@@ -1,0 +1,151 @@
+{
+  "brand": {
+    "primary": {
+      "100": {
+        "$type": "color",
+        "$value": "#F3F4F6",
+        "$description": "Lightest primary background"
+      },
+      "200": {
+        "$type": "color",
+        "$value": "#A78BFA",
+        "$description": "Light primary"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#8B5CF6",
+        "$description": "Primary brand color - AI purple"
+      },
+      "400": {
+        "$type": "color",
+        "$value": "#7C3AED",
+        "$description": "Primary hover"
+      },
+      "500": {
+        "$type": "color",
+        "$value": "#6D28D9",
+        "$description": "Primary active"
+      },
+      "600": {
+        "$type": "color",
+        "$value": "#5B21B6",
+        "$description": "Primary dark"
+      }
+    },
+    "secondary": {
+      "100": {
+        "$type": "color",
+        "$value": "#DBEAFE",
+        "$description": "Lightest secondary"
+      },
+      "200": {
+        "$type": "color",
+        "$value": "#93C5FD",
+        "$description": "Light secondary"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#3B82F6",
+        "$description": "Secondary brand color - Tech blue"
+      },
+      "400": {
+        "$type": "color",
+        "$value": "#2563EB",
+        "$description": "Secondary hover"
+      },
+      "500": {
+        "$type": "color",
+        "$value": "#1D4ED8",
+        "$description": "Secondary active"
+      },
+      "600": {
+        "$type": "color",
+        "$value": "#1E40AF",
+        "$description": "Secondary dark"
+      }
+    },
+    "ai": {
+      "accent": {
+        "$type": "color",
+        "$value": "#8B5CF6",
+        "$description": "AI feature accent color"
+      },
+      "highlight": {
+        "$type": "color",
+        "$value": "#A78BFA",
+        "$description": "AI highlight color for annotations"
+      },
+      "background": {
+        "$type": "color",
+        "$value": "#F5F3FF",
+        "$description": "AI card/panel background"
+      },
+      "border": {
+        "$type": "color",
+        "$value": "#C4B5FD",
+        "$description": "AI element borders"
+      },
+      "glow": {
+        "$type": "color",
+        "$value": "#DDD6FE",
+        "$description": "AI thinking/loading glow"
+      }
+    },
+    "success": {
+      "light": {
+        "$type": "color",
+        "$value": "#D1FAE5"
+      },
+      "main": {
+        "$type": "color",
+        "$value": "#10B981"
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "#059669"
+      }
+    },
+    "warning": {
+      "light": {
+        "$type": "color",
+        "$value": "#FEF3C7"
+      },
+      "main": {
+        "$type": "color",
+        "$value": "#F59E0B"
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "#D97706"
+      }
+    },
+    "danger": {
+      "light": {
+        "$type": "color",
+        "$value": "#FEE2E2"
+      },
+      "main": {
+        "$type": "color",
+        "$value": "#EF4444"
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "#DC2626"
+      }
+    },
+    "info": {
+      "light": {
+        "$type": "color",
+        "$value": "#E0E7FF"
+      },
+      "main": {
+        "$type": "color",
+        "$value": "#6366F1"
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "#4F46E5"
+      }
+    }
+  }
+}

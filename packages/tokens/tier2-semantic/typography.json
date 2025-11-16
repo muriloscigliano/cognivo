@@ -1,0 +1,447 @@
+{
+  "typography": {
+    "heading": {
+      "h1": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.family.display}",
+          "$description": "Large hero heading - Satoshi Display"
+        },
+        "fontSize": {
+          "$type": "dimension",
+          "$value": "{font.size.4xl}",
+          "$description": "48px"
+        },
+        "fontWeight": {
+          "$type": "number",
+          "$value": "{font.weight.bold}",
+          "$description": "700"
+        },
+        "lineHeight": {
+          "$type": "number",
+          "$value": "{line.height.tight}",
+          "$description": "1.2 for headings"
+        },
+        "letterSpacing": {
+          "$type": "dimension",
+          "$value": "{letter.spacing.tight}",
+          "$description": "-0.025em for large headings"
+        }
+      },
+      "h2": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.family.display}",
+          "$description": "Section heading - Satoshi Display"
+        },
+        "fontSize": {
+          "$type": "dimension",
+          "$value": "{font.size.3xl}",
+          "$description": "36px"
+        },
+        "fontWeight": {
+          "$type": "number",
+          "$value": "{font.weight.bold}",
+          "$description": "700"
+        },
+        "lineHeight": {
+          "$type": "number",
+          "$value": "{line.height.tight}",
+          "$description": "1.2"
+        },
+        "letterSpacing": {
+          "$type": "dimension",
+          "$value": "{letter.spacing.tight}",
+          "$description": "-0.025em"
+        }
+      },
+      "h3": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.family.display}",
+          "$description": "Subsection heading - Satoshi Display"
+        },
+        "fontSize": {
+          "$type": "dimension",
+          "$value": "{font.size.2xl}",
+          "$description": "30px"
+        },
+        "fontWeight": {
+          "$type": "number",
+          "$value": "{font.weight.semibold}",
+          "$description": "600"
+        },
+        "lineHeight": {
+          "$type": "number",
+          "$value": "{line.height.snug}",
+          "$description": "1.375"
+        },
+        "letterSpacing": {
+          "$type": "dimension",
+          "$value": "{letter.spacing.normal}",
+          "$description": "0em"
+        }
+      },
+      "h4": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.family.display}",
+          "$description": "Card heading - Satoshi Display"
+        },
+        "fontSize": {
+          "$type": "dimension",
+          "$value": "{font.size.xl}",
+          "$description": "24px"
+        },
+        "fontWeight": {
+          "$type": "number",
+          "$value": "{font.weight.semibold}",
+          "$description": "600"
+        },
+        "lineHeight": {
+          "$type": "number",
+          "$value": "{line.height.snug}",
+          "$description": "1.375"
+        },
+        "letterSpacing": {
+          "$type": "dimension",
+          "$value": "{letter.spacing.normal}",
+          "$description": "0em"
+        }
+      },
+      "h5": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.family.display}",
+          "$description": "Component heading - Satoshi Display"
+        },
+        "fontSize": {
+          "$type": "dimension",
+          "$value": "{font.size.lg}",
+          "$description": "20px"
+        },
+        "fontWeight": {
+          "$type": "number",
+          "$value": "{font.weight.semibold}",
+          "$description": "600"
+        },
+        "lineHeight": {
+          "$type": "number",
+          "$value": "{line.height.snug}",
+          "$description": "1.375"
+        },
+        "letterSpacing": {
+          "$type": "dimension",
+          "$value": "{letter.spacing.normal}",
+          "$description": "0em"
+        }
+      },
+      "h6": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.family.display}",
+          "$description": "Small heading - Satoshi Display"
+        },
+        "fontSize": {
+          "$type": "dimension",
+          "$value": "{font.size.md}",
+          "$description": "18px"
+        },
+        "fontWeight": {
+          "$type": "number",
+          "$value": "{font.weight.semibold}",
+          "$description": "600"
+        },
+        "lineHeight": {
+          "$type": "number",
+          "$value": "{line.height.snug}",
+          "$description": "1.375"
+        },
+        "letterSpacing": {
+          "$type": "dimension",
+          "$value": "{letter.spacing.normal}",
+          "$description": "0em"
+        }
+      }
+    },
+    "body": {
+      "large": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.family.primary}",
+          "$description": "Large body text - Inter"
+        },
+        "fontSize": {
+          "$type": "dimension",
+          "$value": "{font.size.md}",
+          "$description": "18px"
+        },
+        "fontWeight": {
+          "$type": "number",
+          "$value": "{font.weight.normal}",
+          "$description": "400"
+        },
+        "lineHeight": {
+          "$type": "number",
+          "$value": "{line.height.relaxed}",
+          "$description": "1.625 for comfortable reading"
+        },
+        "letterSpacing": {
+          "$type": "dimension",
+          "$value": "{letter.spacing.normal}",
+          "$description": "0em"
+        }
+      },
+      "base": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.family.primary}",
+          "$description": "Default body text - Inter"
+        },
+        "fontSize": {
+          "$type": "dimension",
+          "$value": "{font.size.base}",
+          "$description": "16px - the most common size"
+        },
+        "fontWeight": {
+          "$type": "number",
+          "$value": "{font.weight.normal}",
+          "$description": "400"
+        },
+        "lineHeight": {
+          "$type": "number",
+          "$value": "{line.height.normal}",
+          "$description": "1.5 for optimal readability"
+        },
+        "letterSpacing": {
+          "$type": "dimension",
+          "$value": "{letter.spacing.normal}",
+          "$description": "0em"
+        }
+      },
+      "small": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.family.primary}",
+          "$description": "Small body text - Inter"
+        },
+        "fontSize": {
+          "$type": "dimension",
+          "$value": "{font.size.sm}",
+          "$description": "14px"
+        },
+        "fontWeight": {
+          "$type": "number",
+          "$value": "{font.weight.normal}",
+          "$description": "400"
+        },
+        "lineHeight": {
+          "$type": "number",
+          "$value": "{line.height.normal}",
+          "$description": "1.5"
+        },
+        "letterSpacing": {
+          "$type": "dimension",
+          "$value": "{letter.spacing.normal}",
+          "$description": "0em"
+        }
+      },
+      "xs": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.family.primary}",
+          "$description": "Extra small text - Inter"
+        },
+        "fontSize": {
+          "$type": "dimension",
+          "$value": "{font.size.xs}",
+          "$description": "12px"
+        },
+        "fontWeight": {
+          "$type": "number",
+          "$value": "{font.weight.normal}",
+          "$description": "400"
+        },
+        "lineHeight": {
+          "$type": "number",
+          "$value": "{line.height.normal}",
+          "$description": "1.5"
+        },
+        "letterSpacing": {
+          "$type": "dimension",
+          "$value": "{letter.spacing.wide}",
+          "$description": "0.025em - wider for small text"
+        }
+      }
+    },
+    "label": {
+      "large": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.family.primary}",
+          "$description": "Large label - Inter Medium"
+        },
+        "fontSize": {
+          "$type": "dimension",
+          "$value": "{font.size.base}",
+          "$description": "16px"
+        },
+        "fontWeight": {
+          "$type": "number",
+          "$value": "{font.weight.medium}",
+          "$description": "500"
+        },
+        "lineHeight": {
+          "$type": "number",
+          "$value": "{line.height.snug}",
+          "$description": "1.375 for UI elements"
+        },
+        "letterSpacing": {
+          "$type": "dimension",
+          "$value": "{letter.spacing.normal}",
+          "$description": "0em"
+        }
+      },
+      "medium": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.family.primary}",
+          "$description": "Medium label - Inter Medium"
+        },
+        "fontSize": {
+          "$type": "dimension",
+          "$value": "{font.size.sm}",
+          "$description": "14px - most common label size"
+        },
+        "fontWeight": {
+          "$type": "number",
+          "$value": "{font.weight.medium}",
+          "$description": "500"
+        },
+        "lineHeight": {
+          "$type": "number",
+          "$value": "{line.height.snug}",
+          "$description": "1.375"
+        },
+        "letterSpacing": {
+          "$type": "dimension",
+          "$value": "{letter.spacing.normal}",
+          "$description": "0em"
+        }
+      },
+      "small": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.family.primary}",
+          "$description": "Small label - Inter Medium"
+        },
+        "fontSize": {
+          "$type": "dimension",
+          "$value": "{font.size.xs}",
+          "$description": "12px"
+        },
+        "fontWeight": {
+          "$type": "number",
+          "$value": "{font.weight.medium}",
+          "$description": "500"
+        },
+        "lineHeight": {
+          "$type": "number",
+          "$value": "{line.height.snug}",
+          "$description": "1.375"
+        },
+        "letterSpacing": {
+          "$type": "dimension",
+          "$value": "{letter.spacing.wide}",
+          "$description": "0.025em"
+        }
+      }
+    },
+    "caption": {
+      "fontFamily": {
+        "$type": "string",
+        "$value": "{font.family.primary}",
+        "$description": "Caption text - Inter"
+      },
+      "fontSize": {
+        "$type": "dimension",
+        "$value": "{font.size.xs}",
+        "$description": "12px"
+      },
+      "fontWeight": {
+        "$type": "number",
+        "$value": "{font.weight.normal}",
+        "$description": "400"
+      },
+      "lineHeight": {
+        "$type": "number",
+        "$value": "{line.height.normal}",
+        "$description": "1.5"
+      },
+      "letterSpacing": {
+        "$type": "dimension",
+        "$value": "{letter.spacing.wide}",
+        "$description": "0.025em for small text legibility"
+      }
+    },
+    "code": {
+      "fontFamily": {
+        "$type": "string",
+        "$value": "{font.family.mono}",
+        "$description": "Code and technical text - Fira Code"
+      },
+      "fontSize": {
+        "$type": "dimension",
+        "$value": "{font.size.sm}",
+        "$description": "14px"
+      },
+      "fontWeight": {
+        "$type": "number",
+        "$value": "{font.weight.normal}",
+        "$description": "400"
+      },
+      "lineHeight": {
+        "$type": "number",
+        "$value": "{line.height.relaxed}",
+        "$description": "1.625 for code readability"
+      },
+      "letterSpacing": {
+        "$type": "dimension",
+        "$value": "{letter.spacing.normal}",
+        "$description": "0em"
+      }
+    },
+    "overline": {
+      "fontFamily": {
+        "$type": "string",
+        "$value": "{font.family.primary}",
+        "$description": "Overline/eyebrow text - Inter"
+      },
+      "fontSize": {
+        "$type": "dimension",
+        "$value": "{font.size.xs}",
+        "$description": "12px"
+      },
+      "fontWeight": {
+        "$type": "number",
+        "$value": "{font.weight.semibold}",
+        "$description": "600 for emphasis"
+      },
+      "lineHeight": {
+        "$type": "number",
+        "$value": "{line.height.snug}",
+        "$description": "1.375"
+      },
+      "letterSpacing": {
+        "$type": "dimension",
+        "$value": "{letter.spacing.wider}",
+        "$description": "0.05em - wide tracking for overlines"
+      },
+      "textTransform": {
+        "$type": "string",
+        "$value": "uppercase",
+        "$description": "Overlines are typically uppercase"
+      }
+    }
+  }
+}
