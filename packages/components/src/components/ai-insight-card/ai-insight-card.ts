@@ -44,12 +44,12 @@ export class AiInsightCard extends LitElement {
     css`
       :host {
         display: block;
-        background: ${tokens.color.grayWhite};
-        border-radius: ${tokens.radius.lg};
-        border-left: 4px solid ${tokens.color.aiAccent};
+        background: inherit;
+        border-radius: var(--cg-Border-radius-150);
+        border-left: 4px solid inherit;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         overflow: hidden;
-        transition: box-shadow ${tokens.transition.default};
+        transition: box-shadow inherit;
       }
 
       :host(:hover) {
@@ -57,48 +57,48 @@ export class AiInsightCard extends LitElement {
       }
 
       .card-header {
-        padding: ${tokens.spacing.md};
-        border-bottom: 1px solid ${tokens.color.gray100};
+        padding: var(--cg-spacing-16);
+        border-bottom: 1px solid var(--cg-gray-100);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: ${tokens.spacing.md};
+        gap: var(--cg-spacing-16);
       }
 
       .card-title {
-        font-size: ${tokens.fontSize.lg};
-        font-weight: ${tokens.fontWeight.semibold};
-        color: ${tokens.color.gray900};
+        font-size: var(--cg-font-size-lg);
+        font-weight: inherit;
+        color: inherit;
         margin: 0;
       }
 
       .card-content {
-        padding: ${tokens.spacing.md};
+        padding: var(--cg-spacing-16);
       }
 
       .ai-actions {
         display: flex;
-        gap: ${tokens.spacing.sm};
+        gap: var(--cg-spacing-8);
         flex-wrap: wrap;
       }
 
       .ai-button {
         display: inline-flex;
         align-items: center;
-        gap: ${tokens.spacing.xs};
-        padding: ${tokens.spacing.xs} ${tokens.spacing.md};
-        background: ${tokens.color.aiBackground};
-        border: 1px solid ${tokens.color.aiBorder};
-        border-radius: ${tokens.radius.md};
-        color: ${tokens.color.aiAccent};
-        font-size: ${tokens.fontSize.sm};
-        font-weight: ${tokens.fontWeight.medium};
+        gap: var(--cg-spacing-4);
+        padding: var(--cg-spacing-4) var(--cg-spacing-16);
+        background: inherit;
+        border: 1px solid inherit;
+        border-radius: var(--cg-Border-radius-100);
+        color: inherit;
+        font-size: var(--cg-font-size-sm);
+        font-weight: inherit;
         cursor: pointer;
-        transition: all ${tokens.transition.default};
+        transition: all inherit;
       }
 
       .ai-button:hover {
-        background: ${tokens.color.aiHighlight};
+        background: inherit;
         color: white;
         transform: translateY(-1px);
       }
@@ -114,11 +114,11 @@ export class AiInsightCard extends LitElement {
       }
 
       .ai-result {
-        margin-top: ${tokens.spacing.md};
-        padding: ${tokens.spacing.md};
-        background: ${tokens.color.aiBackground};
-        border: 1px solid ${tokens.color.aiBorder};
-        border-radius: ${tokens.radius.md};
+        margin-top: var(--cg-spacing-16);
+        padding: var(--cg-spacing-16);
+        background: inherit;
+        border: 1px solid inherit;
+        border-radius: var(--cg-Border-radius-100);
         animation: fadeIn 0.3s ease-in-out;
       }
 
@@ -126,30 +126,30 @@ export class AiInsightCard extends LitElement {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: ${tokens.spacing.sm};
+        margin-bottom: var(--cg-spacing-8);
       }
 
       .ai-result-title {
-        font-size: ${tokens.fontSize.md};
-        font-weight: ${tokens.fontWeight.semibold};
-        color: ${tokens.color.gray900};
+        font-size: var(--cg-font-size-md);
+        font-weight: inherit;
+        color: inherit;
       }
 
       .ai-explanation {
-        margin: ${tokens.spacing.sm} 0;
-        color: ${tokens.color.gray900};
+        margin: var(--cg-spacing-8) 0;
+        color: inherit;
         line-height: 1.6;
       }
 
       .ai-bullets {
         list-style: none;
         padding: 0;
-        margin: ${tokens.spacing.sm} 0;
+        margin: var(--cg-spacing-8) 0;
       }
 
       .ai-bullets li {
-        padding: ${tokens.spacing.xs} 0;
-        padding-left: ${tokens.spacing.md};
+        padding: var(--cg-spacing-4) 0;
+        padding-left: var(--cg-spacing-16);
         position: relative;
       }
 
@@ -157,61 +157,61 @@ export class AiInsightCard extends LitElement {
         content: '•';
         position: absolute;
         left: 0;
-        color: ${tokens.color.aiAccent};
+        color: inherit;
         font-weight: bold;
       }
 
       .ai-drivers {
-        margin-top: ${tokens.spacing.md};
+        margin-top: var(--cg-spacing-16);
       }
 
       .driver {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: ${tokens.spacing.xs};
-        margin: ${tokens.spacing.xs} 0;
+        padding: var(--cg-spacing-4);
+        margin: var(--cg-spacing-4) 0;
         background: white;
-        border-radius: ${tokens.radius.sm};
+        border-radius: var(--cg-Border-radius-50);
       }
 
       .driver-factor {
-        font-weight: ${tokens.fontWeight.medium};
+        font-weight: inherit;
       }
 
       .driver-impact {
         display: flex;
         align-items: center;
-        gap: ${tokens.spacing.xs};
-        font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray500};
+        gap: var(--cg-spacing-4);
+        font-size: var(--cg-font-size-sm);
+        color: var(--cg-gray-500);
       }
 
       .loading-state {
         display: flex;
         align-items: center;
-        gap: ${tokens.spacing.sm};
-        padding: ${tokens.spacing.md};
-        color: ${tokens.color.gray500};
+        gap: var(--cg-spacing-8);
+        padding: var(--cg-spacing-16);
+        color: var(--cg-gray-500);
       }
 
       .error-state {
-        padding: ${tokens.spacing.md};
-        background: ${tokens.color.danger};
+        padding: var(--cg-spacing-16);
+        background: inherit;
         color: white;
-        border-radius: ${tokens.radius.md};
-        margin-top: ${tokens.spacing.md};
+        border-radius: var(--cg-Border-radius-100);
+        margin-top: var(--cg-spacing-16);
       }
 
       /* Dark theme support */
       :host([data-theme='dark']) {
-        background: ${tokens.color.gray900};
+        background: inherit;
       }
 
       :host([data-theme='dark']) .card-title,
       :host([data-theme='dark']) .ai-result-title,
       :host([data-theme='dark']) .ai-explanation {
-        color: ${tokens.color.grayWhite};
+        color: inherit;
       }
     `,
   ];
@@ -220,7 +220,7 @@ export class AiInsightCard extends LitElement {
    * Card title
    */
   @property({ type: String })
-  title = '';
+  override title = '';
 
   /**
    * Enabled AI actions

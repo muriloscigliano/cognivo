@@ -4,8 +4,8 @@ import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
 @customElement('ai-context-builder')
-export class Ai-context-builder extends LitElement {
+export class AiContextBuilder extends LitElement {
   static override styles = [baseStyles, css`:host { display: block; }`];
   override render() { return html`<slot></slot>`; }
 }
-declare global { interface HTMLElementTagNameMap { 'ai-context-builder': Ai-context-builder; } }
+declare global { interface HTMLElementTagNameMap { 'ai-context-builder': AiContextBuilder; } }

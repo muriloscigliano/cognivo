@@ -7,7 +7,7 @@ import { tokens } from '../../styles/tokens.js';
 export class LayoutHeader extends LitElement {
   static override styles = [
     baseStyles,
-    css`:host { display: flex; align-items: center; justify-content: space-between; padding: ${tokens.spacing.md} ${tokens.spacing.lg}; border-bottom: 1px solid ${tokens.color.gray100}; background: ${tokens.color.grayWhite}; }`
+    css`:host { display: flex; align-items: center; justify-content: space-between; padding: var(--cg-spacing-16) var(--cg-spacing-24); border-bottom: 1px solid var(--cg-gray-100); background: inherit; }`
   ];
   override render() { return html`<slot></slot>`; }
 }

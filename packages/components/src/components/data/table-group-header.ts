@@ -4,9 +4,9 @@ import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
 @customElement('table-group-header')
-export class Table-group-header extends LitElement {
+export class TableGroupHeader extends LitElement {
   static override styles = [baseStyles, css`:host { display: block; }`];
   @property({ type: Array }) data = [];
   override render() { return html`<slot></slot>`; }
 }
-declare global { interface HTMLElementTagNameMap { 'table-group-header': Table-group-header; } }
+declare global { interface HTMLElementTagNameMap { 'table-group-header': TableGroupHeader; } }

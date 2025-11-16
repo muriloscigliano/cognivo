@@ -42,26 +42,26 @@ export class AiResultPanel extends LitElement {
     css`
       :host {
         display: block;
-        background: var(--panel-background, ${tokens.color.grayWhite});
-        border: 1px solid var(--panel-border, ${tokens.color.gray100});
-        border-radius: ${tokens.radius.lg};
+        background: var(--panel-background, inherit);
+        border: 1px solid var(--panel-border, var(--cg-gray-100));
+        border-radius: var(--cg-Border-radius-150);
         overflow: hidden;
-        transition: all ${tokens.transition.default};
+        transition: all inherit;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       }
 
       :host([variant='success']) {
-        border-color: ${tokens.color.success};
+        border-color: inherit;
         background: var(--success-bg, #f0fdf4);
       }
 
       :host([variant='warning']) {
-        border-color: ${tokens.color.warning};
+        border-color: inherit;
         background: var(--warning-bg, #fffbeb);
       }
 
       :host([variant='error']) {
-        border-color: ${tokens.color.danger};
+        border-color: inherit;
         background: var(--error-bg, #fef2f2);
       }
 
@@ -74,9 +74,9 @@ export class AiResultPanel extends LitElement {
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        padding: ${tokens.spacing.md} ${tokens.spacing.lg};
-        gap: ${tokens.spacing.md};
-        border-bottom: 1px solid var(--panel-border, ${tokens.color.gray100});
+        padding: var(--cg-spacing-16) var(--cg-spacing-24);
+        gap: var(--cg-spacing-16);
+        border-bottom: 1px solid var(--panel-border, var(--cg-gray-100));
         background: var(--header-bg, transparent);
       }
 
@@ -88,26 +88,26 @@ export class AiResultPanel extends LitElement {
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: ${tokens.spacing.xs};
+        gap: var(--cg-spacing-4);
       }
 
       .header-title {
         display: flex;
         align-items: center;
-        gap: ${tokens.spacing.sm};
-        font-family: ${tokens.fontFamily.display};
-        font-size: ${tokens.fontSize.md};
-        font-weight: ${tokens.fontWeight.semibold};
-        color: ${tokens.color.gray900};
+        gap: var(--cg-spacing-8);
+        font-family: inherit;
+        font-size: var(--cg-font-size-md);
+        font-weight: inherit;
+        color: inherit;
         margin: 0;
       }
 
       .header-meta {
         display: flex;
         align-items: center;
-        gap: ${tokens.spacing.md};
-        font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray500};
+        gap: var(--cg-spacing-16);
+        font-size: inherit;
+        color: var(--cg-gray-500);
       }
 
       .timestamp {
@@ -119,7 +119,7 @@ export class AiResultPanel extends LitElement {
       .header-actions {
         display: flex;
         align-items: center;
-        gap: ${tokens.spacing.xs};
+        gap: var(--cg-spacing-4);
         flex-shrink: 0;
       }
 
@@ -130,20 +130,20 @@ export class AiResultPanel extends LitElement {
         justify-content: center;
         width: 32px;
         height: 32px;
-        border: 1px solid ${tokens.color.gray100};
+        border: 1px solid var(--cg-gray-100);
         background: transparent;
-        border-radius: ${tokens.radius.md};
+        border-radius: var(--cg-Border-radius-100);
         cursor: pointer;
-        transition: all ${tokens.transition.default};
-        color: ${tokens.color.gray500};
+        transition: all inherit;
+        color: var(--cg-gray-500);
         font-size: 16px;
         padding: 0;
       }
 
       .action-button:hover {
-        background: ${tokens.color.gray50};
-        border-color: ${tokens.color.gray500};
-        color: ${tokens.color.gray900};
+        background: inherit;
+        border-color: var(--cg-gray-500);
+        color: inherit;
       }
 
       .action-button:active {
@@ -151,17 +151,17 @@ export class AiResultPanel extends LitElement {
       }
 
       .action-button.dismiss {
-        color: ${tokens.color.danger};
+        color: inherit;
       }
 
       .action-button.dismiss:hover {
         background: #fef2f2;
-        border-color: ${tokens.color.danger};
+        border-color: inherit;
       }
 
       /* Content */
       .panel-content {
-        padding: ${tokens.spacing.lg};
+        padding: var(--cg-spacing-24);
         animation: fadeIn 0.2s ease-in-out;
       }
 
@@ -170,40 +170,40 @@ export class AiResultPanel extends LitElement {
       }
 
       .panel-content ::slotted(* + *) {
-        margin-top: ${tokens.spacing.md};
+        margin-top: var(--cg-spacing-16);
       }
 
       .panel-content ::slotted(h3) {
-        font-family: ${tokens.fontFamily.display};
-        font-size: ${tokens.fontSize.base};
-        font-weight: ${tokens.fontWeight.semibold};
-        color: ${tokens.color.gray900};
-        margin-bottom: ${tokens.spacing.sm};
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        color: inherit;
+        margin-bottom: var(--cg-spacing-8);
       }
 
       .panel-content ::slotted(p) {
-        font-size: ${tokens.fontSize.sm};
-        line-height: ${tokens.lineHeight.relaxed};
-        color: ${tokens.color.gray500};
+        font-size: var(--cg-font-size-sm);
+        line-height: inherit;
+        color: var(--cg-gray-500);
       }
 
       .panel-content ::slotted(ul),
       .panel-content ::slotted(ol) {
         padding-left: 20px;
-        font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray500};
+        font-size: var(--cg-font-size-sm);
+        color: var(--cg-gray-500);
       }
 
       .panel-content ::slotted(li) {
-        line-height: ${tokens.lineHeight.relaxed};
-        margin-top: ${tokens.spacing.xs};
+        line-height: inherit;
+        margin-top: var(--cg-spacing-4);
       }
 
       /* Footer */
       .panel-footer {
-        border-top: 1px solid var(--panel-border, ${tokens.color.gray100});
-        padding: ${tokens.spacing.md} ${tokens.spacing.lg};
-        background: var(--footer-bg, ${tokens.color.gray50});
+        border-top: 1px solid var(--panel-border, var(--cg-gray-100));
+        padding: var(--cg-spacing-16) var(--cg-spacing-24);
+        background: var(--footer-bg, inherit);
       }
 
       .panel-footer ::slotted(*) {
@@ -212,30 +212,30 @@ export class AiResultPanel extends LitElement {
 
       /* Collapsible section */
       details {
-        margin-top: ${tokens.spacing.md};
+        margin-top: var(--cg-spacing-16);
       }
 
       summary {
         cursor: pointer;
-        font-weight: ${tokens.fontWeight.medium};
-        color: ${tokens.color.aiAccent};
+        font-weight: inherit;
+        color: inherit;
         list-style: none;
         display: flex;
         align-items: center;
-        gap: ${tokens.spacing.xs};
-        padding: ${tokens.spacing.sm};
-        border-radius: ${tokens.radius.sm};
-        transition: all ${tokens.transition.default};
+        gap: var(--cg-spacing-4);
+        padding: var(--cg-spacing-8);
+        border-radius: var(--cg-Border-radius-50);
+        transition: all inherit;
       }
 
       summary:hover {
-        background: ${tokens.color.gray50};
+        background: inherit;
       }
 
       summary::before {
         content: '▶';
         display: inline-block;
-        transition: transform ${tokens.transition.default};
+        transition: transform inherit;
       }
 
       details[open] summary::before {
@@ -247,11 +247,11 @@ export class AiResultPanel extends LitElement {
         .panel-header,
         .panel-content,
         .panel-footer {
-          padding: ${tokens.spacing.md};
+          padding: var(--cg-spacing-16);
         }
 
         .header-title {
-          font-size: ${tokens.fontSize.base};
+          font-size: inherit;
         }
       }
 
@@ -316,7 +316,7 @@ export class AiResultPanel extends LitElement {
    * Panel title
    */
   @property({ type: String })
-  title = '';
+  override title = '';
 
   /**
    * Timestamp text

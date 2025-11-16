@@ -9,14 +9,15 @@ export class DashboardWidget extends LitElement {
     baseStyles,
     css`:host {
       display: block;
-      background: ${tokens.color.grayWhite};
-      border: 1px solid ${tokens.color.gray100};
-      border-radius: ${tokens.radius.lg};
-      padding: ${tokens.spacing.lg};
+      background: inherit;
+      border: 1px solid var(--cg-gray-100);
+      border-radius: var(--cg-Border-radius-150);
+      padding: var(--cg-spacing-24);
     }`
   ];
 
-  @property({ type: String }) title = '';
+  @property({ type: String })
+  override title = '';
   @property({ type: Object }) data = {};
 
   override render() {

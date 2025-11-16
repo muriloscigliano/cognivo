@@ -11,7 +11,7 @@ export class LayoutStack extends LitElement {
       :host {
         display: flex;
         flex-direction: var(--stack-direction, column);
-        gap: var(--stack-gap, ${tokens.spacing.md});
+        gap: var(--stack-gap, var(--cg-spacing-16));
         align-items: var(--stack-align, stretch);
         justify-content: var(--stack-justify, flex-start);
       }

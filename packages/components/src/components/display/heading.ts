@@ -5,13 +5,13 @@ import { tokens } from '../../styles/tokens.js';
 
 @customElement('cg-heading')
 export class CgHeading extends LitElement {
-  static override styles = [baseStyles, css`:host { display: block; font-family: ${tokens.fontFamily.display}; font-weight: ${tokens.fontWeight.bold}; margin: 0; }
-    :host([level='1']) { font-size: ${tokens.fontSize['3xl']}; }
-    :host([level='2']) { font-size: ${tokens.fontSize['2xl']}; }
-    :host([level='3']) { font-size: ${tokens.fontSize.xl}; }
-    :host([level='4']) { font-size: ${tokens.fontSize.lg}; }
-    :host([level='5']) { font-size: ${tokens.fontSize.base}; }
-    :host([level='6']) { font-size: ${tokens.fontSize.sm}; }`];
+  static override styles = [baseStyles, css`:host { display: block; font-family: inherit; font-weight: inherit; margin: 0; }
+    :host([level='1']) { font-size: inherit; }
+    :host([level='2']) { font-size: inherit; }
+    :host([level='3']) { font-size: inherit; }
+    :host([level='4']) { font-size: var(--cg-font-size-lg); }
+    :host([level='5']) { font-size: inherit; }
+    :host([level='6']) { font-size: var(--cg-font-size-sm); }`];
   @property({ type: String, reflect: true }) level: '1'|'2'|'3'|'4'|'5'|'6' = '2';
   override render() { return html`<slot></slot>`; }
 }

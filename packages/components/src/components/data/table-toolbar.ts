@@ -4,9 +4,9 @@ import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
 @customElement('table-toolbar')
-export class Table-toolbar extends LitElement {
+export class TableToolbar extends LitElement {
   static override styles = [baseStyles, css`:host { display: block; }`];
   @property({ type: Array }) data = [];
   override render() { return html`<slot></slot>`; }
 }
-declare global { interface HTMLElementTagNameMap { 'table-toolbar': Table-toolbar; } }
+declare global { interface HTMLElementTagNameMap { 'table-toolbar': TableToolbar; } }

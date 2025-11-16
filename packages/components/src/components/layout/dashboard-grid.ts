@@ -7,7 +7,7 @@ import { tokens } from '../../styles/tokens.js';
 export class DashboardGrid extends LitElement {
   static override styles = [
     baseStyles,
-    css`:host { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: ${tokens.spacing.lg}; padding: ${tokens.spacing.lg}; }`
+    css`:host { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--cg-spacing-24); padding: var(--cg-spacing-24); }`
   ];
   override render() { return html`<slot></slot>`; }
 }

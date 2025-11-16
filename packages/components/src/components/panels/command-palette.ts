@@ -21,9 +21,9 @@ export class CommandPalette extends LitElement {
       display: flex;
     }
     .panel {
-      background: ${tokens.color.grayWhite};
-      border-radius: ${tokens.radius.lg};
-      padding: ${tokens.spacing.lg};
+      background: inherit;
+      border-radius: var(--cg-Border-radius-150);
+      padding: var(--cg-spacing-24);
       max-width: 600px;
       margin: auto;
     }`

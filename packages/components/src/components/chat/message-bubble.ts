@@ -9,7 +9,7 @@ export class MessageBubble extends LitElement {
     baseStyles,
     css`:host {
       display: block;
-      font-family: ${tokens.font.family.base};
+      font-family: inherit;
     }`
   ];
 

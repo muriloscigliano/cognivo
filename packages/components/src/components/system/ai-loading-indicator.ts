@@ -4,8 +4,8 @@ import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
 @customElement('ai-loading-indicator')
-export class Ai-loading-indicator extends LitElement {
+export class AiLoadingIndicator extends LitElement {
   static override styles = [baseStyles, css`:host { display: block; }`];
   override render() { return html`<slot></slot>`; }
 }
-declare global { interface HTMLElementTagNameMap { 'ai-loading-indicator': Ai-loading-indicator; } }
+declare global { interface HTMLElementTagNameMap { 'ai-loading-indicator': AiLoadingIndicator; } }

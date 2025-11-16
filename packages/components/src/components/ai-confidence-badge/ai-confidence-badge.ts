@@ -30,39 +30,39 @@ export class AiConfidenceBadge extends LitElement {
       :host {
         display: inline-flex;
         align-items: center;
-        gap: ${tokens.spacing.xs};
+        gap: var(--cg-spacing-4);
       }
 
       .badge {
         display: inline-flex;
         align-items: center;
-        gap: ${tokens.spacing.xs};
+        gap: var(--cg-spacing-4);
         padding: var(--badge-padding, 4px 8px);
-        border-radius: ${tokens.radius.full};
-        font-size: var(--badge-font-size, ${tokens.fontSize.xs});
-        font-weight: ${tokens.fontWeight.medium};
-        transition: all ${tokens.transition.default};
+        border-radius: var(--cg-Border-radius-full);
+        font-size: var(--badge-font-size, inherit);
+        font-weight: inherit;
+        transition: all inherit;
       }
 
       .badge.high {
-        background: ${tokens.color.success};
+        background: inherit;
         color: white;
       }
 
       .badge.medium {
-        background: ${tokens.color.warning};
+        background: inherit;
         color: white;
       }
 
       .badge.low {
-        background: ${tokens.color.danger};
+        background: inherit;
         color: white;
       }
 
       .dot {
         width: 6px;
         height: 6px;
-        border-radius: ${tokens.radius.full};
+        border-radius: var(--cg-Border-radius-full);
         background: currentColor;
       }
 
@@ -74,12 +74,12 @@ export class AiConfidenceBadge extends LitElement {
 
       :host([size='md']) {
         --badge-padding: 4px 8px;
-        --badge-font-size: ${tokens.fontSize.xs};
+        --badge-font-size: inherit;
       }
 
       :host([size='lg']) {
         --badge-padding: 6px 12px;
-        --badge-font-size: ${tokens.fontSize.sm};
+        --badge-font-size: var(--cg-font-size-sm);
       }
 
       .percentage {

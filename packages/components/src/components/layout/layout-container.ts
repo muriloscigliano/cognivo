@@ -13,7 +13,7 @@ export class LayoutContainer extends LitElement {
         width: 100%;
         max-width: var(--container-max-width, 1200px);
         margin: 0 auto;
-        padding: var(--container-padding, ${tokens.spacing.lg});
+        padding: var(--container-padding, var(--cg-spacing-24));
       }
 
       :host([size='sm']) { --container-max-width: 640px; }

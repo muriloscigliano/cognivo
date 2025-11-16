@@ -66,41 +66,41 @@ export class AiTable extends LitElement {
         display: block;
         width: 100%;
         overflow-x: auto;
-        background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray100};
-        border-radius: ${tokens.radius.lg};
+        background: inherit;
+        border: 1px solid var(--cg-gray-100);
+        border-radius: var(--cg-Border-radius-150);
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
-        font-size: ${tokens.fontSize.sm};
-        font-family: ${tokens.fontFamily.primary};
+        font-size: var(--cg-font-size-sm);
+        font-family: inherit;
       }
 
       /* Header */
       thead {
-        background: ${tokens.color.gray50};
-        border-bottom: 2px solid ${tokens.color.gray100};
+        background: inherit;
+        border-bottom: 2px solid var(--cg-gray-100);
       }
 
       th {
         padding: var(--cell-padding, 12px 16px);
         text-align: var(--cell-align, left);
-        font-weight: ${tokens.fontWeight.semibold};
-        color: ${tokens.color.gray900};
+        font-weight: inherit;
+        color: inherit;
         white-space: nowrap;
         user-select: none;
       }
 
       th.sortable {
         cursor: pointer;
-        transition: all ${tokens.transition.default};
+        transition: all inherit;
       }
 
       th.sortable:hover {
-        background: ${tokens.color.gray100};
-        color: ${tokens.color.aiAccent};
+        background: var(--cg-gray-100);
+        color: inherit;
       }
 
       .sort-icon {
@@ -112,28 +112,28 @@ export class AiTable extends LitElement {
 
       th.sorted .sort-icon {
         opacity: 1;
-        color: ${tokens.color.aiAccent};
+        color: inherit;
       }
 
       /* Body */
       tbody tr {
-        border-bottom: 1px solid ${tokens.color.gray100};
-        transition: all ${tokens.transition.default};
+        border-bottom: 1px solid var(--cg-gray-100);
+        transition: all inherit;
       }
 
       :host([striped]) tbody tr:nth-child(even) {
-        background: ${tokens.color.gray50};
+        background: inherit;
       }
 
       :host([hoverable]) tbody tr:hover {
-        background: ${tokens.color.gray100};
+        background: var(--cg-gray-100);
         cursor: pointer;
       }
 
       td {
         padding: var(--cell-padding, 12px 16px);
         text-align: var(--cell-align, left);
-        color: ${tokens.color.gray500};
+        color: var(--cg-gray-500);
       }
 
       /* Compact mode */
@@ -176,8 +176,8 @@ export class AiTable extends LitElement {
 
       /* Highlighted rows */
       tr.highlighted {
-        background: ${tokens.color.aiBackground};
-        border-left: 3px solid ${tokens.color.aiAccent};
+        background: inherit;
+        border-left: 3px solid inherit;
       }
 
       /* Column alignment */
@@ -198,8 +198,8 @@ export class AiTable extends LitElement {
       .cell-currency,
       .cell-percentage {
         font-variant-numeric: tabular-nums;
-        font-weight: ${tokens.fontWeight.medium};
-        color: ${tokens.color.gray900};
+        font-weight: inherit;
+        color: inherit;
       }
 
       .cell-currency::before {
@@ -245,27 +245,27 @@ export class AiTable extends LitElement {
 
       /* Empty state */
       .empty-state {
-        padding: ${tokens.spacing.xl};
+        padding: var(--cg-spacing-32);
         text-align: center;
-        color: ${tokens.color.gray500};
+        color: var(--cg-gray-500);
       }
 
       .empty-state-icon {
         font-size: 48px;
         opacity: 0.3;
-        margin-bottom: ${tokens.spacing.sm};
+        margin-bottom: var(--cg-spacing-8);
       }
 
       /* Legend */
       .legend {
         display: flex;
         align-items: center;
-        gap: ${tokens.spacing.lg};
-        padding: ${tokens.spacing.md} ${tokens.spacing.lg};
-        background: ${tokens.color.gray50};
-        border-top: 1px solid ${tokens.color.gray100};
-        font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray500};
+        gap: var(--cg-spacing-24);
+        padding: var(--cg-spacing-16) var(--cg-spacing-24);
+        background: inherit;
+        border-top: 1px solid var(--cg-gray-100);
+        font-size: inherit;
+        color: var(--cg-gray-500);
       }
 
       .legend-item {

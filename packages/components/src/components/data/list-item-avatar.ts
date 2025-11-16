@@ -4,9 +4,9 @@ import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
 @customElement('list-item-avatar')
-export class List-item-avatar extends LitElement {
+export class ListItemAvatar extends LitElement {
   static override styles = [baseStyles, css`:host { display: block; }`];
   @property({ type: Array }) data = [];
   override render() { return html`<slot></slot>`; }
 }
-declare global { interface HTMLElementTagNameMap { 'list-item-avatar': List-item-avatar; } }
+declare global { interface HTMLElementTagNameMap { 'list-item-avatar': ListItemAvatar; } }

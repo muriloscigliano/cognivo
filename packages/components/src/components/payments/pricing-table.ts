@@ -9,9 +9,9 @@ export class PricingTable extends LitElement {
     baseStyles,
     css`:host {
       display: block;
-      padding: ${tokens.spacing.md};
-      border: 1px solid ${tokens.color.gray100};
-      border-radius: ${tokens.radius.lg};
+      padding: var(--cg-spacing-16);
+      border: 1px solid var(--cg-gray-100);
+      border-radius: var(--cg-Border-radius-150);
     }`
   ];
 

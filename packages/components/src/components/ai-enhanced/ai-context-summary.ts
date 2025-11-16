@@ -9,7 +9,7 @@ export class AiContextSummary extends LitElement {
     baseStyles,
     css`:host {
       display: block;
-      padding: ${tokens.spacing.md};
+      padding: var(--cg-spacing-16);
     }`
   ];
 

@@ -39,7 +39,7 @@ export class AiActionGroup extends LitElement {
 
       .group {
         display: flex;
-        gap: var(--group-gap, ${tokens.spacing.sm});
+        gap: var(--group-gap, var(--cg-spacing-8));
       }
 
       :host([layout='horizontal']) .group {
@@ -62,19 +62,19 @@ export class AiActionGroup extends LitElement {
       }
 
       :host([size='md']) {
-        --group-gap: ${tokens.spacing.sm};
+        --group-gap: var(--cg-spacing-8);
       }
 
       :host([size='lg']) {
-        --group-gap: ${tokens.spacing.md};
+        --group-gap: var(--cg-spacing-16);
       }
 
       /* Label */
       .group-label {
-        font-size: ${tokens.fontSize.sm};
-        font-weight: ${tokens.fontWeight.medium};
-        color: ${tokens.color.gray500};
-        margin-bottom: ${tokens.spacing.xs};
+        font-size: var(--cg-font-size-sm);
+        font-weight: inherit;
+        color: var(--cg-gray-500);
+        margin-bottom: var(--cg-spacing-4);
       }
 
       /* Overflow indicator */
@@ -83,18 +83,18 @@ export class AiActionGroup extends LitElement {
         align-items: center;
         gap: 4px;
         padding: 8px 12px;
-        font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray500};
-        background: ${tokens.color.gray50};
-        border: 1px solid ${tokens.color.gray100};
-        border-radius: ${tokens.radius.md};
+        font-size: inherit;
+        color: var(--cg-gray-500);
+        background: inherit;
+        border: 1px solid var(--cg-gray-100);
+        border-radius: var(--cg-Border-radius-100);
         cursor: pointer;
-        transition: all ${tokens.transition.default};
+        transition: all inherit;
       }
 
       .overflow:hover {
-        background: ${tokens.color.gray100};
-        color: ${tokens.color.gray900};
+        background: var(--cg-gray-100);
+        color: inherit;
       }
 
       /* Responsive */

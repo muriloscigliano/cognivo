@@ -4,8 +4,8 @@ import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
 @customElement('forecast-badge')
-export class Forecast-badge extends LitElement {
+export class ForecastBadge extends LitElement {
   static override styles = [baseStyles, css`:host { display: block; }`];
   override render() { return html`<slot></slot>`; }
 }
-declare global { interface HTMLElementTagNameMap { 'forecast-badge': Forecast-badge; } }
+declare global { interface HTMLElementTagNameMap { 'forecast-badge': ForecastBadge; } }

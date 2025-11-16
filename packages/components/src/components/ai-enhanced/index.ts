@@ -1,4 +1,3 @@
-export * from './ai-insight-card.js';
 export * from './ai-metric-card.js';
 export * from './ai-trend-card.js';
 export * from './ai-forecast-card.js';

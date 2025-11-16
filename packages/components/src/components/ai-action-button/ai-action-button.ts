@@ -43,16 +43,16 @@ export class AiActionButton extends LitElement {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: ${tokens.spacing.xs};
+        gap: var(--cg-spacing-4);
         padding: var(--button-padding, 8px 16px);
-        font-family: ${tokens.fontFamily.primary};
-        font-size: var(--button-font-size, ${tokens.fontSize.sm});
-        font-weight: ${tokens.fontWeight.medium};
+        font-family: inherit;
+        font-size: var(--button-font-size, var(--cg-font-size-sm));
+        font-weight: inherit;
         line-height: 1.5;
         border: 1px solid transparent;
-        border-radius: ${tokens.radius.md};
+        border-radius: var(--cg-Border-radius-100);
         cursor: pointer;
-        transition: all ${tokens.transition.default};
+        transition: all inherit;
         user-select: none;
         position: relative;
         overflow: hidden;
@@ -60,19 +60,19 @@ export class AiActionButton extends LitElement {
 
       /* Focus styles for accessibility */
       button:focus-visible {
-        outline: 2px solid ${tokens.color.aiAccent};
+        outline: 2px solid inherit;
         outline-offset: 2px;
       }
 
       /* Primary variant (default) */
       .primary {
-        background: ${tokens.color.aiAccent};
+        background: inherit;
         color: white;
-        border-color: ${tokens.color.aiAccent};
+        border-color: inherit;
       }
 
       .primary:hover:not(:disabled) {
-        background: ${tokens.color.aiAccent};
+        background: inherit;
         filter: brightness(1.1);
         box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
       }
@@ -84,32 +84,32 @@ export class AiActionButton extends LitElement {
       /* Secondary variant */
       .secondary {
         background: transparent;
-        color: ${tokens.color.aiAccent};
-        border-color: ${tokens.color.aiAccent};
+        color: inherit;
+        border-color: inherit;
       }
 
       .secondary:hover:not(:disabled) {
-        background: ${tokens.color.aiAccent}10;
-        border-color: ${tokens.color.aiAccent};
+        background: inherit10;
+        border-color: inherit;
       }
 
       .secondary:active:not(:disabled) {
-        background: ${tokens.color.aiAccent}20;
+        background: inherit20;
       }
 
       /* Ghost variant */
       .ghost {
         background: transparent;
-        color: ${tokens.color.aiAccent};
+        color: inherit;
         border-color: transparent;
       }
 
       .ghost:hover:not(:disabled) {
-        background: ${tokens.color.aiAccent}10;
+        background: inherit10;
       }
 
       .ghost:active:not(:disabled) {
-        background: ${tokens.color.aiAccent}20;
+        background: inherit20;
       }
 
       /* Disabled state */
@@ -144,7 +144,7 @@ export class AiActionButton extends LitElement {
 
       .secondary.loading::after,
       .ghost.loading::after {
-        color: ${tokens.color.aiAccent};
+        color: inherit;
       }
 
       @keyframes spin {
@@ -156,17 +156,17 @@ export class AiActionButton extends LitElement {
       /* Size variants */
       :host([size='sm']) {
         --button-padding: 6px 12px;
-        --button-font-size: ${tokens.fontSize.xs};
+        --button-font-size: inherit;
       }
 
       :host([size='md']) {
         --button-padding: 8px 16px;
-        --button-font-size: ${tokens.fontSize.sm};
+        --button-font-size: var(--cg-font-size-sm);
       }
 
       :host([size='lg']) {
         --button-padding: 12px 24px;
-        --button-font-size: ${tokens.fontSize.base};
+        --button-font-size: inherit;
       }
 
       /* Icon */

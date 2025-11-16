@@ -4,8 +4,8 @@ import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
 @customElement('ai-debug-panel')
-export class Ai-debug-panel extends LitElement {
+export class AiDebugPanel extends LitElement {
   static override styles = [baseStyles, css`:host { display: block; }`];
   override render() { return html`<slot></slot>`; }
 }
-declare global { interface HTMLElementTagNameMap { 'ai-debug-panel': Ai-debug-panel; } }
+declare global { interface HTMLElementTagNameMap { 'ai-debug-panel': AiDebugPanel; } }

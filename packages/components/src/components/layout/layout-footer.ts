@@ -7,7 +7,7 @@ import { tokens } from '../../styles/tokens.js';
 export class LayoutFooter extends LitElement {
   static override styles = [
     baseStyles,
-    css`:host { display: block; padding: ${tokens.spacing.xl} ${tokens.spacing.lg}; border-top: 1px solid ${tokens.color.gray100}; background: ${tokens.color.gray50}; }`
+    css`:host { display: block; padding: var(--cg-spacing-32) var(--cg-spacing-24); border-top: 1px solid var(--cg-gray-100); background: inherit; }`
   ];
   override render() { return html`<slot></slot>`; }
 }

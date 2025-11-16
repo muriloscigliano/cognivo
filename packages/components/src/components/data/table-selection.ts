@@ -4,9 +4,9 @@ import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
 @customElement('table-selection')
-export class Table-selection extends LitElement {
+export class TableSelection extends LitElement {
   static override styles = [baseStyles, css`:host { display: block; }`];
   @property({ type: Array }) data = [];
   override render() { return html`<slot></slot>`; }
 }
-declare global { interface HTMLElementTagNameMap { 'table-selection': Table-selection; } }
+declare global { interface HTMLElementTagNameMap { 'table-selection': TableSelection; } }

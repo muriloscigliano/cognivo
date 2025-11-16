@@ -45,10 +45,10 @@ export class AiMiniChart extends LitElement {
     css`
       :host {
         display: block;
-        background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray100};
-        border-radius: ${tokens.radius.lg};
-        padding: ${tokens.spacing.md};
+        background: inherit;
+        border: 1px solid var(--cg-gray-100);
+        border-radius: var(--cg-Border-radius-150);
+        padding: var(--cg-spacing-16);
       }
 
       .chart-container {
@@ -65,62 +65,62 @@ export class AiMiniChart extends LitElement {
 
       /* Chart elements */
       .grid-line {
-        stroke: ${tokens.color.gray100};
+        stroke: var(--cg-gray-100);
         stroke-width: 1;
         stroke-dasharray: 4 4;
       }
 
       .axis-line {
-        stroke: ${tokens.color.gray500};
+        stroke: var(--cg-gray-500);
         stroke-width: 2;
       }
 
       .axis-label {
         font-size: 11px;
-        fill: ${tokens.color.gray500};
-        font-family: ${tokens.fontFamily.primary};
+        fill: var(--cg-gray-500);
+        font-family: inherit;
       }
 
       /* Data line */
       .data-line {
         fill: none;
-        stroke: ${tokens.color.aiAccent};
+        stroke: inherit;
         stroke-width: 3;
         stroke-linecap: round;
         stroke-linejoin: round;
       }
 
       .data-area {
-        fill: ${tokens.color.aiAccent};
+        fill: inherit;
         opacity: 0.1;
       }
 
       /* Forecast */
       .forecast-line {
         fill: none;
-        stroke: ${tokens.color.aiAccent};
+        stroke: inherit;
         stroke-width: 3;
         stroke-dasharray: 8 4;
         opacity: 0.7;
       }
 
       .confidence-band {
-        fill: ${tokens.color.aiBackground};
+        fill: inherit;
         opacity: 0.3;
       }
 
       /* Data points */
       .data-point {
-        fill: ${tokens.color.aiAccent};
-        stroke: ${tokens.color.grayWhite};
+        fill: inherit;
+        stroke: inherit;
         stroke-width: 2;
         cursor: pointer;
-        transition: all ${tokens.transition.default};
+        transition: all inherit;
       }
 
       .data-point:hover {
         r: 6;
-        fill: ${tokens.color.aiAccent};
+        fill: inherit;
         filter: brightness(1.2);
       }
 
@@ -143,26 +143,26 @@ export class AiMiniChart extends LitElement {
 
       /* Bars */
       .bar {
-        fill: ${tokens.color.aiAccent};
-        transition: all ${tokens.transition.default};
+        fill: inherit;
+        transition: all inherit;
       }
 
       .bar:hover {
-        fill: ${tokens.color.aiAccent};
+        fill: inherit;
         filter: brightness(1.2);
       }
 
       /* Tooltip */
       .tooltip {
         position: absolute;
-        background: ${tokens.color.gray900};
+        background: inherit;
         color: white;
         padding: 8px 12px;
-        border-radius: ${tokens.radius.sm};
-        font-size: ${tokens.fontSize.xs};
+        border-radius: var(--cg-Border-radius-50);
+        font-size: inherit;
         pointer-events: none;
         opacity: 0;
-        transition: opacity ${tokens.transition.default};
+        transition: opacity inherit;
         z-index: 10;
         white-space: nowrap;
       }
@@ -172,22 +172,22 @@ export class AiMiniChart extends LitElement {
       }
 
       .tooltip-label {
-        font-weight: ${tokens.fontWeight.semibold};
+        font-weight: inherit;
         margin-bottom: 4px;
       }
 
       .tooltip-value {
-        color: ${tokens.color.aiAccent};
+        color: inherit;
       }
 
       /* Legend */
       .legend {
         display: flex;
         align-items: center;
-        gap: ${tokens.spacing.md};
-        margin-top: ${tokens.spacing.md};
-        font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray500};
+        gap: var(--cg-spacing-16);
+        margin-top: var(--cg-spacing-16);
+        font-size: inherit;
+        color: var(--cg-gray-500);
       }
 
       .legend-item {
@@ -202,11 +202,11 @@ export class AiMiniChart extends LitElement {
       }
 
       .legend-line.solid {
-        background: ${tokens.color.aiAccent};
+        background: inherit;
       }
 
       .legend-line.dashed {
-        background: linear-gradient(to right, ${tokens.color.aiAccent} 50%, transparent 50%);
+        background: linear-gradient(to right, inherit 50%, transparent 50%);
         background-size: 8px 2px;
       }
 

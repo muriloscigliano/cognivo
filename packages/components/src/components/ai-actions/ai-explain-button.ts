@@ -10,18 +10,18 @@ export class AiExplainButton extends LitElement {
     css`:host {
       display: inline-flex;
       align-items: center;
-      gap: ${tokens.spacing.xs};
-      padding: ${tokens.spacing.sm} ${tokens.spacing.md};
-      background: ${tokens.color.primary};
-      color: ${tokens.color.grayWhite};
+      gap: var(--cg-spacing-4);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
+      background: inherit;
+      color: inherit;
       border: none;
-      border-radius: ${tokens.radius.md};
+      border-radius: var(--cg-Border-radius-100);
       cursor: pointer;
-      font-family: ${tokens.font.family.base};
-      font-size: ${tokens.font.size.sm};
+      font-family: inherit;
+      font-size: inherit;
     }
     :host(:hover) {
-      background: ${tokens.color.primaryHover};
+      background: inherit;
     }
     :host([loading]) {
       opacity: 0.6;

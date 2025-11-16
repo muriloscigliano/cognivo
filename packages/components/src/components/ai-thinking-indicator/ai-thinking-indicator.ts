@@ -29,19 +29,19 @@ export class AiThinkingIndicator extends LitElement {
       :host {
         display: inline-flex;
         align-items: center;
-        gap: var(--gap, ${tokens.spacing.xs});
+        gap: var(--gap, var(--cg-spacing-4));
       }
 
       .container {
         display: inline-flex;
         align-items: center;
         gap: inherit;
-        padding: ${tokens.spacing.xs};
+        padding: var(--cg-spacing-4);
       }
 
       .dot {
-        background: ${tokens.color.aiAccent};
-        border-radius: ${tokens.radius.full};
+        background: inherit;
+        border-radius: var(--cg-Border-radius-full);
         width: var(--dot-size, 8px);
         height: var(--dot-size, 8px);
         animation: pulse 1.4s ease-in-out infinite;

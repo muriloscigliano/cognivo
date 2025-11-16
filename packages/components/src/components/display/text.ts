@@ -7,13 +7,13 @@ import { tokens } from '../../styles/tokens.js';
 export class CgText extends LitElement {
   static override styles = [
     baseStyles,
-    css`:host { display: inline; font-family: ${tokens.fontFamily.primary}; font-size: var(--text-size, ${tokens.fontSize.base}); color: var(--text-color, ${tokens.color.gray900}); }
-    :host([size='xs']) { --text-size: ${tokens.fontSize.xs}; }
-    :host([size='sm']) { --text-size: ${tokens.fontSize.sm}; }
-    :host([size='md']) { --text-size: ${tokens.fontSize.md}; }
-    :host([size='lg']) { --text-size: ${tokens.fontSize.lg}; }
-    :host([variant='secondary']) { --text-color: ${tokens.color.gray500}; }
-    :host([variant='muted']) { --text-color: ${tokens.color.gray500}; opacity: 0.7; }`,
+    css`:host { display: inline; font-family: inherit; font-size: var(--text-size, inherit); color: var(--text-color, inherit); }
+    :host([size='xs']) { --text-size: inherit; }
+    :host([size='sm']) { --text-size: var(--cg-font-size-sm); }
+    :host([size='md']) { --text-size: var(--cg-font-size-md); }
+    :host([size='lg']) { --text-size: var(--cg-font-size-lg); }
+    :host([variant='secondary']) { --text-color: var(--cg-gray-500); }
+    :host([variant='muted']) { --text-color: var(--cg-gray-500); opacity: 0.7; }`,
   ];
   @property({ type: String, reflect: true }) size = 'base';
   @property({ type: String, reflect: true }) variant = 'primary';

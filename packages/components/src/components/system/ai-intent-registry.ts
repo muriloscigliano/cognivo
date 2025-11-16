@@ -4,8 +4,8 @@ import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
 @customElement('ai-intent-registry')
-export class Ai-intent-registry extends LitElement {
+export class AiIntentRegistry extends LitElement {
   static override styles = [baseStyles, css`:host { display: block; }`];
   override render() { return html`<slot></slot>`; }
 }
-declare global { interface HTMLElementTagNameMap { 'ai-intent-registry': Ai-intent-registry; } }
+declare global { interface HTMLElementTagNameMap { 'ai-intent-registry': AiIntentRegistry; } }

@@ -4,11 +4,11 @@ import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
 @customElement('pie-chart')
-export class Pie-chart extends LitElement {
+export class PieChart extends LitElement {
   static override styles = [baseStyles, css`:host { display: block; width: 100%; height: 200px; }`];
   @property({ type: Array }) data = [];
   override render() {
     return html`<svg width="100%" height="100%"><slot></slot></svg>`;
   }
 }
-declare global { interface HTMLElementTagNameMap { 'pie-chart': Pie-chart; } }
+declare global { interface HTMLElementTagNameMap { 'pie-chart': PieChart; } }

@@ -16,7 +16,7 @@ export class LayoutGrid extends LitElement {
       :host {
         display: grid;
         grid-template-columns: var(--grid-columns, repeat(auto-fit, minmax(300px, 1fr)));
-        gap: var(--grid-gap, ${tokens.spacing.lg});
+        gap: var(--grid-gap, var(--cg-spacing-24));
         width: 100%;
       }
 

@@ -4,10 +4,10 @@ import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
 @customElement('filter-panel')
-export class Filter-panel extends LitElement {
+export class FilterPanel extends LitElement {
   static override styles = [baseStyles, css`:host { display: block; }`];
   @property({ type: String }) value = '';
   @state() private selected = '';
   override render() { return html`<slot></slot>`; }
 }
-declare global { interface HTMLElementTagNameMap { 'filter-panel': Filter-panel; } }
+declare global { interface HTMLElementTagNameMap { 'filter-panel': FilterPanel; } }
