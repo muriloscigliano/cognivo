@@ -1,0 +1,568 @@
+{
+  "ai": {
+    "confidence": {
+      "high": {
+        "color": {
+          "$type": "color",
+          "$value": "{green.400}",
+          "$description": "High confidence (>= 80%) - green for positive"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{green.100}",
+          "$description": "High confidence background - light green"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{green.300}",
+          "$description": "High confidence border"
+        },
+        "threshold": {
+          "$type": "number",
+          "$value": 0.8,
+          "$description": "Minimum score for high confidence (80%)"
+        }
+      },
+      "medium": {
+        "color": {
+          "$type": "color",
+          "$value": "{yellow.500}",
+          "$description": "Medium confidence (50-79%) - yellow for caution"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{yellow.100}",
+          "$description": "Medium confidence background - light yellow"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{yellow.300}",
+          "$description": "Medium confidence border"
+        },
+        "threshold": {
+          "$type": "number",
+          "$value": 0.5,
+          "$description": "Minimum score for medium confidence (50%)"
+        }
+      },
+      "low": {
+        "color": {
+          "$type": "color",
+          "$value": "{red.500}",
+          "$description": "Low confidence (< 50%) - red for warning"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{red.100}",
+          "$description": "Low confidence background - light red"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{red.300}",
+          "$description": "Low confidence border"
+        },
+        "threshold": {
+          "$type": "number",
+          "$value": 0,
+          "$description": "Minimum score for low confidence (0%)"
+        }
+      }
+    },
+    "anomaly": {
+      "critical": {
+        "color": {
+          "$type": "color",
+          "$value": "{red.600}",
+          "$description": "Critical anomaly - bright red for immediate attention"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{red.100}",
+          "$description": "Critical anomaly background"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{red.400}",
+          "$description": "Critical anomaly border - strong red"
+        },
+        "glow": {
+          "$type": "color",
+          "$value": "{red.200}",
+          "$description": "Critical anomaly glow effect"
+        }
+      },
+      "high": {
+        "color": {
+          "$type": "color",
+          "$value": "{red.500}",
+          "$description": "High severity anomaly"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{red.100}",
+          "$description": "High anomaly background"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{red.300}",
+          "$description": "High anomaly border"
+        },
+        "glow": {
+          "$type": "color",
+          "$value": "{red.100}",
+          "$description": "High anomaly glow"
+        }
+      },
+      "medium": {
+        "color": {
+          "$type": "color",
+          "$value": "{yellow.600}",
+          "$description": "Medium severity anomaly"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{yellow.100}",
+          "$description": "Medium anomaly background"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{yellow.300}",
+          "$description": "Medium anomaly border"
+        },
+        "glow": {
+          "$type": "color",
+          "$value": "{yellow.100}",
+          "$description": "Medium anomaly glow"
+        }
+      },
+      "low": {
+        "color": {
+          "$type": "color",
+          "$value": "{yellow.500}",
+          "$description": "Low severity anomaly"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{yellow.100}",
+          "$description": "Low anomaly background"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{yellow.200}",
+          "$description": "Low anomaly border"
+        },
+        "glow": {
+          "$type": "color",
+          "$value": "#fff8dc",
+          "$description": "Low anomaly glow - very light yellow"
+        }
+      }
+    },
+    "thinking": {
+      "duration": {
+        "$type": "duration",
+        "$value": "1400ms",
+        "$description": "Animation duration for thinking indicator"
+      },
+      "dotSize": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "6px",
+          "$description": "Small thinking dot"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "8px",
+          "$description": "Medium thinking dot (default)"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "10px",
+          "$description": "Large thinking dot"
+        }
+      },
+      "dotGap": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "4px",
+          "$description": "Gap between small dots"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "6px",
+          "$description": "Gap between medium dots"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "8px",
+          "$description": "Gap between large dots"
+        }
+      },
+      "color": {
+        "$type": "color",
+        "$value": "{brand.ai.accent}",
+        "$description": "Thinking indicator color - AI purple"
+      },
+      "colorSecondary": {
+        "$type": "color",
+        "$value": "{brand.ai.highlight}",
+        "$description": "Secondary thinking color - lighter purple"
+      }
+    },
+    "insight": {
+      "explanation": {
+        "icon": {
+          "$type": "string",
+          "$value": "💡",
+          "$description": "Icon for explanations"
+        },
+        "color": {
+          "$type": "color",
+          "$value": "{blue.500}",
+          "$description": "Explanation accent color"
+        }
+      },
+      "forecast": {
+        "icon": {
+          "$type": "string",
+          "$value": "📊",
+          "$description": "Icon for forecasts"
+        },
+        "color": {
+          "$type": "color",
+          "$value": "{brand.ai.accent}",
+          "$description": "Forecast accent color - AI purple"
+        },
+        "lineColor": {
+          "$type": "color",
+          "$value": "{brand.ai.highlight}",
+          "$description": "Forecast line color"
+        },
+        "confidenceArea": {
+          "$type": "color",
+          "$value": "{brand.ai.background}",
+          "$description": "Confidence interval background"
+        }
+      },
+      "classification": {
+        "icon": {
+          "$type": "string",
+          "$value": "🏷️",
+          "$description": "Icon for classifications"
+        },
+        "color": {
+          "$type": "color",
+          "$value": "{green.500}",
+          "$description": "Classification accent color"
+        }
+      },
+      "optimization": {
+        "icon": {
+          "$type": "string",
+          "$value": "⚡",
+          "$description": "Icon for optimizations"
+        },
+        "color": {
+          "$type": "color",
+          "$value": "{yellow.500}",
+          "$description": "Optimization accent color"
+        }
+      }
+    },
+    "action": {
+      "button": {
+        "background": {
+          "$type": "color",
+          "$value": "{brand.ai.background}",
+          "$description": "AI action button background"
+        },
+        "backgroundHover": {
+          "$type": "color",
+          "$value": "{brand.ai.highlight}",
+          "$description": "AI action button hover background"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{brand.ai.border}",
+          "$description": "AI action button border"
+        },
+        "color": {
+          "$type": "color",
+          "$value": "{brand.ai.accent}",
+          "$description": "AI action button text color"
+        }
+      },
+      "iconSize": {
+        "$type": "dimension",
+        "$value": "{icon.size.100}",
+        "$description": "AI action icon size - 16px"
+      },
+      "spacing": {
+        "$type": "dimension",
+        "$value": "{spacing.8}",
+        "$description": "Spacing between AI actions - 8px"
+      }
+    },
+    "result": {
+      "background": {
+        "$type": "color",
+        "$value": "{gray.50}",
+        "$description": "AI result panel background"
+      },
+      "border": {
+        "$type": "color",
+        "$value": "{brand.ai.border}",
+        "$description": "AI result panel border"
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "{spacing.16}",
+        "$description": "AI result panel padding - 16px"
+      },
+      "borderRadius": {
+        "$type": "dimension",
+        "$value": "{Border.radius.100}",
+        "$description": "AI result panel border radius - 8px"
+      },
+      "shadow": {
+        "x": {
+          "$type": "dimension",
+          "$value": "{shadow.sm.x}",
+          "$description": "Result shadow X offset"
+        },
+        "y": {
+          "$type": "dimension",
+          "$value": "{shadow.sm.y}",
+          "$description": "Result shadow Y offset"
+        },
+        "blur": {
+          "$type": "dimension",
+          "$value": "{shadow.sm.blur}",
+          "$description": "Result shadow blur"
+        },
+        "color": {
+          "$type": "color",
+          "$value": "{brand.ai.glow}",
+          "$description": "Result shadow color - AI purple glow"
+        }
+      }
+    },
+    "driver": {
+      "impact": {
+        "high": {
+          "color": {
+            "$type": "color",
+            "$value": "{red.500}",
+            "$description": "High impact driver (> 70%)"
+          },
+          "barHeight": {
+            "$type": "dimension",
+            "$value": "8px",
+            "$description": "High impact bar height"
+          }
+        },
+        "medium": {
+          "color": {
+            "$type": "color",
+            "$value": "{yellow.500}",
+            "$description": "Medium impact driver (30-70%)"
+          },
+          "barHeight": {
+            "$type": "dimension",
+            "$value": "6px",
+            "$description": "Medium impact bar height"
+          }
+        },
+        "low": {
+          "color": {
+            "$type": "color",
+            "$value": "{green.400}",
+            "$description": "Low impact driver (< 30%)"
+          },
+          "barHeight": {
+            "$type": "dimension",
+            "$value": "4px",
+            "$description": "Low impact bar height"
+          }
+        }
+      }
+    },
+    "state": {
+      "idle": {
+        "color": {
+          "$type": "color",
+          "$value": "{gray.500}",
+          "$description": "AI idle state - waiting for user action"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{gray.100}",
+          "$description": "AI idle background"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{gray.300}",
+          "$description": "AI idle border"
+        }
+      },
+      "processing": {
+        "color": {
+          "$type": "color",
+          "$value": "{brand.ai.accent}",
+          "$description": "AI actively processing"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{brand.ai.background}",
+          "$description": "AI processing background"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{brand.ai.border}",
+          "$description": "AI processing border"
+        }
+      },
+      "streaming": {
+        "color": {
+          "$type": "color",
+          "$value": "{blue.500}",
+          "$description": "AI streaming results progressively"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{blue.100}",
+          "$description": "AI streaming background"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{blue.300}",
+          "$description": "AI streaming border"
+        }
+      },
+      "success": {
+        "color": {
+          "$type": "color",
+          "$value": "{green.500}",
+          "$description": "AI operation completed successfully"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{green.100}",
+          "$description": "AI success background"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{green.300}",
+          "$description": "AI success border"
+        }
+      },
+      "error": {
+        "color": {
+          "$type": "color",
+          "$value": "{red.500}",
+          "$description": "AI operation failed"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{red.100}",
+          "$description": "AI error background"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{red.300}",
+          "$description": "AI error border"
+        }
+      }
+    },
+    "chart": {
+      "forecastLine": {
+        "$type": "color",
+        "$value": "{brand.ai.highlight}",
+        "$description": "Forecast prediction line color"
+      },
+      "confidenceBand": {
+        "$type": "color",
+        "$value": "{brand.ai.background}",
+        "$description": "Confidence interval shaded area"
+      },
+      "anomalyMarker": {
+        "$type": "color",
+        "$value": "{ai.anomaly.high.color}",
+        "$description": "Chart marker for detected anomalies"
+      },
+      "trendUp": {
+        "$type": "color",
+        "$value": "{green.500}",
+        "$description": "Positive trend indicator"
+      },
+      "trendDown": {
+        "$type": "color",
+        "$value": "{red.500}",
+        "$description": "Negative trend indicator"
+      },
+      "gridColor": {
+        "$type": "color",
+        "$value": "{gray.200}",
+        "$description": "Chart grid lines"
+      },
+      "axisColor": {
+        "$type": "color",
+        "$value": "{gray.400}",
+        "$description": "Chart axis lines"
+      }
+    },
+    "effect": {
+      "glow": {
+        "color": {
+          "$type": "color",
+          "$value": "{brand.ai.glow}",
+          "$description": "AI glow effect color"
+        },
+        "blur": {
+          "$type": "dimension",
+          "$value": "8px",
+          "$description": "AI glow blur radius"
+        },
+        "spread": {
+          "$type": "dimension",
+          "$value": "2px",
+          "$description": "AI glow spread radius"
+        }
+      },
+      "shimmer": {
+        "from": {
+          "$type": "color",
+          "$value": "{gray.200}",
+          "$description": "Shimmer animation start color"
+        },
+        "to": {
+          "$type": "color",
+          "$value": "{gray.300}",
+          "$description": "Shimmer animation end color"
+        },
+        "duration": {
+          "$type": "duration",
+          "$value": "1500ms",
+          "$description": "Shimmer animation duration"
+        }
+      },
+      "backdropBlur": {
+        "$type": "dimension",
+        "$value": "8px",
+        "$description": "Backdrop blur for AI overlays/modals"
+      },
+      "gradient": {
+        "from": {
+          "$type": "color",
+          "$value": "{brand.ai.accent}",
+          "$description": "AI gradient start color"
+        },
+        "to": {
+          "$type": "color",
+          "$value": "{brand.ai.highlight}",
+          "$description": "AI gradient end color"
+        }
+      }
+    }
+  }
+}

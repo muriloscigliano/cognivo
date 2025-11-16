@@ -1,0 +1,47 @@
+import { LitElement, html, css } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
+import { baseStyles } from '../../styles/base.js';
+import { tokens } from '../../styles/tokens.js';
+
+@customElement('modal-sheet')
+export class ModalSheet extends LitElement {
+  static override styles = [
+    baseStyles,
+    css`:host {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+    :host([open]) {
+      display: flex;
+    }
+    .panel {
+      background: ${tokens.color.grayWhite};
+      border-radius: ${tokens.radius.lg};
+      padding: ${tokens.spacing.lg};
+      max-width: 600px;
+      margin: auto;
+    }`
+  ];
+
+  @property({ type: Boolean, reflect: true }) open = false;
+
+  override render() {
+    return html`
+      <div class="panel">
+        <slot></slot>
+      </div>
+    `;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'modal-sheet': ModalSheet;
+  }
+}

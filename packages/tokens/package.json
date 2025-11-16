@@ -1,0 +1,22 @@
+{
+  "name": "@cognivo/tokens",
+  "version": "0.0.0",
+  "description": "Design tokens for Cognivo AI component library",
+  "keywords": ["design-tokens", "css-variables", "cognivo", "theming"],
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.css",
+  "exports": {
+    ".": "./dist/index.css",
+    "./css": "./dist/index.css"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js --watch",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "style-dictionary": "^4.0.0"
+  }
+}
