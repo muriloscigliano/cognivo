@@ -4,6 +4,11 @@
 **Last Updated:** November 16, 2025
 **Status:** Post Phase 1 - Token System Complete
 
+📚 **Related Docs:**
+- [AI UX Patterns](./AI_UX_PATTERNS.md) - Research-backed design patterns
+- [Token Audit](./TOKEN_AUDIT.md) - Token system analysis
+- [Technology Stack](./TECHNOLOGY_STACK.md) - Technical decisions
+
 ---
 
 ## 🎯 Build Philosophy
@@ -37,12 +42,20 @@ Based on **dashboard frequency + AI value-add + reusability:**
 - "Detect anomalies"
 - Trigger any AI intent
 
+**AI UX Patterns Applied:**
+- ✅ **Make Clear What System Can Do** - Clear action labels with tooltips
+- ✅ **Support Efficient Invocation** - Inline, keyboard shortcuts
+- ✅ **State Visibility** - Processing/success/error states
+- ✅ **Action Feedback Loop** - Immediate visual feedback
+- ✅ **Contextual AI Actions** - Show based on data context
+
 **Features:**
 - Multiple sizes (sm, md, lg)
 - Icon + label support
 - Loading states (with `<ai-thinking-indicator>`)
 - Disabled state
-- Keyboard accessible
+- Keyboard accessible (Tab, Enter, Space)
+- Tooltip explaining action
 - Event: `ai:action-triggered`
 
 **Tokens Needed (Tier 3):**
@@ -89,11 +102,20 @@ Based on **dashboard frequency + AI value-add + reusability:**
 - List drivers/factors
 - Highlight anomalies
 
+**AI UX Patterns Applied:**
+- ✅ **Make Clear How Well System Works** - Confidence badge in header
+- ✅ **Progressive Disclosure** - Collapsible sections for long content
+- ✅ **Explainable AI** - Driver lists, factor breakdowns
+- ✅ **Support Efficient Dismissal** - Close button, remember dismissal
+- ✅ **Mitigate Social Biases** - Disclaimer text about limitations
+
 **Features:**
 - Slot for custom content
 - Built-in layouts for common result types
 - Confidence badge integration
 - Collapsible sections
+- Timestamp ("Analyzed 2 minutes ago")
+- Close/dismiss button
 - Dark mode support
 
 **Tokens Needed (Tier 3):**
@@ -141,13 +163,21 @@ Based on **dashboard frequency + AI value-add + reusability:**
 - Explain specific data points
 - Classify/tag rows
 
+**AI UX Patterns Applied:**
+- ✅ **Inline Anomaly Highlighting** - Color-coded rows by severity
+- ✅ **Confidence Calibration** - Badge per row showing certainty
+- ✅ **Contextual AI Actions** - Row-level AI actions on hover/select
+- ✅ **Support Efficient Invocation** - Inline action buttons
+- ✅ **Make Clear How Well System Works** - Legend explaining colors
+
 **Features:**
 - Column definitions
-- Anomaly highlighting
+- Anomaly highlighting (4 severity levels)
 - Inline confidence badges
 - Row-level AI actions
 - Sortable/filterable
 - Responsive (horizontal scroll)
+- Legend/key for colors
 
 **Tokens Needed (Tier 3):**
 ```json
@@ -193,12 +223,21 @@ Based on **dashboard frequency + AI value-add + reusability:**
 - Forecast overlays
 - Anomaly markers on chart
 
+**AI UX Patterns Applied:**
+- ✅ **Forecast Visualization** - Dashed forecast line with confidence band
+- ✅ **Inline Anomaly Highlighting** - Markers/dots on outliers
+- ✅ **Confidence Calibration** - Band width shows uncertainty
+- ✅ **Make Clear How Well System Works** - Legend with explanation
+- ✅ **Explainable AI** - Tooltip explains why point is anomalous
+
 **Features:**
 - Chart.js or D3 integration (or custom SVG)
 - AI annotation layer
 - Tooltip with AI insights
 - Responsive sizing
 - Multiple chart types (line, bar, area)
+- Forecast line (dashed) with confidence band
+- Anomaly markers with severity colors
 
 **Tokens Needed (Tier 3):**
 ```json
@@ -239,12 +278,19 @@ Based on **dashboard frequency + AI value-add + reusability:**
 - Toggle between actions
 - Dropdown for many actions
 
+**AI UX Patterns Applied:**
+- ✅ **Make Clear What System Can Do** - Show all available actions
+- ✅ **Support Efficient Invocation** - Grouped access, keyboard nav
+- ✅ **Contextual AI Actions** - Show only relevant actions for context
+- ✅ **Action Feedback Loop** - Consistent feedback across all actions
+
 **Features:**
 - Horizontal/vertical layout
 - Icon-only or text+icon
 - Dropdown overflow (>4 actions)
-- Keyboard navigation
+- Keyboard navigation (arrow keys)
 - Active state tracking
+- Tooltip on each action
 
 **Component API:**
 ```html
