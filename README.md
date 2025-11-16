@@ -91,14 +91,47 @@ const monthlySpending = [
 | `@cognivo/adapter-anthropic` | Anthropic/Claude integration | 📋 Planned |
 | `@cognivo/adapter-local` | Local LLM support | 📋 Planned |
 
+## Component Library Structure
+
+Cognivo uses **Atomic Design** principles to organize 207 components across 5 hierarchical levels:
+
+```
+🔬 Atoms (54)      → Foundational elements (buttons, icons, badges)
+🧬 Molecules (68)  → Simple compositions (cards, search bars, list items)
+🏗️ Organisms (53)  → Complex features (tables, charts, navigation)
+📋 Templates (20)  → Page layouts (dashboard widgets, pricing tables)
+📄 Pages (12)      → Complete pages (dashboards, chat interfaces)
+```
+
+### Component Categories
+
+- **Base Components** (8 layout + 14 display + 14 system = 36)
+- **Data Components** (18 data display + 14 charts = 32)
+- **Interactive** (11 filters/search/nav)
+- **AI-Enhanced** (23 AI cards/charts + 13 AI actions = 36)
+- **Panels & Modals** (9 overlays/dialogs)
+- **Graph/Canvas** (36 visualization components)
+- **Payments** (30 pricing/billing components)
+- **Dashboard** (12 widget components)
+- **Chat** (15 messaging/agent components)
+
+**📊 Total: 207 components** organized for maximum composability.
+
 ## Documentation
 
 📖 See the `/docs` folder for comprehensive guides:
 
+### Core Documentation
 - [PROJECT_PLAN.md](./PROJECT_PLAN.md) - Full architecture and roadmap
 - [FRAMEWORK_COMPARISON.md](./FRAMEWORK_COMPARISON.md) - Framework approach analysis
 - [AI_INTEGRATION_GUIDE.md](./AI_INTEGRATION_GUIDE.md) - How AI integration works
 - [TECHNOLOGY_STACK.md](./TECHNOLOGY_STACK.md) - Technology decisions
+
+### Component Guides
+- [ATOMIC_DESIGN_STRUCTURE.md](./docs/ATOMIC_DESIGN_STRUCTURE.md) - Complete component hierarchy
+- [COMPONENT_COMPOSITION_GUIDE.md](./docs/COMPONENT_COMPOSITION_GUIDE.md) - How to compose components
+- [COMPONENT_CHECKLIST.md](./docs/COMPONENT_CHECKLIST.md) - Quality checklist
+- [AI_UX_PATTERNS.md](./docs/AI_UX_PATTERNS.md) - AI-specific UX patterns
 
 ## Development
 
