@@ -38,7 +38,7 @@ import '../ai-confidence-badge/ai-confidence-badge.js';
  */
 @customElement('ai-insight-card')
 export class AiInsightCard extends LitElement {
-  static styles = [
+  static override styles = [
     baseStyles,
     animations,
     css`
@@ -244,7 +244,7 @@ export class AiInsightCard extends LitElement {
    * AI client instance (injected via property or context)
    */
   @property({ attribute: false })
-  aiClient?: AiClient;
+  aiClient?: any;
 
   /**
    * Current AI result
@@ -342,7 +342,7 @@ export class AiInsightCard extends LitElement {
     return labels[intent] || intent;
   }
 
-  render() {
+  override render() {
     return html`
       <div class="card">
         ${this.title
@@ -419,7 +419,7 @@ export class AiInsightCard extends LitElement {
                     ${this.result.bullets && this.result.bullets.length > 0
                       ? html`
                           <ul class="ai-bullets">
-                            ${this.result.bullets.map((bullet) => html`<li>${bullet}</li>`)}
+                            ${this.result.bullets.map((bullet: any) => html`<li>${bullet}</li>`)}
                           </ul>
                         `
                       : null}
@@ -429,7 +429,7 @@ export class AiInsightCard extends LitElement {
                           <div class="ai-drivers">
                             <strong>Key Drivers:</strong>
                             ${this.result.drivers.map(
-                              (driver) => html`
+                              (driver: any) => html`
                                 <div class="driver">
                                   <span class="driver-factor">${driver.factor}</span>
                                   <span class="driver-impact">

@@ -12,6 +12,7 @@ import '@cognivo/tokens';
 export { AiThinkingIndicator } from './components/ai-thinking-indicator/index.js';
 export { AiConfidenceBadge } from './components/ai-confidence-badge/index.js';
 export { AiInsightCard } from './components/ai-insight-card/index.js';
+export { AiActionButton } from './components/ai-action-button/index.js';
 
 // Export types
 export type {

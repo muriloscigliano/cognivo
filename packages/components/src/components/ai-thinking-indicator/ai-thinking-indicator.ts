@@ -22,7 +22,7 @@ import { tokens } from '../../styles/tokens.js';
  */
 @customElement('ai-thinking-indicator')
 export class AiThinkingIndicator extends LitElement {
-  static styles = [
+  static override styles = [
     baseStyles,
     animations,
     css`
@@ -102,7 +102,7 @@ export class AiThinkingIndicator extends LitElement {
   @property({ type: String })
   label = 'AI is thinking';
 
-  render() {
+  override render() {
     return html`
       <div class="container" role="status" aria-live="polite">
         <div class="dot"></div>

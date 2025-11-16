@@ -24,7 +24,7 @@ import { tokens } from '../../styles/tokens.js';
  */
 @customElement('ai-confidence-badge')
 export class AiConfidenceBadge extends LitElement {
-  static styles = [
+  static override styles = [
     baseStyles,
     css`
       :host {
@@ -129,7 +129,7 @@ export class AiConfidenceBadge extends LitElement {
     }
   }
 
-  render() {
+  override render() {
     const percentage = Math.round(this.score * 100);
 
     const classes = {

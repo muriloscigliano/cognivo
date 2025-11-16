@@ -1,21 +1,21 @@
-import type { AiIntent, AiResult } from '@cognivo/core';
+// AI types (using string for intents to avoid core dependency in types)
 
 /**
  * Custom event types for AI components
  */
 
 export interface AiInvokeEventDetail {
-  intent: AiIntent;
+  intent: string;
   context: unknown;
 }
 
 export interface AiResultEventDetail {
-  intent: AiIntent;
-  result: AiResult;
+  intent: string;
+  result: any;
 }
 
 export interface AiErrorEventDetail {
-  intent: AiIntent;
+  intent: string;
   error: Error;
 }
 
