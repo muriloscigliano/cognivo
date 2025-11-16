@@ -386,6 +386,183 @@
           }
         }
       }
+    },
+    "state": {
+      "idle": {
+        "color": {
+          "$type": "color",
+          "$value": "{gray.500}",
+          "$description": "AI idle state - waiting for user action"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{gray.100}",
+          "$description": "AI idle background"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{gray.300}",
+          "$description": "AI idle border"
+        }
+      },
+      "processing": {
+        "color": {
+          "$type": "color",
+          "$value": "{brand.ai.accent}",
+          "$description": "AI actively processing"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{brand.ai.background}",
+          "$description": "AI processing background"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{brand.ai.border}",
+          "$description": "AI processing border"
+        }
+      },
+      "streaming": {
+        "color": {
+          "$type": "color",
+          "$value": "{blue.500}",
+          "$description": "AI streaming results progressively"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{blue.100}",
+          "$description": "AI streaming background"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{blue.300}",
+          "$description": "AI streaming border"
+        }
+      },
+      "success": {
+        "color": {
+          "$type": "color",
+          "$value": "{green.500}",
+          "$description": "AI operation completed successfully"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{green.100}",
+          "$description": "AI success background"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{green.300}",
+          "$description": "AI success border"
+        }
+      },
+      "error": {
+        "color": {
+          "$type": "color",
+          "$value": "{red.500}",
+          "$description": "AI operation failed"
+        },
+        "background": {
+          "$type": "color",
+          "$value": "{red.100}",
+          "$description": "AI error background"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{red.300}",
+          "$description": "AI error border"
+        }
+      }
+    },
+    "chart": {
+      "forecastLine": {
+        "$type": "color",
+        "$value": "{brand.ai.highlight}",
+        "$description": "Forecast prediction line color"
+      },
+      "confidenceBand": {
+        "$type": "color",
+        "$value": "{brand.ai.background}",
+        "$description": "Confidence interval shaded area"
+      },
+      "anomalyMarker": {
+        "$type": "color",
+        "$value": "{ai.anomaly.high.color}",
+        "$description": "Chart marker for detected anomalies"
+      },
+      "trendUp": {
+        "$type": "color",
+        "$value": "{green.500}",
+        "$description": "Positive trend indicator"
+      },
+      "trendDown": {
+        "$type": "color",
+        "$value": "{red.500}",
+        "$description": "Negative trend indicator"
+      },
+      "gridColor": {
+        "$type": "color",
+        "$value": "{gray.200}",
+        "$description": "Chart grid lines"
+      },
+      "axisColor": {
+        "$type": "color",
+        "$value": "{gray.400}",
+        "$description": "Chart axis lines"
+      }
+    },
+    "effect": {
+      "glow": {
+        "color": {
+          "$type": "color",
+          "$value": "{brand.ai.glow}",
+          "$description": "AI glow effect color"
+        },
+        "blur": {
+          "$type": "dimension",
+          "$value": "8px",
+          "$description": "AI glow blur radius"
+        },
+        "spread": {
+          "$type": "dimension",
+          "$value": "2px",
+          "$description": "AI glow spread radius"
+        }
+      },
+      "shimmer": {
+        "from": {
+          "$type": "color",
+          "$value": "{gray.200}",
+          "$description": "Shimmer animation start color"
+        },
+        "to": {
+          "$type": "color",
+          "$value": "{gray.300}",
+          "$description": "Shimmer animation end color"
+        },
+        "duration": {
+          "$type": "duration",
+          "$value": "1500ms",
+          "$description": "Shimmer animation duration"
+        }
+      },
+      "backdropBlur": {
+        "$type": "dimension",
+        "$value": "8px",
+        "$description": "Backdrop blur for AI overlays/modals"
+      },
+      "gradient": {
+        "from": {
+          "$type": "color",
+          "$value": "{brand.ai.accent}",
+          "$description": "AI gradient start color"
+        },
+        "to": {
+          "$type": "color",
+          "$value": "{brand.ai.highlight}",
+          "$description": "AI gradient end color"
+        }
+      }
     }
   }
 }

@@ -155,6 +155,33 @@ export const tokens = {
         glow: token('ai-anomaly-low-glow'),
       },
     },
+    state: {
+      idle: {
+        color: token('ai-state-idle-color'),
+        background: token('ai-state-idle-background'),
+        border: token('ai-state-idle-border'),
+      },
+      processing: {
+        color: token('ai-state-processing-color'),
+        background: token('ai-state-processing-background'),
+        border: token('ai-state-processing-border'),
+      },
+      streaming: {
+        color: token('ai-state-streaming-color'),
+        background: token('ai-state-streaming-background'),
+        border: token('ai-state-streaming-border'),
+      },
+      success: {
+        color: token('ai-state-success-color'),
+        background: token('ai-state-success-background'),
+        border: token('ai-state-success-border'),
+      },
+      error: {
+        color: token('ai-state-error-color'),
+        background: token('ai-state-error-background'),
+        border: token('ai-state-error-border'),
+      },
+    },
     thinking: {
       duration: token('ai-thinking-duration'),
       color: token('ai-thinking-color'),
@@ -167,6 +194,32 @@ export const tokens = {
         sm: token('ai-thinking-dotGap-sm'),
         md: token('ai-thinking-dotGap-md'),
         lg: token('ai-thinking-dotGap-lg'),
+      },
+    },
+    chart: {
+      forecastLine: token('ai-chart-forecastLine'),
+      confidenceBand: token('ai-chart-confidenceBand'),
+      anomalyMarker: token('ai-chart-anomalyMarker'),
+      trendUp: token('ai-chart-trendUp'),
+      trendDown: token('ai-chart-trendDown'),
+      gridColor: token('ai-chart-gridColor'),
+      axisColor: token('ai-chart-axisColor'),
+    },
+    effect: {
+      glow: {
+        color: token('ai-effect-glow-color'),
+        blur: token('ai-effect-glow-blur'),
+        spread: token('ai-effect-glow-spread'),
+      },
+      shimmer: {
+        from: token('ai-effect-shimmer-from'),
+        to: token('ai-effect-shimmer-to'),
+        duration: token('ai-effect-shimmer-duration'),
+      },
+      backdropBlur: token('ai-effect-backdropBlur'),
+      gradient: {
+        from: token('ai-effect-gradient-from'),
+        to: token('ai-effect-gradient-to'),
       },
     },
     result: {
