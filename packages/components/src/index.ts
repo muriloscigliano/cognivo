@@ -13,6 +13,12 @@ export { AiThinkingIndicator } from './components/ai-thinking-indicator/index.js
 export { AiConfidenceBadge } from './components/ai-confidence-badge/index.js';
 export { AiInsightCard } from './components/ai-insight-card/index.js';
 export { AiActionButton } from './components/ai-action-button/index.js';
+export { AiResultPanel } from './components/ai-result-panel/index.js';
+export { AiTable } from './components/ai-table/index.js';
+export type { AiTableColumn, AiTableRow } from './components/ai-table/index.js';
+export { AiActionGroup } from './components/ai-action-group/index.js';
+export { AiMiniChart } from './components/ai-mini-chart/index.js';
+export type { AiChartDataPoint } from './components/ai-mini-chart/index.js';
 
 // Export types
 export type {
