@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cognivo Component Explorer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .explorer {
+      display: grid;
+      grid-template-columns: 280px 1fr 400px;
+      height: 100vh;
+      background: #f9fafb;
+    }
+
+    /* Left Sidebar - Component List */
+    .sidebar {
+      background: white;
+      border-right: 1px solid #e5e7eb;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+
+    .sidebar-header {
+      padding: 0.5rem 0 1rem 0;
+      border-bottom: 2px solid #8b5cf6;
+      margin-bottom: 1rem;
+    }
+
+    .sidebar-header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .sidebar-header p {
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin-top: 0.25rem;
+    }
+
+    .component-category {
+      margin-bottom: 1.5rem;
+    }
+
+    .category-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #6b7280;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      padding: 0.25rem 0;
+    }
+
+    .component-list {
+      list-style: none;
+    }
+
+    .component-item {
+      padding: 0.625rem 0.75rem;
+      cursor: pointer;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      color: #374151;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .component-item:hover {
+      background: #f3f4f6;
+      color: #8b5cf6;
+    }
+
+    .component-item.active {
+      background: #ede9fe;
+      color: #8b5cf6;
+      font-weight: 600;
+    }
+
+    .component-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .status-badge {
+      margin-left: auto;
+      padding: 0.125rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.625rem;
+      font-weight: 600;
+    }
+
+    .status-badge.ready {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-badge.stub {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* Middle - Component Spec */
+    .main-content {
+      overflow-y: auto;
+      padding: 2rem;
+    }
+
+    .component-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .component-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .component-description {
+      font-size: 1rem;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    .section {
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .code-block {
+      background: #1f2937;
+      color: #f9fafb;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .props-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+
+    .props-table th,
+    .props-table td {
+      text-align: left;
+      padding: 0.75rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .props-table th {
+      background: #f9fafb;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: #374151;
+    }
+
+    .props-table td {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+
+    .props-table code {
+      background: #f3f4f6;
+      padding: 0.125rem 0.375rem;
+      border-radius: 0.25rem;
+      font-family: 'Monaco', monospace;
+      font-size: 0.8125rem;
+      color: #8b5cf6;
+    }
+
+    .demo-area {
+      background: white;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 1rem;
+    }
+
+    /* Right Sidebar - AI Chat */
+    .chat-panel {
+      background: white;
+      border-left: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      padding: 1rem;
+      border-bottom: 1px solid #e5e7eb;
+      background: #f9fafb;
+    }
+
+    .chat-header h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .chat-message {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .chat-message.user {
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #8b5cf6;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+
+    .chat-message.user .message-avatar {
+      background: #3b82f6;
+    }
+
+    .message-content {
+      flex: 1;
+      max-width: 280px;
+    }
+
+    .message-bubble {
+      background: #f3f4f6;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: #374151;
+    }
+
+    .chat-message.user .message-bubble {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .message-time {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-top: 0.25rem;
+      padding: 0 0.25rem;
+    }
+
+    .chat-input-area {
+      padding: 1rem;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .chat-input input:focus {
+      border-color: #8b5cf6;
+    }
+
+    .chat-input button {
+      padding: 0.75rem 1rem;
+      background: #8b5cf6;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .chat-input button:hover {
+      background: #7c3aed;
+    }
+
+    .chat-suggestions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .suggestion-chip {
+      padding: 0.5rem 0.75rem;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      font-size: 0.8125rem;
+      color: #6b7280;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: left;
+    }
+
+    .suggestion-chip:hover {
+      background: #ede9fe;
+      border-color: #8b5cf6;
+      color: #8b5cf6;
+    }
+
+    .empty-state {
+      padding: 3rem 1.5rem;
+      text-align: center;
+      color: #9ca3af;
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="explorer">
+    <!-- Left Sidebar: Component List -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>Cognivo</h1>
+        <p>AI-Native Components</p>
+      </div>
+
+      <div class="component-category">
+        <div class="category-title">⚡ AI Core (8)</div>
+        <ul class="component-list">
+          <li class="component-item active" data-component="ai-insight-card">
+            <span class="component-icon">🎯</span>
+            <span>AiInsightCard</span>
+            <span class="status-badge ready">Ready</span>
+          </li>
+          <li class="component-item" data-component="ai-table">
+            <span class="component-icon">📊</span>
+            <span>AiTable</span>
+            <span class="status-badge ready">Ready</span>
+          </li>
+          <li class="component-item" data-component="ai-mini-chart">
+            <span class="component-icon">📈</span>
+            <span>AiMiniChart</span>
+            <span class="status-badge ready">Ready</span>
+          </li>
+          <li class="component-item" data-component="ai-thinking-indicator">
+            <span class="component-icon">💭</span>
+            <span>AiThinkingIndicator</span>
+            <span class="status-badge ready">Ready</span>
+          </li>
+          <li class="component-item" data-component="ai-confidence-badge">
+            <span class="component-icon">✓</span>
+            <span>AiConfidenceBadge</span>
+            <span class="status-badge ready">Ready</span>
+          </li>
+          <li class="component-item" data-component="ai-action-button">
+            <span class="component-icon">🔘</span>
+            <span>AiActionButton</span>
+            <span class="status-badge ready">Ready</span>
+          </li>
+          <li class="component-item" data-component="ai-action-group">
+            <span class="component-icon">🎛️</span>
+            <span>AiActionGroup</span>
+            <span class="status-badge ready">Ready</span>
+          </li>
+          <li class="component-item" data-component="ai-result-panel">
+            <span class="component-icon">📋</span>
+            <span>AiResultPanel</span>
+            <span class="status-badge ready">Ready</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="component-category">
+        <div class="category-title">📊 Charts (14)</div>
+        <ul class="component-list">
+          <li class="component-item" data-component="line-chart">
+            <span class="component-icon">📈</span>
+            <span>LineChart</span>
+            <span class="status-badge stub">Stub</span>
+          </li>
+          <li class="component-item" data-component="bar-chart">
+            <span class="component-icon">📊</span>
+            <span>BarChart</span>
+            <span class="status-badge stub">Stub</span>
+          </li>
+          <li class="component-item" data-component="area-chart">
+            <span class="component-icon">📉</span>
+            <span>AreaChart</span>
+            <span class="status-badge stub">Stub</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="component-category">
+        <div class="category-title">🎨 Display (14)</div>
+        <ul class="component-list">
+          <li class="component-item" data-component="badge">
+            <span class="component-icon">🏷️</span>
+            <span>Badge</span>
+            <span class="status-badge stub">Stub</span>
+          </li>
+          <li class="component-item" data-component="chip">
+            <span class="component-icon">💊</span>
+            <span>Chip</span>
+            <span class="status-badge stub">Stub</span>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Middle: Component Spec -->
+    <main class="main-content" id="component-spec">
+      <div class="component-header">
+        <h1 class="component-title">&lt;ai-insight-card&gt;</h1>
+        <p class="component-description">
+          The flagship component of Cognivo. Displays data with AI-powered insights,
+          explanations, forecasts, and anomaly detection built-in.
+        </p>
+      </div>
+
+      <section class="section">
+        <h2 class="section-title">📦 Installation</h2>
+        <pre class="code-block">pnpm add @cognivo/components @cognivo/adapter-openai</pre>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">💻 Basic Usage</h2>
+        <pre class="code-block">&lt;script type="module"&gt;
+  import '@cognivo/components';
+  import { OpenAiClient } from '@cognivo/adapter-openai';
+
+  const aiClient = new OpenAiClient({
+    apiKey: 'YOUR_API_KEY'
+  });
+
+  const card = document.querySelector('ai-insight-card');
+  card.data = [
+    { month: 'Jan', revenue: 10000 },
+    { month: 'Feb', revenue: 12000 },
+    { month: 'Mar', revenue: 15000 }
+  ];
+  card.aiClient = aiClient;
+  card.meta = {
+    timeframe: 'monthly',
+    unit: 'USD',
+    dataType: 'revenue'
+  };
+&lt;/script&gt;
+
+&lt;ai-insight-card
+  title="Revenue Analysis"
+  ai-actions='["explain", "forecast"]'
+&gt;
+  &lt;div&gt;Your chart here&lt;/div&gt;
+&lt;/ai-insight-card&gt;</pre>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">🎛️ Props</h2>
+        <table class="props-table">
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>title</code></td>
+              <td><code>string</code></td>
+              <td><code>""</code></td>
+              <td>Card title</td>
+            </tr>
+            <tr>
+              <td><code>aiActions</code></td>
+              <td><code>string[]</code></td>
+              <td><code>[]</code></td>
+              <td>AI intents to enable (explain, forecast, etc.)</td>
+            </tr>
+            <tr>
+              <td><code>data</code></td>
+              <td><code>any[]</code></td>
+              <td><code>[]</code></td>
+              <td>Dataset to analyze</td>
+            </tr>
+            <tr>
+              <td><code>aiClient</code></td>
+              <td><code>AiClient</code></td>
+              <td><code>null</code></td>
+              <td>AI client instance</td>
+            </tr>
+            <tr>
+              <td><code>meta</code></td>
+              <td><code>object</code></td>
+              <td><code>{}</code></td>
+              <td>Metadata (timeframe, unit, dataType)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">📡 Events</h2>
+        <table class="props-table">
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th>Payload</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>ai:invoke</code></td>
+              <td><code>{ intent, context }</code></td>
+              <td>Fired when AI action is invoked</td>
+            </tr>
+            <tr>
+              <td><code>ai:result</code></td>
+              <td><code>{ result }</code></td>
+              <td>Fired when AI returns results</td>
+            </tr>
+            <tr>
+              <td><code>ai:error</code></td>
+              <td><code>{ error }</code></td>
+              <td>Fired when an error occurs</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">🎨 Live Demo</h2>
+        <div class="demo-area">
+          <p style="text-align: center; color: #6b7280;">
+            Live demo will appear here when component is loaded
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Right Sidebar: AI Chat -->
+    <aside class="chat-panel">
+      <div class="chat-header">
+        <h2>
+          <span>🤖</span>
+          AI Assistant
+        </h2>
+      </div>
+
+      <div class="chat-messages" id="chat-messages">
+        <div class="empty-state">
+          <div class="empty-state-icon">💬</div>
+          <p>Ask me anything about this component!</p>
+        </div>
+
+        <div class="chat-suggestions">
+          <button class="suggestion-chip" data-prompt="How do I use this component?">
+            How do I use this component?
+          </button>
+          <button class="suggestion-chip" data-prompt="What props does it accept?">
+            What props does it accept?
+          </button>
+          <button class="suggestion-chip" data-prompt="Show me a code example">
+            Show me a code example
+          </button>
+          <button class="suggestion-chip" data-prompt="What AI intents are available?">
+            What AI intents are available?
+          </button>
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <div class="chat-input">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Ask about this component..."
+            autocomplete="off"
+          />
+          <button id="send-button">Send</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script type="module">
+    // Component navigation
+    const componentItems = document.querySelectorAll('.component-item');
+    const componentSpec = document.getElementById('component-spec');
+
+    componentItems.forEach(item => {
+      item.addEventListener('click', () => {
+        // Update active state
+        componentItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+
+        // Update component spec (in real app, fetch component data)
+        const componentName = item.dataset.component;
+        console.log('Loading component:', componentName);
+        // TODO: Load component spec dynamically
+      });
+    });
+
+    // AI Chat functionality
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const sendButton = document.getElementById('send-button');
+    const suggestionChips = document.querySelectorAll('.suggestion-chip');
+
+    function addMessage(text, isUser = false) {
+      // Remove empty state
+      const emptyState = chatMessages.querySelector('.empty-state');
+      if (emptyState) emptyState.remove();
+
+      // Remove suggestions after first message
+      const suggestions = chatMessages.querySelector('.chat-suggestions');
+      if (suggestions && isUser) suggestions.remove();
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `chat-message ${isUser ? 'user' : 'ai'}`;
+
+      const time = new Date().toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit'
+      });
+
+      messageDiv.innerHTML = `
+        <div class="message-avatar">${isUser ? 'U' : 'AI'}</div>
+        <div class="message-content">
+          <div class="message-bubble">${text}</div>
+          <div class="message-time">${time}</div>
+        </div>
+      `;
+
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function simulateAIResponse(userMessage) {
+      setTimeout(() => {
+        let response = "I'm a demo AI assistant. In the full version, I'd help you with:";
+
+        if (userMessage.toLowerCase().includes('how')) {
+          response = "To use this component:\n\n1. Install via npm\n2. Import in your code\n3. Add to your HTML\n4. Configure with props\n\nCheck the code examples above!";
+        } else if (userMessage.toLowerCase().includes('props')) {
+          response = "This component accepts these props:\n• title (string)\n• aiActions (array)\n• data (array)\n• aiClient (object)\n• meta (object)\n\nSee the Props table for details!";
+        } else if (userMessage.toLowerCase().includes('example')) {
+          response = "Check the 'Basic Usage' section above for a complete working example with code!";
+        } else if (userMessage.toLowerCase().includes('intent')) {
+          response = "Available AI intents:\n• explain - Analyze patterns\n• forecast - Predict future\n• detect_anomaly - Find outliers\n• summarize - Key takeaways\n• classify - Auto-categorize\n• optimize - Suggestions\n• compare - Side-by-side\n• cluster - Group similar";
+        }
+
+        addMessage(response, false);
+      }, 1000);
+    }
+
+    function handleSendMessage() {
+      const message = chatInput.value.trim();
+      if (!message) return;
+
+      addMessage(message, true);
+      chatInput.value = '';
+
+      simulateAIResponse(message);
+    }
+
+    sendButton.addEventListener('click', handleSendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleSendMessage();
+    });
+
+    suggestionChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const prompt = chip.dataset.prompt;
+        chatInput.value = prompt;
+        handleSendMessage();
+      });
+    });
+  </script>
+</body>
+</html>
