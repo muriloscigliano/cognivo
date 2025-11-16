@@ -50,20 +50,49 @@ export const tokens = {
     xl: token('spacing-32'),
   },
 
-  // Typography
+  // Typography - Updated to use new semantic tokens
   fontSize: {
-    xs: token('font-size-75'),
-    sm: token('font-size-100'),
-    md: token('font-size-200'),
-    lg: token('font-size-400'),
-    xl: token('font-size-500'),
+    xs: token('font-size-xs'),      // 12px
+    sm: token('font-size-sm'),      // 14px
+    base: token('font-size-base'),  // 16px
+    md: token('font-size-md'),      // 18px
+    lg: token('font-size-lg'),      // 20px
+    xl: token('font-size-xl'),      // 24px
+    '2xl': token('font-size-2xl'),  // 30px
+    '3xl': token('font-size-3xl'),  // 36px
   },
 
   fontWeight: {
-    normal: token('font-weight-400'),
-    medium: token('font-weight-500'),
-    semibold: token('font-weight-600'),
-    bold: token('font-weight-700'),
+    light: token('font-weight-light'),          // 300
+    normal: token('font-weight-normal'),        // 400
+    medium: token('font-weight-medium'),        // 500
+    semibold: token('font-weight-semibold'),    // 600
+    bold: token('font-weight-bold'),            // 700
+    extrabold: token('font-weight-extrabold'),  // 800
+    black: token('font-weight-black'),          // 900
+  },
+
+  fontFamily: {
+    primary: token('font-family-primary'),   // Inter Variable
+    display: token('font-family-display'),   // Satoshi Variable
+    mono: token('font-family-mono'),         // Fira Code
+  },
+
+  lineHeight: {
+    tight: token('line-height-tight'),       // 1.2
+    snug: token('line-height-snug'),         // 1.375
+    normal: token('line-height-normal'),     // 1.5
+    relaxed: token('line-height-relaxed'),   // 1.625
+    loose: token('line-height-loose'),       // 1.75
+  },
+
+  letterSpacing: {
+    tighter: token('letter-spacing-tighter'), // -0.05em
+    tight: token('letter-spacing-tight'),     // -0.025em
+    normal: token('letter-spacing-normal'),   // 0em
+    wide: token('letter-spacing-wide'),       // 0.025em
+    wider: token('letter-spacing-wider'),     // 0.05em
+    widest: token('letter-spacing-widest'),   // 0.1em
   },
 
   // Border radius
@@ -79,5 +108,72 @@ export const tokens = {
     fast: token('transition-duration-fast'),
     default: token('transition-duration-default'),
     slow: token('transition-duration-slow'),
+  },
+
+  // AI-specific tokens
+  ai: {
+    confidence: {
+      high: {
+        color: token('ai-confidence-high-color'),
+        background: token('ai-confidence-high-background'),
+        border: token('ai-confidence-high-border'),
+      },
+      medium: {
+        color: token('ai-confidence-medium-color'),
+        background: token('ai-confidence-medium-background'),
+        border: token('ai-confidence-medium-border'),
+      },
+      low: {
+        color: token('ai-confidence-low-color'),
+        background: token('ai-confidence-low-background'),
+        border: token('ai-confidence-low-border'),
+      },
+    },
+    anomaly: {
+      critical: {
+        color: token('ai-anomaly-critical-color'),
+        background: token('ai-anomaly-critical-background'),
+        border: token('ai-anomaly-critical-border'),
+        glow: token('ai-anomaly-critical-glow'),
+      },
+      high: {
+        color: token('ai-anomaly-high-color'),
+        background: token('ai-anomaly-high-background'),
+        border: token('ai-anomaly-high-border'),
+        glow: token('ai-anomaly-high-glow'),
+      },
+      medium: {
+        color: token('ai-anomaly-medium-color'),
+        background: token('ai-anomaly-medium-background'),
+        border: token('ai-anomaly-medium-border'),
+        glow: token('ai-anomaly-medium-glow'),
+      },
+      low: {
+        color: token('ai-anomaly-low-color'),
+        background: token('ai-anomaly-low-background'),
+        border: token('ai-anomaly-low-border'),
+        glow: token('ai-anomaly-low-glow'),
+      },
+    },
+    thinking: {
+      duration: token('ai-thinking-duration'),
+      color: token('ai-thinking-color'),
+      dotSize: {
+        sm: token('ai-thinking-dotSize-sm'),
+        md: token('ai-thinking-dotSize-md'),
+        lg: token('ai-thinking-dotSize-lg'),
+      },
+      dotGap: {
+        sm: token('ai-thinking-dotGap-sm'),
+        md: token('ai-thinking-dotGap-md'),
+        lg: token('ai-thinking-dotGap-lg'),
+      },
+    },
+    result: {
+      background: token('ai-result-background'),
+      border: token('ai-result-border'),
+      padding: token('ai-result-padding'),
+      borderRadius: token('ai-result-borderRadius'),
+    },
   },
 };

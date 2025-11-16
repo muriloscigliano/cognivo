@@ -1,9 +1,0 @@
-{
-  "settings-panel": {
-    "gap": {
-      "$type": "dimension",
-      "$value": "{spacing.150}"
-    }
-  }
-}
-

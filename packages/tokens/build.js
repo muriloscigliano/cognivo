@@ -190,13 +190,17 @@ const semanticLight = loadTokens(path.join(__dirname, 'dist/tier2-semantic/cogni
 const semanticDark = loadTokens(path.join(__dirname, 'dist/tier2-semantic/cognivo-dark.json'))
 const semanticTypography = loadTokens(path.join(__dirname, 'dist/tier2-semantic/typography.json'))
 const semanticFoundation = loadTokens(path.join(__dirname, 'dist/tier2-semantic/foundation.json'))
+const semanticAiStates = loadTokens(path.join(__dirname, 'dist/tier2-semantic/ai-states.json'))
 
-// Load all component tokens
-const componentTokenFiles = fs.readdirSync(path.join(__dirname, 'dist/tier3-component'))
-  .filter(file => file.endsWith('.json'))
-  .map(file => loadTokens(path.join(__dirname, 'dist/tier3-component', file)))
+// Load all component tokens (if any exist)
+const componentDir = path.join(__dirname, 'dist/tier3-component')
+const componentTokenFiles = fs.existsSync(componentDir)
+  ? fs.readdirSync(componentDir)
+      .filter(file => file.endsWith('.json'))
+      .map(file => loadTokens(path.join(componentDir, file)))
+  : []
 
-const componentTokens = mergeTokens(...componentTokenFiles)
+const componentTokens = componentTokenFiles.length > 0 ? mergeTokens(...componentTokenFiles) : {}
 
 // Merge tier1 tokens (core + brand)
 const tier1Tokens = mergeTokens(coreTokens, brandCognivo)
@@ -228,7 +232,7 @@ async function buildTokens() {
     
     // Build Tier 2 + Tier 3 (semantic + component tokens) - references Tier 1
     // For light theme
-    const tier2LightTokens = mergeTokens(semanticLight, semanticTypography, semanticFoundation)
+    const tier2LightTokens = mergeTokens(semanticLight, semanticTypography, semanticFoundation, semanticAiStates)
     const lightTier23Tokens = mergeTokens(tier2LightTokens, componentTokens)
     
     // Include Tier 1 tokens so references can be resolved, but we'll filter them out
@@ -254,7 +258,7 @@ async function buildTokens() {
     }
     
     // For dark theme
-    const tier2DarkTokens = mergeTokens(semanticDark, semanticTypography, semanticFoundation)
+    const tier2DarkTokens = mergeTokens(semanticDark, semanticTypography, semanticFoundation, semanticAiStates)
     const darkTier23Tokens = mergeTokens(tier2DarkTokens, componentTokens)
     const darkAllTokens = mergeTokens(tier1Tokens, darkTier23Tokens)
     
