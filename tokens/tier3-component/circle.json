@@ -1,0 +1,15 @@
+{
+  "circle": {
+    "size": {
+      "default": {
+        "$type": "dimension",
+        "$value": "{spacing.600}"
+      }
+    },
+    "background": {
+      "$type": "color",
+      "$value": "{color.surface.container.background}"
+    }
+  }
+}
+

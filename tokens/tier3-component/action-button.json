@@ -1,0 +1,55 @@
+{
+  "action-button": {
+    "size": {
+      "sm": {
+        "padding": {
+          "x": {
+            "$type": "dimension",
+            "$value": "{spacing.150}"
+          },
+          "y": {
+            "$type": "dimension",
+            "$value": "{spacing.50}"
+          }
+        },
+        "font": {
+          "$type": "dimension",
+          "$value": "{font.size.md}"
+        }
+      },
+      "md": {
+        "padding": {
+          "x": {
+            "$type": "dimension",
+            "$value": "{spacing.200}"
+          },
+          "y": {
+            "$type": "dimension",
+            "$value": "{spacing.100}"
+          }
+        },
+        "font": {
+          "$type": "dimension",
+          "$value": "{font.size.lg}"
+        }
+      },
+      "lg": {
+        "padding": {
+          "x": {
+            "$type": "dimension",
+            "$value": "{spacing.300}"
+          },
+          "y": {
+            "$type": "dimension",
+            "$value": "{spacing.150}"
+          }
+        },
+        "font": {
+          "$type": "dimension",
+          "$value": "{font.size.xl}"
+        }
+      }
+    }
+  }
+}
+

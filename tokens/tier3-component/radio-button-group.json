@@ -1,0 +1,9 @@
+{
+  "radio-button-group": {
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.200}"
+    }
+  }
+}
+

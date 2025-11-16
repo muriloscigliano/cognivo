@@ -1,0 +1,31 @@
+{
+  "settings-toggle-list": {
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.250}"
+    },
+    "divider": {
+      "color": {
+        "$type": "color",
+        "$value": "{color.surface.container.border}"
+      }
+    },
+    "label": {
+      "color": {
+        "$type": "color",
+        "$value": "{color.surface.base.text}"
+      },
+      "font": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{font.size.lg}"
+        },
+        "weight": {
+          "$type": "string",
+          "$value": "{font.weight.medium}"
+        }
+      }
+    }
+  }
+}
+

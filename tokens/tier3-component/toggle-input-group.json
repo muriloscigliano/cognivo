@@ -1,0 +1,9 @@
+{
+  "toggle-input-group": {
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.200}"
+    }
+  }
+}
+

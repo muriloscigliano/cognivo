@@ -1,0 +1,119 @@
+{
+  "time-period-selector": {
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.100}"
+    },
+    "item": {
+      "gap": {
+        "$type": "dimension",
+        "$value": "{spacing.50}"
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "{spacing.200}"
+      },
+      "border": {
+        "width": {
+          "$type": "dimension",
+          "$value": "{border.width.thin}"
+        }
+      }
+    },
+    "value": {
+      "font": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{font.size.lg}"
+        },
+        "weight": {
+          "$type": "string",
+          "$value": "{font.weight.semibold}"
+        }
+      }
+    },
+    "unit": {
+      "font": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{font.size.md}"
+        },
+        "weight": {
+          "$type": "string",
+          "$value": "{font.weight.medium}"
+        }
+      }
+    },
+    "background": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.surface.base.background}"
+      },
+      "hover": {
+        "$type": "color",
+        "$value": "{color.surface.base.background}"
+      },
+      "selected": {
+        "$type": "color",
+        "$value": "{color.surface.base.border}"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.surface.base.border}"
+      },
+      "hover": {
+        "$type": "color",
+        "$value": "{color.surface.base.border}"
+      },
+      "selected": {
+        "$type": "color",
+        "$value": "{color.surface.base.text}"
+      }
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{border.radius.medium}"
+    },
+    "value": {
+      "color": {
+        "default": {
+          "$type": "color",
+          "$value": "{color.surface.container.text}"
+        },
+        "selected": {
+          "$type": "color",
+          "$value": "{color.surface.container.text}"
+        }
+      }
+    },
+    "unit": {
+      "color": {
+        "default": {
+          "$type": "color",
+          "$value": "{color.surface.container.text}"
+        },
+        "selected": {
+          "$type": "color",
+          "$value": "{color.surface.container.text}"
+        }
+      }
+    },
+    "transition": {
+      "duration": {
+        "default": {
+          "$type": "duration",
+          "$value": "{transition.duration.default}"
+        }
+      },
+      "easing": {
+        "default": {
+          "$type": "string",
+          "$value": "{transition.easing.default}"
+        }
+      }
+    }
+  }
+}
+

@@ -1,0 +1,26 @@
+{
+  "brand": {
+    "red": {
+      "100": {
+        "$type": "color",
+        "$value": "#fbf2f2"
+      },
+      "200": {
+        "$type": "color",
+        "$value": "#e49599"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#dc3545"
+      },
+      "500": {
+        "$type": "color",
+        "$value": "#D51E33"
+      },
+      "600": {
+        "$type": "color",
+        "$value": "#7b111d"
+      }
+    }
+  }
+}

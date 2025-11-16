@@ -1,0 +1,68 @@
+{
+  "brand": {
+    "gray": {
+      "50": {
+        "$type": "color",
+        "$value": "#f5fafd"
+      },
+      "100": {
+        "$type": "color",
+        "$value": "#e8f0f7"
+      },
+      "200": {
+        "$type": "color",
+        "$value": "#d4e1ed"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#bcd1e1"
+      },
+      "400": {
+        "$type": "color",
+        "$value": "#a0b8cd"
+      },
+      "500": {
+        "$type": "color",
+        "$value": "#8aa4bd"
+      },
+      "600": {
+        "$type": "color",
+        "$value": "#6b8daa"
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#4f7494"
+      },
+      "800": {
+        "$type": "color",
+        "$value": "#345c7a"
+      },
+      "900": {
+        "$type": "color",
+        "$value": "#1b4561"
+      }
+    },
+    "blue": {
+      "100": {
+        "$type": "color",
+        "$value": "#25cae4"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#1a82c3"
+      },
+      "500": {
+        "$type": "color",
+        "$value": "#02539c"
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#004b87"
+      },
+      "900": {
+        "$type": "color",
+        "$value": "#022b4b"
+      }
+    }
+  }
+}

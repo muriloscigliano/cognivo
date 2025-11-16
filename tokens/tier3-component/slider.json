@@ -1,0 +1,95 @@
+{
+  "slider": {
+    "track": {
+      "height": {
+        "$type": "dimension",
+        "$value": "{spacing.50}"
+      },
+      "background": {
+        "$type": "color",
+        "$value": "{color.slider.track.background}"
+      },
+      "filled": {
+        "$type": "color",
+        "$value": "{color.slider.track.filled}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{border.radius.full}"
+      }
+    },
+    "thumb": {
+      "width": {
+        "$type": "dimension",
+        "$value": "{spacing.250}"
+      },
+      "height": {
+        "$type": "dimension",
+        "$value": "{spacing.250}"
+      },
+      "background": {
+        "$type": "color",
+        "$value": "{color.slider.thumb.background}"
+      },
+      "border": {
+        "width": {
+          "$type": "dimension",
+          "$value": "{border.width.medium}"
+        },
+        "color": {
+          "$type": "color",
+          "$value": "{color.slider.thumb.border}"
+        }
+      },
+      "hover": {
+        "$type": "color",
+        "$value": "{color.slider.thumb.hover}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{border.radius.full}"
+      }
+    },
+    "mark": {
+      "width": {
+        "$type": "dimension",
+        "$value": "{border.width.thin}"
+      },
+      "height": {
+        "$type": "dimension",
+        "$value": "{spacing.100}"
+      },
+      "background": {
+        "$type": "color",
+        "$value": "{color.slider.mark.background}"
+      }
+    },
+    "padding": {
+      "y": {
+        "$type": "dimension",
+        "$value": "{spacing.100}"
+      }
+    },
+    "input": {
+      "height": {
+        "$type": "dimension",
+        "$value": "{icon.size.xs}"
+      }
+    },
+    "transition": {
+      "duration": {
+        "default": {
+          "$type": "duration",
+          "$value": "{transition.duration.default}"
+        }
+      },
+      "easing": {
+        "default": {
+          "$type": "string",
+          "$value": "{transition.easing.default}"
+        }
+      }
+    }
+  }
+}
+

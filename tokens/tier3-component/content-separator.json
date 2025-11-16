@@ -1,0 +1,37 @@
+{
+  "content-separator": {
+    "border": {
+      "width": {
+        "$type": "dimension",
+        "$value": "{border.width.thin}"
+      },
+      "color": {
+        "$type": "color",
+        "$value": "{color.surface.base.divider}"
+      }
+    },
+    "spacing": {
+      "text": {
+        "$type": "dimension",
+        "$value": "{spacing.200}"
+      }
+    },
+    "text": {
+      "font": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{font.size.sm}"
+        },
+        "weight": {
+          "$type": "string",
+          "$value": "{font.weight.regular}"
+        }
+      },
+      "color": {
+        "$type": "color",
+        "$value": "{color.surface.container.text}"
+      }
+    }
+  }
+}
+

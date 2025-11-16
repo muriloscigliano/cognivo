@@ -1,0 +1,19 @@
+{
+  "action-group": {
+    "gap": {
+      "sm": {
+        "$type": "dimension",
+        "$value": "{spacing.100}"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "{spacing.200}"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "{spacing.300}"
+      }
+    }
+  }
+}
+

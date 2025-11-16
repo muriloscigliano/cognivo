@@ -1,0 +1,21 @@
+{
+  "settings-radio-group": {
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.200}"
+    },
+    "divider": {
+      "color": {
+        "$type": "color",
+        "$value": "{color.surface.container.border}"
+      },
+      "padding": {
+        "y": {
+          "$type": "dimension",
+          "$value": "{spacing.200}"
+        }
+      }
+    }
+  }
+}
+
