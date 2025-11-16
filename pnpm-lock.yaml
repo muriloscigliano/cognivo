@@ -51,6 +51,22 @@ importers:
         specifier: ^2.1.0
         version: 2.1.9(@types/node@22.19.1)
 
+  examples/ai-chat:
+    dependencies:
+      '@cognivo/components':
+        specifier: workspace:*
+        version: link:../../packages/components
+      '@cognivo/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@cognivo/tokens':
+        specifier: workspace:*
+        version: link:../../packages/tokens
+    devDependencies:
+      vite:
+        specifier: ^5.0.0
+        version: 5.4.21(@types/node@22.19.1)
+
   packages/adapter-openai:
     dependencies:
       '@cognivo/core':
