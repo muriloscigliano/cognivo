@@ -1,0 +1,1 @@
+{"version":3,"file":"widget-header.d.ts","sourceRoot":"","sources":["../../../src/components/dashboard/widget-header.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,UAAU,EAAa,MAAM,KAAK,CAAC;AAK5C,qBACa,YAAa,SAAQ,UAAU;IAC1C,OAAgB,MAAM,4BASpB;IAGO,KAAK,SAAM;IACQ,IAAI,KAAM;IAE7B,MAAM;CAGhB;AAED,OAAO,CAAC,MAAM,CAAC;IACb,UAAU,qBAAqB;QAC7B,eAAe,EAAE,YAAY,CAAC;KAC/B;CACF"}
