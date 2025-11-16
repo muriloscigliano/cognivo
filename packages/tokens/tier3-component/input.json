@@ -1,0 +1,277 @@
+{
+  "input": {
+    "border": {
+      "width": {
+        "default": {
+          "$type": "dimension",
+          "$value": "{border.width.thin}"
+        }
+      },
+      "radius": {
+        "default": {
+          "$type": "dimension",
+          "$value": "{border.radius.medium}"
+        }
+      },
+      "default": {
+        "$type": "color",
+        "$value": "{color.input.border.default}"
+      },
+      "hover": {
+        "$type": "color",
+        "$value": "{color.input.border.hover}"
+      },
+      "focus": {
+        "$type": "color",
+        "$value": "{color.input.border.focus}"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "{color.input.border.error}"
+      },
+      "valid": {
+        "$type": "color",
+        "$value": "{color.status.success.border.default}"
+      },
+      "disabled": {
+        "$type": "color",
+        "$value": "{color.input.border.disabled}"
+      }
+    },
+    "transition": {
+      "duration": {
+        "default": {
+          "$type": "duration",
+          "$value": "{transition.duration.default}"
+        }
+      },
+      "easing": {
+        "default": {
+          "$type": "string",
+          "$value": "{transition.easing.default}"
+        }
+      }
+    },
+    "outline": {
+      "width": {
+        "default": {
+          "$type": "dimension",
+          "$value": "{outline.width.default}"
+        }
+      },
+      "offset": {
+        "default": {
+          "$type": "dimension",
+          "$value": "{outline.offset.default}"
+        }
+      }
+    },
+    "height": {
+      "default": {
+        "$type": "dimension",
+        "$value": "{spacing.600}"
+      }
+    },
+    "padding": {
+      "x": {
+        "$type": "dimension",
+        "$value": "{spacing.200}"
+      },
+      "y": {
+        "$type": "dimension",
+        "$value": "{spacing.100}"
+      },
+      "top": {
+        "with-label": {
+          "$type": "dimension",
+          "$value": "{spacing.300}"
+        }
+      }
+    },
+    "font": {
+      "size": {
+        "$type": "dimension",
+        "$value": "{font.size.lg}"
+      },
+      "weight": {
+        "$type": "string",
+        "$value": "{font.weight.regular}"
+      }
+    },
+    "label": {
+      "font": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{font.size.md}"
+        },
+        "weight": {
+          "$type": "string",
+          "$value": "{font.weight.regular}"
+        }
+      },
+      "color": {
+        "default": {
+          "$type": "color",
+          "$value": "{color.input.text.default}"
+        },
+        "optional": {
+          "$type": "color",
+          "$value": "{color.input.text.placeholder}"
+        }
+      },
+      "spacing": {
+        "bottom": {
+          "$type": "dimension",
+          "$value": "{spacing.50}"
+        },
+        "gap": {
+          "$type": "dimension",
+          "$value": "{spacing.100}"
+        }
+      }
+    },
+    "helper": {
+      "font": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{font.size.sm}"
+        },
+        "weight": {
+          "$type": "string",
+          "$value": "{font.weight.regular}"
+        }
+      },
+      "color": {
+        "default": {
+          "$type": "color",
+          "$value": "{color.input.text.placeholder}"
+        }
+      },
+      "spacing": {
+        "top": {
+          "$type": "dimension",
+          "$value": "{spacing.50}"
+        }
+      }
+    },
+    "message": {
+      "error": {
+        "font": {
+          "size": {
+            "$type": "dimension",
+            "$value": "{font.size.sm}"
+          },
+          "weight": {
+            "$type": "string",
+            "$value": "{font.weight.regular}"
+          }
+        },
+        "color": {
+          "$type": "color",
+          "$value": "{color.status.error.border.default}"
+        },
+        "spacing": {
+          "top": {
+            "$type": "dimension",
+            "$value": "{spacing.50}"
+          }
+        }
+      },
+      "valid": {
+        "font": {
+          "size": {
+            "$type": "dimension",
+            "$value": "{font.size.sm}"
+          },
+          "weight": {
+            "$type": "string",
+            "$value": "{font.weight.regular}"
+          }
+        },
+        "color": {
+          "$type": "color",
+          "$value": "{color.status.success.border.default}"
+        },
+        "spacing": {
+          "top": {
+            "$type": "dimension",
+            "$value": "{spacing.50}"
+          }
+        }
+      }
+    },
+    "background": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.input.background.default}"
+      },
+      "hover": {
+        "$type": "color",
+        "$value": "{color.input.background.hover}"
+      },
+      "focus": {
+        "$type": "color",
+        "$value": "{color.input.background.focus}"
+      },
+      "disabled": {
+        "$type": "color",
+        "$value": "{color.input.background.disabled}"
+      }
+    },
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.input.text.default}"
+      },
+      "placeholder": {
+        "$type": "color",
+        "$value": "{color.input.text.placeholder}"
+      },
+      "disabled": {
+        "$type": "color",
+        "$value": "{color.input.text.disabled}"
+      }
+    },
+    "icon": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.input.icon.default}"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "{color.input.icon.error}"
+      },
+      "success": {
+        "$type": "color",
+        "$value": "{color.input.icon.success}"
+      },
+      "spacing": {
+        "left": {
+          "$type": "dimension",
+          "$value": "{spacing.200}"
+        },
+        "right": {
+          "$type": "dimension",
+          "$value": "{spacing.200}"
+        }
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": "{spacing.200}"
+      }
+    },
+    "rightElement": {
+      "width": {
+        "$type": "dimension",
+        "$value": "{spacing.500}"
+      },
+      "spacing": {
+        "left": {
+          "$type": "dimension",
+          "$value": "{spacing.100}"
+        }
+      }
+    }
+  }
+}
+

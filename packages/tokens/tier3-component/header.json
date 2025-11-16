@@ -1,0 +1,55 @@
+{
+  "header": {
+    "background": {
+      "$type": "color",
+      "$value": "{color.surface.container.background}"
+    },
+    "text": {
+      "$type": "color",
+      "$value": "{color.surface.container.text}"
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{color.surface.container.border}"
+    },
+    "height": {
+      "$type": "dimension",
+      "$value": "{spacing.700}"
+    },
+    "padding": {
+      "x": {
+        "$type": "dimension",
+        "$value": "{spacing.300}"
+      },
+      "y": {
+        "$type": "dimension",
+        "$value": "{spacing.200}"
+      }
+    },
+    "z-index": {
+      "$type": "dimension",
+      "$value": "{z-index.200}"
+    },
+    "border": {
+      "width": {
+        "$type": "dimension",
+        "$value": "{border.width.thin}"
+      }
+    },
+    "navigation": {
+      "margin": {
+        "x": {
+          "$type": "dimension",
+          "$value": "{spacing.300}"
+        }
+      }
+    },
+    "actions": {
+      "gap": {
+        "$type": "dimension",
+        "$value": "{spacing.100}"
+      }
+    }
+  }
+}
+

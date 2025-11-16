@@ -1,0 +1,45 @@
+{
+  "kebab-menu": {
+    "trigger": {
+      "padding": {
+        "$type": "dimension",
+        "$value": "{spacing.50}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": "{icon.size.lg}"
+      },
+      "icon": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{icon.size.sm}"
+        }
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{border.radius.small}"
+      },
+      "background": {
+        "hover": {
+          "$type": "color",
+          "$value": "{color.surface.cards.hover.background}"
+        }
+      }
+    },
+    "transition": {
+      "duration": {
+        "default": {
+          "$type": "duration",
+          "$value": "{transition.duration.default}"
+        }
+      },
+      "easing": {
+        "default": {
+          "$type": "string",
+          "$value": "{transition.easing.default}"
+        }
+      }
+    }
+  }
+}
+

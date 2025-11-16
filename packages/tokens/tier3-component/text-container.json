@@ -1,0 +1,37 @@
+{
+  "text-container": {
+    "max-width": {
+      "sm": {
+        "$type": "dimension",
+        "$value": "480px"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "720px"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "960px"
+      },
+      "xl": {
+        "$type": "dimension",
+        "$value": "1200px"
+      }
+    },
+    "padding": {
+      "sm": {
+        "$type": "dimension",
+        "$value": "{spacing.200}"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "{spacing.300}"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "{spacing.400}"
+      }
+    }
+  }
+}
+

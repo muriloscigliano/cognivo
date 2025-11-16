@@ -1,0 +1,27 @@
+{
+  "text-divider": {
+    "border": {
+      "$type": "color",
+      "$value": "{color.surface.container.border}"
+    },
+    "border-width": {
+      "$type": "dimension",
+      "$value": "{border.width.thin}"
+    },
+    "spacing": {
+      "sm": {
+        "$type": "dimension",
+        "$value": "{spacing.200}"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "{spacing.300}"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "{spacing.400}"
+      }
+    }
+  }
+}
+

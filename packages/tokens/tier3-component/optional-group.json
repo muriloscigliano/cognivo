@@ -1,0 +1,45 @@
+{
+  "optional-group": {
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.100}"
+    },
+    "header": {
+      "gap": {
+        "$type": "dimension",
+        "$value": "{spacing.100}"
+      }
+    },
+    "label": {
+      "font": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{font.size.md}"
+        },
+        "weight": {
+          "$type": "string",
+          "$value": "{font.weight.medium}"
+        }
+      }
+    },
+    "badge": {
+      "font": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{font.size.sm}"
+        },
+        "weight": {
+          "$type": "string",
+          "$value": "{font.weight.regular}"
+        }
+      }
+    },
+    "content": {
+      "gap": {
+        "$type": "dimension",
+        "$value": "{spacing.100}"
+      }
+    }
+  }
+}
+

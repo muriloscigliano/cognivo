@@ -1,0 +1,31 @@
+{
+  "form": {
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.200}"
+    },
+    "error": {
+      "color": {
+        "$type": "color",
+        "$value": "{color.status.error.border.default}"
+      },
+      "font": {
+        "size": {
+          "$type": "dimension",
+          "$value": "{font.size.md}"
+        },
+        "weight": {
+          "$type": "string",
+          "$value": "{font.weight.regular}"
+        }
+      },
+      "spacing": {
+        "top": {
+          "$type": "dimension",
+          "$value": "{spacing.100}"
+        }
+      }
+    }
+  }
+}
+

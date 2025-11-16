@@ -1,0 +1,95 @@
+{
+  "segmented-control": {
+    "background": {
+      "$type": "color",
+      "$value": "{color.segmented-control.background}"
+    },
+    "item": {
+      "background": {
+        "default": {
+          "$type": "color",
+          "$value": "{color.segmented-control.item.background.default}"
+        },
+        "selected": {
+          "$type": "color",
+          "$value": "{color.segmented-control.item.background.selected}"
+        }
+      },
+      "text": {
+        "default": {
+          "$type": "color",
+          "$value": "{color.segmented-control.item.text.default}"
+        },
+        "selected": {
+          "$type": "color",
+          "$value": "{color.segmented-control.item.text.selected}"
+        }
+      },
+      "border": {
+        "$type": "color",
+        "$value": "{color.segmented-control.item.border}"
+      },
+      "padding": {
+        "x": {
+          "$type": "dimension",
+          "$value": "{spacing.200}"
+        },
+        "y": {
+          "$type": "dimension",
+          "$value": "{spacing.100}"
+        }
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{border.radius.medium}"
+      }
+    },
+    "border": {
+      "width": {
+        "$type": "dimension",
+        "$value": "{border.width.thin}"
+      }
+    },
+    "padding": {
+      "$type": "dimension",
+      "$value": "{spacing.50}"
+    },
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.50}"
+    },
+    "font": {
+      "size": {
+        "$type": "dimension",
+        "$value": "{font.size.lg}"
+      },
+      "weight": {
+        "$type": "string",
+        "$value": "{font.weight.regular}"
+      }
+    },
+    "item": {
+      "hover": {
+        "background": {
+          "$type": "color",
+          "$value": "{color.surface.cards.hover.background}"
+        }
+      }
+    },
+    "transition": {
+      "duration": {
+        "default": {
+          "$type": "duration",
+          "$value": "{transition.duration.default}"
+        }
+      },
+      "easing": {
+        "default": {
+          "$type": "string",
+          "$value": "{transition.easing.default}"
+        }
+      }
+    }
+  }
+}
+

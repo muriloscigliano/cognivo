@@ -1,0 +1,101 @@
+{
+  "table": {
+    "header": {
+      "background": {
+        "$type": "color",
+        "$value": "{color.surface.container.background}"
+      },
+      "text": {
+        "$type": "color",
+        "$value": "{color.surface.container.text}"
+      },
+      "border": {
+        "color": {
+          "$type": "color",
+          "$value": "{color.surface.container.border}"
+        },
+        "width": {
+          "$type": "dimension",
+          "$value": "{border.width.medium}"
+        }
+      },
+      "padding": {
+        "x": {
+          "$type": "dimension",
+          "$value": "{spacing.200}"
+        },
+        "y": {
+          "$type": "dimension",
+          "$value": "{spacing.150}"
+        }
+      },
+      "font": {
+        "weight": {
+          "$type": "string",
+          "$value": "{font.weight.semibold}"
+        }
+      }
+    },
+    "row": {
+      "background": {
+        "default": {
+          "$type": "color",
+          "$value": "{color.surface.base.background}"
+        },
+        "hover": {
+          "$type": "color",
+          "$value": "{color.surface.cards.hover.background}"
+        },
+        "selected": {
+          "$type": "color",
+          "$value": "{color.surface.cards.selected.background}"
+        },
+        "striped": {
+          "$type": "color",
+          "$value": "{color.surface.container.background}"
+        }
+      },
+      "border": {
+        "color": {
+          "$type": "color",
+          "$value": "{color.surface.base.divider}"
+        },
+        "width": {
+          "$type": "dimension",
+          "$value": "{border.width.thin}"
+        }
+      },
+      "transition": {
+        "duration": {
+          "$type": "duration",
+          "$value": "{transition.duration.default}"
+        },
+        "easing": {
+          "$type": "string",
+          "$value": "{transition.easing.default}"
+        }
+      }
+    },
+    "cell": {
+      "text": {
+        "$type": "color",
+        "$value": "{color.surface.base.text}"
+      },
+      "border": {
+        "$type": "color",
+        "$value": "{color.surface.base.divider}"
+      },
+      "padding": {
+        "x": {
+          "$type": "dimension",
+          "$value": "{spacing.200}"
+        },
+        "y": {
+          "$type": "dimension",
+          "$value": "{spacing.150}"
+        }
+      }
+    }
+  }
+}
+

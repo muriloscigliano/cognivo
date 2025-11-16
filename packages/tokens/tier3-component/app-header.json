@@ -1,0 +1,115 @@
+{
+  "app-header": {
+    "background": {
+      "$type": "color",
+      "$value": "{color.surface.container.background}"
+    },
+    "border-radius": {
+      "$type": "dimension",
+      "$value": "{border.radius.medium}"
+    },
+    "padding": {
+      "x": {
+        "$type": "dimension",
+        "$value": "{spacing.200}"
+      },
+      "y": {
+        "$type": "dimension",
+        "$value": "{spacing.100}"
+      }
+    },
+    "search": {
+      "container": {
+        "background": {
+          "$type": "color",
+          "$value": "{color.surface.base.background}"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.surface.container.border}"
+        },
+        "border-radius": {
+          "$type": "dimension",
+          "$value": "250px"
+        },
+        "padding": {
+          "x": {
+            "$type": "dimension",
+            "$value": "{spacing.50}"
+          },
+          "y": {
+            "$type": "dimension",
+            "$value": "{spacing.150}"
+          }
+        },
+        "gap": {
+          "$type": "dimension",
+          "$value": "{spacing.100}"
+        }
+      },
+      "input": {
+        "font": {
+          "size": {
+            "$type": "dimension",
+            "$value": "{font.size.lg}"
+          }
+        },
+        "padding": {
+          "x": {
+            "$type": "dimension",
+            "$value": "{spacing.200}"
+          },
+          "y": {
+            "$type": "dimension",
+            "$value": "{spacing.100}"
+          }
+        }
+      }
+    },
+    "theme-toggle": {
+      "background": {
+        "$type": "color",
+        "$value": "{color.surface.base.background}"
+      },
+      "border": {
+        "$type": "color",
+        "$value": "{color.surface.container.border}"
+      },
+      "border-radius": {
+        "$type": "dimension",
+        "$value": "500px"
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "{spacing.25}"
+      },
+      "slider": {
+        "spacing": {
+          "left": {
+            "$type": "dimension",
+            "$value": "{spacing.25}"
+          },
+          "right": {
+            "$type": "dimension",
+            "$value": "{spacing.25}"
+          }
+        }
+      }
+    },
+    "transition": {
+      "duration": {
+        "default": {
+          "$type": "duration",
+          "$value": "{transition.duration.default}"
+        }
+      },
+      "easing": {
+        "default": {
+          "$type": "string",
+          "$value": "{transition.easing.default}"
+        }
+      }
+    }
+  }
+}
+

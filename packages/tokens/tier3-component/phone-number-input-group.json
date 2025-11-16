@@ -1,0 +1,15 @@
+{
+  "phone-number-input-group": {
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.100}"
+    },
+    "country-code": {
+      "width": {
+        "$type": "dimension",
+        "$value": "80px"
+      }
+    }
+  }
+}
+

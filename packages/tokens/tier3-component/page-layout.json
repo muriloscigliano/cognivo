@@ -1,0 +1,35 @@
+{
+  "page-layout": {
+    "sidebar": {
+      "width": {
+        "$type": "dimension",
+        "$value": "{layout.drawer.size.sm}"
+      },
+      "background": {
+        "$type": "color",
+        "$value": "{color.surface.container.background}"
+      },
+      "border": {
+        "width": {
+          "$type": "dimension",
+          "$value": "{border.width.thin}"
+        },
+        "color": {
+          "$type": "color",
+          "$value": "{color.surface.container.border}"
+        }
+      }
+    },
+    "main": {
+      "padding": {
+        "$type": "dimension",
+        "$value": "{spacing.300}"
+      },
+      "background": {
+        "$type": "color",
+        "$value": "{color.surface.base.background}"
+      }
+    }
+  }
+}
+

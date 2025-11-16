@@ -1,0 +1,23 @@
+{
+  "hero-icon": {
+    "color": {
+      "$type": "color",
+      "$value": "{color.surface.base.icon}"
+    },
+    "size": {
+      "sm": {
+        "$type": "dimension",
+        "$value": "{icon.size.md}"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "{icon.size.lg}"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "{icon.size.xl}"
+      }
+    }
+  }
+}
+

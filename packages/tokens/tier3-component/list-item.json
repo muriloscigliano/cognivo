@@ -1,0 +1,67 @@
+{
+  "list-item": {
+    "background": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.surface.base.background}"
+      },
+      "hover": {
+        "$type": "color",
+        "$value": "{color.surface.cards.hover.background}"
+      },
+      "selected": {
+        "$type": "color",
+        "$value": "{color.surface.cards.selected.background}"
+      }
+    },
+    "text": {
+      "$type": "color",
+      "$value": "{color.surface.base.text}"
+    },
+    "border": {
+      "color": {
+        "$type": "color",
+        "$value": "{color.surface.base.divider}"
+      },
+      "width": {
+        "$type": "dimension",
+        "$value": "{border.width.thin}"
+      }
+    },
+    "gap": {
+      "default": {
+        "$type": "dimension",
+        "$value": "{spacing.150}"
+      },
+      "actions": {
+        "$type": "dimension",
+        "$value": "{spacing.100}"
+      }
+    },
+    "padding": {
+      "x": {
+        "$type": "dimension",
+        "$value": "{spacing.200}"
+      },
+      "y": {
+        "$type": "dimension",
+        "$value": "{spacing.150}"
+      }
+    },
+    "transition": {
+      "duration": {
+        "default": {
+          "$type": "duration",
+          "$value": "{transition.duration.default}"
+        }
+      },
+      "easing": {
+        "default": {
+          "$type": "string",
+          "$value": "{transition.easing.default}"
+        }
+      }
+    }
+  }
+}
+

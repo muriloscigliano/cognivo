@@ -1,0 +1,27 @@
+{
+  "icon": {
+    "color": {
+      "$type": "color",
+      "$value": "{color.surface.container.icon}"
+    },
+    "size": {
+      "sm": {
+        "$type": "dimension",
+        "$value": "{icon.size.100}"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "{icon.size.200}"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "{icon.size.300}"
+      },
+      "xl": {
+        "$type": "dimension",
+        "$value": "{icon.size.400}"
+      }
+    }
+  }
+}
+
