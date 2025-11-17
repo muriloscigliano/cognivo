@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Cognivo Components - Visual Showcase</title>
+  <script type="module">
+    import '@cognivo/components';
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg, #f5f5f7);
+      color: var(--text, #1d1d1f);
+      padding: 2rem;
+      line-height: 1.6;
+    }
+    [data-theme="dark"] {
+      --bg: #1d1d1f;
+      --text: #f5f5f7;
+      --card-bg: #2d2d2f;
+      --border: #3d3d3f;
+    }
+    [data-theme="light"] {
+      --bg: #f5f5f7;
+      --text: #1d1d1f;
+      --card-bg: #ffffff;
+      --border: #e5e5e7;
+    }
+    .header {
+      max-width: 1800px;
+      margin: 0 auto 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .search-box, .theme-toggle {
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: var(--card-bg);
+      color: var(--text);
+      font-size: 1rem;
+    }
+    .search-box { width: 300px; }
+    .theme-toggle { cursor: pointer; font-size: 1.2rem; }
+    .stats {
+      max-width: 1800px;
+      margin: 0 auto 2rem;
+      display: flex;
+      gap: 1rem;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      flex: 1;
+    }
+    .stat-card h3 {
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-bottom: 0.5rem;
+    }
+    .stat-card .value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #667eea;
+    }
+    .container { max-width: 1800px; margin: 0 auto; }
+    .category {
+      margin-bottom: 4rem;
+    }
+    .category-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .category-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+    }
+    .category-count {
+      background: #667eea;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    .components-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .component-card {
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      transition: all 0.2s;
+    }
+    .component-card:hover {
+      border-color: #667eea;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+    }
+    .component-name {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .component-tag {
+      font-size: 0.75rem;
+      color: #667eea;
+      opacity: 0.7;
+      font-family: 'Monaco', monospace;
+    }
+    .component-preview {
+      min-height: 80px;
+      padding: 1rem;
+      background: var(--bg);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body data-theme="light">
+  <div class="header">
+    <div>
+      <h1>All Cognivo Components</h1>
+      <p>Complete visual showcase of all ~225 web components</p>
+    </div>
+    <div class="controls">
+      <input type="text" class="search-box" id="search" placeholder="Search components...">
+      <button class="theme-toggle" id="theme-toggle">🌙</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <h3>Total Components</h3>
+      <div class="value" id="total">225</div>
+    </div>
+    <div class="stat-card">
+      <h3>Visible</h3>
+      <div class="value" id="visible">225</div>
+    </div>
+    <div class="stat-card">
+      <h3>Categories</h3>
+      <div class="value">15</div>
+    </div>
+  </div>
+
+  <div class="container" id="showcase"></div>
+
+  <script type="module">
+    const allComponents = {
+      'Display Components': [
+        'cg-badge', 'cg-chip', 'cg-heading', 'cg-label', 'cg-text',
+        'kpi-number', 'kpi-delta', 'kpi-group', 'icon-badge', 'icon-avatar',
+        'category-chip', 'status-chip', 'stat-text'
+      ],
+      'Charts': [
+        'pie-chart', 'bar-chart', 'line-chart', 'donut-chart', 'area-chart',
+        'radar-chart', 'mini-bar-chart', 'mini-line-chart', 'mini-sparkline', 'mini-donut',
+        'heatmap-chart', 'timeline-chart', 'anomaly-highlight', 'forecast-curve'
+      ],
+      'Data Components': [
+        'data-table', 'data-list', 'data-card', 'category-card', 'comparison-card',
+        'metric-card', 'list-item', 'list-item-meta', 'list-item-avatar', 'list-divider',
+        'table-cell', 'table-row', 'table-header', 'table-group-header',
+        'table-filters', 'table-toolbar', 'table-selection', 'table-pagination'
+      ],
+      'Interactive': [
+        'search-bar', 'smart-search-bar', 'search-filter', 'filter-chips', 'filter-panel',
+        'breadcrumbs', 'pagination', 'sorter', 'tab-group', 'segment-switcher',
+        'group-selector'
+      ],
+      'Layout': [
+        'layout-grid', 'layout-stack', 'layout-container', 'layout-section',
+        'layout-sidebar', 'layout-header', 'layout-footer', 'dashboard-grid'
+      ],
+      'AI Core': [
+        'ai-confidence-badge', 'ai-action-button'
+      ],
+      'AI System': [
+        'ai-provider', 'ai-client', 'ai-intent-registry', 'ai-context-builder',
+        'ai-loading-indicator', 'ai-thinking-animation', 'ai-source-list', 'ai-debug-panel',
+        'confidence-display', 'explain-tooltip', 'forecast-badge', 'anomaly-badge',
+        'auto-tag-badge', 'source-attribution'
+      ],
+      'AI Enhanced': [
+        'ai-insight-card', 'ai-metric-card', 'ai-trend-card', 'ai-forecast-card', 'ai-anomaly-card',
+        'ai-insights-scroller', 'ai-table-toolbar', 'ai-table-explain', 'ai-table-anomaly',
+        'ai-table-cluster', 'ai-table-auto-tag', 'ai-list', 'ai-list-cluster',
+        'ai-auto-tag-list', 'ai-list-summary', 'ai-trend-chart', 'ai-forecast-chart',
+        'ai-anomaly-chart', 'ai-chart-summary', 'ai-context-card', 'ai-context-summary',
+        'ai-context-explanation', 'ai-region'
+      ],
+      'AI Actions': [
+        'ai-explain-button', 'ai-summarize-button', 'ai-ask-button', 'ai-generate-button',
+        'ai-cluster-button', 'ai-tag-button', 'ai-forecast-button', 'ai-detect-anomaly-button',
+        'ai-suggest-button', 'ai-auto-complete', 'ai-quick-actions', 'ai-floating-button',
+        'ai-toolbar-actions'
+      ],
+      'Panels & Modals': [
+        'ai-assistant', 'command-palette', 'drawer-left', 'drawer-right',
+        'flyout-menu', 'modal-dialog', 'modal-sheet', 'popover', 'side-panel'
+      ],
+      'Graph & Canvas': [
+        'canvas-minimap', 'canvas-pan', 'canvas-toolbar', 'canvas-zoom', 'connection-line',
+        'dag-canvas', 'dag-edge', 'dag-node', 'dependency-graph', 'edge-label', 'edge-path',
+        'flow-canvas', 'flow-connector', 'flow-handle', 'flow-node', 'force-graph',
+        'gantt-chart', 'graph-canvas', 'graph-edge', 'graph-label', 'graph-node', 'graph-port',
+        'mind-map', 'network-edge', 'network-graph', 'network-node', 'node-card',
+        'node-group', 'node-minimap', 'node-palette', 'org-chart', 'snap-grid',
+        'timeline-graph', 'tree-branch', 'tree-canvas', 'tree-node'
+      ],
+      'Payments': [
+        'billing-cycle', 'billing-info', 'checkout-summary', 'credit-card-input', 'discount-badge',
+        'invoice-item', 'invoice-total', 'payment-button', 'payment-form', 'payment-history',
+        'payment-method', 'payment-status', 'plan-selector', 'pricing-card', 'pricing-comparison',
+        'pricing-table', 'pricing-tier', 'promo-code', 'receipt', 'recurring-badge',
+        'refund-badge', 'stripe-element', 'subscription-card', 'tax-line', 'total-breakdown',
+        'transaction-item', 'trial-banner', 'upgrade-prompt', 'usage-meter', 'wallet-button'
+      ],
+      'Dashboard': [
+        'dashboard-widget', 'widget-header', 'widget-body', 'widget-footer',
+        'stats-widget', 'chart-widget', 'table-widget', 'activity-widget',
+        'alert-widget', 'quick-stats', 'metric-grid', 'dashboard-layout'
+      ],
+      'Chat': [
+        'chat-container', 'chat-message', 'chat-input', 'chat-header', 'message-bubble',
+        'message-avatar', 'typing-indicator', 'message-list', 'agent-selector',
+        'multi-agent-chat', 'agent-avatar', 'agent-response', 'conversation-thread',
+        'chat-suggestions', 'quick-replies'
+      ]
+    };
+
+    function render() {
+      const container = document.getElementById('showcase');
+      const searchTerm = document.getElementById('search').value.toLowerCase();
+      let visibleCount = 0;
+
+      container.innerHTML = '';
+
+      Object.entries(allComponents).forEach(([category, components]) => {
+        const filtered = components.filter(tag => tag.toLowerCase().includes(searchTerm));
+        if (filtered.length === 0) return;
+
+        visibleCount += filtered.length;
+
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'category';
+        categoryDiv.innerHTML = `
+          <div class="category-header">
+            <h2 class="category-title">${category}</h2>
+            <span class="category-count">${filtered.length}</span>
+          </div>
+          <div class="components-grid">
+            ${filtered.map(tag => `
+              <div class="component-card">
+                <div class="component-name">
+                  <span>${tag.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</span>
+                  <span class="component-tag">&lt;${tag}&gt;</span>
+                </div>
+                <div class="component-preview">
+                  <${tag}>${getExampleContent(tag)}</${tag}>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(categoryDiv);
+      });
+
+      document.getElementById('visible').textContent = visibleCount;
+      document.getElementById('total').textContent = Object.values(allComponents).flat().length;
+    }
+
+    function getExampleContent(tag) {
+      if (tag.includes('badge')) return 'Badge';
+      if (tag.includes('button')) return 'Click Me';
+      if (tag.includes('heading')) return 'Heading Text';
+      if (tag.includes('text')) return 'Sample Text';
+      if (tag.includes('label')) return 'Label';
+      if (tag.includes('chip')) return 'Chip';
+      if (tag === 'cg-icon') return '⭐';
+      if (tag.includes('card')) return 'Card Content';
+      if (tag.includes('list-item')) return 'List Item';
+      if (tag.includes('chart')) return '';
+      return 'Content';
+    }
+
+    // Event listeners
+    document.getElementById('search').addEventListener('input', render);
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      document.getElementById('theme-toggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    });
+
+    // Initial render
+    setTimeout(render, 500);
+  </script>
+</body>
+</html>
+

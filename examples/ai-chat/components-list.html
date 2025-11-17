@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cognivo Components List</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: var(--bg-color, #f5f5f7);
+        color: var(--text-color, #1d1d1f);
+        padding: 2rem;
+        line-height: 1.6;
+      }
+
+      [data-theme="dark"] {
+        --bg-color: #1d1d1f;
+        --text-color: #f5f5f7;
+        --card-bg: #2d2d2f;
+        --border-color: #3d3d3f;
+      }
+
+      [data-theme="light"] {
+        --bg-color: #f5f5f7;
+        --text-color: #1d1d1f;
+        --card-bg: #ffffff;
+        --border-color: #e5e5e7;
+      }
+
+      .header {
+        max-width: 1400px;
+        margin: 0 auto 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 2rem;
+        border-bottom: 2px solid var(--border-color);
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .header p {
+        color: var(--text-color);
+        opacity: 0.7;
+        margin-top: 0.5rem;
+      }
+
+      .controls {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      .search-box {
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        background: var(--card-bg);
+        color: var(--text-color);
+        font-size: 1rem;
+        width: 300px;
+      }
+
+      .search-box:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .theme-toggle {
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        background: var(--card-bg);
+        color: var(--text-color);
+        cursor: pointer;
+        font-size: 1.2rem;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .stats {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .stat-card {
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1.5rem;
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .stat-card h3 {
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-color);
+        opacity: 0.6;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-card .value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #667eea;
+      }
+
+      .category {
+        margin-bottom: 3rem;
+      }
+
+      .category-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--border-color);
+      }
+
+      .category-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: var(--text-color);
+      }
+
+      .category-count {
+        background: #667eea;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+
+      .components-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+      }
+
+      .component-card {
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1.25rem;
+        transition: all 0.2s ease;
+        cursor: pointer;
+      }
+
+      .component-card:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+      }
+
+      .component-name {
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .component-tag {
+        display: inline-block;
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        margin-top: 0.5rem;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .no-results {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-color);
+        opacity: 0.5;
+      }
+
+      @media (max-width: 768px) {
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+
+        .search-box {
+          width: 100%;
+        }
+
+        .components-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body data-theme="light">
+    <div class="header">
+      <div>
+        <h1>Cognivo Components</h1>
+        <p>Complete component library showcase</p>
+      </div>
+      <div class="controls">
+        <input
+          type="text"
+          class="search-box"
+          id="search"
+          placeholder="Search components..."
+        />
+        <button class="theme-toggle" id="theme-toggle">🌙</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="stats">
+        <div class="stat-card">
+          <h3>Total Components</h3>
+          <div class="value" id="total-count">207</div>
+        </div>
+        <div class="stat-card">
+          <h3>Categories</h3>
+          <div class="value">14</div>
+        </div>
+        <div class="stat-card">
+          <h3>Visible</h3>
+          <div class="value" id="visible-count">207</div>
+        </div>
+      </div>
+
+      <div id="components-list">
+        <!-- Categories will be inserted here -->
+      </div>
+    </div>
+
+    <script type="module">
+      const components = {
+        'AI Components (Main Exports)': [
+          'AiThinkingIndicator',
+          'AiConfidenceBadge',
+          'AiInsightCard',
+          'AiActionButton',
+          'AiResultPanel',
+          'AiTable',
+          'AiActionGroup',
+          'AiMiniChart',
+        ],
+        'Base Layout Components': [
+          'LayoutGrid',
+          'LayoutStack',
+          'LayoutContainer',
+          'LayoutSection',
+          'LayoutSidebar',
+          'LayoutHeader',
+          'LayoutFooter',
+          'DashboardGrid',
+        ],
+        'Display Components': [
+          'CgText',
+          'CgHeading',
+          'CgLabel',
+          'CgBadge',
+          'CgChip',
+          'CgIcon',
+          'KpiNumber',
+          'KpiDelta',
+          'KpiGroup',
+          'IconBadge',
+          'IconAvatar',
+          'CategoryChip',
+          'StatusChip',
+          'StatText',
+        ],
+        'Charts Components': [
+          'MiniBarChart',
+          'MiniLineChart',
+          'MiniSparkline',
+          'MiniDonut',
+          'BarChart',
+          'LineChart',
+          'AreaChart',
+          'DonutChart',
+          'PieChart',
+          'RadarChart',
+          'HeatmapChart',
+          'TimelineChart',
+          'AnomalyHighlight',
+          'ForecastCurve',
+        ],
+        'Data Display Components': [
+          'CategoryCard',
+          'ComparisonCard',
+          'DataCard',
+          'DataList',
+          'DataTable',
+          'ListDivider',
+          'ListItemAvatar',
+          'ListItemMeta',
+          'ListItem',
+          'MetricCard',
+          'TableCell',
+          'TableFilters',
+          'TableGroupHeader',
+          'TableHeader',
+          'TablePagination',
+          'TableRow',
+          'TableSelection',
+          'TableToolbar',
+        ],
+        'Interactive Components': [
+          'Breadcrumbs',
+          'FilterChips',
+          'FilterPanel',
+          'GroupSelector',
+          'Pagination',
+          'SearchBar',
+          'SearchFilter',
+          'SegmentSwitcher',
+          'SmartSearchBar',
+          'Sorter',
+          'TabGroup',
+        ],
+        'AI-Enhanced Components': [
+          'AiInsightCard',
+          'AiMetricCard',
+          'AiTrendCard',
+          'AiForecastCard',
+          'AiAnomalyCard',
+          'AiInsightsScroller',
+          'AiTableToolbar',
+          'AiTableExplain',
+          'AiTableAnomaly',
+          'AiTableCluster',
+          'AiTableAutoTag',
+          'AiList',
+          'AiListCluster',
+          'AiAutoTagList',
+          'AiListSummary',
+          'AiTrendChart',
+          'AiForecastChart',
+          'AiAnomalyChart',
+          'AiChartSummary',
+          'AiContextCard',
+          'AiContextSummary',
+          'AiContextExplanation',
+          'AiRegion',
+        ],
+        'AI Action Components': [
+          'AiExplainButton',
+          'AiSummarizeButton',
+          'AiAskButton',
+          'AiGenerateButton',
+          'AiClusterButton',
+          'AiTagButton',
+          'AiForecastButton',
+          'AiDetectAnomalyButton',
+          'AiSuggestButton',
+          'AiAutoComplete',
+          'AiQuickActions',
+          'AiFloatingButton',
+          'AiToolbarActions',
+        ],
+        'System & Utility Components': [
+          'AiProvider',
+          'AiClient',
+          'AiIntentRegistry',
+          'AiContextBuilder',
+          'AiLoadingIndicator',
+          'AiThinkingAnimation',
+          'ConfidenceDisplay',
+          'AiSourceList',
+          'AiDebugPanel',
+          'ExplainTooltip',
+          'ForecastBadge',
+          'AnomalyBadge',
+          'AutoTagBadge',
+          'SourceAttribution',
+        ],
+        'Panels/Drawers/Modals': [
+          'AiAssistant',
+          'CommandPalette',
+          'DrawerLeft',
+          'DrawerRight',
+          'FlyoutMenu',
+          'ModalDialog',
+          'ModalSheet',
+          'Popover',
+          'SidePanel',
+        ],
+        'Graph/Node/Canvas Components': [
+          'CanvasMinimap',
+          'CanvasPan',
+          'CanvasToolbar',
+          'CanvasZoom',
+          'ConnectionLine',
+          'DagCanvas',
+          'DagEdge',
+          'DagNode',
+          'DependencyGraph',
+          'EdgeLabel',
+          'EdgePath',
+          'FlowCanvas',
+          'FlowConnector',
+          'FlowHandle',
+          'FlowNode',
+          'ForceGraph',
+          'GanttChart',
+          'GraphCanvas',
+          'GraphEdge',
+          'GraphLabel',
+          'GraphNode',
+          'GraphPort',
+          'MindMap',
+          'NetworkEdge',
+          'NetworkGraph',
+          'NetworkNode',
+          'NodeCard',
+          'NodeGroup',
+          'NodeMinimap',
+          'NodePalette',
+          'OrgChart',
+          'SnapGrid',
+          'TimelineGraph',
+          'TreeBranch',
+          'TreeCanvas',
+          'TreeNode',
+        ],
+        'Payments Components': [
+          'BillingCycle',
+          'BillingInfo',
+          'CheckoutSummary',
+          'CreditCardInput',
+          'DiscountBadge',
+          'InvoiceItem',
+          'InvoiceTotal',
+          'PaymentButton',
+          'PaymentForm',
+          'PaymentHistory',
+          'PaymentMethod',
+          'PaymentStatus',
+          'PlanSelector',
+          'PricingCard',
+          'PricingComparison',
+          'PricingTable',
+          'PricingTier',
+          'PromoCode',
+          'Receipt',
+          'RecurringBadge',
+          'RefundBadge',
+          'StripeElement',
+          'SubscriptionCard',
+          'TaxLine',
+          'TotalBreakdown',
+          'TransactionItem',
+          'TrialBanner',
+          'UpgradePrompt',
+          'UsageMeter',
+          'WalletButton',
+        ],
+        'Dashboard Components': [
+          'DashboardWidget',
+          'WidgetHeader',
+          'WidgetBody',
+          'WidgetFooter',
+          'StatsWidget',
+          'ChartWidget',
+          'TableWidget',
+          'ActivityWidget',
+          'AlertWidget',
+          'QuickStats',
+          'MetricGrid',
+          'DashboardLayout',
+        ],
+        'Chat/Multi-Agent Components': [
+          'ChatContainer',
+          'ChatMessage',
+          'ChatInput',
+          'ChatHeader',
+          'MessageBubble',
+          'MessageAvatar',
+          'TypingIndicator',
+          'MessageList',
+          'AgentSelector',
+          'MultiAgentChat',
+          'AgentAvatar',
+          'AgentResponse',
+          'ConversationThread',
+          'ChatSuggestions',
+          'QuickReplies',
+        ],
+      };
+
+      function renderComponents() {
+        const container = document.getElementById('components-list');
+        container.innerHTML = '';
+
+        let visibleCount = 0;
+
+        Object.entries(components).forEach(([category, items]) => {
+          const categoryDiv = document.createElement('div');
+          categoryDiv.className = 'category';
+          categoryDiv.dataset.category = category.toLowerCase();
+
+          const filteredItems = items.filter((item) => {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            return item.toLowerCase().includes(searchTerm);
+          });
+
+          if (filteredItems.length === 0) {
+            categoryDiv.classList.add('hidden');
+            return;
+          }
+
+          visibleCount += filteredItems.length;
+
+          categoryDiv.innerHTML = `
+            <div class="category-header">
+              <h2 class="category-title">${category}</h2>
+              <span class="category-count">${filteredItems.length}</span>
+            </div>
+            <div class="components-grid">
+              ${filteredItems
+                .map(
+                  (component) => `
+                <div class="component-card" data-component="${component.toLowerCase()}">
+                  <div class="component-name">${component}</div>
+                  <span class="component-tag">${getComponentTag(component)}</span>
+                </div>
+              `
+                )
+                .join('')}
+            </div>
+          `;
+
+          container.appendChild(categoryDiv);
+        });
+
+        document.getElementById('visible-count').textContent = visibleCount;
+      }
+
+      function getComponentTag(component) {
+        if (component.startsWith('Ai')) return 'AI';
+        if (component.startsWith('Cg')) return 'Display';
+        if (component.includes('Chart')) return 'Chart';
+        if (component.includes('Table')) return 'Data';
+        if (component.includes('Chat')) return 'Chat';
+        if (component.includes('Payment')) return 'Payment';
+        if (component.includes('Graph') || component.includes('Node')) return 'Graph';
+        return 'Component';
+      }
+
+      // Search functionality
+      document.getElementById('search').addEventListener('input', renderComponents);
+
+      // Theme toggle
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        document.getElementById('theme-toggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+      });
+
+      // Initial render
+      renderComponents();
+    </script>
+  </body>
+</html>
+
