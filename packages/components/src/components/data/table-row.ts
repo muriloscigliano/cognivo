@@ -4,9 +4,40 @@ import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
 @customElement('table-row')
-export class Table-row extends LitElement {
-  static override styles = [baseStyles, css`:host { display: block; }`];
-  @property({ type: Array }) data = [];
-  override render() { return html`<slot></slot>`; }
+export class TableRow extends LitElement {
+  static override styles = [
+    baseStyles,
+    css`
+      :host {
+        display: table-row;
+        border-bottom: 1px solid ${tokens.color.gray200};
+        transition: background ${tokens.transition.default};
+      }
+
+      :host(:hover) {
+        background: ${tokens.color.gray50};
+      }
+
+      :host([selected]) {
+        background: ${tokens.color.primaryLight};
+      }
+
+      :host([striped]:nth-child(even)) {
+        background: ${tokens.color.gray50};
+      }
+    `,
+  ];
+
+  @property({ type: Boolean }) selected = false;
+  @property({ type: Boolean }) striped = false;
+
+  override render() {
+    return html`<slot></slot>`;
+  }
 }
-declare global { interface HTMLElementTagNameMap { 'table-row': Table-row; } }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'table-row': TableRow;
+  }
+}
