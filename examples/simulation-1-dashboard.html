@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulation #1 - AI Dashboard | Cognivo</title>
+  <link rel="stylesheet" href="../packages/tokens/dist/index.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--pa-font-family-roboto);
+      background: var(--pa-gray-50);
+      padding: var(--pa-spacing-24);
+      color: var(--pa-gray-900);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: var(--pa-spacing-32);
+    }
+
+    h1 {
+      font-size: var(--pa-font-size-800);
+      font-weight: var(--pa-font-weight-700);
+      margin-bottom: var(--pa-spacing-8);
+      color: var(--pa-blue-500);
+    }
+
+    .subtitle {
+      color: var(--pa-gray-600);
+      font-size: var(--pa-font-size-200);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--pa-spacing-24);
+      margin-bottom: var(--pa-spacing-32);
+    }
+
+    .charts-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: var(--pa-spacing-24);
+      margin-bottom: var(--pa-spacing-32);
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--pa-spacing-16);
+      padding: var(--pa-spacing-16);
+      background: var(--pa-gray-white);
+      border-radius: var(--pa-Border-radius-100);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+      font-size: var(--pa-font-size-500);
+      font-weight: var(--pa-font-weight-600);
+      margin-bottom: var(--pa-spacing-16);
+      color: var(--pa-gray-900);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--pa-green-100);
+      color: var(--pa-green-600);
+      border-radius: var(--pa-Border-radius-full);
+      font-size: var(--pa-font-size-75);
+      font-weight: var(--pa-font-weight-600);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🚀 AI Analytics Dashboard</h1>
+      <p class="subtitle">Real-time insights powered by AI</p>
+    </header>
+
+    <!-- AI Status Bar -->
+    <div class="status-bar">
+      <ai-thinking-indicator size="md"></ai-thinking-indicator>
+      <span>AI is processing your data...</span>
+      <ai-confidence-badge score="0.95" show-percentage size="md"></ai-confidence-badge>
+      <span class="badge">Live</span>
+    </div>
+
+    <div style="height: 32px;"></div>
+
+    <!-- KPI Cards Grid -->
+    <h2 class="section-title">Key Performance Indicators</h2>
+    <div class="dashboard-grid">
+      <kpi-card
+        title="Total Revenue"
+        value="$125,430"
+        change="+23.5%"
+        trend="up"
+        period="vs last month"
+      ></kpi-card>
+
+      <kpi-card
+        title="Active Users"
+        value="8,234"
+        change="+12.3%"
+        trend="up"
+        period="vs last week"
+      ></kpi-card>
+
+      <kpi-card
+        title="Conversion Rate"
+        value="3.24%"
+        change="-1.2%"
+        trend="down"
+        period="vs yesterday"
+      ></kpi-card>
+
+      <kpi-card
+        title="Avg. Session"
+        value="4m 32s"
+        change="+5.8%"
+        trend="up"
+        period="vs last month"
+      ></kpi-card>
+    </div>
+
+    <div style="height: 32px;"></div>
+
+    <!-- Data Cards -->
+    <h2 class="section-title">Performance Metrics</h2>
+    <div class="dashboard-grid">
+      <data-card
+        title="New Customers"
+        value="342"
+        subtitle="This month"
+        icon="👥"
+        variant="primary"
+      ></data-card>
+
+      <data-card
+        title="Orders Completed"
+        value="1,234"
+        subtitle="+18% from last month"
+        icon="📦"
+        variant="success"
+      ></data-card>
+
+      <data-card
+        title="Support Tickets"
+        value="28"
+        subtitle="4 pending resolution"
+        icon="🎫"
+        variant="warning"
+      ></data-card>
+
+      <data-card
+        title="Server Uptime"
+        value="99.9%"
+        subtitle="Last 30 days"
+        icon="⚡"
+        variant="success"
+      ></data-card>
+    </div>
+
+    <div style="height: 32px;"></div>
+
+    <!-- Charts -->
+    <h2 class="section-title">Analytics Charts</h2>
+    <div class="charts-section">
+      <div>
+        <h3 style="margin-bottom: 16px; color: var(--pa-gray-700); font-size: var(--pa-font-size-200);">Monthly Revenue</h3>
+        <bar-chart id="revenueChart" show-values show-labels></bar-chart>
+      </div>
+
+      <div>
+        <h3 style="margin-bottom: 16px; color: var(--pa-gray-700); font-size: var(--pa-font-size-200);">User Growth</h3>
+        <line-chart id="growthChart" smooth show-points fill-area></line-chart>
+      </div>
+    </div>
+
+    <div style="height: 32px;"></div>
+
+    <!-- AI Insights Section -->
+    <h2 class="section-title">AI Insights</h2>
+    <ai-insight-card
+      title="Revenue Forecast"
+      insight="Based on current trends, revenue is projected to reach $150,000 next month (+19.6% growth). Key drivers: increased user engagement and higher conversion rates."
+      confidence="0.87"
+    ></ai-insight-card>
+  </div>
+
+  <script type="module">
+    import '../packages/components/dist/index.js';
+
+    // Set up Bar Chart data
+    const revenueChart = document.getElementById('revenueChart');
+    revenueChart.data = [
+      { label: 'Jan', value: 45000, color: 'var(--pa-blue-500)' },
+      { label: 'Feb', value: 52000, color: 'var(--pa-blue-500)' },
+      { label: 'Mar', value: 48000, color: 'var(--pa-blue-500)' },
+      { label: 'Apr', value: 61000, color: 'var(--pa-blue-500)' },
+      { label: 'May', value: 72000, color: 'var(--pa-blue-500)' },
+      { label: 'Jun', value: 125430, color: 'var(--pa-green-500)' }
+    ];
+
+    // Set up Line Chart data
+    const growthChart = document.getElementById('growthChart');
+    growthChart.series = [
+      {
+        name: 'Users',
+        data: [
+          { label: 'Jan', value: 1200 },
+          { label: 'Feb', value: 1890 },
+          { label: 'Mar', value: 2340 },
+          { label: 'Apr', value: 3200 },
+          { label: 'May', value: 4100 },
+          { label: 'Jun', value: 5680 },
+          { label: 'Jul', value: 8234 }
+        ],
+        color: 'var(--pa-blue-500)'
+      }
+    ];
+  </script>
+</body>
+</html>
