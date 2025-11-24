@@ -1,28 +1,30 @@
-import { LitElement, html, css, svg } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { LitElement, html, css } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
+/**
+ * FlowNode Component
+ *
+ * @element flow-node
+ */
 @customElement('flow-node')
 export class FlowNode extends LitElement {
   static override styles = [
     baseStyles,
     css`:host {
       display: block;
-      position: relative;
-    }
-    svg {
-      width: 100%;
-      height: 100%;
-    }`
+      background: ${tokens.color.grayWhite};
+      border-radius: ${tokens.radius.md};
+      padding: ${tokens.spacing.md};
+    }`,
   ];
 
-  @property({ type: Array }) nodes = [];
-  @property({ type: Array }) edges = [];
-  @state() private zoom = 1;
+  @property({ type: Object })
+  data: any = {};
 
   override render() {
-    return html`<svg><slot></slot></svg>`;
+    return html`<slot></slot>`;
   }
 }
 
