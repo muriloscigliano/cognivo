@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimal Simulation - Cognivo</title>
+  <link rel="stylesheet" href="../packages/tokens/dist/index.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--cg-font-family-primary);
+      background: var(--cg-gray-50);
+      padding: var(--cg-spacing-24);
+      color: var(--cg-gray-900);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: var(--cg-spacing-32);
+    }
+
+    h1 {
+      font-size: var(--cg-font-size-3xl);
+      font-weight: var(--cg-font-weight-bold);
+      margin-bottom: var(--cg-spacing-8);
+      color: var(--cg-blue-500);
+    }
+
+    .subtitle {
+      color: var(--cg-gray-600);
+      font-size: var(--cg-font-size-md);
+    }
+
+    .section {
+      margin-bottom: var(--cg-spacing-32);
+    }
+
+    .section-title {
+      font-size: var(--cg-font-size-xl);
+      font-weight: var(--cg-font-weight-semibold);
+      margin-bottom: var(--cg-spacing-16);
+      color: var(--cg-gray-800);
+      border-bottom: 2px solid var(--cg-blue-200);
+      padding-bottom: var(--cg-spacing-8);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--cg-spacing-24);
+    }
+
+    .flex-row {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-16);
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: var(--cg-gray-white);
+      border-radius: var(--cg-Border-radius-100);
+      padding: var(--cg-spacing-24);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-16);
+      padding: var(--cg-spacing-16);
+      background: var(--cg-gray-white);
+      border-radius: var(--cg-Border-radius-100);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin-bottom: var(--cg-spacing-24);
+    }
+
+    .badge-live {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--cg-green-100);
+      color: var(--cg-green-600);
+      border-radius: var(--cg-Border-radius-full);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+    }
+
+    /* Test component visibility */
+    .component-test {
+      border: 2px dashed var(--cg-blue-300);
+      padding: var(--cg-spacing-16);
+      margin-bottom: var(--cg-spacing-16);
+      border-radius: var(--cg-Border-radius-50);
+    }
+
+    .component-label {
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-gray-500);
+      margin-bottom: var(--cg-spacing-8);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Cognivo Minimal Demo</h1>
+      <p class="subtitle">Testing core AI components</p>
+    </header>
+
+    <!-- AI Status Bar -->
+    <div class="status-bar">
+      <div class="component-test">
+        <div class="component-label">&lt;ai-thinking-indicator&gt;</div>
+        <ai-thinking-indicator size="md"></ai-thinking-indicator>
+      </div>
+      <span>AI is analyzing...</span>
+      <div class="component-test">
+        <div class="component-label">&lt;ai-confidence-badge&gt;</div>
+        <ai-confidence-badge score="0.95" show-percentage size="md"></ai-confidence-badge>
+      </div>
+      <span class="badge-live">Live</span>
+    </div>
+
+    <!-- KPI Cards Section -->
+    <section class="section">
+      <h2 class="section-title">KPI Cards</h2>
+      <div class="grid">
+        <div class="component-test">
+          <div class="component-label">&lt;kpi-card&gt;</div>
+          <kpi-card
+            title="Total Revenue"
+            value="$125,430"
+            change="+23.5%"
+            trend="up"
+            period="vs last month"
+          ></kpi-card>
+        </div>
+
+        <div class="component-test">
+          <div class="component-label">&lt;kpi-card&gt;</div>
+          <kpi-card
+            title="Active Users"
+            value="8,234"
+            change="+12.3%"
+            trend="up"
+            period="vs last week"
+          ></kpi-card>
+        </div>
+
+        <div class="component-test">
+          <div class="component-label">&lt;kpi-card&gt;</div>
+          <kpi-card
+            title="Conversion Rate"
+            value="3.24%"
+            change="-1.2%"
+            trend="down"
+            period="vs yesterday"
+          ></kpi-card>
+        </div>
+      </div>
+    </section>
+
+    <!-- Data Cards Section -->
+    <section class="section">
+      <h2 class="section-title">Data Cards</h2>
+      <div class="grid">
+        <div class="component-test">
+          <div class="component-label">&lt;data-card&gt;</div>
+          <data-card
+            title="New Customers"
+            value="342"
+            subtitle="This month"
+            variant="primary"
+          ></data-card>
+        </div>
+
+        <div class="component-test">
+          <div class="component-label">&lt;data-card&gt;</div>
+          <data-card
+            title="Orders Completed"
+            value="1,234"
+            subtitle="+18% from last month"
+            variant="success"
+          ></data-card>
+        </div>
+      </div>
+    </section>
+
+    <!-- Charts Section -->
+    <section class="section">
+      <h2 class="section-title">Charts</h2>
+      <div class="grid">
+        <div class="component-test">
+          <div class="component-label">&lt;bar-chart&gt;</div>
+          <bar-chart id="revenueChart" show-values show-labels></bar-chart>
+        </div>
+
+        <div class="component-test">
+          <div class="component-label">&lt;line-chart&gt;</div>
+          <line-chart id="growthChart" smooth show-points fill-area></line-chart>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Insights Section -->
+    <section class="section">
+      <h2 class="section-title">AI Insights</h2>
+      <div class="component-test">
+        <div class="component-label">&lt;ai-insight-card&gt;</div>
+        <ai-insight-card
+          title="Revenue Forecast"
+          insight="Based on current trends, revenue is projected to reach $150,000 next month (+19.6% growth). Key drivers: increased user engagement and higher conversion rates."
+          confidence="0.87"
+        ></ai-insight-card>
+      </div>
+    </section>
+
+    <!-- Debug Info -->
+    <section class="section">
+      <h2 class="section-title">Debug Info</h2>
+      <div class="card">
+        <p><strong>Components loaded:</strong> <span id="component-count">Checking...</span></p>
+        <p><strong>Tokens CSS loaded:</strong> <span id="tokens-status">Checking...</span></p>
+        <p><strong>Custom elements registered:</strong></p>
+        <ul id="registered-elements" style="margin-top: 8px; padding-left: 20px;"></ul>
+      </div>
+    </section>
+  </div>
+
+  <script type="module">
+    // Import all components
+    import '../packages/components/dist/index.js';
+
+    // Wait for components to initialize
+    setTimeout(() => {
+      // Check registered custom elements
+      const elementsToCheck = [
+        'ai-thinking-indicator',
+        'ai-confidence-badge',
+        'ai-insight-card',
+        'kpi-card',
+        'data-card',
+        'bar-chart',
+        'line-chart'
+      ];
+
+      const registered = elementsToCheck.filter(el => customElements.get(el));
+      const missing = elementsToCheck.filter(el => !customElements.get(el));
+
+      document.getElementById('component-count').textContent =
+        `${registered.length}/${elementsToCheck.length} components registered`;
+
+      const list = document.getElementById('registered-elements');
+      elementsToCheck.forEach(el => {
+        const li = document.createElement('li');
+        const isRegistered = customElements.get(el);
+        li.innerHTML = `<code>${el}</code>: ${isRegistered ? '✅' : '❌'}`;
+        li.style.color = isRegistered ? 'var(--cg-green-600)' : 'var(--cg-red-500)';
+        list.appendChild(li);
+      });
+
+      // Check tokens
+      const testEl = document.createElement('div');
+      testEl.style.color = 'var(--cg-blue-500)';
+      document.body.appendChild(testEl);
+      const computedColor = getComputedStyle(testEl).color;
+      document.body.removeChild(testEl);
+
+      document.getElementById('tokens-status').textContent =
+        computedColor !== '' && computedColor !== 'rgb(0, 0, 0)' ? '✅ Loaded' : '❌ Not loaded';
+
+    }, 500);
+
+    // Set up chart data after components are ready
+    customElements.whenDefined('bar-chart').then(() => {
+      const revenueChart = document.getElementById('revenueChart');
+      if (revenueChart) {
+        revenueChart.data = [
+          { label: 'Jan', value: 45000 },
+          { label: 'Feb', value: 52000 },
+          { label: 'Mar', value: 48000 },
+          { label: 'Apr', value: 61000 },
+          { label: 'May', value: 72000 },
+          { label: 'Jun', value: 125430 }
+        ];
+      }
+    }).catch(console.error);
+
+    customElements.whenDefined('line-chart').then(() => {
+      const growthChart = document.getElementById('growthChart');
+      if (growthChart) {
+        growthChart.series = [
+          {
+            name: 'Users',
+            data: [
+              { label: 'Jan', value: 1200 },
+              { label: 'Feb', value: 1890 },
+              { label: 'Mar', value: 2340 },
+              { label: 'Apr', value: 3200 },
+              { label: 'May', value: 4100 },
+              { label: 'Jun', value: 5680 },
+              { label: 'Jul', value: 8234 }
+            ]
+          }
+        ];
+      }
+    }).catch(console.error);
+  </script>
+</body>
+</html>

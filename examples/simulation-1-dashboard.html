@@ -13,7 +13,7 @@
     }
 
     body {
-      font-family: var(--cg-font-family-roboto);
+      font-family: var(--cg-font-family-primary);
       background: var(--cg-gray-50);
       padding: var(--cg-spacing-24);
       color: var(--cg-gray-900);
@@ -29,15 +29,15 @@
     }
 
     h1 {
-      font-size: var(--cg-font-size-800);
-      font-weight: var(--cg-font-weight-700);
+      font-size: var(--cg-font-size-3xl);
+      font-weight: var(--cg-font-weight-bold);
       margin-bottom: var(--cg-spacing-8);
       color: var(--cg-blue-500);
     }
 
     .subtitle {
       color: var(--cg-gray-600);
-      font-size: var(--cg-font-size-200);
+      font-size: var(--cg-font-size-md);
     }
 
     .dashboard-grid {
@@ -65,8 +65,8 @@
     }
 
     .section-title {
-      font-size: var(--cg-font-size-500);
-      font-weight: var(--cg-font-weight-600);
+      font-size: var(--cg-font-size-xl);
+      font-weight: var(--cg-font-weight-semibold);
       margin-bottom: var(--cg-spacing-16);
       color: var(--cg-gray-900);
     }
@@ -77,15 +77,15 @@
       background: var(--cg-green-100);
       color: var(--cg-green-600);
       border-radius: var(--cg-Border-radius-full);
-      font-size: var(--cg-font-size-75);
-      font-weight: var(--cg-font-weight-600);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>🚀 AI Analytics Dashboard</h1>
+      <h1>AI Analytics Dashboard</h1>
       <p class="subtitle">Real-time insights powered by AI</p>
     </header>
 
@@ -144,7 +144,7 @@
         title="New Customers"
         value="342"
         subtitle="This month"
-        icon="👥"
+        icon="users"
         variant="primary"
       ></data-card>
 
@@ -152,7 +152,7 @@
         title="Orders Completed"
         value="1,234"
         subtitle="+18% from last month"
-        icon="📦"
+        icon="package"
         variant="success"
       ></data-card>
 
@@ -160,7 +160,7 @@
         title="Support Tickets"
         value="28"
         subtitle="4 pending resolution"
-        icon="🎫"
+        icon="ticket"
         variant="warning"
       ></data-card>
 
@@ -168,7 +168,7 @@
         title="Server Uptime"
         value="99.9%"
         subtitle="Last 30 days"
-        icon="⚡"
+        icon="zap"
         variant="success"
       ></data-card>
     </div>
@@ -179,12 +179,12 @@
     <h2 class="section-title">Analytics Charts</h2>
     <div class="charts-section">
       <div>
-        <h3 style="margin-bottom: 16px; color: var(--cg-gray-700); font-size: var(--cg-font-size-200);">Monthly Revenue</h3>
+        <h3 style="margin-bottom: 16px; color: var(--cg-gray-700); font-size: var(--cg-font-size-md);">Monthly Revenue</h3>
         <bar-chart id="revenueChart" show-values show-labels></bar-chart>
       </div>
 
       <div>
-        <h3 style="margin-bottom: 16px; color: var(--cg-gray-700); font-size: var(--cg-font-size-200);">User Growth</h3>
+        <h3 style="margin-bottom: 16px; color: var(--cg-gray-700); font-size: var(--cg-font-size-md);">User Growth</h3>
         <line-chart id="growthChart" smooth show-points fill-area></line-chart>
       </div>
     </div>
@@ -203,34 +203,40 @@
   <script type="module">
     import '../packages/components/dist/index.js';
 
-    // Set up Bar Chart data
-    const revenueChart = document.getElementById('revenueChart');
-    revenueChart.data = [
-      { label: 'Jan', value: 45000, color: 'var(--cg-blue-500)' },
-      { label: 'Feb', value: 52000, color: 'var(--cg-blue-500)' },
-      { label: 'Mar', value: 48000, color: 'var(--cg-blue-500)' },
-      { label: 'Apr', value: 61000, color: 'var(--cg-blue-500)' },
-      { label: 'May', value: 72000, color: 'var(--cg-blue-500)' },
-      { label: 'Jun', value: 125430, color: 'var(--cg-green-500)' }
-    ];
-
-    // Set up Line Chart data
-    const growthChart = document.getElementById('growthChart');
-    growthChart.series = [
-      {
-        name: 'Users',
-        data: [
-          { label: 'Jan', value: 1200 },
-          { label: 'Feb', value: 1890 },
-          { label: 'Mar', value: 2340 },
-          { label: 'Apr', value: 3200 },
-          { label: 'May', value: 4100 },
-          { label: 'Jun', value: 5680 },
-          { label: 'Jul', value: 8234 }
-        ],
-        color: 'var(--cg-blue-500)'
+    // Wait for custom elements to be defined before setting data
+    customElements.whenDefined('bar-chart').then(() => {
+      const revenueChart = document.getElementById('revenueChart');
+      if (revenueChart) {
+        revenueChart.data = [
+          { label: 'Jan', value: 45000 },
+          { label: 'Feb', value: 52000 },
+          { label: 'Mar', value: 48000 },
+          { label: 'Apr', value: 61000 },
+          { label: 'May', value: 72000 },
+          { label: 'Jun', value: 125430 }
+        ];
       }
-    ];
+    });
+
+    customElements.whenDefined('line-chart').then(() => {
+      const growthChart = document.getElementById('growthChart');
+      if (growthChart) {
+        growthChart.series = [
+          {
+            name: 'Users',
+            data: [
+              { label: 'Jan', value: 1200 },
+              { label: 'Feb', value: 1890 },
+              { label: 'Mar', value: 2340 },
+              { label: 'Apr', value: 3200 },
+              { label: 'May', value: 4100 },
+              { label: 'Jun', value: 5680 },
+              { label: 'Jul', value: 8234 }
+            ]
+          }
+        ];
+      }
+    });
   </script>
 </body>
 </html>
