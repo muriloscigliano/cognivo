@@ -30,6 +30,24 @@ export interface AiTableRow {
 }
 
 /**
+ * Event detail for sort changes
+ */
+export interface AiTableSortChangedDetail {
+  column: string | null;
+  direction: 'asc' | 'desc';
+  timestamp: number;
+}
+
+/**
+ * Event detail for row selection
+ */
+export interface AiTableRowSelectedDetail {
+  row: AiTableRow;
+  index: number;
+  timestamp: number;
+}
+
+/**
  * AI Table
  *
  * Data table with AI-powered features: anomaly highlighting, confidence scores,
@@ -91,6 +109,18 @@ export class AiTable extends LitElement {
         color: ${tokens.color.gray900};
         white-space: nowrap;
         user-select: none;
+      }
+
+      .header-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0;
+        border: none;
+        background: transparent;
+        font: inherit;
+        color: inherit;
+        cursor: inherit;
       }
 
       th.sortable {
@@ -397,6 +427,50 @@ export class AiTable extends LitElement {
   private sortDirection: 'asc' | 'desc' = 'asc';
 
   /**
+   * Normalize date-like values to timestamps for sorting
+   */
+  private normalizeDate(value: unknown): number | null {
+    if (value instanceof Date && !Number.isNaN(value.getTime())) return value.getTime();
+    if (typeof value === 'string' || typeof value === 'number') {
+      const date = new Date(value);
+      if (!Number.isNaN(date.getTime())) return date.getTime();
+    }
+    return null;
+  }
+
+  /**
+   * Type-aware comparator to keep sorting predictable
+   */
+  private compareValues(aVal: unknown, bVal: unknown, column?: AiTableColumn): number {
+    if (aVal === bVal) return 0;
+    if (aVal == null) return 1;
+    if (bVal == null) return -1;
+
+    // Numeric-like types
+    if (['number', 'currency', 'percentage'].includes(column?.type || '')) {
+      const aNum = typeof aVal === 'number' ? aVal : Number(aVal);
+      const bNum = typeof bVal === 'number' ? bVal : Number(bVal);
+      if (Number.isFinite(aNum) && Number.isFinite(bNum)) {
+        return aNum === bNum ? 0 : aNum > bNum ? 1 : -1;
+      }
+    }
+
+    // Dates
+    if (column?.type === 'date') {
+      const aDate = this.normalizeDate(aVal);
+      const bDate = this.normalizeDate(bVal);
+      if (aDate !== null && bDate !== null) {
+        return aDate === bDate ? 0 : aDate > bDate ? 1 : -1;
+      }
+    }
+
+    // Fallback to locale string compare
+    const aStr = String(aVal).toLocaleLowerCase();
+    const bStr = String(bVal).toLocaleLowerCase();
+    return aStr.localeCompare(bStr);
+  }
+
+  /**
    * Get sorted data
    */
   private get sortedData(): AiTableRow[] {
@@ -405,10 +479,8 @@ export class AiTable extends LitElement {
     return [...this.data].sort((a, b) => {
       const aVal = a[this.sortColumn!];
       const bVal = b[this.sortColumn!];
-
-      if (aVal === bVal) return 0;
-
-      const comparison = aVal > bVal ? 1 : -1;
+      const column = this.columns.find((c) => c.key === this.sortColumn);
+      const comparison = this.compareValues(aVal, bVal, column);
       return this.sortDirection === 'asc' ? comparison : -comparison;
     });
   }
@@ -429,7 +501,7 @@ export class AiTable extends LitElement {
     }
 
     this.dispatchEvent(
-      new CustomEvent('ai:sort-changed', {
+      new CustomEvent<AiTableSortChangedDetail>('ai:sort-changed', {
         detail: {
           column: this.sortColumn,
           direction: this.sortDirection,
@@ -444,9 +516,11 @@ export class AiTable extends LitElement {
   /**
    * Handle row click
    */
-  private handleRowClick(row: AiTableRow, index: number) {
+  private handleRowClick(event: Event, row: AiTableRow, index: number) {
+    if (this.isInteractiveTarget(event)) return;
+
     this.dispatchEvent(
-      new CustomEvent('ai:row-selected', {
+      new CustomEvent<AiTableRowSelectedDetail>('ai:row-selected', {
         detail: {
           row,
           index,
@@ -456,6 +530,20 @@ export class AiTable extends LitElement {
         composed: true,
       })
     );
+  }
+
+  /**
+   * Ignore row clicks originating from interactive descendants
+   */
+  private isInteractiveTarget(event: Event): boolean {
+    const path = event.composedPath();
+    return path.some((node) => {
+      if (!(node instanceof HTMLElement)) return false;
+      const tag = node.tagName.toLowerCase();
+      if (['button', 'a', 'input', 'select', 'textarea', 'option'].includes(tag)) return true;
+      const role = node.getAttribute('role');
+      return role === 'button' || role === 'link';
+    });
   }
 
   /**
@@ -492,20 +580,33 @@ export class AiTable extends LitElement {
                   [`align-${column.align || 'left'}`]: true,
                 })}
                 style=${column.width ? `width: ${column.width}` : ''}
-                @click=${() => this.handleSort(column)}
+                aria-sort=${column.sortable
+                  ? this.sortColumn === column.key
+                    ? this.sortDirection === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : 'none'
+                  : 'none'}
               >
-                ${column.label}
                 ${column.sortable
                   ? html`
-                      <span class="sort-icon">
-                        ${this.sortColumn === column.key
-                          ? this.sortDirection === 'asc'
-                            ? '▲'
-                            : '▼'
-                          : '⇅'}
-                      </span>
+                      <button
+                        type="button"
+                        class="header-button"
+                        @click=${() => this.handleSort(column)}
+                        aria-label="${`Sort by ${column.label}`}"
+                      >
+                        <span>${column.label}</span>
+                        <span class="sort-icon" aria-hidden="true">
+                          ${this.sortColumn === column.key
+                            ? this.sortDirection === 'asc'
+                              ? '▲'
+                              : '▼'
+                            : '⇅'}
+                        </span>
+                      </button>
                     `
-                  : null}
+                  : html`<span>${column.label}</span>`}
               </th>
             `
           )}
@@ -550,7 +651,7 @@ export class AiTable extends LitElement {
                   highlighted: isHighlighted,
                 })}
                 data-anomaly=${anomalySeverity || ''}
-                @click=${() => this.handleRowClick(row, index)}
+                @click=${(event: Event) => this.handleRowClick(event, row, index)}
               >
                 ${this.columns.map((column) => {
                   const value = row[column.key];

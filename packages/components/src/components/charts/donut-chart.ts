@@ -118,8 +118,8 @@ export class DonutChart extends LitElement {
     tokens.color.warning,
     tokens.color.danger,
     tokens.color.info,
-    'var(--pa-blue-300)',
-    'var(--pa-green-300)',
+    'var(--cg-blue-300)',
+    'var(--cg-green-300)',
   ];
 
   private getTotal(): number {

@@ -20,7 +20,7 @@ export class AnomalyHighlight extends LitElement {
       .line { fill: none; stroke: ${tokens.color.gray500}; stroke-width: 2; }
       .normal-point { fill: ${tokens.color.primaryMain}; }
       .anomaly-low { fill: ${tokens.color.warning}; }
-      .anomaly-medium { fill: 'var(--pa-red-300)'; }
+      .anomaly-medium { fill: var(--cg-red-300); }
       .anomaly-high { fill: ${tokens.color.danger}; animation: pulse 1s infinite; }
       @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
       .highlight-zone { fill: ${tokens.color.danger}; opacity: 0.1; }

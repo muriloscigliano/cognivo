@@ -9,7 +9,7 @@ import { unsafeCSS } from 'lit';
  * Get a CSS custom property value
  */
 export function token(name: string) {
-  return unsafeCSS(`var(--pa-${name})`);
+  return unsafeCSS(`var(--cg-${name})`);
 }
 
 /**
@@ -18,17 +18,17 @@ export function token(name: string) {
 export const tokens = {
   // Colors
   color: {
-    primaryMain: token('blue-500'),
-    primaryLight: token('blue-300'),
-    primaryDark: token('blue-700'),
+    primaryMain: token('brand-primary-400'),
+    primaryLight: token('brand-primary-300'),
+    primaryDark: token('brand-primary-500'),
 
-    secondaryMain: token('green-500'),
+    secondaryMain: token('brand-secondary-300'),
 
-    aiAccent: token('blue-500'),
-    aiHighlight: token('blue-300'),
-    aiBackground: token('blue-100'),
-    aiBorder: token('blue-400'),
-    aiGlow: token('blue-500'),
+    aiAccent: token('brand-ai-accent'),
+    aiHighlight: token('brand-ai-highlight'),
+    aiBackground: token('brand-ai-background'),
+    aiBorder: token('brand-ai-border'),
+    aiGlow: token('brand-ai-glow'),
 
     success: token('green-500'),
     warning: token('yellow-500'),
@@ -51,52 +51,52 @@ export const tokens = {
     md: token('spacing-16'),
     lg: token('spacing-24'),
     xl: token('spacing-32'),
-    xxl: token('spacing-40'),
+    xxl: token('spacing-48'),
   },
 
-  // Typography - Using actual pa- tokens
+  // Typography
   fontSize: {
-    xs: token('font-size-75'),      // 12px
-    sm: token('font-size-100'),     // 14px
-    base: token('font-size-200'),   // 16px
-    md: token('font-size-250'),     // 18px
-    lg: token('font-size-400'),     // 20px
-    xl: token('font-size-500'),     // 24px
-    '2xl': token('font-size-700'),  // 32px
-    '3xl': token('font-size-800'),  // 40px
+    xs: token('font-size-xs'),      // 12px
+    sm: token('font-size-sm'),      // 14px
+    base: token('font-size-base'),  // 16px
+    md: token('font-size-md'),      // 18px
+    lg: token('font-size-lg'),      // 20px
+    xl: token('font-size-xl'),      // 24px
+    '2xl': token('font-size-2xl'),  // 30px
+    '3xl': token('font-size-3xl'),  // 36px
   },
 
   fontWeight: {
-    light: token('font-weight-300'),
-    normal: token('font-weight-400'),
-    medium: token('font-weight-500'),
-    semibold: token('font-weight-600'),
-    bold: token('font-weight-700'),
-    extrabold: token('font-weight-800'),
-    black: token('font-weight-900'),
+    light: token('font-weight-light'),
+    normal: token('font-weight-normal'),
+    medium: token('font-weight-medium'),
+    semibold: token('font-weight-semibold'),
+    bold: token('font-weight-bold'),
+    extrabold: token('font-weight-extrabold'),
+    black: token('font-weight-black'),
   },
 
   fontFamily: {
-    primary: token('font-family-roboto'),
-    display: token('font-family-roboto'),
-    mono: token('font-family-roboto'),
+    primary: token('font-family-primary'),
+    display: token('font-family-display'),
+    mono: token('font-family-mono'),
   },
 
   lineHeight: {
-    tight: token('line-height-100'),     // 1.2
-    snug: token('line-height-100'),
-    normal: token('line-height-200'),    // 1.5
-    relaxed: token('line-height-300'),   // 1.75
-    loose: token('line-height-300'),
+    tight: token('line-height-tight'),     // 1.2
+    snug: token('line-height-snug'),
+    normal: token('line-height-normal'),   // 1.5
+    relaxed: token('line-height-relaxed'), // 1.625
+    loose: token('line-height-loose'),
   },
 
   letterSpacing: {
-    tighter: token('letter-spacing-100'),
-    tight: token('letter-spacing-100'),
-    normal: token('letter-spacing-200'),
-    wide: token('letter-spacing-300'),
-    wider: token('letter-spacing-300'),
-    widest: token('letter-spacing-300'),
+    tighter: token('letter-spacing-tighter'),
+    tight: token('letter-spacing-tight'),
+    normal: token('letter-spacing-normal'),
+    wide: token('letter-spacing-wide'),
+    wider: token('letter-spacing-wider'),
+    widest: token('letter-spacing-widest'),
   },
 
   // Border radius

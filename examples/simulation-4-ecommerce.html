@@ -8,54 +8,54 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: var(--pa-font-family-roboto);
-      background: linear-gradient(135deg, var(--pa-blue-100) 0%, var(--pa-gray-50) 100%);
-      padding: var(--pa-spacing-24);
+      font-family: var(--cg-font-family-roboto);
+      background: linear-gradient(135deg, var(--cg-blue-100) 0%, var(--cg-gray-50) 100%);
+      padding: var(--cg-spacing-24);
       min-height: 100vh;
     }
     .container { max-width: 1600px; margin: 0 auto; }
     header {
-      background: var(--pa-gray-white);
-      padding: var(--pa-spacing-24);
-      border-radius: var(--pa-Border-radius-150);
-      margin-bottom: var(--pa-spacing-24);
+      background: var(--cg-gray-white);
+      padding: var(--cg-spacing-24);
+      border-radius: var(--cg-Border-radius-150);
+      margin-bottom: var(--cg-spacing-24);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
     h1 {
-      font-size: var(--pa-font-size-800);
-      font-weight: var(--pa-font-weight-700);
-      color: var(--pa-blue-500);
+      font-size: var(--cg-font-size-800);
+      font-weight: var(--cg-font-weight-700);
+      color: var(--cg-blue-500);
       margin-bottom: 8px;
     }
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: var(--pa-spacing-16);
-      margin-bottom: var(--pa-spacing-24);
+      gap: var(--cg-spacing-16);
+      margin-bottom: var(--cg-spacing-24);
     }
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: var(--pa-spacing-16);
-      margin-bottom: var(--pa-spacing-24);
+      gap: var(--cg-spacing-16);
+      margin-bottom: var(--cg-spacing-24);
     }
     .section {
-      background: var(--pa-gray-white);
-      padding: var(--pa-spacing-24);
-      border-radius: var(--pa-Border-radius-150);
-      margin-bottom: var(--pa-spacing-24);
+      background: var(--cg-gray-white);
+      padding: var(--cg-spacing-24);
+      border-radius: var(--cg-Border-radius-150);
+      margin-bottom: var(--cg-spacing-24);
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
     h2 {
-      font-size: var(--pa-font-size-500);
-      font-weight: var(--pa-font-weight-600);
-      margin-bottom: var(--pa-spacing-16);
-      color: var(--pa-gray-900);
+      font-size: var(--cg-font-size-500);
+      font-weight: var(--cg-font-weight-600);
+      margin-bottom: var(--cg-spacing-16);
+      color: var(--cg-gray-900);
     }
     .chart-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-      gap: var(--pa-spacing-24);
+      gap: var(--cg-spacing-24);
     }
   </style>
 </head>
@@ -65,7 +65,7 @@
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <div>
           <h1>🛍️ E-Commerce Analytics</h1>
-          <p style="color: var(--pa-gray-600);">Real-time store performance dashboard</p>
+          <p style="color: var(--cg-gray-600);">Real-time store performance dashboard</p>
         </div>
         <div style="display: flex; gap: 16px; align-items: center;">
           <ai-thinking-indicator size="md"></ai-thinking-indicator>
@@ -215,16 +215,16 @@
         { label: 'Sat', value: 28450 },
         { label: 'Sun', value: 24600 }
       ],
-      color: 'var(--pa-green-500)'
+      color: 'var(--cg-green-500)'
     }];
 
     // Category Chart
     document.getElementById('categoryChart').data = [
-      { label: 'Electronics', value: 125000, color: 'var(--pa-blue-500)' },
-      { label: 'Clothing', value: 98000, color: 'var(--pa-blue-400)' },
-      { label: 'Home & Garden', value: 76000, color: 'var(--pa-blue-300)' },
-      { label: 'Sports', value: 54000, color: 'var(--pa-gray-400)' },
-      { label: 'Books', value: 42000, color: 'var(--pa-gray-400)' }
+      { label: 'Electronics', value: 125000, color: 'var(--cg-blue-500)' },
+      { label: 'Clothing', value: 98000, color: 'var(--cg-blue-400)' },
+      { label: 'Home & Garden', value: 76000, color: 'var(--cg-blue-300)' },
+      { label: 'Sports', value: 54000, color: 'var(--cg-gray-400)' },
+      { label: 'Books', value: 42000, color: 'var(--cg-gray-400)' }
     ];
 
     // Product Table

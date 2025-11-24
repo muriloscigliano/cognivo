@@ -8,96 +8,96 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: var(--pa-font-family-roboto);
-      background: var(--pa-gray-100);
+      font-family: var(--cg-font-family-roboto);
+      background: var(--cg-gray-100);
       display: flex;
       height: 100vh;
-      color: var(--pa-gray-900);
+      color: var(--cg-gray-900);
     }
     .container {
       max-width: 1200px;
       width: 100%;
       margin: auto;
       display: flex;
-      gap: var(--pa-spacing-24);
-      padding: var(--pa-spacing-24);
+      gap: var(--cg-spacing-24);
+      padding: var(--cg-spacing-24);
       height: 100vh;
     }
     .sidebar {
       width: 280px;
-      background: var(--pa-gray-white);
-      border-radius: var(--pa-Border-radius-150);
-      padding: var(--pa-spacing-24);
+      background: var(--cg-gray-white);
+      border-radius: var(--cg-Border-radius-150);
+      padding: var(--cg-spacing-24);
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
     .main-chat {
       flex: 1;
-      background: var(--pa-gray-white);
-      border-radius: var(--pa-Border-radius-150);
-      padding: var(--pa-spacing-24);
+      background: var(--cg-gray-white);
+      border-radius: var(--cg-Border-radius-150);
+      padding: var(--cg-spacing-24);
       display: flex;
       flex-direction: column;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
     .chat-header {
-      padding-bottom: var(--pa-spacing-16);
-      border-bottom: 1px solid var(--pa-gray-200);
-      margin-bottom: var(--pa-spacing-24);
+      padding-bottom: var(--cg-spacing-16);
+      border-bottom: 1px solid var(--cg-gray-200);
+      margin-bottom: var(--cg-spacing-24);
     }
     h1 {
-      font-size: var(--pa-font-size-500);
-      font-weight: var(--pa-font-weight-700);
-      color: var(--pa-blue-500);
+      font-size: var(--cg-font-size-500);
+      font-weight: var(--cg-font-weight-700);
+      color: var(--cg-blue-500);
       margin-bottom: 8px;
     }
     .messages {
       flex: 1;
       overflow-y: auto;
-      margin-bottom: var(--pa-spacing-24);
+      margin-bottom: var(--cg-spacing-24);
       display: flex;
       flex-direction: column;
-      gap: var(--pa-spacing-16);
+      gap: var(--cg-spacing-16);
     }
     .message {
-      padding: var(--pa-spacing-16);
-      border-radius: var(--pa-Border-radius-100);
+      padding: var(--cg-spacing-16);
+      border-radius: var(--cg-Border-radius-100);
       max-width: 80%;
     }
     .message.user {
-      background: var(--pa-blue-100);
+      background: var(--cg-blue-100);
       align-self: flex-end;
     }
     .message.ai {
-      background: var(--pa-gray-100);
+      background: var(--cg-gray-100);
       align-self: flex-start;
     }
     .ai-actions {
       display: flex;
-      gap: var(--pa-spacing-8);
+      gap: var(--cg-spacing-8);
       flex-wrap: wrap;
-      margin-top: var(--pa-spacing-16);
-      padding: var(--pa-spacing-16);
-      background: var(--pa-gray-50);
-      border-radius: var(--pa-Border-radius-100);
+      margin-top: var(--cg-spacing-16);
+      padding: var(--cg-spacing-16);
+      background: var(--cg-gray-50);
+      border-radius: var(--cg-Border-radius-100);
     }
     .action-btn {
       padding: 8px 16px;
-      background: var(--pa-blue-500);
+      background: var(--cg-blue-500);
       color: white;
       border: none;
-      border-radius: var(--pa-Border-radius-50);
+      border-radius: var(--cg-Border-radius-50);
       cursor: pointer;
-      font-size: var(--pa-font-size-75);
-      font-weight: var(--pa-font-weight-500);
+      font-size: var(--cg-font-size-75);
+      font-weight: var(--cg-font-weight-500);
       transition: all 200ms;
     }
     .action-btn:hover {
-      background: var(--pa-blue-700);
+      background: var(--cg-blue-700);
     }
     .stats-grid {
       display: grid;
-      gap: var(--pa-spacing-12);
-      margin-top: var(--pa-spacing-24);
+      gap: var(--cg-spacing-12);
+      margin-top: var(--cg-spacing-24);
     }
   </style>
 </head>
@@ -105,7 +105,7 @@
   <div class="container">
     <!-- Sidebar -->
     <div class="sidebar">
-      <h2 style="margin-bottom: 16px; font-size: var(--pa-font-size-250);">💬 Chat Sessions</h2>
+      <h2 style="margin-bottom: 16px; font-size: var(--cg-font-size-250);">💬 Chat Sessions</h2>
 
       <div class="stats-grid">
         <data-card
@@ -122,13 +122,13 @@
       </div>
 
       <div style="margin-top: 32px;">
-        <h3 style="margin-bottom: 12px; font-size: var(--pa-font-size-100); color: var(--pa-gray-600);">AI Status</h3>
-        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--pa-gray-50); border-radius: 8px;">
+        <h3 style="margin-bottom: 12px; font-size: var(--cg-font-size-100); color: var(--cg-gray-600);">AI Status</h3>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--cg-gray-50); border-radius: 8px;">
           <ai-thinking-indicator size="sm"></ai-thinking-indicator>
-          <span style="font-size: var(--pa-font-size-75);">Processing</span>
+          <span style="font-size: var(--cg-font-size-75);">Processing</span>
         </div>
         <div style="margin-top: 12px; display: flex; align-items: center; gap: 12px;">
-          <span style="font-size: var(--pa-font-size-75); color: var(--pa-gray-600);">Confidence:</span>
+          <span style="font-size: var(--cg-font-size-75); color: var(--cg-gray-600);">Confidence:</span>
           <ai-confidence-badge score="0.94" show-percentage size="sm"></ai-confidence-badge>
         </div>
       </div>
@@ -138,7 +138,7 @@
     <div class="main-chat">
       <div class="chat-header">
         <h1>🤖 AI Assistant</h1>
-        <p style="color: var(--pa-gray-600); font-size: var(--pa-font-size-100);">Powered by Cognivo AI Engine</p>
+        <p style="color: var(--cg-gray-600); font-size: var(--cg-font-size-100);">Powered by Cognivo AI Engine</p>
       </div>
 
       <div class="messages">
@@ -199,7 +199,7 @@
 
       <!-- AI Action Buttons -->
       <div class="ai-actions">
-        <strong style="width: 100%; margin-bottom: 8px; font-size: var(--pa-font-size-100);">Quick Actions:</strong>
+        <strong style="width: 100%; margin-bottom: 8px; font-size: var(--cg-font-size-100);">Quick Actions:</strong>
         <ai-action-button action="explain" size="sm">Explain More</ai-action-button>
         <ai-action-button action="forecast" size="sm">Forecast Next Quarter</ai-action-button>
         <ai-action-button action="detect-anomaly" size="sm">Detect Anomalies</ai-action-button>
@@ -213,10 +213,10 @@
 
     // Region Chart
     document.getElementById('regionChart').data = [
-      { label: 'North America', value: 145000, color: 'var(--pa-blue-500)' },
-      { label: 'Europe', value: 98000, color: 'var(--pa-blue-400)' },
-      { label: 'Asia Pacific', value: 72000, color: 'var(--pa-blue-300)' },
-      { label: 'Latin America', value: 27890, color: 'var(--pa-gray-400)' }
+      { label: 'North America', value: 145000, color: 'var(--cg-blue-500)' },
+      { label: 'Europe', value: 98000, color: 'var(--cg-blue-400)' },
+      { label: 'Asia Pacific', value: 72000, color: 'var(--cg-blue-300)' },
+      { label: 'Latin America', value: 27890, color: 'var(--cg-gray-400)' }
     ];
 
     // Trend Chart
@@ -227,7 +227,7 @@
         { label: 'May', value: 112000 },
         { label: 'Jun', value: 135890 }
       ],
-      color: 'var(--pa-green-500)'
+      color: 'var(--cg-green-500)'
     }];
   </script>
 </body>

@@ -35,10 +35,10 @@ export class HeatmapChart extends LitElement {
 
   private getColor(value: number, min: number, max: number): string {
     const ratio = (value - min) / (max - min);
-    if (ratio > 0.75) return 'var(--pa-red-500)';
-    if (ratio > 0.5) return 'var(--pa-yellow-500)';
-    if (ratio > 0.25) return 'var(--pa-blue-300)';
-    return 'var(--pa-blue-100)';
+    if (ratio > 0.75) return 'var(--cg-red-500)';
+    if (ratio > 0.5) return 'var(--cg-yellow-500)';
+    if (ratio > 0.25) return 'var(--cg-blue-300)';
+    return 'var(--cg-blue-100)';
   }
 
   override render() {

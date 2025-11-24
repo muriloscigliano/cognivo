@@ -183,17 +183,17 @@ StyleDictionary.registerFormat({
 })
 
 // Load all token files
-const coreTokens = loadTokens(path.join(__dirname, 'dist/tier1-core/core.json'))
-const brandCognivo = loadTokens(path.join(__dirname, 'dist/tier1-core/brand-cognivo.json'))
+const coreTokens = loadTokens(path.join(__dirname, 'tier1-core/core.json'))
+const brandCognivo = loadTokens(path.join(__dirname, 'tier1-core/brand-cognivo.json'))
 
-const semanticLight = loadTokens(path.join(__dirname, 'dist/tier2-semantic/cognivo-light.json'))
-const semanticDark = loadTokens(path.join(__dirname, 'dist/tier2-semantic/cognivo-dark.json'))
-const semanticTypography = loadTokens(path.join(__dirname, 'dist/tier2-semantic/typography.json'))
-const semanticFoundation = loadTokens(path.join(__dirname, 'dist/tier2-semantic/foundation.json'))
-const semanticAiStates = loadTokens(path.join(__dirname, 'dist/tier2-semantic/ai-states.json'))
+const semanticLight = loadTokens(path.join(__dirname, 'tier2-semantic/cognivo-light.json'))
+const semanticDark = loadTokens(path.join(__dirname, 'tier2-semantic/cognivo-dark.json'))
+const semanticTypography = loadTokens(path.join(__dirname, 'tier2-semantic/typography.json'))
+const semanticFoundation = loadTokens(path.join(__dirname, 'tier2-semantic/foundation.json'))
+const semanticAiStates = loadTokens(path.join(__dirname, 'tier2-semantic/ai-states.json'))
 
 // Load all component tokens (if any exist)
-const componentDir = path.join(__dirname, 'dist/tier3-component')
+const componentDir = path.join(__dirname, 'tier3-component')
 const componentTokenFiles = fs.existsSync(componentDir)
   ? fs.readdirSync(componentDir)
       .filter(file => file.endsWith('.json'))
@@ -207,7 +207,7 @@ const tier1Tokens = mergeTokens(coreTokens, brandCognivo)
 
 async function buildTokens() {
   try {
-    // Build Tier 1 (base tokens) - outputs raw values with pa- prefix
+    // Build Tier 1 (base tokens) - outputs raw values with cg- prefix
     const tier1Config = {
       tokens: tier1Tokens,
       platforms: {
