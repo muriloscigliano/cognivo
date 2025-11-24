@@ -95,7 +95,7 @@ export class ComparisonCard extends LitElement {
     `,
   ];
 
-  @property({ type: String }) title = '';
+  @property({ type: String }) override title = '';
   @property({ type: String }) subtitle = '';
   @property({ type: Array }) data: ComparisonItem[] = [];
 

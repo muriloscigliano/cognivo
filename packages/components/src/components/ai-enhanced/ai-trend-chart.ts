@@ -115,7 +115,7 @@ export class AiTrendChart extends LitElement {
   ];
 
   @property({ type: Array }) data: TrendPoint[] = [];
-  @property({ type: String }) title = 'Trend Chart';
+  @property({ type: String }) override title = 'Trend Chart';
 
   private _getMaxValue(): number {
     return Math.max(...this.data.map(d => d.value), 0);

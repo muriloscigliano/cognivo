@@ -115,7 +115,7 @@ export class DataCard extends LitElement {
   ];
 
   @property({ type: String })
-  title = '';
+  override title = '';
 
   @property({ type: String })
   value = '';

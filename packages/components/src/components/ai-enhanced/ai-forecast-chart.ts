@@ -147,7 +147,7 @@ export class AiForecastChart extends LitElement {
   ];
 
   @property({ type: Array }) data: ForecastPoint[] = [];
-  @property({ type: String }) title = 'Forecast Chart';
+  @property({ type: String }) override title = 'Forecast Chart';
 
   private _getMaxValue(): number {
     const values: number[] = [];

@@ -110,7 +110,7 @@ export class AiListCluster extends LitElement {
   ];
 
   @property({ type: Array }) data: ListClusterData[] = [];
-  @property({ type: String }) title = 'List Clusters';
+  @property({ type: String }) override title = 'List Clusters';
 
   override render() {
     return html`

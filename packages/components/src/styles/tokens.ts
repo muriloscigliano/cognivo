@@ -34,6 +34,7 @@ export const tokens = {
     warning: token('yellow-500'),
     danger: token('red-500'),
     info: token('blue-500'),
+    infoLight: token('blue-300'),
 
     grayWhite: token('gray-white'),
     gray50: token('gray-50'),
@@ -44,11 +45,13 @@ export const tokens = {
 
   // Spacing
   spacing: {
+    xxs: token('spacing-2'),
     xs: token('spacing-4'),
     sm: token('spacing-8'),
     md: token('spacing-16'),
     lg: token('spacing-24'),
     xl: token('spacing-32'),
+    xxl: token('spacing-40'),
   },
 
   // Typography - Using actual pa- tokens
@@ -108,6 +111,15 @@ export const tokens = {
   transition: {
     fast: unsafeCSS('150ms'),
     default: unsafeCSS('200ms'),
+    base: unsafeCSS('200ms'),
     slow: unsafeCSS('300ms'),
+  },
+
+  // Shadows
+  shadow: {
+    sm: unsafeCSS('0 1px 2px rgba(0, 0, 0, 0.05)'),
+    md: unsafeCSS('0 4px 6px rgba(0, 0, 0, 0.1)'),
+    lg: unsafeCSS('0 10px 15px rgba(0, 0, 0, 0.1)'),
+    xl: unsafeCSS('0 20px 25px rgba(0, 0, 0, 0.15)'),
   },
 };

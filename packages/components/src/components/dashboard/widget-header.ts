@@ -152,7 +152,7 @@ export class WidgetHeader extends LitElement {
   ];
 
   @property({ type: String })
-  title = '';
+  override title = '';
 
   @property({ type: String })
   subtitle = '';

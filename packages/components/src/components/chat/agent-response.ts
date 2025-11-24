@@ -186,7 +186,7 @@ export class AgentResponse extends LitElement {
         }
       }
 
-      :host([animate]) .response-container {
+      :host([animated]) .response-container {
         animation: slideIn 0.3s ease-out;
       }
     `
@@ -199,7 +199,7 @@ export class AgentResponse extends LitElement {
   metadata: AgentMetadata | null = null;
 
   @property({ type: Boolean, reflect: true })
-  animate = false;
+  animated = false;
 
   @property({ type: Boolean })
   showActions = true;

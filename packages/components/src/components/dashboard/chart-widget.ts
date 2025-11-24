@@ -221,7 +221,7 @@ export class ChartWidget extends LitElement {
   ];
 
   @property({ type: String })
-  title = '';
+  override title = '';
 
   @property({ type: String })
   chartType: ChartType = 'line';
@@ -301,17 +301,17 @@ export class ChartWidget extends LitElement {
   }
 
   private _getDefaultColor(index: number): string {
-    const colors = [
-      tokens.color.primaryMain,
-      tokens.color.success,
-      tokens.color.warning,
-      tokens.color.danger,
-      tokens.color.info,
+    const colors: string[] = [
+      tokens.color.primaryMain as unknown as string,
+      tokens.color.success as unknown as string,
+      tokens.color.warning as unknown as string,
+      tokens.color.danger as unknown as string,
+      tokens.color.info as unknown as string,
       '#9333EA', // purple
       '#EC4899', // pink
       '#F59E0B', // amber
     ];
-    return colors[index % colors.length];
+    return colors[index % colors.length]!;
   }
 
   override render() {

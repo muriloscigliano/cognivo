@@ -62,7 +62,7 @@ export class TableToolbar extends LitElement {
     `,
   ];
 
-  @property({ type: String }) title = '';
+  @property({ type: String }) override title = '';
 
   override render() {
     return html`

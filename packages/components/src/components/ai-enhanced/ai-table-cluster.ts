@@ -125,7 +125,7 @@ export class AiTableCluster extends LitElement {
   ];
 
   @property({ type: Array }) data: ClusterData[] = [];
-  @property({ type: String }) title = 'Table Clusters';
+  @property({ type: String }) override title = 'Table Clusters';
 
   override render() {
     if (!this.data || this.data.length === 0) {

@@ -118,7 +118,7 @@ export class AiAutoTagList extends LitElement {
   ];
 
   @property({ type: Array }) data: TaggedItem[] = [];
-  @property({ type: String }) title = 'Auto-Tagged List';
+  @property({ type: String }) override title = 'Auto-Tagged List';
 
   override render() {
     if (!this.data || this.data.length === 0) {

@@ -57,7 +57,7 @@ export class KpiNumber extends LitElement {
   ];
 
   @property({ type: String }) value = '';
-  @property({ type: String }) prefix = '';
+  @property({ type: String }) override prefix = '';
   @property({ type: String }) suffix = '';
   @property({ type: String, reflect: true }) size: 'small' | 'medium' | 'large' = 'large';
   @property({ type: String, reflect: true }) variant: 'default' | 'success' | 'warning' | 'danger' = 'default';

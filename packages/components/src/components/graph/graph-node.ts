@@ -96,7 +96,7 @@ export class GraphNode extends LitElement {
   selected = false;
 
   @property({ type: Boolean, reflect: true })
-  draggable = true;
+  override draggable = true;
 
   @property({ type: Number })
   x = 0;

@@ -1,9 +1,23 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { AiIntent, type AiResult, type AiClient } from '@cognivo/core';
 import { baseStyles, animations } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 import { AiInvokeEvent, AiResultEvent, AiErrorEvent } from '../../types/events.js';
+
+// Type definitions (previously from @cognivo/core)
+type AiIntent = string;
+
+interface AiResult {
+  data?: unknown;
+  confidence?: number;
+  explanation?: string;
+  bullets?: Array<{ text: string; impact?: number }>;
+  drivers?: Array<{ name: string; impact: number }>;
+}
+
+interface AiClient {
+  runIntent: (intent: string, context?: unknown) => Promise<AiResult>;
+}
 import '../ai-thinking-indicator/ai-thinking-indicator.js';
 import '../ai-confidence-badge/ai-confidence-badge.js';
 
@@ -220,7 +234,7 @@ export class AiInsightCard extends LitElement {
    * Card title
    */
   @property({ type: String })
-  title = '';
+  override title = '';
 
   /**
    * Enabled AI actions

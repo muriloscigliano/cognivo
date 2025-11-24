@@ -109,7 +109,7 @@ export class ChatMessage extends LitElement {
         }
       }
 
-      :host([animate]) .message-container {
+      :host([animated]) .message-container {
         animation: messageSlideIn 0.3s ease-out;
       }
     `
@@ -137,7 +137,7 @@ export class ChatMessage extends LitElement {
   compact = false;
 
   @property({ type: Boolean, reflect: true })
-  animate = false;
+  animated = false;
 
   @property({ type: Boolean })
   showAvatar = true;
@@ -175,7 +175,7 @@ export class ChatMessage extends LitElement {
             timestamp="${this.compact ? this.timestamp : ''}"
             status="${this.status}"
             ?show-tail="${this.showTail}"
-            ?animate="${this.animate}"
+            ?animate="${this.animated}"
           >
             <slot></slot>
           </message-bubble>

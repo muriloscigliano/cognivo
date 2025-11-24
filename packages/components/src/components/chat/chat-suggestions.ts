@@ -105,15 +105,15 @@ export class ChatSuggestions extends LitElement {
         }
       }
 
-      :host([animate]) .suggestion-card {
+      :host([animated]) .suggestion-card {
         animation: fadeInUp 0.3s ease-out;
         animation-fill-mode: both;
       }
 
-      :host([animate]) .suggestion-card:nth-child(1) { animation-delay: 0s; }
-      :host([animate]) .suggestion-card:nth-child(2) { animation-delay: 0.05s; }
-      :host([animate]) .suggestion-card:nth-child(3) { animation-delay: 0.1s; }
-      :host([animate]) .suggestion-card:nth-child(4) { animation-delay: 0.15s; }
+      :host([animated]) .suggestion-card:nth-child(1) { animation-delay: 0s; }
+      :host([animated]) .suggestion-card:nth-child(2) { animation-delay: 0.05s; }
+      :host([animated]) .suggestion-card:nth-child(3) { animation-delay: 0.1s; }
+      :host([animated]) .suggestion-card:nth-child(4) { animation-delay: 0.15s; }
     `
   ];
 
@@ -121,7 +121,7 @@ export class ChatSuggestions extends LitElement {
   suggestions: Suggestion[] = [];
 
   @property({ type: String })
-  title = 'Suggested Prompts';
+  override title = 'Suggested Prompts';
 
   @property({ type: String, reflect: true })
   layout: 'grid' | 'list' = 'grid';
@@ -130,7 +130,7 @@ export class ChatSuggestions extends LitElement {
   compact = false;
 
   @property({ type: Boolean, reflect: true })
-  animate = false;
+  animated = false;
 
   @property({ type: Boolean })
   showTitle = true;

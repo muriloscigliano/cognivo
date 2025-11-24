@@ -9,8 +9,8 @@ export interface Insight {
   importance?: number;
 }
 
-@customElement('ai-insight-card')
-export class AiInsightCard extends LitElement {
+@customElement('ai-insights-panel')
+export class AiInsightsPanel extends LitElement {
   static override styles = [
     baseStyles,
     css`
@@ -167,7 +167,7 @@ export class AiInsightCard extends LitElement {
     `
   ];
 
-  @property({ type: String }) title = '';
+  @property({ type: String }) override title = '';
   @property({ type: Number }) confidence = 0;
   @property({ type: Array }) insights: Insight[] = [];
 
@@ -236,6 +236,6 @@ export class AiInsightCard extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'ai-insight-card': AiInsightCard;
+    'ai-insights-panel': AiInsightsPanel;
   }
 }

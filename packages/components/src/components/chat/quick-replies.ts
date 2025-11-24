@@ -120,28 +120,28 @@ export class QuickReplies extends LitElement {
         }
       }
 
-      :host([animate]) .quick-reply-chip {
+      :host([animated]) .quick-reply-chip {
         animation: slideInUp 0.3s ease-out;
         animation-fill-mode: both;
       }
 
-      :host([animate]) .quick-reply-chip:nth-child(1) {
+      :host([animated]) .quick-reply-chip:nth-child(1) {
         animation-delay: 0s;
       }
 
-      :host([animate]) .quick-reply-chip:nth-child(2) {
+      :host([animated]) .quick-reply-chip:nth-child(2) {
         animation-delay: 0.05s;
       }
 
-      :host([animate]) .quick-reply-chip:nth-child(3) {
+      :host([animated]) .quick-reply-chip:nth-child(3) {
         animation-delay: 0.1s;
       }
 
-      :host([animate]) .quick-reply-chip:nth-child(4) {
+      :host([animated]) .quick-reply-chip:nth-child(4) {
         animation-delay: 0.15s;
       }
 
-      :host([animate]) .quick-reply-chip:nth-child(5) {
+      :host([animated]) .quick-reply-chip:nth-child(5) {
         animation-delay: 0.2s;
       }
 
@@ -160,7 +160,7 @@ export class QuickReplies extends LitElement {
   replies: QuickReply[] = [];
 
   @property({ type: String })
-  title = '';
+  override title = '';
 
   @property({ type: String, reflect: true })
   variant: 'default' | 'outlined' | 'filled' = 'default';
@@ -172,7 +172,7 @@ export class QuickReplies extends LitElement {
   compact = false;
 
   @property({ type: Boolean, reflect: true })
-  animate = false;
+  animated = false;
 
   private handleReplyClick(reply: QuickReply) {
     if (reply.disabled) return;

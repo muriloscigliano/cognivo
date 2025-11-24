@@ -217,7 +217,7 @@ export class DashboardWidget extends LitElement {
   errorMessage = '';
 
   @property({ type: Boolean, reflect: true })
-  draggable = false;
+  override draggable = false;
 
   @property({ type: Boolean, reflect: true })
   resizable = false;

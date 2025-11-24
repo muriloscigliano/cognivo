@@ -166,11 +166,11 @@ export class MessageBubble extends LitElement {
         }
       }
 
-      :host([variant='agent'][animate]) .bubble {
+      :host([variant='agent'][animated]) .bubble {
         animation: slideInLeft 0.3s ease-out;
       }
 
-      :host([variant='user'][animate]) .bubble {
+      :host([variant='user'][animated]) .bubble {
         animation: slideInRight 0.3s ease-out;
       }
     `
@@ -189,7 +189,7 @@ export class MessageBubble extends LitElement {
   showTail = true;
 
   @property({ type: Boolean, reflect: true })
-  animate = false;
+  animated = false;
 
   @property({ type: Boolean, reflect: true })
   error = false;

@@ -122,7 +122,7 @@ export class KpiCard extends LitElement {
   ];
 
   @property({ type: String })
-  title = '';
+  override title = '';
 
   @property({ type: String })
   value = '';

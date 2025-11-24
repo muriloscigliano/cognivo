@@ -116,7 +116,7 @@ export class AreaChart extends LitElement {
 
   private getLabels(): string[] {
     if (this.series.length === 0) return [];
-    return this.series[0].data.map(d => d.label);
+    return this.series[0]!.data.map(d => d.label);
   }
 
   private createPath(data: AreaChartData[], chartWidth: number, chartHeight: number, padding: any): string {

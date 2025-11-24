@@ -129,7 +129,7 @@ export class DashboardLayout extends LitElement {
   gap = '';
 
   @property({ type: Boolean, reflect: true })
-  draggable = false;
+  override draggable = false;
 
   @property({ type: Boolean, reflect: true })
   resizable = false;

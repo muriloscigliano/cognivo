@@ -182,7 +182,7 @@ export class LineChart extends LitElement {
 
   private getLabels(): string[] {
     if (this.series.length === 0) return [];
-    return this.series[0].data.map(d => d.label);
+    return this.series[0]!.data.map(d => d.label);
   }
 
   private createPath(data: LineChartData[], chartWidth: number, chartHeight: number, padding: any): string {
@@ -203,10 +203,10 @@ export class LineChart extends LitElement {
     }
 
     // Smooth curve using quadratic bezier
-    let path = `M ${points[0].x} ${points[0].y}`;
+    let path = `M ${points[0]!.x} ${points[0]!.y}`;
     for (let i = 0; i < points.length - 1; i++) {
-      const current = points[i];
-      const next = points[i + 1];
+      const current = points[i]!;
+      const next = points[i + 1]!;
       const midX = (current.x + next.x) / 2;
       path += ` Q ${current.x} ${current.y}, ${midX} ${(current.y + next.y) / 2}`;
       if (i < points.length - 2) {

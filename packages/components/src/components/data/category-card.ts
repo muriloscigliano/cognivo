@@ -88,7 +88,7 @@ export class CategoryCard extends LitElement {
     `,
   ];
 
-  @property({ type: String }) title = '';
+  @property({ type: String }) override title = '';
   @property({ type: Number }) count = 0;
   @property({ type: String }) description = '';
   @property({ type: String }) icon = '📁';

@@ -154,7 +154,7 @@ export class AiList extends LitElement {
   ];
 
   @property({ type: Array }) data: AiListItem[] = [];
-  @property({ type: String }) title = 'AI-Enhanced List';
+  @property({ type: String }) override title = 'AI-Enhanced List';
   @state() private sortBy: 'priority' | 'category' | 'default' = 'default';
 
   private _getPriorityLevel(priority?: number): 'high' | 'medium' | 'low' {

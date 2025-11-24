@@ -112,7 +112,7 @@ export class ChatHeader extends LitElement {
   ];
 
   @property({ type: String })
-  title = 'Chat';
+  override title = 'Chat';
 
   @property({ type: String })
   subtitle = '';

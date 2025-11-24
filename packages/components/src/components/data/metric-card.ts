@@ -116,7 +116,7 @@ export class MetricCard extends LitElement {
     `,
   ];
 
-  @property({ type: String }) title = '';
+  @property({ type: String }) override title = '';
   @property({ type: String }) value = '';
   @property({ type: Number }) change = 0;
   @property({ type: String }) changeLabel = 'vs last period';

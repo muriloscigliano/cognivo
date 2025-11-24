@@ -186,7 +186,7 @@ export class AlertWidget extends LitElement {
         align-items: center;
         padding: ${tokens.spacing.xxs} ${tokens.spacing.xs};
         border-radius: ${tokens.radius.sm};
-        font-size: ${tokens.fontSize.xxs};
+        font-size: ${tokens.fontSize.xs};
         font-weight: ${tokens.fontWeight.semibold};
         text-transform: uppercase;
         letter-spacing: 0.5px;

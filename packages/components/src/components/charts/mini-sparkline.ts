@@ -29,7 +29,7 @@ export class MiniSparkline extends LitElement {
     return svg`
       <svg viewBox="0 0 80 30">
         <path class="line" d="${path}" />
-        ${points.length > 0 ? svg`<circle class="dot" cx="${points[points.length - 1].x}" cy="${points[points.length - 1].y}" r="2" />` : null}
+        ${points.length > 0 ? svg`<circle class="dot" cx="${points[points.length - 1]!.x}" cy="${points[points.length - 1]!.y}" r="2" />` : null}
       </svg>
     `;
   }

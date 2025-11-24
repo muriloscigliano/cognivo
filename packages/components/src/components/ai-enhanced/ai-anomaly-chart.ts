@@ -133,7 +133,7 @@ export class AiAnomalyChart extends LitElement {
   ];
 
   @property({ type: Array }) data: AiAnomalyPoint[] = [];
-  @property({ type: String }) title = 'Anomaly Detection';
+  @property({ type: String }) override title = 'Anomaly Detection';
 
   private _getMaxValue(): number {
     return Math.max(...this.data.map(d => d.value), 0);

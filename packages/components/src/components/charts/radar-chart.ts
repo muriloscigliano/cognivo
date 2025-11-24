@@ -48,7 +48,7 @@ export class RadarChart extends LitElement {
     }
 
     const cx = 150, cy = 150, maxRadius = 100;
-    const labels = this.series[0].data.map(d => d.label);
+    const labels = this.series[0]!.data.map(d => d.label);
     const maxValue = Math.max(...this.series.flatMap(s => s.data.map(d => d.value)));
     const angleStep = 360 / labels.length;
     const colors = [tokens.color.primaryMain, tokens.color.success, tokens.color.warning];
