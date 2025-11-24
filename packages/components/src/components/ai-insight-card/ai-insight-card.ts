@@ -237,6 +237,18 @@ export class AiInsightCard extends LitElement {
   override title = '';
 
   /**
+   * Static insight text (for demos without AI client)
+   */
+  @property({ type: String })
+  insight = '';
+
+  /**
+   * Static confidence score (for demos without AI client)
+   */
+  @property({ type: Number })
+  confidence = 0;
+
+  /**
    * Enabled AI actions
    */
   @property({ type: Array, attribute: 'ai-actions' })
@@ -409,7 +421,27 @@ export class AiInsightCard extends LitElement {
               `
             : null}
 
-          <!-- AI Result -->
+          <!-- Static Insight (for demos) -->
+          ${this.insight && !this.result && !this.loading
+            ? html`
+                <div class="ai-result">
+                  <div class="ai-result-header">
+                    <span class="ai-result-title">AI Insights</span>
+                    ${this.confidence
+                      ? html`
+                          <ai-confidence-badge
+                            score=${this.confidence}
+                            show-percentage
+                          ></ai-confidence-badge>
+                        `
+                      : null}
+                  </div>
+                  <p class="ai-explanation">${this.insight}</p>
+                </div>
+              `
+            : null}
+
+          <!-- AI Result (dynamic) -->
           ${this.result && !this.loading
             ? html`
                 <div class="ai-result">
