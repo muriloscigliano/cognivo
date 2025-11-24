@@ -8,26 +8,29 @@ export class AiForecastButton extends LitElement {
   static override styles = [
     baseStyles,
     css`
-host {
-      display: inline-flex;
-      align-items: center;
-      gap: ${tokens.spacing.xs};
-      padding: ${tokens.spacing.sm} ${tokens.spacing.md};
-      background: ${tokens.color.primaryMain};
-      color: ${tokens.color.grayWhite};
-      border: none;
-      border-radius: ${tokens.radius.md};
-      cursor: pointer;
-      font-family: ${tokens.fontFamily.primary};
-      font-size: ${tokens.fontSize.sm};
-    }
-    :host(:hover) {
-      background: ${tokens.color.primaryDark};
-    }
-    :host([loading]) {
-      opacity: 0.6;
-      cursor: wait;
-    }`
+      :host {
+        display: inline-flex;
+        align-items: center;
+        gap: ${tokens.spacing.xs};
+        padding: ${tokens.spacing.sm} ${tokens.spacing.md};
+        background: ${tokens.color.primaryMain};
+        color: ${tokens.color.grayWhite};
+        border: none;
+        border-radius: ${tokens.radius.md};
+        cursor: pointer;
+        font-family: ${tokens.fontFamily.primary};
+        font-size: ${tokens.fontSize.sm};
+      }
+
+      :host(:hover) {
+        background: ${tokens.color.primaryDark};
+      }
+
+      :host([loading]) {
+        opacity: 0.6;
+        cursor: wait;
+      }
+    `
   ];
 
   @property({ type: Boolean, reflect: true }) loading = false;

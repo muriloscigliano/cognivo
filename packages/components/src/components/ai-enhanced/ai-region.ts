@@ -101,11 +101,11 @@ export class AiRegion extends LitElement {
       }
 
       :host([variant='success'])::before {
-        background: linear-gradient(90deg, ${tokens.color.success} 0%, ${tokens.color.successDark} 100%);
+        background: linear-gradient(90deg, ${tokens.color.success} 0%, ${tokens.color.success} 100%);
       }
 
       :host([variant='success']) .ai-label {
-        background: linear-gradient(135deg, ${tokens.color.success} 0%, ${tokens.color.successDark} 100%);
+        background: linear-gradient(135deg, ${tokens.color.success} 0%, ${tokens.color.success} 100%);
       }
     `
   ];

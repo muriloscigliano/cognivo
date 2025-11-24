@@ -178,7 +178,7 @@ export class SubscriptionCard extends LitElement {
       }
 
       .card.current .cta-button:hover {
-        background: ${tokens.color.successDark};
+        background: ${tokens.color.success};
       }
     `
   ];

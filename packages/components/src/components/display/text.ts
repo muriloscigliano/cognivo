@@ -8,7 +8,7 @@ export class CgText extends LitElement {
   static override styles = [
     baseStyles,
     css`
-host { display: inline; font-family: ${tokens.fontFamily.primary}; font-size: var(--text-size, ${tokens.fontSize.base}); color: var(--text-color, ${tokens.color.gray900}); }
+      :host { display: inline; font-family: ${tokens.fontFamily.primary}; font-size: var(--text-size, ${tokens.fontSize.base}); color: var(--text-color, ${tokens.color.gray900}); }
     :host([size='xs']) { --text-size: ${tokens.fontSize.xs}; }
     :host([size='sm']) { --text-size: ${tokens.fontSize.sm}; }
     :host([size='md']) { --text-size: ${tokens.fontSize.md}; }
