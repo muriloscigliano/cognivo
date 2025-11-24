@@ -30,7 +30,7 @@ export class FilterPanel extends LitElement {
       .clear-btn {
         padding: ${tokens.spacing.xs} ${tokens.spacing.sm};
         background: none;
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.sm};
         cursor: pointer;
         font-size: ${tokens.fontSize.sm};

@@ -14,12 +14,12 @@ export class TablePagination extends LitElement {
         align-items: center;
         padding: ${tokens.spacing.md} ${tokens.spacing.lg};
         background: ${tokens.color.gray50};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .pagination-info {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       .pagination-controls {
@@ -31,8 +31,8 @@ export class TablePagination extends LitElement {
       .pagination-btn {
         padding: ${tokens.spacing.xs} ${tokens.spacing.md};
         background: ${tokens.color.grayWhite};
-        color: ${tokens.color.gray700};
-        border: 1px solid ${tokens.color.gray300};
+        color: ${tokens.color.gray900};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.sm};
         cursor: pointer;
         font-size: ${tokens.fontSize.sm};
@@ -43,7 +43,7 @@ export class TablePagination extends LitElement {
 
       .pagination-btn:hover:not(:disabled) {
         background: ${tokens.color.gray100};
-        border-color: ${tokens.color.gray400};
+        border-color: ${tokens.color.gray500};
       }
 
       .pagination-btn:disabled {
@@ -59,7 +59,7 @@ export class TablePagination extends LitElement {
 
       .page-size-select {
         padding: ${tokens.spacing.xs} ${tokens.spacing.sm};
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.sm};
         font-size: ${tokens.fontSize.sm};
         cursor: pointer;

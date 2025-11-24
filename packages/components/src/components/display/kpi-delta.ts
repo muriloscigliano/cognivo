@@ -29,7 +29,7 @@ export class KpiDelta extends LitElement {
       }
 
       :host([trend='neutral']) {
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       :host([inverted][trend='up']) {

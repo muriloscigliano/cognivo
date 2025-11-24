@@ -34,10 +34,10 @@ export class WidgetFooter extends LitElement {
         gap: ${tokens.spacing.md};
         padding: ${tokens.spacing.md} ${tokens.spacing.lg};
         background: ${tokens.color.gray50};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
         border-bottom-left-radius: ${tokens.radius.lg};
         border-bottom-right-radius: ${tokens.radius.lg};
-        font-size: ${tokens.font.size.sm};
+        font-size: ${tokens.fontSize.sm};
       }
 
       :host([align='left']) {
@@ -77,15 +77,15 @@ export class WidgetFooter extends LitElement {
         display: inline-flex;
         align-items: center;
         gap: ${tokens.spacing.xs};
-        color: ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
         text-decoration: none;
         cursor: pointer;
         transition: all ${tokens.transition.fast};
-        font-weight: ${tokens.font.weight.medium};
+        font-weight: ${tokens.fontWeight.medium};
       }
 
       .link:hover {
-        color: ${tokens.color.primaryHover};
+        color: ${tokens.color.primaryDark};
         text-decoration: underline;
       }
 
@@ -93,8 +93,8 @@ export class WidgetFooter extends LitElement {
         display: flex;
         align-items: center;
         gap: ${tokens.spacing.sm};
-        color: ${tokens.color.gray600};
-        font-size: ${tokens.font.size.xs};
+        color: ${tokens.color.gray500};
+        font-size: ${tokens.fontSize.xs};
       }
 
       .metadata-item {
@@ -104,7 +104,7 @@ export class WidgetFooter extends LitElement {
       }
 
       .metadata-divider {
-        color: ${tokens.color.gray400};
+        color: ${tokens.color.gray500};
       }
 
       .actions {
@@ -116,13 +116,13 @@ export class WidgetFooter extends LitElement {
       .action-btn {
         padding: ${tokens.spacing.xs} ${tokens.spacing.sm};
         background: transparent;
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         cursor: pointer;
         transition: all ${tokens.transition.fast};
-        font-size: ${tokens.font.size.xs};
-        font-weight: ${tokens.font.weight.medium};
+        font-size: ${tokens.fontSize.xs};
+        font-weight: ${tokens.fontWeight.medium};
         display: inline-flex;
         align-items: center;
         gap: ${tokens.spacing.xs};
@@ -130,23 +130,23 @@ export class WidgetFooter extends LitElement {
 
       .action-btn:hover {
         background: ${tokens.color.gray100};
-        border-color: ${tokens.color.gray400};
+        border-color: ${tokens.color.gray500};
       }
 
       .action-btn[data-variant='primary'] {
-        background: ${tokens.color.primary};
-        border-color: ${tokens.color.primary};
+        background: ${tokens.color.primaryMain};
+        border-color: ${tokens.color.primaryMain};
         color: ${tokens.color.grayWhite};
       }
 
       .action-btn[data-variant='primary']:hover {
-        background: ${tokens.color.primaryHover};
-        border-color: ${tokens.color.primaryHover};
+        background: ${tokens.color.primaryDark};
+        border-color: ${tokens.color.primaryDark};
       }
 
       .timestamp {
         color: ${tokens.color.gray500};
-        font-size: ${tokens.font.size.xs};
+        font-size: ${tokens.fontSize.xs};
         font-style: italic;
       }
     `

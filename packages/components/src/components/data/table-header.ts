@@ -12,7 +12,7 @@ export class TableHeader extends LitElement {
         display: table-header-group;
         font-weight: ${tokens.fontWeight.semibold};
         background: ${tokens.color.gray50};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         font-size: ${tokens.fontSize.sm};
         text-transform: uppercase;
         letter-spacing: 0.5px;

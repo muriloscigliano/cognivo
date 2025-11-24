@@ -38,7 +38,7 @@ export class RefundBadge extends LitElement {
 
       .badge.rejected {
         background: rgba(239, 68, 68, 0.1);
-        color: ${tokens.color.error};
+        color: ${tokens.color.danger};
       }
 
       .badge.completed {

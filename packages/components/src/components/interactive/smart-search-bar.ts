@@ -22,7 +22,7 @@ export class SmartSearchBar extends LitElement {
       .search-input {
         width: 100%;
         padding: ${tokens.spacing.sm} ${tokens.spacing.xl};
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         font-size: ${tokens.fontSize.md};
       }
@@ -34,7 +34,7 @@ export class SmartSearchBar extends LitElement {
         right: 0;
         margin-top: ${tokens.spacing.xs};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         max-height: 300px;

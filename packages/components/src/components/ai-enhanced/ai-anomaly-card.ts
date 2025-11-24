@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
-export interface AnomalyData {
+export interface AiAnomalyData {
   title: string;
   description: string;
   severity: 'critical' | 'high' | 'medium' | 'low';
@@ -21,7 +21,7 @@ export class AiAnomalyCard extends LitElement {
         display: block;
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         transition: all ${tokens.transition.default};
@@ -52,7 +52,7 @@ export class AiAnomalyCard extends LitElement {
 
       .timestamp {
         font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       .severity-badge {
@@ -68,24 +68,24 @@ export class AiAnomalyCard extends LitElement {
       }
 
       .severity-badge.critical {
-        background: ${tokens.color.dangerMain};
+        background: ${tokens.color.danger};
         color: white;
         animation: pulse 2s ease-in-out infinite;
       }
 
       .severity-badge.high {
-        background: ${tokens.color.dangerLight};
-        color: ${tokens.color.dangerDark};
+        background: ${tokens.color.danger};
+        color: ${tokens.color.danger};
       }
 
       .severity-badge.medium {
-        background: ${tokens.color.warningLight};
-        color: ${tokens.color.warningDark};
+        background: ${tokens.color.warning};
+        color: ${tokens.color.warning};
       }
 
       .severity-badge.low {
-        background: ${tokens.color.gray200};
-        color: ${tokens.color.gray700};
+        background: ${tokens.color.gray100};
+        color: ${tokens.color.gray900};
       }
 
       @keyframes pulse {
@@ -99,7 +99,7 @@ export class AiAnomalyCard extends LitElement {
 
       .description {
         font-size: ${tokens.fontSize.md};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         line-height: 1.5;
         margin-bottom: ${tokens.spacing.md};
       }
@@ -122,7 +122,7 @@ export class AiAnomalyCard extends LitElement {
 
       .metric-label {
         font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
@@ -134,7 +134,7 @@ export class AiAnomalyCard extends LitElement {
       }
 
       .metric-value.deviation {
-        color: ${tokens.color.dangerMain};
+        color: ${tokens.color.danger};
       }
 
       .ai-section {
@@ -142,7 +142,7 @@ export class AiAnomalyCard extends LitElement {
         align-items: center;
         justify-content: space-between;
         padding-top: ${tokens.spacing.md};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .ai-badge {
@@ -159,7 +159,7 @@ export class AiAnomalyCard extends LitElement {
 
       .confidence {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         font-weight: ${tokens.fontWeight.medium};
       }
 
@@ -174,13 +174,13 @@ export class AiAnomalyCard extends LitElement {
       }
 
       .empty-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         margin-bottom: ${tokens.spacing.sm};
       }
     `
   ];
 
-  @property({ type: Object }) data: AnomalyData | null = null;
+  @property({ type: Object }) data: AiAnomalyData | null = null;
 
   private _getSeverityIcon(severity: string): string {
     switch (severity) {

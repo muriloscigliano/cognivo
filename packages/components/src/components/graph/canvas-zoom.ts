@@ -38,7 +38,7 @@ export class CanvasZoom extends LitElement {
         flex-direction: column;
         gap: ${tokens.spacing.xs};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         padding: ${tokens.spacing.xs};
         box-shadow: ${tokens.shadow.md};
@@ -78,7 +78,7 @@ export class CanvasZoom extends LitElement {
       .zoom-level {
         font-family: ${tokens.fontFamily.primary};
         font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         text-align: center;
         padding: ${tokens.spacing.xs} 0;
         user-select: none;
@@ -86,7 +86,7 @@ export class CanvasZoom extends LitElement {
 
       .divider {
         height: 1px;
-        background: ${tokens.color.gray200};
+        background: ${tokens.color.gray100};
         margin: ${tokens.spacing.xs} 0;
       }
     `,

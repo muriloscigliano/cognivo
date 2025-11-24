@@ -22,17 +22,17 @@ export class PricingCard extends LitElement {
         height: 100%;
         display: flex;
         flex-direction: column;
-        transition: all ${tokens.transition.normal};
+        transition: all ${tokens.transition.default};
       }
 
       .card:hover {
-        border-color: ${tokens.color.primary};
+        border-color: ${tokens.color.primaryMain};
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         transform: translateY(-2px);
       }
 
       .card.popular {
-        border-color: ${tokens.color.primary};
+        border-color: ${tokens.color.primaryMain};
         box-shadow: 0 8px 24px rgba(0, 100, 255, 0.15);
       }
 
@@ -70,7 +70,7 @@ export class PricingCard extends LitElement {
       .currency {
         font-size: ${tokens.fontSize.lg};
         font-weight: ${tokens.fontWeight.bold};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       .amount {
@@ -104,7 +104,7 @@ export class PricingCard extends LitElement {
         align-items: center;
         gap: ${tokens.spacing.sm};
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       .feature-icon {

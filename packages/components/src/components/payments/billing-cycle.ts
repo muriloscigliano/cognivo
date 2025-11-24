@@ -29,7 +29,7 @@ export class BillingCycle extends LitElement {
         border-radius: ${tokens.radius.full};
         font-size: ${tokens.fontSize.base};
         font-weight: ${tokens.fontWeight.medium};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         cursor: pointer;
         transition: all ${tokens.transition.fast};
         position: relative;
@@ -41,7 +41,7 @@ export class BillingCycle extends LitElement {
 
       .cycle-button.active {
         background: white;
-        color: ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 

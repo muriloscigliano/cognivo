@@ -41,7 +41,7 @@ export class PricingComparison extends LitElement {
       .table-header th {
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.gray50};
-        border-bottom: 2px solid ${tokens.color.gray200};
+        border-bottom: 2px solid ${tokens.color.gray100};
         text-align: center;
         font-size: ${tokens.fontSize.base};
         font-weight: ${tokens.fontWeight.bold};
@@ -65,7 +65,7 @@ export class PricingComparison extends LitElement {
 
       .plan-price {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
         font-weight: ${tokens.fontWeight.semibold};
       }
 
@@ -77,7 +77,7 @@ export class PricingComparison extends LitElement {
         padding: ${tokens.spacing.md};
         text-align: center;
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       tbody td:first-child {
@@ -92,7 +92,7 @@ export class PricingComparison extends LitElement {
       }
 
       .cross-icon {
-        color: ${tokens.color.gray300};
+        color: ${tokens.color.gray100};
         font-size: ${tokens.fontSize.lg};
       }
     `

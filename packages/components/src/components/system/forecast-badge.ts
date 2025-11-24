@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
-export interface ForecastData {
+export interface ForecastBadgeData {
   trend: 'up' | 'down' | 'stable';
   value: number;
   unit?: string;

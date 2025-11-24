@@ -40,13 +40,13 @@ export class TableFilters extends LitElement {
       .filter-label {
         font-size: ${tokens.fontSize.sm};
         font-weight: ${tokens.fontWeight.medium};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       .filter-input,
       .filter-select {
         padding: ${tokens.spacing.sm} ${tokens.spacing.md};
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.sm};
         font-family: ${tokens.fontFamily.primary};
         font-size: ${tokens.fontSize.sm};
@@ -81,12 +81,12 @@ export class TableFilters extends LitElement {
       }
 
       .action-btn.secondary {
-        background: ${tokens.color.gray200};
-        color: ${tokens.color.gray700};
+        background: ${tokens.color.gray100};
+        color: ${tokens.color.gray900};
       }
 
       .action-btn.secondary:hover {
-        background: ${tokens.color.gray300};
+        background: ${tokens.color.gray100};
       }
     `,
   ];

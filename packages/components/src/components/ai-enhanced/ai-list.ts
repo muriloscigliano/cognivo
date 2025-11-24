@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
-export interface ListItem {
+export interface AiListItem {
   id: string;
   text: string;
   priority?: number;
@@ -55,7 +55,7 @@ export class AiList extends LitElement {
       .sort-button {
         padding: ${tokens.spacing.xs} ${tokens.spacing.sm};
         background: ${tokens.color.gray100};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         font-size: ${tokens.fontSize.xs};
         cursor: pointer;
@@ -63,7 +63,7 @@ export class AiList extends LitElement {
       }
 
       .sort-button:hover {
-        background: ${tokens.color.gray200};
+        background: ${tokens.color.gray100};
       }
 
       .sort-button.active {
@@ -84,7 +84,7 @@ export class AiList extends LitElement {
         gap: ${tokens.spacing.md};
         padding: ${tokens.spacing.md};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         transition: all ${tokens.transition.default};
         cursor: pointer;
@@ -103,16 +103,16 @@ export class AiList extends LitElement {
       }
 
       .item-priority.high {
-        background: ${tokens.color.dangerMain};
-        box-shadow: 0 0 8px ${tokens.color.dangerMain}80;
+        background: ${tokens.color.danger};
+        box-shadow: 0 0 8px ${tokens.color.danger}80;
       }
 
       .item-priority.medium {
-        background: ${tokens.color.warningMain};
+        background: ${tokens.color.warning};
       }
 
       .item-priority.low {
-        background: ${tokens.color.successMain};
+        background: ${tokens.color.success};
       }
 
       .item-content {
@@ -147,13 +147,13 @@ export class AiList extends LitElement {
       }
 
       .empty-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         margin-bottom: ${tokens.spacing.sm};
       }
     `
   ];
 
-  @property({ type: Array }) data: ListItem[] = [];
+  @property({ type: Array }) data: AiListItem[] = [];
   @property({ type: String }) title = 'AI-Enhanced List';
   @state() private sortBy: 'priority' | 'category' | 'default' = 'default';
 
@@ -164,7 +164,7 @@ export class AiList extends LitElement {
     return 'low';
   }
 
-  private _getSortedData(): ListItem[] {
+  private _getSortedData(): AiListItem[] {
     const items = [...this.data];
     switch (this.sortBy) {
       case 'priority':

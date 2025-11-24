@@ -14,7 +14,7 @@ export class TableToolbar extends LitElement {
         align-items: center;
         padding: ${tokens.spacing.md} ${tokens.spacing.lg};
         background: ${tokens.color.grayWhite};
-        border-bottom: 1px solid ${tokens.color.gray200};
+        border-bottom: 1px solid ${tokens.color.gray100};
       }
 
       .toolbar-left {
@@ -52,12 +52,12 @@ export class TableToolbar extends LitElement {
       }
 
       .toolbar-btn.secondary {
-        background: ${tokens.color.gray200};
-        color: ${tokens.color.gray700};
+        background: ${tokens.color.gray100};
+        color: ${tokens.color.gray900};
       }
 
       .toolbar-btn.secondary:hover {
-        background: ${tokens.color.gray300};
+        background: ${tokens.color.gray100};
       }
     `,
   ];

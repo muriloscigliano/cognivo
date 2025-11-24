@@ -10,7 +10,7 @@ export class TableRow extends LitElement {
     css`
       :host {
         display: table-row;
-        border-bottom: 1px solid ${tokens.color.gray200};
+        border-bottom: 1px solid ${tokens.color.gray100};
         transition: background ${tokens.transition.default};
       }
 

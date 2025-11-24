@@ -78,7 +78,7 @@ export class TreeCanvas extends LitElement {
 
       .branch {
         fill: none;
-        stroke: ${tokens.color.gray400};
+        stroke: ${tokens.color.gray500};
         stroke-width: 2;
       }
 

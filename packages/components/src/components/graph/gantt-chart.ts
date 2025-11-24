@@ -13,7 +13,8 @@ import { GraphNode as Node, GraphEdge as Edge } from './graph-canvas.js';
 export class GanttChart extends LitElement {
   static override styles = [
     baseStyles,
-    css`:host {
+    css`
+host {
       display: block;
       width: 100%;
       height: 100%;
@@ -75,7 +76,7 @@ export class GanttChart extends LitElement {
                 y1="${sy}"
                 x2="${tx}"
                 y2="${ty}"
-                stroke="${tokens.color.gray400}"
+                stroke="${tokens.color.gray500}"
                 stroke-width="2"
               />
             `;

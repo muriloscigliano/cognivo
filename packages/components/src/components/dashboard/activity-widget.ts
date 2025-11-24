@@ -62,7 +62,7 @@ export class ActivityWidget extends LitElement {
         top: 40px;
         bottom: -16px;
         width: 2px;
-        background: ${tokens.color.gray200};
+        background: ${tokens.color.gray100};
       }
 
       .activity-indicator {
@@ -74,8 +74,8 @@ export class ActivityWidget extends LitElement {
         align-items: center;
         justify-content: center;
         background: ${tokens.color.grayWhite};
-        border: 2px solid ${tokens.color.gray300};
-        font-size: ${tokens.font.size.sm};
+        border: 2px solid ${tokens.color.gray100};
+        font-size: ${tokens.fontSize.sm};
         z-index: 1;
       }
 
@@ -95,7 +95,7 @@ export class ActivityWidget extends LitElement {
       }
 
       .activity-indicator[data-type='error'] {
-        border-color: ${tokens.color.error};
+        border-color: ${tokens.color.danger};
         background: rgba(239, 68, 68, 0.1);
       }
 
@@ -123,27 +123,27 @@ export class ActivityWidget extends LitElement {
       }
 
       .activity-title {
-        font-size: ${tokens.font.size.sm};
-        font-weight: ${tokens.font.weight.semibold};
+        font-size: ${tokens.fontSize.sm};
+        font-weight: ${tokens.fontWeight.semibold};
         color: ${tokens.color.gray900};
         margin: 0;
       }
 
       .activity-user {
-        color: ${tokens.color.primary};
-        font-weight: ${tokens.font.weight.semibold};
+        color: ${tokens.color.primaryMain};
+        font-weight: ${tokens.fontWeight.semibold};
       }
 
       .activity-timestamp {
-        font-size: ${tokens.font.size.xs};
+        font-size: ${tokens.fontSize.xs};
         color: ${tokens.color.gray500};
         white-space: nowrap;
         flex-shrink: 0;
       }
 
       .activity-description {
-        font-size: ${tokens.font.size.sm};
-        color: ${tokens.color.gray600};
+        font-size: ${tokens.fontSize.sm};
+        color: ${tokens.color.gray500};
         line-height: 1.5;
         margin-top: ${tokens.spacing.xs};
       }
@@ -155,10 +155,10 @@ export class ActivityWidget extends LitElement {
         padding: ${tokens.spacing.xs} ${tokens.spacing.sm};
         margin-top: ${tokens.spacing.sm};
         background: transparent;
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
-        color: ${tokens.color.gray700};
-        font-size: ${tokens.font.size.xs};
+        color: ${tokens.color.gray900};
+        font-size: ${tokens.fontSize.xs};
         text-decoration: none;
         cursor: pointer;
         transition: all ${tokens.transition.fast};
@@ -166,13 +166,13 @@ export class ActivityWidget extends LitElement {
 
       .activity-action:hover {
         background: ${tokens.color.gray100};
-        border-color: ${tokens.color.gray400};
+        border-color: ${tokens.color.gray500};
       }
 
       .empty-state {
         padding: ${tokens.spacing.xxl};
         text-align: center;
-        color: ${tokens.color.gray400};
+        color: ${tokens.color.gray500};
       }
 
       /* Compact mode */
@@ -181,7 +181,7 @@ export class ActivityWidget extends LitElement {
       }
 
       :host([compact]) .activity-description {
-        font-size: ${tokens.font.size.xs};
+        font-size: ${tokens.fontSize.xs};
       }
     `
   ];

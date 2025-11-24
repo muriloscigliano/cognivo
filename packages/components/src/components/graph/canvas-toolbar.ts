@@ -39,7 +39,7 @@ export class CanvasToolbar extends LitElement {
       :host {
         display: flex;
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         padding: ${tokens.spacing.xs};
         gap: ${tokens.spacing.xs};
@@ -93,13 +93,13 @@ export class CanvasToolbar extends LitElement {
 
       .button-label {
         font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         white-space: nowrap;
       }
 
       .divider {
         width: 1px;
-        background: ${tokens.color.gray200};
+        background: ${tokens.color.gray100};
         margin: 0 ${tokens.spacing.xs};
       }
 

@@ -76,7 +76,7 @@ export class DAGCanvas extends LitElement {
 
       .edge {
         fill: none;
-        stroke: ${tokens.color.gray400};
+        stroke: ${tokens.color.gray500};
         stroke-width: 2;
         marker-end: url(#dag-arrow);
       }
@@ -310,7 +310,7 @@ export class DAGCanvas extends LitElement {
             refY="3"
             orient="auto"
           >
-            <polygon points="0 0, 10 3, 0 6" fill="${tokens.color.gray400}" />
+            <polygon points="0 0, 10 3, 0 6" fill="${tokens.color.gray500}" />
           </marker>
         </defs>
         <g class="edges">${this.renderEdges()}</g>

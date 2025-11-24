@@ -30,7 +30,7 @@ export class RadarChart extends LitElement {
       svg { width: 100%; height: 100%; }
       .polygon { fill-opacity: 0.2; stroke-width: 2; }
       .grid-polygon { fill: none; stroke: ${tokens.color.gray100}; stroke-width: 1; }
-      .axis-line { stroke: ${tokens.color.gray300}; stroke-width: 1; }
+      .axis-line { stroke: ${tokens.color.gray100}; stroke-width: 1; }
       .label { font-family: ${tokens.fontFamily.primary}; font-size: ${tokens.fontSize.xs}; fill: ${tokens.color.gray900}; }
     `,
   ];

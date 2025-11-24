@@ -19,7 +19,7 @@ export class AiListCluster extends LitElement {
         display: block;
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
       }
 
@@ -97,7 +97,7 @@ export class AiListCluster extends LitElement {
 
       .cluster-item {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         padding-left: ${tokens.spacing.sm};
       }
 

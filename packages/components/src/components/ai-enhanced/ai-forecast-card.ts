@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
-export interface ForecastData {
+export interface AiForecastData {
   title: string;
   current: number;
   predicted: number;
@@ -23,7 +23,7 @@ export class AiForecastCard extends LitElement {
         display: block;
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         transition: all ${tokens.transition.default};
@@ -76,13 +76,13 @@ export class AiForecastCard extends LitElement {
 
       .metric-label {
         font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         text-transform: uppercase;
         font-weight: ${tokens.fontWeight.medium};
       }
 
       .metric-value {
-        font-size: ${tokens.fontSize.xxl};
+        font-size: ${tokens.fontSize['2xl']};
         font-weight: ${tokens.fontWeight.bold};
         color: ${tokens.color.gray900};
         display: flex;
@@ -96,12 +96,12 @@ export class AiForecastCard extends LitElement {
 
       .unit {
         font-size: ${tokens.fontSize.md};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       .timeframe {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         text-align: center;
         margin-bottom: ${tokens.spacing.md};
       }
@@ -131,7 +131,7 @@ export class AiForecastCard extends LitElement {
         background: ${tokens.color.gray50};
         border-radius: ${tokens.radius.md};
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         line-height: 1.5;
       }
 
@@ -141,7 +141,7 @@ export class AiForecastCard extends LitElement {
 
       .confidence-section {
         padding-top: ${tokens.spacing.md};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .confidence-label {
@@ -149,7 +149,7 @@ export class AiForecastCard extends LitElement {
         justify-content: space-between;
         align-items: center;
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         margin-bottom: ${tokens.spacing.xs};
       }
 
@@ -160,14 +160,14 @@ export class AiForecastCard extends LitElement {
 
       .confidence-track {
         height: 8px;
-        background: ${tokens.color.gray200};
+        background: ${tokens.color.gray100};
         border-radius: ${tokens.radius.full};
         overflow: hidden;
       }
 
       .confidence-fill {
         height: 100%;
-        background: linear-gradient(90deg, ${tokens.color.primaryMain} 0%, ${tokens.color.successMain} 100%);
+        background: linear-gradient(90deg, ${tokens.color.primaryMain} 0%, ${tokens.color.success} 100%);
         border-radius: ${tokens.radius.full};
         transition: width ${tokens.transition.default};
       }
@@ -183,13 +183,13 @@ export class AiForecastCard extends LitElement {
       }
 
       .empty-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         margin-bottom: ${tokens.spacing.sm};
       }
     `
   ];
 
-  @property({ type: Object }) data: ForecastData | null = null;
+  @property({ type: Object }) data: AiForecastData | null = null;
 
   override render() {
     if (!this.data) {

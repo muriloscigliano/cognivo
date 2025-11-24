@@ -16,7 +16,7 @@ export class PaymentButton extends LitElement {
       .button {
         width: 100%;
         padding: ${tokens.spacing.md} ${tokens.spacing.lg};
-        background: ${tokens.color.primary};
+        background: ${tokens.color.primaryMain};
         color: white;
         border: none;
         border-radius: ${tokens.radius.md};
@@ -43,7 +43,7 @@ export class PaymentButton extends LitElement {
       }
 
       .button:disabled {
-        background: ${tokens.color.gray300};
+        background: ${tokens.color.gray100};
         color: ${tokens.color.gray500};
         cursor: not-allowed;
         transform: none;
@@ -54,13 +54,13 @@ export class PaymentButton extends LitElement {
       }
 
       .button.error {
-        background: ${tokens.color.error};
+        background: ${tokens.color.danger};
       }
 
       .button.secondary {
         background: white;
-        color: ${tokens.color.primary};
-        border: 2px solid ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
+        border: 2px solid ${tokens.color.primaryMain};
       }
 
       .button.secondary:hover:not(:disabled) {

@@ -21,7 +21,7 @@ export class AiTableAnomaly extends LitElement {
         display: block;
         padding: ${tokens.spacing.md};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.dangerLight};
+        border: 1px solid ${tokens.color.danger};
         border-radius: ${tokens.radius.md};
       }
 
@@ -50,7 +50,7 @@ export class AiTableAnomaly extends LitElement {
         align-items: center;
         gap: ${tokens.spacing.xs};
         padding: ${tokens.spacing.xs} ${tokens.spacing.sm};
-        background: linear-gradient(135deg, ${tokens.color.dangerMain} 0%, ${tokens.color.dangerDark} 100%);
+        background: linear-gradient(135deg, ${tokens.color.danger} 0%, ${tokens.color.danger} 100%);
         color: white;
         border-radius: ${tokens.radius.full};
         font-size: ${tokens.fontSize.xs};
@@ -67,24 +67,24 @@ export class AiTableAnomaly extends LitElement {
         padding: ${tokens.spacing.md};
         background: ${tokens.color.gray50};
         border-radius: ${tokens.radius.md};
-        border-left: 3px solid ${tokens.color.dangerMain};
+        border-left: 3px solid ${tokens.color.danger};
       }
 
       .anomaly-item.critical {
-        border-left-color: ${tokens.color.dangerMain};
-        background: ${tokens.color.dangerLight}15;
+        border-left-color: ${tokens.color.danger};
+        background: ${tokens.color.danger}15;
       }
 
       .anomaly-item.high {
-        border-left-color: ${tokens.color.warningDark};
+        border-left-color: ${tokens.color.warning};
       }
 
       .anomaly-item.medium {
-        border-left-color: ${tokens.color.warningMain};
+        border-left-color: ${tokens.color.warning};
       }
 
       .anomaly-item.low {
-        border-left-color: ${tokens.color.gray400};
+        border-left-color: ${tokens.color.gray500};
       }
 
       .anomaly-header {
@@ -109,28 +109,28 @@ export class AiTableAnomaly extends LitElement {
       }
 
       .severity-badge.critical {
-        background: ${tokens.color.dangerMain};
+        background: ${tokens.color.danger};
         color: white;
       }
 
       .severity-badge.high {
-        background: ${tokens.color.dangerLight};
-        color: ${tokens.color.dangerDark};
+        background: ${tokens.color.danger};
+        color: ${tokens.color.danger};
       }
 
       .severity-badge.medium {
-        background: ${tokens.color.warningLight};
-        color: ${tokens.color.warningDark};
+        background: ${tokens.color.warning};
+        color: ${tokens.color.warning};
       }
 
       .severity-badge.low {
-        background: ${tokens.color.gray200};
-        color: ${tokens.color.gray700};
+        background: ${tokens.color.gray100};
+        color: ${tokens.color.gray900};
       }
 
       .anomaly-description {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         line-height: 1.5;
         margin-bottom: ${tokens.spacing.sm};
       }
@@ -149,7 +149,7 @@ export class AiTableAnomaly extends LitElement {
       }
 
       .value-label {
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         margin-bottom: ${tokens.spacing.xs};
       }
 
@@ -161,11 +161,11 @@ export class AiTableAnomaly extends LitElement {
       .empty-state {
         text-align: center;
         padding: ${tokens.spacing.lg};
-        color: ${tokens.color.successMain};
+        color: ${tokens.color.success};
       }
 
       .empty-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         margin-bottom: ${tokens.spacing.sm};
       }
     `

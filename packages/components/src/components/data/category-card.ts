@@ -11,7 +11,7 @@ export class CategoryCard extends LitElement {
       :host {
         display: block;
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
         overflow: hidden;
         transition: all ${tokens.transition.default};
@@ -57,7 +57,7 @@ export class CategoryCard extends LitElement {
       }
 
       .description {
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         font-size: ${tokens.fontSize.sm};
         line-height: ${tokens.lineHeight.relaxed};
         margin-bottom: ${tokens.spacing.md};
@@ -67,7 +67,7 @@ export class CategoryCard extends LitElement {
         display: flex;
         gap: ${tokens.spacing.lg};
         padding-top: ${tokens.spacing.md};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .stat {

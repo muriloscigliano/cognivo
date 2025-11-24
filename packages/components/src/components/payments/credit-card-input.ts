@@ -35,7 +35,7 @@ export class CreditCardInput extends LitElement {
       .label {
         font-size: ${tokens.fontSize.sm};
         font-weight: ${tokens.fontWeight.medium};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       .input-wrapper {
@@ -55,12 +55,12 @@ export class CreditCardInput extends LitElement {
 
       .input:focus {
         outline: none;
-        border-color: ${tokens.color.primary};
+        border-color: ${tokens.color.primaryMain};
         box-shadow: 0 0 0 3px rgba(0, 100, 255, 0.1);
       }
 
       .input.error {
-        border-color: ${tokens.color.error};
+        border-color: ${tokens.color.danger};
       }
 
       .input.error:focus {
@@ -88,7 +88,7 @@ export class CreditCardInput extends LitElement {
 
       .error-message {
         font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.error};
+        color: ${tokens.color.danger};
         margin-top: 4px;
       }
 

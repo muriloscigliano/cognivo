@@ -15,7 +15,7 @@ export class ListDivider extends LitElement {
 
       .divider {
         border: none;
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
         margin: 0;
       }
 
@@ -33,7 +33,7 @@ export class ListDivider extends LitElement {
       .divider.with-text::after {
         content: '';
         flex: 1;
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       :host([dashed]) .divider {
@@ -48,7 +48,7 @@ export class ListDivider extends LitElement {
 
       :host([orientation='vertical']) .divider {
         border-top: none;
-        border-left: 1px solid ${tokens.color.gray200};
+        border-left: 1px solid ${tokens.color.gray100};
         height: 100%;
       }
     `,

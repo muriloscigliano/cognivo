@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
-export interface ForecastData {
+export interface ForecastCurveData {
   x: number;
   actual?: number;
   forecast?: number;
@@ -24,7 +24,7 @@ export class ForecastCurve extends LitElement {
     `,
   ];
 
-  @property({ type: Array }) data: ForecastData[] = [];
+  @property({ type: Array }) data: ForecastCurveData[] = [];
 
   override render() {
     if (!this.data || this.data.length === 0) return html`<div style="text-align:center;padding:60px;color:${tokens.color.gray500}">No data</div>`;

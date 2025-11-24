@@ -18,7 +18,7 @@ export class AiTableAutoTag extends LitElement {
         display: block;
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
       }
 
@@ -99,7 +99,7 @@ export class AiTableAutoTag extends LitElement {
 
       .confidence-bar {
         height: 4px;
-        background: ${tokens.color.gray200};
+        background: ${tokens.color.gray100};
         border-radius: ${tokens.radius.full};
         overflow: hidden;
       }
@@ -118,7 +118,7 @@ export class AiTableAutoTag extends LitElement {
       }
 
       .empty-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         margin-bottom: ${tokens.spacing.sm};
       }
     `

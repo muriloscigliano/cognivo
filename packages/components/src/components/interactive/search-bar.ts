@@ -22,7 +22,7 @@ export class SearchBar extends LitElement {
       .search-input {
         width: 100%;
         padding: ${tokens.spacing.sm} ${tokens.spacing.md} ${tokens.spacing.sm} ${tokens.spacing.xl};
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         font-family: ${tokens.fontFamily.primary};
         font-size: ${tokens.fontSize.md};
@@ -57,7 +57,7 @@ export class SearchBar extends LitElement {
       }
 
       .clear-btn:hover {
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       :host([size='small']) .search-input {

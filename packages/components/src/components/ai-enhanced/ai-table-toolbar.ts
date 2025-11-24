@@ -12,7 +12,7 @@ export class AiTableToolbar extends LitElement {
         display: block;
         padding: ${tokens.spacing.md};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
       }
 
@@ -35,7 +35,7 @@ export class AiTableToolbar extends LitElement {
         gap: ${tokens.spacing.xs};
         padding: ${tokens.spacing.sm} ${tokens.spacing.md};
         background: ${tokens.color.gray100};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         font-size: ${tokens.fontSize.sm};
         color: ${tokens.color.gray900};
@@ -44,8 +44,8 @@ export class AiTableToolbar extends LitElement {
       }
 
       .toolbar-button:hover {
-        background: ${tokens.color.gray200};
-        border-color: ${tokens.color.gray300};
+        background: ${tokens.color.gray100};
+        border-color: ${tokens.color.gray100};
       }
 
       .toolbar-button.ai-button {

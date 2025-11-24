@@ -34,7 +34,7 @@ export class DashboardWidget extends LitElement {
         display: flex;
         flex-direction: column;
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
         box-shadow: ${tokens.shadow.sm};
         overflow: hidden;
@@ -44,7 +44,7 @@ export class DashboardWidget extends LitElement {
 
       :host(:hover) {
         box-shadow: ${tokens.shadow.md};
-        border-color: ${tokens.color.gray300};
+        border-color: ${tokens.color.gray100};
       }
 
       :host([collapsed]) {
@@ -70,7 +70,7 @@ export class DashboardWidget extends LitElement {
       }
 
       :host([error]) {
-        border-color: ${tokens.color.error};
+        border-color: ${tokens.color.danger};
       }
 
       /* Drag handle */
@@ -84,15 +84,15 @@ export class DashboardWidget extends LitElement {
         top: ${tokens.spacing.sm};
         left: ${tokens.spacing.sm};
         cursor: grab;
-        color: ${tokens.color.gray400};
-        font-size: ${tokens.font.size.sm};
+        color: ${tokens.color.gray500};
+        font-size: ${tokens.fontSize.sm};
         padding: ${tokens.spacing.xs};
         border-radius: ${tokens.radius.sm};
         transition: all ${tokens.transition.fast};
       }
 
       .drag-handle:hover {
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         background: ${tokens.color.gray100};
       }
 
@@ -116,7 +116,7 @@ export class DashboardWidget extends LitElement {
         background: linear-gradient(
           135deg,
           transparent 50%,
-          ${tokens.color.gray300} 50%
+          ${tokens.color.gray100} 50%
         );
         border-bottom-right-radius: ${tokens.radius.lg};
       }
@@ -152,8 +152,8 @@ export class DashboardWidget extends LitElement {
       .spinner {
         width: 40px;
         height: 40px;
-        border: 3px solid ${tokens.color.gray200};
-        border-top-color: ${tokens.color.primary};
+        border: 3px solid ${tokens.color.gray100};
+        border-top-color: ${tokens.color.primaryMain};
         border-radius: 50%;
         animation: spin 1s linear infinite;
       }
@@ -165,11 +165,11 @@ export class DashboardWidget extends LitElement {
       /* Error state */
       .error-message {
         padding: ${tokens.spacing.md};
-        background: ${tokens.color.errorLight};
-        color: ${tokens.color.error};
+        background: ${tokens.color.danger};
+        color: ${tokens.color.danger};
         border-radius: ${tokens.radius.md};
         margin: ${tokens.spacing.md};
-        font-size: ${tokens.font.size.sm};
+        font-size: ${tokens.fontSize.sm};
         display: flex;
         align-items: center;
         gap: ${tokens.spacing.sm};
@@ -195,8 +195,8 @@ export class DashboardWidget extends LitElement {
       .empty-content {
         padding: ${tokens.spacing.xl};
         text-align: center;
-        color: ${tokens.color.gray400};
-        font-size: ${tokens.font.size.sm};
+        color: ${tokens.color.gray500};
+        font-size: ${tokens.fontSize.sm};
       }
     `
   ];

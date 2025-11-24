@@ -20,8 +20,8 @@ export class Pagination extends LitElement {
         height: 36px;
         padding: ${tokens.spacing.xs} ${tokens.spacing.sm};
         background: ${tokens.color.grayWhite};
-        color: ${tokens.color.gray700};
-        border: 1px solid ${tokens.color.gray300};
+        color: ${tokens.color.gray900};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.sm};
         cursor: pointer;
         font-size: ${tokens.fontSize.sm};
@@ -31,7 +31,7 @@ export class Pagination extends LitElement {
 
       .pagination-btn:hover:not(:disabled) {
         background: ${tokens.color.gray100};
-        border-color: ${tokens.color.gray400};
+        border-color: ${tokens.color.gray500};
       }
 
       .pagination-btn:disabled {

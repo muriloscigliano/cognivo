@@ -33,7 +33,7 @@ export class WidgetHeader extends LitElement {
         align-items: center;
         gap: ${tokens.spacing.md};
         padding: ${tokens.spacing.md} ${tokens.spacing.lg};
-        border-bottom: 1px solid ${tokens.color.gray200};
+        border-bottom: 1px solid ${tokens.color.gray100};
         background: ${tokens.color.gray50};
         border-top-left-radius: ${tokens.radius.lg};
         border-top-right-radius: ${tokens.radius.lg};
@@ -48,7 +48,7 @@ export class WidgetHeader extends LitElement {
       }
 
       .icon {
-        font-size: ${tokens.font.size.xl};
+        font-size: ${tokens.fontSize.xl};
         flex-shrink: 0;
       }
 
@@ -61,8 +61,8 @@ export class WidgetHeader extends LitElement {
       }
 
       .title {
-        font-size: ${tokens.font.size.md};
-        font-weight: ${tokens.font.weight.semibold};
+        font-size: ${tokens.fontSize.md};
+        font-weight: ${tokens.fontWeight.semibold};
         color: ${tokens.color.gray900};
         margin: 0;
         white-space: nowrap;
@@ -71,8 +71,8 @@ export class WidgetHeader extends LitElement {
       }
 
       .subtitle {
-        font-size: ${tokens.font.size.xs};
-        color: ${tokens.color.gray600};
+        font-size: ${tokens.fontSize.xs};
+        color: ${tokens.color.gray500};
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -83,11 +83,11 @@ export class WidgetHeader extends LitElement {
         align-items: center;
         justify-content: center;
         padding: ${tokens.spacing.xxs} ${tokens.spacing.xs};
-        background: ${tokens.color.primary};
+        background: ${tokens.color.primaryMain};
         color: ${tokens.color.grayWhite};
         border-radius: ${tokens.radius.full};
-        font-size: ${tokens.font.size.xs};
-        font-weight: ${tokens.font.weight.medium};
+        font-size: ${tokens.fontSize.xs};
+        font-weight: ${tokens.fontWeight.medium};
         margin-left: ${tokens.spacing.xs};
         flex-shrink: 0;
       }
@@ -101,7 +101,7 @@ export class WidgetHeader extends LitElement {
       }
 
       .badge[data-variant='error'] {
-        background: ${tokens.color.error};
+        background: ${tokens.color.danger};
       }
 
       .actions {
@@ -120,14 +120,14 @@ export class WidgetHeader extends LitElement {
         border: none;
         background: transparent;
         border-radius: ${tokens.radius.md};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         cursor: pointer;
         transition: all ${tokens.transition.fast};
-        font-size: ${tokens.font.size.md};
+        font-size: ${tokens.fontSize.md};
       }
 
       .action-btn:hover {
-        background: ${tokens.color.gray200};
+        background: ${tokens.color.gray100};
         color: ${tokens.color.gray900};
       }
 

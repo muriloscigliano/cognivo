@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
-export interface AnomalyPoint {
+export interface AiAnomalyPoint {
   label: string;
   value: number;
   isAnomaly?: boolean;
@@ -61,23 +61,23 @@ export class AiAnomalyChart extends LitElement {
 
       .normal-line {
         fill: none;
-        stroke: ${tokens.color.gray400};
+        stroke: ${tokens.color.gray500};
         stroke-width: 2;
       }
 
       .data-point {
-        fill: ${tokens.color.successMain};
+        fill: ${tokens.color.success};
         transition: all ${tokens.transition.default};
         cursor: pointer;
       }
 
       .data-point.anomaly {
-        fill: ${tokens.color.dangerMain};
+        fill: ${tokens.color.danger};
         r: 6;
       }
 
       .data-point.anomaly.critical {
-        fill: ${tokens.color.dangerMain};
+        fill: ${tokens.color.danger};
         animation: pulseAnomaly 2s ease-in-out infinite;
       }
 
@@ -95,25 +95,25 @@ export class AiAnomalyChart extends LitElement {
       }
 
       .anomaly-indicator {
-        fill: ${tokens.color.dangerLight};
+        fill: ${tokens.color.danger};
         opacity: 0.2;
       }
 
       .grid-line {
-        stroke: ${tokens.color.gray200};
+        stroke: ${tokens.color.gray100};
         stroke-width: 1;
         stroke-dasharray: 2, 2;
       }
 
       .axis-line {
-        stroke: ${tokens.color.gray300};
+        stroke: ${tokens.color.gray100};
         stroke-width: 1;
       }
 
       .label {
         font-family: ${tokens.fontFamily.primary};
         font-size: 11px;
-        fill: ${tokens.color.gray600};
+        fill: ${tokens.color.gray500};
       }
 
       .empty-state {
@@ -126,13 +126,13 @@ export class AiAnomalyChart extends LitElement {
       }
 
       .empty-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         margin-bottom: ${tokens.spacing.sm};
       }
     `
   ];
 
-  @property({ type: Array }) data: AnomalyPoint[] = [];
+  @property({ type: Array }) data: AiAnomalyPoint[] = [];
   @property({ type: String }) title = 'Anomaly Detection';
 
   private _getMaxValue(): number {

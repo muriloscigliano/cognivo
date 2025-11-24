@@ -30,11 +30,11 @@ export class PromoCode extends LitElement {
       .promo-title {
         font-size: ${tokens.fontSize.sm};
         font-weight: ${tokens.fontWeight.medium};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       .promo-icon {
-        color: ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
       }
 
       .promo-input-group {
@@ -54,12 +54,12 @@ export class PromoCode extends LitElement {
 
       .promo-input:focus {
         outline: none;
-        border-color: ${tokens.color.primary};
+        border-color: ${tokens.color.primaryMain};
         box-shadow: 0 0 0 3px rgba(0, 100, 255, 0.1);
       }
 
       .promo-input.error {
-        border-color: ${tokens.color.error};
+        border-color: ${tokens.color.danger};
       }
 
       .promo-input.success {
@@ -68,7 +68,7 @@ export class PromoCode extends LitElement {
 
       .apply-button {
         padding: ${tokens.spacing.sm} ${tokens.spacing.lg};
-        background: ${tokens.color.primary};
+        background: ${tokens.color.primaryMain};
         color: white;
         border: none;
         border-radius: ${tokens.radius.md};
@@ -84,7 +84,7 @@ export class PromoCode extends LitElement {
       }
 
       .apply-button:disabled {
-        background: ${tokens.color.gray300};
+        background: ${tokens.color.gray100};
         cursor: not-allowed;
       }
 
@@ -101,7 +101,7 @@ export class PromoCode extends LitElement {
       }
 
       .promo-message.error {
-        color: ${tokens.color.error};
+        color: ${tokens.color.danger};
       }
 
       .applied-badge {

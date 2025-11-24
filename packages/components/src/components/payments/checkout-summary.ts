@@ -105,7 +105,7 @@ export class CheckoutSummary extends LitElement {
       .summary-totals {
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.gray50};
-        border-top: 2px solid ${tokens.color.gray200};
+        border-top: 2px solid ${tokens.color.gray100};
       }
 
       .total-row {
@@ -119,12 +119,12 @@ export class CheckoutSummary extends LitElement {
         margin-bottom: 0;
         margin-top: ${tokens.spacing.md};
         padding-top: ${tokens.spacing.md};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .total-label {
         font-size: ${tokens.fontSize.base};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       .total-value {
@@ -142,7 +142,7 @@ export class CheckoutSummary extends LitElement {
       .total-row:last-child .total-value {
         font-size: ${tokens.fontSize.xl};
         font-weight: ${tokens.fontWeight.bold};
-        color: ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
       }
 
       .discount-value {

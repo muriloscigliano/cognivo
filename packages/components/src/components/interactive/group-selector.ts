@@ -21,7 +21,7 @@ export class GroupSelector extends LitElement {
       .select {
         width: 100%;
         padding: ${tokens.spacing.sm} ${tokens.spacing.md};
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.sm};
         font-family: ${tokens.fontFamily.primary};
         font-size: ${tokens.fontSize.md};
@@ -30,7 +30,7 @@ export class GroupSelector extends LitElement {
 
       optgroup {
         font-weight: ${tokens.fontWeight.semibold};
-        color: ${tokens.color.gray800};
+        color: ${tokens.color.gray900};
       }
 
       option {

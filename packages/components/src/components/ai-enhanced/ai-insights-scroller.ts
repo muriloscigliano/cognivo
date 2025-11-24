@@ -60,7 +60,7 @@ export class AiInsightsScroller extends LitElement {
         scroll-behavior: smooth;
         padding-bottom: ${tokens.spacing.sm};
         scrollbar-width: thin;
-        scrollbar-color: ${tokens.color.gray300} ${tokens.color.gray100};
+        scrollbar-color: ${tokens.color.gray100} ${tokens.color.gray100};
       }
 
       .scroller::-webkit-scrollbar {
@@ -73,19 +73,19 @@ export class AiInsightsScroller extends LitElement {
       }
 
       .scroller::-webkit-scrollbar-thumb {
-        background: ${tokens.color.gray300};
+        background: ${tokens.color.gray100};
         border-radius: ${tokens.radius.full};
       }
 
       .scroller::-webkit-scrollbar-thumb:hover {
-        background: ${tokens.color.gray400};
+        background: ${tokens.color.gray500};
       }
 
       .insight-card {
         flex: 0 0 280px;
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         transition: all ${tokens.transition.default};
@@ -122,23 +122,23 @@ export class AiInsightsScroller extends LitElement {
       }
 
       .priority-badge.high {
-        background: ${tokens.color.dangerLight};
-        color: ${tokens.color.dangerDark};
+        background: ${tokens.color.danger};
+        color: ${tokens.color.danger};
       }
 
       .priority-badge.medium {
-        background: ${tokens.color.warningLight};
-        color: ${tokens.color.warningDark};
+        background: ${tokens.color.warning};
+        color: ${tokens.color.warning};
       }
 
       .priority-badge.low {
-        background: ${tokens.color.gray200};
-        color: ${tokens.color.gray700};
+        background: ${tokens.color.gray100};
+        color: ${tokens.color.gray900};
       }
 
       .card-description {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         line-height: 1.5;
         margin-bottom: ${tokens.spacing.md};
       }
@@ -148,7 +148,7 @@ export class AiInsightsScroller extends LitElement {
         align-items: center;
         justify-content: space-between;
         padding-top: ${tokens.spacing.sm};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .type-indicator {
@@ -156,7 +156,7 @@ export class AiInsightsScroller extends LitElement {
         align-items: center;
         gap: ${tokens.spacing.xs};
         font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       .type-icon {
@@ -164,15 +164,15 @@ export class AiInsightsScroller extends LitElement {
       }
 
       .type-indicator.positive .type-icon {
-        color: ${tokens.color.successMain};
+        color: ${tokens.color.success};
       }
 
       .type-indicator.negative .type-icon {
-        color: ${tokens.color.dangerMain};
+        color: ${tokens.color.danger};
       }
 
       .type-indicator.warning .type-icon {
-        color: ${tokens.color.warningMain};
+        color: ${tokens.color.warning};
       }
 
       .type-indicator.info .type-icon {
@@ -181,7 +181,7 @@ export class AiInsightsScroller extends LitElement {
 
       .confidence-mini {
         font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         font-weight: ${tokens.fontWeight.medium};
       }
 
@@ -196,7 +196,7 @@ export class AiInsightsScroller extends LitElement {
       }
 
       .empty-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         margin-bottom: ${tokens.spacing.sm};
       }
 

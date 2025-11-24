@@ -34,7 +34,7 @@ export class StatsWidget extends LitElement {
       :host {
         display: block;
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
         padding: ${tokens.spacing.lg};
         transition: all ${tokens.transition.base};
@@ -59,27 +59,27 @@ export class StatsWidget extends LitElement {
       }
 
       .stat-label {
-        font-size: ${tokens.font.size.sm};
-        color: ${tokens.color.gray600};
-        font-weight: ${tokens.font.weight.medium};
+        font-size: ${tokens.fontSize.sm};
+        color: ${tokens.color.gray500};
+        font-weight: ${tokens.fontWeight.medium};
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
 
       .stat-icon {
-        font-size: ${tokens.font.size.xl};
+        font-size: ${tokens.fontSize.xl};
         opacity: 0.8;
       }
 
       .stat-value {
-        font-size: ${tokens.font.size.xxxl};
-        font-weight: ${tokens.font.weight.bold};
+        font-size: ${tokens.fontSize['3xl']};
+        font-weight: ${tokens.fontWeight.bold};
         color: ${tokens.color.gray900};
         line-height: 1.2;
       }
 
       .stat-subtitle {
-        font-size: ${tokens.font.size.xs};
+        font-size: ${tokens.fontSize.xs};
         color: ${tokens.color.gray500};
         margin-top: ${tokens.spacing.xs};
       }
@@ -90,15 +90,15 @@ export class StatsWidget extends LitElement {
         justify-content: space-between;
         gap: ${tokens.spacing.md};
         padding-top: ${tokens.spacing.sm};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .trend {
         display: flex;
         align-items: center;
         gap: ${tokens.spacing.xs};
-        font-size: ${tokens.font.size.sm};
-        font-weight: ${tokens.font.weight.semibold};
+        font-size: ${tokens.fontSize.sm};
+        font-weight: ${tokens.fontWeight.semibold};
       }
 
       .trend[data-trend='up'] {
@@ -106,21 +106,21 @@ export class StatsWidget extends LitElement {
       }
 
       .trend[data-trend='down'] {
-        color: ${tokens.color.error};
+        color: ${tokens.color.danger};
       }
 
       .trend[data-trend='neutral'] {
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       .trend-icon {
-        font-size: ${tokens.font.size.md};
+        font-size: ${tokens.fontSize.md};
       }
 
       .change-label {
-        font-size: ${tokens.font.size.xs};
+        font-size: ${tokens.fontSize.xs};
         color: ${tokens.color.gray500};
-        font-weight: ${tokens.font.weight.normal};
+        font-weight: ${tokens.fontWeight.normal};
       }
 
       /* Variants */
@@ -135,12 +135,12 @@ export class StatsWidget extends LitElement {
       }
 
       :host([variant='error']) {
-        border-color: ${tokens.color.error};
+        border-color: ${tokens.color.danger};
         background: linear-gradient(135deg, ${tokens.color.grayWhite} 0%, rgba(239, 68, 68, 0.05) 100%);
       }
 
       :host([variant='primary']) {
-        border-color: ${tokens.color.primary};
+        border-color: ${tokens.color.primaryMain};
         background: linear-gradient(135deg, ${tokens.color.grayWhite} 0%, rgba(99, 102, 241, 0.05) 100%);
       }
     `

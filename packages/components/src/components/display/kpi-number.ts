@@ -21,13 +21,13 @@ export class KpiNumber extends LitElement {
       .prefix {
         font-size: ${tokens.fontSize.lg};
         font-weight: ${tokens.fontWeight.medium};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       .suffix {
         font-size: ${tokens.fontSize.lg};
         font-weight: ${tokens.fontWeight.medium};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       :host([size='small']) {

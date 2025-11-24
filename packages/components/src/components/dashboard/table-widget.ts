@@ -17,7 +17,7 @@ export interface TableColumn {
 /**
  * Table Row Data
  */
-export interface TableRow {
+export interface WidgetTableRow {
   [key: string]: any;
 }
 
@@ -52,19 +52,19 @@ export class TableWidget extends LitElement {
       table {
         width: 100%;
         border-collapse: collapse;
-        font-size: ${tokens.font.size.sm};
+        font-size: ${tokens.fontSize.sm};
       }
 
       thead {
         background: ${tokens.color.gray100};
-        border-bottom: 2px solid ${tokens.color.gray300};
+        border-bottom: 2px solid ${tokens.color.gray100};
       }
 
       th {
         padding: ${tokens.spacing.md} ${tokens.spacing.lg};
         text-align: left;
-        font-weight: ${tokens.font.weight.semibold};
-        color: ${tokens.color.gray700};
+        font-weight: ${tokens.fontWeight.semibold};
+        color: ${tokens.color.gray900};
         white-space: nowrap;
         position: relative;
       }
@@ -83,14 +83,14 @@ export class TableWidget extends LitElement {
       }
 
       th[data-sortable='true']:hover {
-        background: ${tokens.color.gray200};
+        background: ${tokens.color.gray100};
       }
 
       .sort-indicator {
         display: inline-block;
         margin-left: ${tokens.spacing.xs};
         opacity: 0.5;
-        font-size: ${tokens.font.size.xs};
+        font-size: ${tokens.fontSize.xs};
       }
 
       th[data-sort-direction='asc'] .sort-indicator,
@@ -99,7 +99,7 @@ export class TableWidget extends LitElement {
       }
 
       tbody tr {
-        border-bottom: 1px solid ${tokens.color.gray200};
+        border-bottom: 1px solid ${tokens.color.gray100};
         transition: background ${tokens.transition.fast};
       }
 
@@ -131,14 +131,14 @@ export class TableWidget extends LitElement {
       .empty-state {
         padding: ${tokens.spacing.xxl};
         text-align: center;
-        color: ${tokens.color.gray400};
+        color: ${tokens.color.gray500};
       }
 
       /* Responsive */
       @media (max-width: 768px) {
         th, td {
           padding: ${tokens.spacing.sm} ${tokens.spacing.md};
-          font-size: ${tokens.font.size.xs};
+          font-size: ${tokens.fontSize.xs};
         }
       }
 
@@ -154,7 +154,7 @@ export class TableWidget extends LitElement {
   columns: TableColumn[] = [];
 
   @property({ type: Array })
-  rows: TableRow[] = [];
+  rows: WidgetTableRow[] = [];
 
   @property({ type: Boolean, reflect: true })
   loading = false;
@@ -198,7 +198,7 @@ export class TableWidget extends LitElement {
     }));
   }
 
-  private _handleRowClick(row: TableRow, index: number) {
+  private _handleRowClick(row: WidgetTableRow, index: number) {
     if (!this.clickableRows) return;
 
     this.dispatchEvent(new CustomEvent('row-click', {
@@ -208,7 +208,7 @@ export class TableWidget extends LitElement {
     }));
   }
 
-  private _getSortedRows(): TableRow[] {
+  private _getSortedRows(): WidgetTableRow[] {
     if (!this._sortColumn || !this._sortDirection) {
       return this.rows;
     }

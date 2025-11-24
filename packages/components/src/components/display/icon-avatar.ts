@@ -59,8 +59,8 @@ export class IconAvatar extends LitElement {
       }
 
       :host([variant='gray']) {
-        background: ${tokens.color.gray200};
-        color: ${tokens.color.gray700};
+        background: ${tokens.color.gray100};
+        color: ${tokens.color.gray900};
       }
     `,
   ];

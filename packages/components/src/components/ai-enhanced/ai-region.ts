@@ -83,29 +83,29 @@ export class AiRegion extends LitElement {
       }
 
       :host([variant='warning']) {
-        background: linear-gradient(135deg, ${tokens.color.warningLight}10 0%, ${tokens.color.grayWhite} 100%);
-        border-color: ${tokens.color.warningMain};
+        background: linear-gradient(135deg, ${tokens.color.warning}10 0%, ${tokens.color.grayWhite} 100%);
+        border-color: ${tokens.color.warning};
       }
 
       :host([variant='warning'])::before {
-        background: linear-gradient(90deg, ${tokens.color.warningMain} 0%, ${tokens.color.warningDark} 100%);
+        background: linear-gradient(90deg, ${tokens.color.warning} 0%, ${tokens.color.warning} 100%);
       }
 
       :host([variant='warning']) .ai-label {
-        background: linear-gradient(135deg, ${tokens.color.warningMain} 0%, ${tokens.color.warningDark} 100%);
+        background: linear-gradient(135deg, ${tokens.color.warning} 0%, ${tokens.color.warning} 100%);
       }
 
       :host([variant='success']) {
-        background: linear-gradient(135deg, ${tokens.color.successLight}10 0%, ${tokens.color.grayWhite} 100%);
-        border-color: ${tokens.color.successMain};
+        background: linear-gradient(135deg, ${tokens.color.success}10 0%, ${tokens.color.grayWhite} 100%);
+        border-color: ${tokens.color.success};
       }
 
       :host([variant='success'])::before {
-        background: linear-gradient(90deg, ${tokens.color.successMain} 0%, ${tokens.color.successDark} 100%);
+        background: linear-gradient(90deg, ${tokens.color.success} 0%, ${tokens.color.successDark} 100%);
       }
 
       :host([variant='success']) .ai-label {
-        background: linear-gradient(135deg, ${tokens.color.successMain} 0%, ${tokens.color.successDark} 100%);
+        background: linear-gradient(135deg, ${tokens.color.success} 0%, ${tokens.color.successDark} 100%);
       }
     `
   ];

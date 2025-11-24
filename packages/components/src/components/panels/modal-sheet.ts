@@ -103,7 +103,7 @@ export class ModalSheet extends LitElement {
       .handle-bar {
         width: 40px;
         height: 4px;
-        background: ${tokens.color.gray300};
+        background: ${tokens.color.gray100};
         border-radius: ${tokens.radius.full};
       }
 

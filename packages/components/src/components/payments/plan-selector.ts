@@ -55,19 +55,19 @@ export class PlanSelector extends LitElement {
       }
 
       .plan-option:hover {
-        border-color: ${tokens.color.primary};
+        border-color: ${tokens.color.primaryMain};
         background: ${tokens.color.gray50};
       }
 
       .plan-option.selected {
-        border-color: ${tokens.color.primary};
+        border-color: ${tokens.color.primaryMain};
         background: rgba(0, 100, 255, 0.05);
       }
 
       .radio {
         width: 20px;
         height: 20px;
-        border: 2px solid ${tokens.color.gray300};
+        border: 2px solid ${tokens.color.gray100};
         border-radius: 50%;
         margin-right: ${tokens.spacing.md};
         display: flex;
@@ -77,13 +77,13 @@ export class PlanSelector extends LitElement {
       }
 
       .plan-option.selected .radio {
-        border-color: ${tokens.color.primary};
+        border-color: ${tokens.color.primaryMain};
       }
 
       .radio-dot {
         width: 10px;
         height: 10px;
-        background: ${tokens.color.primary};
+        background: ${tokens.color.primaryMain};
         border-radius: 50%;
         display: none;
       }
@@ -111,7 +111,7 @@ export class PlanSelector extends LitElement {
       .plan-price {
         font-size: ${tokens.fontSize.lg};
         font-weight: ${tokens.fontWeight.bold};
-        color: ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
         white-space: nowrap;
       }
     `

@@ -23,7 +23,7 @@ export class AiMetricCard extends LitElement {
         display: block;
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         transition: all ${tokens.transition.default};
@@ -42,7 +42,7 @@ export class AiMetricCard extends LitElement {
 
       .label {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         text-transform: uppercase;
         letter-spacing: 0.5px;
         font-weight: ${tokens.fontWeight.medium};
@@ -65,7 +65,7 @@ export class AiMetricCard extends LitElement {
       }
 
       .current-value {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         font-weight: ${tokens.fontWeight.bold};
         color: ${tokens.color.gray900};
         line-height: 1.2;
@@ -76,7 +76,7 @@ export class AiMetricCard extends LitElement {
 
       .unit {
         font-size: ${tokens.fontSize.lg};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       .change {
@@ -89,15 +89,15 @@ export class AiMetricCard extends LitElement {
       }
 
       .change.up {
-        color: ${tokens.color.successMain};
+        color: ${tokens.color.success};
       }
 
       .change.down {
-        color: ${tokens.color.dangerMain};
+        color: ${tokens.color.danger};
       }
 
       .change.stable {
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       .prediction-section {
@@ -109,7 +109,7 @@ export class AiMetricCard extends LitElement {
 
       .prediction-label {
         font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         text-transform: uppercase;
         margin-bottom: ${tokens.spacing.xs};
       }
@@ -129,14 +129,14 @@ export class AiMetricCard extends LitElement {
         border-radius: ${tokens.radius.md};
         border-left: 3px solid ${tokens.color.primaryMain};
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         line-height: 1.5;
         margin-bottom: ${tokens.spacing.md};
       }
 
       .confidence-section {
         padding-top: ${tokens.spacing.md};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .confidence-label {
@@ -144,7 +144,7 @@ export class AiMetricCard extends LitElement {
         justify-content: space-between;
         align-items: center;
         font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         margin-bottom: ${tokens.spacing.xs};
       }
 
@@ -155,14 +155,14 @@ export class AiMetricCard extends LitElement {
 
       .confidence-track {
         height: 6px;
-        background: ${tokens.color.gray200};
+        background: ${tokens.color.gray100};
         border-radius: ${tokens.radius.full};
         overflow: hidden;
       }
 
       .confidence-fill {
         height: 100%;
-        background: linear-gradient(90deg, ${tokens.color.primaryMain} 0%, ${tokens.color.successMain} 100%);
+        background: linear-gradient(90deg, ${tokens.color.primaryMain} 0%, ${tokens.color.success} 100%);
         border-radius: ${tokens.radius.full};
         transition: width ${tokens.transition.default};
       }
@@ -178,7 +178,7 @@ export class AiMetricCard extends LitElement {
       }
 
       .empty-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         margin-bottom: ${tokens.spacing.sm};
       }
     `

@@ -19,7 +19,7 @@ export class AiContextExplanation extends LitElement {
         display: block;
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
       }
 
@@ -50,7 +50,7 @@ export class AiContextExplanation extends LitElement {
 
       .explanation {
         font-size: ${tokens.fontSize.md};
-        color: ${tokens.color.gray800};
+        color: ${tokens.color.gray900};
         line-height: 1.7;
         margin-bottom: ${tokens.spacing.lg};
         padding: ${tokens.spacing.md};
@@ -83,7 +83,7 @@ export class AiContextExplanation extends LitElement {
         border-radius: ${tokens.radius.md};
         border-left: 3px solid ${tokens.color.primaryMain};
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       .concept-item {

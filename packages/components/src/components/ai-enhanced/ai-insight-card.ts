@@ -17,7 +17,7 @@ export class AiInsightCard extends LitElement {
       :host {
         display: block;
         padding: ${tokens.spacing.lg};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
         background: ${tokens.color.grayWhite};
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -70,7 +70,7 @@ export class AiInsightCard extends LitElement {
         padding: ${tokens.spacing.md};
         background: ${tokens.color.gray50};
         border-radius: ${tokens.radius.md};
-        border-left: 3px solid ${tokens.color.gray300};
+        border-left: 3px solid ${tokens.color.gray100};
         transition: all ${tokens.transition.default};
       }
 
@@ -79,18 +79,18 @@ export class AiInsightCard extends LitElement {
       }
 
       .insight-item.positive {
-        border-left-color: ${tokens.color.successMain};
-        background: linear-gradient(90deg, ${tokens.color.successLight}15 0%, ${tokens.color.gray50} 100%);
+        border-left-color: ${tokens.color.success};
+        background: linear-gradient(90deg, ${tokens.color.success}15 0%, ${tokens.color.gray50} 100%);
       }
 
       .insight-item.negative {
-        border-left-color: ${tokens.color.dangerMain};
-        background: linear-gradient(90deg, ${tokens.color.dangerLight}15 0%, ${tokens.color.gray50} 100%);
+        border-left-color: ${tokens.color.danger};
+        background: linear-gradient(90deg, ${tokens.color.danger}15 0%, ${tokens.color.gray50} 100%);
       }
 
       .insight-item.warning {
-        border-left-color: ${tokens.color.warningMain};
-        background: linear-gradient(90deg, ${tokens.color.warningLight}15 0%, ${tokens.color.gray50} 100%);
+        border-left-color: ${tokens.color.warning};
+        background: linear-gradient(90deg, ${tokens.color.warning}15 0%, ${tokens.color.gray50} 100%);
       }
 
       .insight-icon {
@@ -102,13 +102,13 @@ export class AiInsightCard extends LitElement {
       .insight-text {
         flex: 1;
         font-size: ${tokens.fontSize.md};
-        color: ${tokens.color.gray800};
+        color: ${tokens.color.gray900};
         line-height: 1.5;
       }
 
       .confidence-section {
         padding-top: ${tokens.spacing.md};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .confidence-label {
@@ -116,7 +116,7 @@ export class AiInsightCard extends LitElement {
         justify-content: space-between;
         align-items: center;
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         margin-bottom: ${tokens.spacing.xs};
       }
 
@@ -127,14 +127,14 @@ export class AiInsightCard extends LitElement {
 
       .confidence-track {
         height: 8px;
-        background: ${tokens.color.gray200};
+        background: ${tokens.color.gray100};
         border-radius: ${tokens.radius.full};
         overflow: hidden;
       }
 
       .confidence-fill {
         height: 100%;
-        background: linear-gradient(90deg, ${tokens.color.primaryMain} 0%, ${tokens.color.successMain} 100%);
+        background: linear-gradient(90deg, ${tokens.color.primaryMain} 0%, ${tokens.color.success} 100%);
         border-radius: ${tokens.radius.full};
         transition: width ${tokens.transition.default};
         animation: fillProgress 0.8s ease-out forwards;
@@ -157,7 +157,7 @@ export class AiInsightCard extends LitElement {
       }
 
       .empty-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         margin-bottom: ${tokens.spacing.sm};
       }
 

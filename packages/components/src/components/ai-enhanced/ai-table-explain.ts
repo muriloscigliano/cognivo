@@ -19,7 +19,7 @@ export class AiTableExplain extends LitElement {
         display: block;
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
       }
 
@@ -58,7 +58,7 @@ export class AiTableExplain extends LitElement {
 
       .summary-text {
         font-size: ${tokens.fontSize.md};
-        color: ${tokens.color.gray800};
+        color: ${tokens.color.gray900};
         line-height: 1.6;
       }
 
@@ -101,7 +101,7 @@ export class AiTableExplain extends LitElement {
 
       .insight-text {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         line-height: 1.5;
       }
 
@@ -118,7 +118,7 @@ export class AiTableExplain extends LitElement {
         gap: ${tokens.spacing.sm};
         padding: ${tokens.spacing.sm};
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         line-height: 1.5;
       }
 
@@ -138,7 +138,7 @@ export class AiTableExplain extends LitElement {
       }
 
       .empty-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         margin-bottom: ${tokens.spacing.sm};
       }
     `

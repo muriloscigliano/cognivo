@@ -14,7 +14,7 @@ export class UpgradePrompt extends LitElement {
       }
 
       .prompt-container {
-        background: linear-gradient(135deg, ${tokens.color.primary} 0%, ${tokens.color.primaryDark} 100%);
+        background: linear-gradient(135deg, ${tokens.color.primaryMain} 0%, ${tokens.color.primaryDark} 100%);
         border-radius: ${tokens.radius.lg};
         padding: ${tokens.spacing.xl};
         color: white;
@@ -80,7 +80,7 @@ export class UpgradePrompt extends LitElement {
         width: 100%;
         padding: ${tokens.spacing.md} ${tokens.spacing.lg};
         background: white;
-        color: ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
         border: none;
         border-radius: ${tokens.radius.md};
         font-size: ${tokens.fontSize.base};

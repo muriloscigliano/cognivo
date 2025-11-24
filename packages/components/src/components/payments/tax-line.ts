@@ -22,7 +22,7 @@ export class TaxLine extends LitElement {
       }
 
       .tax-label {
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         display: flex;
         align-items: center;
         gap: ${tokens.spacing.xs};

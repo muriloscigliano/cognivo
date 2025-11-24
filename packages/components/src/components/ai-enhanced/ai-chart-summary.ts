@@ -20,7 +20,7 @@ export class AiChartSummary extends LitElement {
         display: block;
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       }
@@ -61,19 +61,19 @@ export class AiChartSummary extends LitElement {
       }
 
       .trend-icon {
-        font-size: ${tokens.fontSize.xxl};
+        font-size: ${tokens.fontSize['2xl']};
       }
 
       .trend-icon.up {
-        color: ${tokens.color.successMain};
+        color: ${tokens.color.success};
       }
 
       .trend-icon.down {
-        color: ${tokens.color.dangerMain};
+        color: ${tokens.color.danger};
       }
 
       .trend-icon.stable {
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       .trend-info {
@@ -82,7 +82,7 @@ export class AiChartSummary extends LitElement {
 
       .trend-label {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         margin-bottom: ${tokens.spacing.xs};
       }
 
@@ -128,13 +128,13 @@ export class AiChartSummary extends LitElement {
       .point-text {
         flex: 1;
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray800};
+        color: ${tokens.color.gray900};
         line-height: 1.5;
       }
 
       .confidence-section {
         padding-top: ${tokens.spacing.md};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .confidence-label {
@@ -142,7 +142,7 @@ export class AiChartSummary extends LitElement {
         justify-content: space-between;
         align-items: center;
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         margin-bottom: ${tokens.spacing.xs};
       }
 
@@ -153,14 +153,14 @@ export class AiChartSummary extends LitElement {
 
       .confidence-track {
         height: 6px;
-        background: ${tokens.color.gray200};
+        background: ${tokens.color.gray100};
         border-radius: ${tokens.radius.full};
         overflow: hidden;
       }
 
       .confidence-fill {
         height: 100%;
-        background: linear-gradient(90deg, ${tokens.color.primaryMain} 0%, ${tokens.color.successMain} 100%);
+        background: linear-gradient(90deg, ${tokens.color.primaryMain} 0%, ${tokens.color.success} 100%);
         border-radius: ${tokens.radius.full};
         transition: width ${tokens.transition.default};
       }
@@ -176,7 +176,7 @@ export class AiChartSummary extends LitElement {
       }
 
       .empty-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         margin-bottom: ${tokens.spacing.sm};
       }
     `

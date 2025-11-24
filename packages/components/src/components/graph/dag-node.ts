@@ -12,7 +12,8 @@ import { tokens } from '../../styles/tokens.js';
 export class DagNode extends LitElement {
   static override styles = [
     baseStyles,
-    css`:host {
+    css`
+host {
       display: block;
       background: ${tokens.color.grayWhite};
       border-radius: ${tokens.radius.md};

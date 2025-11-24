@@ -12,19 +12,19 @@ export class TableGroupHeader extends LitElement {
         display: table-row;
         background: ${tokens.color.gray100};
         font-weight: ${tokens.fontWeight.semibold};
-        color: ${tokens.color.gray800};
+        color: ${tokens.color.gray900};
       }
 
       .group-cell {
         padding: ${tokens.spacing.md} ${tokens.spacing.lg};
         font-size: ${tokens.fontSize.md};
-        border-top: 2px solid ${tokens.color.gray300};
-        border-bottom: 1px solid ${tokens.color.gray300};
+        border-top: 2px solid ${tokens.color.gray100};
+        border-bottom: 1px solid ${tokens.color.gray100};
       }
 
       .group-count {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         font-weight: ${tokens.fontWeight.normal};
         margin-left: ${tokens.spacing.sm};
       }

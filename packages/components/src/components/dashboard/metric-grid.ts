@@ -78,7 +78,7 @@ export class MetricGrid extends LitElement {
         gap: ${tokens.spacing.md};
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
         transition: all ${tokens.transition.base};
         position: relative;
@@ -89,7 +89,7 @@ export class MetricGrid extends LitElement {
       .metric-card:hover {
         box-shadow: ${tokens.shadow.md};
         transform: translateY(-2px);
-        border-color: ${tokens.color.gray300};
+        border-color: ${tokens.color.gray100};
       }
 
       .metric-card::before {
@@ -99,7 +99,7 @@ export class MetricGrid extends LitElement {
         left: 0;
         right: 0;
         height: 4px;
-        background: var(--metric-color, ${tokens.color.primary});
+        background: var(--metric-color, ${tokens.color.primaryMain});
       }
 
       .metric-card[data-status='success']::before {
@@ -111,7 +111,7 @@ export class MetricGrid extends LitElement {
       }
 
       .metric-card[data-status='error']::before {
-        background: ${tokens.color.error};
+        background: ${tokens.color.danger};
       }
 
       .metric-card[data-status='info']::before {
@@ -131,27 +131,27 @@ export class MetricGrid extends LitElement {
       }
 
       .card-title {
-        font-size: ${tokens.font.size.sm};
-        font-weight: ${tokens.font.weight.semibold};
-        color: ${tokens.color.gray700};
+        font-size: ${tokens.fontSize.sm};
+        font-weight: ${tokens.fontWeight.semibold};
+        color: ${tokens.color.gray900};
         margin: 0;
       }
 
       .card-description {
-        font-size: ${tokens.font.size.xs};
+        font-size: ${tokens.fontSize.xs};
         color: ${tokens.color.gray500};
         margin-top: ${tokens.spacing.xxs};
       }
 
       .card-icon {
-        font-size: ${tokens.font.size.xl};
+        font-size: ${tokens.fontSize.xl};
         opacity: 0.7;
         flex-shrink: 0;
       }
 
       .card-value {
-        font-size: ${tokens.font.size.xxxl};
-        font-weight: ${tokens.font.weight.bold};
+        font-size: ${tokens.fontSize['3xl']};
+        font-weight: ${tokens.fontWeight.bold};
         color: ${tokens.color.gray900};
         line-height: 1.2;
       }
@@ -162,15 +162,15 @@ export class MetricGrid extends LitElement {
         justify-content: space-between;
         gap: ${tokens.spacing.sm};
         padding-top: ${tokens.spacing.sm};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .trend-indicator {
         display: flex;
         align-items: center;
         gap: ${tokens.spacing.xs};
-        font-size: ${tokens.font.size.sm};
-        font-weight: ${tokens.font.weight.semibold};
+        font-size: ${tokens.fontSize.sm};
+        font-weight: ${tokens.fontWeight.semibold};
       }
 
       .trend-indicator[data-trend='up'] {
@@ -178,18 +178,18 @@ export class MetricGrid extends LitElement {
       }
 
       .trend-indicator[data-trend='down'] {
-        color: ${tokens.color.error};
+        color: ${tokens.color.danger};
       }
 
       .trend-indicator[data-trend='neutral'] {
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       .empty-state {
         grid-column: 1 / -1;
         padding: ${tokens.spacing.xxl};
         text-align: center;
-        color: ${tokens.color.gray400};
+        color: ${tokens.color.gray500};
       }
     `
   ];

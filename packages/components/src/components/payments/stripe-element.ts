@@ -37,18 +37,18 @@ export class StripeElement extends LitElement {
       }
 
       .stripe-element-wrapper:focus-within {
-        border-color: ${tokens.color.primary};
+        border-color: ${tokens.color.primaryMain};
         box-shadow: 0 0 0 3px rgba(0, 100, 255, 0.1);
       }
 
       .stripe-element-wrapper.error {
-        border-color: ${tokens.color.error};
+        border-color: ${tokens.color.danger};
       }
 
       .error-message {
         margin-top: ${tokens.spacing.sm};
         font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.error};
+        color: ${tokens.color.danger};
       }
 
       .security-note {
@@ -74,12 +74,12 @@ export class StripeElement extends LitElement {
         gap: ${tokens.spacing.xs};
         margin-top: ${tokens.spacing.md};
         font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray400};
+        color: ${tokens.color.gray500};
       }
 
       .stripe-logo {
         font-weight: ${tokens.fontWeight.bold};
-        color: ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
       }
     `
   ];

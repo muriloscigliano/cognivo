@@ -55,7 +55,7 @@ export class GraphNode extends LitElement {
         min-width: 120px;
         min-height: 60px;
         background: ${tokens.color.grayWhite};
-        border: 2px solid ${tokens.color.gray400};
+        border: 2px solid ${tokens.color.gray500};
         border-radius: ${tokens.radius.md};
         padding: ${tokens.spacing.md};
         transition: all ${tokens.transition.default};
@@ -84,7 +84,7 @@ export class GraphNode extends LitElement {
         margin-top: ${tokens.spacing.xs};
         font-family: ${tokens.fontFamily.primary};
         font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
     `,
   ];

@@ -37,11 +37,11 @@ export class StatusChip extends LitElement {
 
       :host([status='inactive']) {
         background: ${tokens.color.gray100};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       :host([status='inactive']) .status-dot {
-        background: ${tokens.color.gray400};
+        background: ${tokens.color.gray500};
       }
 
       :host([status='pending']) {

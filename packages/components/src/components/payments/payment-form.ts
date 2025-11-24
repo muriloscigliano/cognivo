@@ -56,7 +56,7 @@ export class PaymentForm extends LitElement {
       .submit-button {
         flex: 1;
         padding: ${tokens.spacing.md} ${tokens.spacing.lg};
-        background: ${tokens.color.primary};
+        background: ${tokens.color.primaryMain};
         color: white;
         border: none;
         border-radius: ${tokens.radius.md};
@@ -71,15 +71,15 @@ export class PaymentForm extends LitElement {
       }
 
       .submit-button:disabled {
-        background: ${tokens.color.gray300};
+        background: ${tokens.color.gray100};
         cursor: not-allowed;
       }
 
       .cancel-button {
         padding: ${tokens.spacing.md} ${tokens.spacing.lg};
         background: white;
-        color: ${tokens.color.gray700};
-        border: 2px solid ${tokens.color.gray200};
+        color: ${tokens.color.gray900};
+        border: 2px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         font-size: ${tokens.fontSize.base};
         font-weight: ${tokens.fontWeight.semibold};
@@ -89,7 +89,7 @@ export class PaymentForm extends LitElement {
 
       .cancel-button:hover {
         background: ${tokens.color.gray50};
-        border-color: ${tokens.color.gray300};
+        border-color: ${tokens.color.gray100};
       }
 
       .loading-spinner {

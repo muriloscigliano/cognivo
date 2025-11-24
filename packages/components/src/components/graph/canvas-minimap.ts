@@ -40,7 +40,7 @@ export class CanvasMinimap extends LitElement {
         width: 200px;
         height: 150px;
         background: ${tokens.color.gray50};
-        border: 2px solid ${tokens.color.gray300};
+        border: 2px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         overflow: hidden;
         box-shadow: ${tokens.shadow.lg};
@@ -58,7 +58,7 @@ export class CanvasMinimap extends LitElement {
       }
 
       .minimap-edge {
-        stroke: ${tokens.color.gray400};
+        stroke: ${tokens.color.gray500};
         stroke-width: 1;
         opacity: 0.4;
       }

@@ -19,7 +19,7 @@ export class AiListSummary extends LitElement {
         display: block;
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
       }
 
@@ -49,7 +49,7 @@ export class AiListSummary extends LitElement {
       }
 
       .total-count {
-        font-size: ${tokens.fontSize.xxl};
+        font-size: ${tokens.fontSize['2xl']};
         font-weight: ${tokens.fontWeight.bold};
         color: ${tokens.color.primaryMain};
         margin-bottom: ${tokens.spacing.md};
@@ -71,7 +71,7 @@ export class AiListSummary extends LitElement {
         border-radius: ${tokens.radius.md};
         border-left: 3px solid ${tokens.color.primaryMain};
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         line-height: 1.5;
       }
 
@@ -101,13 +101,13 @@ export class AiListSummary extends LitElement {
 
       .category-name {
         font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         margin-top: ${tokens.spacing.xs};
       }
 
       .insights-section {
         padding-top: ${tokens.spacing.md};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .section-title {
@@ -125,7 +125,7 @@ export class AiListSummary extends LitElement {
 
       .insight-item {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         padding-left: ${tokens.spacing.sm};
       }
 

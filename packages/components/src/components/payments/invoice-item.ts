@@ -37,7 +37,7 @@ export class InvoiceItem extends LitElement {
 
       .quantity, .unit-price, .total {
         font-size: ${tokens.fontSize.base};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         text-align: right;
       }
 

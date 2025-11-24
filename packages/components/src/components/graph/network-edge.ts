@@ -12,7 +12,8 @@ import { tokens } from '../../styles/tokens.js';
 export class NetworkEdge extends LitElement {
   static override styles = [
     baseStyles,
-    css`:host {
+    css`
+host {
       display: block;
     }
     svg {
@@ -33,7 +34,7 @@ export class NetworkEdge extends LitElement {
         <path
           d="M ${this.source.x} ${this.source.y} L ${this.target.x} ${this.target.y}"
           fill="none"
-          stroke="${tokens.color.gray400}"
+          stroke="${tokens.color.gray500}"
           stroke-width="2"
         />
       </svg>

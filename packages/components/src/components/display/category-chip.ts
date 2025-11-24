@@ -17,14 +17,14 @@ export class CategoryChip extends LitElement {
         font-size: ${tokens.fontSize.sm};
         font-weight: ${tokens.fontWeight.medium};
         background: ${tokens.color.gray100};
-        color: ${tokens.color.gray800};
-        border: 1px solid ${tokens.color.gray200};
+        color: ${tokens.color.gray900};
+        border: 1px solid ${tokens.color.gray100};
         transition: all ${tokens.transition.default};
         cursor: default;
       }
 
       :host(:hover) {
-        background: ${tokens.color.gray200};
+        background: ${tokens.color.gray100};
       }
 
       :host([clickable]) {

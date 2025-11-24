@@ -48,17 +48,17 @@ export class SnapGrid extends LitElement {
       }
 
       .grid-line {
-        stroke: ${tokens.color.gray200};
+        stroke: ${tokens.color.gray100};
         stroke-width: 1;
       }
 
       .grid-line-major {
-        stroke: ${tokens.color.gray300};
+        stroke: ${tokens.color.gray100};
         stroke-width: 1.5;
       }
 
       .grid-dot {
-        fill: ${tokens.color.gray300};
+        fill: ${tokens.color.gray100};
       }
     `,
   ];

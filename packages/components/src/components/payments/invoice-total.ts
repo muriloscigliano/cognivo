@@ -43,7 +43,7 @@ export class InvoiceTotal extends LitElement {
       }
 
       .total-label {
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       .total-value {
@@ -58,7 +58,7 @@ export class InvoiceTotal extends LitElement {
       .grand-total {
         margin-top: ${tokens.spacing.md};
         padding-top: ${tokens.spacing.md};
-        border-top: 2px solid ${tokens.color.gray200};
+        border-top: 2px solid ${tokens.color.gray100};
       }
 
       .grand-total .total-label {
@@ -70,13 +70,13 @@ export class InvoiceTotal extends LitElement {
       .grand-total .total-value {
         font-size: ${tokens.fontSize.xl};
         font-weight: ${tokens.fontWeight.bold};
-        color: ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
       }
 
       .paid-section {
         margin-top: ${tokens.spacing.md};
         padding-top: ${tokens.spacing.md};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .paid-value {
@@ -84,7 +84,7 @@ export class InvoiceTotal extends LitElement {
       }
 
       .due-value {
-        color: ${tokens.color.error};
+        color: ${tokens.color.danger};
       }
     `
   ];

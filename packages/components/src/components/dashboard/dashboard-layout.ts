@@ -110,14 +110,14 @@ export class DashboardLayout extends LitElement {
       }
 
       .empty-text {
-        font-size: ${tokens.font.size.lg};
-        font-weight: ${tokens.font.weight.medium};
+        font-size: ${tokens.fontSize.lg};
+        font-weight: ${tokens.fontWeight.medium};
         margin-bottom: ${tokens.spacing.xs};
       }
 
       .empty-hint {
-        font-size: ${tokens.font.size.sm};
-        color: ${tokens.color.gray400};
+        font-size: ${tokens.fontSize.sm};
+        color: ${tokens.color.gray500};
       }
     `
   ];

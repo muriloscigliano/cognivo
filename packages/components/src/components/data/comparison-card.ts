@@ -18,7 +18,7 @@ export class ComparisonCard extends LitElement {
       :host {
         display: block;
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         padding: ${tokens.spacing.lg};
       }
@@ -36,7 +36,7 @@ export class ComparisonCard extends LitElement {
 
       .subtitle {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       .comparison-list {
@@ -56,7 +56,7 @@ export class ComparisonCard extends LitElement {
 
       .item-label {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         font-weight: ${tokens.fontWeight.medium};
       }
 
@@ -89,7 +89,7 @@ export class ComparisonCard extends LitElement {
       }
 
       .item-change.neutral {
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         background: ${tokens.color.gray100};
       }
     `,

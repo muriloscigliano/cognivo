@@ -50,9 +50,9 @@ export class UsageMeter extends LitElement {
 
       .meter-fill {
         height: 100%;
-        background: ${tokens.color.primary};
+        background: ${tokens.color.primaryMain};
         border-radius: ${tokens.radius.full};
-        transition: width ${tokens.transition.normal}, background ${tokens.transition.normal};
+        transition: width ${tokens.transition.default}, background ${tokens.transition.default};
       }
 
       .meter-fill.warning {
@@ -60,7 +60,7 @@ export class UsageMeter extends LitElement {
       }
 
       .meter-fill.danger {
-        background: ${tokens.color.error};
+        background: ${tokens.color.danger};
       }
 
       .meter-footer {
@@ -77,12 +77,12 @@ export class UsageMeter extends LitElement {
         background: rgba(239, 68, 68, 0.1);
         border-radius: ${tokens.radius.sm};
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.error};
+        color: ${tokens.color.danger};
         text-align: center;
       }
 
       .upgrade-link {
-        color: ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
         text-decoration: underline;
         cursor: pointer;
         font-weight: ${tokens.fontWeight.medium};

@@ -26,7 +26,7 @@ export class SegmentSwitcher extends LitElement {
         background: transparent;
         border: none;
         border-radius: ${tokens.radius.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         font-size: ${tokens.fontSize.sm};
         font-weight: ${tokens.fontWeight.medium};
         cursor: pointer;

@@ -11,7 +11,7 @@ export class MetricCard extends LitElement {
       :host {
         display: block;
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         padding: ${tokens.spacing.lg};
         transition: all ${tokens.transition.default};
@@ -30,7 +30,7 @@ export class MetricCard extends LitElement {
 
       .metric-title {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         font-weight: ${tokens.fontWeight.medium};
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -80,7 +80,7 @@ export class MetricCard extends LitElement {
       }
 
       .metric-change.neutral {
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         background: ${tokens.color.gray100};
       }
 

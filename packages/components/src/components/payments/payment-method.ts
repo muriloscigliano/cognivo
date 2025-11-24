@@ -37,12 +37,12 @@ export class PaymentMethod extends LitElement {
       }
 
       .method-container:hover {
-        border-color: ${tokens.color.primary};
+        border-color: ${tokens.color.primaryMain};
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       }
 
       .method-container.selected {
-        border-color: ${tokens.color.primary};
+        border-color: ${tokens.color.primaryMain};
         background: rgba(0, 100, 255, 0.05);
       }
 
@@ -80,7 +80,7 @@ export class PaymentMethod extends LitElement {
       .default-badge {
         display: inline-block;
         padding: 2px ${tokens.spacing.xs};
-        background: ${tokens.color.primary};
+        background: ${tokens.color.primaryMain};
         color: white;
         border-radius: ${tokens.radius.sm};
         font-size: ${tokens.fontSize.xs};
@@ -95,7 +95,7 @@ export class PaymentMethod extends LitElement {
       .expiry {
         margin-top: 2px;
         font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray400};
+        color: ${tokens.color.gray500};
       }
 
       .method-actions {
@@ -106,8 +106,8 @@ export class PaymentMethod extends LitElement {
       .action-button {
         padding: ${tokens.spacing.xs} ${tokens.spacing.sm};
         background: white;
-        color: ${tokens.color.gray700};
-        border: 1px solid ${tokens.color.gray200};
+        color: ${tokens.color.gray900};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.sm};
         font-size: ${tokens.fontSize.xs};
         cursor: pointer;
@@ -116,11 +116,11 @@ export class PaymentMethod extends LitElement {
 
       .action-button:hover {
         background: ${tokens.color.gray50};
-        border-color: ${tokens.color.gray300};
+        border-color: ${tokens.color.gray100};
       }
 
       .delete-button {
-        color: ${tokens.color.error};
+        color: ${tokens.color.danger};
       }
     `
   ];

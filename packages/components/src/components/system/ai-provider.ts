@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { provide } from '@lit/context';
+import { provide, createContext } from '@lit/context';
 import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
@@ -13,7 +13,7 @@ export interface AIContext {
 }
 
 // Create a context for AI provider
-export const aiContext = Symbol('ai-context');
+export const aiContext = createContext<AIContext>(Symbol('ai-context'));
 
 @customElement('ai-provider')
 export class AiProvider extends LitElement {

@@ -30,7 +30,7 @@ export class Breadcrumbs extends LitElement {
         display: flex;
         align-items: center;
         gap: ${tokens.spacing.xs};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         text-decoration: none;
         transition: color ${tokens.transition.default};
       }
@@ -49,7 +49,7 @@ export class Breadcrumbs extends LitElement {
       }
 
       .separator {
-        color: ${tokens.color.gray400};
+        color: ${tokens.color.gray500};
         user-select: none;
       }
 

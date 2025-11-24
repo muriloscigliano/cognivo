@@ -53,7 +53,7 @@ export class AlertWidget extends LitElement {
         gap: ${tokens.spacing.md};
         padding: ${tokens.spacing.md} ${tokens.spacing.lg};
         border-left: 4px solid transparent;
-        border-bottom: 1px solid ${tokens.color.gray200};
+        border-bottom: 1px solid ${tokens.color.gray100};
         background: ${tokens.color.grayWhite};
         transition: all ${tokens.transition.fast};
         position: relative;
@@ -73,7 +73,7 @@ export class AlertWidget extends LitElement {
 
       /* Priority colors */
       .alert-item[data-priority='critical'] {
-        border-left-color: ${tokens.color.error};
+        border-left-color: ${tokens.color.danger};
         background: rgba(239, 68, 68, 0.05);
       }
 
@@ -88,16 +88,16 @@ export class AlertWidget extends LitElement {
       }
 
       .alert-item[data-priority='low'] {
-        border-left-color: ${tokens.color.gray400};
+        border-left-color: ${tokens.color.gray500};
       }
 
       .alert-item[data-priority='info'] {
-        border-left-color: ${tokens.color.primary};
+        border-left-color: ${tokens.color.primaryMain};
         background: rgba(99, 102, 241, 0.05);
       }
 
       .alert-icon {
-        font-size: ${tokens.font.size.xl};
+        font-size: ${tokens.fontSize.xl};
         flex-shrink: 0;
         margin-top: ${tokens.spacing.xxs};
       }
@@ -118,15 +118,15 @@ export class AlertWidget extends LitElement {
       }
 
       .alert-title {
-        font-size: ${tokens.font.size.sm};
-        font-weight: ${tokens.font.weight.semibold};
+        font-size: ${tokens.fontSize.sm};
+        font-weight: ${tokens.fontWeight.semibold};
         color: ${tokens.color.gray900};
         margin: 0;
       }
 
       .alert-message {
-        font-size: ${tokens.font.size.sm};
-        color: ${tokens.color.gray700};
+        font-size: ${tokens.fontSize.sm};
+        color: ${tokens.color.gray900};
         line-height: 1.5;
       }
 
@@ -139,7 +139,7 @@ export class AlertWidget extends LitElement {
       }
 
       .alert-timestamp {
-        font-size: ${tokens.font.size.xs};
+        font-size: ${tokens.fontSize.xs};
         color: ${tokens.color.gray500};
       }
 
@@ -149,18 +149,18 @@ export class AlertWidget extends LitElement {
         gap: ${tokens.spacing.xs};
         padding: ${tokens.spacing.xs} ${tokens.spacing.sm};
         background: transparent;
-        border: 1px solid ${tokens.color.primary};
+        border: 1px solid ${tokens.color.primaryMain};
         border-radius: ${tokens.radius.md};
-        color: ${tokens.color.primary};
-        font-size: ${tokens.font.size.xs};
-        font-weight: ${tokens.font.weight.medium};
+        color: ${tokens.color.primaryMain};
+        font-size: ${tokens.fontSize.xs};
+        font-weight: ${tokens.fontWeight.medium};
         text-decoration: none;
         cursor: pointer;
         transition: all ${tokens.transition.fast};
       }
 
       .alert-action:hover {
-        background: ${tokens.color.primary};
+        background: ${tokens.color.primaryMain};
         color: ${tokens.color.grayWhite};
       }
 
@@ -168,17 +168,17 @@ export class AlertWidget extends LitElement {
         padding: ${tokens.spacing.xs};
         background: transparent;
         border: none;
-        color: ${tokens.color.gray400};
+        color: ${tokens.color.gray500};
         cursor: pointer;
         border-radius: ${tokens.radius.sm};
         transition: all ${tokens.transition.fast};
-        font-size: ${tokens.font.size.md};
+        font-size: ${tokens.fontSize.md};
         line-height: 1;
       }
 
       .dismiss-btn:hover {
-        background: ${tokens.color.gray200};
-        color: ${tokens.color.gray700};
+        background: ${tokens.color.gray100};
+        color: ${tokens.color.gray900};
       }
 
       .priority-badge {
@@ -186,14 +186,14 @@ export class AlertWidget extends LitElement {
         align-items: center;
         padding: ${tokens.spacing.xxs} ${tokens.spacing.xs};
         border-radius: ${tokens.radius.sm};
-        font-size: ${tokens.font.size.xxs};
-        font-weight: ${tokens.font.weight.semibold};
+        font-size: ${tokens.fontSize.xxs};
+        font-weight: ${tokens.fontWeight.semibold};
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
 
       .priority-badge[data-priority='critical'] {
-        background: ${tokens.color.error};
+        background: ${tokens.color.danger};
         color: ${tokens.color.grayWhite};
       }
 
@@ -208,19 +208,19 @@ export class AlertWidget extends LitElement {
       }
 
       .priority-badge[data-priority='low'] {
-        background: ${tokens.color.gray300};
-        color: ${tokens.color.gray700};
+        background: ${tokens.color.gray100};
+        color: ${tokens.color.gray900};
       }
 
       .priority-badge[data-priority='info'] {
-        background: ${tokens.color.primary};
+        background: ${tokens.color.primaryMain};
         color: ${tokens.color.grayWhite};
       }
 
       .empty-state {
         padding: ${tokens.spacing.xxl};
         text-align: center;
-        color: ${tokens.color.gray400};
+        color: ${tokens.color.gray500};
       }
     `
   ];

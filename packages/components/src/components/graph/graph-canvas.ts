@@ -97,13 +97,13 @@ export class GraphCanvas extends LitElement {
       }
 
       .grid-pattern {
-        stroke: ${tokens.color.gray200};
+        stroke: ${tokens.color.gray100};
         stroke-width: 1;
         fill: none;
       }
 
       .dot-pattern circle {
-        fill: ${tokens.color.gray300};
+        fill: ${tokens.color.gray100};
       }
 
       .node-group {
@@ -117,7 +117,7 @@ export class GraphCanvas extends LitElement {
 
       .node-rect {
         fill: ${tokens.color.grayWhite};
-        stroke: ${tokens.color.gray400};
+        stroke: ${tokens.color.gray500};
         stroke-width: 2;
         rx: 8;
       }
@@ -138,7 +138,7 @@ export class GraphCanvas extends LitElement {
 
       .edge-path {
         fill: none;
-        stroke: ${tokens.color.gray400};
+        stroke: ${tokens.color.gray500};
         stroke-width: 2;
         transition: all ${tokens.transition.default};
       }
@@ -162,7 +162,7 @@ export class GraphCanvas extends LitElement {
         height: 32px;
         border-radius: ${tokens.radius.sm};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         display: flex;
         align-items: center;
         justify-content: center;
@@ -382,7 +382,7 @@ export class GraphCanvas extends LitElement {
               refY="3"
               orient="auto"
             >
-              <polygon points="0 0, 10 3, 0 6" fill="${tokens.color.gray400}" />
+              <polygon points="0 0, 10 3, 0 6" fill="${tokens.color.gray500}" />
             </marker>
           </defs>
           ${this.renderBackground()}

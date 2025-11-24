@@ -51,7 +51,7 @@ export class GraphEdge extends LitElement {
 
       .edge-path {
         fill: none;
-        stroke: ${tokens.color.gray400};
+        stroke: ${tokens.color.gray500};
         stroke-width: 2;
         pointer-events: stroke;
         transition: all ${tokens.transition.default};
@@ -65,7 +65,7 @@ export class GraphEdge extends LitElement {
       .edge-label {
         font-family: ${tokens.fontFamily.primary};
         font-size: ${tokens.fontSize.xs};
-        fill: ${tokens.color.gray700};
+        fill: ${tokens.color.gray900};
         text-anchor: middle;
         dominant-baseline: middle;
         pointer-events: none;
@@ -121,7 +121,7 @@ export class GraphEdge extends LitElement {
             refY="3"
             orient="auto"
           >
-            <polygon points="0 0, 10 3, 0 6" fill="${tokens.color.gray400}" />
+            <polygon points="0 0, 10 3, 0 6" fill="${tokens.color.gray500}" />
           </marker>
         </defs>
         <path class="edge-path" d="${path}" marker-end="url(#edge-arrow)" />

@@ -17,7 +17,7 @@ export class StatText extends LitElement {
       .label {
         font-size: ${tokens.fontSize.sm};
         font-weight: ${tokens.fontWeight.medium};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }

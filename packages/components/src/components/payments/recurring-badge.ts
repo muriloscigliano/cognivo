@@ -19,7 +19,7 @@ export class RecurringBadge extends LitElement {
         gap: ${tokens.spacing.xs};
         padding: 4px ${tokens.spacing.md};
         background: rgba(59, 130, 246, 0.1);
-        color: ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
         border-radius: ${tokens.radius.full};
         font-size: ${tokens.fontSize.xs};
         font-weight: ${tokens.fontWeight.medium};

@@ -22,7 +22,7 @@ export class AiTrendCard extends LitElement {
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.grayWhite};
         border-radius: ${tokens.radius.lg};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         transition: all ${tokens.transition.default};
       }
@@ -67,20 +67,20 @@ export class AiTrendCard extends LitElement {
       }
 
       .trend-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         line-height: 1;
       }
 
       .trend-up {
-        color: ${tokens.color.successMain};
+        color: ${tokens.color.success};
       }
 
       .trend-down {
-        color: ${tokens.color.dangerMain};
+        color: ${tokens.color.danger};
       }
 
       .trend-stable {
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       .trend-info {
@@ -88,27 +88,27 @@ export class AiTrendCard extends LitElement {
       }
 
       .trend-percentage {
-        font-size: ${tokens.fontSize.xxl};
+        font-size: ${tokens.fontSize['2xl']};
         font-weight: ${tokens.fontWeight.bold};
         line-height: 1.2;
       }
 
       .trend-timeframe {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         margin-top: ${tokens.spacing.xs};
       }
 
       .description {
         font-size: ${tokens.fontSize.md};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         line-height: 1.6;
         margin-bottom: ${tokens.spacing.md};
       }
 
       .confidence-section {
         padding-top: ${tokens.spacing.md};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .confidence-label {
@@ -116,7 +116,7 @@ export class AiTrendCard extends LitElement {
         justify-content: space-between;
         align-items: center;
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         margin-bottom: ${tokens.spacing.xs};
       }
 
@@ -127,14 +127,14 @@ export class AiTrendCard extends LitElement {
 
       .confidence-track {
         height: 8px;
-        background: ${tokens.color.gray200};
+        background: ${tokens.color.gray100};
         border-radius: ${tokens.radius.full};
         overflow: hidden;
       }
 
       .confidence-fill {
         height: 100%;
-        background: linear-gradient(90deg, ${tokens.color.primaryMain} 0%, ${tokens.color.successMain} 100%);
+        background: linear-gradient(90deg, ${tokens.color.primaryMain} 0%, ${tokens.color.success} 100%);
         border-radius: ${tokens.radius.full};
         transition: width ${tokens.transition.default};
       }

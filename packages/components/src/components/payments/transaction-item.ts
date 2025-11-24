@@ -99,7 +99,7 @@ export class TransactionItem extends LitElement {
       }
 
       .dot-separator {
-        color: ${tokens.color.gray300};
+        color: ${tokens.color.gray100};
       }
 
       @media (max-width: 640px) {

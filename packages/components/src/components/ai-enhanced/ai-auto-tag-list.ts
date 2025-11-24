@@ -54,7 +54,7 @@ export class AiAutoTagList extends LitElement {
       .list-item {
         padding: ${tokens.spacing.md};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         transition: all ${tokens.transition.default};
       }
@@ -86,7 +86,7 @@ export class AiAutoTagList extends LitElement {
         border-radius: ${tokens.radius.full};
         font-size: ${tokens.fontSize.xs};
         font-weight: ${tokens.fontWeight.medium};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         transition: all ${tokens.transition.default};
       }
 
@@ -111,7 +111,7 @@ export class AiAutoTagList extends LitElement {
       }
 
       .empty-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         margin-bottom: ${tokens.spacing.sm};
       }
     `

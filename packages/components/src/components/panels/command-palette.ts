@@ -111,7 +111,7 @@ export class CommandPalette extends LitElement {
       .kbd {
         padding: 2px ${tokens.spacing.xs};
         background: ${tokens.color.gray100};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.sm};
         font-size: ${tokens.fontSize.xs};
         font-family: ${tokens.fontFamily.mono};
@@ -175,12 +175,12 @@ export class CommandPalette extends LitElement {
       }
 
       .palette-content::-webkit-scrollbar-thumb {
-        background: ${tokens.color.gray300};
+        background: ${tokens.color.gray100};
         border-radius: ${tokens.radius.full};
       }
 
       .palette-content::-webkit-scrollbar-thumb:hover {
-        background: ${tokens.color.gray400};
+        background: ${tokens.color.gray500};
       }
 
       /* Responsive */

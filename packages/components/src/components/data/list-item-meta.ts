@@ -39,7 +39,7 @@ export class ListItemMeta extends LitElement {
 
       .description {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         margin: 0;
         line-height: ${tokens.lineHeight.relaxed};
       }

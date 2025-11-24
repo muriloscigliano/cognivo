@@ -47,7 +47,7 @@ export class WidgetBody extends LitElement {
       }
 
       :host::-webkit-scrollbar-thumb {
-        background: ${tokens.color.gray400};
+        background: ${tokens.color.gray500};
         border-radius: ${tokens.radius.sm};
       }
 
@@ -74,8 +74,8 @@ export class WidgetBody extends LitElement {
       .spinner {
         width: 40px;
         height: 40px;
-        border: 3px solid ${tokens.color.gray200};
-        border-top-color: ${tokens.color.primary};
+        border: 3px solid ${tokens.color.gray100};
+        border-top-color: ${tokens.color.primaryMain};
         border-radius: 50%;
         animation: spin 1s linear infinite;
       }
@@ -91,7 +91,7 @@ export class WidgetBody extends LitElement {
         align-items: center;
         justify-content: center;
         padding: ${tokens.spacing.xxl};
-        color: ${tokens.color.gray400};
+        color: ${tokens.color.gray500};
         text-align: center;
         min-height: 200px;
       }
@@ -103,13 +103,13 @@ export class WidgetBody extends LitElement {
       }
 
       .empty-text {
-        font-size: ${tokens.font.size.md};
+        font-size: ${tokens.fontSize.md};
         margin-bottom: ${tokens.spacing.xs};
       }
 
       .empty-hint {
-        font-size: ${tokens.font.size.sm};
-        color: ${tokens.color.gray400};
+        font-size: ${tokens.fontSize.sm};
+        color: ${tokens.color.gray500};
       }
 
       /* Fade in/out for content transitions */

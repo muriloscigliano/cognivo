@@ -46,7 +46,7 @@ export class ChartWidget extends LitElement {
       :host {
         display: block;
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
         overflow: hidden;
       }
@@ -64,13 +64,13 @@ export class ChartWidget extends LitElement {
         justify-content: space-between;
         gap: ${tokens.spacing.md};
         padding: ${tokens.spacing.md} ${tokens.spacing.lg};
-        border-bottom: 1px solid ${tokens.color.gray200};
+        border-bottom: 1px solid ${tokens.color.gray100};
         background: ${tokens.color.gray50};
       }
 
       .chart-title {
-        font-size: ${tokens.font.size.md};
-        font-weight: ${tokens.font.weight.semibold};
+        font-size: ${tokens.fontSize.md};
+        font-weight: ${tokens.fontWeight.semibold};
         color: ${tokens.color.gray900};
         margin: 0;
       }
@@ -79,7 +79,7 @@ export class ChartWidget extends LitElement {
         display: flex;
         gap: ${tokens.spacing.xs};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         padding: ${tokens.spacing.xxs};
       }
@@ -89,11 +89,11 @@ export class ChartWidget extends LitElement {
         background: transparent;
         border: none;
         border-radius: ${tokens.radius.sm};
-        color: ${tokens.color.gray600};
-        font-size: ${tokens.font.size.xs};
+        color: ${tokens.color.gray500};
+        font-size: ${tokens.fontSize.xs};
         cursor: pointer;
         transition: all ${tokens.transition.fast};
-        font-weight: ${tokens.font.weight.medium};
+        font-weight: ${tokens.fontWeight.medium};
       }
 
       .chart-type-btn:hover {
@@ -102,7 +102,7 @@ export class ChartWidget extends LitElement {
       }
 
       .chart-type-btn[data-active='true'] {
-        background: ${tokens.color.primary};
+        background: ${tokens.color.primaryMain};
         color: ${tokens.color.grayWhite};
       }
 
@@ -123,7 +123,7 @@ export class ChartWidget extends LitElement {
         min-height: 200px;
         background: ${tokens.color.gray50};
         border-radius: ${tokens.radius.md};
-        border: 2px dashed ${tokens.color.gray300};
+        border: 2px dashed ${tokens.color.gray100};
       }
 
       .chart-placeholder {
@@ -151,7 +151,7 @@ export class ChartWidget extends LitElement {
         display: flex;
         align-items: center;
         gap: ${tokens.spacing.xs};
-        font-size: ${tokens.font.size.sm};
+        font-size: ${tokens.fontSize.sm};
       }
 
       .legend-color {
@@ -162,12 +162,12 @@ export class ChartWidget extends LitElement {
       }
 
       .legend-label {
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       .legend-value {
         color: ${tokens.color.gray900};
-        font-weight: ${tokens.font.weight.semibold};
+        font-weight: ${tokens.fontWeight.semibold};
         margin-left: ${tokens.spacing.xs};
       }
 
@@ -188,8 +188,8 @@ export class ChartWidget extends LitElement {
       .spinner {
         width: 40px;
         height: 40px;
-        border: 3px solid ${tokens.color.gray200};
-        border-top-color: ${tokens.color.primary};
+        border: 3px solid ${tokens.color.gray100};
+        border-top-color: ${tokens.color.primaryMain};
         border-radius: 50%;
         animation: spin 1s linear infinite;
       }
@@ -202,7 +202,7 @@ export class ChartWidget extends LitElement {
       .empty-state {
         padding: ${tokens.spacing.xxl};
         text-align: center;
-        color: ${tokens.color.gray400};
+        color: ${tokens.color.gray500};
       }
 
       /* Responsive */
@@ -302,10 +302,10 @@ export class ChartWidget extends LitElement {
 
   private _getDefaultColor(index: number): string {
     const colors = [
-      tokens.color.primary,
+      tokens.color.primaryMain,
       tokens.color.success,
       tokens.color.warning,
-      tokens.color.error,
+      tokens.color.danger,
       tokens.color.info,
       '#9333EA', // purple
       '#EC4899', // pink
@@ -363,7 +363,7 @@ export class ChartWidget extends LitElement {
                 <div>
                   ${this._getTypeLabel(this.chartType)} Chart
                 </div>
-                <div style="font-size: ${tokens.font.size.xs}; margin-top: ${tokens.spacing.xs};">
+                <div style="font-size: ${tokens.fontSize.xs}; margin-top: ${tokens.spacing.xs};">
                   Slot for chart library integration
                 </div>
               </div>

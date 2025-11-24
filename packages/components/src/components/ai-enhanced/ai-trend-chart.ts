@@ -82,20 +82,20 @@ export class AiTrendChart extends LitElement {
       }
 
       .grid-line {
-        stroke: ${tokens.color.gray200};
+        stroke: ${tokens.color.gray100};
         stroke-width: 1;
         stroke-dasharray: 2, 2;
       }
 
       .axis-line {
-        stroke: ${tokens.color.gray300};
+        stroke: ${tokens.color.gray100};
         stroke-width: 1;
       }
 
       .label {
         font-family: ${tokens.fontFamily.primary};
         font-size: 11px;
-        fill: ${tokens.color.gray600};
+        fill: ${tokens.color.gray500};
       }
 
       .empty-state {
@@ -108,7 +108,7 @@ export class AiTrendChart extends LitElement {
       }
 
       .empty-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         margin-bottom: ${tokens.spacing.sm};
       }
     `

@@ -50,7 +50,7 @@ export class FlowCanvas extends LitElement {
       }
 
       .grid {
-        stroke: ${tokens.color.gray200};
+        stroke: ${tokens.color.gray100};
         stroke-width: 1;
       }
 
@@ -74,7 +74,7 @@ export class FlowCanvas extends LitElement {
       }
 
       .node-input .node-shape {
-        fill: ${tokens.color.successLight};
+        fill: ${tokens.color.success};
       }
 
       .node-output .node-shape {
@@ -86,7 +86,7 @@ export class FlowCanvas extends LitElement {
       }
 
       .node-decision .node-shape {
-        fill: ${tokens.color.warningLight};
+        fill: ${tokens.color.warning};
       }
 
       .node-label {
@@ -100,7 +100,7 @@ export class FlowCanvas extends LitElement {
 
       .edge {
         fill: none;
-        stroke: ${tokens.color.gray400};
+        stroke: ${tokens.color.gray500};
         stroke-width: 2;
         transition: all ${tokens.transition.default};
         marker-end: url(#flow-arrow);
@@ -297,7 +297,7 @@ export class FlowCanvas extends LitElement {
             refY="3"
             orient="auto"
           >
-            <polygon points="0 0, 10 3, 0 6" fill="${tokens.color.gray400}" />
+            <polygon points="0 0, 10 3, 0 6" fill="${tokens.color.gray500}" />
           </marker>
         </defs>
         ${this.enableSnap ? this.renderGrid() : null}

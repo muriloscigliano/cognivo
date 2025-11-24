@@ -40,7 +40,7 @@ export class Receipt extends LitElement {
       .receipt-header {
         text-align: center;
         padding-bottom: ${tokens.spacing.lg};
-        border-bottom: 2px dashed ${tokens.color.gray200};
+        border-bottom: 2px dashed ${tokens.color.gray100};
         margin-bottom: ${tokens.spacing.lg};
       }
 
@@ -116,7 +116,7 @@ export class Receipt extends LitElement {
 
       .receipt-totals {
         padding-top: ${tokens.spacing.md};
-        border-top: 2px solid ${tokens.color.gray200};
+        border-top: 2px solid ${tokens.color.gray100};
       }
 
       .total-row {
@@ -129,13 +129,13 @@ export class Receipt extends LitElement {
       .total-row:last-child {
         margin-top: ${tokens.spacing.md};
         padding-top: ${tokens.spacing.md};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
         font-size: ${tokens.fontSize.lg};
         font-weight: ${tokens.fontWeight.bold};
       }
 
       .total-label {
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       .total-value {
@@ -144,14 +144,14 @@ export class Receipt extends LitElement {
       }
 
       .total-row:last-child .total-value {
-        color: ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
       }
 
       .receipt-footer {
         text-align: center;
         padding-top: ${tokens.spacing.lg};
         margin-top: ${tokens.spacing.lg};
-        border-top: 2px dashed ${tokens.color.gray200};
+        border-top: 2px dashed ${tokens.color.gray100};
         font-size: ${tokens.fontSize.sm};
         color: ${tokens.color.gray500};
       }
@@ -159,7 +159,7 @@ export class Receipt extends LitElement {
       .print-button {
         margin-top: ${tokens.spacing.lg};
         padding: ${tokens.spacing.sm} ${tokens.spacing.lg};
-        background: ${tokens.color.primary};
+        background: ${tokens.color.primaryMain};
         color: white;
         border: none;
         border-radius: ${tokens.radius.md};

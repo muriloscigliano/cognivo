@@ -22,12 +22,12 @@ export class Sorter extends LitElement {
       .label {
         font-size: ${tokens.fontSize.sm};
         font-weight: ${tokens.fontWeight.medium};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       .sort-select {
         padding: ${tokens.spacing.xs} ${tokens.spacing.md};
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.sm};
         font-family: ${tokens.fontFamily.primary};
         font-size: ${tokens.fontSize.sm};
@@ -38,7 +38,7 @@ export class Sorter extends LitElement {
       }
 
       .sort-select:hover {
-        border-color: ${tokens.color.gray400};
+        border-color: ${tokens.color.gray500};
       }
 
       .sort-select:focus {
@@ -50,17 +50,17 @@ export class Sorter extends LitElement {
       .direction-btn {
         padding: ${tokens.spacing.xs};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.sm};
         cursor: pointer;
         display: flex;
         align-items: center;
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         transition: all ${tokens.transition.default};
       }
 
       .direction-btn:hover {
-        border-color: ${tokens.color.gray400};
+        border-color: ${tokens.color.gray500};
         color: ${tokens.color.gray900};
       }
 

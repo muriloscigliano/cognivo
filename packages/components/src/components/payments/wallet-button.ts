@@ -75,7 +75,7 @@ export class WalletButton extends LitElement {
         display: flex;
         align-items: center;
         gap: ${tokens.spacing.md};
-        color: ${tokens.color.gray400};
+        color: ${tokens.color.gray500};
         font-size: ${tokens.fontSize.sm};
       }
 
@@ -84,7 +84,7 @@ export class WalletButton extends LitElement {
         content: '';
         flex: 1;
         height: 1px;
-        background: ${tokens.color.gray200};
+        background: ${tokens.color.gray100};
       }
     `
   ];

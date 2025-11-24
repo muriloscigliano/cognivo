@@ -38,12 +38,12 @@ export class PaymentStatus extends LitElement {
 
       .status.failed {
         background: rgba(239, 68, 68, 0.1);
-        color: ${tokens.color.error};
+        color: ${tokens.color.danger};
       }
 
       .status.processing {
         background: rgba(59, 130, 246, 0.1);
-        color: ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
       }
 
       .status.refunded {

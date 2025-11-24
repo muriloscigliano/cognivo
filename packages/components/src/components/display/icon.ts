@@ -4,7 +4,8 @@ import { baseStyles } from '../../styles/base.js';
 
 @customElement('cg-icon')
 export class CgIcon extends LitElement {
-  static override styles = [baseStyles, css`:host { display: inline-flex; width: 24px; height: 24px; }`];
+  static override styles = [baseStyles, css`
+host { display: inline-flex; width: 24px; height: 24px; }`];
   @property({ type: String }) name = '';
   override render() { return html`<slot>${this.name}</slot>`; }
 }

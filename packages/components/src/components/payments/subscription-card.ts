@@ -34,18 +34,18 @@ export class SubscriptionCard extends LitElement {
         height: 100%;
         display: flex;
         flex-direction: column;
-        transition: all ${tokens.transition.normal};
+        transition: all ${tokens.transition.default};
         position: relative;
       }
 
       .card:hover {
-        border-color: ${tokens.color.primary};
+        border-color: ${tokens.color.primaryMain};
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         transform: translateY(-2px);
       }
 
       .card.popular {
-        border-color: ${tokens.color.primary};
+        border-color: ${tokens.color.primaryMain};
         box-shadow: 0 8px 24px rgba(0, 100, 255, 0.15);
       }
 
@@ -59,7 +59,7 @@ export class SubscriptionCard extends LitElement {
         top: -12px;
         left: 50%;
         transform: translateX(-50%);
-        background: ${tokens.color.primary};
+        background: ${tokens.color.primaryMain};
         color: white;
         padding: 4px ${tokens.spacing.md};
         border-radius: ${tokens.radius.full};
@@ -106,7 +106,7 @@ export class SubscriptionCard extends LitElement {
       .currency {
         font-size: ${tokens.fontSize.lg};
         font-weight: ${tokens.fontWeight.bold};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       .amount {
@@ -140,7 +140,7 @@ export class SubscriptionCard extends LitElement {
         align-items: center;
         gap: ${tokens.spacing.sm};
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       .feature-icon {
@@ -152,7 +152,7 @@ export class SubscriptionCard extends LitElement {
       .cta-button {
         width: 100%;
         padding: ${tokens.spacing.md} ${tokens.spacing.lg};
-        background: ${tokens.color.primary};
+        background: ${tokens.color.primaryMain};
         color: white;
         border: none;
         border-radius: ${tokens.radius.md};
@@ -168,7 +168,7 @@ export class SubscriptionCard extends LitElement {
       }
 
       .cta-button:disabled {
-        background: ${tokens.color.gray300};
+        background: ${tokens.color.gray100};
         cursor: not-allowed;
         transform: none;
       }

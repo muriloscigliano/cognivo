@@ -19,7 +19,7 @@ export class AiContextCard extends LitElement {
         display: block;
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       }
@@ -48,18 +48,18 @@ export class AiContextCard extends LitElement {
       }
 
       .importance-badge.high {
-        background: ${tokens.color.dangerLight};
-        color: ${tokens.color.dangerDark};
+        background: ${tokens.color.danger};
+        color: ${tokens.color.danger};
       }
 
       .importance-badge.medium {
-        background: ${tokens.color.warningLight};
-        color: ${tokens.color.warningDark};
+        background: ${tokens.color.warning};
+        color: ${tokens.color.warning};
       }
 
       .importance-badge.low {
-        background: ${tokens.color.gray200};
-        color: ${tokens.color.gray700};
+        background: ${tokens.color.gray100};
+        color: ${tokens.color.gray900};
       }
 
       .ai-badge {
@@ -76,14 +76,14 @@ export class AiContextCard extends LitElement {
 
       .description {
         font-size: ${tokens.fontSize.md};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         line-height: 1.6;
         margin-bottom: ${tokens.spacing.md};
       }
 
       .related-section {
         padding-top: ${tokens.spacing.md};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .section-title {
@@ -107,7 +107,7 @@ export class AiContextCard extends LitElement {
         background: ${tokens.color.gray50};
         border-radius: ${tokens.radius.md};
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       .item-icon {
@@ -125,7 +125,7 @@ export class AiContextCard extends LitElement {
       }
 
       .empty-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         margin-bottom: ${tokens.spacing.sm};
       }
     `

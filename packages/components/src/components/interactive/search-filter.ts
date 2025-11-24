@@ -17,13 +17,13 @@ export class SearchFilter extends LitElement {
       .search-input {
         flex: 1;
         padding: ${tokens.spacing.sm} ${tokens.spacing.md};
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.sm};
       }
 
       .filter-select {
         padding: ${tokens.spacing.sm} ${tokens.spacing.md};
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.sm};
         min-width: 150px;
       }

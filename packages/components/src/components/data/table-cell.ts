@@ -26,7 +26,7 @@ export class TableCell extends LitElement {
       :host([header]) {
         font-weight: ${tokens.fontWeight.semibold};
         background: ${tokens.color.gray50};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         font-size: ${tokens.fontSize.sm};
         padding: ${tokens.spacing.sm} ${tokens.spacing.lg};
       }

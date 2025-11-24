@@ -32,7 +32,7 @@ export class PricingTier extends LitElement {
       }
 
       .tier:hover {
-        border-color: ${tokens.color.primary};
+        border-color: ${tokens.color.primaryMain};
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       }
 
@@ -45,7 +45,7 @@ export class PricingTier extends LitElement {
       .tier-price {
         font-size: ${tokens.fontSize.lg};
         font-weight: ${tokens.fontWeight.bold};
-        color: ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
       }
 
       .price-label {

@@ -21,7 +21,7 @@ export class TabGroup extends LitElement {
 
       .tab-list {
         display: flex;
-        border-bottom: 2px solid ${tokens.color.gray200};
+        border-bottom: 2px solid ${tokens.color.gray100};
         gap: ${tokens.spacing.xs};
       }
 
@@ -31,7 +31,7 @@ export class TabGroup extends LitElement {
         border: none;
         border-bottom: 2px solid transparent;
         margin-bottom: -2px;
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         font-size: ${tokens.fontSize.md};
         font-weight: ${tokens.fontWeight.medium};
         cursor: pointer;

@@ -42,7 +42,7 @@ export class TotalBreakdown extends LitElement {
       }
 
       .breakdown-label {
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
       }
 
       .breakdown-value {
@@ -57,7 +57,7 @@ export class TotalBreakdown extends LitElement {
       .total-row {
         margin-top: ${tokens.spacing.md};
         padding-top: ${tokens.spacing.md};
-        border-top: 2px solid ${tokens.color.gray200};
+        border-top: 2px solid ${tokens.color.gray100};
       }
 
       .total-row .breakdown-label {
@@ -69,7 +69,7 @@ export class TotalBreakdown extends LitElement {
       .total-row .breakdown-value {
         font-size: ${tokens.fontSize.xl};
         font-weight: ${tokens.fontWeight.bold};
-        color: ${tokens.color.primary};
+        color: ${tokens.color.primaryMain};
       }
     `
   ];

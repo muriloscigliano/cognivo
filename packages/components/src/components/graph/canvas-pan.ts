@@ -64,7 +64,7 @@ export class CanvasPan extends LitElement {
         flex-direction: column;
         gap: ${tokens.spacing.xs};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray300};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         padding: ${tokens.spacing.xs};
         box-shadow: ${tokens.shadow.md};

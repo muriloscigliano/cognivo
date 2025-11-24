@@ -62,7 +62,7 @@ export class AiForecastChart extends LitElement {
 
       .actual-line {
         fill: none;
-        stroke: ${tokens.color.gray700};
+        stroke: ${tokens.color.gray900};
         stroke-width: 2;
       }
 
@@ -79,7 +79,7 @@ export class AiForecastChart extends LitElement {
       }
 
       .data-point {
-        fill: ${tokens.color.gray700};
+        fill: ${tokens.color.gray900};
       }
 
       .predicted-point {
@@ -87,20 +87,20 @@ export class AiForecastChart extends LitElement {
       }
 
       .grid-line {
-        stroke: ${tokens.color.gray200};
+        stroke: ${tokens.color.gray100};
         stroke-width: 1;
         stroke-dasharray: 2, 2;
       }
 
       .axis-line {
-        stroke: ${tokens.color.gray300};
+        stroke: ${tokens.color.gray100};
         stroke-width: 1;
       }
 
       .label {
         font-family: ${tokens.fontFamily.primary};
         font-size: 11px;
-        fill: ${tokens.color.gray600};
+        fill: ${tokens.color.gray500};
       }
 
       .legend {
@@ -123,7 +123,7 @@ export class AiForecastChart extends LitElement {
       }
 
       .legend-line.actual {
-        background: ${tokens.color.gray700};
+        background: ${tokens.color.gray900};
       }
 
       .legend-line.predicted {
@@ -140,7 +140,7 @@ export class AiForecastChart extends LitElement {
       }
 
       .empty-icon {
-        font-size: ${tokens.fontSize.xxxl};
+        font-size: ${tokens.fontSize['3xl']};
         margin-bottom: ${tokens.spacing.sm};
       }
     `

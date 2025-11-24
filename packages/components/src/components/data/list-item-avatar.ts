@@ -24,7 +24,7 @@ export class ListItemAvatar extends LitElement {
         justify-content: center;
         overflow: hidden;
         background: ${tokens.color.gray100};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         font-weight: ${tokens.fontWeight.medium};
         font-size: ${tokens.fontSize.sm};
       }

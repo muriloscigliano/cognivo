@@ -19,7 +19,7 @@ export class AiContextSummary extends LitElement {
         display: block;
         padding: ${tokens.spacing.lg};
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
       }
 
@@ -55,7 +55,7 @@ export class AiContextSummary extends LitElement {
         border-left: 4px solid ${tokens.color.primaryMain};
         margin-bottom: ${tokens.spacing.md};
         font-size: ${tokens.fontSize.md};
-        color: ${tokens.color.gray800};
+        color: ${tokens.color.gray900};
         line-height: 1.6;
       }
 
@@ -71,7 +71,7 @@ export class AiContextSummary extends LitElement {
         align-items: flex-start;
         gap: ${tokens.spacing.sm};
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray700};
+        color: ${tokens.color.gray900};
         line-height: 1.5;
       }
 
@@ -81,20 +81,20 @@ export class AiContextSummary extends LitElement {
 
       .confidence-section {
         padding-top: ${tokens.spacing.md};
-        border-top: 1px solid ${tokens.color.gray200};
+        border-top: 1px solid ${tokens.color.gray100};
       }
 
       .confidence-label {
         display: flex;
         justify-content: space-between;
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         margin-bottom: ${tokens.spacing.xs};
       }
 
       .confidence-track {
         height: 6px;
-        background: ${tokens.color.gray200};
+        background: ${tokens.color.gray100};
         border-radius: ${tokens.radius.full};
         overflow: hidden;
       }

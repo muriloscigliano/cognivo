@@ -33,7 +33,7 @@ export class QuickStats extends LitElement {
       :host {
         display: block;
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.lg};
         overflow: hidden;
       }
@@ -73,8 +73,8 @@ export class QuickStats extends LitElement {
         flex-direction: column;
         gap: ${tokens.spacing.xs};
         padding: ${tokens.spacing.lg};
-        border-right: 1px solid ${tokens.color.gray200};
-        border-bottom: 1px solid ${tokens.color.gray200};
+        border-right: 1px solid ${tokens.color.gray100};
+        border-bottom: 1px solid ${tokens.color.gray100};
         transition: all ${tokens.transition.fast};
         position: relative;
         overflow: hidden;
@@ -91,7 +91,7 @@ export class QuickStats extends LitElement {
         left: 0;
         width: 3px;
         height: 100%;
-        background: var(--stat-color, ${tokens.color.primary});
+        background: var(--stat-color, ${tokens.color.primaryMain});
         opacity: 0;
         transition: opacity ${tokens.transition.fast};
       }
@@ -108,21 +108,21 @@ export class QuickStats extends LitElement {
       }
 
       .stat-label {
-        font-size: ${tokens.font.size.xs};
-        color: ${tokens.color.gray600};
-        font-weight: ${tokens.font.weight.medium};
+        font-size: ${tokens.fontSize.xs};
+        color: ${tokens.color.gray500};
+        font-weight: ${tokens.fontWeight.medium};
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
 
       .stat-icon {
-        font-size: ${tokens.font.size.md};
+        font-size: ${tokens.fontSize.md};
         opacity: 0.6;
       }
 
       .stat-value {
-        font-size: ${tokens.font.size.xxl};
-        font-weight: ${tokens.font.weight.bold};
+        font-size: ${tokens.fontSize['2xl']};
+        font-weight: ${tokens.fontWeight.bold};
         color: ${tokens.color.gray900};
         line-height: 1.2;
       }
@@ -131,8 +131,8 @@ export class QuickStats extends LitElement {
         display: flex;
         align-items: center;
         gap: ${tokens.spacing.xxs};
-        font-size: ${tokens.font.size.xs};
-        font-weight: ${tokens.font.weight.semibold};
+        font-size: ${tokens.fontSize.xs};
+        font-weight: ${tokens.fontWeight.semibold};
       }
 
       .stat-change[data-trend='up'] {
@@ -140,17 +140,17 @@ export class QuickStats extends LitElement {
       }
 
       .stat-change[data-trend='down'] {
-        color: ${tokens.color.error};
+        color: ${tokens.color.danger};
       }
 
       .stat-change[data-trend='neutral'] {
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
       }
 
       .empty-state {
         padding: ${tokens.spacing.xxl};
         text-align: center;
-        color: ${tokens.color.gray400};
+        color: ${tokens.color.gray500};
       }
     `
   ];

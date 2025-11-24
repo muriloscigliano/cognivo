@@ -54,8 +54,8 @@ export class TableSelection extends LitElement {
 
       .selection-btn.secondary {
         background: ${tokens.color.grayWhite};
-        color: ${tokens.color.gray700};
-        border: 1px solid ${tokens.color.gray300};
+        color: ${tokens.color.gray900};
+        border: 1px solid ${tokens.color.gray100};
       }
 
       .selection-btn.secondary:hover {

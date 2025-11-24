@@ -20,7 +20,7 @@ export class DataList extends LitElement {
       :host {
         display: block;
         background: ${tokens.color.grayWhite};
-        border: 1px solid ${tokens.color.gray200};
+        border: 1px solid ${tokens.color.gray100};
         border-radius: ${tokens.radius.md};
         overflow: hidden;
       }
@@ -80,7 +80,7 @@ export class DataList extends LitElement {
 
       .description {
         font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray600};
+        color: ${tokens.color.gray500};
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
