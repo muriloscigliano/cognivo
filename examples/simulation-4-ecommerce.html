@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulation #4 - E-Commerce Dashboard | Cognivo</title>
+  <link rel="stylesheet" href="../packages/tokens/dist/index.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--pa-font-family-roboto);
+      background: linear-gradient(135deg, var(--pa-blue-100) 0%, var(--pa-gray-50) 100%);
+      padding: var(--pa-spacing-24);
+      min-height: 100vh;
+    }
+    .container { max-width: 1600px; margin: 0 auto; }
+    header {
+      background: var(--pa-gray-white);
+      padding: var(--pa-spacing-24);
+      border-radius: var(--pa-Border-radius-150);
+      margin-bottom: var(--pa-spacing-24);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      font-size: var(--pa-font-size-800);
+      font-weight: var(--pa-font-weight-700);
+      color: var(--pa-blue-500);
+      margin-bottom: 8px;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--pa-spacing-16);
+      margin-bottom: var(--pa-spacing-24);
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--pa-spacing-16);
+      margin-bottom: var(--pa-spacing-24);
+    }
+    .section {
+      background: var(--pa-gray-white);
+      padding: var(--pa-spacing-24);
+      border-radius: var(--pa-Border-radius-150);
+      margin-bottom: var(--pa-spacing-24);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      font-size: var(--pa-font-size-500);
+      font-weight: var(--pa-font-weight-600);
+      margin-bottom: var(--pa-spacing-16);
+      color: var(--pa-gray-900);
+    }
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: var(--pa-spacing-24);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1>🛍️ E-Commerce Analytics</h1>
+          <p style="color: var(--pa-gray-600);">Real-time store performance dashboard</p>
+        </div>
+        <div style="display: flex; gap: 16px; align-items: center;">
+          <ai-thinking-indicator size="md"></ai-thinking-indicator>
+          <ai-confidence-badge score="0.97" show-percentage size="lg"></ai-confidence-badge>
+        </div>
+      </div>
+    </header>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <kpi-card
+        title="Today's Revenue"
+        value="$28,450"
+        change="+15.3%"
+        trend="up"
+        period="vs yesterday"
+      ></kpi-card>
+
+      <kpi-card
+        title="Orders"
+        value="1,842"
+        change="+8.7%"
+        trend="up"
+        period="vs yesterday"
+      ></kpi-card>
+
+      <kpi-card
+        title="Avg. Order Value"
+        value="$154.52"
+        change="+3.2%"
+        trend="up"
+        period="vs last week"
+      ></kpi-card>
+
+      <kpi-card
+        title="Cart Abandonment"
+        value="12.4%"
+        change="-2.1%"
+        trend="down"
+        period="improvement"
+      ></kpi-card>
+
+      <kpi-card
+        title="Conversion Rate"
+        value="4.82%"
+        change="+0.8%"
+        trend="up"
+        period="vs last month"
+      ></kpi-card>
+    </div>
+
+    <!-- Performance Cards -->
+    <div class="cards-grid">
+      <data-card
+        title="Top Product"
+        value="Wireless Headphones"
+        subtitle="324 units sold today"
+        icon="🎧"
+        variant="primary"
+      ></data-card>
+
+      <data-card
+        title="Active Promotions"
+        value="12"
+        subtitle="Summer Sale active"
+        icon="🎯"
+        variant="warning"
+      ></data-card>
+
+      <data-card
+        title="Customer Satisfaction"
+        value="4.8/5.0"
+        subtitle="Based on 1,234 reviews"
+        icon="⭐"
+        variant="success"
+      ></data-card>
+
+      <data-card
+        title="Stock Alerts"
+        value="8 items"
+        subtitle="Running low on inventory"
+        icon="📦"
+        variant="danger"
+      ></data-card>
+    </div>
+
+    <!-- Sales Charts -->
+    <div class="chart-grid">
+      <div class="section">
+        <h2>Weekly Revenue Trend</h2>
+        <line-chart id="revenueChart" smooth show-points fill-area show-grid></line-chart>
+      </div>
+
+      <div class="section">
+        <h2>Top Categories</h2>
+        <bar-chart id="categoryChart" show-values show-labels></bar-chart>
+      </div>
+    </div>
+
+    <!-- Product Performance Table -->
+    <div class="section">
+      <h2>Top Performing Products</h2>
+      <data-table id="productTable" striped hoverable></data-table>
+    </div>
+
+    <!-- AI Insights -->
+    <div class="section">
+      <h2>AI-Powered Insights</h2>
+      <ai-result-panel
+        title="Daily Sales Analysis"
+        status="success"
+      >
+        <p style="margin-bottom: 16px; line-height: 1.6;">
+          🎯 <strong>Peak sales hour:</strong> 2-3 PM (32% of daily revenue)<br>
+          📱 <strong>Mobile traffic:</strong> Up 45% - consider mobile-first promotions<br>
+          💰 <strong>Upsell opportunity:</strong> Customers buying headphones often add cases (+$42 avg)<br>
+          🔥 <strong>Trending now:</strong> Smart home devices (+156% search volume)
+        </p>
+        <ai-confidence-badge score="0.91" show-percentage></ai-confidence-badge>
+      </ai-result-panel>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="section">
+      <h2>Quick Actions</h2>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <ai-action-button action="forecast">Forecast Next Week</ai-action-button>
+        <ai-action-button action="detect-anomaly">Detect Sales Anomalies</ai-action-button>
+        <ai-action-button action="explain">Explain Trends</ai-action-button>
+        <ai-action-button action="summarize">Generate Report</ai-action-button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import '../packages/components/dist/index.js';
+
+    // Revenue Chart
+    document.getElementById('revenueChart').series = [{
+      name: 'Daily Revenue',
+      data: [
+        { label: 'Mon', value: 18400 },
+        { label: 'Tue', value: 21200 },
+        { label: 'Wed', value: 24800 },
+        { label: 'Thu', value: 26100 },
+        { label: 'Fri', value: 31200 },
+        { label: 'Sat', value: 28450 },
+        { label: 'Sun', value: 24600 }
+      ],
+      color: 'var(--pa-green-500)'
+    }];
+
+    // Category Chart
+    document.getElementById('categoryChart').data = [
+      { label: 'Electronics', value: 125000, color: 'var(--pa-blue-500)' },
+      { label: 'Clothing', value: 98000, color: 'var(--pa-blue-400)' },
+      { label: 'Home & Garden', value: 76000, color: 'var(--pa-blue-300)' },
+      { label: 'Sports', value: 54000, color: 'var(--pa-gray-400)' },
+      { label: 'Books', value: 42000, color: 'var(--pa-gray-400)' }
+    ];
+
+    // Product Table
+    const productTable = document.getElementById('productTable');
+    productTable.columns = [
+      { key: 'rank', label: '#', width: '60px', sortable: true },
+      { key: 'product', label: 'Product', sortable: true },
+      { key: 'category', label: 'Category', sortable: true },
+      { key: 'sales', label: 'Units Sold', sortable: true },
+      { key: 'revenue', label: 'Revenue', sortable: true },
+      { key: 'trend', label: 'Trend', sortable: true }
+    ];
+
+    productTable.data = [
+      { rank: 1, product: 'Wireless Headphones Pro', category: 'Electronics', sales: 324, revenue: '$48,600', trend: '↑ 23%' },
+      { rank: 2, product: 'Smart Watch Series 5', category: 'Electronics', sales: 298, revenue: '$44,700', trend: '↑ 18%' },
+      { rank: 3, product: 'Yoga Mat Premium', category: 'Sports', sales: 256, revenue: '$7,680', trend: '↑ 12%' },
+      { rank: 4, product: 'Coffee Maker Deluxe', category: 'Home & Garden', sales: 234, revenue: '$23,400', trend: '↑ 8%' },
+      { rank: 5, product: 'Running Shoes', category: 'Sports', sales: 212, revenue: '$21,200', trend: '↑ 5%' },
+      { rank: 6, product: 'Desk Lamp LED', category: 'Home & Garden', sales: 189, revenue: '$5,670', trend: '↑ 15%' },
+      { rank: 7, product: 'Backpack Travel', category: 'Clothing', sales: 176, revenue: '$8,800', trend: '↓ 3%' },
+      { rank: 8, product: 'Plant Pot Set', category: 'Home & Garden', sales: 145, revenue: '$2,900', trend: '↑ 28%' }
+    ];
+  </script>
+</body>
+</html>

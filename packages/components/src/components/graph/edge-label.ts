@@ -1,28 +1,44 @@
 import { LitElement, html, css, svg } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
+/**
+ * EdgeLabel Component
+ *
+ * @element edge-label
+ */
 @customElement('edge-label')
 export class EdgeLabel extends LitElement {
   static override styles = [
     baseStyles,
-    css`:host {
+    css`
+host {
       display: block;
-      position: relative;
     }
     svg {
       width: 100%;
       height: 100%;
-    }`
+    }`,
   ];
 
-  @property({ type: Array }) nodes = [];
-  @property({ type: Array }) edges = [];
-  @state() private zoom = 1;
+  @property({ type: Object })
+  source = { x: 0, y: 0 };
+
+  @property({ type: Object })
+  target = { x: 100, y: 100 };
 
   override render() {
-    return html`<svg><slot></slot></svg>`;
+    return html`
+      <svg viewBox="0 0 400 300">
+        <path
+          d="M ${this.source.x} ${this.source.y} L ${this.target.x} ${this.target.y}"
+          fill="none"
+          stroke="${tokens.color.gray500}"
+          stroke-width="2"
+        />
+      </svg>
+    `;
   }
 }
 

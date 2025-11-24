@@ -316,7 +316,7 @@ export class AiResultPanel extends LitElement {
    * Panel title
    */
   @property({ type: String })
-  title = '';
+  override title = '';
 
   /**
    * Timestamp text

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulation #5 - Complete Component Showcase | Cognivo</title>
+  <link rel="stylesheet" href="../packages/tokens/dist/index.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--pa-font-family-roboto);
+      background: var(--pa-gray-50);
+      padding: var(--pa-spacing-24);
+    }
+    .container { max-width: 1600px; margin: 0 auto; }
+    header {
+      text-align: center;
+      margin-bottom: var(--pa-spacing-32);
+      padding: var(--pa-spacing-32);
+      background: linear-gradient(135deg, var(--pa-blue-500), var(--pa-blue-700));
+      border-radius: var(--pa-Border-radius-150);
+      color: white;
+    }
+    h1 {
+      font-size: var(--pa-font-size-900);
+      font-weight: var(--pa-font-weight-900);
+      margin-bottom: var(--pa-spacing-16);
+    }
+    .section {
+      background: var(--pa-gray-white);
+      padding: var(--pa-spacing-24);
+      border-radius: var(--pa-Border-radius-150);
+      margin-bottom: var(--pa-spacing-24);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      font-size: var(--pa-font-size-500);
+      font-weight: var(--pa-font-weight-700);
+      margin-bottom: var(--pa-spacing-16);
+      color: var(--pa-blue-500);
+      border-bottom: 2px solid var(--pa-blue-500);
+      padding-bottom: var(--pa-spacing-8);
+    }
+    .component-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--pa-spacing-16);
+      margin-bottom: var(--pa-spacing-16);
+    }
+    .demo-box {
+      padding: var(--pa-spacing-16);
+      background: var(--pa-gray-50);
+      border-radius: var(--pa-Border-radius-100);
+      border: 1px dashed var(--pa-gray-300);
+    }
+    .label {
+      font-size: var(--pa-font-size-75);
+      color: var(--pa-gray-600);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--pa-spacing-8);
+      font-weight: var(--pa-font-weight-600);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🚀 Cognivo Component Showcase</h1>
+      <p style="font-size: var(--pa-font-size-250); opacity: 0.95;">Complete demonstration of all working components</p>
+      <div style="margin-top: 24px; display: flex; justify-content: center; gap: 16px;">
+        <ai-thinking-indicator size="lg"></ai-thinking-indicator>
+        <ai-confidence-badge score="1.0" show-percentage size="lg"></ai-confidence-badge>
+      </div>
+    </header>
+
+    <!-- AI Components -->
+    <div class="section">
+      <h2>🤖 AI Components</h2>
+      <div class="component-grid">
+        <div class="demo-box">
+          <div class="label">AI Thinking Indicator</div>
+          <div style="display: flex; gap: 16px; align-items: center;">
+            <ai-thinking-indicator size="sm"></ai-thinking-indicator>
+            <ai-thinking-indicator size="md"></ai-thinking-indicator>
+            <ai-thinking-indicator size="lg"></ai-thinking-indicator>
+          </div>
+        </div>
+
+        <div class="demo-box">
+          <div class="label">AI Confidence Badges</div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <ai-confidence-badge score="0.95" show-percentage size="md"></ai-confidence-badge>
+            <ai-confidence-badge score="0.65" show-percentage size="md"></ai-confidence-badge>
+            <ai-confidence-badge score="0.35" show-percentage size="md"></ai-confidence-badge>
+          </div>
+        </div>
+
+        <div class="demo-box">
+          <div class="label">AI Action Buttons</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <ai-action-button action="explain" size="sm">Explain</ai-action-button>
+            <ai-action-button action="forecast" size="sm">Forecast</ai-action-button>
+            <ai-action-button action="detect-anomaly" size="sm">Detect</ai-action-button>
+            <ai-action-button action="summarize" size="sm">Summarize</ai-action-button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px;">
+        <div class="label">AI Insight Card</div>
+        <ai-insight-card
+          title="Performance Analysis"
+          insight="System performance is optimal. All metrics are within expected ranges. No anomalies detected in the last 24 hours."
+          confidence="0.94"
+        ></ai-insight-card>
+      </div>
+
+      <div style="margin-top: 16px;">
+        <div class="label">AI Result Panel</div>
+        <ai-result-panel
+          title="Analysis Complete"
+          status="success"
+        >
+          <p>✅ Processed 10,000 records successfully<br>
+          ⚡ Completed in 2.3 seconds<br>
+          📊 Generated 5 actionable insights</p>
+        </ai-result-panel>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="section">
+      <h2>📊 KPI Cards</h2>
+      <div class="component-grid">
+        <kpi-card
+          title="Revenue"
+          value="$125,430"
+          change="+23.5%"
+          trend="up"
+          period="vs last month"
+        ></kpi-card>
+
+        <kpi-card
+          title="Users"
+          value="8,234"
+          change="+12.3%"
+          trend="up"
+          period="vs last week"
+        ></kpi-card>
+
+        <kpi-card
+          title="Churn Rate"
+          value="2.4%"
+          change="-0.8%"
+          trend="down"
+          period="improvement"
+        ></kpi-card>
+
+        <kpi-card
+          title="API Latency"
+          value="145ms"
+          change="0%"
+          trend="neutral"
+          period="stable"
+        ></kpi-card>
+      </div>
+    </div>
+
+    <!-- Data Cards -->
+    <div class="section">
+      <h2>🎴 Data Cards</h2>
+      <div class="component-grid">
+        <data-card
+          title="Active Projects"
+          value="42"
+          subtitle="8 completed this week"
+          icon="📁"
+          variant="default"
+        ></data-card>
+
+        <data-card
+          title="Team Members"
+          value="128"
+          subtitle="+12 new this month"
+          icon="👥"
+          variant="primary"
+        ></data-card>
+
+        <data-card
+          title="Tasks Done"
+          value="1,847"
+          subtitle="94% completion rate"
+          icon="✅"
+          variant="success"
+        ></data-card>
+
+        <data-card
+          title="Pending Reviews"
+          value="23"
+          subtitle="Needs attention"
+          icon="⚠️"
+          variant="warning"
+        ></data-card>
+
+        <data-card
+          title="Critical Issues"
+          value="3"
+          subtitle="Immediate action required"
+          icon="🚨"
+          variant="danger"
+        ></data-card>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="section">
+      <h2>📈 Charts</h2>
+
+      <div class="label">Bar Chart - Vertical</div>
+      <div style="margin-bottom: 32px;">
+        <bar-chart id="verticalBar" show-values show-labels orientation="vertical"></bar-chart>
+      </div>
+
+      <div class="label">Bar Chart - Horizontal</div>
+      <div style="margin-bottom: 32px;">
+        <bar-chart id="horizontalBar" show-values show-labels orientation="horizontal"></bar-chart>
+      </div>
+
+      <div class="label">Line Chart - Single Series</div>
+      <div style="margin-bottom: 32px;">
+        <line-chart id="singleLine" smooth show-points show-grid></line-chart>
+      </div>
+
+      <div class="label">Line Chart - Multiple Series</div>
+      <div style="margin-bottom: 32px;">
+        <line-chart id="multiLine" smooth show-points show-grid></line-chart>
+      </div>
+
+      <div class="label">Line Chart - Filled Area</div>
+      <div>
+        <line-chart id="areaChart" smooth show-points fill-area></line-chart>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="section">
+      <h2>📋 Data Table</h2>
+      <div class="label">Sortable, Striped, Hoverable</div>
+      <data-table id="demoTable" striped hoverable></data-table>
+    </div>
+
+    <!-- All Components Combined -->
+    <div class="section" style="background: linear-gradient(135deg, var(--pa-blue-50), var(--pa-green-50)); border: 2px solid var(--pa-blue-500);">
+      <h2>✨ All Components Working Together!</h2>
+      <p style="margin-bottom: 24px; font-size: var(--pa-font-size-200);">This showcase demonstrates all fixed components rendering beautifully with proper styling!</p>
+
+      <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+        <ai-thinking-indicator size="md"></ai-thinking-indicator>
+        <ai-confidence-badge score="0.98" show-percentage></ai-confidence-badge>
+        <ai-action-button action="explain">Test Me!</ai-action-button>
+        <kpi-card title="Success Rate" value="100%" change="+100%" trend="up"></kpi-card>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import '../packages/components/dist/index.js';
+
+    // Vertical Bar Chart
+    document.getElementById('verticalBar').data = [
+      { label: 'Q1', value: 42000, color: 'var(--pa-blue-500)' },
+      { label: 'Q2', value: 58000, color: 'var(--pa-blue-500)' },
+      { label: 'Q3', value: 65000, color: 'var(--pa-blue-500)' },
+      { label: 'Q4', value: 78000, color: 'var(--pa-green-500)' }
+    ];
+
+    // Horizontal Bar Chart
+    document.getElementById('horizontalBar').data = [
+      { label: 'Product A', value: 340, color: 'var(--pa-blue-500)' },
+      { label: 'Product B', value: 280, color: 'var(--pa-blue-400)' },
+      { label: 'Product C', value: 220, color: 'var(--pa-blue-300)' },
+      { label: 'Product D', value: 180, color: 'var(--pa-gray-400)' },
+      { label: 'Product E', value: 120, color: 'var(--pa-gray-400)' }
+    ];
+
+    // Single Line Chart
+    document.getElementById('singleLine').series = [{
+      name: 'Sales',
+      data: [
+        { label: 'Jan', value: 4200 },
+        { label: 'Feb', value: 5100 },
+        { label: 'Mar', value: 4800 },
+        { label: 'Apr', value: 6200 },
+        { label: 'May', value: 7800 },
+        { label: 'Jun', value: 9100 }
+      ],
+      color: 'var(--pa-blue-500)'
+    }];
+
+    // Multi Line Chart
+    document.getElementById('multiLine').series = [
+      {
+        name: 'Revenue',
+        data: [
+          { label: 'Mon', value: 12000 },
+          { label: 'Tue', value: 15000 },
+          { label: 'Wed', value: 18000 },
+          { label: 'Thu', value: 16000 },
+          { label: 'Fri', value: 21000 }
+        ],
+        color: 'var(--pa-blue-500)'
+      },
+      {
+        name: 'Costs',
+        data: [
+          { label: 'Mon', value: 8000 },
+          { label: 'Tue', value: 9000 },
+          { label: 'Wed', value: 11000 },
+          { label: 'Thu', value: 10000 },
+          { label: 'Fri', value: 13000 }
+        ],
+        color: 'var(--pa-red-500)'
+      },
+      {
+        name: 'Profit',
+        data: [
+          { label: 'Mon', value: 4000 },
+          { label: 'Tue', value: 6000 },
+          { label: 'Wed', value: 7000 },
+          { label: 'Thu', value: 6000 },
+          { label: 'Fri', value: 8000 }
+        ],
+        color: 'var(--pa-green-500)'
+      }
+    ];
+
+    // Area Chart
+    document.getElementById('areaChart').series = [{
+      name: 'Users',
+      data: [
+        { label: 'Week 1', value: 1200 },
+        { label: 'Week 2', value: 1890 },
+        { label: 'Week 3', value: 2340 },
+        { label: 'Week 4', value: 3200 }
+      ],
+      color: 'var(--pa-green-500)'
+    }];
+
+    // Data Table
+    const table = document.getElementById('demoTable');
+    table.columns = [
+      { key: 'id', label: 'ID', width: '80px', sortable: true },
+      { key: 'name', label: 'Name', sortable: true },
+      { key: 'email', label: 'Email', sortable: true },
+      { key: 'role', label: 'Role', sortable: true },
+      { key: 'status', label: 'Status', sortable: true },
+      { key: 'score', label: 'Score', sortable: true }
+    ];
+
+    table.data = [
+      { id: 1, name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin', status: 'Active', score: 95 },
+      { id: 2, name: 'Bob Smith', email: 'bob@example.com', role: 'User', status: 'Active', score: 87 },
+      { id: 3, name: 'Carol White', email: 'carol@example.com', role: 'Manager', status: 'Active', score: 92 },
+      { id: 4, name: 'David Brown', email: 'david@example.com', role: 'User', status: 'Inactive', score: 78 },
+      { id: 5, name: 'Eve Davis', email: 'eve@example.com', role: 'Admin', status: 'Active', score: 98 },
+      { id: 6, name: 'Frank Miller', email: 'frank@example.com', role: 'User', status: 'Active', score: 84 },
+      { id: 7, name: 'Grace Lee', email: 'grace@example.com', role: 'Manager', status: 'Active', score: 91 }
+    ];
+  </script>
+</body>
+</html>

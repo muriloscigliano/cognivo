@@ -5,7 +5,8 @@ import { tokens } from '../../styles/tokens.js';
 
 @customElement('cg-heading')
 export class CgHeading extends LitElement {
-  static override styles = [baseStyles, css`:host { display: block; font-family: ${tokens.fontFamily.display}; font-weight: ${tokens.fontWeight.bold}; margin: 0; }
+  static override styles = [baseStyles, css`
+    :host { display: block; font-family: ${tokens.fontFamily.display}; font-weight: ${tokens.fontWeight.bold}; margin: 0; }
     :host([level='1']) { font-size: ${tokens.fontSize['3xl']}; }
     :host([level='2']) { font-size: ${tokens.fontSize['2xl']}; }
     :host([level='3']) { font-size: ${tokens.fontSize.xl}; }
