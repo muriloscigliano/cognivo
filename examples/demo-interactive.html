@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cognivo - Interactive AI Demo</title>
+  <link rel="stylesheet" href="../packages/tokens/dist/index.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Dark theme base */
+      --bg: #09090b;
+      --surface: #18181b;
+      --surface-2: #27272a;
+      --border: #3f3f46;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --accent: #8b5cf6;
+      --accent-hover: #7c3aed;
+      --accent-glow: rgba(139, 92, 246, 0.15);
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+
+      /* Override Cognivo tokens for dark theme */
+      --cg-gray-white: var(--surface);
+      --cg-gray-50: #27272a;
+      --cg-gray-100: var(--border);
+      --cg-gray-500: var(--text-muted);
+      --cg-gray-600: #71717a;
+      --cg-gray-700: #52525b;
+      --cg-gray-900: var(--text);
+      --cg-brand-ai-accent: var(--accent);
+      --cg-brand-ai-highlight: #a78bfa;
+      --cg-brand-ai-background: var(--accent-glow);
+      --cg-brand-ai-border: rgba(139, 92, 246, 0.4);
+      --cg-green-500: var(--success);
+      --cg-yellow-500: var(--warning);
+      --cg-red-500: var(--danger);
+      --cg-blue-500: #3b82f6;
+      --cg-brand-primary-400: var(--accent);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body { min-height: 100vh; }
+
+    .app {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 32px;
+      padding: 4px 0;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .nav { display: flex; flex-direction: column; gap: 2px; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+
+    .nav-item:hover { background: var(--surface-2); color: var(--text); }
+    .nav-item.active { background: var(--accent-glow); color: var(--accent); }
+
+    .nav-section {
+      margin: 20px 0 8px;
+      padding: 0 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    /* Main */
+    .main {
+      padding: 32px 40px;
+      max-width: 1200px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .header p { color: var(--text-muted); font-size: 14px; }
+
+    .header-actions { display: flex; gap: 12px; align-items: center; }
+
+    .ai-status {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 13px;
+    }
+
+    /* Section */
+    .section { margin-bottom: 32px; }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    /* Grid */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .card-title { font-size: 14px; font-weight: 600; }
+    .card-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-success { background: rgba(34, 197, 94, 0.15); color: var(--success); }
+    .badge-accent { background: var(--accent-glow); color: var(--accent); }
+    .badge-warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+
+    /* AI Insight Card Container */
+    .ai-card-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .ai-card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ai-card-title { font-size: 15px; font-weight: 600; }
+
+    .ai-card-body { padding: 20px; }
+
+    .ai-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .ai-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: var(--accent-glow);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .ai-btn:hover {
+      background: var(--accent);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    .ai-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .ai-result {
+      background: var(--accent-glow);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 10px;
+      padding: 16px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .ai-result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .ai-result-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .ai-result-content {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    .ai-result-content ul {
+      margin: 12px 0;
+      padding-left: 20px;
+    }
+
+    .ai-result-content li {
+      margin: 6px 0;
+      color: var(--text-muted);
+    }
+
+    .ai-result-content li strong {
+      color: var(--text);
+    }
+
+    .ai-loading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Data Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 10px 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .data-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table tr:last-child td { border-bottom: none; }
+
+    .data-table tr:hover { background: var(--surface-2); }
+
+    .trend-up { color: var(--success); }
+    .trend-down { color: var(--danger); }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 800px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .main { padding: 20px; }
+      .grid-4 { grid-template-columns: 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-icon">C</div>
+        <span class="logo-text">Cognivo</span>
+      </div>
+      <nav class="nav">
+        <a class="nav-item active">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          Dashboard
+        </a>
+        <a class="nav-item">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          Analytics
+        </a>
+        <div class="nav-section">AI Features</div>
+        <a class="nav-item">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          AI Insights
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <header class="header">
+        <div>
+          <h1>Analytics Dashboard</h1>
+          <p>Real-time insights powered by AI</p>
+        </div>
+        <div class="header-actions">
+          <div class="ai-status">
+            <ai-thinking-indicator size="sm"></ai-thinking-indicator>
+            <span style="color: var(--text-muted)">AI Ready</span>
+            <ai-confidence-badge score="0.94" show-percentage size="sm"></ai-confidence-badge>
+          </div>
+          <div class="ai-status">
+            <span class="live-dot"></span>
+            <span>Live</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- KPI Section -->
+      <section class="section">
+        <div class="section-header">
+          <span class="section-title">Key Metrics</span>
+          <span class="badge badge-success">+18.2% overall</span>
+        </div>
+        <div class="grid-4">
+          <kpi-card title="Revenue" value="$142,580" change="+24.3%" trend="up" period="vs last month"></kpi-card>
+          <kpi-card title="Active Users" value="12,847" change="+18.7%" trend="up" period="vs last week"></kpi-card>
+          <kpi-card title="Conversion" value="4.28%" change="+0.6%" trend="up" period="vs yesterday"></kpi-card>
+          <kpi-card title="Churn Rate" value="2.1%" change="-0.3%" trend="down" period="vs last month"></kpi-card>
+        </div>
+      </section>
+
+      <!-- Charts Section -->
+      <section class="section">
+        <div class="section-header">
+          <span class="section-title">Performance</span>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Revenue Trend</div>
+                <div class="card-subtitle">Monthly revenue growth</div>
+              </div>
+              <span class="badge badge-success">+24%</span>
+            </div>
+            <bar-chart id="revenueChart" show-values show-labels></bar-chart>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">User Growth</div>
+                <div class="card-subtitle">Active users over time</div>
+              </div>
+              <span class="badge badge-accent">Trending</span>
+            </div>
+            <line-chart id="userChart" smooth show-points fill-area></line-chart>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI Insights Section -->
+      <section class="section">
+        <div class="section-header">
+          <span class="section-title">AI Analysis</span>
+        </div>
+        <div class="ai-card-wrapper">
+          <div class="ai-card-header">
+            <span class="ai-card-title">Revenue Analysis</span>
+            <ai-confidence-badge id="mainConfidence" score="0" size="md"></ai-confidence-badge>
+          </div>
+          <div class="ai-card-body">
+            <div class="ai-actions">
+              <button class="ai-btn" id="btn-explain" onclick="runAiAction('explain')">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                Explain
+              </button>
+              <button class="ai-btn" id="btn-forecast" onclick="runAiAction('forecast')">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                Forecast
+              </button>
+              <button class="ai-btn" id="btn-anomaly" onclick="runAiAction('anomaly')">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                Detect Anomalies
+              </button>
+            </div>
+            <div id="ai-output">
+              <div class="ai-result">
+                <div class="ai-result-header">
+                  <span class="ai-result-title">Click an action above to get AI insights</span>
+                </div>
+                <div class="ai-result-content">
+                  Select "Explain" to understand current trends, "Forecast" to predict future performance, or "Detect Anomalies" to find unusual patterns in your data.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Data Table Section -->
+      <section class="section">
+        <div class="section-header">
+          <span class="section-title">Top Products</span>
+        </div>
+        <div class="card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Revenue</th>
+                <th>Units Sold</th>
+                <th>Growth</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Pro Plan</strong></td>
+                <td>$68,420</td>
+                <td>1,247</td>
+                <td class="trend-up">+32.4%</td>
+                <td><span class="badge badge-success">Top Seller</span></td>
+              </tr>
+              <tr>
+                <td><strong>Enterprise</strong></td>
+                <td>$45,200</td>
+                <td>89</td>
+                <td class="trend-up">+18.2%</td>
+                <td><span class="badge badge-accent">Growing</span></td>
+              </tr>
+              <tr>
+                <td><strong>Starter</strong></td>
+                <td>$18,960</td>
+                <td>2,840</td>
+                <td class="trend-up">+8.7%</td>
+                <td><span class="badge badge-accent">Stable</span></td>
+              </tr>
+              <tr>
+                <td><strong>Legacy Basic</strong></td>
+                <td>$10,000</td>
+                <td>524</td>
+                <td class="trend-down">-12.3%</td>
+                <td><span class="badge badge-warning">Declining</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module">
+    import '../packages/components/dist/index.js';
+
+    // Sample data
+    const revenueData = [
+      { label: 'Jan', value: 82000 },
+      { label: 'Feb', value: 91000 },
+      { label: 'Mar', value: 86000 },
+      { label: 'Apr', value: 105000 },
+      { label: 'May', value: 118000 },
+      { label: 'Jun', value: 142580 }
+    ];
+
+    const userData = [
+      { label: 'Jan', value: 4200 },
+      { label: 'Feb', value: 5100 },
+      { label: 'Mar', value: 6800 },
+      { label: 'Apr', value: 8200 },
+      { label: 'May', value: 10500 },
+      { label: 'Jun', value: 12847 }
+    ];
+
+    // Initialize charts
+    customElements.whenDefined('bar-chart').then(() => {
+      const chart = document.getElementById('revenueChart');
+      if (chart) chart.data = revenueData;
+    });
+
+    customElements.whenDefined('line-chart').then(() => {
+      const chart = document.getElementById('userChart');
+      if (chart) chart.series = [{ name: 'Users', data: userData }];
+    });
+
+    // Mock AI Client - simulates AI responses
+    const mockAiResponses = {
+      explain: {
+        confidence: 0.92,
+        title: 'Revenue Analysis',
+        content: `
+          <p>Based on analysis of your revenue data over the past 6 months, here are the key insights:</p>
+          <ul>
+            <li><strong>Strong Growth Trajectory:</strong> Revenue increased 73.9% from January ($82K) to June ($142.5K)</li>
+            <li><strong>Acceleration Phase:</strong> Growth rate increased from 11% (Jan-Feb) to 20.8% (May-Jun)</li>
+            <li><strong>Pro Plan Dominance:</strong> Pro Plan contributes 48% of total revenue, up from 35% in Q1</li>
+            <li><strong>Enterprise Opportunity:</strong> Despite lower volume, Enterprise shows highest per-unit value</li>
+          </ul>
+          <p>The data suggests your pricing strategy and product-market fit are strengthening.</p>
+        `
+      },
+      forecast: {
+        confidence: 0.87,
+        title: 'Revenue Forecast',
+        content: `
+          <p>Projected performance for the next quarter based on current trends:</p>
+          <ul>
+            <li><strong>July Projection:</strong> $158,000 - $165,000 (11-16% growth)</li>
+            <li><strong>August Projection:</strong> $172,000 - $185,000</li>
+            <li><strong>September Projection:</strong> $188,000 - $205,000</li>
+            <li><strong>Q3 Total:</strong> $518,000 - $555,000 expected</li>
+          </ul>
+          <p><strong>Key Assumptions:</strong> Continued Pro Plan adoption, stable churn rate, no major market changes.</p>
+          <p><strong>Risk Factors:</strong> Economic conditions, competitor pricing, seasonal variations.</p>
+        `
+      },
+      anomaly: {
+        confidence: 0.94,
+        title: 'Anomaly Detection',
+        content: `
+          <p>Analysis detected the following patterns requiring attention:</p>
+          <ul>
+            <li><strong>Positive Anomaly:</strong> June revenue 20.8% above trend line - investigate success factors</li>
+            <li><strong>Concern:</strong> Legacy Basic declining 12.3% - consider sunset or revitalization</li>
+            <li><strong>Opportunity:</strong> Enterprise conversion rate 2.3x higher than average on Thursdays</li>
+            <li><strong>Pattern:</strong> 68% of Pro Plan upgrades occur within 14 days of trial start</li>
+          </ul>
+          <p><strong>Recommendation:</strong> Focus resources on understanding the June spike and replicating those conditions.</p>
+        `
+      }
+    };
+
+    // AI Action Handler
+    window.runAiAction = async function(action) {
+      const output = document.getElementById('ai-output');
+      const confidence = document.getElementById('mainConfidence');
+      const btn = document.getElementById(`btn-${action}`);
+
+      // Disable all buttons
+      document.querySelectorAll('.ai-btn').forEach(b => b.disabled = true);
+
+      // Show loading
+      output.innerHTML = `
+        <div class="ai-loading">
+          <ai-thinking-indicator size="md"></ai-thinking-indicator>
+          <span>AI is analyzing your data...</span>
+        </div>
+      `;
+
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
+
+      // Get response
+      const response = mockAiResponses[action];
+
+      // Update confidence badge
+      confidence.setAttribute('score', response.confidence);
+      confidence.setAttribute('show-percentage', '');
+
+      // Show result
+      output.innerHTML = `
+        <div class="ai-result">
+          <div class="ai-result-header">
+            <span class="ai-result-title">${response.title}</span>
+            <ai-confidence-badge score="${response.confidence}" show-percentage size="sm"></ai-confidence-badge>
+          </div>
+          <div class="ai-result-content">${response.content}</div>
+        </div>
+      `;
+
+      // Re-enable buttons
+      document.querySelectorAll('.ai-btn').forEach(b => b.disabled = false);
+    };
+  </script>
+</body>
+</html>
