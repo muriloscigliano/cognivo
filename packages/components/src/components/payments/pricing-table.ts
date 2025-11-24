@@ -60,7 +60,7 @@ export class PricingTable extends LitElement {
   plans: SubscriptionPlan[] = [];
 
   @property({ type: String })
-  title = 'Choose Your Plan';
+  override title: string = 'Choose Your Plan';
 
   @property({ type: String })
   subtitle = 'Select the perfect plan for your needs';

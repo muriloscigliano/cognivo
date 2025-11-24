@@ -143,7 +143,7 @@ export class Popover extends LitElement {
 
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String, reflect: true }) placement: 'top' | 'right' | 'bottom' | 'left' = 'bottom';
-  @property({ type: String }) title = '';
+  @property({ type: String }) override title: string = '';
   @property({ type: Number }) offset = 8;
   @property({ type: Boolean, attribute: 'close-on-backdrop' }) closeOnBackdrop = true;
   @property({ type: Boolean, attribute: 'close-on-esc' }) closeOnEsc = true;

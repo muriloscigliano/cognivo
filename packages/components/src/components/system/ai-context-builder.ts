@@ -314,7 +314,7 @@ export class AiContextBuilder extends LitElement {
       type: this.newItem.type as any || 'text',
       content: this.newItem.content,
       weight: this.newItem.weight || 1,
-      metadata: this.newItem.metadata
+      metadata: this.newItem.metadata || {}
     };
 
     this.items = [...this.items, item];

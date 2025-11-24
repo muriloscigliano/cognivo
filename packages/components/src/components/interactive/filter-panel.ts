@@ -44,7 +44,7 @@ export class FilterPanel extends LitElement {
     `,
   ];
 
-  @property({ type: String }) title = 'Filters';
+  @property({ type: String }) override title: string = 'Filters';
 
   private _handleClear() {
     this.dispatchEvent(new CustomEvent('clear-filters'));

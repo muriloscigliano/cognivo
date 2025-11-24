@@ -124,7 +124,7 @@ export class PlanSelector extends LitElement {
   selectedPlanId = '';
 
   @property({ type: String })
-  title = 'Select a Plan';
+  override title: string = 'Select a Plan';
 
   @property({ type: String })
   description = '';

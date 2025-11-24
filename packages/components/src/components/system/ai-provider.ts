@@ -148,7 +148,7 @@ export class AiProvider extends LitElement {
   @state()
   private connectedComponents = 0;
 
-  connectedCallback() {
+  override connectedCallback() {
     super.connectedCallback();
     this.dispatchEvent(new CustomEvent('ai-provider-ready', {
       detail: { context: this.context },

@@ -193,8 +193,8 @@ export class AiAssistant extends LitElement {
 
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String, reflect: true }) side: 'left' | 'right' = 'right';
-  @property({ type: String }) width = '380px';
-  @property({ type: String }) title = 'AI Assistant';
+  @property({ type: String }) width: string = '380px';
+  @property({ type: String }) override title: string = 'AI Assistant';
   @property({ type: Boolean, attribute: 'close-on-backdrop' }) closeOnBackdrop = true;
   @property({ type: Boolean, attribute: 'close-on-esc' }) closeOnEsc = true;
   @property({ type: Boolean, attribute: 'hide-backdrop', reflect: true }) hideBackdrop = false;

@@ -185,7 +185,7 @@ export class ExplainTooltip extends LitElement {
   explanation = '';
 
   @property({ type: String })
-  title = '';
+  override title: string = '';
 
   @property({ type: Number })
   confidence = 0;

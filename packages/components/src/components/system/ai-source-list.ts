@@ -209,7 +209,7 @@ export class AiSourceList extends LitElement {
   sources: AISource[] = [];
 
   @property({ type: String })
-  title = 'AI Sources';
+  override title: string = 'AI Sources';
 
   @property({ type: Boolean, reflect: true })
   compact = false;

@@ -124,7 +124,7 @@ export class TrialBanner extends LitElement {
   daysRemaining = 7;
 
   @property({ type: String })
-  title = 'Free Trial Active';
+  override title: string = 'Free Trial Active';
 
   @property({ type: String })
   message = '';

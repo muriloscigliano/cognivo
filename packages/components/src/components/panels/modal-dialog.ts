@@ -166,7 +166,7 @@ export class ModalDialog extends LitElement {
 
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String, reflect: true }) size: 'sm' | 'md' | 'lg' | 'xl' | 'full' = 'md';
-  @property({ type: String }) title = '';
+  @property({ type: String }) override title: string = '';
   @property({ type: Boolean, attribute: 'close-on-backdrop' }) closeOnBackdrop = true;
   @property({ type: Boolean, attribute: 'close-on-esc' }) closeOnEsc = true;
   @property({ type: Boolean, attribute: 'hide-backdrop', reflect: true }) hideBackdrop = false;

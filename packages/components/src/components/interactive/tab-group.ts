@@ -67,7 +67,7 @@ export class TabGroup extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback();
-    if (!this.activeTab && this.tabs.length > 0) {
+    if (!this.activeTab && this.tabs.length > 0 && this.tabs[0]) {
       this.activeTab = this.tabs[0].id;
     }
   }

@@ -181,7 +181,7 @@ export class ModalSheet extends LitElement {
 
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String, reflect: true }) height: 'sm' | 'md' | 'lg' | 'full' = 'md';
-  @property({ type: String }) title = '';
+  @property({ type: String }) override title: string = '';
   @property({ type: Boolean, attribute: 'close-on-backdrop' }) closeOnBackdrop = true;
   @property({ type: Boolean, attribute: 'close-on-esc' }) closeOnEsc = true;
   @property({ type: Boolean, attribute: 'hide-backdrop', reflect: true }) hideBackdrop = false;

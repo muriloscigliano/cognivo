@@ -94,7 +94,7 @@ export class StripeElement extends LitElement {
   disabled = false;
 
   @property({ type: String })
-  title = 'Payment Details';
+  override title: string = 'Payment Details';
 
   @property({ type: Boolean })
   showSecurityNote = true;

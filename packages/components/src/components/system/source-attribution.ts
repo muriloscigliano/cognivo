@@ -147,7 +147,7 @@ export class SourceAttribution extends LitElement {
   ];
 
   @property({ type: String })
-  title = '';
+  override title: string = '';
 
   @property({ type: String })
   url = '';

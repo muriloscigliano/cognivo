@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { baseStyles } from '../../styles/base.js';
 import { tokens } from '../../styles/tokens.js';
 
-export interface DrawerConfig {
+export interface RightDrawerConfig {
   width?: string;
   closeOnBackdrop?: boolean;
   closeOnEsc?: boolean;
@@ -124,8 +124,8 @@ export class DrawerRight extends LitElement {
   ];
 
   @property({ type: Boolean, reflect: true }) open = false;
-  @property({ type: String }) width = '320px';
-  @property({ type: String }) title = '';
+  @property({ type: String }) width: string = '320px';
+  @property({ type: String }) override title: string = '';
   @property({ type: Boolean, attribute: 'close-on-backdrop' }) closeOnBackdrop = true;
   @property({ type: Boolean, attribute: 'close-on-esc' }) closeOnEsc = true;
   @property({ type: Boolean, attribute: 'hide-backdrop', reflect: true }) hideBackdrop = false;

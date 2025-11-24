@@ -147,7 +147,7 @@ export class PaymentMethod extends LitElement {
         amex: '💳',
         discover: '💳'
       };
-      return brandIcons[method.brand || 'visa'];
+      return brandIcons[method.brand || 'visa'] || '';
     }
 
     const typeIcons: Record<string, string> = {

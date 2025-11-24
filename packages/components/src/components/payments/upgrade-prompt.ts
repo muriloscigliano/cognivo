@@ -120,7 +120,7 @@ export class UpgradePrompt extends LitElement {
   ];
 
   @property({ type: String })
-  title = 'Upgrade to Premium';
+  override title: string = 'Upgrade to Premium';
 
   @property({ type: String })
   description = 'Unlock all premium features and take your experience to the next level';

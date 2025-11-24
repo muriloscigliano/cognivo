@@ -68,7 +68,7 @@ export class PaymentHistory extends LitElement {
   payments: PaymentHistoryItem[] = [];
 
   @property({ type: String })
-  title = 'Payment History';
+  override title: string = 'Payment History';
 
   @property({ type: Boolean })
   showHeader = true;

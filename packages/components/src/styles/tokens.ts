@@ -3,12 +3,13 @@
  *
  * Helpers for accessing Cognivo design tokens in components
  */
+import { unsafeCSS } from 'lit';
 
 /**
  * Get a CSS custom property value
  */
-export function token(name: string): string {
-  return `var(--pa-${name})`;
+export function token(name: string) {
+  return unsafeCSS(`var(--pa-${name})`);
 }
 
 /**
@@ -105,8 +106,8 @@ export const tokens = {
 
   // Transitions (using default values as fallback)
   transition: {
-    fast: '150ms',
-    default: '200ms',
-    slow: '300ms',
+    fast: unsafeCSS('150ms'),
+    default: unsafeCSS('200ms'),
+    slow: unsafeCSS('300ms'),
   },
 };
