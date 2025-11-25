@@ -452,6 +452,19 @@
         </div>
       </section>
 
+      <!-- Data Cards Section -->
+      <section class="section">
+        <div class="section-header">
+          <span class="section-title">Quick Stats</span>
+        </div>
+        <div class="grid-4">
+          <data-card title="New Signups" value="847" subtitle="This week" variant="primary"></data-card>
+          <data-card title="Support Tickets" value="23" subtitle="4 urgent" variant="warning"></data-card>
+          <data-card title="Server Uptime" value="99.98%" subtitle="Last 30 days" variant="success"></data-card>
+          <data-card title="API Calls" value="2.4M" subtitle="+12% from yesterday" variant="primary"></data-card>
+        </div>
+      </section>
+
       <!-- Charts Section -->
       <section class="section">
         <div class="section-header">
@@ -503,7 +516,15 @@
               </button>
               <button class="ai-btn" id="btn-anomaly" onclick="runAiAction('anomaly')">
                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                Detect Anomalies
+                Anomalies
+              </button>
+              <button class="ai-btn" id="btn-summarize" onclick="runAiAction('summarize')">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Summarize
+              </button>
+              <button class="ai-btn" id="btn-optimize" onclick="runAiAction('optimize')">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                Optimize
               </button>
             </div>
             <div id="ai-output">
@@ -648,6 +669,35 @@
             <li><strong>Pattern:</strong> 68% of Pro Plan upgrades occur within 14 days of trial start</li>
           </ul>
           <p><strong>Recommendation:</strong> Focus resources on understanding the June spike and replicating those conditions.</p>
+        `
+      },
+      summarize: {
+        confidence: 0.96,
+        title: 'Executive Summary',
+        content: `
+          <p><strong>Business Performance Summary - Q2 2024</strong></p>
+          <p>Your business showed exceptional performance this quarter with key highlights:</p>
+          <ul>
+            <li><strong>Revenue:</strong> $142,580 (+24.3% MoM) - exceeding targets by 18%</li>
+            <li><strong>User Growth:</strong> 12,847 active users (+18.7%) - strong organic acquisition</li>
+            <li><strong>Product Mix:</strong> Pro Plan dominates at 48% of revenue; Enterprise shows highest LTV</li>
+            <li><strong>Health Metrics:</strong> Churn down to 2.1%, conversion up to 4.28%</li>
+          </ul>
+          <p><strong>Bottom Line:</strong> Strong growth trajectory with improving unit economics. Focus on Enterprise expansion and Pro Plan retention.</p>
+        `
+      },
+      optimize: {
+        confidence: 0.89,
+        title: 'Optimization Recommendations',
+        content: `
+          <p>Based on your data, here are high-impact optimization opportunities:</p>
+          <ul>
+            <li><strong>Pricing Opportunity:</strong> Enterprise shows 4.2x higher LTV than Pro. Consider dedicated enterprise sales team (+$180K potential)</li>
+            <li><strong>Conversion Boost:</strong> Implement exit-intent offers on pricing page - projected +0.8% conversion rate</li>
+            <li><strong>Retention Play:</strong> Add usage-based triggers for at-risk accounts - could reduce churn by 0.4%</li>
+            <li><strong>Quick Win:</strong> A/B test annual billing discount (20% vs 25%) - potential +$45K ARR</li>
+          </ul>
+          <p><strong>Priority Action:</strong> Focus on Enterprise sales motion - highest ROI opportunity identified.</p>
         `
       }
     };
