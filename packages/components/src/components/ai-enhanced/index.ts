@@ -22,3 +22,7 @@ export * from './ai-context-summary.js';
 export * from './ai-context-explanation.js';
 export * from './ai-list-cluster.js';
 export * from './ai-region.js';
+export * from '../ai-smart-search/index.js';
+export * from '../ai-content-generator/index.js';
+export * from '../ai-sentiment-badge/index.js';
+export * from '../ai-streaming-message/index.js';

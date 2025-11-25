@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cognivo - New AI Components Demo</title>
+  <script type="module" src="../packages/components/dist/index.js"></script>
+  <style>
+    :root {
+      /* Dark theme overrides */
+      --cg-color-gray-white: #0f172a;
+      --cg-color-gray-50: #1e293b;
+      --cg-color-gray-100: #334155;
+      --cg-color-gray-200: #475569;
+      --cg-color-gray-300: #64748b;
+      --cg-color-gray-400: #94a3b8;
+      --cg-color-gray-500: #94a3b8;
+      --cg-color-gray-600: #cbd5e1;
+      --cg-color-gray-700: #e2e8f0;
+      --cg-color-gray-800: #f1f5f9;
+      --cg-color-gray-900: #f8fafc;
+      --cg-color-ai-accent: #8b5cf6;
+      --cg-color-ai-background: rgba(139, 92, 246, 0.1);
+      --cg-color-ai-border: rgba(139, 92, 246, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #94a3b8;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    @media (max-width: 1024px) {
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .demo-section {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .demo-section.full-width {
+      grid-column: span 2;
+    }
+
+    @media (max-width: 1024px) {
+      .demo-section.full-width {
+        grid-column: span 1;
+      }
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #334155;
+    }
+
+    .section-icon {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.2));
+      border-radius: 10px;
+      font-size: 18px;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .section-subtitle {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    /* Sentiment badges demo */
+    .sentiment-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .sentiment-demo-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Chat demo */
+    .chat-demo {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Search demo */
+    .search-demo {
+      max-width: 600px;
+    }
+
+    /* Results area */
+    .results-area {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 8px;
+      min-height: 80px;
+    }
+
+    .results-placeholder {
+      color: #64748b;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    /* Content generator demo */
+    .generator-demo {
+      max-width: 100%;
+    }
+
+    /* Code block */
+    .code-example {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      overflow-x: auto;
+    }
+
+    .code-tag {
+      color: #f472b6;
+    }
+
+    .code-attr {
+      color: #7dd3fc;
+    }
+
+    .code-string {
+      color: #a5f3fc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>New AI Components</h1>
+      <p class="subtitle">High-value AI component patterns for modern applications</p>
+    </header>
+
+    <div class="demo-grid">
+      <!-- AI Smart Search -->
+      <div class="demo-section">
+        <div class="section-header">
+          <div class="section-icon">🔍</div>
+          <div>
+            <div class="section-title">AI Smart Search</div>
+            <div class="section-subtitle">Semantic search with AI-powered suggestions</div>
+          </div>
+        </div>
+        <div class="search-demo">
+          <ai-smart-search
+            id="smart-search"
+            placeholder="Try: 'show revenue trends' or 'find anomalies'"
+            show-ai-badge
+            show-hints
+          ></ai-smart-search>
+          <div class="results-area">
+            <div class="results-placeholder" id="search-results">
+              Type to see AI-powered suggestions...
+            </div>
+          </div>
+        </div>
+        <div class="code-example">
+          <span class="code-tag">&lt;ai-smart-search</span>
+          <span class="code-attr"> placeholder</span>=<span class="code-string">"Search with AI..."</span>
+          <span class="code-attr"> show-ai-badge</span>
+          <span class="code-tag">&gt;&lt;/ai-smart-search&gt;</span>
+        </div>
+      </div>
+
+      <!-- AI Sentiment Badges -->
+      <div class="demo-section">
+        <div class="section-header">
+          <div class="section-icon">😊</div>
+          <div>
+            <div class="section-title">AI Sentiment Badges</div>
+            <div class="section-subtitle">Visual sentiment indicators with confidence scores</div>
+          </div>
+        </div>
+        <div class="sentiment-grid">
+          <div class="sentiment-demo-row">
+            <ai-sentiment-badge sentiment="positive" score="0.92" show-icon show-score></ai-sentiment-badge>
+            <ai-sentiment-badge sentiment="negative" score="0.85" show-icon show-score></ai-sentiment-badge>
+            <ai-sentiment-badge sentiment="neutral" score="0.78" show-icon show-score></ai-sentiment-badge>
+            <ai-sentiment-badge sentiment="mixed" score="0.65" show-icon show-score></ai-sentiment-badge>
+          </div>
+          <div class="sentiment-demo-row">
+            <ai-sentiment-badge sentiment="positive" score="0.95" size="sm" show-icon show-ai-indicator></ai-sentiment-badge>
+            <ai-sentiment-badge sentiment="positive" score="0.88" size="md" show-icon></ai-sentiment-badge>
+            <ai-sentiment-badge sentiment="positive" score="0.91" size="lg" show-icon show-score></ai-sentiment-badge>
+          </div>
+          <div class="sentiment-demo-row">
+            <ai-sentiment-badge sentiment="positive" expanded show-icon show-score score="0.94" tooltip="Customer satisfaction score"></ai-sentiment-badge>
+            <ai-sentiment-badge sentiment="negative" expanded show-icon show-score score="0.72" tooltip="Churn risk indicator"></ai-sentiment-badge>
+          </div>
+        </div>
+        <div class="code-example">
+          <span class="code-tag">&lt;ai-sentiment-badge</span>
+          <span class="code-attr"> sentiment</span>=<span class="code-string">"positive"</span>
+          <span class="code-attr"> score</span>=<span class="code-string">"0.92"</span>
+          <span class="code-tag">&gt;&lt;/ai-sentiment-badge&gt;</span>
+        </div>
+      </div>
+
+      <!-- AI Streaming Message -->
+      <div class="demo-section full-width">
+        <div class="section-header">
+          <div class="section-icon">💬</div>
+          <div>
+            <div class="section-title">AI Streaming Message</div>
+            <div class="section-subtitle">ChatGPT-style messages with streaming, citations, and actions</div>
+          </div>
+        </div>
+        <div class="chat-demo">
+          <ai-streaming-message
+            id="loading-message"
+            loading
+            sender="AI Analyst"
+          ></ai-streaming-message>
+
+          <ai-streaming-message
+            id="streaming-message"
+            streaming
+            sender="AI Analyst"
+            content="Based on my analysis of your Q4 revenue data, I've identified several key insights..."
+            show-actions
+          ></ai-streaming-message>
+
+          <ai-streaming-message
+            sender="AI Analyst"
+            content="**Revenue Analysis Summary**
+
+Your Q4 2024 revenue shows a **15.3% increase** compared to Q3, driven primarily by:
+
+1. **SaaS subscriptions** grew by 22%
+2. **Enterprise deals** increased by 18%
+3. **Self-serve** remained stable at 5% growth
+
+Key recommendations:
+- Focus marketing budget on enterprise segment
+- Investigate the underperforming APAC region
+- Consider pricing optimization for mid-tier plans
+
+```javascript
+const growth = calculateGrowth(q4Revenue, q3Revenue);
+console.log('Growth rate:', growth + '%');
+```"
+            show-actions
+            show-confidence
+            confidence="0.89"
+          ></ai-streaming-message>
+
+          <ai-streaming-message
+            sender="Research Agent"
+            avatar="📚"
+            content="I found 3 relevant sources to support this analysis. The enterprise growth aligns with industry trends reported by Gartner and McKinsey."
+            show-actions
+          ></ai-streaming-message>
+        </div>
+        <div class="code-example">
+          <span class="code-tag">&lt;ai-streaming-message</span><br>
+          &nbsp;&nbsp;<span class="code-attr">sender</span>=<span class="code-string">"AI Analyst"</span><br>
+          &nbsp;&nbsp;<span class="code-attr">content</span>=<span class="code-string">"Your analysis results..."</span><br>
+          &nbsp;&nbsp;<span class="code-attr">streaming</span><br>
+          &nbsp;&nbsp;<span class="code-attr">show-actions</span><br>
+          <span class="code-tag">&gt;&lt;/ai-streaming-message&gt;</span>
+        </div>
+      </div>
+
+      <!-- AI Content Generator -->
+      <div class="demo-section full-width">
+        <div class="section-header">
+          <div class="section-icon">✨</div>
+          <div>
+            <div class="section-title">AI Content Generator</div>
+            <div class="section-subtitle">Generate and refine text with AI assistance</div>
+          </div>
+        </div>
+        <div class="generator-demo">
+          <ai-content-generator
+            id="content-generator"
+            prompt="Write a professional email announcing our Q4 results to stakeholders"
+            show-options
+            show-quick-actions
+          ></ai-content-generator>
+        </div>
+        <div class="code-example">
+          <span class="code-tag">&lt;ai-content-generator</span><br>
+          &nbsp;&nbsp;<span class="code-attr">prompt</span>=<span class="code-string">"Write a marketing tagline..."</span><br>
+          &nbsp;&nbsp;<span class="code-attr">tone</span>=<span class="code-string">"professional"</span><br>
+          &nbsp;&nbsp;<span class="code-attr">show-options</span><br>
+          &nbsp;&nbsp;<span class="code-attr">show-quick-actions</span><br>
+          <span class="code-tag">&gt;&lt;/ai-content-generator&gt;</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // Smart Search Demo
+    const smartSearch = document.getElementById('smart-search');
+    const searchResults = document.getElementById('search-results');
+
+    // Mock suggestions data
+    const mockSuggestions = [
+      { text: 'Show revenue trends', type: 'query', description: 'Analyze revenue patterns over time', confidence: 0.95 },
+      { text: 'Find anomalies in spending', type: 'query', description: 'Detect unusual spending patterns', confidence: 0.88 },
+      { text: 'Compare Q3 vs Q4', type: 'action', description: 'Generate comparative analysis', confidence: 0.92 },
+      { text: 'Export to PDF', type: 'action', description: 'Download report as PDF', confidence: 0.85 },
+      { text: 'Customer churn analysis', type: 'result', description: 'Previously viewed report', confidence: 0.78 },
+    ];
+
+    smartSearch.addEventListener('ai:input-change', (e) => {
+      const query = e.detail.value.toLowerCase();
+      if (query.length > 0) {
+        const filtered = mockSuggestions.filter(s =>
+          s.text.toLowerCase().includes(query) ||
+          s.description.toLowerCase().includes(query)
+        );
+        smartSearch.suggestions = filtered.length > 0 ? filtered : mockSuggestions.slice(0, 3);
+        searchResults.innerHTML = `<div style="color: #8b5cf6;">Searching for: "${e.detail.value}"</div>`;
+      } else {
+        smartSearch.suggestions = [];
+        searchResults.innerHTML = '<div class="results-placeholder">Type to see AI-powered suggestions...</div>';
+      }
+    });
+
+    smartSearch.addEventListener('ai:search', (e) => {
+      searchResults.innerHTML = `<div style="color: #22c55e;">Executing search: "${e.detail.query}"</div>`;
+    });
+
+    smartSearch.addEventListener('ai:suggestion-select', (e) => {
+      searchResults.innerHTML = `<div style="color: #22c55e;">Selected: "${e.detail.suggestion.text}"</div>`;
+    });
+
+    // Content Generator Demo
+    const contentGenerator = document.getElementById('content-generator');
+
+    contentGenerator.addEventListener('ai:generate', async (e) => {
+      contentGenerator.loading = true;
+
+      // Simulate AI generation
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      const content = `Dear Stakeholders,
+
+I am pleased to share our Q4 2024 results, which demonstrate strong performance across all key metrics.
+
+**Highlights:**
+- Total revenue increased by 15.3% compared to Q3
+- Customer acquisition grew by 22% in the enterprise segment
+- Net retention rate improved to 118%
+
+We are confident in our trajectory and look forward to continued growth in 2025.
+
+Best regards,
+The Executive Team`;
+
+      contentGenerator.loading = false;
+      contentGenerator.content = content;
+    });
+
+    contentGenerator.addEventListener('ai:refine', async (e) => {
+      contentGenerator.loading = true;
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      let refined = contentGenerator.content;
+      switch (e.detail.action) {
+        case 'shorten':
+          refined = refined.split('\n').slice(0, 6).join('\n') + '\n\n[Content condensed]';
+          break;
+        case 'formalize':
+          refined = refined.replace('pleased', 'honored').replace('strong', 'exceptional');
+          break;
+        case 'simplify':
+          refined = refined.replace('demonstrate strong performance across all key metrics', 'show we did well');
+          break;
+      }
+
+      contentGenerator.loading = false;
+      contentGenerator.content = refined;
+    });
+
+    // Streaming message demo
+    const streamingMessage = document.getElementById('streaming-message');
+    let streamIndex = 0;
+    const fullContent = "Based on my analysis of your Q4 revenue data, I've identified several key insights that could help drive strategic decisions for next quarter. The data shows a strong upward trend in enterprise sales, particularly in the EMEA region.";
+
+    function simulateStreaming() {
+      if (streamIndex < fullContent.length) {
+        streamingMessage.content = fullContent.slice(0, streamIndex + 1);
+        streamIndex++;
+        setTimeout(simulateStreaming, 30);
+      } else {
+        streamingMessage.streaming = false;
+      }
+    }
+
+    // Start streaming after a short delay
+    setTimeout(simulateStreaming, 2000);
+
+    // Stop loading after delay
+    setTimeout(() => {
+      document.getElementById('loading-message').loading = false;
+      document.getElementById('loading-message').content = "I'm ready to help analyze your data. What would you like to explore?";
+    }, 3000);
+  </script>
+</body>
+</html>
