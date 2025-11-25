@@ -29,3 +29,11 @@ export * from '../ai-streaming-message/index.js';
 export * from '../ai-command-palette/index.js';
 export * from '../ai-suggestion-chips/index.js';
 export * from '../ai-data-highlighter/index.js';
+
+// Shape of AI Patterns
+export * from '../ai-example-gallery/index.js';
+export * from '../ai-caveat/index.js';
+export * from '../ai-prompt-templates/index.js';
+export * from '../ai-branches/index.js';
+export * from '../ai-reasoning/index.js';
+export * from '../ai-approval-flow/index.js';
