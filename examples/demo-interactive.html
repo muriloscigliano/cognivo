@@ -494,6 +494,33 @@
         </div>
       </section>
 
+      <!-- Pie Charts Section -->
+      <section class="section">
+        <div class="section-header">
+          <span class="section-title">Revenue Breakdown</span>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">By Product</div>
+                <div class="card-subtitle">Revenue distribution</div>
+              </div>
+            </div>
+            <pie-chart id="productPieChart" show-labels show-legend></pie-chart>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">By Region</div>
+                <div class="card-subtitle">Geographic distribution</div>
+              </div>
+            </div>
+            <pie-chart id="regionPieChart" show-labels show-legend></pie-chart>
+          </div>
+        </div>
+      </section>
+
       <!-- AI Insights Section -->
       <section class="section">
         <div class="section-header">
@@ -541,54 +568,19 @@
         </div>
       </section>
 
-      <!-- Data Table Section -->
+      <!-- AI Table Section -->
       <section class="section">
         <div class="section-header">
-          <span class="section-title">Top Products</span>
+          <span class="section-title">Product Analytics</span>
+          <span class="badge badge-accent">AI-Powered</span>
         </div>
-        <div class="card">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Revenue</th>
-                <th>Units Sold</th>
-                <th>Growth</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>Pro Plan</strong></td>
-                <td>$68,420</td>
-                <td>1,247</td>
-                <td class="trend-up">+32.4%</td>
-                <td><span class="badge badge-success">Top Seller</span></td>
-              </tr>
-              <tr>
-                <td><strong>Enterprise</strong></td>
-                <td>$45,200</td>
-                <td>89</td>
-                <td class="trend-up">+18.2%</td>
-                <td><span class="badge badge-accent">Growing</span></td>
-              </tr>
-              <tr>
-                <td><strong>Starter</strong></td>
-                <td>$18,960</td>
-                <td>2,840</td>
-                <td class="trend-up">+8.7%</td>
-                <td><span class="badge badge-accent">Stable</span></td>
-              </tr>
-              <tr>
-                <td><strong>Legacy Basic</strong></td>
-                <td>$10,000</td>
-                <td>524</td>
-                <td class="trend-down">-12.3%</td>
-                <td><span class="badge badge-warning">Declining</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <ai-table
+          id="productTable"
+          highlight-anomalies
+          show-confidence
+          show-legend
+          hoverable
+        ></ai-table>
       </section>
     </main>
   </div>
@@ -624,6 +616,55 @@
     customElements.whenDefined('line-chart').then(() => {
       const chart = document.getElementById('userChart');
       if (chart) chart.series = [{ name: 'Users', data: userData }];
+    });
+
+    // Initialize pie charts
+    customElements.whenDefined('pie-chart').then(() => {
+      const productPie = document.getElementById('productPieChart');
+      if (productPie) {
+        productPie.data = [
+          { label: 'Pro Plan', value: 68420, color: '#8b5cf6' },
+          { label: 'Enterprise', value: 45200, color: '#3b82f6' },
+          { label: 'Starter', value: 18960, color: '#22c55e' },
+          { label: 'Legacy', value: 10000, color: '#f59e0b' }
+        ];
+      }
+
+      const regionPie = document.getElementById('regionPieChart');
+      if (regionPie) {
+        regionPie.data = [
+          { label: 'North America', value: 58000, color: '#8b5cf6' },
+          { label: 'Europe', value: 42000, color: '#3b82f6' },
+          { label: 'Asia Pacific', value: 28000, color: '#22c55e' },
+          { label: 'Other', value: 14580, color: '#f59e0b' }
+        ];
+      }
+    });
+
+    // Initialize AI Table
+    customElements.whenDefined('ai-table').then(() => {
+      const table = document.getElementById('productTable');
+      if (table) {
+        table.columns = [
+          { key: 'product', label: 'Product', type: 'text', sortable: true },
+          { key: 'revenue', label: 'Revenue', type: 'currency', sortable: true, align: 'right' },
+          { key: 'units', label: 'Units Sold', type: 'number', sortable: true, align: 'right' },
+          { key: 'growth', label: 'Growth', type: 'percentage', sortable: true, align: 'right' },
+          { key: 'confidence', label: 'AI Confidence', type: 'confidence', align: 'center' }
+        ];
+
+        table.data = [
+          { product: 'Pro Plan', revenue: 68420, units: 1247, growth: 0.324, confidence: 0.95, _highlighted: true },
+          { product: 'Enterprise', revenue: 45200, units: 89, growth: 0.182, confidence: 0.91 },
+          { product: 'Starter', revenue: 18960, units: 2840, growth: 0.087, confidence: 0.88 },
+          { product: 'Legacy Basic', revenue: 10000, units: 524, growth: -0.123, confidence: 0.72, _anomaly: true, _anomalySeverity: 'medium' }
+        ];
+
+        // Listen for row selection
+        table.addEventListener('ai:row-selected', (e) => {
+          console.log('Row selected:', e.detail);
+        });
+      }
     });
 
     // Mock AI Client - simulates AI responses
