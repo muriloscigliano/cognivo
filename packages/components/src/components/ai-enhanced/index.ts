@@ -26,3 +26,6 @@ export * from '../ai-smart-search/index.js';
 export * from '../ai-content-generator/index.js';
 export * from '../ai-sentiment-badge/index.js';
 export * from '../ai-streaming-message/index.js';
+export * from '../ai-command-palette/index.js';
+export * from '../ai-suggestion-chips/index.js';
+export * from '../ai-data-highlighter/index.js';

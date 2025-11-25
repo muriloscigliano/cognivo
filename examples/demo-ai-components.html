@@ -362,6 +362,92 @@ console.log('Growth rate:', growth + '%');
           <span class="code-tag">&gt;&lt;/ai-content-generator&gt;</span>
         </div>
       </div>
+
+      <!-- AI Command Palette -->
+      <div class="demo-section">
+        <div class="section-header">
+          <div class="section-icon">⌘</div>
+          <div>
+            <div class="section-title">AI Command Palette</div>
+            <div class="section-subtitle">Cmd+K style interface with AI search</div>
+          </div>
+        </div>
+        <div style="text-align: center; padding: 2rem;">
+          <button id="open-palette-btn" style="padding: 12px 24px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); border: none; border-radius: 8px; color: white; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+            <span>⌘K</span>
+            <span>Open Command Palette</span>
+          </button>
+          <p style="margin-top: 1rem; color: #64748b; font-size: 0.9rem;">Or press <kbd style="padding: 2px 8px; background: #334155; border-radius: 4px;">Cmd/Ctrl + K</kbd></p>
+        </div>
+        <ai-command-palette id="command-palette" show-ai-mode></ai-command-palette>
+        <div class="code-example">
+          <span class="code-tag">&lt;ai-command-palette</span>
+          <span class="code-attr"> show-ai-mode</span>
+          <span class="code-tag">&gt;&lt;/ai-command-palette&gt;</span>
+        </div>
+      </div>
+
+      <!-- AI Suggestion Chips -->
+      <div class="demo-section">
+        <div class="section-header">
+          <div class="section-icon">💡</div>
+          <div>
+            <div class="section-title">AI Suggestion Chips</div>
+            <div class="section-subtitle">Clickable AI-generated suggestions</div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <ai-suggestion-chips
+            id="suggestion-chips-1"
+            label="Quick Actions"
+            show-refresh
+          ></ai-suggestion-chips>
+          <ai-suggestion-chips
+            id="suggestion-chips-2"
+            label="Recommendations"
+            dismissible
+          ></ai-suggestion-chips>
+          <ai-suggestion-chips
+            id="suggestion-chips-loading"
+            label="Loading State"
+            loading
+          ></ai-suggestion-chips>
+        </div>
+        <div class="code-example">
+          <span class="code-tag">&lt;ai-suggestion-chips</span><br>
+          &nbsp;&nbsp;<span class="code-attr">label</span>=<span class="code-string">"Quick Actions"</span><br>
+          &nbsp;&nbsp;<span class="code-attr">dismissible</span><br>
+          &nbsp;&nbsp;<span class="code-attr">show-refresh</span><br>
+          <span class="code-tag">&gt;&lt;/ai-suggestion-chips&gt;</span>
+        </div>
+      </div>
+
+      <!-- AI Data Highlighter -->
+      <div class="demo-section full-width">
+        <div class="section-header">
+          <div class="section-icon">📊</div>
+          <div>
+            <div class="section-title">AI Data Highlighter</div>
+            <div class="section-subtitle">Highlight important data with AI annotations</div>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+          <ai-data-highlighter id="highlight-1"></ai-data-highlighter>
+          <ai-data-highlighter id="highlight-2"></ai-data-highlighter>
+          <ai-data-highlighter id="highlight-3"></ai-data-highlighter>
+          <ai-data-highlighter id="highlight-4"></ai-data-highlighter>
+        </div>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <ai-data-highlighter id="highlight-compact-1" compact clickable></ai-data-highlighter>
+          <ai-data-highlighter id="highlight-compact-2" compact clickable></ai-data-highlighter>
+        </div>
+        <div class="code-example">
+          <span class="code-tag">&lt;ai-data-highlighter</span><br>
+          &nbsp;&nbsp;<span class="code-attr">.highlight</span>=<span class="code-string">${`{ value: '$1.2M', type: 'increase', annotation: '...' }`}</span><br>
+          &nbsp;&nbsp;<span class="code-attr">clickable</span><br>
+          <span class="code-tag">&gt;&lt;/ai-data-highlighter&gt;</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -473,6 +559,113 @@ The Executive Team`;
       document.getElementById('loading-message').loading = false;
       document.getElementById('loading-message').content = "I'm ready to help analyze your data. What would you like to explore?";
     }, 3000);
+
+    // Command Palette Demo
+    const commandPalette = document.getElementById('command-palette');
+    const openPaletteBtn = document.getElementById('open-palette-btn');
+
+    commandPalette.commands = [
+      { id: '1', label: 'Generate Report', description: 'Create AI-powered analytics report', icon: '📊', category: 'AI Actions', shortcut: '⌘+R' },
+      { id: '2', label: 'Analyze Trends', description: 'Detect patterns in your data', icon: '📈', category: 'AI Actions' },
+      { id: '3', label: 'Find Anomalies', description: 'AI-powered anomaly detection', icon: '🔍', category: 'AI Actions' },
+      { id: '4', label: 'Export to PDF', description: 'Download current view as PDF', icon: '📄', category: 'Export', shortcut: '⌘+E' },
+      { id: '5', label: 'Share Dashboard', description: 'Generate shareable link', icon: '🔗', category: 'Export' },
+      { id: '6', label: 'Settings', description: 'Configure your workspace', icon: '⚙️', category: 'System', shortcut: '⌘+,' },
+      { id: '7', label: 'Help & Support', description: 'Get help with the platform', icon: '❓', category: 'System' },
+    ];
+
+    openPaletteBtn.addEventListener('click', () => {
+      commandPalette.openPalette();
+    });
+
+    commandPalette.addEventListener('ai:command-select', (e) => {
+      console.log('Command selected:', e.detail.command);
+    });
+
+    // Suggestion Chips Demo
+    const suggestionChips1 = document.getElementById('suggestion-chips-1');
+    const suggestionChips2 = document.getElementById('suggestion-chips-2');
+
+    suggestionChips1.chips = [
+      { id: '1', label: 'Show Q4 Revenue', icon: '📊', variant: 'primary' },
+      { id: '2', label: 'Compare Regions', icon: '🌍' },
+      { id: '3', label: 'Export CSV', icon: '📁' },
+      { id: '4', label: 'Schedule Report', icon: '📅' },
+    ];
+
+    suggestionChips2.chips = [
+      { id: '1', label: 'Focus on Enterprise', icon: '🏢', variant: 'success' },
+      { id: '2', label: 'Review APAC Performance', icon: '⚠️', variant: 'warning' },
+      { id: '3', label: 'Optimize Pricing', icon: '💰', variant: 'primary' },
+    ];
+
+    suggestionChips1.addEventListener('ai:chip-select', (e) => {
+      console.log('Chip selected:', e.detail.chip);
+    });
+
+    suggestionChips1.addEventListener('ai:refresh', async () => {
+      suggestionChips1.loading = true;
+      await new Promise(r => setTimeout(r, 1000));
+      suggestionChips1.loading = false;
+    });
+
+    // Data Highlighter Demo
+    document.getElementById('highlight-1').highlight = {
+      id: '1',
+      value: '$1.24M',
+      label: 'Revenue',
+      type: 'increase',
+      change: 15.3,
+      changeLabel: 'vs Q3',
+      annotation: 'Revenue exceeded projections by 8%. The primary driver was enterprise deals in EMEA region.',
+      confidence: 0.92
+    };
+
+    document.getElementById('highlight-2').highlight = {
+      id: '2',
+      value: '2,847',
+      label: 'New Customers',
+      type: 'increase',
+      change: 22,
+      annotation: 'Customer acquisition accelerated due to successful product launch in October.',
+      confidence: 0.88
+    };
+
+    document.getElementById('highlight-3').highlight = {
+      id: '3',
+      value: '4.2%',
+      label: 'Churn Rate',
+      type: 'decrease',
+      change: -12,
+      annotation: 'Churn improved significantly after implementing the new onboarding flow.',
+      confidence: 0.85
+    };
+
+    document.getElementById('highlight-4').highlight = {
+      id: '4',
+      value: '$847K',
+      label: 'APAC Revenue',
+      type: 'anomaly',
+      change: -8,
+      annotation: 'APAC performance is below expectations. AI detected potential market saturation in key segments.',
+      confidence: 0.78
+    };
+
+    document.getElementById('highlight-compact-1').highlight = {
+      id: '5',
+      value: '118%',
+      label: 'NRR',
+      type: 'success',
+      annotation: 'Net Revenue Retention is in the top quartile for SaaS companies.'
+    };
+
+    document.getElementById('highlight-compact-2').highlight = {
+      id: '6',
+      value: '2.3 days',
+      label: 'Avg Response',
+      type: 'warning',
+      annotation: 'Response time has increased. Consider adding more support staff.'
+    };
   </script>
 </body>
 </html>
