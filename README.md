@@ -2,9 +2,9 @@
 
 **The AI-Native Component Library**
 
-54 Web Components. 19 AI-specific. Framework-agnostic. Dark-first. 70KB gzip.
+108 Web Components. 73 AI-specific. Framework-agnostic. Dark-first. 133KB gzip.
 
-The only component library purpose-built for AI applications — with streaming text, tool indicators, confidence badges, execution timelines, model selectors, and cognitive bias analysis. Works in React, Vue, Angular, Svelte, or vanilla HTML.
+The most comprehensive component library purpose-built for AI applications. Covers every pattern from basic UI to multi-agent orchestration, RAG, safety guardrails, evaluation, and production DevOps. Works in React, Vue, Angular, Svelte, or vanilla HTML.
 
 ## What's Inside
 
@@ -12,10 +12,15 @@ The only component library purpose-built for AI applications — with streaming 
 |----------|-------|---------|
 | **Foundation** | 14 | Button, Card, Badge, Callout, Image, Icon, Label, Separator |
 | **Forms** | 10 | Input, Select, Checkbox, Radio, Switch, Slider, DatePicker |
-| **Data & Navigation** | 11 | Table, Chart, Tabs, Accordion, Steps, CodeBlock, Markdown |
-| **AI Display** | 9 | Thinking, Badge, Chat, InsightCard, ResultPanel, StreamingText, Citation, ToolIndicator |
-| **AI Workflow** | 7 | DiffPanel, Timeline, Feedback, TokenTracker, PromptEditor, Search, Annotation |
-| **AI Visualization** | 3 | Heatmap, ModelSelector, Toast |
+| **Data & Navigation** | 11 | Table, Chart, MetricCard, Tabs, Accordion, Steps, CodeBlock |
+| **AI Display** | 10 | Thinking, Badge, Chat, InsightCard, ResultPanel, StreamingText, Citation, DataCard |
+| **AI Workflow** | 11 | DiffPanel, Timeline, Feedback, Search, Annotation, AgentCard, ReasoningTree, Guardrail, RagPanel |
+| **AI Visualization** | 6 | Heatmap, ModelSelector, Toast, ContextWindow, EvalScorecard, SourceGraph |
+| **AI Controls** | 3 | MemoryPanel, ConfidenceSlider, FormGenerator |
+| **AI Production** | 10 | WorkflowBuilder, AbTest, DataTable, CostDashboard, BatchProgress |
+| **AI Collaboration** | 10 | Presence, FileUpload, AudioPlayer, Onboarding, UsageMeter, StatusPage |
+| **AI DevOps** | 10 | AnalyticsChart, ApiKeyManager, TestRunner, WebhookConfig, DebugConsole |
+| **AI Essentials** | 13 | Sidebar, CommandPalette, Avatar, ProgressSteps, JsonViewer, CopyButton, ActionPreview, CaptureFlow, KpiGrid, AlertCard, RevealAnimation, RichMessage, ToolCardResolver |
 
 ## Quick Start
 
@@ -27,13 +32,10 @@ npm install @cognivo/components @cognivo/tokens
 <!-- Load tokens -->
 <link rel="stylesheet" href="node_modules/@cognivo/tokens/dist/index.css">
 
-<!-- Use components -->
+<!-- Use any component -->
 <ai-thinking text="Analyzing data" shimmer></ai-thinking>
-
 <ai-badge score="0.92"></ai-badge>
-
-<ai-token-tracker inputTokens="423" outputTokens="156" cost="0.0024" latency="1200" model="GPT-4o"></ai-token-tracker>
-
+<ai-data-card title="Invoice #1042" icon="📄"></ai-data-card>
 <cg-metric-card title="Revenue" value="$2.4M" delta="+18%" trend="up"></cg-metric-card>
 ```
 
@@ -44,14 +46,18 @@ npm install @cognivo/adapter-react @cognivo/components @cognivo/tokens
 ```
 
 ```tsx
-import { AiChat, AiBadge, CgButton } from '@cognivo/adapter-react';
-import '@cognivo/components'; // Register web components
+import { AiChat, AiBadge, AiDataCard, CgButton } from '@cognivo/adapter-react';
+import '@cognivo/components';
 import '@cognivo/tokens/dist/index.css';
 
 function App() {
   return (
     <div>
       <AiBadge score={0.92} size="lg" />
+      <AiDataCard title="Order" fields={[
+        { label: 'Total', value: '$129.99', type: 'currency' },
+        { label: 'Status', value: 'Shipped', type: 'status', status: 'success' },
+      ]} />
       <CgButton variant="primary">Click me</CgButton>
     </div>
   );
@@ -66,7 +72,7 @@ npm install @cognivo/adapter-vue @cognivo/components @cognivo/tokens
 
 ```vue
 <script setup>
-import { AiThinking, CgCard } from '@cognivo/adapter-vue';
+import { AiThinking, AiKpiGrid, CgCard } from '@cognivo/adapter-vue';
 import '@cognivo/components';
 import '@cognivo/tokens/dist/index.css';
 </script>
@@ -74,41 +80,54 @@ import '@cognivo/tokens/dist/index.css';
 <template>
   <CgCard>
     <AiThinking text="Processing" :cancelable="true" />
+    <AiKpiGrid :kpis="[
+      { label: 'Revenue', value: '$2.4M', delta: '+18%', trend: 'up' },
+      { label: 'Users', value: '14.2K', delta: '+5%', trend: 'up' },
+    ]" />
   </CgCard>
 </template>
 ```
 
-## AI Components — No Competitor Has These
+## AI-Native Components — What No One Else Has
 
-### `<ai-chat>` — Production Chat Interface
-Streaming, markdown rendering, message actions (copy/retry/rate), branching, follow-up suggestions, conversation export.
+### Agent Orchestration
+- **`<ai-agent-card>`** — Multi-agent status with handoff chain and capabilities
+- **`<ai-reasoning-tree>`** — Expandable chain-of-thought visualizer
+- **`<ai-guardrail>`** — Safety filter with policy checks and admin override
+- **`<ai-rag-panel>`** — RAG document display with relevance scores
+- **`<ai-workflow-builder>`** — Visual DAG for agent workflow definition
 
-### `<ai-thinking>` — Full Loading System
-3 variants (dots, spinner, skeleton), stages, tool call indicators, cancel button, progress bar, 200ms delay.
+### AI Display & Chat
+- **`<ai-chat>`** — Production chat with streaming, markdown, actions, branching
+- **`<ai-streaming-text>`** — Token-by-token renderer with cursor
+- **`<ai-rich-message>`** — Chat message with embedded cards and actions
+- **`<ai-data-card>`** — Compact key-value display (invoice, order, profile — any data)
+- **`<ai-tool-card-resolver>`** — Dynamic card renderer for tool call results
 
-### `<ai-streaming-text>` — Token-by-Token Renderer
-Append text programmatically, markdown support, blinking cursor, XSS-safe.
+### Observability & Evaluation
+- **`<ai-context-window>`** — Token budget tracker with segmented bar
+- **`<ai-eval-scorecard>`** — LLM evaluation grades (A-F) with score bars
+- **`<ai-token-tracker>`** — Cost, latency, and token usage display
+- **`<ai-cost-dashboard>`** — Aggregate usage over time with budget
+- **`<ai-debug-console>`** — Request/response inspector
 
-### `<ai-timeline>` — Execution Transparency
-Show agent steps: pending → active → complete → error. Duration bars, expandable details, tool badges.
+### Production & DevOps
+- **`<ai-ab-test>`** — Side-by-side model/prompt comparison with voting
+- **`<ai-batch-progress>`** — Batch job progress with success/fail segments
+- **`<ai-api-key-manager>`** — API key CRUD with masked display
+- **`<ai-test-runner>`** — AI evaluation test results display
+- **`<ai-feature-flag>`** — Feature flag toggles for AI capabilities
+- **`<ai-webhook-config>`** — Webhook endpoint management
+- **`<ai-version-selector>`** — Model version picker with rollout %
+- **`<ai-changelog>`** — Version history feed
 
-### `<ai-diff-panel>` — Model Output Comparison
-Side-by-side or inline diff with change stats. For A/B testing, prompt iterations.
-
-### `<ai-feedback>` — RLHF Widget
-Thumbs, stars, or emoji mode. Issue tags, optional comment, submitted confirmation.
-
-### `<ai-token-tracker>` — Cost & Usage Display
-Compact or detailed mode. Input/output tokens, cost, latency, budget progress bar.
-
-### `<ai-model-selector>` — Agent/Model Picker
-Cards with capabilities, cost tier, search/filter. Multi-select for comparison.
-
-### `<ai-heatmap>` — Matrix Visualization
-Confusion matrices, correlation tables. SVG, tooltips, clickable cells, color scales.
-
-### `<ai-annotation>` — Text Labeling
-Highlight text with labels and confidence scores. For ML labeling, document review.
+### Collaboration & UX
+- **`<ai-presence>`** — Online user indicators
+- **`<ai-file-upload>`** — Drag-drop file upload for AI processing
+- **`<ai-capture-flow>`** — Multi-step: upload → preview → process → result
+- **`<ai-onboarding>`** — Step-by-step AI feature tutorial
+- **`<ai-command-palette>`** — ⌘K command palette with fuzzy search
+- **`<ai-action-preview>`** — Confirmation before executing AI actions
 
 ## Generative UI Engine
 
@@ -128,7 +147,7 @@ kpi2 = MetricCard("Users", "14.2K", "+5%", "up")
 
 Features:
 - Streaming parser (renders tokens as they arrive)
-- 54 components registered with Zod schemas
+- 108 components registered with Zod schemas
 - Cognitive bias analysis (`suggestBiasesForTree()`)
 - Token governance (`validateTokenUsage()`)
 
@@ -138,7 +157,7 @@ Features:
 
 ```
 Tier 1 (Core)     → Raw values: --cg-gray-500, --cg-spacing-16
-Tier 2 (Semantic)  → Purpose: --cg-color-surface-base-text, --cg-color-action-primary-background
+Tier 2 (Semantic)  → Purpose: --cg-color-surface-base-text
 Tier 3 (Component) → Specific: --cg-component-button-height-md
 ```
 
@@ -148,13 +167,25 @@ Dark/light themes via `data-theme` attribute. Stockify palette with neon lime `#
 
 | Package | Description | Size |
 |---------|-------------|------|
-| `@cognivo/components` | 54 Lit Web Components | 70KB gzip |
+| `@cognivo/components` | 108 Lit Web Components | 133KB gzip |
 | `@cognivo/tokens` | 1,768 CSS custom properties | 95KB |
 | `@cognivo/gen-ui` | Streaming parser + registry + bias engine | 63KB |
 | `@cognivo/gen-ui-lit` | Lit renderer for gen-ui | 9KB |
-| `@cognivo/adapter-react` | 55 React wrappers | 10KB |
-| `@cognivo/adapter-vue` | 55 Vue wrappers | 8KB |
+| `@cognivo/adapter-react` | 109 React wrappers | 14KB |
+| `@cognivo/adapter-vue` | 109 Vue wrappers | 12KB |
 | `@cognivo/core` | AI integration core | 49KB |
+
+## vs Competition
+
+| Library | Total | AI-Native | Framework | Bundle |
+|---------|-------|-----------|-----------|--------|
+| **Cognivo** | **108** | **73** | **Any** (Web Components) | **133KB** |
+| Shoelace | 60 | 0 | Any (WC) | 80KB |
+| shadcn/ui | 50 | 5 | React only | varies |
+| OpenUI | 47 | 5 | React only | 434KB |
+| Radix | 30 | 0 | React only | varies |
+| assistant-ui | 25 | 25 | React only | varies |
+| Vercel AI SDK | 15 | 15 | React only | varies |
 
 ## Development
 
