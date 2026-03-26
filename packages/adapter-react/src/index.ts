@@ -186,3 +186,15 @@ export { AiEmbeddingViz } from './components/AiEmbeddingViz.js';
 export { AiPromptTemplate } from './components/AiPromptTemplate.js';
 export { AiBatchProgress } from './components/AiBatchProgress.js';
 export { AiChangelog } from './components/AiChangelog.js';
+
+// Wave 5: AI Collaboration & Real-Time
+export { AiPresence } from './components/AiPresence.js';
+export { AiFileUpload } from './components/AiFileUpload.js';
+export { AiAudioPlayer } from './components/AiAudioPlayer.js';
+export { AiOnboarding } from './components/AiOnboarding.js';
+export { AiUsageMeter } from './components/AiUsageMeter.js';
+export { AiModelComparison } from './components/AiModelComparison.js';
+export { AiErrorBoundary } from './components/AiErrorBoundary.js';
+export { AiStatusPage } from './components/AiStatusPage.js';
+export { AiKeyboardShortcuts } from './components/AiKeyboardShortcuts.js';
+export { AiEmptyState } from './components/AiEmptyState.js';

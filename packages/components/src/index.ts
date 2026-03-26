@@ -90,6 +90,17 @@ import { AiEmbeddingViz } from './components/ai-embedding-viz/ai-embedding-viz.j
 import { AiPromptTemplate } from './components/ai-prompt-template/ai-prompt-template.js';
 import { AiBatchProgress } from './components/ai-batch-progress/ai-batch-progress.js';
 import { AiChangelog } from './components/ai-changelog/ai-changelog.js';
+// Wave 5: AI Collaboration & Real-Time
+import { AiPresence } from './components/ai-presence/ai-presence.js';
+import { AiFileUpload } from './components/ai-file-upload/ai-file-upload.js';
+import { AiAudioPlayer } from './components/ai-audio-player/ai-audio-player.js';
+import { AiOnboarding } from './components/ai-onboarding/ai-onboarding.js';
+import { AiUsageMeter } from './components/ai-usage-meter/ai-usage-meter.js';
+import { AiModelComparison } from './components/ai-model-comparison/ai-model-comparison.js';
+import { AiErrorBoundary } from './components/ai-error-boundary/ai-error-boundary.js';
+import { AiStatusPage } from './components/ai-status-page/ai-status-page.js';
+import { AiKeyboardShortcuts } from './components/ai-keyboard-shortcuts/ai-keyboard-shortcuts.js';
+import { AiEmptyState } from './components/ai-empty-state/ai-empty-state.js';
 
 export {
   // Wave 1: Foundation
@@ -118,6 +129,10 @@ export {
   AiWorkflowBuilder, AiAbTest, AiDataTable, AiNotificationCenter,
   AiCostDashboard, AiPermissionGate, AiEmbeddingViz,
   AiPromptTemplate, AiBatchProgress, AiChangelog,
+  // AI Wave 5: Collaboration & Real-Time
+  AiPresence, AiFileUpload, AiAudioPlayer, AiOnboarding,
+  AiUsageMeter, AiModelComparison, AiErrorBoundary,
+  AiStatusPage, AiKeyboardShortcuts, AiEmptyState,
 };
 
 // Type exports
