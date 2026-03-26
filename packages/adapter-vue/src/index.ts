@@ -73,4 +73,11 @@ export { AiVersionSelector } from "./components/AiVersionSelector.js";
 export { AiFeatureFlag } from "./components/AiFeatureFlag.js";
 export { AiDebugConsole } from "./components/AiDebugConsole.js";
 export { AiAccessibilityReport } from "./components/AiAccessibilityReport.js";
+// Final 6
+export { AiSidebar } from "./components/AiSidebar.js";
+export { AiCommandPalette } from "./components/AiCommandPalette.js";
+export { AiAvatar } from "./components/AiAvatar.js";
+export { AiProgressSteps } from "./components/AiProgressSteps.js";
+export { AiJsonViewer } from "./components/AiJsonViewer.js";
+export { AiCopyButton } from "./components/AiCopyButton.js";
 export { CgGenerativeUi } from './components/CgGenerativeUi.js';

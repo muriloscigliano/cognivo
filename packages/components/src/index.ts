@@ -112,6 +112,13 @@ import { AiVersionSelector } from './components/ai-version-selector/ai-version-s
 import { AiFeatureFlag } from './components/ai-feature-flag/ai-feature-flag.js';
 import { AiDebugConsole } from './components/ai-debug-console/ai-debug-console.js';
 import { AiAccessibilityReport } from './components/ai-accessibility-report/ai-accessibility-report.js';
+// Final 6: Reaching 100
+import { AiSidebar } from './components/ai-sidebar/ai-sidebar.js';
+import { AiCommandPalette } from './components/ai-command-palette/ai-command-palette.js';
+import { AiAvatar } from './components/ai-avatar/ai-avatar.js';
+import { AiProgressSteps } from './components/ai-progress-steps/ai-progress-steps.js';
+import { AiJsonViewer } from './components/ai-json-viewer/ai-json-viewer.js';
+import { AiCopyButton } from './components/ai-copy-button/ai-copy-button.js';
 
 export {
   // Wave 1: Foundation
@@ -148,6 +155,8 @@ export {
   AiAnalyticsChart, AiCollaborativeEditor, AiApiKeyManager,
   AiTestRunner, AiWebhookConfig, AiDataPreview,
   AiVersionSelector, AiFeatureFlag, AiDebugConsole, AiAccessibilityReport,
+  // Final 6: 100 Components
+  AiSidebar, AiCommandPalette, AiAvatar, AiProgressSteps, AiJsonViewer, AiCopyButton,
 };
 
 // Type exports
