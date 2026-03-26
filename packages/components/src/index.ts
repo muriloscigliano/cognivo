@@ -68,6 +68,17 @@ import { AiPromptEditor } from './components/ai-prompt-editor/ai-prompt-editor.j
 import { AiSearch } from './components/ai-search/ai-search.js';
 import { AiAnnotation } from './components/ai-annotation/ai-annotation.js';
 import { AiHeatmap } from './components/ai-heatmap/ai-heatmap.js';
+// Wave 3: AI Agent & Orchestration
+import { AiAgentCard } from './components/ai-agent-card/ai-agent-card.js';
+import { AiReasoningTree } from './components/ai-reasoning-tree/ai-reasoning-tree.js';
+import { AiGuardrail } from './components/ai-guardrail/ai-guardrail.js';
+import { AiRagPanel } from './components/ai-rag-panel/ai-rag-panel.js';
+import { AiContextWindow } from './components/ai-context-window/ai-context-window.js';
+import { AiEvalScorecard } from './components/ai-eval-scorecard/ai-eval-scorecard.js';
+import { AiSourceGraph } from './components/ai-source-graph/ai-source-graph.js';
+import { AiMemoryPanel } from './components/ai-memory-panel/ai-memory-panel.js';
+import { AiConfidenceSlider } from './components/ai-confidence-slider/ai-confidence-slider.js';
+import { AiFormGenerator } from './components/ai-form-generator/ai-form-generator.js';
 
 export {
   // Wave 1: Foundation
@@ -88,6 +99,10 @@ export {
   AiDiffPanel, AiTimeline, AiFeedback, AiToast,
   AiModelSelector, AiTokenTracker, AiPromptEditor,
   AiSearch, AiAnnotation, AiHeatmap,
+  // AI Wave 3: Agent & Orchestration
+  AiAgentCard, AiReasoningTree, AiGuardrail, AiRagPanel,
+  AiContextWindow, AiEvalScorecard, AiSourceGraph,
+  AiMemoryPanel, AiConfidenceSlider, AiFormGenerator,
 };
 
 // Type exports

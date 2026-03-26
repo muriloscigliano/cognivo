@@ -162,3 +162,15 @@ export type { CgChartProps, CgChartDataPoint } from './components/CgChart.js';
 // Interactive
 export { CgFollowUp } from './components/CgFollowUp.js';
 export type { CgFollowUpProps, CgFollowUpItem } from './components/CgFollowUp.js';
+
+// Wave 3: AI Agent & Orchestration
+export { AiAgentCard } from './components/AiAgentCard.js';
+export { AiReasoningTree } from './components/AiReasoningTree.js';
+export { AiGuardrail } from './components/AiGuardrail.js';
+export { AiRagPanel } from './components/AiRagPanel.js';
+export { AiContextWindow } from './components/AiContextWindow.js';
+export { AiEvalScorecard } from './components/AiEvalScorecard.js';
+export { AiSourceGraph } from './components/AiSourceGraph.js';
+export { AiMemoryPanel } from './components/AiMemoryPanel.js';
+export { AiConfidenceSlider } from './components/AiConfidenceSlider.js';
+export { AiFormGenerator } from './components/AiFormGenerator.js';
