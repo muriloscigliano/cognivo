@@ -1,5 +1,5 @@
 /**
- * Component Registry — metadata for all 54 Cognivo components.
+ * Component Registry — metadata for all 64 Cognivo components.
  * Powers the showcase sidebar, component pages, props tables, and examples.
  */
 
@@ -811,5 +811,184 @@ export const registry: ComponentMeta[] = [
     events: [{ name: 'ai-toast-dismiss', detail: '{id, reason}', description: 'Toast dismissed' }],
     examples: [{ label: 'Demo (click to show)', html: `<cg-stack direction="row" gap="sm"><cg-button variant="secondary" onclick="document.querySelector('ai-toast')?.show('Analysis complete!', 'success')">Success</cg-button><cg-button variant="secondary" onclick="document.querySelector('ai-toast')?.show('Processing your request...', 'ai')">AI</cg-button><cg-button variant="secondary" onclick="document.querySelector('ai-toast')?.show('Rate limit exceeded', 'error')">Error</cg-button></cg-stack><ai-toast></ai-toast>` }],
     since: 'v0.3.0',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // AI ORCHESTRATION (Wave 3)
+  // ═══════════════════════════════════════════════════════════════════════════
+  {
+    tag: 'ai-agent-card', name: 'Agent Card', category: 'ai-workflow',
+    description: 'Multi-agent orchestration card showing agent name, role, status, current task, handoff chain, and capabilities.',
+    props: [
+      { name: 'name', type: 'string', default: '"Agent"', description: 'Agent name' },
+      { name: 'role', type: 'string', description: 'Agent role (Researcher, Coder, etc.)' },
+      { name: 'status', type: '"idle" | "thinking" | "acting" | "done" | "error"', default: '"idle"', description: 'Current status' },
+      { name: 'task', type: 'string', description: 'Current task description' },
+      { name: 'handoffChain', type: 'string[]', description: 'Delegation chain' },
+      { name: 'capabilities', type: 'string[]', description: 'Agent capabilities' },
+      { name: 'avatar', type: 'string', default: '"🤖"', description: 'Avatar emoji or text' },
+    ],
+    events: [
+      { name: 'ai-agent-select', detail: '{name, role, status}', description: 'Agent selected' },
+      { name: 'ai-agent-pause', detail: '{name}', description: 'Pause clicked' },
+      { name: 'ai-agent-cancel', detail: '{name}', description: 'Cancel clicked' },
+    ],
+    examples: [
+      { label: 'Agent states', html: `<cg-stack direction="row" gap="md" style="flex-wrap: wrap;">
+        <ai-agent-card name="Researcher" role="Research Agent" status="done" avatar="🔍"></ai-agent-card>
+        <ai-agent-card name="Coder" role="Code Agent" status="thinking" task="Implementing auth module" avatar="💻"></ai-agent-card>
+        <ai-agent-card name="Reviewer" role="QA Agent" status="idle" avatar="✅"></ai-agent-card>
+      </cg-stack>`, setup: (el) => {
+        const cards = el.querySelectorAll('ai-agent-card');
+        if (cards[0]) (cards[0] as any).capabilities = ['search', 'summarize'];
+        if (cards[1]) { (cards[1] as any).capabilities = ['code', 'debug', 'test']; (cards[1] as any).handoffChain = ['Researcher', 'Coder']; }
+      }},
+    ],
+    since: 'v0.4.0',
+  },
+  {
+    tag: 'ai-reasoning-tree', name: 'Reasoning Tree', category: 'ai-workflow',
+    description: 'Expandable chain-of-thought visualizer. Shows multi-step AI reasoning with node types, confidence, and highlight path.',
+    props: [
+      { name: 'nodes', type: 'ReasoningNode[]', description: 'Tree of {id, type, content, confidence?, children?}' },
+      { name: 'highlightPath', type: 'string[]', description: 'IDs of nodes in answer path' },
+    ],
+    events: [
+      { name: 'ai-reasoning-node-click', detail: '{id, type, content}', description: 'Node clicked' },
+      { name: 'ai-reasoning-expand', detail: '{id, expanded}', description: 'Node expanded/collapsed' },
+    ],
+    examples: [{ label: 'Chain of thought', html: `<ai-reasoning-tree></ai-reasoning-tree>`, setup: (el) => {
+      const t = el.querySelector('ai-reasoning-tree') as any;
+      if (t) t.nodes = [
+        { id: '1', type: 'thought', content: 'User is asking about Q4 revenue trends', confidence: 0.95, children: [
+          { id: '2', type: 'action', content: 'Query database for Q4 financial data', confidence: 0.9, children: [
+            { id: '3', type: 'observation', content: 'Found 1,247 records. Revenue: $2.4M (+18% YoY)', confidence: 0.88 },
+          ]},
+          { id: '4', type: 'action', content: 'Search web for industry benchmarks', children: [
+            { id: '5', type: 'observation', content: 'Industry average growth: 12%. Cognivo outperforms by 6%', confidence: 0.75 },
+          ]},
+        ]},
+        { id: '6', type: 'conclusion', content: 'Revenue grew 18% driven by enterprise expansion, outperforming industry by 6%', confidence: 0.91 },
+      ];
+      t.highlightPath = ['1', '2', '3', '6'];
+    }}],
+    since: 'v0.4.0',
+  },
+  {
+    tag: 'ai-guardrail', name: 'Guardrail', category: 'ai-workflow',
+    description: 'Safety filter display with policy checks, blocked content (blurred), severity badges, and admin override.',
+    props: [
+      { name: 'status', type: '"safe" | "flagged" | "blocked"', default: '"safe"', description: 'Filter status' },
+      { name: 'checks', type: '{policy, passed, reason?}[]', description: 'Policy check results' },
+      { name: 'blockedContent', type: 'string', description: 'Content that was blocked' },
+      { name: 'allowOverride', type: 'boolean', default: 'false', description: 'Show override button' },
+      { name: 'severityLevel', type: '"low" | "medium" | "high" | "critical"', default: '"low"', description: 'Severity' },
+    ],
+    events: [
+      { name: 'ai-guardrail-override', detail: '{status, severity}', description: 'Override clicked' },
+      { name: 'ai-guardrail-report', detail: '{status, checks}', description: 'Report clicked' },
+      { name: 'ai-guardrail-reveal', detail: '{revealed}', description: 'Blocked content toggled' },
+    ],
+    examples: [
+      { label: 'Safe', html: `<ai-guardrail status="safe"></ai-guardrail>`, setup: (el) => { const g = el.querySelector('ai-guardrail') as any; if (g) g.checks = [{policy:'Content Policy',passed:true},{policy:'PII Detection',passed:true},{policy:'Toxicity Filter',passed:true}]; }},
+      { label: 'Blocked', html: `<ai-guardrail status="blocked" severityLevel="high" allowOverride blockedContent="[Content redacted: Contains personal identifiable information including SSN and address]"></ai-guardrail>`, setup: (el) => { const g = el.querySelector('ai-guardrail') as any; if (g) g.checks = [{policy:'Content Policy',passed:true},{policy:'PII Detection',passed:false,reason:'SSN pattern detected in output'},{policy:'Toxicity Filter',passed:true}]; }},
+    ],
+    since: 'v0.4.0',
+  },
+  {
+    tag: 'ai-rag-panel', name: 'RAG Panel', category: 'ai-workflow',
+    description: 'Retrieved document display for RAG. Shows documents with relevance scores, source types, excerpts, and filters.',
+    props: [
+      { name: 'documents', type: '{title, source, excerpt, relevance, type?, url?}[]', description: 'Retrieved documents' },
+      { name: 'query', type: 'string', description: 'Search query' },
+      { name: 'sortBy', type: '"relevance" | "recency" | "source"', default: '"relevance"', description: 'Sort order' },
+    ],
+    events: [{ name: 'ai-rag-document-click', detail: '{index, document}', description: 'Document clicked' }],
+    examples: [{ label: 'Retrieved sources', html: `<ai-rag-panel></ai-rag-panel>`, setup: (el) => { const r = el.querySelector('ai-rag-panel') as any; if (r) { r.query = 'Q4 revenue analysis'; r.documents = [
+      {title:'Q4 Financial Report',source:'Internal Docs',excerpt:'Total revenue reached $2.4M in Q4, representing an 18% increase year-over-year...',relevance:0.95,type:'doc'},
+      {title:'Enterprise Sales Pipeline',source:'CRM Database',excerpt:'Three new Fortune 500 contracts signed in October, totaling $400K ARR...',relevance:0.88,type:'database'},
+      {title:'Industry Growth Report 2025',source:'McKinsey',excerpt:'SaaS industry grew 12% on average in 2025, with enterprise segment leading...',relevance:0.72,type:'web',url:'#'},
+    ]; }}}],
+    since: 'v0.4.0',
+  },
+  {
+    tag: 'ai-context-window', name: 'Context Window', category: 'ai-viz',
+    description: 'Token budget tracker with segmented bar showing context window usage by category. Warning states and cache indicators.',
+    props: [
+      { name: 'total', type: 'number', default: '128000', description: 'Max context tokens' },
+      { name: 'segments', type: '{label, tokens, color?}[]', description: 'Usage segments' },
+      { name: 'cached', type: 'number', default: '0', description: 'Cached tokens (prompt caching)' },
+    ],
+    events: [{ name: 'ai-context-segment-click', detail: '{label, tokens}', description: 'Segment clicked' }],
+    examples: [{ label: 'Token budget', html: `<ai-context-window total="128000" cached="4200" style="max-width: 500px;"></ai-context-window>`, setup: (el) => { const c = el.querySelector('ai-context-window') as any; if (c) c.segments = [{label:'System',tokens:4200,color:'#a78bfa'},{label:'Messages',tokens:18500,color:'#60a5fa'},{label:'Tools',tokens:6800,color:'#14b8a6'},{label:'RAG Context',tokens:12000,color:'#fbbf24'}]; }}],
+    since: 'v0.4.0',
+  },
+  {
+    tag: 'ai-eval-scorecard', name: 'Eval Scorecard', category: 'ai-viz',
+    description: 'LLM evaluation display with score bars, overall grade (A-F), comparison deltas, and expandable explanations.',
+    props: [
+      { name: 'scores', type: '{metric, value, max?, explanation?}[]', description: 'Evaluation scores' },
+      { name: 'grade', type: 'string', description: 'Overall grade (A-F)' },
+      { name: 'comparison', type: 'Record<string, number>', description: 'Delta vs previous' },
+    ],
+    events: [{ name: 'ai-eval-metric-click', detail: '{metric}', description: 'Metric clicked' }],
+    examples: [{ label: 'Response evaluation', html: `<ai-eval-scorecard grade="B" style="max-width: 450px;"></ai-eval-scorecard>`, setup: (el) => { const e = el.querySelector('ai-eval-scorecard') as any; if (e) { e.scores = [{metric:'Relevance',value:88,explanation:'Response directly addresses the query with specific data points.'},{metric:'Coherence',value:82,explanation:'Logical flow with clear structure.'},{metric:'Safety',value:95},{metric:'Hallucination',value:72,explanation:'One claim about market share not supported by sources.'}]; e.comparison = {Relevance:3,Coherence:-1,Safety:0,Hallucination:8}; }}}],
+    since: 'v0.4.0',
+  },
+  {
+    tag: 'ai-source-graph', name: 'Source Graph', category: 'ai-viz',
+    description: 'SVG knowledge attribution graph showing which sources contributed to a response with connection weights.',
+    props: [
+      { name: 'sources', type: '{id, title, type, weight, excerpt?}[]', description: 'Source nodes' },
+      { name: 'responseId', type: 'string', default: '"Response"', description: 'Center node label' },
+    ],
+    events: [{ name: 'ai-source-click', detail: '{id, title, type, weight}', description: 'Source clicked' }],
+    examples: [{ label: 'Attribution graph', html: `<ai-source-graph></ai-source-graph>`, setup: (el) => { const g = el.querySelector('ai-source-graph') as any; if (g) g.sources = [{id:'1',title:'Financial Report',type:'doc',weight:0.9,excerpt:'Revenue grew 18% YoY...'},{id:'2',title:'CRM Data',type:'database',weight:0.7},{id:'3',title:'Industry Report',type:'web',weight:0.5},{id:'4',title:'Sales API',type:'api',weight:0.3}]; }}],
+    since: 'v0.4.0',
+  },
+  {
+    tag: 'ai-memory-panel', name: 'Memory Panel', category: 'ai-workflow',
+    description: 'Agent memory display with short-term (conversation) and long-term (persisted) sections. Search, pin, delete.',
+    props: [
+      { name: 'shortTerm', type: 'Memory[]', description: 'Short-term memories' },
+      { name: 'longTerm', type: 'Memory[]', description: 'Long-term memories' },
+      { name: 'searchable', type: 'boolean', default: 'true', description: 'Enable search' },
+    ],
+    events: [
+      { name: 'ai-memory-delete', detail: '{id, type}', description: 'Memory deleted' },
+      { name: 'ai-memory-pin', detail: '{id, pinned}', description: 'Memory pinned/unpinned' },
+      { name: 'ai-memory-search', detail: '{query}', description: 'Search query changed' },
+    ],
+    examples: [{ label: 'Agent memory', html: `<ai-memory-panel style="max-width: 450px;"></ai-memory-panel>`, setup: (el) => { const m = el.querySelector('ai-memory-panel') as any; if (m) { const now = Date.now(); m.shortTerm = [{id:'s1',content:'User asked about Q4 revenue trends',type:'context',timestamp:now-60000},{id:'s2',content:'Retrieved 5 documents from knowledge base',type:'context',timestamp:now-30000}]; m.longTerm = [{id:'l1',content:'User prefers concise answers with bullet points',type:'preference',timestamp:now-86400000,pinned:true},{id:'l2',content:'Company fiscal year ends in December',type:'fact',timestamp:now-172800000},{id:'l3',content:'Always include source citations',type:'instruction',timestamp:now-259200000}]; }}}],
+    since: 'v0.4.0',
+  },
+  {
+    tag: 'ai-confidence-slider', name: 'Confidence Slider', category: 'ai-viz',
+    description: 'Quality threshold control with color gradient slider, live result count, preset buttons, and distribution histogram.',
+    props: [
+      { name: 'value', type: 'number', default: '50', description: 'Current threshold' },
+      { name: 'resultCount', type: 'number', description: 'Results above threshold' },
+      { name: 'totalCount', type: 'number', description: 'Total results' },
+      { name: 'distribution', type: 'number[]', description: 'Confidence histogram data' },
+    ],
+    events: [{ name: 'ai-confidence-change', detail: '{value}', description: 'Threshold changed' }],
+    examples: [{ label: 'Threshold control', html: `<ai-confidence-slider value="70" resultCount="12" totalCount="47" style="max-width: 400px;"></ai-confidence-slider>`, setup: (el) => { const s = el.querySelector('ai-confidence-slider') as any; if (s) s.distribution = [2,3,5,8,12,15,18,22,25,20,15,10,8,5,3,2,1,1,0,1]; }}],
+    since: 'v0.4.0',
+  },
+  {
+    tag: 'ai-form-generator', name: 'Form Generator', category: 'ai-workflow',
+    description: 'Dynamic form from AI-generated JSON schema. Renders inputs, selects, checkboxes with validation. LLM describes fields, component renders them.',
+    props: [
+      { name: 'schema', type: 'FormSchema', description: 'JSON schema with fields, title, description' },
+      { name: 'values', type: 'Record<string, unknown>', description: 'Pre-filled values' },
+      { name: 'loading', type: 'boolean', default: 'false', description: 'Show loading state' },
+    ],
+    events: [
+      { name: 'ai-form-submit', detail: '{values}', description: 'Form submitted' },
+      { name: 'ai-form-change', detail: '{name, value, values}', description: 'Field changed' },
+      { name: 'ai-form-validate', detail: '{valid, errors}', description: 'Validation result' },
+    ],
+    examples: [{ label: 'AI-generated form', html: `<ai-form-generator style="max-width: 450px;"></ai-form-generator>`, setup: (el) => { const f = el.querySelector('ai-form-generator') as any; if (f) f.schema = {title:'Customer Feedback',description:'Help us improve our AI assistant',submitLabel:'Send Feedback',fields:[{name:'rating',type:'select',label:'Overall Rating',required:true,options:[{value:'5',label:'Excellent'},{value:'4',label:'Good'},{value:'3',label:'Average'},{value:'2',label:'Poor'},{value:'1',label:'Terrible'}]},{name:'helpful',type:'checkbox',label:'Was the response helpful?',default:true},{name:'comment',type:'textarea',label:'Additional Comments',placeholder:'What could we improve?'},{name:'email',type:'email',label:'Email (optional)',placeholder:'you@example.com'}]}; }}],
+    since: 'v0.4.0',
   },
 ];
