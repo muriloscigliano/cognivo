@@ -179,8 +179,14 @@ export class AiFormGenerator extends LitElement {
         else if (f.min !== undefined && num < f.min) errors[f.name] = `Minimum: ${f.min}`;
         else if (f.max !== undefined && num > f.max) errors[f.name] = `Maximum: ${f.max}`;
       }
-      if (f.pattern && val && !new RegExp(f.pattern).test(String(val))) {
-        errors[f.name] = 'Invalid format';
+      if (f.pattern && val) {
+        try {
+          if (!new RegExp(f.pattern).test(String(val))) {
+            errors[f.name] = 'Invalid format';
+          }
+        } catch {
+          // Invalid regex pattern — skip validation
+        }
       }
     }
 
@@ -222,6 +228,7 @@ export class AiFormGenerator extends LitElement {
         <div class="field">
           <label class="field-label">${field.label}${field.required ? html`<span class="required">*</span>` : nothing}</label>
           <select class="${err ? 'error' : ''}" .value=${String(val)}
+            aria-invalid="${err ? 'true' : 'false'}"
             @change=${(e: Event) => this._setValue(field.name, (e.target as HTMLSelectElement).value)}>
             <option value="">${field.placeholder || 'Select...'}</option>
             ${(field.options || []).map(o => html`<option value="${o.value}" ?selected=${val === o.value}>${o.label}</option>`)}
@@ -248,6 +255,7 @@ export class AiFormGenerator extends LitElement {
         <label class="field-label">${field.label}${field.required ? html`<span class="required">*</span>` : nothing}</label>
         <input type="${field.type}" class="${err ? 'error' : ''}" .value=${String(val)}
           placeholder="${field.placeholder || ''}"
+          aria-invalid="${err ? 'true' : 'false'}"
           @input=${(e: Event) => this._setValue(field.name, (e.target as HTMLInputElement).value)} />
         ${err ? html`<span class="field-error">${err}</span>` : nothing}
       </div>

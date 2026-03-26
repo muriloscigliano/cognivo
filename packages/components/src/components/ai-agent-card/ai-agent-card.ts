@@ -105,6 +105,7 @@ export class AiAgentCard extends LitElement {
       font-size: 11px; padding: 0; transition: all 150ms;
     }
     .action-btn:hover { color: var(--cg-color-surface-base-text, #fafafa); background: var(--cg-gray-700, #3f3f46); }
+    .action-btn:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }
 
     @media (prefers-reduced-motion: reduce) {
       .status-dot, .card, .action-btn { animation: none; transition: none; }
@@ -143,7 +144,7 @@ export class AiAgentCard extends LitElement {
       <div class="card ${isActive ? 'active' : ''}" role="article" tabindex="0"
         aria-label="${this.name} — ${this.status}"
         @click=${this._handleClick}
-        @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter') this._handleClick(); }}>
+        @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleClick(); } }}>
 
         ${isActive ? html`
           <div class="actions">

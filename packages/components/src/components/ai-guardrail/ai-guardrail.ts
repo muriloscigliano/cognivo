@@ -165,7 +165,7 @@ export class AiGuardrail extends LitElement {
 
   override render() {
     return html`
-      <div class="panel" role="alert" aria-label="Safety filter: ${this.status}">
+      <div class="panel" role="alert" aria-live="polite" aria-atomic="true" aria-label="Safety filter: ${this.status}">
         <div class="status-bar ${this.status}">
           <span class="status-icon">${this._getStatusIcon()}</span>
           <span class="status-text">${this._getStatusText()}</span>
@@ -191,8 +191,14 @@ export class AiGuardrail extends LitElement {
           <div class="blocked-section">
             <div class="blocked-label">Blocked Content</div>
             <div class="blocked-content ${this._revealed ? 'revealed' : ''}"
-              @click=${() => { this._revealed = !this._revealed; }}>${this.blockedContent}</div>
-            <div class="blocked-hint">${this._revealed ? 'Click to hide' : 'Click to reveal'}</div>
+              @click=${() => {
+                this._revealed = !this._revealed;
+                this.dispatchEvent(new CustomEvent('ai-guardrail-reveal', {
+                  bubbles: true, composed: true,
+                  detail: { revealed: this._revealed },
+                }));
+              }}>${this.blockedContent}</div>
+            <div class="blocked-hint">${this._revealed ? 'Click to hide' : 'Click to reveal (content may be harmful)'}</div>
           </div>
         ` : nothing}
 

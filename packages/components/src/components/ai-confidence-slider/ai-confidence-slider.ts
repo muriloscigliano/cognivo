@@ -62,6 +62,17 @@ export class AiConfidenceSlider extends LitElement {
       outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
+    /* Firefox */
+    input[type="range"]::-moz-range-thumb {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--cg-color-surface-base-text, #fafafa);
+      border: 2px solid var(--cg-brand-ai-accent, #dfff61);
+      cursor: pointer;
+    }
+    input[type="range"]::-moz-range-track {
+      height: 6px; border-radius: 3px;
+      background: linear-gradient(90deg, #f87171 0%, #fbbf24 50%, #4ade80 100%);
+    }
 
     .value-badge {
       position: absolute;
@@ -171,10 +182,11 @@ export class AiConfidenceSlider extends LitElement {
           `)}
         </div>
 
-        ${this.distribution.length > 0 ? html`
+        ${this.distribution.length > 0 ? (() => {
+          const maxVal = Math.max(...this.distribution, 1);
+          return html`
           <div class="distribution" aria-hidden="true">
             ${this.distribution.map((v, i) => {
-              const maxVal = Math.max(...this.distribution, 1);
               const h = (v / maxVal) * 32;
               const pct = (i / this.distribution.length) * 100;
               const isBelow = pct < this.value;
@@ -182,7 +194,7 @@ export class AiConfidenceSlider extends LitElement {
                 style="height: ${Math.max(h, 2)}px; background: ${this._getBarColor(i, this.distribution.length)};"></div>`;
             })}
           </div>
-        ` : nothing}
+        `;})() : nothing}
       </div>
     `;
   }

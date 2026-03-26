@@ -127,6 +127,7 @@ export class AiMemoryPanel extends LitElement {
   @property({ type: Boolean }) searchable: boolean = true;
 
   @state() private _activeTab: 'short' | 'long' = 'short';
+  private _searchTimer?: ReturnType<typeof setTimeout>;
   @state() private _search: string = '';
 
   private get _activeMemories(): Memory[] {
@@ -184,8 +185,13 @@ export class AiMemoryPanel extends LitElement {
           <div class="search-row">
             <input class="search-input" type="text" placeholder="Search memories..."
               .value=${this._search}
-              @input=${(e: Event) => { this._search = (e.target as HTMLInputElement).value;
-                this.dispatchEvent(new CustomEvent('ai-memory-search', { bubbles: true, composed: true, detail: { query: this._search } }));
+              @input=${(e: Event) => {
+                this._search = (e.target as HTMLInputElement).value;
+                // Debounce event dispatch
+                if (this._searchTimer) clearTimeout(this._searchTimer);
+                this._searchTimer = setTimeout(() => {
+                  this.dispatchEvent(new CustomEvent('ai-memory-search', { bubbles: true, composed: true, detail: { query: this._search } }));
+                }, 250);
               }} />
           </div>
         ` : nothing}
