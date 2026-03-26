@@ -17,6 +17,8 @@ interface PolicyCheck {
 export class AiGuardrail extends LitElement {
   static override styles = css`
     :host {
+      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      animation: fadeSlideIn 200ms cubic-bezier(0, 0, 0.58, 1);
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
@@ -132,6 +134,11 @@ export class AiGuardrail extends LitElement {
     :focus-visible {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+    }
+  
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   `;
 

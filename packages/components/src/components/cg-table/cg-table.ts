@@ -24,6 +24,7 @@ export interface TableColumn {
 export class CgTable extends LitElement {
   static override styles = css`
     :host {
+      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -89,6 +90,9 @@ export class CgTable extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
+  
+    tbody tr { transition: background-color 100ms cubic-bezier(0, 0, 0.58, 1); }
+    tbody tr:hover { background: rgba(255, 255, 255, 0.03); }
   `;
 
   @property({ type: Array }) columns: TableColumn[] = [];

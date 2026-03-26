@@ -16,6 +16,7 @@ import { customElement, property, state, query } from 'lit/decorators.js';
 export class CgCarousel extends LitElement {
   static override styles = css`
     :host {
+      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
       position: relative;

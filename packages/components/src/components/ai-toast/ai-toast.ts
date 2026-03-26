@@ -20,6 +20,7 @@ interface Toast {
 export class AiToast extends LitElement {
   static override styles = css`
     :host {
+      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
       display: block;
       position: fixed;
       z-index: 9999;

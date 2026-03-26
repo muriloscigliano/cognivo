@@ -13,6 +13,7 @@ import { customElement, property } from 'lit/decorators.js';
 export class CgSeparator extends LitElement {
   static override styles = css`
     :host {
+      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
       display: flex;
       align-items: center;
       gap: var(--cg-spacing-12, 12px);

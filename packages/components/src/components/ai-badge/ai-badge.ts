@@ -15,6 +15,7 @@ import { property, state, customElement } from 'lit/decorators.js';
 export class AiBadge extends LitElement {
   static override styles = css`
     :host {
+      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
       display: inline-flex;
       align-items: center;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);

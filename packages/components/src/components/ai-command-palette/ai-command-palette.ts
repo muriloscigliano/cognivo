@@ -21,6 +21,7 @@ export interface PaletteCommand {
 export class AiCommandPalette extends LitElement {
   static override styles = css`
     :host {
+      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
       display: contents;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }

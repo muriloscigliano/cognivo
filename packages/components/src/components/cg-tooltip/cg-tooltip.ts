@@ -17,6 +17,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 export class CgTooltip extends LitElement {
   static override styles = css`
     :host {
+      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
       display: inline-block;
       position: relative;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);

@@ -13,7 +13,8 @@ import { customElement, property } from 'lit/decorators.js';
 @customElement('cg-date-picker')
 export class CgDatePicker extends LitElement {
   static override styles = css`
-    :host { display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); }
+    :host {
+      transition: color 100ms cubic-bezier(0, 0, 0.58, 1); display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); }
 
     input {
       width: 100%; padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); min-height: 40px;

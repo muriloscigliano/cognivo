@@ -7,7 +7,8 @@ import { customElement, property } from 'lit/decorators.js';
 @customElement('cg-slider')
 export class CgSlider extends LitElement {
   static override styles = css`
-    :host { display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); }
+    :host {
+      transition: color 100ms cubic-bezier(0, 0, 0.58, 1); display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); }
 
     .slider-wrapper { padding: var(--cg-spacing-8, 8px) 0; }
 

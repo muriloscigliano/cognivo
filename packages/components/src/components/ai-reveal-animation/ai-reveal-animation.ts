@@ -14,6 +14,7 @@ type RevealType = 'fade' | 'slide-up' | 'scale' | 'flip';
 export class AiRevealAnimation extends LitElement {
   static override styles = css`
     :host {
+      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
       display: block;
     }
 

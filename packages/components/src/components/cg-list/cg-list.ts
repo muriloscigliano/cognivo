@@ -27,6 +27,7 @@ export interface ListItem {
 export class CgList extends LitElement {
   static override styles = css`
     :host {
+      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -167,6 +168,9 @@ export class CgList extends LitElement {
     @media (prefers-reduced-motion: reduce) {
       * { transition: none !important; animation: none !important; }
     }
+  
+    .item { transition: background-color 100ms cubic-bezier(0, 0, 0.58, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1); }
+    .item:hover { transform: translateX(2px); }
   `;
 
   @property({ type: Array }) items: ListItem[] = [];

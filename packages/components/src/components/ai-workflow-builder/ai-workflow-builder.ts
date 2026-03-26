@@ -19,7 +19,8 @@ interface WorkflowStep {
 @customElement('ai-workflow-builder')
 export class AiWorkflowBuilder extends LitElement {
   static override styles = css`
-    :host { display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif); }
+    :host {
+      transition: color 100ms cubic-bezier(0, 0, 0.58, 1); display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif); }
 
     .container {
       background: var(--cg-color-surface-container-background, #18181b);

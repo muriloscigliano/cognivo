@@ -8,7 +8,8 @@ import { customElement, property } from 'lit/decorators.js';
 @customElement('cg-markdown')
 export class CgMarkdown extends LitElement {
   static override styles = css`
-    :host { display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); color: var(--cg-color-surface-base-text, #fafafa); line-height: var(--cg-line-height-relaxed, 1.625); font-size: var(--cg-font-size-sm, 14px); }
+    :host {
+      transition: color 100ms cubic-bezier(0, 0, 0.58, 1); display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); color: var(--cg-color-surface-base-text, #fafafa); line-height: var(--cg-line-height-relaxed, 1.625); font-size: var(--cg-font-size-sm, 14px); }
     .md h1 { font-size: 1.5rem; font-weight: 700; margin: 1em 0 0.5em; }
     .md h2 { font-size: 1.25rem; font-weight: 700; margin: 1em 0 0.5em; }
     .md h3 { font-size: 1.1rem; font-weight: 600; margin: 0.8em 0 0.4em; }

@@ -20,6 +20,8 @@ interface KpiItem {
 export class AiKpiGrid extends LitElement {
   static override styles = css`
     :host {
+      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      animation: fadeSlideIn 200ms cubic-bezier(0, 0, 0.58, 1);
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
@@ -132,6 +134,11 @@ export class AiKpiGrid extends LitElement {
     @media (prefers-reduced-motion: reduce) {
       .kpi { transition: none; }
       .skel-line { animation: none; background: var(--cg-gray-800, #27272a); }
+    }
+  
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   `;
 
