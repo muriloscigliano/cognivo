@@ -991,4 +991,35 @@ export const registry: ComponentMeta[] = [
     examples: [{ label: 'AI-generated form', html: `<ai-form-generator style="max-width: 450px;"></ai-form-generator>`, setup: (el) => { const f = el.querySelector('ai-form-generator') as any; if (f) f.schema = {title:'Customer Feedback',description:'Help us improve our AI assistant',submitLabel:'Send Feedback',fields:[{name:'rating',type:'select',label:'Overall Rating',required:true,options:[{value:'5',label:'Excellent'},{value:'4',label:'Good'},{value:'3',label:'Average'},{value:'2',label:'Poor'},{value:'1',label:'Terrible'}]},{name:'helpful',type:'checkbox',label:'Was the response helpful?',default:true},{name:'comment',type:'textarea',label:'Additional Comments',placeholder:'What could we improve?'},{name:'email',type:'email',label:'Email (optional)',placeholder:'you@example.com'}]}; }}],
     since: 'v0.4.0',
   },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // AI DATA DISPLAY
+  // ═══════════════════════════════════════════════════════════════════════════
+  {
+    tag: 'ai-data-card', name: 'Data Card', category: 'ai-display',
+    description: 'Compact inline key-value data display. Embed in chat messages, tool results, and insight cards. Shows any structured data with type-specific formatting.',
+    props: [
+      { name: 'title', type: 'string', description: 'Card title' },
+      { name: 'subtitle', type: 'string', description: 'Subtitle text' },
+      { name: 'icon', type: 'string', description: 'Header icon (emoji)' },
+      { name: 'headerStatus', type: '"success"|"warning"|"error"|"info"|"neutral"', description: 'Header badge color' },
+      { name: 'headerStatusLabel', type: 'string', description: 'Header badge text' },
+      { name: 'fields', type: 'DataField[]', description: 'Key-value rows with optional type formatting' },
+      { name: 'actions', type: 'CardAction[]', description: 'Footer action buttons' },
+      { name: 'compact', type: 'boolean', default: 'false', description: 'Compact display mode' },
+      { name: 'loading', type: 'boolean', default: 'false', description: 'Show loading skeleton' },
+      { name: 'highlighted', type: 'boolean', default: 'false', description: 'Accent border' },
+    ],
+    events: [
+      { name: 'ai-data-card-action', detail: '{actionId, actionLabel}', description: 'Action button clicked' },
+      { name: 'ai-data-card-row-click', detail: '{label, value, type}', description: 'Row clicked' },
+    ],
+    examples: [
+      { label: 'Invoice', html: `<ai-data-card title="Invoice #1042" subtitle="Acme Corp" icon="📄" headerStatus="warning" headerStatusLabel="Pending" style="max-width: 380px;"></ai-data-card>`, setup: (el) => { const c = el.querySelector('ai-data-card') as any; if (c) { c.fields = [{label:'Amount',value:'$4,200.00',type:'currency'},{label:'Due Date',value:'Mar 30, 2026',type:'date'},{label:'Status',value:'Pending',type:'status',status:'warning'},{label:'Client',value:'Acme Corp',type:'text',copyable:true},{label:'Growth',value:'+18.5%',type:'percent'}]; c.actions = [{id:'send',label:'Send Invoice',variant:'primary',icon:'📨'},{id:'edit',label:'Edit',variant:'secondary'}]; } }},
+      { label: 'AI Model Info', html: `<ai-data-card title="Claude 3.5 Sonnet" icon="🤖" headerStatus="success" headerStatusLabel="Active" style="max-width: 380px;"></ai-data-card>`, setup: (el) => { const c = el.querySelector('ai-data-card') as any; if (c) { c.fields = [{label:'Provider',value:'Anthropic'},{label:'Tokens',value:'1,247',type:'number'},{label:'Cost',value:'$0.0089',type:'currency'},{label:'Latency',value:'2.4s'},{label:'Confidence',value:'92%',type:'percent'},{label:'Status',value:'Operational',type:'badge',status:'success'}]; } }},
+      { label: 'Compact', html: `<ai-data-card title="Order #8821" icon="📦" compact style="max-width: 300px;"></ai-data-card>`, setup: (el) => { const c = el.querySelector('ai-data-card') as any; if (c) { c.fields = [{label:'Total',value:'$129.99',type:'currency'},{label:'Items',value:'3',type:'number'},{label:'Status',value:'Shipped',type:'status',status:'success'}]; } }},
+      { label: 'Loading', html: `<ai-data-card loading style="max-width: 380px;"></ai-data-card>` },
+    ],
+    since: 'v0.4.0',
+  },
 ];

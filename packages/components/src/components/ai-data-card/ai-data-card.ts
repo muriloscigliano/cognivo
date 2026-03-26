@@ -347,6 +347,18 @@ export class AiDataCard extends LitElement {
   @property({ type: Boolean }) highlighted: boolean = false;
 
   private _copiedField: string | null = null;
+  private _copyTimer?: ReturnType<typeof setTimeout>;
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this._copyTimer) clearTimeout(this._copyTimer);
+  }
+
+  private _sanitizeUrl(url: string): string {
+    const trimmed = url.trim().toLowerCase();
+    if (trimmed.startsWith('javascript:') || trimmed.startsWith('data:') || trimmed.startsWith('vbscript:')) return '#';
+    return url;
+  }
 
   private _handleAction(action: CardAction) {
     if (action.disabled) return;
@@ -380,7 +392,8 @@ export class AiDataCard extends LitElement {
       }
       this._copiedField = field.label;
       this.requestUpdate();
-      setTimeout(() => { this._copiedField = null; this.requestUpdate(); }, 2000);
+      if (this._copyTimer) clearTimeout(this._copyTimer);
+      this._copyTimer = setTimeout(() => { this._copiedField = null; this.requestUpdate(); }, 2000);
     } catch { /* silently fail */ }
   }
 
@@ -393,8 +406,11 @@ export class AiDataCard extends LitElement {
         return html`<span class="val-currency">${val}</span>`;
       case 'number':
         return html`<span class="val-number">${val}</span>`;
-      case 'percent':
-        return html`<span class="val-percent" style="color: ${Number(field.value) >= 0 ? '#4ade80' : '#f87171'};">${val}</span>`;
+      case 'percent': {
+        const num = Number(field.value);
+        const pColor = isNaN(num) ? 'var(--cg-gray-400, #a1a1aa)' : num >= 0 ? '#4ade80' : '#f87171';
+        return html`<span class="val-percent" style="color: ${pColor};">${val}</span>`;
+      }
       case 'date':
         return html`<span class="val-date">${val}</span>`;
       case 'status':
@@ -402,7 +418,7 @@ export class AiDataCard extends LitElement {
       case 'badge':
         return html`<span class="val-badge ${status}">${val}</span>`;
       case 'link':
-        return html`<a class="val-link" href="${field.url || '#'}" target="_blank" rel="noopener noreferrer">${val}</a>`;
+        return html`<a class="val-link" href="${this._sanitizeUrl(field.url || '#')}" target="_blank" rel="noopener noreferrer">${val}</a>`;
       default:
         return html`<span>${val}</span>`;
     }
