@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cognivo — AI Dashboard Demo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #09090B;
+      color: #FAFAFA;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .dashboard { max-width: 1200px; margin: 0 auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .header h1 { font-size: 24px; font-weight: 800; color: #DFFF61; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .full-width { grid-column: 1 / -1; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Header -->
+    <div class="header">
+      <h1>Revenue Dashboard</h1>
+      <div id="token-tracker"></div>
+    </div>
+
+    <!-- KPI Metrics -->
+    <div class="grid" id="metrics"></div>
+
+    <!-- AI Thinking (simulated) -->
+    <div id="thinking-area" style="margin-bottom: 16px;"></div>
+
+    <!-- Timeline + Chart Summary -->
+    <div class="two-col">
+      <div id="timeline-area"></div>
+      <div id="chart-area"></div>
+    </div>
+
+    <!-- AI Analysis Panel -->
+    <div id="analysis" style="margin-bottom: 24px;"></div>
+
+    <!-- Insights -->
+    <div class="grid" id="insights"></div>
+
+    <!-- Citations -->
+    <div id="citations" style="margin-bottom: 24px;"></div>
+
+    <!-- Follow-up suggestions -->
+    <div id="follow-ups"></div>
+
+    <!-- Feedback -->
+    <div id="feedback" style="margin-top: 24px;"></div>
+
+    <!-- Toast container -->
+    <ai-toast position="top-right"></ai-toast>
+  </div>
+
+  <script type="module">
+    import '../../packages/tokens/dist/index.css';
+    import '@cognivo/components';
+
+    // ── Metrics ──
+    const metricsEl = document.getElementById('metrics');
+    const metrics = [
+      { title: 'Revenue', value: '$2.4M', delta: '+18%', trend: 'up', sparkline: [1.2, 1.4, 1.5, 1.8, 2.0, 2.1, 2.4] },
+      { title: 'Users', value: '14.2K', delta: '+5%', trend: 'up', sparkline: [10, 11, 11.5, 12, 13, 13.5, 14.2] },
+      { title: 'Churn', value: '1.8%', delta: '-0.3%', trend: 'down', sparkline: [2.5, 2.3, 2.1, 2.0, 1.9, 1.8, 1.8] },
+      { title: 'NPS', value: '72', delta: '+4', trend: 'up', sparkline: [62, 64, 65, 68, 70, 71, 72] },
+    ];
+    for (const m of metrics) {
+      const card = document.createElement('cg-metric-card');
+      card.title = m.title;
+      card.value = m.value;
+      card.delta = m.delta;
+      card.trend = m.trend;
+      card.sparkline = m.sparkline;
+      card.comparison = 'vs last quarter';
+      card.clickable = true;
+      metricsEl.appendChild(card);
+    }
+
+    // ── Token Tracker ──
+    const tracker = document.createElement('ai-token-tracker');
+    tracker.inputTokens = 1250;
+    tracker.outputTokens = 890;
+    tracker.cost = 0.0089;
+    tracker.latency = 2400;
+    tracker.model = 'Claude 3.5';
+    document.getElementById('token-tracker').appendChild(tracker);
+
+    // ── Simulated AI Flow ──
+    const thinkingArea = document.getElementById('thinking-area');
+    const thinking = document.createElement('ai-thinking');
+    thinking.variant = 'dots';
+    thinking.shimmer = true;
+    thinking.delay = 0;
+    thinking.stages = ['Connecting to model...', 'Analyzing Q4 data...', 'Generating insights...'];
+    thinking.tools = [
+      { name: 'database', status: 'complete' },
+      { name: 'web_search', status: 'loading' },
+    ];
+    thinking.cancelable = true;
+    thinkingArea.appendChild(thinking);
+
+    // Remove thinking after 4s and show results
+    setTimeout(() => {
+      thinkingArea.innerHTML = '';
+      showResults();
+      // Show toast
+      document.querySelector('ai-toast').show('Analysis complete — 3 insights found', 'success');
+    }, 4000);
+
+    function showResults() {
+      // ── Timeline ──
+      const timeline = document.createElement('ai-timeline');
+      timeline.steps = [
+        { label: 'Received query', status: 'complete', duration: 50 },
+        { label: 'Queried database', status: 'complete', duration: 1200, tools: ['database'] },
+        { label: 'Web search', status: 'complete', duration: 800, tools: ['web_search'] },
+        { label: 'Generated analysis', status: 'complete', duration: 2400 },
+      ];
+      document.getElementById('timeline-area').appendChild(timeline);
+
+      // ── Chart Summary ──
+      const summary = document.createElement('ai-chart-summary');
+      summary.summary = 'Revenue shows consistent upward trend driven by enterprise expansion. Q1 dip is seasonal and expected. Marketing ROI improved 22% vs Q3.';
+      summary.confidence = 0.91;
+      summary.trends = [
+        { label: 'Revenue', direction: 'up', value: '+18%' },
+        { label: 'Churn', direction: 'down', value: '-0.3%' },
+        { label: 'NPS', direction: 'up', value: '+4 pts' },
+      ];
+      summary.collapsible = true;
+      document.getElementById('chart-area').appendChild(summary);
+
+      // ── Result Panel ──
+      const panel = document.createElement('ai-result-panel');
+      panel.title = 'Q4 Revenue Analysis';
+      panel.explanation = 'Revenue grew 18% YoY driven primarily by enterprise expansion (+32%) and new feature adoption. SMB segment grew modestly (+8%), while consumer segment declined (-2%) due to increased competition.';
+      panel.bullets = [
+        'Enterprise segment: +32% ($1.2M → $1.6M)',
+        'SMB segment: +8% ($600K → $648K)',
+        'Consumer: -2% ($200K → $196K)',
+        'Marketing ROI improved 22% vs Q3',
+      ];
+      panel.drivers = [
+        { factor: 'Enterprise deals', impact: 42 },
+        { factor: 'New features', impact: 28 },
+        { factor: 'Marketing', impact: 15 },
+        { factor: 'Pricing change', impact: -8 },
+      ];
+      panel.confidence = 0.91;
+      panel.collapsible = true;
+      document.getElementById('analysis').appendChild(panel);
+
+      // ── Insight Cards ──
+      const insightsEl = document.getElementById('insights');
+      const insights = [
+        { type: 'explanation', text: 'Enterprise expansion drove 42% of revenue growth, primarily through 3 new Fortune 500 contracts signed in October.', confidence: 0.95, timestamp: '2 min ago' },
+        { type: 'anomaly', text: 'Unusual spike in EU error rates (3.2% vs 0.8% baseline) detected on Nov 15th. Correlates with CDN configuration change.', confidence: 0.88, timestamp: '5 min ago' },
+        { type: 'forecast', text: 'Based on current trajectory, Q1 revenue projected at $2.1M (seasonal 12% dip). Recovery expected by Q2 to $2.6M.', confidence: 0.76, timestamp: '8 min ago' },
+      ];
+      for (const i of insights) {
+        const card = document.createElement('ai-insight-card');
+        card.type = i.type;
+        card.text = i.text;
+        card.confidence = i.confidence;
+        card.timestamp = i.timestamp;
+        card.expandable = true;
+        insightsEl.appendChild(card);
+      }
+
+      // ── Citations ──
+      const citations = document.createElement('ai-citation');
+      citations.mode = 'list';
+      citations.sources = [
+        { title: 'Q4 Financial Report', url: '#', excerpt: 'Total revenue reached $2.4M, a 18% increase YoY...', relevance: 0.95 },
+        { title: 'Enterprise Sales Pipeline', url: '#', excerpt: '3 new Fortune 500 contracts totaling $400K ARR...', relevance: 0.88 },
+        { title: 'Marketing Performance Dashboard', url: '#', excerpt: 'Content marketing emerged as highest-converting channel...', relevance: 0.72 },
+      ];
+      document.getElementById('citations').appendChild(citations);
+
+      // ── Follow-ups ──
+      const followUp = document.createElement('cg-follow-up');
+      followUp.items = [
+        'Show breakdown by region',
+        'Compare to last quarter',
+        'Forecast next 6 months',
+        'Export as PDF',
+      ];
+      document.getElementById('follow-ups').appendChild(followUp);
+
+      // ── Feedback ──
+      const feedback = document.createElement('ai-feedback');
+      feedback.mode = 'thumbs';
+      feedback.tags = ['Inaccurate', 'Missing data', 'Too verbose', 'Helpful'];
+      document.getElementById('feedback').appendChild(feedback);
+    }
+  </script>
+</body>
+</html>
