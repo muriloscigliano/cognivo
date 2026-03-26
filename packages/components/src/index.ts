@@ -119,6 +119,14 @@ import { AiAvatar } from './components/ai-avatar/ai-avatar.js';
 import { AiProgressSteps } from './components/ai-progress-steps/ai-progress-steps.js';
 import { AiJsonViewer } from './components/ai-json-viewer/ai-json-viewer.js';
 import { AiCopyButton } from './components/ai-copy-button/ai-copy-button.js';
+// Wave 7: Freely-inspired production patterns
+import { AiToolCardResolver } from './components/ai-tool-card-resolver/ai-tool-card-resolver.js';
+import { AiActionPreview } from './components/ai-action-preview/ai-action-preview.js';
+import { AiCaptureFlow } from './components/ai-capture-flow/ai-capture-flow.js';
+import { AiKpiGrid } from './components/ai-kpi-grid/ai-kpi-grid.js';
+import { AiAlertCard } from './components/ai-alert-card/ai-alert-card.js';
+import { AiRevealAnimation } from './components/ai-reveal-animation/ai-reveal-animation.js';
+import { AiRichMessage } from './components/ai-rich-message/ai-rich-message.js';
 
 export {
   // Wave 1: Foundation
@@ -157,6 +165,9 @@ export {
   AiVersionSelector, AiFeatureFlag, AiDebugConsole, AiAccessibilityReport,
   // Final 6: 100 Components
   AiSidebar, AiCommandPalette, AiAvatar, AiProgressSteps, AiJsonViewer, AiCopyButton,
+  // Wave 7: Freely-inspired production patterns
+  AiToolCardResolver, AiActionPreview, AiCaptureFlow, AiKpiGrid,
+  AiAlertCard, AiRevealAnimation, AiRichMessage,
 };
 
 // Type exports

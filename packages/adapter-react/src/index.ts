@@ -218,3 +218,12 @@ export { AiAvatar } from './components/AiAvatar.js';
 export { AiProgressSteps } from './components/AiProgressSteps.js';
 export { AiJsonViewer } from './components/AiJsonViewer.js';
 export { AiCopyButton } from './components/AiCopyButton.js';
+
+// Wave 7: Freely-inspired
+export { AiToolCardResolver } from './components/AiToolCardResolver.js';
+export { AiActionPreview } from './components/AiActionPreview.js';
+export { AiCaptureFlow } from './components/AiCaptureFlow.js';
+export { AiKpiGrid } from './components/AiKpiGrid.js';
+export { AiAlertCard } from './components/AiAlertCard.js';
+export { AiRevealAnimation } from './components/AiRevealAnimation.js';
+export { AiRichMessage } from './components/AiRichMessage.js';
