@@ -79,6 +79,17 @@ import { AiSourceGraph } from './components/ai-source-graph/ai-source-graph.js';
 import { AiMemoryPanel } from './components/ai-memory-panel/ai-memory-panel.js';
 import { AiConfidenceSlider } from './components/ai-confidence-slider/ai-confidence-slider.js';
 import { AiFormGenerator } from './components/ai-form-generator/ai-form-generator.js';
+// Wave 4: AI Production & Enterprise
+import { AiWorkflowBuilder } from './components/ai-workflow-builder/ai-workflow-builder.js';
+import { AiAbTest } from './components/ai-ab-test/ai-ab-test.js';
+import { AiDataTable } from './components/ai-data-table/ai-data-table.js';
+import { AiNotificationCenter } from './components/ai-notification-center/ai-notification-center.js';
+import { AiCostDashboard } from './components/ai-cost-dashboard/ai-cost-dashboard.js';
+import { AiPermissionGate } from './components/ai-permission-gate/ai-permission-gate.js';
+import { AiEmbeddingViz } from './components/ai-embedding-viz/ai-embedding-viz.js';
+import { AiPromptTemplate } from './components/ai-prompt-template/ai-prompt-template.js';
+import { AiBatchProgress } from './components/ai-batch-progress/ai-batch-progress.js';
+import { AiChangelog } from './components/ai-changelog/ai-changelog.js';
 
 export {
   // Wave 1: Foundation
@@ -103,6 +114,10 @@ export {
   AiAgentCard, AiReasoningTree, AiGuardrail, AiRagPanel,
   AiContextWindow, AiEvalScorecard, AiSourceGraph,
   AiMemoryPanel, AiConfidenceSlider, AiFormGenerator,
+  // AI Wave 4: Production & Enterprise
+  AiWorkflowBuilder, AiAbTest, AiDataTable, AiNotificationCenter,
+  AiCostDashboard, AiPermissionGate, AiEmbeddingViz,
+  AiPromptTemplate, AiBatchProgress, AiChangelog,
 };
 
 // Type exports

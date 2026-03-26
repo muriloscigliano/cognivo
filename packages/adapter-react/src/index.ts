@@ -174,3 +174,15 @@ export { AiSourceGraph } from './components/AiSourceGraph.js';
 export { AiMemoryPanel } from './components/AiMemoryPanel.js';
 export { AiConfidenceSlider } from './components/AiConfidenceSlider.js';
 export { AiFormGenerator } from './components/AiFormGenerator.js';
+
+// Wave 4: AI Production & Enterprise
+export { AiWorkflowBuilder } from './components/AiWorkflowBuilder.js';
+export { AiAbTest } from './components/AiAbTest.js';
+export { AiDataTable } from './components/AiDataTable.js';
+export { AiNotificationCenter } from './components/AiNotificationCenter.js';
+export { AiCostDashboard } from './components/AiCostDashboard.js';
+export { AiPermissionGate } from './components/AiPermissionGate.js';
+export { AiEmbeddingViz } from './components/AiEmbeddingViz.js';
+export { AiPromptTemplate } from './components/AiPromptTemplate.js';
+export { AiBatchProgress } from './components/AiBatchProgress.js';
+export { AiChangelog } from './components/AiChangelog.js';
