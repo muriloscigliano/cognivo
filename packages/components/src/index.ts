@@ -127,6 +127,7 @@ import { AiKpiGrid } from './components/ai-kpi-grid/ai-kpi-grid.js';
 import { AiAlertCard } from './components/ai-alert-card/ai-alert-card.js';
 import { AiRevealAnimation } from './components/ai-reveal-animation/ai-reveal-animation.js';
 import { AiRichMessage } from './components/ai-rich-message/ai-rich-message.js';
+import { AiDataCard } from './components/ai-data-card/ai-data-card.js';
 
 export {
   // Wave 1: Foundation
@@ -168,6 +169,7 @@ export {
   // Wave 7: Freely-inspired production patterns
   AiToolCardResolver, AiActionPreview, AiCaptureFlow, AiKpiGrid,
   AiAlertCard, AiRevealAnimation, AiRichMessage,
+  AiDataCard,
 };
 
 // Type exports

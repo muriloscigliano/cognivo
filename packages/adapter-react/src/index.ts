@@ -227,3 +227,4 @@ export { AiKpiGrid } from './components/AiKpiGrid.js';
 export { AiAlertCard } from './components/AiAlertCard.js';
 export { AiRevealAnimation } from './components/AiRevealAnimation.js';
 export { AiRichMessage } from './components/AiRichMessage.js';
+export { AiDataCard } from "./components/AiDataCard.js";
