@@ -129,8 +129,18 @@ export class AiJsonViewer extends LitElement {
     return 0;
   }
 
+  private _seen = new WeakSet();
+
   private _renderValue(val: unknown, path: string, depth: number, isLast: boolean): unknown {
     const comma = isLast ? '' : ',';
+
+    // Circular reference detection
+    if (val !== null && typeof val === 'object') {
+      if (this._seen.has(val as object)) {
+        return html`<span class="null">[Circular]</span>${comma}`;
+      }
+      this._seen.add(val as object);
+    }
 
     if (val === null) {
       return html`<span class="null">null</span>${comma}`;
@@ -198,6 +208,7 @@ ${keys.map((key, i) => {
   }
 
   override render() {
+    this._seen = new WeakSet(); // Reset cycle detection each render
     return html`
       <div class="root" role="tree" aria-label="JSON viewer">
         <div class="line">${this._renderValue(this.data, '$', 0, true)}</div>

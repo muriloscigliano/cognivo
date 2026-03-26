@@ -110,8 +110,21 @@ export class AiCopyButton extends LitElement {
   }
 
   private async _handleCopy(): Promise<void> {
+    if (!this.value) return;
     try {
-      await navigator.clipboard.writeText(this.value);
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(this.value);
+      } else {
+        // Fallback for non-secure contexts
+        const ta = document.createElement('textarea');
+        ta.value = this.value;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
       this._copied = true;
       this.dispatchEvent(new CustomEvent('ai-copy-success', {
         detail: { value: this.value },
