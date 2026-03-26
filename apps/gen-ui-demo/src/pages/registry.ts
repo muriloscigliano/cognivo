@@ -1,5 +1,5 @@
 /**
- * Component Registry — metadata for all 64 Cognivo components.
+ * Component Registry — metadata for all 124 Cognivo components.
  * Powers the showcase sidebar, component pages, props tables, and examples.
  */
 

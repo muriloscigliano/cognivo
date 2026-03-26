@@ -2,7 +2,7 @@
 
 **The AI-Native Component Library**
 
-108 Web Components. 73 AI-specific. Framework-agnostic. Dark-first. 133KB gzip.
+124 Web Components. 74 AI-specific. Framework-agnostic. Dark-first. 164KB gzip.
 
 The most comprehensive component library purpose-built for AI applications. Covers every pattern from basic UI to multi-agent orchestration, RAG, safety guardrails, evaluation, and production DevOps. Works in React, Vue, Angular, Svelte, or vanilla HTML.
 
@@ -147,7 +147,7 @@ kpi2 = MetricCard("Users", "14.2K", "+5%", "up")
 
 Features:
 - Streaming parser (renders tokens as they arrive)
-- 108 components registered with Zod schemas
+- 124 components registered with Zod schemas
 - Cognitive bias analysis (`suggestBiasesForTree()`)
 - Token governance (`validateTokenUsage()`)
 
@@ -167,19 +167,19 @@ Dark/light themes via `data-theme` attribute. Stockify palette with neon lime `#
 
 | Package | Description | Size |
 |---------|-------------|------|
-| `@cognivo/components` | 108 Lit Web Components | 133KB gzip |
+| `@cognivo/components` | 124 Lit Web Components | 164KB gzip |
 | `@cognivo/tokens` | 1,768 CSS custom properties | 95KB |
 | `@cognivo/gen-ui` | Streaming parser + registry + bias engine | 63KB |
 | `@cognivo/gen-ui-lit` | Lit renderer for gen-ui | 9KB |
-| `@cognivo/adapter-react` | 109 React wrappers | 14KB |
-| `@cognivo/adapter-vue` | 109 Vue wrappers | 12KB |
+| `@cognivo/adapter-react` | 125 React wrappers | 14KB |
+| `@cognivo/adapter-vue` | 125 Vue wrappers | 12KB |
 | `@cognivo/core` | AI integration core | 49KB |
 
 ## vs Competition
 
 | Library | Total | AI-Native | Framework | Bundle |
 |---------|-------|-----------|-----------|--------|
-| **Cognivo** | **108** | **73** | **Any** (Web Components) | **133KB** |
+| **Cognivo** | **124** | **73** | **Any** (Web Components) | **133KB** |
 | Shoelace | 60 | 0 | Any (WC) | 80KB |
 | shadcn/ui | 50 | 5 | React only | varies |
 | OpenUI | 47 | 5 | React only | 434KB |

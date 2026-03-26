@@ -1,7 +1,7 @@
 {
   "name": "@cognivo/components",
   "version": "0.3.0",
-  "description": "54 AI-native Web Components built with Lit 3. Framework-agnostic, dark-first, accessible.",
+  "description": "124 Web Components (50 foundation + 74 AI-native) built with Lit 3. Framework-agnostic, dark-first, accessible.",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
