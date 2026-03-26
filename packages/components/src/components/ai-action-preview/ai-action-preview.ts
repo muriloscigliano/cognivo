@@ -209,7 +209,11 @@ export class AiActionPreview extends LitElement {
     }
   }
 
+  private _confirmed = false;
+
   private _handleConfirm() {
+    if (this._confirmed) return; // Guard double-fire
+    this._confirmed = true;
     this._clearTimer();
     this.dispatchEvent(new CustomEvent('ai-action-confirm', {
       bubbles: true, composed: true,

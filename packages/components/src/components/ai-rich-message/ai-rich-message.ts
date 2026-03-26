@@ -187,7 +187,7 @@ export class AiRichMessage extends LitElement {
     return html`
       <div class="avatar ${this.role}" aria-hidden="true">
         ${this.avatar
-          ? html`<img src=${this.avatar} alt="">`
+          ? html`<img src=${this.avatar} alt="${this.role} avatar">`
           : this._avatarFallback()}
       </div>
     `;
@@ -204,8 +204,20 @@ export class AiRichMessage extends LitElement {
     `;
   }
 
+  private _cardAbort?: AbortController;
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    this._cardAbort?.abort();
+  }
+
   private _renderCards() {
     if (this.cards.length === 0) return nothing;
+    // Clean up previous card listeners
+    this._cardAbort?.abort();
+    this._cardAbort = new AbortController();
+    const signal = this._cardAbort.signal;
+
     return html`
       <div class="cards">
         ${this.cards.map((card, idx) => {
@@ -217,7 +229,7 @@ export class AiRichMessage extends LitElement {
               this._dispatch('ai-message-card-action', {
                 cardIndex: idx, action: e.detail?.action, data: e.detail?.data,
               });
-            }) as EventListener);
+            }) as EventListener, { signal });
             return el;
           } catch {
             return html`<div style="padding:8px;font-size:12px;color:var(--cg-gray-500,#71717a);">Card unavailable</div>`;

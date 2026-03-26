@@ -104,18 +104,27 @@ export class AiRevealAnimation extends LitElement {
   @property({ type: Boolean }) visible = false;
 
   @state() private _done = false;
+  private _animAbort?: AbortController;
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    this._animAbort?.abort();
+  }
 
   override updated(changed: Map<string, unknown>) {
     if (changed.has('visible') && this.visible) {
       this._done = false;
-      // Reset in case re-triggering
+      // Clean up previous listener
+      this._animAbort?.abort();
+      this._animAbort = new AbortController();
       const wrapper = this.shadowRoot?.querySelector('.wrapper');
       if (wrapper) {
-        wrapper.addEventListener('animationend', this._onAnimEnd, { once: true });
+        wrapper.addEventListener('animationend', this._onAnimEnd, { once: true, signal: this._animAbort.signal });
       }
     }
     if (changed.has('visible') && !this.visible) {
       this._done = false;
+      this._animAbort?.abort();
     }
   }
 

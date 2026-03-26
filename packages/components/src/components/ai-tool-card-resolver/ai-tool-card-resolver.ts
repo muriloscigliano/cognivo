@@ -133,9 +133,20 @@ export class AiToolCardResolver extends LitElement {
     }));
   }
 
+  private _abortController?: AbortController;
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    this._abortController?.abort();
+  }
+
   private _resolveComponent(): HTMLElement | null {
     const tag = this.registry[this.toolName];
     if (!tag) return null;
+
+    // Clean up previous listeners
+    this._abortController?.abort();
+    this._abortController = new AbortController();
 
     try {
       const el = document.createElement(tag);
@@ -145,7 +156,7 @@ export class AiToolCardResolver extends LitElement {
         this._dispatch('ai-tool-card-action', {
           toolName: this.toolName, action: e.detail?.action, data: e.detail?.data,
         });
-      }) as EventListener);
+      }) as EventListener, { signal: this._abortController.signal });
       return el;
     } catch (err) {
       this._error = err instanceof Error ? err.message : 'Component failed to render';
