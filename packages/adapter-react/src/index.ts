@@ -240,3 +240,11 @@ export { CgDrawer } from './components/CgDrawer.js';
 export { CgBreadcrumbs } from './components/CgBreadcrumbs.js';
 export { CgPagination } from './components/CgPagination.js';
 export { CgChip } from './components/CgChip.js';
+
+// Final Foundation
+export { CgNumberInput } from './components/CgNumberInput.js';
+export { CgOtpInput } from './components/CgOtpInput.js';
+export { CgAutocomplete } from './components/CgAutocomplete.js';
+export { CgColorPicker } from './components/CgColorPicker.js';
+export { CgLink } from './components/CgLink.js';
+export { CgAvatarGroup } from './components/CgAvatarGroup.js';

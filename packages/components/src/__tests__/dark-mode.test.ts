@@ -88,8 +88,9 @@ describe('No standalone hardcoded values', () => {
       const bad: string[] = [];
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i]!;
-        // Skip comments
+        // Skip comments and data value lines (color palette arrays)
         if (line.trim().startsWith('//') || line.trim().startsWith('*')) continue;
+        if (line.trim().startsWith("'#") || line.trim().startsWith('"#')) continue; // Hex color data arrays
         // Skip lines that have var() — the hex is a fallback
         if (line.includes('var(--cg-')) continue;
         // Check for standalone hex

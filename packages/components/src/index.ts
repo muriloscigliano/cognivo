@@ -59,6 +59,14 @@ import { CgBreadcrumbs } from './components/cg-breadcrumbs/cg-breadcrumbs.js';
 import { CgPagination } from './components/cg-pagination/cg-pagination.js';
 import { CgChip } from './components/cg-chip/cg-chip.js';
 
+// ── Wave 6: Final Foundation (6) ─────────────────────────────────────────────
+import { CgNumberInput } from './components/cg-number-input/cg-number-input.js';
+import { CgOtpInput } from './components/cg-otp-input/cg-otp-input.js';
+import { CgAutocomplete } from './components/cg-autocomplete/cg-autocomplete.js';
+import { CgColorPicker } from './components/cg-color-picker/cg-color-picker.js';
+import { CgLink } from './components/cg-link/cg-link.js';
+import { CgAvatarGroup } from './components/cg-avatar-group/cg-avatar-group.js';
+
 // ── AI Components (19) ──────────────────────────────────────────────────────
 import { AiThinking } from './components/ai-thinking/ai-thinking.js';
 import { AiBadge } from './components/ai-badge/ai-badge.js';
@@ -156,6 +164,8 @@ export {
   // Wave 5: Foundation UI Primitives
   CgDropdown, CgModal, CgTooltip, CgProgressBar, CgSpinner,
   CgSkeleton, CgDrawer, CgBreadcrumbs, CgPagination, CgChip,
+  // Wave 6: Final Foundation
+  CgNumberInput, CgOtpInput, CgAutocomplete, CgColorPicker, CgLink, CgAvatarGroup,
   // AI Components
   AiThinking, AiBadge, AiChat, AiResultPanel, AiChartSummary, AiInsightCard,
   AiStreamingText, AiCitation, AiToolIndicator,
