@@ -112,6 +112,11 @@ export class CgBadge extends LitElement {
       width: 10px;
       height: 10px;
     }
+  
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
   `;
 
   @property({ reflect: true }) variant: 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'accent' = 'neutral';

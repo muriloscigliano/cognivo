@@ -94,6 +94,12 @@ export class CgImageBlock extends LitElement {
     :host([clickable]) figure { cursor: pointer; }
     :host([clickable]) figure:hover img { transform: scale(1.02); }
     :host([clickable]) img { transition: opacity var(--cg-motion-duration-slower, 350ms) ease, transform 0.2s ease; }
+  
+
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+    }
   `;
 
   @property() src = '';

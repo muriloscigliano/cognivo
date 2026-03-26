@@ -162,6 +162,11 @@ export class CgList extends LitElement {
       color: var(--cg-gray-400, #a1a1aa);
       flex-shrink: 0;
     }
+  
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
   `;
 
   @property({ type: Array }) items: ListItem[] = [];

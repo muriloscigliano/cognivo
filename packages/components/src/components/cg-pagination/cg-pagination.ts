@@ -121,6 +121,11 @@ export class CgPagination extends LitElement {
         height: 32px;
       }
     }
+  
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
   `;
 
   @property({ type: Number }) total = 1;

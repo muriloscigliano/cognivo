@@ -83,6 +83,12 @@ export class CgTable extends LitElement {
       padding: var(--cg-spacing-32, 32px);
       color: var(--cg-gray-500, #71717a);
     }
+  
+
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+    }
   `;
 
   @property({ type: Array }) columns: TableColumn[] = [];

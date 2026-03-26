@@ -127,6 +127,12 @@ export class AiToast extends LitElement {
       .toast.dismissing { animation: none; opacity: 0; }
       .progress { animation: none; width: 0; }
     }
+  
+
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+    }
   `;
 
   /** Position on screen */

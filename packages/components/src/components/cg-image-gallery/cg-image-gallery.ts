@@ -93,6 +93,12 @@ export class CgImageGallery extends LitElement {
     }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     @media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } .img-wrapper:hover img { transform: none; } }
+  
+
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+    }
   `;
 
   @property({ type: Array }) images: GalleryImage[] = [];

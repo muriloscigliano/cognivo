@@ -102,6 +102,11 @@ export class CgCallout extends LitElement {
     .dismiss:hover { opacity: 0.8; }
     .dismiss:focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
     .dismiss svg { width: 16px; height: 16px; }
+  
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
   `;
 
   @property({ reflect: true }) variant: 'info' | 'success' | 'warning' | 'danger' | 'neutral' = 'info';

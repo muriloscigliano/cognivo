@@ -124,6 +124,11 @@ export class CgBreadcrumbs extends LitElement {
       height: 16px;
       justify-content: center;
     }
+  
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
   `;
 
   @property({ type: Array }) items: BreadcrumbItem[] = [];

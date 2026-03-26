@@ -209,6 +209,11 @@ export class CgCodeBlock extends LitElement {
       font-family: inherit;
     }
     .expand-btn:hover { color: var(--cg-color-code-text, #e4e4e7); }
+  
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
   `;
 
   @property() code = '';

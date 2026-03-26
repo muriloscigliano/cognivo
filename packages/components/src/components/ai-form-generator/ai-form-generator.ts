@@ -126,6 +126,12 @@ export class AiFormGenerator extends LitElement {
     @media (prefers-reduced-motion: reduce) {
       input, select, textarea, .submit-btn { transition: none; }
     }
+  
+
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+    }
   `;
 
   @property({ type: Object }) schema: FormSchema | null = null;

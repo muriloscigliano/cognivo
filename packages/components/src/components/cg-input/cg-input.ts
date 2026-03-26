@@ -128,6 +128,17 @@ export class CgInput extends LitElement {
       tabular-nums: true;
     }
     :host([error]) .count { color: var(--cg-color-status-error-text-default, #f87171); }
+  
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+  
+
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+    }
   `;
 
   @property() value = '';

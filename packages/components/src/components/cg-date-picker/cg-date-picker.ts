@@ -29,6 +29,11 @@ export class CgDatePicker extends LitElement {
     input:focus { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25))))))))); }
     input:disabled { opacity: 0.5; cursor: not-allowed; }
     :host([error]) input { border-color: var(--cg-text-danger, #ef4444); }
+  
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
   `;
 
   @property() value = '';

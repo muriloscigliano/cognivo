@@ -89,6 +89,17 @@ export class CgCard extends LitElement {
       border-top: 1px solid var(--cg-color-surface-cards-border, #27272a);
       padding: var(--cg-spacing-12, 12px) var(--cg-spacing-24, 24px);
     }
+  
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+  
+
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+    }
   `;
 
   @property({ reflect: true }) variant: 'elevated' | 'outlined' | 'filled' = 'elevated';

@@ -77,6 +77,11 @@ export class CgSelect extends LitElement {
     .search input:focus { border-color: var(--cg-focus-ring-color, #c8e650); }
 
     .empty-msg { padding: var(--cg-spacing-12, 12px); text-align: center; color: var(--cg-gray-500, #71717a); font-size: var(--cg-font-size-sm, 14px); }
+  
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
   `;
 
   @property({ type: Array }) options: SelectOption[] = [];

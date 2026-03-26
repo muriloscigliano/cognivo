@@ -111,6 +111,12 @@ export class AiToolCardResolver extends LitElement {
     @media (prefers-reduced-motion: reduce) {
       .skeleton-line { animation: none; background: var(--cg-gray-800, #27272a); }
     }
+  
+
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+    }
   `;
 
   /** Tool call name, e.g. "invoice" or "search_results" */

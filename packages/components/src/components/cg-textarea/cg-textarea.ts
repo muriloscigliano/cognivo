@@ -55,6 +55,11 @@ export class CgTextarea extends LitElement {
       color: var(--cg-gray-500, #71717a);
     }
     :host([error]) .count { color: var(--cg-text-danger, #ef4444); }
+  
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
   `;
 
   @property() value = '';
