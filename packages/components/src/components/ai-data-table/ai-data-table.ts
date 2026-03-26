@@ -241,7 +241,7 @@ export class AiDataTable extends LitElement {
                         @mouseenter=${() => { if (anomaly) this._hoveredAnomaly = cellId; }}
                         @mouseleave=${() => { this._hoveredAnomaly = null; }}
                       >
-                        ${String(row[col.key] ?? '')}
+                        ${typeof row[col.key] === 'object' ? JSON.stringify(row[col.key]) : String(row[col.key] ?? '')}
                         ${anomaly ? html`<span class="anomaly-icon" aria-label="Anomaly: ${anomaly.reason}">\u26A0</span>` : nothing}
                         ${anomaly && this._hoveredAnomaly === cellId ? html`<span class="tooltip">${anomaly.reason}</span>` : nothing}
                       </td>
