@@ -201,7 +201,9 @@ export class AiAudioPlayer extends LitElement {
       cancelAnimationFrame(this._raf);
       this.dispatchEvent(new CustomEvent('ai-audio-pause', { bubbles: true, composed: true }));
     } else {
-      this._audio.play();
+      this._audio.play().catch(() => {
+        this._playing = false;
+      });
       this._playing = true;
       this._raf = requestAnimationFrame(this._tick);
       this.dispatchEvent(new CustomEvent('ai-audio-play', { bubbles: true, composed: true }));
