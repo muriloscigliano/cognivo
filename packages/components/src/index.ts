@@ -101,6 +101,17 @@ import { AiErrorBoundary } from './components/ai-error-boundary/ai-error-boundar
 import { AiStatusPage } from './components/ai-status-page/ai-status-page.js';
 import { AiKeyboardShortcuts } from './components/ai-keyboard-shortcuts/ai-keyboard-shortcuts.js';
 import { AiEmptyState } from './components/ai-empty-state/ai-empty-state.js';
+// Wave 6: AI Analytics & DevOps
+import { AiAnalyticsChart } from './components/ai-analytics-chart/ai-analytics-chart.js';
+import { AiCollaborativeEditor } from './components/ai-collaborative-editor/ai-collaborative-editor.js';
+import { AiApiKeyManager } from './components/ai-api-key-manager/ai-api-key-manager.js';
+import { AiTestRunner } from './components/ai-test-runner/ai-test-runner.js';
+import { AiWebhookConfig } from './components/ai-webhook-config/ai-webhook-config.js';
+import { AiDataPreview } from './components/ai-data-preview/ai-data-preview.js';
+import { AiVersionSelector } from './components/ai-version-selector/ai-version-selector.js';
+import { AiFeatureFlag } from './components/ai-feature-flag/ai-feature-flag.js';
+import { AiDebugConsole } from './components/ai-debug-console/ai-debug-console.js';
+import { AiAccessibilityReport } from './components/ai-accessibility-report/ai-accessibility-report.js';
 
 export {
   // Wave 1: Foundation
@@ -133,6 +144,10 @@ export {
   AiPresence, AiFileUpload, AiAudioPlayer, AiOnboarding,
   AiUsageMeter, AiModelComparison, AiErrorBoundary,
   AiStatusPage, AiKeyboardShortcuts, AiEmptyState,
+  // AI Wave 6: Analytics & DevOps
+  AiAnalyticsChart, AiCollaborativeEditor, AiApiKeyManager,
+  AiTestRunner, AiWebhookConfig, AiDataPreview,
+  AiVersionSelector, AiFeatureFlag, AiDebugConsole, AiAccessibilityReport,
 };
 
 // Type exports

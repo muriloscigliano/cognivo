@@ -198,3 +198,15 @@ export { AiErrorBoundary } from './components/AiErrorBoundary.js';
 export { AiStatusPage } from './components/AiStatusPage.js';
 export { AiKeyboardShortcuts } from './components/AiKeyboardShortcuts.js';
 export { AiEmptyState } from './components/AiEmptyState.js';
+
+// Wave 6: AI Analytics & DevOps
+export { AiAnalyticsChart } from './components/AiAnalyticsChart.js';
+export { AiCollaborativeEditor } from './components/AiCollaborativeEditor.js';
+export { AiApiKeyManager } from './components/AiApiKeyManager.js';
+export { AiTestRunner } from './components/AiTestRunner.js';
+export { AiWebhookConfig } from './components/AiWebhookConfig.js';
+export { AiDataPreview } from './components/AiDataPreview.js';
+export { AiVersionSelector } from './components/AiVersionSelector.js';
+export { AiFeatureFlag } from './components/AiFeatureFlag.js';
+export { AiDebugConsole } from './components/AiDebugConsole.js';
+export { AiAccessibilityReport } from './components/AiAccessibilityReport.js';
