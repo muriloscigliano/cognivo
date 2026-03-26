@@ -205,7 +205,10 @@ export class CgDrawer extends LitElement {
   override disconnectedCallback() {
     super.disconnectedCallback();
     document.removeEventListener('keydown', this._keydownHandler);
-    document.body.style.overflow = this._previousOverflow || '';
+    // Only restore if we actually locked it
+    if (this.open) {
+      document.body.style.overflow = this._previousOverflow || '';
+    }
   }
 
   private _handleKeydown(e: KeyboardEvent) {

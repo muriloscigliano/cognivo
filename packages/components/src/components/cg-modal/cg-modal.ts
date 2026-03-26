@@ -194,6 +194,15 @@ export class CgModal extends LitElement {
   private _focusableElements: HTMLElement[] = [];
   private _previousFocus: HTMLElement | null = null;
 
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    // Always restore body scroll if destroyed while open
+    if (this.open) {
+      document.body.style.overflow = this._previousOverflow || '';
+    }
+    this._focusableElements = [];
+  }
+
   override updated(changed: Map<string, unknown>) {
     if (changed.has('open')) {
       if (this.open) {
