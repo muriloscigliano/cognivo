@@ -19,7 +19,9 @@
     "sourceMap": true,
     "composite": true,
     "incremental": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false
   },
   "exclude": ["node_modules", "dist"]
 }

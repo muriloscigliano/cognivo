@@ -1,495 +1,394 @@
-import { LitElement, html, css } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
-import { classMap } from 'lit/directives/class-map.js';
-import { baseStyles, animations } from '../../styles/base.js';
-import { tokens } from '../../styles/tokens.js';
-import '../ai-confidence-badge/ai-confidence-badge.js';
-
 /**
- * AI Result Panel
+ * <ai-result-panel> — Analysis Dashboard
  *
- * Displays AI analysis results with confidence scores, timestamps, and collapsible sections.
- * Supports progressive disclosure for complex results.
- *
- * @element ai-result-panel
- *
- * @attr {number} confidence - Confidence score (0-1)
- * @attr {boolean} dismissible - Show close button
- * @attr {boolean} collapsed - Start collapsed
- * @attr {string} timestamp - Result timestamp
- * @attr {string} title - Panel title
- * @attr {string} variant - Visual variant: 'default' | 'success' | 'warning' | 'error'
- *
- * @fires ai:panel-dismissed - Fired when panel is dismissed
- * @fires ai:panel-toggled - Fired when panel is expanded/collapsed
- *
- * @slot - Main content
- * @slot header - Custom header content
- * @slot footer - Custom footer content
- *
- * @example
- * ```html
- * <ai-result-panel confidence="0.92" title="Analysis Results">
- *   <p>Spending increased 93% in March due to campaign launch.</p>
- * </ai-result-panel>
- * ```
+ * Collapsible, tabbed views (Summary/Data/Sources),
+ * animated driver bars, sorting, export actions,
+ * streaming support, confidence breakdown, actions toolbar.
  */
+import { LitElement, html, css, nothing } from 'lit';
+import { property, state, customElement } from 'lit/decorators.js';
+
+interface Driver { factor: string; impact: number; }
+interface Source { title: string; url?: string; excerpt?: string; }
+
 @customElement('ai-result-panel')
 export class AiResultPanel extends LitElement {
-  static override styles = [
-    baseStyles,
-    animations,
-    css`
-      :host {
-        display: block;
-        background: var(--panel-background, ${tokens.color.grayWhite});
-        border: 1px solid var(--panel-border, ${tokens.color.gray100});
-        border-radius: ${tokens.radius.lg};
-        overflow: hidden;
-        transition: all ${tokens.transition.default};
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      }
+  static override styles = css`
+    :host {
+      display: block;
+      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
+    }
 
-      :host([variant='success']) {
-        border-color: ${tokens.color.success};
-        background: var(--success-bg, #f0fdf4);
-      }
+    .panel {
+      background: var(--cg-color-surface-container-background, #18181b);
+      border: 1px solid rgba(223, 255, 97, 0.12);
+      border-radius: 12px;
+      overflow: hidden;
+    }
 
-      :host([variant='warning']) {
-        border-color: ${tokens.color.warning};
-        background: var(--warning-bg, #fffbeb);
-      }
+    /* ── Header ── */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      cursor: pointer;
+    }
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--cg-color-surface-base-text, #fafafa);
+    }
+    .collapse-icon {
+      color: var(--cg-gray-500, #71717a);
+      font-size: 12px;
+      transition: transform 200ms;
+    }
+    .panel.collapsed .collapse-icon { transform: rotate(-90deg); }
 
-      :host([variant='error']) {
-        border-color: ${tokens.color.danger};
-        background: var(--error-bg, #fef2f2);
-      }
+    .header-actions { display: flex; gap: 4px; }
+    .header-btn {
+      background: none;
+      border: 1px solid var(--cg-gray-700, #3f3f46);
+      color: var(--cg-gray-400, #a1a1aa);
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 150ms;
+      font-family: inherit;
+    }
+    .header-btn:hover {
+      color: var(--cg-color-surface-base-text, #fafafa);
+      border-color: var(--cg-gray-600, #52525b);
+    }
 
-      :host([collapsed]) .panel-content {
-        display: none;
-      }
+    /* ── Body ── */
+    .body {
+      padding: 0 18px 18px;
+    }
+    .panel.collapsed .body { display: none; }
 
-      /* Header */
-      .panel-header {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        padding: ${tokens.spacing.md} ${tokens.spacing.lg};
-        gap: ${tokens.spacing.md};
-        border-bottom: 1px solid var(--panel-border, ${tokens.color.gray100});
-        background: var(--header-bg, transparent);
-      }
+    /* ── Tabs ── */
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+    }
+    .tab {
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--cg-gray-500, #71717a);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all 150ms;
+      font-family: inherit;
+    }
+    .tab:hover { color: var(--cg-gray-300, #d4d4d8); }
+    .tab.active {
+      color: var(--cg-brand-ai-accent, #dfff61);
+      border-bottom-color: var(--cg-brand-ai-accent, #dfff61);
+    }
 
-      :host([collapsed]) .panel-header {
-        border-bottom: none;
-      }
+    /* ── Summary tab ── */
+    .explanation {
+      font-size: 14px;
+      color: var(--cg-color-surface-base-text, #fafafa);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
 
-      .header-left {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: ${tokens.spacing.xs};
-      }
+    .bullets {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .bullet {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--cg-color-surface-base-text, #fafafa);
+      line-height: 1.5;
+    }
+    .bullet::before {
+      content: '→';
+      color: var(--cg-brand-ai-accent, #dfff61);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
 
-      .header-title {
-        display: flex;
-        align-items: center;
-        gap: ${tokens.spacing.sm};
-        font-family: ${tokens.fontFamily.display};
-        font-size: ${tokens.fontSize.md};
-        font-weight: ${tokens.fontWeight.semibold};
-        color: ${tokens.color.gray900};
-        margin: 0;
-      }
+    /* ── Drivers ── */
+    .drivers-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .drivers-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--cg-gray-400, #a1a1aa);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .sort-btn {
+      background: none;
+      border: none;
+      color: var(--cg-gray-500, #71717a);
+      font-size: 11px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .sort-btn:hover { color: var(--cg-brand-ai-accent, #dfff61); }
 
-      .header-meta {
-        display: flex;
-        align-items: center;
-        gap: ${tokens.spacing.md};
-        font-size: ${tokens.fontSize.xs};
-        color: ${tokens.color.gray500};
-      }
+    .drivers {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .driver {
+      background: var(--cg-color-surface-base-background, #09090b);
+      border: 1px solid var(--cg-gray-800, #27272a);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .driver-top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .driver-name { font-size: 12px; color: var(--cg-gray-400, #a1a1aa); }
+    .driver-value {
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .driver-value.positive { color: var(--cg-green-400, #4ade80); }
+    .driver-value.negative { color: var(--cg-red-400, #f87171); }
 
-      .timestamp {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-      }
+    .driver-bar {
+      height: 4px;
+      border-radius: 2px;
+      background: var(--cg-gray-800, #27272a);
+      overflow: hidden;
+    }
+    .driver-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 600ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .driver-fill.positive { background: var(--cg-green-400, #4ade80); }
+    .driver-fill.negative { background: var(--cg-red-400, #f87171); }
 
-      .header-actions {
-        display: flex;
-        align-items: center;
-        gap: ${tokens.spacing.xs};
-        flex-shrink: 0;
-      }
+    /* ── Sources tab ── */
+    .source-item {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+    }
+    .source-item:last-child { border-bottom: none; }
+    .source-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cg-brand-ai-accent, #dfff61);
+      text-decoration: none;
+    }
+    .source-title:hover { text-decoration: underline; }
+    .source-excerpt {
+      font-size: 12px;
+      color: var(--cg-gray-500, #71717a);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
 
-      /* Action buttons */
-      .action-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        border: 1px solid ${tokens.color.gray100};
-        background: transparent;
-        border-radius: ${tokens.radius.md};
-        cursor: pointer;
-        transition: all ${tokens.transition.default};
-        color: ${tokens.color.gray500};
-        font-size: 16px;
-        padding: 0;
-      }
+    /* ── Data tab ── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .data-table th {
+      text-align: left;
+      padding: 6px 10px;
+      color: var(--cg-gray-400, #a1a1aa);
+      font-weight: 600;
+      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+    }
+    .data-table td {
+      padding: 6px 10px;
+      color: var(--cg-color-surface-base-text, #fafafa);
+      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+    }
 
-      .action-button:hover {
-        background: ${tokens.color.gray50};
-        border-color: ${tokens.color.gray500};
-        color: ${tokens.color.gray900};
-      }
+    /* ── Streaming ── */
+    .streaming-indicator {
+      padding: 12px 0;
+    }
 
-      .action-button:active {
-        transform: translateY(1px);
-      }
+    .empty {
+      text-align: center;
+      padding: 32px;
+      color: var(--cg-gray-500, #71717a);
+      font-size: 14px;
+    }
 
-      .action-button.dismiss {
-        color: ${tokens.color.danger};
-      }
+    @media (prefers-reduced-motion: reduce) {
+      .driver-fill, .collapse-icon { transition: none; }
+    }
+  `;
 
-      .action-button.dismiss:hover {
-        background: #fef2f2;
-        border-color: ${tokens.color.danger};
-      }
+  @property({ type: String }) title: string = 'AI Analysis';
+  @property({ type: String }) explanation: string = '';
+  @property({ type: Array }) bullets: string[] = [];
+  @property({ type: Array }) drivers: Driver[] = [];
+  @property({ type: Number }) confidence: number = 0;
+  @property({ type: Boolean }) collapsible: boolean = false;
+  @property({ type: Array }) sources: Source[] = [];
+  @property({ type: Array }) data: Record<string, unknown>[] = [];
+  @property({ type: Boolean }) streaming: boolean = false;
 
-      /* Content */
-      .panel-content {
-        padding: ${tokens.spacing.lg};
-        animation: fadeIn 0.2s ease-in-out;
-      }
+  @state() private _collapsed: boolean = false;
+  @state() private _activeTab: 'summary' | 'data' | 'sources' = 'summary';
+  @state() private _sortAsc: boolean = false;
 
-      .panel-content ::slotted(*) {
-        margin: 0;
-      }
-
-      .panel-content ::slotted(* + *) {
-        margin-top: ${tokens.spacing.md};
-      }
-
-      .panel-content ::slotted(h3) {
-        font-family: ${tokens.fontFamily.display};
-        font-size: ${tokens.fontSize.base};
-        font-weight: ${tokens.fontWeight.semibold};
-        color: ${tokens.color.gray900};
-        margin-bottom: ${tokens.spacing.sm};
-      }
-
-      .panel-content ::slotted(p) {
-        font-size: ${tokens.fontSize.sm};
-        line-height: ${tokens.lineHeight.relaxed};
-        color: ${tokens.color.gray500};
-      }
-
-      .panel-content ::slotted(ul),
-      .panel-content ::slotted(ol) {
-        padding-left: 20px;
-        font-size: ${tokens.fontSize.sm};
-        color: ${tokens.color.gray500};
-      }
-
-      .panel-content ::slotted(li) {
-        line-height: ${tokens.lineHeight.relaxed};
-        margin-top: ${tokens.spacing.xs};
-      }
-
-      /* Footer */
-      .panel-footer {
-        border-top: 1px solid var(--panel-border, ${tokens.color.gray100});
-        padding: ${tokens.spacing.md} ${tokens.spacing.lg};
-        background: var(--footer-bg, ${tokens.color.gray50});
-      }
-
-      .panel-footer ::slotted(*) {
-        margin: 0;
-      }
-
-      /* Collapsible section */
-      details {
-        margin-top: ${tokens.spacing.md};
-      }
-
-      summary {
-        cursor: pointer;
-        font-weight: ${tokens.fontWeight.medium};
-        color: ${tokens.color.aiAccent};
-        list-style: none;
-        display: flex;
-        align-items: center;
-        gap: ${tokens.spacing.xs};
-        padding: ${tokens.spacing.sm};
-        border-radius: ${tokens.radius.sm};
-        transition: all ${tokens.transition.default};
-      }
-
-      summary:hover {
-        background: ${tokens.color.gray50};
-      }
-
-      summary::before {
-        content: '▶';
-        display: inline-block;
-        transition: transform ${tokens.transition.default};
-      }
-
-      details[open] summary::before {
-        transform: rotate(90deg);
-      }
-
-      /* Responsive */
-      @media (max-width: 640px) {
-        .panel-header,
-        .panel-content,
-        .panel-footer {
-          padding: ${tokens.spacing.md};
-        }
-
-        .header-title {
-          font-size: ${tokens.fontSize.base};
-        }
-      }
-
-      /* Dark mode support */
-      @media (prefers-color-scheme: dark) {
-        :host {
-          background: #1f2937;
-          border-color: #374151;
-        }
-
-        .panel-header {
-          border-color: #374151;
-        }
-
-        .header-title {
-          color: #f9fafb;
-        }
-
-        .header-meta,
-        .panel-content ::slotted(p),
-        .panel-content ::slotted(li) {
-          color: #d1d5db;
-        }
-
-        .action-button {
-          border-color: #374151;
-          color: #9ca3af;
-        }
-
-        .action-button:hover {
-          background: #374151;
-          color: #f9fafb;
-        }
-
-        .panel-footer {
-          background: #111827;
-          border-color: #374151;
-        }
-      }
-    `,
-  ];
-
-  /**
-   * Confidence score (0 to 1)
-   */
-  @property({ type: Number })
-  confidence = 0;
-
-  /**
-   * Show dismiss button
-   */
-  @property({ type: Boolean })
-  dismissible = false;
-
-  /**
-   * Start collapsed
-   */
-  @property({ type: Boolean, reflect: true })
-  collapsed = false;
-
-  /**
-   * Panel title
-   */
-  @property({ type: String })
-  override title = '';
-
-  /**
-   * Timestamp text
-   */
-  @property({ type: String })
-  timestamp = '';
-
-  /**
-   * Visual variant
-   */
-  @property({ type: String, reflect: true })
-  variant: 'default' | 'success' | 'warning' | 'error' = 'default';
-
-  /**
-   * Internal state for expanded/collapsed
-   */
-  @state()
-  private isExpanded = true;
-
-  override connectedCallback() {
-    super.connectedCallback();
-    this.isExpanded = !this.collapsed;
-  }
-
-  /**
-   * Toggle panel expanded/collapsed
-   */
-  private togglePanel() {
-    this.isExpanded = !this.isExpanded;
-    this.collapsed = !this.isExpanded;
-
-    this.dispatchEvent(
-      new CustomEvent('ai:panel-toggled', {
-        detail: {
-          expanded: this.isExpanded,
-          timestamp: Date.now(),
-        },
-        bubbles: true,
-        composed: true,
-      })
+  private get _sortedDrivers(): Driver[] {
+    const sorted = [...this.drivers].sort((a, b) =>
+      this._sortAsc ? a.impact - b.impact : b.impact - a.impact
     );
+    return sorted;
   }
 
-  /**
-   * Dismiss panel
-   */
-  private dismissPanel() {
-    this.dispatchEvent(
-      new CustomEvent('ai:panel-dismissed', {
-        detail: {
-          timestamp: Date.now(),
-        },
-        bubbles: true,
-        composed: true,
-      })
-    );
-
-    // Optionally hide the panel
-    this.style.display = 'none';
+  private _toggleCollapse() {
+    if (!this.collapsible) return;
+    this._collapsed = !this._collapsed;
   }
 
-  /**
-   * Get relative time string
-   */
-  private getRelativeTime(): string {
-    if (!this.timestamp) return '';
+  private _handleExport(format: string) {
+    this.dispatchEvent(new CustomEvent('ai-result-export', {
+      bubbles: true, composed: true,
+      detail: { format, title: this.title, explanation: this.explanation, bullets: this.bullets, drivers: this.drivers },
+    }));
+  }
 
-    const now = Date.now();
-    const time = new Date(this.timestamp).getTime();
-    const diff = now - time;
+  private _handleCopy() {
+    const text = `${this.title}\n\n${this.explanation}\n\n${this.bullets.map(b => `→ ${b}`).join('\n')}`;
+    navigator.clipboard?.writeText(text);
+    this.dispatchEvent(new CustomEvent('ai-result-copy', { bubbles: true, composed: true, detail: { content: text } }));
+  }
 
-    const seconds = Math.floor(diff / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
+  private _renderSummary() {
+    return html`
+      ${this.explanation ? html`<div class="explanation">${this.explanation}</div>` : nothing}
 
-    if (days > 0) return `${days}d ago`;
-    if (hours > 0) return `${hours}h ago`;
-    if (minutes > 0) return `${minutes}m ago`;
-    if (seconds > 0) return `${seconds}s ago`;
-    return 'just now';
+      ${this.bullets.length > 0 ? html`
+        <ul class="bullets" role="list">
+          ${this.bullets.map(b => html`<li class="bullet">${b}</li>`)}
+        </ul>
+      ` : nothing}
+
+      ${this.drivers.length > 0 ? html`
+        <div class="drivers-header">
+          <span class="drivers-label">Impact Drivers</span>
+          <button class="sort-btn" @click=${() => { this._sortAsc = !this._sortAsc; }}>
+            Sort ${this._sortAsc ? '↑' : '↓'}
+          </button>
+        </div>
+        <div class="drivers">
+          ${this._sortedDrivers.map(d => html`
+            <div class="driver">
+              <div class="driver-top">
+                <span class="driver-name">${d.factor}</span>
+                <span class="driver-value ${d.impact >= 0 ? 'positive' : 'negative'}">
+                  ${d.impact >= 0 ? '+' : ''}${d.impact}%
+                </span>
+              </div>
+              <div class="driver-bar">
+                <div class="driver-fill ${d.impact >= 0 ? 'positive' : 'negative'}"
+                  style="width: ${Math.min(Math.abs(d.impact), 100)}%"></div>
+              </div>
+            </div>
+          `)}
+        </div>
+      ` : nothing}
+    `;
+  }
+
+  private _renderData() {
+    if (this.data.length === 0 || !this.data[0]) return html`<div class="empty">No data available</div>`;
+    const keys = Object.keys(this.data[0]);
+    return html`
+      <table class="data-table">
+        <thead><tr>${keys.map(k => html`<th>${k}</th>`)}</tr></thead>
+        <tbody>${this.data.map(row => html`
+          <tr>${keys.map(k => html`<td>${String(row[k] ?? '')}</td>`)}</tr>
+        `)}</tbody>
+      </table>
+    `;
+  }
+
+  private _renderSources() {
+    if (this.sources.length === 0) return html`<div class="empty">No sources available</div>`;
+    return html`
+      ${this.sources.map(s => html`
+        <div class="source-item">
+          ${s.url
+            ? html`<a class="source-title" href="${s.url}" target="_blank" rel="noopener">${s.title}</a>`
+            : html`<span class="source-title">${s.title}</span>`}
+          ${s.excerpt ? html`<div class="source-excerpt">${s.excerpt}</div>` : nothing}
+        </div>
+      `)}
+    `;
   }
 
   override render() {
-    const showConfidence = this.confidence > 0;
-    const showTimestamp = this.timestamp !== '';
+    if (!this.explanation && !this.streaming) {
+      return html`<div class="panel"><div class="empty">No results yet. Run an AI analysis to see results here.</div></div>`;
+    }
+
+    const hasTabs = this.data.length > 0 || this.sources.length > 0;
 
     return html`
-      <div class="panel">
-        <!-- Header -->
-        <div class="panel-header">
+      <div class="panel ${this._collapsed ? 'collapsed' : ''}" role="region" aria-label="${this.title}">
+        <div class="header" @click=${this._toggleCollapse}>
           <div class="header-left">
-            ${this.title
-              ? html`
-                  <h3 class="header-title">
-                    ${this.title}
-                    ${showConfidence
-                      ? html`
-                          <ai-confidence-badge
-                            score=${this.confidence}
-                            size="sm"
-                            show-percentage
-                          ></ai-confidence-badge>
-                        `
-                      : null}
-                  </h3>
-                `
-              : null}
-            ${showTimestamp || showConfidence
-              ? html`
-                  <div class="header-meta">
-                    ${showTimestamp
-                      ? html`
-                          <span class="timestamp">
-                            <span>🕐</span>
-                            <span>${this.getRelativeTime()}</span>
-                          </span>
-                        `
-                      : null}
-                    <slot name="header"></slot>
-                  </div>
-                `
-              : null}
+            ${this.collapsible ? html`<span class="collapse-icon" aria-hidden="true">▼</span>` : nothing}
+            <span class="title">${this.title}</span>
+            ${this.confidence > 0 ? html`<ai-badge score="${this.confidence}" size="sm"></ai-badge>` : nothing}
           </div>
-
-          <div class="header-actions">
-            <button
-              class="action-button toggle"
-              @click=${this.togglePanel}
-              title=${this.isExpanded ? 'Collapse' : 'Expand'}
-              aria-label=${this.isExpanded ? 'Collapse panel' : 'Expand panel'}
-            >
-              ${this.isExpanded ? '−' : '+'}
-            </button>
-
-            ${this.dismissible
-              ? html`
-                  <button
-                    class="action-button dismiss"
-                    @click=${this.dismissPanel}
-                    title="Dismiss"
-                    aria-label="Dismiss panel"
-                  >
-                    ×
-                  </button>
-                `
-              : null}
+          <div class="header-actions" @click=${(e: Event) => e.stopPropagation()}>
+            <button class="header-btn" @click=${this._handleCopy}>Copy</button>
+            <button class="header-btn" @click=${() => this._handleExport('json')}>Export</button>
           </div>
         </div>
 
-        <!-- Content -->
-        ${this.isExpanded
-          ? html`
-              <div class="panel-content">
-                <slot></slot>
-              </div>
+        <div class="body">
+          ${this.streaming ? html`
+            <div class="streaming-indicator">
+              <ai-thinking text="Analyzing" shimmer delay="0"></ai-thinking>
+            </div>
+          ` : nothing}
 
-              ${this.querySelector('[slot="footer"]')
-                ? html`
-                    <div class="panel-footer">
-                      <slot name="footer"></slot>
-                    </div>
-                  `
-                : null}
-            `
-          : null}
+          ${hasTabs ? html`
+            <div class="tabs">
+              <button class="tab ${this._activeTab === 'summary' ? 'active' : ''}" @click=${() => this._activeTab = 'summary'}>Summary</button>
+              ${this.data.length > 0 ? html`<button class="tab ${this._activeTab === 'data' ? 'active' : ''}" @click=${() => this._activeTab = 'data'}>Data</button>` : nothing}
+              ${this.sources.length > 0 ? html`<button class="tab ${this._activeTab === 'sources' ? 'active' : ''}" @click=${() => this._activeTab = 'sources'}>Sources</button>` : nothing}
+            </div>
+          ` : nothing}
+
+          ${this._activeTab === 'summary' ? this._renderSummary() : nothing}
+          ${this._activeTab === 'data' ? this._renderData() : nothing}
+          ${this._activeTab === 'sources' ? this._renderSources() : nothing}
+        </div>
       </div>
     `;
-  }
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'ai-result-panel': AiResultPanel;
   }
 }

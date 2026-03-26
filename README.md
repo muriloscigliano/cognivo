@@ -1,203 +1,155 @@
 # Cognivo
 
-**AI-Native Component Library** - Transform dashboards into intelligent interfaces.
+**AI-Native Component Library + Generative UI Engine + Cognitive Bias Analysis**
 
-> ⚠️ **Project Status:** Initial Planning Phase - Not yet ready for production use.
+41 Web Components. Framework-agnostic. Dark-first design. Neon lime accent. The only component library that ships cognitive bias awareness.
 
-## What is Cognivo?
+## What Makes Cognivo Different
 
-Cognivo is a component library that embeds AI directly into your UI components. Instead of chatbots, you get:
+| | Cognivo | OpenUI | Radix | Shoelace |
+|--|---------|--------|-------|----------|
+| **Framework** | Any (Web Components) | React only | React only | Any (WC) |
+| **Generative UI** | Streaming parser + 41 components | Streaming parser + 40 components | No | No |
+| **Bias Analysis** | `suggestBiasesForTree()` — finds cognitive biases in generated UI | — | — | — |
+| **Token Governance** | `validateTokenUsage()` — rejects magic values | — | — | — |
+| **Design Tokens** | 1,760 tokens, 3 tiers, palette generator | OKLCH system | CSS vars | CSS vars |
+| **Dark Mode** | Dark-first, 96% coverage | CSS media query | — | — |
+| **Bundle** | ~230KB (no React dep) | ~434KB+ (React + Radix + Recharts) | — | — |
 
-- 📊 **AI-powered cards** that explain patterns
-- 📈 **Smart charts** that forecast trends
-- 🔍 **Intelligent tables** that detect anomalies
-- 💡 **Contextual insights** embedded in your dashboard
+## Quick Start
 
-**Not a chatbot library. A component library with AI superpowers.**
+```bash
+# Install
+pnpm add @cognivo/components @cognivo/tokens
 
-## Key Features
+# Use in HTML
+<script type="module">
+  import '@cognivo/components';
+</script>
+<link rel="stylesheet" href="@cognivo/tokens/dist/index.css">
 
-✅ **AI-Native** - Built for LLM integration from the ground up
-✅ **Framework Support** - Vue 3, React (planned), Svelte (planned)
-✅ **LLM-Agnostic** - Works with OpenAI, Anthropic, local models, or custom backends
-✅ **Type-Safe** - Full TypeScript support with intelligent autocomplete
-✅ **Structured Outputs** - Predictable, schema-validated AI responses
-✅ **Designer-Friendly** - Token-based theming, not utility classes
+<cg-button label="Get Started" variant="primary"></cg-button>
+<cg-metric-card title="Revenue" value="$2.4M" delta="+18%" trend="up"></cg-metric-card>
+```
+
+```bash
+# Use in React
+pnpm add @cognivo/adapter-react
+```
+
+```tsx
+import { CgButton, CgMetricCard } from '@cognivo/adapter-react';
+
+<CgButton label="Get Started" variant="primary" />
+<CgMetricCard title="Revenue" value="$2.4M" delta="+18%" trend="up" />
+```
+
+## Packages
+
+| Package | Description | Size |
+|---------|-------------|------|
+| `@cognivo/components` | 41 Lit 3 Web Components across 4 categories | 230KB |
+| `@cognivo/tokens` | 1,760 design tokens (3 tiers), palette generator | 94KB CSS |
+| `@cognivo/gen-ui` | Streaming parser, component registry, prompt gen, bias engine | 63KB |
+| `@cognivo/gen-ui-lit` | Lit renderer for generative UI | 9KB |
+| `@cognivo/adapter-react` | 42 React wrappers with TypeScript types | 8KB |
+| `@cognivo/adapter-vue` | 42 Vue 3 wrappers | 4KB |
+| `@cognivo/core` | AI orchestration (intents, guardrails, resilience, caching) | 49KB |
+| `@cognivo/adapter-openai` | OpenAI adapter with structured outputs | 242KB |
+| `@cognivo/adapter-anthropic` | Anthropic Claude adapter | 17KB |
+| `@cognivo/design-advisor` | 180 cognitive bias cards + registry | 6KB |
+
+## Component Categories
+
+### Foundation (13)
+`Stack` · `Separator` · `Text` · `Icon` · `Label` · `Button` · `ButtonGroup` · `Card` · `Badge` · `BadgeGroup` · `Callout` · `Image` · `ImageBlock`
+
+### Forms (9)
+`Input` · `Textarea` · `Select` · `Checkbox` · `Radio` · `Switch` · `Slider` · `DatePicker` · `Form`
+
+### Data & Navigation (11)
+`MetricCard` · `Table` · `Chart` · `ImageGallery` · `Tabs` · `Accordion` · `Steps` · `Carousel` · `CodeBlock` · `Markdown` · `List` · `Section`
+
+### AI-Native (7) — *The Differentiator*
+`AiThinking` · `AiBadge` · `AiInsightCard` · `AiResultPanel` · `AiChartSummary` · `FollowUp` · `AiChat`
+
+## Generative UI Engine
+
+LLMs generate UI by outputting a compact DSL. Cognivo parses it in real-time and renders live Web Components.
+
+```typescript
+import { cognivoLibrary, createStreamingParser, suggestBiasesForTree } from '@cognivo/gen-ui';
+import { LitRenderer } from '@cognivo/gen-ui-lit';
+
+// 1. Generate system prompt from component library
+const prompt = cognivoLibrary.prompt();
+
+// 2. Stream LLM output through the parser
+const parser = createStreamingParser(cognivoLibrary.toJSONSchema());
+for await (const chunk of llmStream) {
+  const result = parser.push(chunk);
+  renderer.render(result, container); // Live Web Components appear
+}
+
+// 3. Analyze for cognitive biases
+const biases = suggestBiasesForTree(result, cognivoLibrary);
+// → [{ biasName: "Anchoring Bias", severity: "high", components: ["MetricCard"], recommendation: "..." }]
+```
+
+## Design Token System
+
+3-tier architecture with a palette generator:
+
+```
+Tier 1 (Primitives)  →  Tier 2 (Semantic)  →  Tier 3 (Component)
+  gray-500: #71717A       color-text-muted       component-button-height-md
+  spacing-16: 16px        color-surface-card      component-card-radius
+  brand-primary: #DFFF61  color-action-primary    component-input-height-lg
+```
+
+```bash
+# Switch palette
+node packages/tokens/generate-from-palette.cjs palettes/my-brand.json
+pnpm --filter @cognivo/tokens build
+# → Entire design system regenerates
+```
+
+## Development
+
+```bash
+pnpm install
+pnpm build                              # Build all packages
+pnpm --filter @cognivo/components test   # Run component tests (273)
+pnpm --filter @cognivo/gen-ui test       # Run engine tests (110)
+
+# Start the demo
+cd apps/gen-ui-demo && pnpm dev
+# → Showcase: /showcase.html
+# → Playground: / (supports real OpenAI streaming)
+```
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────┐
-│  Your Application (Vue/React/Svelte)   │
-└─────────────────┬───────────────────────┘
-                  │
-        ┌─────────┼──────────┐
-        │         │          │
-┌───────▼───┐ ┌──▼──────┐ ┌─▼────────────┐
-│@cognivo/  │ │@cognivo/│ │ @cognivo/    │
-│vue        │ │react    │ │ primitives   │
-│           │ │         │ │ (Web Comp.)  │
-└─────┬─────┘ └────┬────┘ └──────┬───────┘
-      │            │             │
-      └────────────┼─────────────┘
-                   │
-          ┌────────▼─────────┐
-          │  @cognivo/core   │
-          │  (AI contracts)  │
-          └────────┬─────────┘
-                   │
-      ┌────────────┼────────────┐
-      │            │            │
-┌─────▼─────┐ ┌───▼──────┐ ┌──▼──────┐
-│ OpenAI    │ │Anthropic │ │ Local   │
-│ Adapter   │ │ Adapter  │ │ Adapter │
-└───────────┘ └──────────┘ └─────────┘
+┌─────────────────────────────────────────────────────────────┐
+│  @cognivo/gen-ui (Pure TypeScript — zero framework deps)    │
+│  Parser · Registry · Prompt Gen · Bias Engine · Validation  │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+        ┌──────────────┼──────────────┐
+        ▼              ▼              ▼
+┌──────────────┐ ┌──────────┐ ┌──────────┐
+│ gen-ui-lit   │ │ React    │ │ Vue      │
+│ Lit renderer │ │ wrappers │ │ wrappers │
+│ → <cg-*>    │ │ (42)     │ │ (42)     │
+└──────────────┘ └──────────┘ └──────────┘
+        │
+┌──────────────────────────────────────┐
+│ @cognivo/components (41 Lit WCs)     │
+│ + @cognivo/tokens (1,760 CSS vars)   │
+└──────────────────────────────────────┘
 ```
-
-## Quick Example
-
-```vue
-<script setup>
-import { AiInsightCard } from '@cognivo/vue';
-
-const monthlySpending = [
-  { month: 'Jan', amount: 1200 },
-  { month: 'Feb', amount: 1450 },
-  { month: 'Mar', amount: 2800 }, // AI will detect this spike!
-];
-</script>
-
-<template>
-  <AiInsightCard
-    :data="monthlySpending"
-    :ai-actions="['explain', 'forecast']"
-    :meta="{ unit: 'USD', timeframe: 'monthly' }"
-  />
-</template>
-```
-
-**Result:** Card shows your data + AI insights panel explaining the March spike, predicting April spending.
-
-## Packages
-
-| Package | Description | Status |
-|---------|-------------|--------|
-| `@cognivo/core` | Framework-agnostic AI logic | 🏗️ In Progress |
-| `@cognivo/tokens` | Design tokens (CSS variables) | 📋 Planned |
-| `@cognivo/vue` | Vue 3 components | 📋 Planned |
-| `@cognivo/react` | React components | 📋 Planned |
-| `@cognivo/primitives` | Web Components (Lit) | 📋 Planned |
-| `@cognivo/adapter-openai` | OpenAI integration | 📋 Planned |
-| `@cognivo/adapter-anthropic` | Anthropic/Claude integration | 📋 Planned |
-| `@cognivo/adapter-local` | Local LLM support | 📋 Planned |
-
-## Component Library Structure
-
-Cognivo uses **Atomic Design** principles to organize 207 components across 5 hierarchical levels:
-
-```
-🔬 Atoms (54)      → Foundational elements (buttons, icons, badges)
-🧬 Molecules (68)  → Simple compositions (cards, search bars, list items)
-🏗️ Organisms (53)  → Complex features (tables, charts, navigation)
-📋 Templates (20)  → Page layouts (dashboard widgets, pricing tables)
-📄 Pages (12)      → Complete pages (dashboards, chat interfaces)
-```
-
-### Component Categories
-
-- **Base Components** (8 layout + 14 display + 14 system = 36)
-- **Data Components** (18 data display + 14 charts = 32)
-- **Interactive** (11 filters/search/nav)
-- **AI-Enhanced** (23 AI cards/charts + 13 AI actions = 36)
-- **Panels & Modals** (9 overlays/dialogs)
-- **Graph/Canvas** (36 visualization components)
-- **Payments** (30 pricing/billing components)
-- **Dashboard** (12 widget components)
-- **Chat** (15 messaging/agent components)
-
-**📊 Total: 207 components** organized for maximum composability.
-
-## Documentation
-
-📖 See the `/docs` folder for comprehensive guides:
-
-### Core Documentation
-- [PROJECT_PLAN.md](./PROJECT_PLAN.md) - Full architecture and roadmap
-- [FRAMEWORK_COMPARISON.md](./FRAMEWORK_COMPARISON.md) - Framework approach analysis
-- [AI_INTEGRATION_GUIDE.md](./AI_INTEGRATION_GUIDE.md) - How AI integration works
-- [TECHNOLOGY_STACK.md](./TECHNOLOGY_STACK.md) - Technology decisions
-
-### Component Guides
-- [ATOMIC_DESIGN_STRUCTURE.md](./docs/ATOMIC_DESIGN_STRUCTURE.md) - Complete component hierarchy
-- [COMPONENT_COMPOSITION_GUIDE.md](./docs/COMPONENT_COMPOSITION_GUIDE.md) - How to compose components
-- [COMPONENT_CHECKLIST.md](./docs/COMPONENT_CHECKLIST.md) - Quality checklist
-- [AI_UX_PATTERNS.md](./docs/AI_UX_PATTERNS.md) - AI-specific UX patterns
-
-## Development
-
-This project uses:
-
-- **pnpm** - Fast, disk-efficient package manager
-- **Turborepo** - Intelligent monorepo builds
-- **TypeScript** - Type-safe code
-- **Vite** - Lightning-fast builds
-- **Vitest** - Modern testing
-
-```bash
-# Install dependencies
-pnpm install
-
-# Build all packages
-pnpm build
-
-# Run tests
-pnpm test
-
-# Development mode
-pnpm dev
-```
-
-## Roadmap
-
-### Phase 0: Foundation (Weeks 1-2) ✅ In Progress
-- [x] Architecture planning
-- [x] Monorepo setup
-- [x] Core types and interfaces
-- [ ] Design token system
-- [ ] Documentation site scaffold
-
-### Phase 1: Core + Vue Basics (Weeks 3-6)
-- [ ] OpenAI adapter
-- [ ] Anthropic adapter
-- [ ] First 20 base components (Vue)
-- [ ] Playground demo app
-
-### Phase 2: AI-Enhanced Components (Weeks 7-10)
-- [ ] AiInsightCard
-- [ ] AiTable
-- [ ] AiMiniChart
-- [ ] AI loading states
-
-### Phase 3: React Support (Weeks 11-14)
-- [ ] Port core components to React
-- [ ] React-specific hooks
-
-See [PROJECT_PLAN.md](./PROJECT_PLAN.md) for full roadmap.
-
-## Contributing
-
-This project is in early planning stages. Contributions welcome once we reach Phase 1!
 
 ## License
 
-MIT © Murilo Scigliano
-
-## Questions?
-
-- 📧 Contact: [GitHub Issues](https://github.com/muriloscigliano/cognivo/issues)
-- 📚 Docs: Coming soon
-- 💬 Discussions: Coming soon
-
----
-
-**Status:** 🏗️ **Planning Phase** - Star & watch for updates!
+MIT

@@ -10,7 +10,8 @@ export default defineConfig({
       fileName: () => 'index.js',
     },
     rollupOptions: {
-      external: ['openai', '@cognivo/core'],
+      // Bundle openai for browser, but keep @cognivo/core external
+      external: ['@cognivo/core'],
     },
     sourcemap: true,
     minify: false,

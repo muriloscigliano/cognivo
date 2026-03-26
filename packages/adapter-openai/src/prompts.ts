@@ -14,7 +14,7 @@ export function buildPrompt(intent: AiIntent, context: AiContext): string {
 
   switch (intent) {
     case AiIntent.EXPLAIN:
-      return `Analyze this ${meta?.dataType || 'data'} dataset and explain key patterns, trends, and insights.
+      return `${meta?.userQuestion ? `The user asks: "${meta.userQuestion}"\n\n` : ''}Analyze this ${meta?.dataType || 'data'} dataset and explain key patterns, trends, and insights.
 
 Dataset:
 ${datasetStr}
@@ -27,7 +27,7 @@ Metadata:
 - Category: ${meta?.category || 'unknown'}
 
 Provide:
-1. A clear explanation of what's happening in the data
+1. A clear explanation of what's happening in the data${meta?.userQuestion ? ", addressing the user's question" : ''}
 2. Key bullet points (3-5 most important insights)
 3. Drivers/factors that explain the patterns (with impact -100 to 100)
 4. Any anomalies or notable outliers

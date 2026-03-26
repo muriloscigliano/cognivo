@@ -8,6 +8,7 @@ import {
 } from '@cognivo/core';
 import { schemas } from './schemas.js';
 import { buildPrompt, SYSTEM_PROMPT } from './prompts.js';
+import { PromptCacheManager } from './prompt-cache.js';
 
 /**
  * OpenAI Client Configuration
@@ -27,6 +28,9 @@ export interface OpenAiClientConfig {
 
   /** Organization ID (optional) */
   organization?: string;
+
+  /** Enable prompt caching for reduced latency on repeated calls */
+  enablePromptCache?: boolean;
 }
 
 /**
@@ -50,7 +54,8 @@ export interface OpenAiClientConfig {
  */
 export class OpenAiClient extends BaseAiClient {
   private client: OpenAI;
-  private config: Required<Omit<OpenAiClientConfig, 'apiKey' | 'organization'>>;
+  private config: Required<Omit<OpenAiClientConfig, 'apiKey' | 'organization' | 'enablePromptCache'>>;
+  private cacheManager?: PromptCacheManager;
 
   constructor(config: OpenAiClientConfig) {
     super();
@@ -65,6 +70,12 @@ export class OpenAiClient extends BaseAiClient {
       defaultTemperature: config.defaultTemperature ?? 0.3,
       defaultMaxTokens: config.defaultMaxTokens ?? 2000,
     };
+
+    if (config.enablePromptCache) {
+      this.cacheManager = new PromptCacheManager({
+        systemPrompt: SYSTEM_PROMPT,
+      });
+    }
   }
 
   /**
@@ -84,23 +95,19 @@ export class OpenAiClient extends BaseAiClient {
       throw new Error(`No schema defined for intent: ${intent}`);
     }
 
-    // Prepare system prompt
-    const systemPrompt = options?.systemPrompt || SYSTEM_PROMPT;
+    // Build messages: use cache manager if available and no custom system prompt
+    const messages = this.cacheManager && !options?.systemPrompt
+      ? this.cacheManager.buildMessages(userPrompt, context.meta?.conversationHistory)
+      : [
+          { role: 'system' as const, content: options?.systemPrompt || SYSTEM_PROMPT },
+          { role: 'user' as const, content: userPrompt },
+        ];
 
     try {
       // Call OpenAI with structured outputs
       const response = await this.client.chat.completions.create({
         model: options?.model || this.config.defaultModel,
-        messages: [
-          {
-            role: 'system',
-            content: systemPrompt,
-          },
-          {
-            role: 'user',
-            content: userPrompt,
-          },
-        ],
+        messages,
         response_format: {
           type: 'json_schema',
           json_schema: {

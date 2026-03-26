@@ -186,11 +186,22 @@ StyleDictionary.registerFormat({
 const coreTokens = loadTokens(path.join(__dirname, 'tier1-core/core.json'))
 const brandCognivo = loadTokens(path.join(__dirname, 'tier1-core/brand-cognivo.json'))
 
+// Generated from palette (run: node generate-from-palette.cjs)
+const generatedColors = fs.existsSync(path.join(__dirname, 'tier1-core/generated-colors.json'))
+  ? loadTokens(path.join(__dirname, 'tier1-core/generated-colors.json')) : {}
+const generatedBrand = fs.existsSync(path.join(__dirname, 'tier1-core/generated-brand.json'))
+  ? loadTokens(path.join(__dirname, 'tier1-core/generated-brand.json')) : {}
+
 const semanticLight = loadTokens(path.join(__dirname, 'tier2-semantic/cognivo-light.json'))
 const semanticDark = loadTokens(path.join(__dirname, 'tier2-semantic/cognivo-dark.json'))
 const semanticTypography = loadTokens(path.join(__dirname, 'tier2-semantic/typography.json'))
-const semanticFoundation = loadTokens(path.join(__dirname, 'tier2-semantic/foundation.json'))
 const semanticAiStates = loadTokens(path.join(__dirname, 'tier2-semantic/ai-states.json'))
+
+// Generated semantic patches from palette
+const generatedSemantic = fs.existsSync(path.join(__dirname, 'tier2-semantic/generated-palette.json'))
+  ? loadTokens(path.join(__dirname, 'tier2-semantic/generated-palette.json')) : {}
+const generatedDark = fs.existsSync(path.join(__dirname, 'tier2-semantic/generated-palette-dark.json'))
+  ? loadTokens(path.join(__dirname, 'tier2-semantic/generated-palette-dark.json')) : {}
 
 // Load all component tokens (if any exist)
 const componentDir = path.join(__dirname, 'tier3-component')
@@ -202,8 +213,8 @@ const componentTokenFiles = fs.existsSync(componentDir)
 
 const componentTokens = componentTokenFiles.length > 0 ? mergeTokens(...componentTokenFiles) : {}
 
-// Merge tier1 tokens (core + brand)
-const tier1Tokens = mergeTokens(coreTokens, brandCognivo)
+// Merge tier1 tokens (core + brand + generated from palette)
+const tier1Tokens = mergeTokens(coreTokens, brandCognivo, generatedColors, generatedBrand)
 
 async function buildTokens() {
   try {
@@ -232,7 +243,7 @@ async function buildTokens() {
     
     // Build Tier 2 + Tier 3 (semantic + component tokens) - references Tier 1
     // For light theme
-    const tier2LightTokens = mergeTokens(semanticLight, semanticTypography, semanticFoundation, semanticAiStates)
+    const tier2LightTokens = mergeTokens(semanticLight, semanticTypography, semanticAiStates, generatedSemantic)
     const lightTier23Tokens = mergeTokens(tier2LightTokens, componentTokens)
     
     // Include Tier 1 tokens so references can be resolved, but we'll filter them out
@@ -258,7 +269,7 @@ async function buildTokens() {
     }
     
     // For dark theme
-    const tier2DarkTokens = mergeTokens(semanticDark, semanticTypography, semanticFoundation, semanticAiStates)
+    const tier2DarkTokens = mergeTokens(semanticDark, semanticTypography, semanticAiStates, generatedDark)
     const darkTier23Tokens = mergeTokens(tier2DarkTokens, componentTokens)
     const darkAllTokens = mergeTokens(tier1Tokens, darkTier23Tokens)
     
@@ -360,7 +371,8 @@ async function buildTokens() {
   }
   
   // Extract CSS variable declarations and filter
-  function filterTier23CSS(css) {
+  // skipFilter=true for dark theme (include ALL tokens, since dark only has overrides)
+  function filterTier23CSS(css, skipFilter = false) {
     const lines = css.split('\n')
     const filtered = []
     let inRootBlock = false
@@ -382,18 +394,20 @@ async function buildTokens() {
         const varNameMatch = line.match(/^[\s]*--cg-([^:]+):/)
         if (varNameMatch) {
           const varName = varNameMatch[1]
-          // Check if this is a Tier 1 token
-          // Tier 2 semantic foundation tokens: border-width-thin/medium/thick, border-radius-small/medium/large/full, spacing-50/100/150/200/250/300/400/450/500/600/700 (number-based for >5 sizes), font-size-xs/sm/md/lg/xl (t-shirt for ≤5 sizes), icon-size-sm/md/lg/xl/2xl (t-shirt for ≤5 sizes)
-          // Tier 1 tokens: gray-*, blue-*, spacing-0/4/8/10/12/16/etc (numeric), font-size-50/75/100/etc (numeric), icon-size-100/200/etc (numeric), border-radius-50/100/etc (numeric), border-width-50/100/etc (numeric), Border-*, brand-*, layout-*
-          const tier2SemanticPatterns = ['border-width-thin', 'border-width-medium', 'border-width-thick', 'border-radius-small', 'border-radius-medium', 'border-radius-large', 'border-radius-full', 'spacing-25', 'spacing-50', 'spacing-100', 'spacing-150', 'spacing-200', 'spacing-250', 'spacing-300', 'spacing-400', 'spacing-450', 'spacing-500', 'spacing-600', 'spacing-700', 'font-size-xs', 'font-size-sm', 'font-size-md', 'font-size-lg', 'font-size-xl', 'icon-size-sm', 'icon-size-xs', 'icon-size-md', 'icon-size-lg', 'icon-size-xl', 'icon-size-2xl']
-          const isTier2Semantic = tier2SemanticPatterns.some(pattern => varName === pattern || varName.startsWith(pattern + '-'))
+          // Tier 1 = primitive tokens from core.json + brand-cognivo.json
+          // Tier 2 = semantic tokens from cognivo-light/dark.json + typography.json + ai-states.json
+          // Tier 3 = component tokens from tier3-component/*.json (prefixed with component-)
+          // Filter: include Tier 2/3 in theme output, exclude Tier 1 (already in tier1.css)
+          const tier2SemanticPatterns = [] // foundation.json deleted — no more aliases to track
+          const isTier2Semantic = false
           
           // Tier 1 prefixes (exact numeric matches)
-          const tier1Prefixes = ['gray-', 'blue-', 'green-', 'yellow-', 'red-', 'spacing-0', 'spacing-00', 'spacing-2', 'spacing-4', 'spacing-8', 'spacing-10', 'spacing-12', 'spacing-16', 'spacing-18', 'spacing-24', 'spacing-32', 'spacing-36', 'spacing-48', 'spacing-56', 'spacing-64', 'font-size-50', 'font-size-75', 'font-size-100', 'font-size-200', 'font-size-250', 'font-size-400', 'font-size-500', 'font-size-600', 'font-size-700', 'font-size-800', 'font-size-900', 'text-', 'line-', 'letter-', 'icon-size-100', 'icon-size-200', 'icon-size-300', 'icon-size-400', 'icon-size-500', 'border-radius-50', 'border-radius-100', 'border-radius-150', 'border-radius-200', 'border-radius-250', 'border-radius-300', 'border-radius-none', 'border-radius-full', 'border-width-0', 'border-width-50', 'border-width-75', 'border-width-100', 'border-width-300', 'border-width-100-2', 'opacity-', 'shadow-sm-', 'shadow-md-', 'shadow-lg-', 'z-index-0', 'z-index-100', 'z-index-200', 'z-index-300', 'z-index-400', 'z-index-500', 'z-index-top', 'z-index-bottom', 'brand-', 'transition-', 'outline-', 'Border-', 'layout-']
+          const tier1Prefixes = ['gray-', 'blue-', 'green-', 'yellow-', 'red-', 'spacing-0', 'spacing-2', 'spacing-4', 'spacing-8', 'spacing-12', 'spacing-16', 'spacing-24', 'spacing-32', 'spacing-48', 'spacing-56', 'spacing-64', 'font-size-50', 'font-size-75', 'font-size-100', 'font-size-200', 'font-size-250', 'font-size-400', 'font-size-500', 'font-size-600', 'font-size-700', 'font-size-800', 'font-size-900', 'text-', 'line-', 'letter-', 'icon-size-100', 'icon-size-200', 'icon-size-300', 'icon-size-400', 'icon-size-500', 'border-radius-50', 'border-radius-100', 'border-radius-150', 'border-radius-200', 'border-radius-250', 'border-radius-300', 'border-radius-none', 'border-radius-full', 'border-width-0', 'border-width-50', 'border-width-75', 'border-width-100', 'border-width-300', 'opacity-', 'shadow-sm-', 'shadow-md-', 'shadow-lg-', 'z-index-0', 'z-index-100', 'z-index-200', 'z-index-300', 'z-index-400', 'z-index-500', 'z-index-top', 'z-index-bottom', 'brand-', 'transition-', 'outline-', 'layout-']
           const isTier1 = tier1Prefixes.some(prefix => varName.startsWith(prefix)) && !isTier2Semantic
           
           // Include Tier 2/3 tokens, exclude Tier 1 tokens
-          if (!isTier1) {
+          // Exception: dark theme includes ALL tokens (they're all overrides)
+          if (skipFilter || !isTier1) {
             filtered.push(line)
           }
         } else {
@@ -409,7 +423,7 @@ async function buildTokens() {
   }
   
   lightCSS = filterTier23CSS(lightCSS)
-  darkCSS = filterTier23CSS(darkCSS)
+  darkCSS = filterTier23CSS(darkCSS, true)  // dark theme: include ALL tokens (they're overrides)
   
   // Combine: Tier 1 (base) + Tier 2/3 (semantic + component) for light theme
   // Then dark theme overrides

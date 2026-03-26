@@ -1,0 +1,170 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+
+const patterns = [
+  {
+    name: 'Guardrails',
+    module: 'GuardedClient',
+    description: 'Validate AI inputs and outputs against configurable rules. Prevent prompt injection, enforce length limits, check confidence ranges, and block PII.',
+    example: `import { GuardedClient, maxLengthRule, noPromptInjectionRule, noPiiRule } from '@cognivo/core';
+
+const client = new GuardedClient(baseClient, {
+  rules: [maxLengthRule(500), noPromptInjectionRule, noPiiRule],
+});`,
+  },
+  {
+    name: 'Resilience (Fallback)',
+    module: 'FallbackClient',
+    description: 'Automatically fall back to alternate AI providers when the primary fails. Configure multiple providers in priority order.',
+    example: `import { FallbackClient } from '@cognivo/core';
+
+const client = new FallbackClient({
+  clients: [openAiClient, anthropicClient],
+  maxRetries: 2,
+});`,
+  },
+  {
+    name: 'Caching',
+    module: 'CachedClient',
+    description: 'LRU cache for AI responses. Avoid redundant API calls for identical requests.',
+    example: `import { CachedClient, InMemoryLruCache } from '@cognivo/core';
+
+const client = new CachedClient(baseClient, {
+  cache: new InMemoryLruCache({ maxSize: 100 }),
+});`,
+  },
+  {
+    name: 'Semantic Caching',
+    module: 'SemanticCachedClient',
+    description: 'Cache AI responses by semantic similarity using embeddings. Returns cached results for semantically equivalent queries even if wording differs.',
+    example: `import { SemanticCachedClient, SemanticCacheStore } from '@cognivo/core';
+
+const client = new SemanticCachedClient(baseClient, {
+  cache: new SemanticCacheStore({ embeddingFn, threshold: 0.92 }),
+});`,
+  },
+  {
+    name: 'Routing',
+    module: 'ModelRouterClient',
+    description: 'Route requests to different models based on intent, complexity, or custom rules. Use fast models for simple tasks and powerful models for complex ones.',
+    example: `import { ModelRouterClient } from '@cognivo/core';
+
+const client = new ModelRouterClient({
+  routes: [
+    { intent: AiIntent.Summarize, client: fastClient },
+    { intent: AiIntent.Forecast, client: powerfulClient },
+  ],
+  defaultClient: fastClient,
+});`,
+  },
+  {
+    name: 'Conversation',
+    module: 'ConversationalClient',
+    description: 'Maintain conversation history across multiple turns. Automatic context window management with configurable history length.',
+    example: `import { ConversationalClient, ConversationHistory } from '@cognivo/core';
+
+const client = new ConversationalClient(baseClient, {
+  history: new ConversationHistory({ maxTurns: 20 }),
+});`,
+  },
+  {
+    name: 'Circuit Breaker',
+    module: 'CircuitBreakerClient',
+    description: 'Prevent cascading failures by tripping a circuit breaker after repeated errors. Auto-recovers after a cooldown period.',
+    example: `import { CircuitBreakerClient } from '@cognivo/core';
+
+const client = new CircuitBreakerClient(baseClient, {
+  failureThreshold: 5,
+  resetTimeout: 30000, // 30s cooldown
+});`,
+  },
+  {
+    name: 'Self-Refine',
+    module: 'SelfRefineClient',
+    description: 'Iteratively refine AI outputs by feeding results back through the model with critique prompts. Improves quality through multi-pass generation.',
+    example: `import { SelfRefineClient } from '@cognivo/core';
+
+const client = new SelfRefineClient(baseClient, {
+  maxIterations: 3,
+  stopWhen: (result) => result.confidence > 0.9,
+});`,
+  },
+  {
+    name: 'Extended Thinking',
+    module: 'ExtendedThinkingClient',
+    description: 'Chain-of-thought prompting that breaks complex problems into reasoning steps before generating a final answer.',
+    example: `import { ExtendedThinkingClient } from '@cognivo/core';
+
+const client = new ExtendedThinkingClient(baseClient, {
+  thinkingSteps: ['analyze', 'hypothesize', 'validate', 'conclude'],
+});`,
+  },
+  {
+    name: 'Prompt Optimization',
+    module: 'PromptOptimizer',
+    description: 'DSPy-inspired automatic prompt optimization. Evaluates prompt variants against test cases to find the best-performing prompt.',
+    example: `import { PromptOptimizer, PromptEvaluator, confidenceMetric } from '@cognivo/core';
+
+const optimizer = new PromptOptimizer(baseClient, {
+  evaluator: new PromptEvaluator({ metrics: [confidenceMetric] }),
+  testCases: [...],
+});
+const bestPrompt = await optimizer.optimize();`,
+  },
+  {
+    name: 'Agent Coordination',
+    module: 'AgentCoordinator',
+    description: 'Coordinate multiple AI agents working on subtasks. Decompose complex tasks, assign to specialized agents, and merge results.',
+    example: `import { AgentCoordinator } from '@cognivo/core';
+
+const coordinator = new AgentCoordinator({
+  agents: { analyst: analyticsClient, writer: contentClient },
+  planner: plannerClient,
+});
+const result = await coordinator.execute('Analyze Q4 sales and write a report');`,
+  },
+  {
+    name: 'Observability',
+    module: 'ObservableClient',
+    description: 'Trace AI requests with spans, timing, and metadata. Integrates with any tracing backend via the AiTracer interface.',
+    example: `import { ObservableClient, InMemoryTracer } from '@cognivo/core';
+
+const tracer = new InMemoryTracer();
+const client = new ObservableClient(baseClient, { tracer });
+
+await client.run(context);
+console.log(tracer.spans); // [{ name, duration, metadata, ... }]`,
+  },
+];
+---
+
+<DocsLayout title="AI Patterns">
+  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">AI Integration Patterns</h1>
+  <p style="color: #6b7280; margin-bottom: 1rem;">
+    12 production-ready patterns for robust AI integration. All patterns implement the <code>AiClient</code> interface
+    and compose via the decorator pattern.
+  </p>
+  <p style="margin-bottom: 2rem; font-size: 0.9rem;">
+    <strong>Install:</strong> <code>pnpm add @cognivo/core</code> -- all patterns are included in the core package.
+  </p>
+
+  {patterns.map((pattern, i) => (
+    <section style="margin-bottom: 2rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; padding: 1.5rem;">
+      <div style="display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.5rem;">
+        <span style="color: var(--color-primary); font-weight: 700; font-size: 0.85rem;">{String(i + 1).padStart(2, '0')}</span>
+        <h2 style="font-size: 1.25rem; font-weight: 700;">{pattern.name}</h2>
+        <code style="font-size: 0.8rem;">{pattern.module}</code>
+      </div>
+      <p style="color: #4b5563; margin-bottom: 1rem;">{pattern.description}</p>
+      <pre><code>{pattern.example}</code></pre>
+    </section>
+  ))}
+
+  <section style="margin-top: 2rem; padding: 1.25rem; background: var(--color-primary-light); border-radius: 8px;">
+    <p style="font-size: 0.9rem;">
+      <strong>Composing patterns:</strong> All patterns implement <code>AiClient</code>, so you can stack them:
+      <code>ObservableClient(GuardedClient(CachedClient(OpenAiClient)))</code>.
+      See the <a href="/core">Core API</a> page for a full composition example.
+    </p>
+  </section>
+</DocsLayout>

@@ -1,0 +1,100 @@
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { AiThinking } from '../components/ai-thinking/ai-thinking.js';
+
+// Register the custom element if not already registered
+if (!customElements.get('ai-thinking')) {
+  customElements.define('ai-thinking', AiThinking);
+}
+
+describe('ai-thinking', () => {
+  let element: AiThinking;
+
+  beforeEach(async () => {
+    element = document.createElement('ai-thinking') as AiThinking;
+    element.delay = 0; // Skip delay for tests
+    document.body.appendChild(element);
+    await element.updateComplete;
+  });
+
+  afterEach(() => {
+    element.remove();
+  });
+
+  it('renders in the DOM with a shadow root', () => {
+    expect(element).toBeDefined();
+    expect(element.shadowRoot).toBeDefined();
+  });
+
+  it('renders a container div', () => {
+    const container = element.shadowRoot!.querySelector('.container');
+    expect(container).not.toBeNull();
+  });
+
+  it('shows default text "Thinking"', () => {
+    const textEl = element.shadowRoot!.querySelector('.text');
+    expect(textEl).not.toBeNull();
+    expect(textEl!.textContent).toBe('Thinking');
+  });
+
+  it('updates displayed text when text property changes', async () => {
+    element.text = 'Analyzing';
+    await element.updateComplete;
+
+    const textEl = element.shadowRoot!.querySelector('.text');
+    expect(textEl!.textContent).toBe('Analyzing');
+  });
+
+  it('renders dots element for animation', () => {
+    const dots = element.shadowRoot!.querySelector('.dots');
+    expect(dots).not.toBeNull();
+  });
+
+  it('renders icon element', () => {
+    const icon = element.shadowRoot!.querySelector('.icon');
+    expect(icon).not.toBeNull();
+  });
+
+  it('does not apply shimmer class by default', () => {
+    const container = element.shadowRoot!.querySelector('.container');
+    expect(container!.classList.contains('shimmer')).toBe(false);
+  });
+
+  it('applies shimmer class when shimmer property is true', async () => {
+    element.shimmer = true;
+    await element.updateComplete;
+
+    const container = element.shadowRoot!.querySelector('.container');
+    expect(container!.classList.contains('shimmer')).toBe(true);
+  });
+
+  it('has role="status" for accessibility', () => {
+    const container = element.shadowRoot!.querySelector('.container');
+    expect(container!.getAttribute('role')).toBe('status');
+  });
+
+  it('has aria-live="polite" for screen readers', () => {
+    const container = element.shadowRoot!.querySelector('.container');
+    expect(container!.getAttribute('aria-live')).toBe('polite');
+  });
+
+  it('has aria-label matching the text property', async () => {
+    const container = element.shadowRoot!.querySelector('.container');
+    expect(container!.getAttribute('aria-label')).toBe('Thinking');
+
+    element.text = 'Processing';
+    await element.updateComplete;
+
+    const updatedContainer = element.shadowRoot!.querySelector('.container');
+    expect(updatedContainer!.getAttribute('aria-label')).toBe('Processing');
+  });
+
+  it('marks icon as aria-hidden', () => {
+    const icon = element.shadowRoot!.querySelector('.icon');
+    expect(icon!.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('marks dots as aria-hidden', () => {
+    const dots = element.shadowRoot!.querySelector('.dots');
+    expect(dots!.getAttribute('aria-hidden')).toBe('true');
+  });
+});

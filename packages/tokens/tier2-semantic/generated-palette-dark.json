@@ -1,0 +1,91 @@
+{
+  "$description": "Dark theme auto-generated from stockify-dark.json",
+  "overlay": {
+    "accent": {
+      "subtle": {
+        "$type": "color",
+        "$value": "rgba(223, 255, 97, 0.06)"
+      },
+      "light": {
+        "$type": "color",
+        "$value": "rgba(223, 255, 97, 0.12)"
+      },
+      "medium": {
+        "$type": "color",
+        "$value": "rgba(223, 255, 97, 0.18)"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "rgba(223, 255, 97, 0.25)"
+      }
+    },
+    "dark": {
+      "subtle": {
+        "$type": "color",
+        "$value": "rgba(0, 0, 0, 0.12)"
+      },
+      "light": {
+        "$type": "color",
+        "$value": "rgba(0, 0, 0, 0.2)"
+      },
+      "medium": {
+        "$type": "color",
+        "$value": "rgba(0, 0, 0, 0.3)"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "rgba(0,0,0,0.6)"
+      }
+    }
+  },
+  "text": {
+    "primary": {
+      "$type": "color",
+      "$value": "#FAFAFA"
+    },
+    "secondary": {
+      "$type": "color",
+      "$value": "#A1A1AA"
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "#52525B"
+    },
+    "placeholder": {
+      "$type": "color",
+      "$value": "#52525B"
+    },
+    "disabled": {
+      "$type": "color",
+      "$value": "#3F3F46"
+    },
+    "accent": {
+      "$type": "color",
+      "$value": "#E5FF6B"
+    },
+    "success": {
+      "$type": "color",
+      "$value": "#4ADE80"
+    },
+    "warning": {
+      "$type": "color",
+      "$value": "#F59E0B"
+    },
+    "danger": {
+      "$type": "color",
+      "$value": "#EF4444"
+    },
+    "info": {
+      "$type": "color",
+      "$value": "#E5FF6B"
+    },
+    "inverse": {
+      "$type": "color",
+      "$value": "#18181B"
+    },
+    "onAccent": {
+      "$type": "color",
+      "$value": "#09090B"
+    }
+  }
+}

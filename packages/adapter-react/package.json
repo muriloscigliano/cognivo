@@ -1,0 +1,56 @@
+{
+  "name": "@cognivo/adapter-react",
+  "version": "0.3.0",
+  "description": "55 React wrappers for Cognivo Web Components. Use AI-native components in React apps.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muriloscigliano/cognivo-1"
+  },
+  "scripts": {
+    "build": "vite build && tsc --emitDeclarationOnly",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "@cognivo/components": "workspace:*"
+  },
+  "devDependencies": {
+    "react": "^18.3.0",
+    "@types/react": "^18.3.0",
+    "@cognivo/components": "workspace:*",
+    "@cognivo/gen-ui": "workspace:*",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "vite-plugin-dts": "^4.0.0",
+    "vitest": "^2.1.0"
+  },
+  "keywords": [
+    "react",
+    "web-components",
+    "cognivo",
+    "ai",
+    "wrappers"
+  ]
+}

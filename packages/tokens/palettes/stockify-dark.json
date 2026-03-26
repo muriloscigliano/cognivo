@@ -1,0 +1,134 @@
+{
+  "$description": "Stockify dark dashboard. Full spectrum palette with neon lime accent, zinc neutrals, proper status colors.",
+  "surfaces": {
+    "light": {
+      "page": "#FAFAFA",
+      "card": "#FFFFFF",
+      "raised": "#FFFFFF",
+      "inset": "#F4F4F5",
+      "overlay": "rgba(0,0,0,0.4)"
+    },
+    "dark": {
+      "page": "#09090B",
+      "card": "#18181B",
+      "raised": "#27272A",
+      "inset": "#09090B",
+      "overlay": "rgba(0,0,0,0.6)"
+    }
+  },
+  "text": {
+    "primary": { "light": "#09090B", "dark": "#FAFAFA" },
+    "secondary": { "light": "#52525B", "dark": "#A1A1AA" },
+    "tertiary": { "light": "#A1A1AA", "dark": "#52525B" },
+    "onAccent": "#09090B",
+    "onAccentSoft": "#18181B"
+  },
+  "accent": {
+    "primary": {
+      "50": "#FEFFF0",
+      "100": "#FCFFD6",
+      "200": "#F5FFAD",
+      "300": "#EDFF85",
+      "400": "#E5FF6B",
+      "500": "#DFFF61",
+      "600": "#B2CC4E",
+      "700": "#86993A",
+      "800": "#596627",
+      "900": "#2D3313"
+    },
+    "secondary": {
+      "50": "#F0FDF4",
+      "100": "#DCFCE7",
+      "200": "#BBF7D0",
+      "300": "#86EFAC",
+      "400": "#4ADE80",
+      "500": "#22C55E",
+      "600": "#16A34A",
+      "700": "#15803D",
+      "800": "#166534",
+      "900": "#14532D"
+    },
+    "teal": {
+      "50": "#F0FDFA",
+      "100": "#CCFBF1",
+      "200": "#99F6E4",
+      "300": "#5EEAD4",
+      "400": "#2DD4BF",
+      "500": "#14B8A6",
+      "600": "#0D9488",
+      "700": "#0F766E",
+      "800": "#115E59",
+      "900": "#134E4A"
+    }
+  },
+  "neutral": {
+    "50": "#FAFAFA",
+    "100": "#F4F4F5",
+    "200": "#E4E4E7",
+    "300": "#D4D4D8",
+    "400": "#A1A1AA",
+    "500": "#71717A",
+    "600": "#52525B",
+    "700": "#3F3F46",
+    "800": "#27272A",
+    "900": "#18181B",
+    "950": "#09090B"
+  },
+  "semantic": {
+    "success": {
+      "50": "#F0FDF4",
+      "100": "#DCFCE7",
+      "200": "#BBF7D0",
+      "500": "#22C55E",
+      "600": "#16A34A",
+      "700": "#15803D",
+      "light": "#DCFCE7",
+      "main": "#22C55E",
+      "dark": "#16A34A"
+    },
+    "warning": {
+      "50": "#FFFBEB",
+      "100": "#FEF3C7",
+      "200": "#FDE68A",
+      "500": "#F59E0B",
+      "600": "#D97706",
+      "700": "#B45309",
+      "light": "#FEF3C7",
+      "main": "#F59E0B",
+      "dark": "#D97706"
+    },
+    "error": {
+      "50": "#FEF2F2",
+      "100": "#FEE2E2",
+      "200": "#FECACA",
+      "500": "#EF4444",
+      "600": "#DC2626",
+      "700": "#B91C1C",
+      "light": "#FEE2E2",
+      "main": "#EF4444",
+      "dark": "#DC2626"
+    },
+    "info": {
+      "50": "#EFF6FF",
+      "100": "#DBEAFE",
+      "200": "#BFDBFE",
+      "500": "#3B82F6",
+      "600": "#2563EB",
+      "700": "#1D4ED8",
+      "light": "#DBEAFE",
+      "main": "#3B82F6",
+      "dark": "#2563EB"
+    }
+  },
+  "dataViz": {
+    "series1": "#DFFF61",
+    "series2": "#14B8A6",
+    "series3": "#22C55E",
+    "series4": "#F59E0B",
+    "series5": "#F97316",
+    "series6": "#EC4899",
+    "positive": "#22C55E",
+    "negative": "#EF4444",
+    "neutral": "#71717A"
+  }
+}

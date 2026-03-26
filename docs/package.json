@@ -1,0 +1,22 @@
+{
+  "name": "@cognivo/docs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@cognivo/design-advisor": "workspace:*",
+    "@cognivo/tokens": "workspace:*",
+    "@lit/reactive-element": "^2.1.2",
+    "astro": "^4.16.0",
+    "gsap": "^3.12.0",
+    "lit": "^3.1.0",
+    "lit-element": "^4.2.2",
+    "lit-html": "^3.3.2",
+    "zod": "^3.25.0"
+  }
+}

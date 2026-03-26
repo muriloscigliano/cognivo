@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cognitive Bias Library - Design Advisor</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f8f9fa;
+      min-height: 100vh;
+    }
+
+    .app-header {
+      background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+      color: white;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .app-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .app-header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-header">
+    <div class="container">
+      <h1>🧠 Cognivo Design Advisor</h1>
+      <p>Phase 1: Foundation - 5 Critical Cognitive Biases</p>
+    </div>
+  </div>
+
+  <bias-library></bias-library>
+
+  <script type="module">
+    // Import the bias library component
+    import './dist/components/index.js';
+
+    // Log library info
+    import { LIBRARY_INFO, getStatistics } from './dist/index.js';
+    console.log('Design Advisor Library:', LIBRARY_INFO);
+    console.log('Statistics:', getStatistics());
+  </script>
+</body>
+</html>

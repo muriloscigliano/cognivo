@@ -1,0 +1,81 @@
+{
+  "name": "@cognivo/design-advisor",
+  "version": "0.0.1",
+  "description": "Cognitive psychology-based design analysis and advisory system",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./registry": {
+      "import": "./dist/registry.js"
+    },
+    "./components": {
+      "import": "./dist/components.js"
+    },
+    "./categories/*": {
+      "import": "./dist/categories/*.js"
+    },
+    "./categories/perception": {
+      "import": "./dist/categories/perception.js"
+    },
+    "./categories/decision-making": {
+      "import": "./dist/categories/decision-making.js"
+    },
+    "./categories/memory": {
+      "import": "./dist/categories/memory.js"
+    },
+    "./categories/social": {
+      "import": "./dist/categories/social.js"
+    },
+    "./categories/attribution": {
+      "import": "./dist/categories/attribution.js"
+    },
+    "./categories/emotional": {
+      "import": "./dist/categories/emotional.js"
+    },
+    "./categories/cognitive": {
+      "import": "./dist/categories/cognitive.js"
+    }
+  },
+  "files": ["dist"],
+  "license": "MIT",
+  "sideEffects": ["./dist/components.js"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muriloscigliano/cognivo-1.git",
+    "directory": "packages/design-advisor"
+  },
+  "scripts": {
+    "build": "vite build && tsc --emitDeclarationOnly",
+    "prepublishOnly": "pnpm build",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "bench": "vitest bench",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cognivo/core": "workspace:*",
+    "lit": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "vite": "^6.4.1",
+    "vite-plugin-dts": "^4.3.0",
+    "vitest": "^2.1.0"
+  },
+  "keywords": [
+    "cognitive-psychology",
+    "design",
+    "ui-ux",
+    "cognitive-biases",
+    "design-analysis",
+    "psychology"
+  ]
+}

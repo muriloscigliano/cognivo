@@ -1,0 +1,135 @@
+{
+  "$description": "Auto-generated from stockify-dark.json. Do not edit — regenerate with: node generate-from-palette.js",
+  "overlay": {
+    "accent": {
+      "subtle": {
+        "$type": "color",
+        "$value": "rgba(223, 255, 97, 0.04)"
+      },
+      "light": {
+        "$type": "color",
+        "$value": "rgba(223, 255, 97, 0.08)"
+      },
+      "medium": {
+        "$type": "color",
+        "$value": "rgba(223, 255, 97, 0.12)"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "rgba(223, 255, 97, 0.15)"
+      }
+    },
+    "dark": {
+      "subtle": {
+        "$type": "color",
+        "$value": "rgba(0, 0, 0, 0.04)"
+      },
+      "light": {
+        "$type": "color",
+        "$value": "rgba(0, 0, 0, 0.08)"
+      },
+      "medium": {
+        "$type": "color",
+        "$value": "rgba(0, 0, 0, 0.15)"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "rgba(0,0,0,0.4)"
+      }
+    }
+  },
+  "text": {
+    "primary": {
+      "$type": "color",
+      "$value": "#09090B"
+    },
+    "secondary": {
+      "$type": "color",
+      "$value": "#52525B"
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "#A1A1AA"
+    },
+    "placeholder": {
+      "$type": "color",
+      "$value": "#A1A1AA"
+    },
+    "disabled": {
+      "$type": "color",
+      "$value": "#A1A1AA"
+    },
+    "accent": {
+      "$type": "color",
+      "$value": "#DFFF61"
+    },
+    "success": {
+      "$type": "color",
+      "$value": "#22C55E"
+    },
+    "warning": {
+      "$type": "color",
+      "$value": "#F59E0B"
+    },
+    "danger": {
+      "$type": "color",
+      "$value": "#EF4444"
+    },
+    "info": {
+      "$type": "color",
+      "$value": "#3B82F6"
+    },
+    "inverse": {
+      "$type": "color",
+      "$value": "#FFFFFF"
+    },
+    "onAccent": {
+      "$type": "color",
+      "$value": "#09090B"
+    }
+  },
+  "color": {
+    "chart": {
+      "1": {
+        "$type": "color",
+        "$value": "#DFFF61"
+      },
+      "2": {
+        "$type": "color",
+        "$value": "#14B8A6"
+      },
+      "3": {
+        "$type": "color",
+        "$value": "#22C55E"
+      },
+      "4": {
+        "$type": "color",
+        "$value": "#F59E0B"
+      },
+      "5": {
+        "$type": "color",
+        "$value": "#F97316"
+      },
+      "6": {
+        "$type": "color",
+        "$value": "#EC4899"
+      },
+      "7": {
+        "$type": "color",
+        "$value": "#22C55E"
+      },
+      "8": {
+        "$type": "color",
+        "$value": "#EF4444"
+      },
+      "grid": {
+        "$type": "color",
+        "$value": "#E4E4E7"
+      },
+      "axis": {
+        "$type": "color",
+        "$value": "#A1A1AA"
+      }
+    }
+  }
+}

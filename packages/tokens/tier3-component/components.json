@@ -1,0 +1,48 @@
+{
+  "component": {
+    "button": {
+      "height": {
+        "sm": { "$type": "dimension", "$value": "32px" },
+        "md": { "$type": "dimension", "$value": "38px" },
+        "lg": { "$type": "dimension", "$value": "44px" }
+      },
+      "radius": {
+        "sm": { "$type": "dimension", "$value": "{border.radius.100}" },
+        "md": { "$type": "dimension", "$value": "{border.radius.150}" },
+        "lg": { "$type": "dimension", "$value": "{border.radius.150}" }
+      }
+    },
+    "input": {
+      "height": {
+        "sm": { "$type": "dimension", "$value": "32px" },
+        "md": { "$type": "dimension", "$value": "40px" },
+        "lg": { "$type": "dimension", "$value": "48px" }
+      },
+      "radius": { "$type": "dimension", "$value": "{border.radius.150}" }
+    },
+    "card": {
+      "radius": { "$type": "dimension", "$value": "{border.radius.200}" },
+      "padding": {
+        "sm": { "$type": "dimension", "$value": "{spacing.12}" },
+        "md": { "$type": "dimension", "$value": "{spacing.16}" },
+        "lg": { "$type": "dimension", "$value": "{spacing.24}" }
+      }
+    },
+    "badge": {
+      "radius": {
+        "sm": { "$type": "dimension", "$value": "{border.radius.50}" },
+        "md": { "$type": "dimension", "$value": "{border.radius.100}" },
+        "lg": { "$type": "dimension", "$value": "{border.radius.150}" }
+      }
+    },
+    "table": {
+      "radius": { "$type": "dimension", "$value": "{border.radius.150}" }
+    },
+    "modal": {
+      "radius": { "$type": "dimension", "$value": "{border.radius.200}" }
+    },
+    "tooltip": {
+      "radius": { "$type": "dimension", "$value": "{border.radius.100}" }
+    }
+  }
+}

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cognivo Gen-UI — Live Demo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #0A0A0A; color: #FFFFFF; min-height: 100vh; }
+
+    /* Header */
+    .header { background: #0A0A0A; border-bottom: 1px solid #2A2A2D; color: white; padding: 16px 24px; }
+    .header-top { display: flex; justify-content: space-between; align-items: center; }
+    .header h1 { font-size: 1.3rem; font-weight: 700; color: #DFFF61; }
+    .header p { font-size: 0.8rem; color: #A3A3A3; margin-top: 2px; }
+    .badge-row { display: flex; gap: 6px; margin-top: 8px; }
+    .tech-badge { font-size: 0.65rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: rgba(223,255,97,0.06); color: #DFFF61; border: 1px solid rgba(223,255,97,0.12); }
+
+    /* API bar */
+    .api-bar { padding: 10px 16px; background: #111113; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; border-bottom: 1px solid #2A2A2D; }
+    .api-bar label { font-size: 0.7rem; color: #737373; font-weight: 600; }
+    .api-bar input, .api-bar select {
+      padding: 5px 10px; border-radius: 6px; border: 1px solid #2A2A2D; background: #161618; color: #FFFFFF;
+      font-size: 0.75rem; font-family: monospace; outline: none;
+    }
+    .api-bar input:focus, .api-bar select:focus { border-color: #DFFF61; }
+    .api-bar input { width: 280px; }
+    .api-bar select { width: 160px; }
+    .api-spacer { flex: 1; }
+    #status { font-size: 0.7rem; color: #A3A3A3; }
+
+    /* Layout */
+    .container { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: calc(100vh - 120px); }
+    .left-panel { background: #111113; color: #E5E5E5; display: flex; flex-direction: column; }
+    .right-panel { background: #0A0A0A; display: flex; flex-direction: column; }
+
+    /* Controls */
+    .controls { padding: 10px 16px; background: #0A0A0A; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; border-bottom: 1px solid #2A2A2D; }
+    .controls button {
+      padding: 5px 12px; border-radius: 8px; border: none;
+      font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-generate { background: #DFFF61; color: #000000; }
+    .btn-generate:hover { background: #E2FF70; }
+    .btn-generate:disabled { background: #404040; color: #737373; cursor: not-allowed; }
+    .btn-stream { background: #161618; color: #DFFF61; border: 1px solid #2A2A2D !important; }
+    .btn-stream:hover { border-color: #DFFF61 !important; }
+    .btn-stream:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-parse { background: #10B981; color: #000000; }
+    .btn-parse:hover { background: #34D399; }
+    .btn-reset { background: #1E1E20; color: #A3A3A3; }
+    .btn-reset:hover { background: #2A2A2D; }
+    .btn-example { background: transparent; color: #A3A3A3; border: 1px solid #2A2A2D !important; font-size: 0.7rem; }
+    .btn-example:hover { color: #DFFF61; border-color: #DFFF61 !important; }
+    .btn-prompt { background: transparent; color: #DFFF61; border: 1px solid rgba(223,255,97,0.2) !important; font-size: 0.65rem; }
+    .separator { flex: 1; }
+
+    /* Code area */
+    .code-area { flex: 1; overflow: auto; }
+    textarea {
+      width: 100%; height: 100%; background: #111113; color: #E5E5E5;
+      border: none; padding: 16px; font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.8rem; line-height: 1.6; resize: none; outline: none;
+    }
+    .code-output {
+      background: #0A0A0A; color: #DFFF61; padding: 12px;
+      font-family: monospace; font-size: 0.75rem; line-height: 1.5;
+      max-height: 180px; overflow: auto; white-space: pre-wrap;
+    }
+    .meta-output {
+      background: #0A0A0A; color: #14B8A6; padding: 10px;
+      font-family: monospace; font-size: 0.7rem; border-top: 1px solid #2A2A2D;
+      max-height: 100px; overflow: auto;
+    }
+
+    /* Preview */
+    .preview-header {
+      padding: 10px 16px; background: #161618; font-size: 0.75rem;
+      font-weight: 600; color: #A3A3A3; border-bottom: 1px solid #2A2A2D;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .preview-area { flex: 1; padding: 20px; overflow: auto; background: #0A0A0A; }
+    .prompt-preview {
+      display: none; background: #111113; color: #A3A3A3; padding: 12px;
+      font-family: monospace; font-size: 0.68rem; line-height: 1.5;
+      max-height: 300px; overflow: auto; white-space: pre-wrap; margin: 12px;
+      border-radius: 8px; border: 1px solid #2A2A2D;
+    }
+
+    /* Bias panel */
+    .bias-panel-header {
+      padding: 10px 16px; background: #161618; font-size: 0.75rem;
+      font-weight: 600; color: #DFFF61; border-top: 1px solid #2A2A2D;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .bias-panel-header svg { width: 14px; height: 14px; }
+    .bias-output {
+      background: #111113; padding: 12px 16px; max-height: 200px; overflow: auto;
+      font-size: 0.75rem; color: #A3A3A3;
+    }
+    .bias-item { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #2A2A2D; }
+    .bias-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .bias-header { font-size: 0.8rem; margin-bottom: 3px; color: #FFFFFF; }
+    .bias-severity { font-size: 0.65rem; font-weight: 700; padding: 1px 6px; border-radius: 4px; }
+    .bias-severity.critical { background: rgba(239,68,68,0.15); color: #EF4444; }
+    .bias-severity.high { background: rgba(249,115,22,0.15); color: #F97316; }
+    .bias-severity.medium { background: rgba(245,158,11,0.15); color: #F59E0B; }
+    .bias-severity.low { background: rgba(16,185,129,0.15); color: #10B981; }
+    .bias-components { font-size: 0.7rem; color: #14B8A6; margin-bottom: 3px; }
+    .bias-rec { font-size: 0.72rem; color: #A3A3A3; line-height: 1.4; }
+    .no-bias { color: #737373; font-style: italic; }
+
+    /* Labels */
+    .section-label {
+      padding: 6px 16px; background: #0A0A0A; color: #737373;
+      font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+      border-top: 1px solid #2A2A2D;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <h1>Cognivo Gen-UI</h1>
+        <p>Streaming generative UI with cognitive bias analysis</p>
+      </div>
+    </div>
+    <div class="badge-row">
+      <span class="tech-badge">40 Components</span>
+      <span class="tech-badge">Web Components</span>
+      <span class="tech-badge">Streaming Parser</span>
+      <span class="tech-badge">Bias Analysis</span>
+      <span class="tech-badge">Token Governance</span>
+      <span class="tech-badge">Any Framework</span>
+    </div>
+  </div>
+
+  <div class="api-bar">
+    <label>API Key:</label>
+    <input id="api-key" type="password" placeholder="sk-... (OpenAI key, stays in browser)" />
+    <label>Model:</label>
+    <select id="model-select">
+      <option value="gpt-4o">GPT-4o</option>
+      <option value="gpt-4o-mini">GPT-4o Mini</option>
+      <option value="gpt-4-turbo">GPT-4 Turbo</option>
+      <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+    </select>
+    <span class="api-spacer"></span>
+    <span id="status"></span>
+  </div>
+
+  <div class="container">
+    <div class="left-panel">
+      <div class="controls">
+        <button id="generate-btn" class="btn-generate">Generate</button>
+        <button id="stream-btn" class="btn-stream">Simulate</button>
+        <button id="parse-btn" class="btn-parse">Parse</button>
+        <button id="reset-btn" class="btn-reset">Reset</button>
+        <div class="separator"></div>
+        <button data-example="dashboard" class="btn-example">Dashboard</button>
+        <button data-example="insights" class="btn-example">Insights</button>
+        <button data-example="form" class="btn-example">Form</button>
+        <button data-example="chart" class="btn-example">Chart</button>
+        <button id="prompt-btn" class="btn-prompt">System Prompt</button>
+      </div>
+      <div class="code-area">
+        <textarea id="prompt" spellcheck="false" placeholder="Type a prompt like 'Show a revenue dashboard' or pick an example..."></textarea>
+      </div>
+      <div class="section-label">Generated Output</div>
+      <pre class="code-output" id="code-output"></pre>
+      <div class="section-label">Parse Metadata</div>
+      <pre class="meta-output" id="meta-output"></pre>
+    </div>
+
+    <div class="right-panel">
+      <div class="preview-header">
+        <span>Live Preview</span>
+        <span style="font-size: 0.65rem; color: #737373;">Web Components render here</span>
+      </div>
+      <pre class="prompt-preview" id="prompt-preview"></pre>
+      <div class="preview-area" id="preview"></div>
+
+      <div class="bias-panel-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 5a1 1 0 011 1v4a1 1 0 01-2 0V8a1 1 0 011-1zm0 8a1 1 0 110 2 1 1 0 010-2z"></path>
+        </svg>
+        Cognitive Bias Analysis
+      </div>
+      <div class="bias-output" id="bias-output">
+        <span class="no-bias">Generate or parse UI to see bias analysis</span>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+---
+
+<DocsLayout title="Design Advisor">
+  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Design Advisor</h1>
+  <p style="color: #6b7280; margin-bottom: 1rem;">
+    <code>@cognivo/design-advisor</code> provides a comprehensive library of 180 cognitive biases with design implications,
+    examples, and implementation guidance. Use it to make psychology-informed design decisions.
+  </p>
+  <p style="margin-bottom: 2rem;">
+    <a href="/biases" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #7c3aed; color: white; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-decoration: none;">
+      Explore Biases Interactively &rarr;
+    </a>
+  </p>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Installation</h2>
+    <pre><code>pnpm add @cognivo/design-advisor</code></pre>
+  </section>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Bias Library</h2>
+    <p style="margin-bottom: 1rem;">Access individual biases directly or search the full library of 180 biases:</p>
+    <pre><code>import {'{'}
+  anchoringBias,
+  lossAversion,
+  socialProof,
+  vonRestorffEffect,
+  framingEffect,
+  allBiases,
+  getBiasById,
+  getBiasesByCategory,
+  getBiasesByTag,
+  searchBiases,
+{'}'} from '@cognivo/design-advisor';
+
+// Direct access
+console.log(anchoringBias.name);        // "Anchoring Bias"
+console.log(anchoringBias.category);    // BiasCategory.Decision
+
+// Search by tag
+const pricingBiases = getBiasesByTag('pricing');
+
+// Full-text search
+const results = searchBiases('conversion');
+
+// Browse all
+console.log(allBiases.length);          // 180</code></pre>
+  </section>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">BiasRegistry</h2>
+    <p style="margin-bottom: 1rem;">The <code>BiasRegistry</code> provides advanced querying and recommendations:</p>
+    <pre><code>import {'{'} BiasRegistry, queryBiases, recommendBiases, getStatistics {'}'} from '@cognivo/design-advisor';
+
+// Query by multiple criteria
+const biases = queryBiases({'{'}
+  category: 'decision',
+  tags: ['pricing', 'ecommerce'],
+{'}'});
+
+// Get recommendations for a design context
+const recommendations = recommendBiases({'{'}
+  page: 'pricing',
+  goals: ['increase conversion', 'build trust'],
+{'}'});
+
+// Library statistics
+const stats = getStatistics();
+console.log(stats);  // {'{'} total: 180, byCategory: {'{'} ... {'}'} {'}'}</code></pre>
+  </section>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">LazyBiasRegistry</h2>
+    <p style="margin-bottom: 1rem;">For large applications, use the lazy registry to load biases on demand and reduce initial bundle size:</p>
+    <pre><code>import {'{'} LazyBiasRegistry {'}'} from '@cognivo/design-advisor';
+
+const registry = new LazyBiasRegistry();
+
+// Biases are loaded lazily when accessed
+const bias = await registry.get('anchoring-bias');
+const all = await registry.getAll();</code></pre>
+  </section>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">BiasCard Type</h2>
+    <p style="margin-bottom: 1rem;">Each bias is a fully structured <code>BiasCard</code> object:</p>
+    <pre><code>interface BiasCard {'{'}
+  id: string;
+  name: string;
+  category: BiasCategory;
+  description: string;
+  designImplications: string[];
+  useCases: UseCase[];
+  avoidCases: AvoidCase[];
+  realWorldExamples: RealWorldExample[];
+  implementationSteps: ImplementationStep[];
+  accessibilityGuidelines: AccessibilityGuideline[];
+  ethicalConsiderations: EthicalConsideration[];
+  // ... and more
+{'}'}</code></pre>
+  </section>
+
+  <section>
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Web Components</h2>
+    <p style="margin-bottom: 1rem;">The design advisor also includes web components for browsing biases in the browser:</p>
+    <pre><code>import {'{'} BiasCardElement, BiasLibraryElement {'}'} from '@cognivo/design-advisor';
+
+// Use in HTML:
+// &lt;bias-card&gt;&lt;/bias-card&gt;       - Single bias card display
+// &lt;bias-library&gt;&lt;/bias-library&gt; - Full browsable library with search &amp; filters</code></pre>
+    <p style="margin-top: 1rem; font-size: 0.9rem;">
+      <a href="/showcase.html">See the live bias library browser</a>
+    </p>
+  </section>
+</DocsLayout>

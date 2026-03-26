@@ -321,7 +321,7 @@
       },
       "borderRadius": {
         "$type": "dimension",
-        "$value": "{Border.radius.100}",
+        "$value": "{border.radius.100}",
         "$description": "AI result panel border radius - 8px"
       },
       "shadow": {

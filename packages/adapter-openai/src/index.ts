@@ -9,3 +9,5 @@ export { OpenAiClient } from './client.js';
 export type { OpenAiClientConfig } from './client.js';
 export { schemas } from './schemas.js';
 export { buildPrompt, SYSTEM_PROMPT } from './prompts.js';
+export { PromptCacheManager } from './prompt-cache.js';
+export type { CacheableMessage, PromptCacheConfig } from './prompt-cache.js';

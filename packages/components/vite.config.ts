@@ -4,27 +4,15 @@ import { resolve } from 'path';
 export default defineConfig({
   build: {
     lib: {
-      entry: {
-        index: resolve(__dirname, 'src/index.ts'),
-        'ai-thinking-indicator': resolve(__dirname, 'src/components/ai-thinking-indicator/index.ts'),
-        'ai-confidence-badge': resolve(__dirname, 'src/components/ai-confidence-badge/index.ts'),
-        'ai-insight-card': resolve(__dirname, 'src/components/ai-insight-card/index.ts'),
-      },
+      entry: resolve(__dirname, 'src/index.ts'),
       formats: ['es'],
+      fileName: 'index',
     },
     rollupOptions: {
-      external: ['lit', '@cognivo/core', '@cognivo/tokens'],
-      output: {
-        preserveModules: false,
-      },
+      // DON'T mark lit as external - bundle it so browser can use it!
+      // external: ['lit'],  ← Removed this line
     },
     sourcemap: true,
-    minify: 'esbuild',
-    target: 'es2022',
-  },
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, './src'),
-    },
+    target: 'es2020',
   },
 });

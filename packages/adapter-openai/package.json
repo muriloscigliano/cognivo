@@ -15,8 +15,15 @@
     }
   },
   "files": ["dist"],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muriloscigliano/cognivo-1.git",
+    "directory": "packages/adapter-openai"
+  },
   "scripts": {
     "build": "vite build && tsc --emitDeclarationOnly",
+    "prepublishOnly": "pnpm build",
     "dev": "vite build --watch",
     "type-check": "tsc --noEmit",
     "test": "vitest run",

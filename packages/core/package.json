@@ -1,8 +1,14 @@
 {
   "name": "@cognivo/core",
-  "version": "0.0.0",
-  "description": "Core AI integration logic for Cognivo - Framework-agnostic",
-  "keywords": ["ai", "llm", "core", "framework-agnostic"],
+  "version": "0.3.0",
+  "description": "Framework-agnostic AI integration core. Intents, clients, context building for AI applications.",
+  "keywords": [
+    "ai",
+    "core",
+    "cognivo",
+    "framework-agnostic",
+    "intents"
+  ],
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -15,12 +21,23 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muriloscigliano/cognivo-1"
+  },
   "scripts": {
     "build": "vite build",
+    "prepublishOnly": "pnpm build",
     "dev": "vite build --watch",
     "test": "vitest run",
     "test:watch": "vitest",
+    "bench": "vitest bench",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist"
   },

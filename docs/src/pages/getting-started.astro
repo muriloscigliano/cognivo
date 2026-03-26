@@ -1,0 +1,80 @@
+---
+import DocsLayout from '../layouts/DocsLayout.astro';
+---
+
+<DocsLayout title="Getting Started">
+  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Getting Started</h1>
+  <p style="color: #6b7280; margin-bottom: 2rem;">Install Cognivo and start building AI-powered interfaces in minutes.</p>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Installation</h2>
+    <p style="margin-bottom: 1rem;">Install the core package and an adapter for your AI provider:</p>
+    <pre><code>pnpm add @cognivo/core @cognivo/adapter-openai</code></pre>
+    <p style="margin-top: 1rem; margin-bottom: 1rem;">For UI components (Lit web components):</p>
+    <pre><code>pnpm add @cognivo/components</code></pre>
+    <p style="margin-top: 1rem; margin-bottom: 1rem;">For the cognitive bias design advisor:</p>
+    <pre><code>pnpm add @cognivo/design-advisor</code></pre>
+  </section>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Quick Start: AI Client</h2>
+    <p style="margin-bottom: 1rem;">Create an AI client with the OpenAI adapter and send your first request:</p>
+    <pre><code>import {'{'} ContextBuilder, AiIntent {'}'} from '@cognivo/core';
+import {'{'} OpenAiClient {'}'} from '@cognivo/adapter-openai';
+
+// 1. Create a client
+const client = new OpenAiClient({'{'} apiKey: process.env.OPENAI_API_KEY {'}'});
+
+// 2. Build context with your data
+const context = new ContextBuilder()
+  .withDataset([{'{'} revenue: 50000, month: 'Jan' {'}'}, {'{'} revenue: 62000, month: 'Feb' {'}'}])
+  .withIntent(AiIntent.Summarize)
+  .build();
+
+// 3. Send the request
+const result = await client.run(context);</code></pre>
+  </section>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Quick Start: Components</h2>
+    <p style="margin-bottom: 1rem;">Import the components package to register all custom elements, then use them in your HTML:</p>
+    <pre><code>import '@cognivo/components';
+
+// Now use in HTML:
+// &lt;ai-thinking text="Analyzing..."&gt;&lt;/ai-thinking&gt;
+// &lt;ai-badge score="0.92"&gt;&lt;/ai-badge&gt;
+// &lt;ai-chat&gt;&lt;/ai-chat&gt;</code></pre>
+  </section>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Quick Start: Design Advisor</h2>
+    <p style="margin-bottom: 1rem;">Access the cognitive bias library to improve your design decisions:</p>
+    <pre><code>import {'{'} BiasRegistry, queryBiases {'}'} from '@cognivo/design-advisor';
+
+// Search for biases relevant to pricing pages
+const biases = queryBiases({'{'} tags: ['pricing', 'conversion'] {'}'});
+
+// Get a specific bias
+import {'{'} anchoringBias {'}'} from '@cognivo/design-advisor';
+console.log(anchoringBias.name);        // "Anchoring Bias"
+console.log(anchoringBias.description); // Full description with design implications</code></pre>
+  </section>
+
+  <section>
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Next Steps</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+      <a href="/components" style="display: block; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 1.25rem;">
+        <strong style="display: block; margin-bottom: 0.25rem;">Components</strong>
+        <span style="color: #6b7280; font-size: 0.9rem;">Explore the 6 AI web components</span>
+      </a>
+      <a href="/core" style="display: block; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 1.25rem;">
+        <strong style="display: block; margin-bottom: 0.25rem;">Core API</strong>
+        <span style="color: #6b7280; font-size: 0.9rem;">AiClient, intents, context building</span>
+      </a>
+      <a href="/patterns" style="display: block; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 1.25rem;">
+        <strong style="display: block; margin-bottom: 0.25rem;">AI Patterns</strong>
+        <span style="color: #6b7280; font-size: 0.9rem;">12 production-ready integration patterns</span>
+      </a>
+    </div>
+  </section>
+</DocsLayout>

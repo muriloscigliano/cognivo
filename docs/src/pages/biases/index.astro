@@ -1,0 +1,520 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '@cognivo/tokens/css';
+
+const categories = [
+  { id: 'perception', label: 'Perception', color: '#0891b2' },
+  { id: 'decision-making', label: 'Decision Making', color: '#d97706' },
+  { id: 'memory', label: 'Memory', color: '#4f46e5' },
+  { id: 'social', label: 'Social', color: '#e11d48' },
+  { id: 'attribution', label: 'Attribution', color: '#65a30d' },
+  { id: 'emotional', label: 'Emotional', color: '#c026d3' },
+  { id: 'cognitive', label: 'Cognitive', color: '#1e1e24' },
+];
+---
+
+<BaseLayout title="Cognitive Biases" description="Explore 180 cognitive biases through an interactive card deck experience.">
+  <div class="bias-landing" data-theme="dark">
+
+    <!-- LANGUAGE SWITCHER -->
+    <button id="lang-switch" class="lang-switch" type="button" aria-label="Switch language / Alterar idioma">PT</button>
+
+    <section class="hero">
+      <h1 class="hero-title">Cognitive Biases</h1>
+      <p class="hero-subtitle">The invisible forces shaping every design decision</p>
+      <p class="hero-count" id="bias-count">Loading...</p>
+    </section>
+
+    <section class="stage-section" aria-label="Bias card deck">
+      <div id="deck-loader" class="deck-loader">
+        <div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div>
+      </div>
+      <div id="card-stage" class="card-stage"></div>
+      <button class="nav-arrow nav-prev" id="nav-prev" type="button" aria-label="Previous card">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <button class="nav-arrow nav-next" id="nav-next" type="button" aria-label="Next card">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </section>
+
+    <!-- FLIP SYSTEM -->
+    <div id="flip-overlay" class="flip-overlay" aria-hidden="true"></div>
+    <div id="flip-container" class="flip-container" role="dialog" aria-modal="true" aria-label="Bias detail">
+      <div id="flip-inner" class="flip-inner">
+        <div id="flip-front" class="flip-face flip-face-front"></div>
+        <div id="flip-back" class="flip-face flip-face-back"></div>
+      </div>
+    </div>
+
+    <!-- FILTER -->
+    <nav id="filter-bar" class="filter-bar" aria-label="Filter by category">
+      <div class="filter-inner">
+        <button class="filter-chip active" data-category="all" type="button" aria-pressed="true" style="--chip-color: #f0f0f2">All</button>
+        {categories.map((cat) => (
+          <button class="filter-chip" data-category={cat.id} type="button" aria-pressed="false" style={`--chip-color: ${cat.color}`}>
+            <span class="chip-dot" style={`background: ${cat.color}`}></span>
+            {cat.label}
+          </button>
+        ))}
+      </div>
+      <div id="filter-announce" class="sr-only" aria-live="polite" role="status"></div>
+    </nav>
+  </div>
+
+  <script>
+    import '../../scripts/bias-landing.ts';
+  </script>
+</BaseLayout>
+
+<style is:global>
+  /* ================================================================
+     BIAS LANDING
+     ================================================================ */
+
+  .bias-landing {
+    --bg-deep: #0c0c0e;
+    --text-primary: #f0f0f2;
+    --text-secondary: #a0a0aa;
+    --text-dim: #55555f;
+    --glass-bg: rgba(12, 12, 14, 0.88);
+    --glass-border: rgba(255, 255, 255, 0.07);
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  body:has(.bias-landing) { background: #0c0c0e; overflow: hidden; }
+
+  /* ---- LANG SWITCH ---- */
+  .lang-switch {
+    position: fixed; top: 1rem; right: 1.5rem; z-index: 400;
+    font-family: 'Fira Code', monospace; font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.08em; padding: 0.35rem 0.7rem; border-radius: 6px;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    color: var(--text-secondary); cursor: pointer;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .lang-switch:hover { color: var(--text-primary); border-color: var(--text-dim); }
+  .lang-switch:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 3px; }
+
+  /* ---- HERO ---- */
+  .hero { text-align: center; padding: 4rem 2rem 1rem; position: relative; z-index: 10; }
+  .hero-title {
+    font-family: 'Satoshi', sans-serif; font-size: clamp(2.2rem, 5.5vw, 3.5rem);
+    font-weight: 900; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 0.5rem;
+  }
+  .hero-subtitle { font-size: clamp(0.9rem, 2vw, 1.05rem); color: var(--text-secondary); margin-bottom: 0.35rem; }
+  .hero-count { font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--text-dim); letter-spacing: 0.06em; }
+
+  /* ---- LOADER ---- */
+  .deck-loader {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    display: flex; gap: 8px; z-index: 10;
+  }
+  .loader-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--text-dim);
+    animation: dotP 1.2s ease-in-out infinite;
+  }
+  .loader-dot:nth-child(2) { animation-delay: 0.15s; }
+  .loader-dot:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes dotP { 0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1.2); } }
+
+  /* ---- STAGE ---- */
+  .stage-section {
+    position: relative; height: calc(100vh - 200px); min-height: 420px; max-height: 560px;
+    perspective: 1800px; perspective-origin: 50% 45%;
+  }
+  .card-stage {
+    position: absolute; inset: 0; transform-style: preserve-3d;
+  }
+
+  /* ---- CARDS — Collectible, bold color ---- */
+
+  .deck-card {
+    position: absolute; top: 50%; left: 0; margin-top: -196px;
+    cursor: pointer; transform-style: preserve-3d; will-change: transform, opacity;
+    border-radius: 16px;
+  }
+
+  .deck-card-flipper {
+    position: relative; width: 100%; height: 100%; transform-style: preserve-3d;
+  }
+
+  /* FRONT FACE */
+  .deck-card-front {
+    position: absolute; inset: 0; backface-visibility: hidden;
+    border-radius: 16px; overflow: hidden;
+    display: flex; flex-direction: column;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  .dcf-art-frame {
+    margin: 14px 14px 0; border-radius: 10px; overflow: hidden;
+    background: var(--card-art-bg, rgba(0,0,0,0.15));
+    flex: 1; min-height: 0;
+  }
+
+  .dcf-canvas {
+    width: 100%; height: 100%; display: block;
+  }
+
+  .dcf-body {
+    padding: 1rem 1.25rem 1.35rem;
+  }
+
+  .dcf-cat {
+    font-family: 'Fira Code', monospace; font-size: 0.55rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    opacity: 0.6; display: block; margin-bottom: 0.2rem;
+  }
+
+  .dcf-title {
+    font-family: 'Satoshi', serif; font-size: 1.2rem; font-weight: 700;
+    line-height: 1.2; margin: 0; letter-spacing: -0.01em;
+  }
+
+  /* BACK FACE (small, in-deck — just shows simple def) */
+  .deck-card-back {
+    position: absolute; inset: 0; backface-visibility: hidden;
+    transform: rotateY(180deg); border-radius: 16px; overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    border: 2px solid;
+  }
+
+  .deck-card-back .dcb-scroll { padding: 1.5rem 1.25rem; }
+  .deck-card-back .dcb-cat { font-family: 'Fira Code', monospace; font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.6; display: block; margin-bottom: 0.3rem; }
+  .deck-card-back .dcb-title { font-family: 'Satoshi', sans-serif; font-size: 1.1rem; font-weight: 700; margin: 0 0 0.5rem; line-height: 1.25; }
+  .deck-card-back .dcb-simple { font-size: 0.82rem; line-height: 1.5; opacity: 0.8; margin: 0; }
+
+  /* ---- NAV ARROWS ---- */
+  .nav-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    color: var(--text-secondary); cursor: pointer; padding: 0.65rem;
+    border-radius: 50%; z-index: 50;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .nav-prev { left: 1.5rem; }
+  .nav-next { right: 1.5rem; }
+  .nav-arrow:hover { color: var(--text-primary); border-color: var(--text-dim); }
+  .nav-arrow:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 3px; }
+
+  /* ---- FLIP OVERLAY ---- */
+  .flip-overlay {
+    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8);
+    z-index: 900; opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .flip-overlay.visible { opacity: 1; pointer-events: auto; }
+
+  /* ---- FLIP CONTAINER ---- */
+  .flip-container {
+    position: fixed; z-index: 1000; display: none;
+    perspective: 2400px; pointer-events: auto;
+  }
+  .flip-container.visible { display: block; }
+
+  .flip-inner {
+    width: 100%; height: 100%; position: relative; transform-style: preserve-3d;
+  }
+
+  .flip-face {
+    position: absolute; inset: 0; backface-visibility: hidden;
+    border-radius: 16px; overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Front face in flip container (mirrors card front) */
+  .flip-face-front {
+    display: flex; flex-direction: column;
+  }
+  .flip-face-front .dcf-art-frame {
+    margin: 14px 14px 0; border-radius: 10px; overflow: hidden;
+    background: rgba(0,0,0,0.15); flex: 1; min-height: 0;
+  }
+  .flip-face-front .dcf-canvas { width: 100%; height: 100%; display: block; }
+  .flip-face-front .dcf-body { padding: 1.5rem 2rem 2rem; }
+  .flip-face-front .dcf-cat { font-family: 'Fira Code', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.6; display: block; margin-bottom: 0.3rem; }
+  .flip-face-front .dcf-title { font-family: 'Satoshi', sans-serif; font-size: 1.75rem; font-weight: 700; line-height: 1.2; margin: 0; }
+
+  /* Back face in flip container (full content) */
+  .flip-face-back {
+    transform: rotateY(180deg);
+    border: 2px solid;
+  }
+
+  .flip-back-scroll {
+    padding: 2.5rem 3rem 3rem; height: 100%; overflow-y: auto;
+    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.15) transparent;
+    position: relative;
+  }
+
+  .flip-close-btn {
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15);
+    cursor: pointer; padding: 0.55rem; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; z-index: 10;
+    transition: background 0.15s;
+  }
+  .flip-close-btn:hover { background: rgba(0,0,0,0.5); }
+  .flip-close-btn:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+
+  /* ---- BACK HEADER ---- */
+  .bk-header { margin-bottom: 0.25rem; }
+  .bk-header .dcb-title { max-width: 85%; }
+  .bk-header .dcb-aliases { font-size: 0.8rem; opacity: 0.45; font-style: italic; margin-bottom: 0.5rem; }
+  .bk-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.4rem; }
+  .bk-tag {
+    font-family: 'Fira Code', monospace; font-size: 0.6rem; letter-spacing: 0.04em;
+    padding: 0.15rem 0.5rem; border-radius: 100px;
+    background: rgba(255,255,255,0.08); opacity: 0.6;
+  }
+
+  /* ---- TABS ---- */
+  .bk-tabs {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; gap: 0.25rem; padding: 0.6rem 0; margin-bottom: 0.5rem;
+    overflow-x: auto; scrollbar-width: none;
+    background: inherit;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .bk-tabs::-webkit-scrollbar { display: none; }
+  .bk-tab {
+    font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 500;
+    padding: 0.3rem 0.7rem; border-radius: 6px;
+    background: transparent; border: 1px solid rgba(255,255,255,0.08);
+    color: inherit; opacity: 0.5; cursor: pointer; white-space: nowrap;
+    transition: opacity 0.15s, background 0.15s;
+  }
+  .bk-tab:hover { opacity: 0.8; background: rgba(255,255,255,0.05); }
+  .bk-tab.active { opacity: 1; background: var(--back-accent, rgba(255,255,255,0.12)); color: #0c0c0e; font-weight: 600; border-color: var(--back-accent); }
+  .bk-tab:focus-visible { outline: 2px solid var(--back-accent); outline-offset: 2px; }
+
+  /* ---- SECTION LAYOUT ---- */
+  .bk-section { padding: 1.25rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .bk-section:last-child { border-bottom: none; }
+  .bk-body { max-width: 750px; }
+  .bk-block { margin-bottom: 1.5rem; }
+  .bk-block h4 {
+    font-family: 'Satoshi', sans-serif; font-size: 0.75rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--back-accent, currentColor); margin-bottom: 0.5rem;
+  }
+  .bk-block p { font-size: 0.88rem; line-height: 1.65; opacity: 0.85; margin: 0 0 0.4rem; }
+  .bk-block ul { list-style: none; padding: 0; margin: 0; }
+  .bk-block li { font-size: 0.85rem; line-height: 1.55; opacity: 0.8; padding: 0.2rem 0 0.2rem 1rem; position: relative; }
+  .bk-block li::before { content: '—'; position: absolute; left: 0; color: var(--back-accent); }
+  .bk-detail { font-size: 0.92rem; line-height: 1.7; opacity: 0.9; margin-bottom: 1.25rem; }
+  .bk-mechanism { font-size: 0.85rem; line-height: 1.6; opacity: 0.7; margin-top: 0.4rem; font-style: italic; }
+  .bk-credit { font-family: 'Fira Code', monospace; font-size: 0.72rem; opacity: 0.4; margin-top: 0.4rem; }
+
+  /* ---- IMPACT BADGES ---- */
+  .impact-badge {
+    font-family: 'Fira Code', monospace; font-size: 0.55rem; font-weight: 600;
+    padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase;
+    letter-spacing: 0.06em; display: inline-block; vertical-align: middle; margin-left: 0.3rem;
+  }
+
+  /* ---- IMPACT GRID ---- */
+  .impact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; }
+  .impact-cell {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px; padding: 0.8rem 1rem;
+  }
+  .impact-cell-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.3rem; }
+  .impact-cell-name { font-family: 'Satoshi', sans-serif; font-size: 0.72rem; font-weight: 600; text-transform: capitalize; }
+  .impact-cell p { font-size: 0.78rem; line-height: 1.45; opacity: 0.7; margin: 0; }
+
+  /* ---- USE / AVOID CARDS ---- */
+  .use-card, .avoid-card {
+    background: rgba(255,255,255,0.03); border-left: 3px solid var(--back-accent);
+    border-radius: 0 8px 8px 0; padding: 0.7rem 1rem; margin-bottom: 0.5rem;
+  }
+  .use-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem; }
+  .use-card p, .avoid-card p { font-size: 0.82rem; line-height: 1.5; opacity: 0.75; margin: 0.2rem 0 0; }
+  .avoid-card { border-left-color: #ef4444; }
+  .bk-consequence { font-size: 0.78rem !important; color: #ef4444 !important; opacity: 0.8 !important; }
+  .bk-alternative { font-size: 0.78rem !important; color: var(--back-accent) !important; opacity: 0.8 !important; }
+
+  /* ---- MISTAKES ---- */
+  .mistake-card {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 0.75rem;
+  }
+  .mistake-title { font-family: 'Satoshi', sans-serif; font-size: 0.88rem; font-weight: 600; margin: 0 0 0.3rem; color: #fbbf24; }
+  .mistake-card p { font-size: 0.82rem; line-height: 1.55; opacity: 0.8; margin: 0 0 0.3rem; }
+  .mistake-why { color: #f87171 !important; }
+  .mistake-fix { color: #86efac !important; }
+
+  /* ---- EXAMPLES ---- */
+  .rw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 0.75rem; }
+  .rw-card {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px; padding: 0.8rem 1rem;
+  }
+  .rw-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem; }
+  .rw-head strong { font-size: 0.85rem; }
+  .rw-stars { font-size: 0.75rem; color: #fbbf24; letter-spacing: 0.05em; }
+  .rw-card p { font-size: 0.78rem; line-height: 1.5; opacity: 0.7; margin: 0; }
+
+  .ab-card {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 0.75rem;
+  }
+  .ab-card h5 { font-family: 'Satoshi', sans-serif; font-size: 0.85rem; font-weight: 600; margin: 0 0 0.5rem; }
+  .ab-row { display: flex; gap: 0.75rem; align-items: baseline; margin-bottom: 0.3rem; }
+  .ab-label {
+    font-family: 'Fira Code', monospace; font-size: 0.6rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 0.1rem 0.4rem; border-radius: 4px; flex-shrink: 0;
+    background: rgba(255,255,255,0.08);
+  }
+  .ab-row p { font-size: 0.8rem; line-height: 1.5; opacity: 0.75; margin: 0; }
+  .ab-learnings { margin-top: 0.5rem; }
+  .ab-learnings li { font-size: 0.78rem; opacity: 0.65; }
+
+  .ex-card { border-left: 3px solid var(--back-accent); padding: 0.6rem 1rem; margin-bottom: 0.5rem; border-radius: 0 8px 8px 0; }
+  .ex-card strong { font-size: 0.82rem; display: block; margin-bottom: 0.2rem; }
+  .ex-card p { font-size: 0.8rem; line-height: 1.5; opacity: 0.75; margin: 0; }
+  .ex-good { border-left-color: #86efac; }
+  .ex-bad { border-left-color: #f87171; }
+  .ex-principle { font-style: italic; opacity: 0.5 !important; font-size: 0.75rem !important; margin-top: 0.3rem !important; }
+
+  /* ---- CHECKLIST ---- */
+  .checklist { display: flex; flex-direction: column; gap: 0.4rem; }
+  .check-item {
+    display: flex; gap: 0.6rem; align-items: flex-start;
+    font-size: 0.85rem; line-height: 1.5; opacity: 0.8; cursor: pointer;
+    padding: 0.4rem 0.6rem; border-radius: 8px;
+    transition: background 0.15s;
+  }
+  .check-item:hover { background: rgba(255,255,255,0.04); }
+  .check-item input[type="checkbox"] {
+    accent-color: var(--back-accent); margin-top: 0.2rem; flex-shrink: 0;
+    width: 16px; height: 16px;
+  }
+  .check-item input:checked + span { text-decoration: line-through; opacity: 0.4; }
+
+  /* ---- GUIDELINES ---- */
+  .impl-steps { padding-left: 1.25rem; margin: 0; }
+  .impl-steps li { font-size: 0.85rem; line-height: 1.55; opacity: 0.8; padding: 0.25rem 0; }
+  .impl-tip { display: block; font-size: 0.75rem; opacity: 0.5; font-style: italic; margin-top: 0.15rem; }
+
+  .do-dont-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .do-col h4 { color: #86efac !important; }
+  .dont-col h4 { color: #f87171 !important; }
+  .do-col li::before { color: #86efac; }
+  .dont-col li::before { color: #f87171; }
+
+  .bp-card { background: rgba(255,255,255,0.03); padding: 0.7rem 1rem; border-radius: 8px; margin-bottom: 0.5rem; }
+  .bp-card strong { font-size: 0.82rem; display: block; margin-bottom: 0.2rem; }
+  .bp-card p { font-size: 0.8rem; line-height: 1.5; opacity: 0.75; margin: 0; }
+  .bp-example { font-style: italic; opacity: 0.5 !important; font-size: 0.75rem !important; margin-top: 0.25rem !important; }
+
+  .a11y-item {
+    display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0;
+    font-size: 0.82rem; opacity: 0.8;
+  }
+  .a11y-level {
+    font-family: 'Fira Code', monospace; font-size: 0.6rem; font-weight: 600;
+    background: #6366f1; color: #fff; padding: 0.1rem 0.35rem; border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .a11y-crit { font-family: 'Fira Code', monospace; font-size: 0.65rem; opacity: 0.4; margin-left: auto; }
+
+  .ethics-card { margin-bottom: 0.6rem; }
+  .ethics-card strong { font-size: 0.82rem; }
+  .ethics-card p { font-size: 0.8rem; line-height: 1.5; opacity: 0.75; margin: 0.2rem 0 0; }
+  .ethics-mit { color: #86efac !important; opacity: 0.7 !important; }
+
+  /* ---- RESOURCES ---- */
+  .res-item { font-size: 0.82rem; padding: 0.25rem 0; opacity: 0.75; }
+  .res-item a { color: var(--back-accent); text-decoration: none; }
+  .res-item a:hover { text-decoration: underline; }
+
+  /* ---- RELATED CHIPS ---- */
+  .rel-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .rel-chip {
+    font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 100px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+    cursor: default;
+  }
+
+  .flip-face-back .dcb-cat {
+    font-family: 'Fira Code', monospace; font-size: 0.7rem;
+    letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.3rem;
+  }
+
+  .flip-face-back .dcb-title {
+    font-family: 'Satoshi', sans-serif; font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 800; margin: 0 0 0.4rem; line-height: 1.15; max-width: 85%;
+  }
+
+  .flip-face-back .dcb-aliases { font-size: 0.8rem; font-style: italic; margin-bottom: 1rem; }
+  .flip-face-back .dcb-detail { font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.5rem; opacity: 0.9; max-width: 700px; }
+
+  .flip-face-back .dcb-section { margin-bottom: 1.25rem; max-width: 700px; }
+  .flip-face-back .dcb-section h4 {
+    font-family: 'Satoshi', sans-serif; font-size: 0.78rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.4rem;
+    color: var(--back-accent, currentColor);
+  }
+  .flip-face-back .dcb-section p { font-size: 0.9rem; line-height: 1.6; opacity: 0.85; margin: 0; }
+  .flip-face-back .dcb-section ul { list-style: none; padding: 0; margin: 0; }
+  .flip-face-back .dcb-section li {
+    font-size: 0.85rem; line-height: 1.55; opacity: 0.85;
+    padding: 0.2rem 0 0.2rem 1rem; position: relative;
+  }
+  .flip-face-back .dcb-section li::before { content: '—'; position: absolute; left: 0; color: var(--back-accent, currentColor); }
+
+  /* ---- FILTER BAR ---- */
+  .filter-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+    background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--glass-border); padding: 0.6rem 1rem;
+  }
+  .filter-inner {
+    display: flex; gap: 0.35rem; max-width: 800px; margin: 0 auto;
+    overflow-x: auto; scrollbar-width: none; justify-content: center;
+  }
+  .filter-inner::-webkit-scrollbar { display: none; }
+  .filter-chip {
+    background: transparent; border: 1px solid var(--glass-border);
+    color: var(--text-secondary); padding: 0.3rem 0.75rem; border-radius: 100px;
+    cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 500;
+    white-space: nowrap; transition: all 0.15s ease; display: flex; align-items: center; gap: 0.3rem;
+  }
+  .chip-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .filter-chip:hover { color: var(--text-primary); border-color: var(--text-dim); }
+  .filter-chip:focus-visible { outline: 2px solid var(--chip-color); outline-offset: 2px; }
+  .filter-chip.active { background: var(--chip-color); color: var(--bg-deep, #0c0c0e); border-color: var(--chip-color); font-weight: 600; }
+  .filter-chip.active .chip-dot { background: var(--bg-deep, #0c0c0e) !important; }
+
+  /* ---- A11Y ---- */
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    .hero { padding: 3rem 1.5rem 0.75rem; }
+    .stage-section { max-height: 450px; }
+    .nav-prev { left: 0.5rem; } .nav-next { right: 0.5rem; }
+    .nav-arrow { padding: 0.45rem; }
+    .nav-arrow svg { width: 22px; height: 22px; }
+    .filter-inner { justify-content: flex-start; }
+    .flip-back-scroll { padding: 2rem 1.5rem; }
+    .do-dont-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .impact-grid { grid-template-columns: 1fr; }
+    .rw-grid { grid-template-columns: 1fr; }
+    .ab-row { flex-direction: column; gap: 0.3rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flip-overlay, .filter-chip, .nav-arrow { transition: none !important; }
+    .loader-dot { animation: none; opacity: 0.5; }
+  }
+</style>

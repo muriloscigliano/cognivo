@@ -17,6 +17,9 @@ export interface AiContextMeta {
   /** Category or domain (e.g., 'Marketing', 'Sales') */
   category?: string;
 
+  /** Serialized conversation history for multi-turn interactions */
+  conversationHistory?: string;
+
   /** Additional custom metadata */
   [key: string]: unknown;
 }

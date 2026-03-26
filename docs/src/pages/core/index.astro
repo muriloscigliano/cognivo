@@ -1,0 +1,99 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+---
+
+<DocsLayout title="Core API">
+  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Core API</h1>
+  <p style="color: #6b7280; margin-bottom: 2rem;">
+    <code>@cognivo/core</code> provides framework-agnostic AI integration logic: client interfaces, context building, intents, and result types.
+  </p>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Installation</h2>
+    <pre><code>pnpm add @cognivo/core @cognivo/adapter-openai</code></pre>
+  </section>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">AiClient Interface</h2>
+    <p style="margin-bottom: 1rem;">All adapters implement the <code>AiClient</code> interface. You can swap providers without changing application code.</p>
+    <pre><code>interface AiClient {'{'}
+  run(context: AiContext, options?: AiRequestOptions): Promise&lt;AiResult&gt;;
+{'}'}</code></pre>
+  </section>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Intents</h2>
+    <p style="margin-bottom: 1rem;">Intents describe what you want the AI to do with your data. Available intents:</p>
+    <pre><code>import {'{'} AiIntent {'}'} from '@cognivo/core';
+
+AiIntent.Summarize      // Summarize a dataset
+AiIntent.Explain        // Explain a data point or trend
+AiIntent.Forecast       // Predict future values
+AiIntent.DetectAnomaly  // Find outliers or anomalies
+AiIntent.Classify       // Categorize data points
+AiIntent.Recommend      // Generate recommendations
+AiIntent.Compare        // Compare datasets or segments
+AiIntent.Ask            // Free-form question about data</code></pre>
+  </section>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Context Building</h2>
+    <p style="margin-bottom: 1rem;">Use <code>ContextBuilder</code> to assemble structured context for the AI:</p>
+    <pre><code>import {'{'} ContextBuilder, AiIntent {'}'} from '@cognivo/core';
+
+const context = new ContextBuilder()
+  .withDataset(salesData)
+  .withIntent(AiIntent.DetectAnomaly)
+  .withMeta({'{'} timeRange: 'last-30-days', metric: 'revenue' {'}'})
+  .build();
+
+const result = await client.run(context);</code></pre>
+  </section>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Result Types</h2>
+    <p style="margin-bottom: 1rem;">AI responses are returned as typed <code>AiResult</code> objects:</p>
+    <pre><code>interface AiResult {'{'}
+  answer: string;              // Natural language response
+  confidence: number;          // 0-1 confidence score
+  driver?: AiDriver;           // Key driver analysis
+  anomalies?: AiAnomaly[];     // Detected anomalies
+  forecasts?: AiForecast[];    // Predicted values
+  classifications?: AiClassification[];
+  recommendations?: AiRecommendation[];
+{'}'}</code></pre>
+  </section>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Decorator Pattern</h2>
+    <p style="margin-bottom: 1rem;">Core clients wrap each other in a decorator pattern. Stack capabilities as needed:</p>
+    <pre><code>import {'{'} OpenAiClient {'}'} from '@cognivo/adapter-openai';
+import {'{'} GuardedClient, CachedClient, ObservableClient, InMemoryLruCache, InMemoryTracer {'}'} from '@cognivo/core';
+
+const base = new OpenAiClient({'{'} apiKey: '...' {'}'});
+const cached = new CachedClient(base, {'{'} cache: new InMemoryLruCache() {'}'});
+const guarded = new GuardedClient(cached, {'{'} rules: [noPromptInjectionRule, maxLengthRule(500)] {'}'});
+const client = new ObservableClient(guarded, {'{'} tracer: new InMemoryTracer() {'}'});
+
+// Uses all layers: observability → guardrails → caching → OpenAI
+const result = await client.run(context);</code></pre>
+  </section>
+
+  <section>
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Key Exports</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+      <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 1rem;">
+        <strong>Client Layer</strong>
+        <p style="font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem;">BaseAiClient, GuardedClient, CachedClient, FallbackClient, ObservableClient, ConversationalClient</p>
+      </div>
+      <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 1rem;">
+        <strong>Patterns</strong>
+        <p style="font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem;">CircuitBreaker, SelfRefineClient, ExtendedThinkingClient, ModelRouterClient, AgentCoordinator</p>
+      </div>
+      <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 1rem;">
+        <strong>Utilities</strong>
+        <p style="font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem;">ContextBuilder, PromptOptimizer, PromptEvaluator, InMemoryTracer, InMemoryLruCache, SemanticCacheStore</p>
+      </div>
+    </div>
+  </section>
+</DocsLayout>

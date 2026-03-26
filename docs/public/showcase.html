@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cognivo - Component Showcase</title>
+  <link rel="stylesheet" href="../../packages/tokens/dist/index.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--cg-font-family-primary, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+      background: var(--cg-color-surface-base-background, #f8f9fa);
+      color: var(--cg-color-surface-base-text, #212529);
+      line-height: var(--cg-line-height-normal, 1.5);
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--cg-ai-effect-gradient-from, #8b5cf6), var(--cg-ai-effect-gradient-to, #a78bfa));
+      color: white;
+      padding: var(--cg-spacing-48, 48px) var(--cg-spacing-24, 24px);
+      text-align: center;
+    }
+    .header h1 { font-size: var(--cg-font-size-4xl, 48px); font-weight: var(--cg-font-weight-bold, 700); margin-bottom: var(--cg-spacing-8, 8px); }
+    .header p { font-size: var(--cg-font-size-lg, 20px); opacity: 0.9; }
+    .stats {
+      display: flex;
+      gap: var(--cg-spacing-32, 32px);
+      justify-content: center;
+      margin-top: var(--cg-spacing-24, 24px);
+      flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-number { font-size: var(--cg-font-size-3xl, 36px); font-weight: var(--cg-font-weight-bold, 700); }
+    .stat-label { font-size: var(--cg-font-size-sm, 14px); opacity: 0.8; }
+    .theme-toggle { margin-top: var(--cg-spacing-24, 24px); }
+    .theme-toggle button {
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-24, 24px);
+      border: 2px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border-radius: var(--cg-Border-radius-100, 8px);
+      cursor: pointer;
+      font-size: var(--cg-font-size-sm, 14px);
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+      transition: all 200ms;
+    }
+    .theme-toggle button:hover { background: rgba(255,255,255,0.25); }
+
+    /* Layout */
+    .container { max-width: 1200px; margin: 0 auto; padding: var(--cg-spacing-32, 32px) var(--cg-spacing-24, 24px); }
+    .section { margin-bottom: var(--cg-spacing-48, 48px); }
+    .section h2 {
+      font-size: var(--cg-font-size-2xl, 30px);
+      font-weight: var(--cg-font-weight-semibold, 600);
+      margin-bottom: var(--cg-spacing-8, 8px);
+      color: var(--cg-brand-primary-400, #7c3aed);
+    }
+    .section p.desc { color: var(--cg-gray-600, #6c757d); margin-bottom: var(--cg-spacing-24, 24px); }
+    .card {
+      background: var(--cg-color-surface-container-background, white);
+      border: 1px solid var(--cg-color-surface-container-border, #dee2e6);
+      border-radius: var(--cg-Border-radius-150, 12px);
+      padding: var(--cg-spacing-24, 24px);
+      margin-bottom: var(--cg-spacing-16, 16px);
+    }
+    .card h3 { font-size: var(--cg-font-size-lg, 20px); margin-bottom: var(--cg-spacing-12, 12px); }
+    .demo-row { display: flex; gap: var(--cg-spacing-16, 16px); flex-wrap: wrap; align-items: center; margin-bottom: var(--cg-spacing-16, 16px); }
+    .demo-label { font-size: var(--cg-font-size-sm, 14px); color: var(--cg-gray-600, #6c757d); min-width: 140px; font-weight: 500; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--cg-spacing-16, 16px); }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--cg-spacing-16, 16px); }
+    @media (max-width: 768px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    /* Controls */
+    .controls { display: flex; gap: var(--cg-spacing-8, 8px); flex-wrap: wrap; margin-top: var(--cg-spacing-16, 16px); }
+    .controls button {
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
+      border: 1px solid var(--cg-brand-ai-border, #c4b5fd);
+      background: var(--cg-brand-ai-background, #f5f3ff);
+      color: var(--cg-brand-ai-accent, #8b5cf6);
+      border-radius: var(--cg-Border-radius-100, 8px);
+      cursor: pointer;
+      font-size: var(--cg-font-size-sm, 14px);
+      transition: all 150ms;
+    }
+    .controls button:hover { background: var(--cg-brand-ai-accent, #8b5cf6); color: white; }
+
+    /* Code snippets */
+    code {
+      background: var(--cg-color-surface-inset-background, #f8f9fa);
+      padding: 2px 6px;
+      border-radius: var(--cg-Border-radius-50, 4px);
+      font-family: var(--cg-font-family-mono, monospace);
+      font-size: var(--cg-font-size-sm, 14px);
+    }
+    .code-block {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: var(--cg-Border-radius-100, 8px);
+      padding: var(--cg-spacing-16, 16px);
+      margin-top: var(--cg-spacing-12, 12px);
+      font-family: var(--cg-font-family-mono, monospace);
+      font-size: var(--cg-font-size-xs, 12px);
+      line-height: 1.6;
+      overflow-x: auto;
+    }
+    .code-block .tag { color: #89b4fa; }
+    .code-block .attr { color: #a6e3a1; }
+    .code-block .str { color: #f9e2af; }
+    .code-block .comment { color: #6c7086; }
+
+    /* Component-specific */
+    .chat-demo { height: 500px; }
+    .bias-browser { min-height: 600px; }
+    .insight-grid { display: flex; flex-direction: column; gap: var(--cg-spacing-12, 12px); }
+
+    /* Separator */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cg-brand-ai-border, #c4b5fd), transparent);
+      margin: var(--cg-spacing-48, 48px) 0;
+    }
+
+    /* Component tag */
+    .component-tag {
+      display: inline-block;
+      font-size: var(--cg-font-size-xs, 12px);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--cg-brand-ai-accent, #8b5cf6);
+      background: var(--cg-brand-ai-background, #f5f3ff);
+      padding: 2px 8px;
+      border-radius: var(--cg-Border-radius-50, 4px);
+      margin-bottom: var(--cg-spacing-8, 8px);
+    }
+
+    /* Props table */
+    .props-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: var(--cg-spacing-12, 12px);
+      font-size: var(--cg-font-size-sm, 14px);
+    }
+    .props-table th {
+      text-align: left;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
+      background: var(--cg-color-surface-inset-background, #f8f9fa);
+      font-weight: 600;
+      border-bottom: 2px solid var(--cg-color-surface-container-border, #dee2e6);
+    }
+    .props-table td {
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #dee2e6);
+    }
+
+    /* Dark mode */
+    [data-theme="dark"] body { background: #1a1a2e; color: #e0e0e0; }
+    [data-theme="dark"] .header { background: linear-gradient(135deg, #4c1d95, #6d28d9); }
+    [data-theme="dark"] .card { background: #16213e; border-color: #2a2a4a; color: #e0e0e0; }
+    [data-theme="dark"] .card h3 { color: #e0e0e0; }
+    [data-theme="dark"] .section h2 { color: #a78bfa; }
+    [data-theme="dark"] .section p.desc { color: #9ca3af; }
+    [data-theme="dark"] code { background: #2a2a4a; color: #c4b5fd; }
+    [data-theme="dark"] .container { color: #e0e0e0; }
+    [data-theme="dark"] .demo-label { color: #9ca3af; }
+    [data-theme="dark"] .component-tag { background: #2a2a4a; color: #c4b5fd; }
+    [data-theme="dark"] .props-table th { background: #1a1a2e; color: #c4b5fd; }
+    [data-theme="dark"] .props-table td { border-color: #2a2a4a; }
+    [data-theme="dark"] .section-divider { background: linear-gradient(90deg, transparent, #4c1d95, transparent); }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <div class="header" id="page-header">
+    <h1>Cognivo</h1>
+    <p>AI-Native Component Library + Cognitive Psychology Design Advisor</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-number">9</div><div class="stat-label">Packages</div></div>
+      <div class="stat"><div class="stat-number">6</div><div class="stat-label">Components</div></div>
+      <div class="stat"><div class="stat-number">180</div><div class="stat-label">Bias Cards</div></div>
+      <div class="stat"><div class="stat-number">12</div><div class="stat-label">AI Patterns</div></div>
+      <div class="stat"><div class="stat-number">555</div><div class="stat-label">Tests</div></div>
+    </div>
+    <div class="theme-toggle">
+      <button onclick="toggleTheme()" id="theme-btn">Toggle Dark Mode</button>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- ===== 1. AI THINKING ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-thinking</h2>
+      <p class="desc">Animated thinking indicator with cycling dots and optional shimmer text effect. Perfect for showing AI processing state.</p>
+      <div class="card">
+        <h3>Variants</h3>
+        <div class="demo-row">
+          <span class="demo-label">Default:</span>
+          <ai-thinking></ai-thinking>
+        </div>
+        <div class="demo-row">
+          <span class="demo-label">With shimmer:</span>
+          <ai-thinking shimmer></ai-thinking>
+        </div>
+        <div class="demo-row">
+          <span class="demo-label">Custom text:</span>
+          <ai-thinking text="Analyzing data"></ai-thinking>
+        </div>
+        <div class="demo-row">
+          <span class="demo-label">Processing:</span>
+          <ai-thinking text="Processing" shimmer></ai-thinking>
+        </div>
+        <div class="demo-row">
+          <span class="demo-label">Generating:</span>
+          <ai-thinking text="Generating insights" shimmer></ai-thinking>
+        </div>
+
+        <table class="props-table">
+          <thead><tr><th>Property</th><th>Type</th><th>Default</th></tr></thead>
+          <tbody>
+            <tr><td><code>text</code></td><td>string</td><td>"Thinking"</td></tr>
+            <tr><td><code>shimmer</code></td><td>boolean</td><td>false</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-block">
+          <span class="comment">&lt;!-- Basic --&gt;</span><br>
+          <span class="tag">&lt;ai-thinking&gt;&lt;/ai-thinking&gt;</span><br><br>
+          <span class="comment">&lt;!-- Custom text with shimmer --&gt;</span><br>
+          <span class="tag">&lt;ai-thinking</span> <span class="attr">text=</span><span class="str">"Analyzing"</span> <span class="attr">shimmer</span><span class="tag">&gt;&lt;/ai-thinking&gt;</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 2. AI BADGE ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-badge</h2>
+      <p class="desc">Color-coded confidence badge that visualizes AI confidence levels. Click to interact.</p>
+      <div class="card">
+        <h3>Confidence Levels</h3>
+        <div class="demo-row">
+          <span class="demo-label">High (95%):</span>
+          <ai-badge score="0.95"></ai-badge>
+        </div>
+        <div class="demo-row">
+          <span class="demo-label">High (82%):</span>
+          <ai-badge score="0.82"></ai-badge>
+        </div>
+        <div class="demo-row">
+          <span class="demo-label">Medium (65%):</span>
+          <ai-badge score="0.65"></ai-badge>
+        </div>
+        <div class="demo-row">
+          <span class="demo-label">Medium (55%):</span>
+          <ai-badge score="0.55"></ai-badge>
+        </div>
+        <div class="demo-row">
+          <span class="demo-label">Low (30%):</span>
+          <ai-badge score="0.30"></ai-badge>
+        </div>
+        <div class="demo-row">
+          <span class="demo-label">Low (15%):</span>
+          <ai-badge score="0.15"></ai-badge>
+        </div>
+        <div class="demo-row">
+          <span class="demo-label">Label only:</span>
+          <ai-badge score="0.85" showPercentage="false"></ai-badge>
+        </div>
+
+        <div class="controls">
+          <button onclick="document.querySelectorAll('ai-badge').forEach(b => b.score = Math.random())">Randomize Scores</button>
+          <button onclick="document.querySelectorAll('ai-badge').forEach(b => b.score = 0.95)">All High</button>
+          <button onclick="document.querySelectorAll('ai-badge').forEach(b => b.score = 0.35)">All Low</button>
+        </div>
+
+        <table class="props-table">
+          <thead><tr><th>Property</th><th>Type</th><th>Default</th></tr></thead>
+          <tbody>
+            <tr><td><code>score</code></td><td>number (0-1)</td><td>0.85</td></tr>
+            <tr><td><code>showPercentage</code></td><td>boolean</td><td>true</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-block">
+          <span class="tag">&lt;ai-badge</span> <span class="attr">score=</span><span class="str">"0.92"</span><span class="tag">&gt;&lt;/ai-badge&gt;</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 3. AI RESULT PANEL ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-result-panel</h2>
+      <p class="desc">Structured AI analysis results with explanation, bullet points, impact drivers, and confidence badge.</p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Revenue Analysis</h3>
+          <ai-result-panel id="result-panel-1"></ai-result-panel>
+        </div>
+        <div class="card">
+          <h3>Anomaly Detection</h3>
+          <ai-result-panel id="result-panel-2"></ai-result-panel>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Empty State</h3>
+        <ai-result-panel></ai-result-panel>
+      </div>
+
+      <div class="card">
+        <table class="props-table">
+          <thead><tr><th>Property</th><th>Type</th><th>Default</th></tr></thead>
+          <tbody>
+            <tr><td><code>title</code></td><td>string</td><td>"AI Analysis"</td></tr>
+            <tr><td><code>explanation</code></td><td>string</td><td>""</td></tr>
+            <tr><td><code>bullets</code></td><td>string[]</td><td>[]</td></tr>
+            <tr><td><code>drivers</code></td><td>{factor, impact}[]</td><td>[]</td></tr>
+            <tr><td><code>confidence</code></td><td>number (0-1)</td><td>0</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-block">
+          <span class="comment">// Set complex props via JavaScript</span><br>
+          <span class="tag">const panel = document.querySelector('ai-result-panel');</span><br>
+          <span class="tag">panel.explanation = </span><span class="str">"Revenue grew 35% due to seasonal demand"</span><span class="tag">;</span><br>
+          <span class="tag">panel.bullets = [</span><span class="str">"Q4 saw highest growth"</span><span class="tag">, </span><span class="str">"New market expansion"</span><span class="tag">];</span><br>
+          <span class="tag">panel.drivers = [{factor: </span><span class="str">"Seasonal"</span><span class="tag">, impact: 72}];</span><br>
+          <span class="tag">panel.confidence = 0.91;</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 4. AI CHART SUMMARY ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-chart-summary</h2>
+      <p class="desc">AI-generated chart insight overlay with trend indicators. Designed to annotate data visualizations.</p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>With Trends</h3>
+          <ai-chart-summary id="chart-summary-1"></ai-chart-summary>
+        </div>
+        <div class="card">
+          <h3>Collapsible</h3>
+          <ai-chart-summary id="chart-summary-2" collapsible></ai-chart-summary>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Controls</h3>
+        <div class="controls">
+          <button onclick="updateChartSummary()">Update Summary</button>
+        </div>
+
+        <table class="props-table">
+          <thead><tr><th>Property</th><th>Type</th><th>Default</th></tr></thead>
+          <tbody>
+            <tr><td><code>summary</code></td><td>string</td><td>""</td></tr>
+            <tr><td><code>trends</code></td><td>{label, direction, value}[]</td><td>[]</td></tr>
+            <tr><td><code>collapsible</code></td><td>boolean</td><td>false</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-block">
+          <span class="tag">const summary = document.querySelector('ai-chart-summary');</span><br>
+          <span class="tag">summary.summary = </span><span class="str">"Revenue trending upward with 23% MoM growth"</span><span class="tag">;</span><br>
+          <span class="tag">summary.trends = [<br>
+          &nbsp;&nbsp;{label: </span><span class="str">"Revenue"</span><span class="tag">, direction: </span><span class="str">"up"</span><span class="tag">, value: </span><span class="str">"+23%"</span><span class="tag">},<br>
+          &nbsp;&nbsp;{label: </span><span class="str">"Churn"</span><span class="tag">, direction: </span><span class="str">"down"</span><span class="tag">, value: </span><span class="str">"-5%"</span><span class="tag">}<br>
+          ];</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 5. AI INSIGHT CARD ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-insight-card</h2>
+      <p class="desc">Compact card for displaying AI-generated insights with type icon, text, confidence, and timestamp. Click or press Enter to interact.</p>
+      <div class="insight-grid" id="insight-grid">
+        <ai-insight-card type="explanation" text="Revenue growth is primarily driven by expansion in the APAC market, with Japan and South Korea leading adoption among enterprise customers." confidence="0.94" timestamp="Just now"></ai-insight-card>
+        <ai-insight-card type="forecast" text="Based on current trends, projected Q1 2026 revenue will reach $5.1M, representing 22% growth if current customer acquisition rate holds." confidence="0.82" timestamp="2 min ago"></ai-insight-card>
+        <ai-insight-card type="anomaly" text="Unusual spike in API error rates detected between 2:00-4:00 AM UTC. Error rate jumped from 0.1% to 3.4%, primarily affecting the /v2/analytics endpoint." confidence="0.96" timestamp="5 min ago"></ai-insight-card>
+        <ai-insight-card type="optimization" text="Reducing image payload sizes by 40% could improve page load time by 1.2s and increase mobile conversion rate by an estimated 8-12%." confidence="0.78" timestamp="10 min ago"></ai-insight-card>
+        <ai-insight-card type="classification" text="Support ticket #4821 has been auto-classified as billing inquiry with sub-category refund request. Suggested priority: medium." confidence="0.89" timestamp="15 min ago"></ai-insight-card>
+      </div>
+
+      <div class="card" style="margin-top: var(--cg-spacing-16, 16px);">
+        <table class="props-table">
+          <thead><tr><th>Property</th><th>Type</th><th>Default</th></tr></thead>
+          <tbody>
+            <tr><td><code>type</code></td><td>"explanation" | "forecast" | "anomaly" | "optimization" | "classification"</td><td>"explanation"</td></tr>
+            <tr><td><code>text</code></td><td>string</td><td>""</td></tr>
+            <tr><td><code>confidence</code></td><td>number (0-1)</td><td>0</td></tr>
+            <tr><td><code>timestamp</code></td><td>string</td><td>""</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-block">
+          <span class="tag">&lt;ai-insight-card</span><br>
+          &nbsp;&nbsp;<span class="attr">type=</span><span class="str">"anomaly"</span><br>
+          &nbsp;&nbsp;<span class="attr">text=</span><span class="str">"Unusual spike detected in Q3 data"</span><br>
+          &nbsp;&nbsp;<span class="attr">confidence=</span><span class="str">"0.87"</span><br>
+          &nbsp;&nbsp;<span class="attr">timestamp=</span><span class="str">"2 min ago"</span><br>
+          <span class="tag">&gt;&lt;/ai-insight-card&gt;</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 6. AI CHAT ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-chat</h2>
+      <p class="desc">Full chat interface with AI client integration. Requires an <code>aiClient</code> property to be set programmatically. Supports IME/CJK input.</p>
+      <div class="card">
+        <h3>Chat Interface (no AI client connected)</h3>
+        <div class="chat-demo">
+          <ai-chat></ai-chat>
+        </div>
+
+        <table class="props-table">
+          <thead><tr><th>Property</th><th>Type</th><th>Default</th></tr></thead>
+          <tbody>
+            <tr><td><code>aiClient</code></td><td>AiClient</td><td>null</td></tr>
+            <tr><td><code>dataset</code></td><td>unknown[]</td><td>[]</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-block">
+          <span class="comment">// Connect to OpenAI</span><br>
+          <span class="tag">import { OpenAiClient } from </span><span class="str">'@cognivo/adapter-openai'</span><span class="tag">;</span><br>
+          <span class="tag">const client = new OpenAiClient({ apiKey: </span><span class="str">'...'</span><span class="tag"> });</span><br>
+          <span class="tag">const chat = document.querySelector('ai-chat');</span><br>
+          <span class="tag">chat.aiClient = client;</span><br>
+          <span class="tag">chat.dataset = myData;</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 7. BIAS LIBRARY ===== -->
+    <div class="section">
+      <span class="component-tag">Design Advisor</span>
+      <h2>bias-library</h2>
+      <p class="desc">Browse, search, and filter all 180 cognitive biases from the design advisor. Keyboard accessible with expandable cards.</p>
+      <div class="card">
+        <h3>Cognitive Bias Browser</h3>
+        <div class="bias-browser">
+          <bias-library></bias-library>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== EVENT MONITOR ===== -->
+    <div class="section">
+      <span class="component-tag">Events</span>
+      <h2>Custom Events</h2>
+      <p class="desc">All components emit custom events. Click, type, or interact with components above to see events logged here.</p>
+      <div class="card">
+        <h3>Event Monitor</h3>
+        <div id="event-log" style="font-family: var(--cg-font-family-mono, monospace); font-size: var(--cg-font-size-xs, 12px); background: var(--cg-color-surface-inset-background, #f8f9fa); padding: var(--cg-spacing-16, 16px); border-radius: var(--cg-Border-radius-100, 8px); max-height: 200px; overflow-y: auto; color: var(--cg-gray-600, #6c757d);">
+          <div class="event-placeholder">Interact with components above to see events here...</div>
+        </div>
+        <div class="controls">
+          <button onclick="document.getElementById('event-log').innerHTML = '<div class=event-placeholder>Log cleared. Interact with components to see events.</div>'">Clear Log</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script type="importmap">
+    {
+      "imports": {
+        "@cognivo/core": "../../packages/core/dist/index.js",
+        "@cognivo/components": "../../packages/components/dist/index.js",
+        "@cognivo/design-advisor": "../../packages/design-advisor/dist/index.js",
+        "lit": "../node_modules/lit/index.js",
+        "lit/": "../node_modules/lit/",
+        "@lit/reactive-element": "../node_modules/@lit/reactive-element/reactive-element.js",
+        "@lit/reactive-element/": "../node_modules/@lit/reactive-element/",
+        "lit-element/": "../node_modules/lit-element/",
+        "lit-html": "../node_modules/lit-html/lit-html.js",
+        "lit-html/": "../node_modules/lit-html/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import '@cognivo/components';
+    import { BiasLibraryElement } from '@cognivo/design-advisor';
+
+    // Wait for custom elements to be defined, then set complex properties
+    await customElements.whenDefined('ai-result-panel');
+    await customElements.whenDefined('ai-chart-summary');
+
+    // --- ai-result-panel demos ---
+    const panel1 = document.getElementById('result-panel-1');
+    if (panel1) {
+      panel1.title = 'Revenue Analysis';
+      panel1.explanation = 'Revenue increased 35% quarter-over-quarter, primarily driven by seasonal demand and new market expansion in APAC. The growth pattern is consistent with historical Q4 trends.';
+      panel1.bullets = [
+        'Q4 2025 revenue: $4.2M (+35% QoQ)',
+        'APAC region contributed 42% of new revenue',
+        'Customer retention improved to 94%',
+        'Average deal size grew by 18%',
+      ];
+      panel1.drivers = [
+        { factor: 'Seasonal demand', impact: 72 },
+        { factor: 'New markets', impact: 58 },
+        { factor: 'Pricing optimization', impact: 45 },
+        { factor: 'Churn reduction', impact: -15 },
+      ];
+      panel1.confidence = 0.91;
+    }
+
+    const panel2 = document.getElementById('result-panel-2');
+    if (panel2) {
+      panel2.title = 'Anomaly Detection';
+      panel2.explanation = 'Unusual pattern detected in user signups during Feb 12-15. Traffic spike correlates with an unplanned social media mention from a major influencer.';
+      panel2.bullets = [
+        'Signup rate 340% above baseline',
+        'Concentrated in US West Coast timezone',
+        'Mobile traffic ratio shifted from 55% to 78%',
+      ];
+      panel2.drivers = [
+        { factor: 'Social media spike', impact: 88 },
+        { factor: 'Organic search', impact: 35 },
+        { factor: 'Direct traffic', impact: -12 },
+      ];
+      panel2.confidence = 0.87;
+    }
+
+    // --- ai-chart-summary demos ---
+    const summary1 = document.getElementById('chart-summary-1');
+    if (summary1) {
+      summary1.summary = 'Revenue is trending upward with a consistent 23% month-over-month growth rate. The acceleration began in Q3 and is expected to continue through Q1 2026.';
+      summary1.trends = [
+        { label: 'Revenue', direction: 'up', value: '+23% MoM' },
+        { label: 'Users', direction: 'up', value: '+15% MoM' },
+        { label: 'Churn', direction: 'down', value: '-5.2%' },
+        { label: 'NPS', direction: 'neutral', value: '72' },
+      ];
+    }
+
+    const summary2 = document.getElementById('chart-summary-2');
+    if (summary2) {
+      summary2.summary = 'Cost per acquisition decreased 18% this quarter while maintaining lead quality. Marketing efficiency gains are primarily from channel optimization.';
+      summary2.trends = [
+        { label: 'CPA', direction: 'down', value: '-18%' },
+        { label: 'Lead quality', direction: 'up', value: '+8%' },
+        { label: 'Conversion', direction: 'up', value: '+3.2%' },
+      ];
+    }
+
+    // ai-insight-card instances are in the static HTML with attributes
+  </script>
+
+  <script>
+    // --- Theme toggle ---
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      html.setAttribute('data-theme', isDark ? '' : 'dark');
+      document.getElementById('theme-btn').textContent = isDark ? 'Toggle Dark Mode' : 'Toggle Light Mode';
+    }
+
+    // --- Chart summary update demo ---
+    function updateChartSummary() {
+      const summaries = [
+        { text: 'User engagement peaked during weekday afternoons, suggesting B2B usage patterns dominate.', trends: [{ label: 'Engagement', direction: 'up', value: '+31%' }, { label: 'Bounce rate', direction: 'down', value: '-12%' }] },
+        { text: 'Mobile conversion rate surpassed desktop for the first time this quarter, driven by improved checkout flow.', trends: [{ label: 'Mobile CVR', direction: 'up', value: '+22%' }, { label: 'Desktop CVR', direction: 'neutral', value: '0%' }] },
+        { text: 'Support ticket volume decreased 25% after knowledge base improvements, with self-service resolution rate hitting 68%.', trends: [{ label: 'Tickets', direction: 'down', value: '-25%' }, { label: 'Self-service', direction: 'up', value: '+18%' }] },
+      ];
+      const pick = summaries[Math.floor(Math.random() * summaries.length)];
+      const el = document.getElementById('chart-summary-1');
+      if (el) {
+        el.summary = pick.text;
+        el.trends = pick.trends;
+      }
+    }
+
+    // --- Event monitor ---
+    const eventLog = document.getElementById('event-log');
+    function logEvent(name, detail) {
+      const time = new Date().toLocaleTimeString();
+      const placeholder = eventLog.querySelector('.event-placeholder');
+      if (placeholder) placeholder.remove();
+      const entry = document.createElement('div');
+      entry.style.borderBottom = '1px solid rgba(0,0,0,0.05)';
+      entry.style.padding = '4px 0';
+      entry.innerHTML = `<strong style="color:#8b5cf6">[${time}]</strong> <strong>${name}</strong>: ${JSON.stringify(detail || {}).substring(0, 120)}`;
+      eventLog.prepend(entry);
+    }
+
+    document.addEventListener('ai-badge-click', e => logEvent('ai-badge-click', e.detail));
+    document.addEventListener('ai-message-sent', e => logEvent('ai-message-sent', e.detail));
+    document.addEventListener('ai-response-received', e => logEvent('ai-response-received', e.detail));
+    document.addEventListener('ai-insight-click', e => logEvent('ai-insight-click', e.detail));
+    document.addEventListener('ai-summary-toggle', e => logEvent('ai-summary-toggle', e.detail));
+    document.addEventListener('bias-selected', e => logEvent('bias-selected', e.detail));
+    document.addEventListener('bias-browse', e => logEvent('bias-browse', e.detail));
+  </script>
+
+</body>
+</html>

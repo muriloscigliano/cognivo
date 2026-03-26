@@ -1,0 +1,124 @@
+{
+  "brand": {
+    "primary": {
+      "50": {
+        "$type": "color",
+        "$value": "#FEFFF0"
+      },
+      "100": {
+        "$type": "color",
+        "$value": "#FCFFD6"
+      },
+      "200": {
+        "$type": "color",
+        "$value": "#F5FFAD"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#EDFF85"
+      },
+      "400": {
+        "$type": "color",
+        "$value": "#E5FF6B"
+      },
+      "500": {
+        "$type": "color",
+        "$value": "#DFFF61"
+      },
+      "600": {
+        "$type": "color",
+        "$value": "#B2CC4E"
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#86993A"
+      },
+      "800": {
+        "$type": "color",
+        "$value": "#596627"
+      },
+      "900": {
+        "$type": "color",
+        "$value": "#2D3313"
+      }
+    },
+    "ai": {
+      "accent": {
+        "$type": "color",
+        "$value": "#DFFF61"
+      },
+      "highlight": {
+        "$type": "color",
+        "$value": "#E5FF6B"
+      },
+      "background": {
+        "$type": "color",
+        "$value": "#FEFFF0"
+      },
+      "border": {
+        "$type": "color",
+        "$value": "#F5FFAD"
+      },
+      "glow": {
+        "$type": "color",
+        "$value": "#EDFF85"
+      }
+    },
+    "success": {
+      "light": {
+        "$type": "color",
+        "$value": "#DCFCE7"
+      },
+      "main": {
+        "$type": "color",
+        "$value": "#22C55E"
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "#16A34A"
+      }
+    },
+    "warning": {
+      "light": {
+        "$type": "color",
+        "$value": "#FEF3C7"
+      },
+      "main": {
+        "$type": "color",
+        "$value": "#F59E0B"
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "#D97706"
+      }
+    },
+    "danger": {
+      "light": {
+        "$type": "color",
+        "$value": "#FEE2E2"
+      },
+      "main": {
+        "$type": "color",
+        "$value": "#EF4444"
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "#DC2626"
+      }
+    },
+    "info": {
+      "light": {
+        "$type": "color",
+        "$value": "#DBEAFE"
+      },
+      "main": {
+        "$type": "color",
+        "$value": "#3B82F6"
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "#2563EB"
+      }
+    }
+  }
+}

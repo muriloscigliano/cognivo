@@ -1,8 +1,14 @@
 {
   "name": "@cognivo/tokens",
-  "version": "0.0.0",
-  "description": "Design tokens for Cognivo AI component library",
-  "keywords": ["design-tokens", "css-variables", "cognivo", "theming"],
+  "version": "0.3.0",
+  "description": "1,768 design tokens for Cognivo. CSS custom properties with dark/light themes. W3C DTCG format.",
+  "keywords": [
+    "design-tokens",
+    "css-variables",
+    "dark-mode",
+    "cognivo",
+    "theme"
+  ],
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.css",
@@ -10,9 +16,21 @@
     ".": "./dist/index.css",
     "./css": "./dist/index.css"
   },
-  "files": ["dist"],
+  "files": [
+    "dist",
+    "index.css",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muriloscigliano/cognivo-1"
+  },
   "scripts": {
+    "generate": "node generate-from-palette.cjs",
     "build": "node build.js",
+    "prepublishOnly": "pnpm build",
     "dev": "node build.js --watch",
     "clean": "rm -rf dist"
   },

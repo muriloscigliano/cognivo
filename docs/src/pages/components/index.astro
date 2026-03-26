@@ -1,0 +1,85 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+
+const components = [
+  {
+    tag: 'ai-thinking',
+    name: 'AI Thinking Indicator',
+    description: 'Animated thinking indicator with cycling dots and optional shimmer text effect. Use while waiting for AI responses.',
+    example: '<ai-thinking text="Analyzing data" shimmer></ai-thinking>',
+    props: 'text (string) | shimmer (boolean)',
+  },
+  {
+    tag: 'ai-badge',
+    name: 'AI Confidence Badge',
+    description: 'Displays AI confidence scores with color-coded levels (high/medium/low). Automatically maps 0-1 scores to visual indicators.',
+    example: '<ai-badge score="0.92"></ai-badge>',
+    props: 'score (number 0-1) | showPercentage (boolean)',
+  },
+  {
+    tag: 'ai-chat',
+    name: 'AI Chat Interface',
+    description: 'Full-featured chat component with message history, input field, and AI client integration. Connects to any AiClient implementation.',
+    example: '<ai-chat></ai-chat>\n\n// Connect programmatically:\nconst chat = document.querySelector("ai-chat");\nchat.aiClient = openAiClient;\nchat.dataset = myData;',
+    props: 'aiClient (AiClient) | dataset (any[]) | placeholder (string)',
+  },
+  {
+    tag: 'ai-result-panel',
+    name: 'AI Result Panel',
+    description: 'Displays structured AI results with formatted output, confidence scores, and source attribution.',
+    example: '<ai-result-panel></ai-result-panel>',
+    props: 'result (AiResult) | showSources (boolean)',
+  },
+  {
+    tag: 'ai-chart-summary',
+    name: 'AI Chart Summary',
+    description: 'AI-generated natural language summary of chart data. Pairs with any chart to provide textual insights.',
+    example: '<ai-chart-summary></ai-chart-summary>',
+    props: 'summary (string) | chartType (string)',
+  },
+  {
+    tag: 'ai-insight-card',
+    name: 'AI Insight Card',
+    description: 'Card component for displaying individual AI-generated insights with title, description, confidence, and category.',
+    example: '<ai-insight-card></ai-insight-card>',
+    props: 'title (string) | description (string) | confidence (number) | category (string)',
+  },
+];
+---
+
+<DocsLayout title="Components">
+  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Components</h1>
+  <p style="color: #6b7280; margin-bottom: 1rem;">
+    AI-native web components built with <a href="https://lit.dev">Lit 3.x</a> and Shadow DOM.
+    Works in any framework or vanilla HTML.
+  </p>
+
+  <section style="margin-bottom: 2rem;">
+    <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem;">Installation</h2>
+    <pre><code>pnpm add @cognivo/components</code></pre>
+    <p style="margin-top: 0.75rem; margin-bottom: 0.5rem;">Import once to register all custom elements:</p>
+    <pre><code>import '@cognivo/components';</code></pre>
+  </section>
+
+  <hr style="border: none; border-top: 1px solid var(--color-border); margin-bottom: 2rem;" />
+
+  {components.map(comp => (
+    <section style="margin-bottom: 2.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; padding: 1.5rem;">
+      <div style="display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.5rem;">
+        <h2 style="font-size: 1.25rem; font-weight: 700;">
+          <code style="font-size: 1.1rem;">&lt;{comp.tag}&gt;</code>
+        </h2>
+        <span style="color: #6b7280; font-size: 0.85rem;">{comp.name}</span>
+      </div>
+      <p style="color: #4b5563; margin-bottom: 1rem;">{comp.description}</p>
+      <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 0.75rem;"><strong>Props:</strong> {comp.props}</p>
+      <pre><code>{comp.example}</code></pre>
+    </section>
+  ))}
+
+  <section style="margin-top: 2rem; padding: 1.25rem; background: var(--color-primary-light); border-radius: 8px;">
+    <p style="font-size: 0.9rem;">
+      <strong>Live demo:</strong> See all components in action at <a href="/showcase.html">/showcase.html</a>
+    </p>
+  </section>
+</DocsLayout>
