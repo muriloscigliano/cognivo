@@ -89,4 +89,15 @@ export { AiAlertCard } from "./components/AiAlertCard.js";
 export { AiRevealAnimation } from "./components/AiRevealAnimation.js";
 export { AiRichMessage } from "./components/AiRichMessage.js";
 export { AiDataCard } from "./components/AiDataCard.js";
+// Foundation Primitives
+export { CgDropdown } from "./components/CgDropdown.js";
+export { CgModal } from "./components/CgModal.js";
+export { CgTooltip } from "./components/CgTooltip.js";
+export { CgProgressBar } from "./components/CgProgressBar.js";
+export { CgSpinner } from "./components/CgSpinner.js";
+export { CgSkeleton } from "./components/CgSkeleton.js";
+export { CgDrawer } from "./components/CgDrawer.js";
+export { CgBreadcrumbs } from "./components/CgBreadcrumbs.js";
+export { CgPagination } from "./components/CgPagination.js";
+export { CgChip } from "./components/CgChip.js";
 export { CgGenerativeUi } from './components/CgGenerativeUi.js';

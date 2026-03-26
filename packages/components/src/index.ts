@@ -47,6 +47,18 @@ import { CgSection } from './components/cg-section/cg-section.js';
 import { CgFollowUp } from './components/cg-follow-up/cg-follow-up.js';
 import { CgChart } from './components/cg-chart/cg-chart.js';
 
+// ── Wave 5: Foundation UI Primitives (10) ────────────────────────────────────
+import { CgDropdown } from './components/cg-dropdown/cg-dropdown.js';
+import { CgModal } from './components/cg-modal/cg-modal.js';
+import { CgTooltip } from './components/cg-tooltip/cg-tooltip.js';
+import { CgProgressBar } from './components/cg-progress-bar/cg-progress-bar.js';
+import { CgSpinner } from './components/cg-spinner/cg-spinner.js';
+import { CgSkeleton } from './components/cg-skeleton/cg-skeleton.js';
+import { CgDrawer } from './components/cg-drawer/cg-drawer.js';
+import { CgBreadcrumbs } from './components/cg-breadcrumbs/cg-breadcrumbs.js';
+import { CgPagination } from './components/cg-pagination/cg-pagination.js';
+import { CgChip } from './components/cg-chip/cg-chip.js';
+
 // ── AI Components (19) ──────────────────────────────────────────────────────
 import { AiThinking } from './components/ai-thinking/ai-thinking.js';
 import { AiBadge } from './components/ai-badge/ai-badge.js';
@@ -141,6 +153,9 @@ export {
   CgMarkdown, CgImageBlock, CgImageGallery, CgBadgeGroup,
   // Wave 4: Chat & Data Viz
   CgList, CgSection, CgFollowUp, CgChart,
+  // Wave 5: Foundation UI Primitives
+  CgDropdown, CgModal, CgTooltip, CgProgressBar, CgSpinner,
+  CgSkeleton, CgDrawer, CgBreadcrumbs, CgPagination, CgChip,
   // AI Components
   AiThinking, AiBadge, AiChat, AiResultPanel, AiChartSummary, AiInsightCard,
   AiStreamingText, AiCitation, AiToolIndicator,
@@ -181,3 +196,5 @@ export type { StepItem } from './components/cg-steps/cg-steps.js';
 export type { ListItem } from './components/cg-list/cg-list.js';
 export type { GalleryImage } from './components/cg-image-gallery/cg-image-gallery.js';
 export type { ChartSeries } from './components/cg-chart/cg-chart.js';
+export type { DropdownItem } from './components/cg-dropdown/cg-dropdown.js';
+export type { BreadcrumbItem } from './components/cg-breadcrumbs/cg-breadcrumbs.js';
