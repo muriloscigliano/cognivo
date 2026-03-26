@@ -31,15 +31,27 @@ export class CgButton extends LitElement {
       line-height: 1;
       white-space: nowrap;
       text-decoration: none;
-      transition: all var(--cg-motion-duration-normal, 150ms) ease;
+      transition:
+        transform 250ms cubic-bezier(0.4, 0, 0.2, 1),
+        background-color 100ms cubic-bezier(0, 0, 0.58, 1),
+        border-color 100ms cubic-bezier(0, 0, 0.58, 1),
+        box-shadow 100ms cubic-bezier(0, 0, 0.58, 1);
       -webkit-font-smoothing: antialiased;
       position: relative;
       overflow: hidden;
     }
 
+    /* Press scale — HeroUI pattern */
+    button:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    /* Focus ring — dual layer */
     button:focus-visible {
-      outline: 2px solid var(--cg-focus-ring-color, #c8e650);
-      outline-offset: 2px;
+      box-shadow:
+        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
+        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      outline: none;
     }
 
     /* ── Sizes ── */

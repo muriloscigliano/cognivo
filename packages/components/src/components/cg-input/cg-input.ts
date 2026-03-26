@@ -40,10 +40,12 @@ export class CgInput extends LitElement {
       border-color: var(--cg-color-input-border-hover, #dfff61);
     }
 
-    /* Focus */
+    /* Focus — dual layer ring like HeroUI */
     .wrapper.focused {
-      border-color: var(--cg-color-input-border-focus, #e2ff70);
-      box-shadow: 0 0 0 3px var(--cg-color-input-background-focus, #18181b);
+      border-color: var(--cg-brand-ai-accent, #dfff61);
+      box-shadow:
+        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
+        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
 
     /* Error */

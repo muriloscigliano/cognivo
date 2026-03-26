@@ -1,38 +1,118 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 /**
- * <cg-radio> — Radio button with description and proper ARIA.
+ * <cg-radio> — Radio button with spring animation (HeroUI-quality).
+ *
+ * Features:
+ * - Inner dot scales in with spring bounce
+ * - Dual-layer focus ring
+ * - Press feedback (scale 0.95)
+ * - Smooth border color transition
+ * - Description text support
+ * - prefers-reduced-motion respected
  */
 @customElement('cg-radio')
 export class CgRadio extends LitElement {
   static override styles = css`
-    :host { display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); }
+    :host {
+      display: block;
+      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
+    }
 
     label {
-      display: flex; align-items: flex-start; gap: var(--cg-spacing-8, 8px);
-      cursor: pointer; padding: var(--cg-spacing-4, 4px) 0;
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      padding: 4px 0;
+      -webkit-tap-highlight-color: transparent;
     }
     :host([disabled]) label { cursor: not-allowed; opacity: 0.5; }
 
+    /* ── Circle ── */
     .circle {
-      width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px;
-      border: 2px solid var(--cg-color-radio-border-default, #a1a1aa);
-      border-radius: var(--cg-border-radius-full, 99999px); background: var(--cg-color-radio-background-default, #18181b);
-      display: flex; align-items: center; justify-content: center;
-      transition: all var(--cg-motion-duration-normal, 150ms);
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      border: 2px solid var(--cg-gray-600, #52525b);
+      border-radius: 50%;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition:
+        border-color 200ms cubic-bezier(0, 0, 0.58, 1),
+        box-shadow 200ms cubic-bezier(0, 0, 0.58, 1),
+        transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
     }
-    :host(:not([disabled])) label:hover .circle { border-color: var(--cg-focus-ring-color, #c8e650); }
-    .circle.checked { border-color: var(--cg-color-radio-border-checked, #dfff61); }
-    .circle .dot { width: 8px; height: 8px; border-radius: var(--cg-border-radius-full, 99999px); background: var(--cg-color-radio-background-checked, #dfff61); transform: scale(0); transition: transform var(--cg-motion-duration-normal, 150ms); }
-    .circle.checked .dot { transform: scale(1); }
-    label:focus-visible .circle { outline: 2px solid var(--cg-focus-ring-color, #c8e650); outline-offset: 2px; }
 
-    input { position: absolute; opacity: 0; width: 0; height: 0; }
+    /* Hover */
+    :host(:not([disabled])) label:hover .circle {
+      border-color: var(--cg-brand-ai-accent, #dfff61);
+    }
 
-    .text-group { display: flex; flex-direction: column; gap: 1px; }
-    .label-text { font-size: var(--cg-font-size-sm, 14px); color: var(--cg-color-surface-base-text, #fafafa); }
-    .description { font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-500, #71717a); }
+    /* Press */
+    :host(:not([disabled])) label:active .circle {
+      transform: scale(0.9);
+    }
+
+    /* Focus ring — dual layer */
+    label:focus-visible .circle {
+      border-color: var(--cg-brand-ai-accent, #dfff61);
+      box-shadow:
+        0 0 0 2px var(--cg-color-surface-container-background, #18181b),
+        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+    }
+
+    /* Checked border */
+    .circle.checked {
+      border-color: var(--cg-brand-ai-accent, #dfff61);
+    }
+
+    /* ── Inner dot — spring scale ── */
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--cg-brand-ai-accent, #dfff61);
+      animation: dotIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes dotIn {
+      0% { transform: scale(0); }
+      60% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* Hidden native input */
+    input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    /* Text */
+    .text-group { display: flex; flex-direction: column; gap: 2px; }
+    .label-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--cg-color-surface-base-text, #fafafa);
+      line-height: 1.4;
+    }
+    .description {
+      font-size: 12px;
+      color: var(--cg-gray-500, #71717a);
+      line-height: 1.4;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .circle { transition: none; }
+      .dot { animation: none; transform: scale(1); }
+    }
   `;
 
   @property() label = '';
@@ -43,20 +123,38 @@ export class CgRadio extends LitElement {
   @property({ type: Boolean, reflect: true }) disabled = false;
 
   private _select() {
-    if (this.disabled) return;
+    if (this.disabled || this.checked) return;
     this.checked = true;
-    this.dispatchEvent(new CustomEvent('cg-change', { detail: { value: this.value }, bubbles: true, composed: true }));
+    this.dispatchEvent(new CustomEvent('cg-change', {
+      detail: { value: this.value, checked: true },
+      bubbles: true, composed: true,
+    }));
   }
 
   override render() {
     return html`
-      <label tabindex=${this.disabled ? '-1' : '0'} role="radio" aria-checked=${this.checked} @click=${this._select} @keydown=${(e: KeyboardEvent) => { if (e.key === ' ') { e.preventDefault(); this._select(); } }}>
-        <input type="radio" .checked=${this.checked} ?disabled=${this.disabled} name=${this.name} value=${this.value} tabindex="-1" aria-hidden="true" />
-        <span class="circle ${this.checked ? 'checked' : ''}"><span class="dot"></span></span>
-        <span class="text-group">
-          <span class="label-text">${this.label}</span>
-          ${this.description ? html`<span class="description">${this.description}</span>` : ''}
+      <label
+        tabindex=${this.disabled ? '-1' : '0'}
+        role="radio"
+        aria-checked=${String(this.checked)}
+        aria-disabled=${String(this.disabled)}
+        @click=${this._select}
+        @keydown=${(e: KeyboardEvent) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); this._select(); } }}
+      >
+        <input type="radio" .checked=${this.checked}
+          ?disabled=${this.disabled} name=${this.name} value=${this.value}
+          tabindex="-1" aria-hidden="true" />
+
+        <span class="circle ${this.checked ? 'checked' : ''}">
+          ${this.checked ? html`<span class="dot"></span>` : nothing}
         </span>
+
+        ${this.label ? html`
+          <span class="text-group">
+            <span class="label-text">${this.label}</span>
+            ${this.description ? html`<span class="description">${this.description}</span>` : nothing}
+          </span>
+        ` : nothing}
       </label>
     `;
   }
