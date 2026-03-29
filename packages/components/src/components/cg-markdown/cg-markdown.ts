@@ -9,14 +9,14 @@ import { customElement, property } from 'lit/decorators.js';
 export class CgMarkdown extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1); display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); color: var(--cg-color-surface-base-text, #fafafa); line-height: var(--cg-line-height-relaxed, 1.625); font-size: var(--cg-font-size-sm, 14px); }
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)); display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); color: var(--cg-color-surface-base-text, #fafafa); line-height: var(--cg-line-height-relaxed, 1.625); font-size: var(--cg-font-size-sm, 14px); }
     .md h1 { font-size: 1.5rem; font-weight: 700; margin: 1em 0 0.5em; }
     .md h2 { font-size: 1.25rem; font-weight: 700; margin: 1em 0 0.5em; }
     .md h3 { font-size: 1.1rem; font-weight: 600; margin: 0.8em 0 0.4em; }
     .md p { margin: 0.5em 0; }
     .md strong { font-weight: 600; }
     .md em { font-style: italic; }
-    .md code { background: var(--cg-overlay-accent-light, rgba(223, 255, 97, 0.12))))))))); padding: 2px 5px; border-radius: var(--cg-border-radius-50, 4px); font-family: monospace; font-size: 0.85em; }
+    .md code { background: var(--cg-overlay-accent-light, rgba(223, 255, 97, 0.12)); padding: 2px 5px; border-radius: var(--cg-border-radius-50, 4px); font-family: monospace; font-size: 0.85em; }
     .md pre { background: var(--cg-gray-900, #18181b); color: var(--cg-gray-200, #e4e4e7); padding: var(--cg-spacing-12, 12px); border-radius: var(--cg-border-radius-100, 8px); overflow-x: auto; font-family: monospace; font-size: 0.82rem; line-height: var(--cg-line-height-normal, 1.5); margin: 0.5em 0; }
     .md pre code { background: none; padding: 0; color: inherit; }
     .md a { color: var(--cg-text-accent, #e5ff6b); text-decoration: underline; text-underline-offset: 2px; }

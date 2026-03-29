@@ -13,7 +13,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 export class AiToolCardResolver extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
@@ -68,7 +68,7 @@ export class AiToolCardResolver extends LitElement {
       color: var(--cg-color-surface-base-text, #fafafa);
     }
     .fallback-json {
-      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       font-size: 11px;
       line-height: 1.5;
       color: var(--cg-gray-400, #a1a1aa);

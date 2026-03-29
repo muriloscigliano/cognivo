@@ -23,7 +23,7 @@ export interface BreadcrumbItem {
 export class CgBreadcrumbs extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -79,8 +79,8 @@ export class CgBreadcrumbs extends LitElement {
       font-family: inherit;
       line-height: 1.4;
       transition:
-        color 100ms cubic-bezier(0, 0, 0.58, 1),
-        background-color 100ms cubic-bezier(0, 0, 0.58, 1);
+        color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       -webkit-font-smoothing: antialiased;
     }
 
@@ -90,7 +90,7 @@ export class CgBreadcrumbs extends LitElement {
     }
 
     .crumb-link:active {
-      transform: scale(0.97);
+      transform: scale(var(--cg-interaction-press-scale, 0.97));
     }
 
     .crumb-link:focus-visible {

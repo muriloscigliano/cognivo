@@ -15,7 +15,7 @@ import { customElement, property } from 'lit/decorators.js';
 export class CgLink extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: inline-flex;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -40,7 +40,7 @@ export class CgLink extends LitElement {
       width: 0;
       height: 1px;
       background: currentColor;
-      transition: width 200ms cubic-bezier(0.4, 0, 0.2, 1), left 200ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: width var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)), left var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
     a:hover::after {
       left: 0;

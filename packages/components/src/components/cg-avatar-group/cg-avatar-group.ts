@@ -22,7 +22,7 @@ export interface AvatarItem {
 export class CgAvatarGroup extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: inline-flex;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -43,7 +43,7 @@ export class CgAvatarGroup extends LitElement {
       overflow: hidden;
       flex-shrink: 0;
       cursor: pointer;
-      transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1), margin 200ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)), margin var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     .group:hover .avatar { margin-left: 0 !important; }
@@ -102,7 +102,7 @@ export class CgAvatarGroup extends LitElement {
       font-weight: var(--cg-font-weight-semibold, 600);
       cursor: pointer;
       flex-shrink: 0;
-      transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1), background 100ms ease;
+      transition: transform var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)), background 100ms ease;
     }
     .overflow:hover {
       background: var(--cg-color-action-secondary-background-hover, #3f3f46);

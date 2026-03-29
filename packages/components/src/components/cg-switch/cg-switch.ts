@@ -16,7 +16,7 @@ import { customElement, property } from 'lit/decorators.js';
 export class CgSwitch extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: inline-flex;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
@@ -37,7 +37,7 @@ export class CgSwitch extends LitElement {
       height: 24px;
       border-radius: 9999px;
       background: var(--cg-gray-700, #3f3f46);
-      transition: background-color 200ms cubic-bezier(0, 0, 0.58, 1);
+      transition: background-color var(--cg-motion-duration-normal, 150ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       flex-shrink: 0;
     }
 
@@ -57,8 +57,8 @@ export class CgSwitch extends LitElement {
       left: 3px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
       transition:
-        transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1),
-        box-shadow 200ms cubic-bezier(0, 0, 0.58, 1);
+        transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-bounce, cubic-bezier(0.34, 1.56, 0.64, 1)),
+        box-shadow var(--cg-motion-duration-normal, 150ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
     }
 
     /* Thumb checked — slide right with spring bounce */

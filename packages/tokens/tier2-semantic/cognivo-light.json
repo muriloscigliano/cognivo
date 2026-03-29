@@ -353,7 +353,7 @@
             "$type": "color",
             "$value": "{gray.300}"
           },
-          "boder": {
+          "border": {
             "$type": "color",
             "$value": "{gray.300}"
           }
@@ -643,7 +643,7 @@
             "$type": "color",
             "$value": "{gray.300}"
           },
-          "boder": {
+          "border": {
             "$type": "color",
             "$value": "{gray.300}"
           }
@@ -653,7 +653,7 @@
             "$type": "color",
             "$value": "{gray.300}"
           },
-          "boder": {
+          "border": {
             "$type": "color",
             "$value": "{gray.300}"
           }
@@ -705,7 +705,7 @@
             "$type": "color",
             "$value": "{gray.300}"
           },
-          "boder": {
+          "border": {
             "$type": "color",
             "$value": "{gray.300}"
           }
@@ -2081,7 +2081,24 @@
       "bounce": {
         "$type": "cubicBezier",
         "$value": "cubic-bezier(0.34, 1.56, 0.64, 1)"
+      },
+      "color": {
+        "$type": "cubicBezier",
+        "$value": "cubic-bezier(0, 0, 0.58, 1)",
+        "$description": "Easing for color and opacity transitions"
       }
+    }
+  },
+  "interaction": {
+    "press-scale": {
+      "$type": "number",
+      "$value": 0.97,
+      "$description": "Scale transform on press/active state"
+    },
+    "hover-lift": {
+      "$type": "dimension",
+      "$value": "-1px",
+      "$description": "Vertical translate on hover"
     }
   }
 }

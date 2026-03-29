@@ -15,7 +15,7 @@ import { customElement, property, state, query } from 'lit/decorators.js';
 export class CgNumberInput extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: inline-flex;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -50,12 +50,12 @@ export class CgNumberInput extends LitElement {
       cursor: pointer;
       padding: 0;
       flex-shrink: 0;
-      transition: background 100ms ease, transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: background 100ms ease, transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
       -webkit-user-select: none;
       user-select: none;
     }
     .btn:hover:not(:disabled) { background: var(--cg-color-action-secondary-background-hover, #3f3f46); }
-    .btn:active:not(:disabled) { transform: scale(0.92); }
+    .btn:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale, 0.97)); }
     .btn:disabled { cursor: not-allowed; opacity: 0.4; }
     .btn:focus-visible {
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);

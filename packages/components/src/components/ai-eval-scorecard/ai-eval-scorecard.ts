@@ -18,8 +18,8 @@ interface EvalScore {
 export class AiEvalScorecard extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
-      animation: fadeSlideIn 200ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
@@ -73,7 +73,7 @@ export class AiEvalScorecard extends LitElement {
     }
     .score-bar-fill {
       height: 100%; border-radius: 3px;
-      transition: width 500ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: width var(--cg-motion-duration-slow, 500ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     .score-value {

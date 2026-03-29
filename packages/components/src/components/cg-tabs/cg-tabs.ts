@@ -24,7 +24,7 @@ export interface TabItem {
 export class CgTabs extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -48,7 +48,7 @@ export class CgTabs extends LitElement {
       height: 2px;
       background: var(--cg-focus-ring-color, #c8e650);
       border-radius: 1px;
-      transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: left var(--cg-motion-duration-slow, 0.25s) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)), width var(--cg-motion-duration-slow, 0.25s) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     .tab {
@@ -86,10 +86,10 @@ export class CgTabs extends LitElement {
       color: var(--cg-gray-600, #52525b);
       padding: 1px 6px;
       border-radius: var(--cg-border-radius-full, 99999px);
-      line-height: 1.4;
+      line-height: var(--cg-line-height-snug, 1.375);
     }
     .tab.active .tab-count {
-      background: var(--cg-overlay-accent-medium, rgba(223, 255, 97, 0.18))))))))));
+      background: var(--cg-overlay-accent-medium, rgba(223, 255, 97, 0.18));
       color: var(--cg-text-accent, #e5ff6b);
     }
 

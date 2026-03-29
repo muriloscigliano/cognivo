@@ -22,7 +22,7 @@ interface ActionRef {
 export class AiRichMessage extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
@@ -108,7 +108,7 @@ export class AiRichMessage extends LitElement {
       background: rgba(255, 255, 255, 0.08);
       padding: 1px 5px;
       border-radius: 4px;
-      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       font-size: 13px;
     }
     .message.user .text code {

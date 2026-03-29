@@ -27,7 +27,7 @@ export interface ListItem {
 export class CgList extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -57,17 +57,17 @@ export class CgList extends LitElement {
     :host([dividers]) .item:last-child { border-bottom: none; }
 
     :host([hoverable]) .item:hover {
-      background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.06))))))))));
+      background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.06));
     }
 
     :host([clickable]) .item {
       cursor: pointer;
     }
     :host([clickable]) .item:hover {
-      background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.06)))))))));
+      background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.06));
     }
     :host([clickable]) .item:active {
-      background: var(--cg-overlay-accent-light, rgba(223, 255, 97, 0.12)))))))));
+      background: var(--cg-overlay-accent-light, rgba(223, 255, 97, 0.12));
     }
     :host([clickable]) .item:focus-visible {
       outline: 2px solid var(--cg-focus-ring-color, #c8e650);
@@ -117,14 +117,14 @@ export class CgList extends LitElement {
       font-size: var(--cg-font-size-sm, 14px);
       font-weight: var(--cg-font-weight-medium, 500);
       color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: 1.3;
+      line-height: var(--cg-line-height-snug, 1.375);
     }
 
     .subtitle {
       font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
       margin-top: 2px;
-      line-height: 1.3;
+      line-height: var(--cg-line-height-snug, 1.375);
     }
 
     /* Right side */
@@ -154,7 +154,7 @@ export class CgList extends LitElement {
       font-family: inherit;
       transition: background var(--cg-motion-duration-fast, 80ms);
     }
-    .action-btn:hover { background: var(--cg-overlay-accent-light, rgba(223, 255, 97, 0.12)))))))))); text-decoration: underline; }
+    .action-btn:hover { background: var(--cg-overlay-accent-light, rgba(223, 255, 97, 0.12)); text-decoration: underline; }
     .action-btn:focus-visible { outline: 2px solid var(--cg-focus-ring-color, #c8e650); outline-offset: 1px; }
 
     .chevron {
@@ -169,7 +169,7 @@ export class CgList extends LitElement {
       * { transition: none !important; animation: none !important; }
     }
   
-    .item { transition: background-color 100ms cubic-bezier(0, 0, 0.58, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1); }
+    .item { transition: background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)), transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)); }
     .item:hover { transform: translateX(2px); }
   `;
 

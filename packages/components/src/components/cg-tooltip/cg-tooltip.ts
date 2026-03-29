@@ -17,7 +17,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 export class CgTooltip extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: inline-block;
       position: relative;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
@@ -35,7 +35,7 @@ export class CgTooltip extends LitElement {
       color: var(--cg-color-text-primary, #fafafa);
       font-size: var(--cg-font-size-xs, 12px);
       font-weight: var(--cg-font-weight-medium, 500);
-      line-height: 1.4;
+      line-height: var(--cg-line-height-snug, 1.375);
       border-radius: var(--cg-border-radius-100, 8px);
       white-space: nowrap;
       max-width: 280px;
@@ -48,8 +48,8 @@ export class CgTooltip extends LitElement {
       opacity: 0;
       transform: scale(0.92);
       transition:
-        opacity 150ms cubic-bezier(0.4, 0, 0.2, 1),
-        transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+        opacity var(--cg-motion-duration-slow, 150ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
+        transform var(--cg-motion-duration-slow, 150ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     :host([_visible]) .tooltip {

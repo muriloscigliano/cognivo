@@ -8,7 +8,7 @@ import { customElement, property } from 'lit/decorators.js';
 export class CgSlider extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1); display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); }
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)); display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); }
 
     .slider-wrapper { padding: var(--cg-spacing-8, 8px) 0; }
 
@@ -29,17 +29,17 @@ export class CgSlider extends LitElement {
       -webkit-appearance: none; width: 20px; height: 20px;
       background: var(--cg-color-slider-thumb-background, #dfff61);
       border-radius: var(--cg-border-radius-full, 99999px); border: 3px solid var(--cg-gray-white, #ffffff);
-      box-shadow: 0 1px 4px var(--cg-overlay-dark-medium, rgba(0, 0, 0, 0.3)))))))));
+      box-shadow: 0 1px 4px var(--cg-overlay-dark-medium, rgba(0, 0, 0, 0.3));
       cursor: pointer; transition: transform var(--cg-motion-duration-normal, 150ms);
     }
     input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
-    input[type="range"]::-webkit-slider-thumb:active { transform: scale(0.95); }
-    input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25))))))))); }
+    input[type="range"]::-webkit-slider-thumb:active { transform: scale(var(--cg-interaction-press-scale, 0.97)); }
+    input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
 
     input[type="range"]::-moz-range-thumb {
       width: 20px; height: 20px; background: var(--cg-color-slider-thumb-background, #dfff61);
       border-radius: var(--cg-border-radius-full, 99999px); border: 3px solid var(--cg-gray-white, #ffffff);
-      box-shadow: 0 1px 4px var(--cg-overlay-dark-medium, rgba(0, 0, 0, 0.3))))))))); cursor: pointer;
+      box-shadow: 0 1px 4px var(--cg-overlay-dark-medium, rgba(0, 0, 0, 0.3)); cursor: pointer;
     }
 
     .range-labels { display: flex; justify-content: space-between; margin-top: var(--cg-spacing-4, 4px); }

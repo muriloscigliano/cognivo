@@ -17,7 +17,7 @@ export interface GalleryImage { src: string; alt?: string; caption?: string; }
 export class CgImageGallery extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -52,7 +52,7 @@ export class CgImageGallery extends LitElement {
       transition: background var(--cg-motion-duration-normal, 150ms) ease;
     }
     .img-wrapper:hover::after {
-      background: var(--cg-overlay-dark-subtle, rgba(0, 0, 0, 0.12)))))))));
+      background: var(--cg-overlay-dark-subtle, rgba(0, 0, 0, 0.12));
     }
 
     img {
@@ -77,7 +77,7 @@ export class CgImageGallery extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--cg-overlay-dark-strong, rgba(0, 0, 0, 0.6)))))))));
+      background: var(--cg-overlay-dark-strong, rgba(0, 0, 0, 0.6));
       color: var(--cg-gray-white, #ffffff);
       font-size: 1.25rem;
       font-weight: var(--cg-font-weight-bold, 700);

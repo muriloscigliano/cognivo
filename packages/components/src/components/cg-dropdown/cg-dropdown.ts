@@ -25,7 +25,7 @@ export interface DropdownItem {
 export class CgDropdown extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: inline-block;
       position: relative;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
@@ -56,8 +56,8 @@ export class CgDropdown extends LitElement {
       transform-origin: top left;
       pointer-events: none;
       transition:
-        opacity 200ms cubic-bezier(0.4, 0, 0.2, 1),
-        transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+        opacity var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
+        transform var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     :host([open]) .menu {
@@ -119,8 +119,8 @@ export class CgDropdown extends LitElement {
       overflow: hidden;
       text-overflow: ellipsis;
       transition:
-        background-color 100ms cubic-bezier(0, 0, 0.58, 1),
-        color 100ms cubic-bezier(0, 0, 0.58, 1);
+        background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       -webkit-font-smoothing: antialiased;
     }
 
@@ -129,7 +129,7 @@ export class CgDropdown extends LitElement {
     }
 
     .menu-item:active:not(.disabled) {
-      transform: scale(0.97);
+      transform: scale(var(--cg-interaction-press-scale, 0.97));
       background: var(--cg-color-surface-hover-background, rgba(255, 255, 255, 0.08));
     }
 

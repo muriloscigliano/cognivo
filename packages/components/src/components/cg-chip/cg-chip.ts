@@ -18,7 +18,7 @@ import { customElement, property } from 'lit/decorators.js';
 export class CgChip extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: inline-flex;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -37,11 +37,11 @@ export class CgChip extends LitElement {
       user-select: none;
       -webkit-font-smoothing: antialiased;
       transition:
-        transform 250ms cubic-bezier(0.4, 0, 0.2, 1),
-        background-color 100ms cubic-bezier(0, 0, 0.58, 1),
-        border-color 100ms cubic-bezier(0, 0, 0.58, 1),
-        box-shadow 100ms cubic-bezier(0, 0, 0.58, 1),
-        opacity 100ms cubic-bezier(0, 0, 0.58, 1);
+        transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
+        background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        border-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        box-shadow var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        opacity var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
     }
 
     /* ── Sizes ── */
@@ -58,7 +58,7 @@ export class CgChip extends LitElement {
 
     /* ── Press scale ── */
     .chip:active:not(.disabled) {
-      transform: scale(0.97);
+      transform: scale(var(--cg-interaction-press-scale, 0.97));
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -173,7 +173,7 @@ export class CgChip extends LitElement {
       transition:
         opacity 100ms ease,
         background-color 100ms ease,
-        transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     .remove-btn:hover {

@@ -15,7 +15,7 @@ import { customElement, property } from 'lit/decorators.js';
 export class CgButton extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: inline-flex;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -33,10 +33,10 @@ export class CgButton extends LitElement {
       white-space: nowrap;
       text-decoration: none;
       transition:
-        transform 250ms cubic-bezier(0.4, 0, 0.2, 1),
-        background-color 100ms cubic-bezier(0, 0, 0.58, 1),
-        border-color 100ms cubic-bezier(0, 0, 0.58, 1),
-        box-shadow 100ms cubic-bezier(0, 0, 0.58, 1);
+        transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
+        background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        border-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        box-shadow var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       -webkit-font-smoothing: antialiased;
       position: relative;
       overflow: hidden;
@@ -44,7 +44,7 @@ export class CgButton extends LitElement {
 
     /* Press scale — HeroUI pattern */
     button:active:not(:disabled) {
-      transform: scale(0.97);
+      transform: scale(var(--cg-interaction-press-scale, 0.97));
     }
 
     /* Focus ring — dual layer */
@@ -57,22 +57,22 @@ export class CgButton extends LitElement {
 
     /* ── Sizes ── */
     :host([size="sm"]) button {
-      padding: 6px 12px;
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
       font-size: var(--cg-font-size-xs, 12px);
       border-radius: var(--cg-border-radius-100, 8px);
-      min-height: 32px;
+      min-height: var(--cg-component-button-height-sm, 32px);
     }
     :host([size="md"]) button {
       padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
       font-size: var(--cg-font-size-sm, 14px);
       border-radius: var(--cg-border-radius-150, 12px);
-      min-height: 38px;
+      min-height: var(--cg-component-button-height-md, 38px);
     }
     :host([size="lg"]) button {
       padding: var(--cg-spacing-12, 12px) var(--cg-spacing-24, 24px);
       font-size: var(--cg-font-size-md, 18px);
       border-radius: var(--cg-border-radius-150, 12px);
-      min-height: 44px;
+      min-height: var(--cg-component-button-height-lg, 44px);
     }
 
     /* ── Primary variant ── */
@@ -86,7 +86,7 @@ export class CgButton extends LitElement {
     }
     :host([variant="primary"]) button:not(:disabled):active {
       background: var(--cg-color-action-primary-background-active, #dfff61);
-      transform: scale(0.98);
+      transform: scale(var(--cg-interaction-press-scale, 0.97));
     }
 
     /* ── Secondary variant ── */
@@ -100,7 +100,7 @@ export class CgButton extends LitElement {
     }
     :host([variant="secondary"]) button:not(:disabled):active {
       background: var(--cg-color-action-secondary-background-active, #3f3f46);
-      transform: scale(0.98);
+      transform: scale(var(--cg-interaction-press-scale, 0.97));
     }
 
     /* ── Tertiary (ghost) variant ── */
@@ -113,8 +113,8 @@ export class CgButton extends LitElement {
       background: var(--cg-color-action-tertiary-background-hover, #27272a);
     }
     :host([variant="tertiary"]) button:not(:disabled):active {
-      background: var(--cg-overlay-accent-medium, rgba(223, 255, 97, 0.18)))))))));
-      transform: scale(0.98);
+      background: var(--cg-overlay-accent-medium, rgba(223, 255, 97, 0.18));
+      transform: scale(var(--cg-interaction-press-scale, 0.97));
     }
 
     /* ── Danger type ── */

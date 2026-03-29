@@ -22,7 +22,7 @@ const DEFAULT_COLORS = [
 export class CgColorPicker extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -48,10 +48,10 @@ export class CgColorPicker extends LitElement {
       padding: 0;
       background: none;
       position: relative;
-      transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 200ms ease;
+      transition: transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)), box-shadow 200ms ease;
     }
     .swatch:hover { transform: scale(1.15); z-index: 1; }
-    .swatch:active { transform: scale(0.95); }
+    .swatch:active { transform: scale(var(--cg-interaction-press-scale, 0.97)); }
 
     .swatch .fill {
       width: 100%;

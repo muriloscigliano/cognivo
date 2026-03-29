@@ -19,7 +19,7 @@ import { customElement, property } from 'lit/decorators.js';
 export class CgDrawer extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: contents;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -34,7 +34,7 @@ export class CgDrawer extends LitElement {
       -webkit-backdrop-filter: blur(2px);
       opacity: 0;
       pointer-events: none;
-      transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: opacity var(--cg-motion-duration-slow, 300ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     :host([open]) .backdrop {
@@ -56,7 +56,7 @@ export class CgDrawer extends LitElement {
         0 20px 25px -5px rgba(0, 0, 0, 0.4),
         0 8px 10px -6px rgba(0, 0, 0, 0.3);
       overflow: hidden;
-      transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: transform 300ms var(--cg-motion-easing-bounce, cubic-bezier(0.34, 1.56, 0.64, 1));
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -111,7 +111,7 @@ export class CgDrawer extends LitElement {
       font-weight: var(--cg-font-weight-semibold, 600);
       color: var(--cg-color-text-primary, #fafafa);
       margin: 0;
-      line-height: 1.3;
+      line-height: var(--cg-line-height-snug, 1.375);
     }
 
     .close-btn {
@@ -130,9 +130,9 @@ export class CgDrawer extends LitElement {
       padding: 0;
       flex-shrink: 0;
       transition:
-        background-color 100ms cubic-bezier(0, 0, 0.58, 1),
-        color 100ms cubic-bezier(0, 0, 0.58, 1),
-        transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     .close-btn:hover {
@@ -141,7 +141,7 @@ export class CgDrawer extends LitElement {
     }
 
     .close-btn:active {
-      transform: scale(0.97);
+      transform: scale(var(--cg-interaction-press-scale, 0.97));
     }
 
     .close-btn:focus-visible {
@@ -158,7 +158,7 @@ export class CgDrawer extends LitElement {
       padding: var(--cg-spacing-24, 24px);
       color: var(--cg-color-text-secondary, #a1a1aa);
       font-size: var(--cg-font-size-sm, 14px);
-      line-height: 1.6;
+      line-height: var(--cg-line-height-relaxed, 1.625);
     }
   `;
 

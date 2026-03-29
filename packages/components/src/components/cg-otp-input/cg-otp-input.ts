@@ -16,7 +16,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 export class CgOtpInput extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: inline-flex;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -39,7 +39,7 @@ export class CgOtpInput extends LitElement {
       text-align: center;
       caret-color: var(--cg-brand-ai-accent, #dfff61);
       outline: none;
-      transition: border-color 200ms ease-out, box-shadow 200ms ease-out, transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: border-color 200ms ease-out, box-shadow 200ms ease-out, transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     .box:hover:not(:disabled) {

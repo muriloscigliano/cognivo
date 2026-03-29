@@ -12,7 +12,7 @@ import { property, state, customElement } from 'lit/decorators.js';
 export class AiAudioPlayer extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
@@ -45,7 +45,7 @@ export class AiAudioPlayer extends LitElement {
       transition: transform 100ms ease;
     }
     .play-btn:hover { transform: scale(1.05); }
-    .play-btn:active { transform: scale(0.95); }
+    .play-btn:active { transform: scale(var(--cg-interaction-press-scale, 0.97)); }
     .play-btn:focus-visible {
       outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;

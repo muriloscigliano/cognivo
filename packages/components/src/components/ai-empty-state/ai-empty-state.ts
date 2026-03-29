@@ -13,7 +13,7 @@ import { property, customElement } from 'lit/decorators.js';
 export class AiEmptyState extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: flex;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
@@ -124,7 +124,7 @@ export class AiEmptyState extends LitElement {
     }
 
     .action-btn:hover { filter: brightness(1.1); }
-    .action-btn:active { transform: scale(0.97); }
+    .action-btn:active { transform: scale(var(--cg-interaction-press-scale, 0.97)); }
     .action-btn:focus-visible {
       outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;

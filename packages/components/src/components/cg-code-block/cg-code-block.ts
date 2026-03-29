@@ -57,7 +57,7 @@ function highlight(code: string): string {
 export class CgCodeBlock extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -154,7 +154,7 @@ export class CgCodeBlock extends LitElement {
     pre {
       margin: 0;
       padding: var(--cg-spacing-16, 16px);
-      font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', monospace;
+      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       font-size: 0.82rem;
       line-height: 1.7;
       color: var(--cg-color-code-text, #e4e4e7);

@@ -17,7 +17,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 export class CgModal extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: contents;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -31,7 +31,7 @@ export class CgModal extends LitElement {
       -webkit-backdrop-filter: blur(4px);
       opacity: 0;
       pointer-events: none;
-      transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: opacity var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     :host([open]) .backdrop {
@@ -71,8 +71,8 @@ export class CgModal extends LitElement {
       opacity: 0;
       transform: scale(0.95);
       transition:
-        opacity 200ms cubic-bezier(0.4, 0, 0.2, 1),
-        transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        opacity var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
+        transform 250ms var(--cg-motion-easing-bounce, cubic-bezier(0.34, 1.56, 0.64, 1));
     }
 
     :host([open]) .modal {
@@ -130,9 +130,9 @@ export class CgModal extends LitElement {
       padding: 0;
       flex-shrink: 0;
       transition:
-        background-color 100ms cubic-bezier(0, 0, 0.58, 1),
-        color 100ms cubic-bezier(0, 0, 0.58, 1),
-        transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     .close-btn:hover {
@@ -141,7 +141,7 @@ export class CgModal extends LitElement {
     }
 
     .close-btn:active {
-      transform: scale(0.97);
+      transform: scale(var(--cg-interaction-press-scale, 0.97));
     }
 
     .close-btn:focus-visible {

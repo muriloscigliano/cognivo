@@ -22,7 +22,7 @@ interface FollowUpItem {
 export class CgFollowUp extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
@@ -65,7 +65,7 @@ export class CgFollowUp extends LitElement {
       cursor: pointer;
       transition: all 150ms ease;
       white-space: nowrap;
-      line-height: 1.3;
+      line-height: var(--cg-line-height-snug, 1.375);
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -85,7 +85,7 @@ export class CgFollowUp extends LitElement {
       background: rgba(223, 255, 97, 0.06);
       box-shadow: 0 0 12px rgba(223, 255, 97, 0.08);
     }
-    button:active:not(:disabled) { transform: scale(0.97); }
+    button:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale, 0.97)); }
     button:focus-visible {
       outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;

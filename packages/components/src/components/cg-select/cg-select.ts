@@ -36,8 +36,8 @@ export class CgSelect extends LitElement {
       outline: none;
     }
     .trigger:hover:not(.disabled) { border-color: var(--cg-focus-ring-color, #c8e650); }
-    .trigger:focus-visible { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25))))))))); }
-    .trigger.open { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25))))))))); }
+    .trigger:focus-visible { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
+    .trigger.open { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
     .trigger.disabled { opacity: 0.5; cursor: not-allowed; background: var(--cg-color-surface-field-disable-background, #18181b); }
     :host([error]) .trigger { border-color: var(--cg-text-danger, #ef4444); }
 

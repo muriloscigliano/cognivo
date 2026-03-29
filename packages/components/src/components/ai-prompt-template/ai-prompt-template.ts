@@ -12,7 +12,7 @@ import { property, state, customElement } from 'lit/decorators.js';
 export class AiPromptTemplate extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
@@ -88,7 +88,7 @@ export class AiPromptTemplate extends LitElement {
       width: 100%;
       box-sizing: border-box;
       font-size: 13px;
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       line-height: 1.7;
       color: #d4d4d8;
       resize: vertical;
@@ -104,7 +104,7 @@ export class AiPromptTemplate extends LitElement {
       padding: 1px 4px;
       border-radius: 3px;
       font-weight: 600;
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       font-size: 12px;
     }
 
@@ -136,7 +136,7 @@ export class AiPromptTemplate extends LitElement {
       font-size: 12px;
       font-weight: 600;
       color: #dfff61;
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       min-width: 100px;
     }
 

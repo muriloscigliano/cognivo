@@ -16,7 +16,7 @@ import { customElement, property } from 'lit/decorators.js';
 export class CgRadio extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
@@ -44,9 +44,9 @@ export class CgRadio extends LitElement {
       align-items: center;
       justify-content: center;
       transition:
-        border-color 200ms cubic-bezier(0, 0, 0.58, 1),
-        box-shadow 200ms cubic-bezier(0, 0, 0.58, 1),
-        transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        border-color var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        box-shadow var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     /* Hover */
@@ -78,7 +78,7 @@ export class CgRadio extends LitElement {
       height: 10px;
       border-radius: 50%;
       background: var(--cg-brand-ai-accent, #dfff61);
-      animation: dotIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      animation: dotIn 250ms var(--cg-motion-easing-bounce, cubic-bezier(0.34, 1.56, 0.64, 1)) forwards;
     }
 
     @keyframes dotIn {
@@ -102,12 +102,12 @@ export class CgRadio extends LitElement {
       font-size: 14px;
       font-weight: 500;
       color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: 1.4;
+      line-height: var(--cg-line-height-snug, 1.375);
     }
     .description {
       font-size: 12px;
       color: var(--cg-gray-500, #71717a);
-      line-height: 1.4;
+      line-height: var(--cg-line-height-snug, 1.375);
     }
 
     @media (prefers-reduced-motion: reduce) {

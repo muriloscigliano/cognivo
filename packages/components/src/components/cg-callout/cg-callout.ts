@@ -14,8 +14,8 @@ import { customElement, property, state } from 'lit/decorators.js';
 export class CgCallout extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
-      animation: fadeSlideIn 200ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -23,14 +23,14 @@ export class CgCallout extends LitElement {
     :host([hidden]) { display: none; }
 
     .callout {
-      transition: border-color 200ms cubic-bezier(0, 0, 0.58, 1),
-                  box-shadow 200ms cubic-bezier(0, 0, 0.58, 1);
+      transition: border-color var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+                  box-shadow var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: flex;
       gap: var(--cg-spacing-12, 12px);
       padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       border-radius: var(--cg-border-radius-150, 12px);
       border: 1px solid;
-      line-height: 1.5;
+      line-height: var(--cg-line-height-normal, 1.5);
     }
 
     /* Variants */

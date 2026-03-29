@@ -13,7 +13,7 @@ import { customElement, property, state, query } from 'lit/decorators.js';
 export class CgTextarea extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -29,7 +29,7 @@ export class CgTextarea extends LitElement {
       color: var(--cg-color-surface-base-text, #fafafa);
       font: inherit;
       font-size: var(--cg-font-size-sm, 14px);
-      line-height: 1.5;
+      line-height: var(--cg-line-height-normal, 1.5);
       resize: vertical;
       outline: none;
       transition: border-color var(--cg-motion-duration-normal, 150ms), box-shadow 0.15s;
@@ -37,12 +37,12 @@ export class CgTextarea extends LitElement {
     }
     textarea::placeholder { color: var(--cg-gray-500, #71717a); }
     textarea:hover:not(:disabled):not([readonly]) { border-color: var(--cg-focus-ring-color, #c8e650); }
-    textarea:focus { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25))))))))); }
+    textarea:focus { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
     textarea:disabled { opacity: 0.5; cursor: not-allowed; background: var(--cg-color-surface-field-disable-background, #18181b); }
     textarea[readonly] { background: var(--cg-color-surface-field-disable-background, #18181b); }
 
     :host([error]) textarea { border-color: var(--cg-text-danger, #ef4444); }
-    :host([error]) textarea:focus { box-shadow: 0 0 0 3px var(--cg-overlay-dark-medium, rgba(0, 0, 0, 0.3))))))))); }
+    :host([error]) textarea:focus { box-shadow: 0 0 0 3px var(--cg-overlay-dark-medium, rgba(0, 0, 0, 0.3)); }
 
     :host([autoresize]) textarea { resize: none; overflow: hidden; }
 

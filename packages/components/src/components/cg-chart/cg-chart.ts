@@ -27,7 +27,7 @@ const PALETTE_TOKENS = [
 export class CgChart extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -73,7 +73,7 @@ export class CgChart extends LitElement {
       transform-origin: center;
     }
     .pie-slice:hover {
-      filter: brightness(1.1) drop-shadow(0 2px 4px var(--cg-overlay-dark-medium, rgba(0, 0, 0, 0.3))))))))));
+      filter: brightness(1.1) drop-shadow(0 2px 4px var(--cg-overlay-dark-medium, rgba(0, 0, 0, 0.3));
     }
 
     /* Line dots */
@@ -122,7 +122,7 @@ export class CgChart extends LitElement {
       white-space: nowrap;
       transform: translate(-50%, -100%);
       margin-top: -8px;
-      box-shadow: 0 4px 12px var(--cg-overlay-dark-medium, rgba(0, 0, 0, 0.3)))))))));
+      box-shadow: 0 4px 12px var(--cg-overlay-dark-medium, rgba(0, 0, 0, 0.3));
       z-index: 10;
       opacity: 0;
       transition: opacity var(--cg-motion-duration-normal, 150ms) ease;
@@ -181,7 +181,7 @@ export class CgChart extends LitElement {
       to { transform: scaleY(1); }
     }
     .bar-rect {
-      animation: growUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      animation: growUp 0.4s var(--cg-motion-easing-bounce, cubic-bezier(0.34, 1.56, 0.64, 1)) both;
       transform-origin: bottom;
     }
     .bar-rect:nth-child(2) { animation-delay: 0.05s; }

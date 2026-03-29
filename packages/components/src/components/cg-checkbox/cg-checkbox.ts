@@ -16,7 +16,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 export class CgCheckbox extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
@@ -48,10 +48,10 @@ export class CgCheckbox extends LitElement {
       justify-content: center;
       position: relative;
       transition:
-        background-color 200ms cubic-bezier(0, 0, 0.58, 1),
-        border-color 200ms cubic-bezier(0, 0, 0.58, 1),
-        box-shadow 200ms cubic-bezier(0, 0, 0.58, 1),
-        transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        background-color var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        border-color var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        box-shadow var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     /* Hover */
@@ -90,7 +90,7 @@ export class CgCheckbox extends LitElement {
       width: 12px;
       height: 12px;
       color: var(--cg-gray-black, #000000);
-      animation: checkIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      animation: checkIn 250ms var(--cg-motion-easing-bounce, cubic-bezier(0.34, 1.56, 0.64, 1)) forwards;
     }
 
     @keyframes checkIn {

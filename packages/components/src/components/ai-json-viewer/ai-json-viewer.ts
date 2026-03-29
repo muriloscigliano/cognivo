@@ -13,7 +13,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 export class AiJsonViewer extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-mono, 'JetBrains Mono', 'Fira Code', monospace);
       font-size: 13px;

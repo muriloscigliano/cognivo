@@ -15,8 +15,8 @@ interface Source { title: string; url?: string; excerpt?: string; }
 export class AiResultPanel extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
-      animation: fadeSlideIn 200ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
@@ -186,7 +186,7 @@ export class AiResultPanel extends LitElement {
     .driver-fill {
       height: 100%;
       border-radius: 2px;
-      transition: width 600ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: width var(--cg-motion-duration-slow, 600ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
     .driver-fill.positive { background: var(--cg-green-400, #4ade80); }
     .driver-fill.negative { background: var(--cg-red-400, #f87171); }

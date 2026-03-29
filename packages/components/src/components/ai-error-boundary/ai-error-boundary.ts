@@ -12,7 +12,7 @@ import { property, state, customElement } from 'lit/decorators.js';
 export class AiErrorBoundary extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
@@ -64,7 +64,7 @@ export class AiErrorBoundary extends LitElement {
       color: #fca5a5;
       font-size: 11px;
       font-weight: 700;
-      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       letter-spacing: 0.5px;
     }
 
@@ -100,7 +100,7 @@ export class AiErrorBoundary extends LitElement {
       border-radius: 8px;
       color: var(--cg-color-text-secondary, #a1a1aa);
       font-size: 12px;
-      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       line-height: 1.6;
       white-space: pre-wrap;
       word-break: break-word;

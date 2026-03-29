@@ -16,7 +16,7 @@ import { customElement, property, state, query } from 'lit/decorators.js';
 export class CgCarousel extends LitElement {
   static override styles = css`
     :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1);
+      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
       position: relative;
@@ -74,7 +74,7 @@ export class CgCarousel extends LitElement {
       outline-offset: 2px;
       opacity: 1;
     }
-    .nav-btn:active { transform: translateY(-50%) scale(0.95); }
+    .nav-btn:active { transform: translateY(-50%) scale(var(--cg-interaction-press-scale, 0.97)); }
     .nav-btn:disabled { opacity: 0 !important; cursor: default; }
     .nav-btn svg { width: 18px; height: 18px; color: var(--cg-gray-600, #52525b); }
 

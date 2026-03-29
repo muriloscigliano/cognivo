@@ -43,6 +43,22 @@
     },
     "tooltip": {
       "radius": { "$type": "dimension", "$value": "{border.radius.100}" }
+    },
+    "select": {
+      "height": {
+        "md": { "$type": "dimension", "$value": "{component.input.height.md}" }
+      },
+      "radius": { "$type": "dimension", "$value": "{component.input.radius}" }
+    },
+    "textarea": {
+      "min-height": { "$type": "dimension", "$value": "80px" }
+    },
+    "switch": {
+      "width": { "$type": "dimension", "$value": "44px" },
+      "height": { "$type": "dimension", "$value": "24px" }
+    },
+    "pagination": {
+      "button-size": { "$type": "dimension", "$value": "36px" }
     }
   }
 }
