@@ -6,6 +6,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface FormField {
   name: string;
@@ -30,12 +31,8 @@ interface FormSchema {
 
 @customElement('ai-form-generator')
 export class AiFormGenerator extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    
 
     .form {
       background: var(--cg-color-surface-container-background, #18181b);
@@ -123,9 +120,6 @@ export class AiFormGenerator extends LitElement {
     }
 
     .empty { padding: 32px; text-align: center; color: var(--cg-gray-500, #71717a); font-size: 13px; }
-
-    @media (prefers-reduced-motion: reduce) {
-      input, select, textarea, .submit-btn { transition: none; }
     }
   
 
@@ -133,8 +127,7 @@ export class AiFormGenerator extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  `;
-
+  `];
   @property({ type: Object }) schema: FormSchema | null = null;
   @property({ type: Object }) values: Record<string, unknown> = {};
   @property({ type: Boolean }) loading: boolean = false;

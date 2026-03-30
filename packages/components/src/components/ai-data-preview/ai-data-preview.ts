@@ -7,14 +7,12 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 @customElement('ai-data-preview')
 export class AiDataPreview extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
       background: var(--cg-color-surface-base, #18181b);
       color: var(--cg-color-surface-base-text, #fafafa);
       border: 1px solid var(--cg-color-border-default, #27272a);
@@ -148,12 +146,8 @@ export class AiDataPreview extends LitElement {
       background: var(--cg-color-accent, #dfff61);
       color: #18181b;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; }
     }
-  `;
-
+  `];
   @property({ attribute: false }) data: unknown = null;
   @property({ type: String }) format: 'json' | 'csv' | 'table' = 'json';
   @property({ type: Number }) maxRows = 50;

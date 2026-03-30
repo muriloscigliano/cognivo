@@ -8,15 +8,11 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
 
 @customElement('ai-tool-card-resolver')
 export class AiToolCardResolver extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, shimmerKeyframes, css`
 
     .card {
       background: var(--cg-color-surface-cards-background, #18181b);
@@ -104,21 +100,11 @@ export class AiToolCardResolver extends LitElement {
       padding: 0;
     }
 
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .skeleton-line { animation: none; background: var(--cg-gray-800, #27272a); }
-    }
-  
-
     :focus-visible {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  `;
+  `];
 
   /** Tool call name, e.g. "invoice" or "search_results" */
   @property({ type: String }) toolName = '';

@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-pagination> — Page navigation.
@@ -16,11 +17,9 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-pagination')
 export class CgPagination extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: flex;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
 
     .pagination {
@@ -122,12 +121,7 @@ export class CgPagination extends LitElement {
         height: 32px;
       }
     }
-  
-
-    @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; animation: none !important; }
-    }
-  `;
+  `];
 
   @property({ type: Number }) total = 1;
   @property({ type: Number }) current = 1;

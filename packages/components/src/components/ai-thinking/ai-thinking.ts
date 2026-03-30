@@ -11,6 +11,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBase, reducedMotion } from '../../styles/index.js';
 
 interface ToolCall {
   name: string;
@@ -20,12 +21,7 @@ interface ToolCall {
 
 @customElement('ai-thinking')
 export class AiThinking extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBase, reducedMotion, css`
     :host([size="md"]), :host([size="lg"]) {
       display: flex;
     }
@@ -231,14 +227,7 @@ export class AiThinking extends LitElement {
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .icon, .ring, .tool.loading .tool-icon { animation: none; }
-      .dot { animation: none; opacity: 0.6; }
-      .skeleton-line { animation: none; background: var(--cg-gray-800, #27272a); }
-      .shimmer .text { animation: none; -webkit-text-fill-color: var(--cg-brand-ai-accent, #dfff61); }
-      .progress-fill { transition: none; }
-    }
-  `;
+  `];
 
   /** Display text */
   @property({ type: String }) text: string = 'Thinking';

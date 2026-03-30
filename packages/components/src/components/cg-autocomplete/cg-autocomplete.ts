@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface AutocompleteOption {
   value: string;
@@ -19,12 +20,9 @@ export interface AutocompleteOption {
  */
 @customElement('cg-autocomplete')
 export class CgAutocomplete extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
       position: relative;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
 
     .label {
@@ -100,7 +98,7 @@ export class CgAutocomplete extends LitElement {
       overflow-y: auto;
       z-index: 50;
       padding: var(--cg-spacing-4, 4px);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      box-shadow: var(--cg-elevation-3, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 10px 15px -3px rgba(0, 0, 0, 0.4));
       animation: dropIn 150ms cubic-bezier(0.2, 0, 0, 1);
     }
 
@@ -131,18 +129,13 @@ export class CgAutocomplete extends LitElement {
       font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-input-text-placeholder, #71717a);
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .dropdown { animation: none; }
-      .chevron { transition: none; }
-    }
   
 
     :focus-visible {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  `;
+  `];
 
   @property({ type: Array }) options: AutocompleteOption[] = [];
   @property() value = '';

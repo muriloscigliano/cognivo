@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
 
 /**
  * <cg-button> — Interactive button with variants, sizes, types, and loading state.
@@ -13,13 +14,7 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-button')
 export class CgButton extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBase, reducedMotion, spinKeyframes, css`
     button {
       display: inline-flex;
       align-items: center;
@@ -156,23 +151,7 @@ export class CgButton extends LitElement {
     :host([loading]) .spinner { color: var(--cg-color-action-primary-text-default, #000000); }
     :host([loading][variant="secondary"]) .spinner { color: var(--cg-color-surface-base-text, #fafafa); }
     :host([loading][variant="tertiary"]) .spinner { color: var(--cg-text-accent, #e5ff6b); }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @media (prefers-reduced-motion: reduce) {
-      .spinner { animation-duration: 1.5s; }
-      button { transition: none; }
-    }
-
-    /* ── Full width ── */
-    :host([full]) { display: flex; width: 100%; }
-    :host([full]) button { width: 100%; }
-
-    /* ── Icon slots ── */
-    ::slotted([slot="prefix"]), ::slotted([slot="suffix"]) {
-      display: inline-flex;
-      flex-shrink: 0;
-    }
-  `;
+  `];
 
   @property({ reflect: true }) variant: 'primary' | 'secondary' | 'tertiary' = 'primary';
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';

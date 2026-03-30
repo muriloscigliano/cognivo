@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-textarea> — Multi-line text input with auto-resize and character count.
@@ -11,12 +12,7 @@ import { customElement, property, state, query } from 'lit/decorators.js';
  */
 @customElement('cg-textarea')
 export class CgTextarea extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
     .wrapper {
       position: relative;
     }
@@ -56,12 +52,7 @@ export class CgTextarea extends LitElement {
       color: var(--cg-gray-500, #71717a);
     }
     :host([error]) .count { color: var(--cg-text-danger, #ef4444); }
-  
-
-    @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; animation: none !important; }
-    }
-  `;
+  `];
 
   @property() value = '';
   @property() placeholder = '';

@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-radio> — Radio button with spring animation (HeroUI-quality).
@@ -14,13 +15,7 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-radio')
 export class CgRadio extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
-
+  static override styles = [hostBlock, reducedMotion, css`
     label {
       display: inline-flex;
       align-items: flex-start;
@@ -109,12 +104,7 @@ export class CgRadio extends LitElement {
       color: var(--cg-gray-500, #71717a);
       line-height: var(--cg-line-height-snug, 1.375);
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .circle { transition: none; }
-      .dot { animation: none; transform: scale(1); }
-    }
-  `;
+  `];
 
   @property() label = '';
   @property() description = '';

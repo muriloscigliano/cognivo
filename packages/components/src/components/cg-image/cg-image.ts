@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
 
 /**
  * <cg-image> — Image with lazy loading, aspect ratio, skeleton placeholder, and error fallback.
@@ -13,11 +14,8 @@ import { customElement, property, state } from 'lit/decorators.js';
  */
 @customElement('cg-image')
 export class CgImage extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, shimmerKeyframes, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
       overflow: hidden;
       border-radius: var(--cg-border-radius-150, 12px);
       background: var(--cg-color-surface-container-background, #18181b);
@@ -54,15 +52,6 @@ export class CgImage extends LitElement {
       animation: shimmer 1.5s infinite;
     }
 
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .skeleton { animation: none; background: var(--cg-gray-200, #e4e4e7); }
-    }
-
     /* Error state */
     .error-fallback {
       position: absolute;
@@ -90,7 +79,7 @@ export class CgImage extends LitElement {
       transition: opacity var(--cg-motion-duration-slower, 350ms) ease;
     }
     img.loaded { opacity: 1; }
-  `;
+  `];
 
   @property() src = '';
   @property() alt = '';

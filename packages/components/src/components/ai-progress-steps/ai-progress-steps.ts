@@ -8,6 +8,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface ProgressPhase {
   label: string;
@@ -17,12 +18,7 @@ export interface ProgressPhase {
 
 @customElement('ai-progress-steps')
 export class AiProgressSteps extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
     :host([hidden]) { display: none; }
 
     .steps {
@@ -136,11 +132,7 @@ export class AiProgressSteps extends LitElement {
     :host([compact]) .dot { width: 22px; height: 22px; font-size: 11px; }
     :host([compact]) .info { display: none; }
 
-    @media (prefers-reduced-motion: reduce) {
-      .dot[data-status="active"] { animation: none; }
-      .dot, .line { transition: none; }
-    }
-  `;
+  `];
 
   @property({ type: Array }) phases: ProgressPhase[] = [];
   @property({ type: Boolean, reflect: true }) compact = false;

@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
 
 /**
  * <cg-follow-up> — Suggestion chips for chat conversations.
@@ -20,9 +21,8 @@ interface FollowUpItem {
 
 @customElement('cg-follow-up')
 export class CgFollowUp extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, shimmerKeyframes, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
@@ -146,17 +146,7 @@ export class CgFollowUp extends LitElement {
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
     }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      button { animation: none; transition: none; }
-      .shimmer { animation: none; background: var(--cg-color-surface-container-border, #27272a); }
-    }
-  `;
+  `];
 
   /** Suggestion items — strings or {text, icon} objects */
   @property({ type: Array }) items: (string | FollowUpItem)[] = [];

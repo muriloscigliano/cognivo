@@ -6,6 +6,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes, fadeInKeyframes } from '../../styles/index.js';
 
 interface EvalScore {
   metric: string;
@@ -16,12 +17,9 @@ interface EvalScore {
 
 @customElement('ai-eval-scorecard')
 export class AiEvalScorecard extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, fadeInKeyframes, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
 
     .card {
@@ -96,15 +94,7 @@ export class AiEvalScorecard extends LitElement {
       animation: fadeIn 150ms ease;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
     .empty { padding: 32px; text-align: center; color: var(--cg-gray-500, #71717a); font-size: 13px; }
-
-    @media (prefers-reduced-motion: reduce) {
-      .score-bar-fill, .score-row { transition: none; }
       .explanation { animation: none; }
     }
   
@@ -113,13 +103,7 @@ export class AiEvalScorecard extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `;
-
+  `];
   @property({ type: Array }) scores: EvalScore[] = [];
   @property({ type: String }) grade: string = '';
   @property({ type: Object }) comparison: Record<string, number> | null = null;

@@ -6,6 +6,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes } from '../../styles/index.js';
 
 interface Trend {
   label: string;
@@ -15,12 +16,9 @@ interface Trend {
 
 @customElement('ai-chart-summary')
 export class AiChartSummary extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
 
     .summary {
@@ -165,14 +163,6 @@ export class AiChartSummary extends LitElement {
     }
     .loading-bar:nth-child(1) { width: 80%; }
     .loading-bar:nth-child(2) { width: 50%; }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .summary, .loading-bar { animation: none; }
     }
   
 
@@ -180,13 +170,7 @@ export class AiChartSummary extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `;
-
+  `];
   @property({ type: String }) summary: string = '';
   @property({ type: Array }) trends: Trend[] = [];
   @property({ type: Boolean }) collapsible: boolean = false;

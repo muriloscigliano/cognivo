@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
+import { hostBase, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-number-input> — Number input with increment/decrement buttons.
@@ -13,13 +14,7 @@ import { customElement, property, state, query } from 'lit/decorators.js';
  */
 @customElement('cg-number-input')
 export class CgNumberInput extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBase, reducedMotion, css`
     .wrapper {
       display: inline-flex;
       align-items: center;
@@ -89,11 +84,7 @@ export class CgNumberInput extends LitElement {
     :host([size="lg"]) input { width: 64px; font-size: var(--cg-font-size-base, 16px); height: 44px; }
 
     .label { display: block; font-size: var(--cg-font-size-xs, 12px); color: var(--cg-color-input-text-placeholder, #71717a); margin-bottom: var(--cg-spacing-4, 4px); }
-
-    @media (prefers-reduced-motion: reduce) {
-      .btn, .wrapper { transition: none; }
-    }
-  `;
+  `];
 
   @property({ type: Number }) value = 0;
   @property({ type: Number }) min = -Infinity;

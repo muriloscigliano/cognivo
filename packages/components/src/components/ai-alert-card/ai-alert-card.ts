@@ -6,17 +6,15 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes, pulseKeyframes } from '../../styles/index.js';
 
 type Urgency = 'info' | 'warning' | 'urgent' | 'critical';
 
 @customElement('ai-alert-card')
 export class AiAlertCard extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, pulseKeyframes, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
 
     .card {
@@ -29,6 +27,11 @@ export class AiAlertCard extends LitElement {
       gap: 14px;
       position: relative;
       border-left: 4px solid transparent;
+      transition: box-shadow 150ms ease, transform 150ms ease;
+    }
+    .card:hover {
+      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
+      transform: translateY(var(--cg-interaction-hover-lift, -1px));
     }
 
     /* ── Urgency left border ── */
@@ -151,18 +154,9 @@ export class AiAlertCard extends LitElement {
       0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.2); }
       50% { box-shadow: 0 0 0 6px rgba(248, 113, 113, 0); }
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .card.critical { animation: none; }
       .action-btn, .dismiss { transition: none; }
     }
-  
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `;
-
+  `];
   @property({ type: String }) title = '';
   @property({ type: String }) message = '';
   @property({ type: String }) urgency: Urgency = 'info';

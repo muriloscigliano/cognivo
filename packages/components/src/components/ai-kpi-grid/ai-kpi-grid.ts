@@ -7,6 +7,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes } from '../../styles/index.js';
 
 interface KpiItem {
   label: string;
@@ -18,12 +19,9 @@ interface KpiItem {
 
 @customElement('ai-kpi-grid')
 export class AiKpiGrid extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
 
     .card {
@@ -125,23 +123,9 @@ export class AiKpiGrid extends LitElement {
     .skel-label { width: 60%; height: 10px; margin-bottom: 10px; }
     .skel-value { width: 50%; height: 22px; margin-bottom: 6px; }
     .skel-delta { width: 40%; height: 10px; }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .kpi { transition: none; }
       .skel-line { animation: none; background: var(--cg-gray-800, #27272a); }
     }
-  
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `;
-
+  `];
   @property({ type: String }) title = '';
   @property({ attribute: false }) kpis: KpiItem[] = [];
   @property({ type: Number }) columns = 2;

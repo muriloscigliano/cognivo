@@ -6,6 +6,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { state, customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface Toast {
   id: string;
@@ -18,14 +19,11 @@ interface Toast {
 
 @customElement('ai-toast')
 export class AiToast extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
       position: fixed;
       z-index: 9999;
       pointer-events: none;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
     :host([position="top-right"]), :host(:not([position])) { top: 16px; right: 16px; }
     :host([position="top-left"]) { top: 16px; left: 16px; }
@@ -48,7 +46,7 @@ export class AiToast extends LitElement {
       border-radius: 10px;
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
       pointer-events: auto;
       animation: slideIn 250ms ease;
       position: relative;
@@ -123,18 +121,11 @@ export class AiToast extends LitElement {
       to { width: 0%; }
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .toast { animation: none; }
-      .toast.dismissing { animation: none; opacity: 0; }
-      .progress { animation: none; width: 0; }
-    }
-  
-
     :focus-visible {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  `;
+  `];
 
   /** Position on screen */
   @property({ type: String, reflect: true }) position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' = 'top-right';

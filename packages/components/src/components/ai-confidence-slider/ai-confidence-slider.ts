@@ -6,15 +6,12 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 @customElement('ai-confidence-slider')
 export class AiConfidenceSlider extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    
 
     .container {
       background: var(--cg-color-surface-container-background, #18181b);
@@ -57,7 +54,7 @@ export class AiConfidenceSlider extends LitElement {
       background: var(--cg-color-surface-base-text, #fafafa);
       border: 2px solid var(--cg-brand-ai-accent, #dfff61);
       cursor: pointer;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2));
     }
     input[type="range"]:focus-visible::-webkit-slider-thumb {
       outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
@@ -111,12 +108,8 @@ export class AiConfidenceSlider extends LitElement {
       transition: opacity 150ms;
     }
     .dist-bar.below { opacity: 0.2; }
-
-    @media (prefers-reduced-motion: reduce) {
-      .preset-btn, .dist-bar { transition: none; }
     }
-  `;
-
+  `];
   @property({ type: Number }) value: number = 50;
   @property({ type: Number }) min: number = 0;
   @property({ type: Number }) max: number = 100;

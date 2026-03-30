@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface AccordionItem {
   value: string;
@@ -23,13 +24,7 @@ export interface AccordionItem {
  */
 @customElement('cg-accordion')
 export class CgAccordion extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBlock, reducedMotion, css`
     .item {
       border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
     }
@@ -152,14 +147,10 @@ export class CgAccordion extends LitElement {
     :host([variant="default"]) .content-inner {
       padding: 0 0 var(--cg-spacing-16, 16px);
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .content-wrapper, .chevron, .indicator { transition: none; }
-    }
   
     .header { transition: background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)); }
     .header:hover { background: rgba(255, 255, 255, 0.03); }
-  `;
+  `];
 
   @property({ type: Array }) items: AccordionItem[] = [];
   @property({ type: Boolean }) multiple = false;

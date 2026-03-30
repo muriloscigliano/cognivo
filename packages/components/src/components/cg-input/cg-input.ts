@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-input> — Text input with prefix/suffix slots, clear button, and validation states.
@@ -13,13 +14,7 @@ import { customElement, property, state, query } from 'lit/decorators.js';
  */
 @customElement('cg-input')
 export class CgInput extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBlock, reducedMotion, css`
     .wrapper {
       display: flex;
       align-items: center;
@@ -131,16 +126,11 @@ export class CgInput extends LitElement {
     :host([error]) .count { color: var(--cg-color-status-error-text-default, #f87171); }
   
 
-    @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; animation: none !important; }
-    }
-  
-
     :focus-visible {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  `;
+  `];
 
   @property() value = '';
   @property() placeholder = '';

@@ -6,6 +6,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface WorkflowStep {
   id: string;
@@ -18,9 +19,7 @@ interface WorkflowStep {
 
 @customElement('ai-workflow-builder')
 export class AiWorkflowBuilder extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)); display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif); }
+  static override styles = [hostBlock, reducedMotion, css`
 
     .container {
       background: var(--cg-color-surface-container-background, #18181b);
@@ -76,8 +75,7 @@ export class AiWorkflowBuilder extends LitElement {
 
     .empty { text-align: center; padding: 32px; color: var(--cg-gray-500, #71717a); font-size: 13px; }
 
-    @media (prefers-reduced-motion: reduce) { .step { transition: none; } }
-  `;
+  `];
 
   @property({ type: Array }) steps: WorkflowStep[] = [];
   @property({ type: String }) title: string = 'Workflow';

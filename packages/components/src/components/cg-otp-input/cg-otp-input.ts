@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBase, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-otp-input> — One-time password input with individual digit boxes.
@@ -14,13 +15,7 @@ import { customElement, property, state } from 'lit/decorators.js';
  */
 @customElement('cg-otp-input')
 export class CgOtpInput extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBase, reducedMotion, css`
     .container {
       display: flex;
       gap: var(--cg-spacing-8, 8px);
@@ -70,17 +65,13 @@ export class CgOtpInput extends LitElement {
     .box.filled {
       border-color: var(--cg-color-surface-container-border, #3f3f46);
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .box { transition: none; }
-    }
   
 
     :focus-visible {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  `;
+  `];
 
   @property({ type: Number }) length = 6;
   @property() value = '';

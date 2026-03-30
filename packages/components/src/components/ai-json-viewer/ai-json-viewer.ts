@@ -8,13 +8,12 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 @customElement('ai-json-viewer')
 export class AiJsonViewer extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
       font-family: var(--cg-font-family-mono, 'JetBrains Mono', 'Fira Code', monospace);
       font-size: 13px;
       line-height: 1.6;
@@ -87,12 +86,8 @@ export class AiJsonViewer extends LitElement {
     .bracket {
       color: var(--cg-color-text-secondary, #a1a1aa);
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .toggle { transition: none; }
     }
-  `;
-
+  `];
   @property({ attribute: false }) data: unknown = null;
   @property({ type: Boolean }) expanded = true;
   @property({ type: Number, attribute: 'max-depth' }) maxDepth = 5;

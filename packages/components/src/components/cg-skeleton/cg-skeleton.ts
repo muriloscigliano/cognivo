@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
 
 /**
  * <cg-skeleton> — Loading placeholder with shimmer.
@@ -13,13 +14,7 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-skeleton')
 export class CgSkeleton extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBlock, reducedMotion, shimmerKeyframes, css`
     .skeleton {
       background: linear-gradient(
         90deg,
@@ -34,23 +29,6 @@ export class CgSkeleton extends LitElement {
     :host([animated="false"]) .skeleton {
       animation: none;
       background: var(--cg-color-surface-base-border, #27272a);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .skeleton {
-        animation: skeleton-pulse 2s ease-in-out infinite;
-        background: var(--cg-color-surface-base-border, #27272a);
-      }
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    @keyframes skeleton-pulse {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 0.8; }
     }
 
     /* ── Variants ── */
@@ -83,7 +61,7 @@ export class CgSkeleton extends LitElement {
       display: flex;
       flex-direction: column;
     }
-  `;
+  `];
 
   @property({ type: String, reflect: true }) variant: 'text' | 'circular' | 'rectangular' = 'rectangular';
   @property({ type: String }) width = '100%';

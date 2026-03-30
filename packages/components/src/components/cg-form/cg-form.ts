@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-form> — Form container with submit handling, loading state, and field gap control.
@@ -13,7 +14,7 @@ import { customElement, property, state } from 'lit/decorators.js';
  */
 @customElement('cg-form')
 export class CgForm extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
@@ -50,7 +51,7 @@ export class CgForm extends LitElement {
     .error-summary li {
       margin: 2px 0;
     }
-  `;
+  `];
 
   /** Form name identifier. */
   @property() name = '';

@@ -7,15 +7,12 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, pulseKeyframes } from '../../styles/index.js';
 
 @customElement('ai-batch-progress')
 export class AiBatchProgress extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, pulseKeyframes, css`
+    
     :host([hidden]) { display: none; }
 
     .container {
@@ -137,10 +134,6 @@ export class AiBatchProgress extends LitElement {
       margin-right: 6px;
       animation: pulse 1.5s infinite;
     }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
 
     .eta {
       font-size: 11px;
@@ -185,13 +178,9 @@ export class AiBatchProgress extends LitElement {
       border-color: #dfff61;
     }
     .action-btn.retry:hover { filter: brightness(0.9); }
-
-    @media (prefers-reduced-motion: reduce) {
-      .progress-success, .progress-fail, .action-btn { transition: none; }
       .pulse-dot { animation: none; }
     }
-  `;
-
+  `];
   @property({ type: Number }) total = 0;
   @property({ type: Number }) completed = 0;
   @property({ type: Number }) failed = 0;

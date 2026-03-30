@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { SOLAR_ICONS } from './solar-icons.js';
+import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
 
 /**
  * <cg-icon> — Universal icon component with Solar icons (Iconify).
@@ -105,9 +106,8 @@ const API_CACHE = new Map<string, string>();
 
 @customElement('cg-icon')
 export class CgIcon extends LitElement {
-  static override styles = css`
+  static override styles = [hostBase, reducedMotion, spinKeyframes, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -136,9 +136,6 @@ export class CgIcon extends LitElement {
       height: 100%;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
     :host([name="loading"]) svg {
       animation: spin 1s linear infinite;
     }
@@ -149,11 +146,7 @@ export class CgIcon extends LitElement {
       border-radius: 4px;
       background: var(--cg-gray-800, #27272a);
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      :host([name="loading"]) svg { animation: none; }
-    }
-  `;
+  `];
 
   /** Icon name. Can be: built-in ("check"), alias ("home"), solar ("solar:brain-linear"), or full solar name ("home-2-bold") */
   @property({ reflect: true }) name = '';

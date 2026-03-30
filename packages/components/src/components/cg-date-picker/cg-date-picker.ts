@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-date-picker> — Native date input with Cognivo styling.
@@ -12,10 +13,7 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-date-picker')
 export class CgDatePicker extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1); display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); }
-
+  static override styles = [hostBlock, reducedMotion, css`
     input {
       width: 100%; padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); min-height: 40px;
       border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-field-border, #27272a);
@@ -30,12 +28,7 @@ export class CgDatePicker extends LitElement {
     input:focus { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
     input:disabled { opacity: 0.5; cursor: not-allowed; }
     :host([error]) input { border-color: var(--cg-text-danger, #ef4444); }
-  
-
-    @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; animation: none !important; }
-    }
-  `;
+  `];
 
   @property() value = '';
   @property() name = '';

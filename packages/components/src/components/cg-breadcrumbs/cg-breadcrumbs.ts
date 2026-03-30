@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface BreadcrumbItem {
   label: string;
@@ -21,13 +22,7 @@ export interface BreadcrumbItem {
  */
 @customElement('cg-breadcrumbs')
 export class CgBreadcrumbs extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBlock, reducedMotion, css`
     nav {
       display: flex;
       align-items: center;
@@ -78,9 +73,6 @@ export class CgBreadcrumbs extends LitElement {
       background: transparent;
       font-family: inherit;
       line-height: 1.4;
-      transition:
-        color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       -webkit-font-smoothing: antialiased;
     }
 
@@ -125,12 +117,7 @@ export class CgBreadcrumbs extends LitElement {
       height: 16px;
       justify-content: center;
     }
-  
-
-    @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; animation: none !important; }
-    }
-  `;
+  `];
 
   @property({ type: Array }) items: BreadcrumbItem[] = [];
   @property({ type: String }) separator = '/';

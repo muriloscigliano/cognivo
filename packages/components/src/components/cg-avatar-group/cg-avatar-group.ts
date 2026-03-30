@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBase, reducedMotion } from '../../styles/index.js';
 
 export interface AvatarItem {
   src?: string;
@@ -20,13 +21,7 @@ export interface AvatarItem {
  */
 @customElement('cg-avatar-group')
 export class CgAvatarGroup extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBase, reducedMotion, css`
     .group {
       display: flex;
       align-items: center;
@@ -133,12 +128,7 @@ export class CgAvatarGroup extends LitElement {
     :host([size="lg"]) .overflow { margin-left: -12px; font-size: var(--cg-font-size-sm, 14px); }
     :host([size="lg"]) .initials { font-size: var(--cg-font-size-sm, 14px); }
     :host([size="lg"]) .status { width: 12px; height: 12px; }
-
-    @media (prefers-reduced-motion: reduce) {
-      .avatar, .overflow { transition: none; }
-      .group:hover .avatar { margin-left: revert !important; }
-    }
-  `;
+  `];
 
   @property({ type: Array }) avatars: AvatarItem[] = [];
   @property({ type: Number }) maxVisible = 4;

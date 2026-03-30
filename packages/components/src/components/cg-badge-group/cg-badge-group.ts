@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-badge-group> — Container for a group of badges/tags.
@@ -12,9 +13,8 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-badge-group')
 export class CgBadgeGroup extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: block;
       font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
@@ -48,7 +48,7 @@ export class CgBadgeGroup extends LitElement {
       border-radius: var(--cg-border-radius-100, 8px);
       cursor: default;
     }
-  `;
+  `];
 
   /** Optional label displayed above the badge group. */
   @property() label = '';

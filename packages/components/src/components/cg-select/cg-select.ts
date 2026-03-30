@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-select> — Dropdown select with search, keyboard nav, and multi-select.
@@ -19,9 +20,8 @@ export interface SelectOption {
 
 @customElement('cg-select')
 export class CgSelect extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color 100ms cubic-bezier(0, 0, 0.58, 1); display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); position: relative; }
+  static override styles = [hostBlock, reducedMotion, css`
+    :host { position: relative; }
 
     .trigger {
       display: flex; align-items: center; justify-content: space-between;
@@ -78,12 +78,7 @@ export class CgSelect extends LitElement {
     .search input:focus { border-color: var(--cg-focus-ring-color, #c8e650); }
 
     .empty-msg { padding: var(--cg-spacing-12, 12px); text-align: center; color: var(--cg-gray-500, #71717a); font-size: var(--cg-font-size-sm, 14px); }
-  
-
-    @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; animation: none !important; }
-    }
-  `;
+  `];
 
   @property({ type: Array }) options: SelectOption[] = [];
   @property() value = '';

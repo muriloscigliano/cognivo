@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, pulseKeyframes } from '../../styles/index.js';
 
 export interface StepItem {
   title: string;
@@ -20,13 +21,7 @@ export interface StepItem {
  */
 @customElement('cg-steps')
 export class CgSteps extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBlock, reducedMotion, pulseKeyframes, css`
     /* Vertical layout (default) */
     .steps-vertical { display: flex; flex-direction: column; }
 
@@ -115,10 +110,6 @@ export class CgSteps extends LitElement {
     :host([compact]) .circle svg { width: 11px; height: 11px; }
 
     /* Active pulse */
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 4px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
-      50% { box-shadow: 0 0 0 8px var(--cg-overlay-accent-light, rgba(223, 255, 97, 0.12)); }
-    }
     .circle.active { animation: pulse 2s ease-in-out infinite; }
 
     /* Clickable */
@@ -173,12 +164,7 @@ export class CgSteps extends LitElement {
       margin-top: 2px;
       line-height: 1.4;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .circle.active { animation: none; }
-      .circle, .v-line, .h-line { transition: none; }
-    }
-  `;
+  `];
 
   @property({ type: Array }) items: StepItem[] = [];
   @property({ reflect: true }) direction: 'vertical' | 'horizontal' = 'vertical';

@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBase, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-button-group> — Groups buttons with optional attached mode.
@@ -13,13 +14,7 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-button-group')
 export class CgButtonGroup extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBase, reducedMotion, css`
     /* Direction */
     :host([direction="row"]) { flex-direction: row; }
     :host([direction="column"]) { flex-direction: column; width: 100%; }
@@ -68,7 +63,7 @@ export class CgButtonGroup extends LitElement {
     :host([attached][direction="column"]) ::slotted(*:last-child) {
       border-radius: 0 0 var(--cg-border-radius-150, 12px) var(--cg-border-radius-150, 12px);
     }
-  `;
+  `];
 
   @property({ reflect: true }) direction: 'row' | 'column' = 'row';
   @property({ reflect: true }) gap: 'none' | 'xs' | 'sm' | 'md' = 'sm';

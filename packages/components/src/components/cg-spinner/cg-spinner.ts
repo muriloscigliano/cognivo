@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
 
 /**
  * <cg-spinner> — Spinning loading indicator.
@@ -14,10 +15,8 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-spinner')
 export class CgSpinner extends LitElement {
-  static override styles = css`
+  static override styles = [hostBase, reducedMotion, spinKeyframes, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
       align-items: center;
       justify-content: center;
     }
@@ -67,20 +66,6 @@ export class CgSpinner extends LitElement {
       border-top-color: var(--cg-color-text-primary, #fafafa);
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .spinner {
-        animation: pulse-opacity 1.5s ease-in-out infinite;
-      }
-      @keyframes pulse-opacity {
-        0%, 100% { opacity: 0.3; }
-        50% { opacity: 1; }
-      }
-    }
-
     .sr-only {
       position: absolute;
       width: 1px;
@@ -92,7 +77,7 @@ export class CgSpinner extends LitElement {
       white-space: nowrap;
       border: 0;
     }
-  `;
+  `];
 
   @property({ type: String, reflect: true }) size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
   @property({ type: String, reflect: true }) color: 'default' | 'accent' | 'white' = 'default';

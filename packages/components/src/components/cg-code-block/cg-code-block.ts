@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-code-block> — Code display with syntax highlighting, copy button, and line numbers.
@@ -55,13 +56,7 @@ function highlight(code: string): string {
 
 @customElement('cg-code-block')
 export class CgCodeBlock extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBlock, reducedMotion, css`
     .wrapper {
       background: var(--cg-color-code-background, #09090b);
       border-radius: var(--cg-border-radius-200, 24px);
@@ -210,12 +205,7 @@ export class CgCodeBlock extends LitElement {
       font-family: inherit;
     }
     .expand-btn:hover { color: var(--cg-color-code-text, #e4e4e7); }
-  
-
-    @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; animation: none !important; }
-    }
-  `;
+  `];
 
   @property() code = '';
   @property() language = '';

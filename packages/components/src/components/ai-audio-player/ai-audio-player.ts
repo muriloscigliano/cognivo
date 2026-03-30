@@ -7,15 +7,12 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 @customElement('ai-audio-player')
 export class AiAudioPlayer extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    
     :host([hidden]) { display: none; }
 
     .player {
@@ -134,14 +131,10 @@ export class AiAudioPlayer extends LitElement {
       outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .play-btn { transition: none; }
       .wave-bar { transition: none; }
       .progress-fill { transition: none; }
     }
-  `;
-
+  `];
   @property({ type: String }) src = '';
   @property({ type: String }) title = 'Audio';
   @property({ type: Number }) duration = 0;

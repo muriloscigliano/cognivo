@@ -1,15 +1,13 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-slider> — Range slider with value tooltip.
  */
 @customElement('cg-slider')
 export class CgSlider extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)); display: block; font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); }
-
+  static override styles = [hostBlock, reducedMotion, css`
     .slider-wrapper { padding: var(--cg-spacing-8, 8px) 0; }
 
     .header {
@@ -44,11 +42,7 @@ export class CgSlider extends LitElement {
 
     .range-labels { display: flex; justify-content: space-between; margin-top: var(--cg-spacing-4, 4px); }
     .range-label { font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-500, #71717a); }
-
-    @media (prefers-reduced-motion: reduce) {
-      input[type="range"]::-webkit-slider-thumb { transition: none; }
-    }
-  `;
+  `];
 
   @property() label = '';
   @property() name = '';

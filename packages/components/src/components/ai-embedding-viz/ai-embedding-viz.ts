@@ -7,6 +7,7 @@
  */
 import { LitElement, html, css, nothing, svg } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface EmbeddingPoint {
   x: number;
@@ -23,12 +24,8 @@ const CLUSTER_COLORS = [
 
 @customElement('ai-embedding-viz')
 export class AiEmbeddingViz extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    
     :host([hidden]) { display: none; }
 
     .container {
@@ -97,7 +94,7 @@ export class AiEmbeddingViz extends LitElement {
       white-space: nowrap;
       pointer-events: none;
       z-index: 10;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
       transform: translate(-50%, -100%);
       margin-top: -10px;
     }
@@ -134,12 +131,8 @@ export class AiEmbeddingViz extends LitElement {
       font-size: 9px;
       fill: #52525b;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .point { transition: none; }
     }
-  `;
-
+  `];
   @property({ type: Array }) points: EmbeddingPoint[] = [];
   @property({ type: String }) title = 'Embedding Visualization';
   @property({ type: Boolean }) showLabels = false;

@@ -7,6 +7,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface ChangelogEntry {
   version: string;
@@ -25,12 +26,8 @@ const TYPE_COLORS: Record<string, { bg: string; fg: string }> = {
 
 @customElement('ai-changelog')
 export class AiChangelog extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    
     :host([hidden]) { display: none; }
 
     .container {
@@ -184,12 +181,8 @@ export class AiChangelog extends LitElement {
       font-size: 13px;
       padding: 32px 0;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .entry-card, .changes-preview, .rollback-btn, .expand-toggle { transition: none; }
     }
-  `;
-
+  `];
   @property({ type: Array }) entries: ChangelogEntry[] = [];
 
   @state() private _expandedSet = new Set<string>();

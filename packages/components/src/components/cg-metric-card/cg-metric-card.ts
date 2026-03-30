@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
 
 /**
  * <cg-metric-card> — KPI metric display with trend indicator.
@@ -15,13 +16,7 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-metric-card')
 export class CgMetricCard extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
-
+  static override styles = [hostBlock, reducedMotion, shimmerKeyframes, css`
     .card {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
@@ -36,8 +31,8 @@ export class CgMetricCard extends LitElement {
     .card.clickable { cursor: pointer; }
     .card.clickable:hover {
       border-color: var(--cg-gray-600, #52525b);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-      transform: translateY(-1px);
+      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
+      transform: translateY(var(--cg-interaction-hover-lift, -1px));
     }
     .card:focus-visible {
       outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
@@ -140,18 +135,7 @@ export class CgMetricCard extends LitElement {
     .skel-title { width: 60%; height: 10px; margin-bottom: 10px; }
     .skel-value { width: 45%; height: 22px; margin-bottom: 10px; }
     .skel-delta { width: 30%; height: 14px; }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .card { transition: none; }
-      .spark-bar { transition: none; }
-      .skeleton .skel { animation: none; background: var(--cg-gray-800, #27272a); }
-    }
-  `;
+  `];
 
   /** Metric label */
   @property() title = '';

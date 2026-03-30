@@ -1,5 +1,5 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 
 /**
  * <cg-drawer> — Slide-in side panel.
@@ -86,6 +86,30 @@ export class CgDrawer extends LitElement {
       transform: translateX(0);
     }
 
+    /* ── Closing animation ── */
+    @keyframes drawer-exit-left {
+      from { transform: translateX(0); }
+      to { transform: translateX(-100%); }
+    }
+    @keyframes drawer-exit-right {
+      from { transform: translateX(0); }
+      to { transform: translateX(100%); }
+    }
+    @keyframes backdrop-exit {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    :host([side="left"]) .panel.closing {
+      animation: drawer-exit-left 200ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+    }
+    :host([side="right"]) .panel.closing {
+      animation: drawer-exit-right 200ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+    }
+    .backdrop.closing {
+      pointer-events: auto;
+      animation: backdrop-exit 200ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+    }
+
     /* ── Sizes ── */
     :host([size="sm"]) .panel { width: 320px; max-width: 85vw; }
     :host([size="md"]) .panel { width: 480px; max-width: 85vw; }
@@ -169,6 +193,8 @@ export class CgDrawer extends LitElement {
   @property({ type: Boolean }) closable = true;
   @property({ type: Boolean }) persistent = false;
 
+  @state() private _closing = false;
+
   private _previousOverflow = '';
   private _keydownHandler = this._handleKeydown.bind(this);
 
@@ -177,6 +203,10 @@ export class CgDrawer extends LitElement {
       if (this.open) {
         this._onOpen();
       } else {
+        if (changed.get('open') === true) {
+          this._closing = true;
+          setTimeout(() => { this._closing = false; }, 200);
+        }
         this._onClose();
       }
     }
@@ -232,12 +262,12 @@ export class CgDrawer extends LitElement {
   override render() {
     return html`
       <div
-        class="backdrop"
+        class="backdrop ${this._closing ? 'closing' : ''}"
         @click="${this._handleBackdropClick}"
         aria-hidden="true"
       ></div>
       <div
-        class="panel"
+        class="panel ${this._closing ? 'closing' : ''}"
         role="dialog"
         aria-modal="true"
         aria-label="${this.title || 'Side panel'}"

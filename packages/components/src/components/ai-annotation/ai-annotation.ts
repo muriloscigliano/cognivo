@@ -6,6 +6,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface Annotation {
   start: number;
@@ -21,12 +22,8 @@ interface LabelDef {
 
 @customElement('ai-annotation')
 export class AiAnnotation extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    
 
     .container {
       background: var(--cg-color-surface-container-background, #18181b);
@@ -135,12 +132,8 @@ export class AiAnnotation extends LitElement {
       color: var(--cg-gray-500, #71717a);
       font-size: 13px;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .annotated-span, .annotation-label, .label-btn { transition: none; }
     }
-  `;
-
+  `];
   /** Plain text content */
   @property({ type: String }) content: string = '';
 

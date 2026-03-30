@@ -6,6 +6,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 interface Memory {
   id: string;
@@ -18,12 +19,9 @@ interface Memory {
 
 @customElement('ai-memory-panel')
 export class AiMemoryPanel extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
 
     .panel {
@@ -118,9 +116,6 @@ export class AiMemoryPanel extends LitElement {
     .mem-btn.pinned-btn { color: var(--cg-brand-ai-accent, #dfff61); }
 
     .empty { padding: 32px; text-align: center; color: var(--cg-gray-500, #71717a); font-size: 13px; }
-
-    @media (prefers-reduced-motion: reduce) {
-      .tab, .memory, .mem-btn, .memory-actions { transition: none; }
     }
   
 
@@ -128,13 +123,7 @@ export class AiMemoryPanel extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `;
-
+  `];
   @property({ type: Array }) shortTerm: Memory[] = [];
   @property({ type: Array }) longTerm: Memory[] = [];
   @property({ type: Boolean }) searchable: boolean = true;

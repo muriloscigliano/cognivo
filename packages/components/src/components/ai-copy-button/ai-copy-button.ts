@@ -8,15 +8,12 @@
  */
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBase, reducedMotion } from '../../styles/index.js';
 
 @customElement('ai-copy-button')
 export class AiCopyButton extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBase, reducedMotion, css`
+    
     :host([hidden]) { display: none; }
 
     .copy-btn {
@@ -90,12 +87,8 @@ export class AiCopyButton extends LitElement {
       font-size: inherit;
       line-height: 1;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .copy-btn { transition: none; transform: none !important; }
     }
-  `;
-
+  `];
   @property({ type: String }) value = '';
   @property({ type: String }) label = 'Copy';
   @property({ type: String, reflect: true }) variant: 'default' | 'minimal' | 'icon-only' = 'default';

@@ -7,6 +7,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface ApiKeyEntry {
   id: string;
@@ -19,11 +20,8 @@ export interface ApiKeyEntry {
 
 @customElement('ai-api-key-manager')
 export class AiApiKeyManager extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
       background: var(--cg-color-surface-base, #18181b);
       color: var(--cg-color-surface-base-text, #fafafa);
       border: 1px solid var(--cg-color-border-default, #27272a);
@@ -188,12 +186,8 @@ export class AiApiKeyManager extends LitElement {
       color: var(--cg-color-text-tertiary, #71717a);
       font-size: var(--cg-font-size-sm, 14px);
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; }
     }
-  `;
-
+  `];
   @property({ type: Array }) keys: ApiKeyEntry[] = [];
   @property({ type: Number }) maxKeys = 10;
 

@@ -57,6 +57,15 @@ export class CgTooltip extends LitElement {
       transform: scale(1);
     }
 
+    /* ── Closing animation ── */
+    @keyframes tooltip-exit {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    .tooltip.closing {
+      animation: tooltip-exit 100ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .tooltip {
         transition: opacity 80ms ease;
@@ -159,11 +168,19 @@ export class CgTooltip extends LitElement {
   @property({ type: Boolean, reflect: true, attribute: '_visible' })
   private _visible = false;
 
+  @state() private _closing = false;
+
   private _showTimeout: ReturnType<typeof setTimeout> | null = null;
+  private _hideTimeout: ReturnType<typeof setTimeout> | null = null;
   private _tooltipId = `tooltip-${Math.random().toString(36).slice(2, 9)}`;
 
   private _show() {
     if (this.disabled || !this.content) return;
+    if (this._hideTimeout) {
+      clearTimeout(this._hideTimeout);
+      this._hideTimeout = null;
+      this._closing = false;
+    }
     this._showTimeout = setTimeout(() => {
       this._visible = true;
     }, this.delay);
@@ -174,13 +191,21 @@ export class CgTooltip extends LitElement {
       clearTimeout(this._showTimeout);
       this._showTimeout = null;
     }
-    this._visible = false;
+    if (!this._visible) return;
+    this._closing = true;
+    this._hideTimeout = setTimeout(() => {
+      this._closing = false;
+      this._visible = false;
+    }, 100);
   }
 
   override disconnectedCallback() {
     super.disconnectedCallback();
     if (this._showTimeout) {
       clearTimeout(this._showTimeout);
+    }
+    if (this._hideTimeout) {
+      clearTimeout(this._hideTimeout);
     }
   }
 
@@ -197,7 +222,7 @@ export class CgTooltip extends LitElement {
         <slot></slot>
       </div>
       <div
-        class="tooltip"
+        class="tooltip ${this._closing ? 'closing' : ''}"
         id="${this._tooltipId}"
         role="tooltip"
         aria-hidden="${!this._visible}"

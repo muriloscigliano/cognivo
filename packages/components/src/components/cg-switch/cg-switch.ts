@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBase, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-switch> — Toggle switch with spring animation (HeroUI-quality).
@@ -14,13 +15,7 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-switch')
 export class CgSwitch extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
-
+  static override styles = [hostBase, reducedMotion, css`
     label {
       display: inline-flex;
       align-items: center;
@@ -114,11 +109,7 @@ export class CgSwitch extends LitElement {
     :host([size="lg"]) .track { width: 52px; height: 28px; }
     :host([size="lg"]) .thumb { width: 22px; height: 22px; }
     :host([size="lg"]) .track.checked .thumb { transform: translateX(24px); }
-
-    @media (prefers-reduced-motion: reduce) {
-      .thumb, .track { transition: none; }
-    }
-  `;
+  `];
 
   @property() label = '';
   @property({ type: Boolean }) checked = false;

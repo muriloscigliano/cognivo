@@ -6,15 +6,12 @@
  */
 import { LitElement, html, css, svg, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 @customElement('ai-heatmap')
 export class AiHeatmap extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    
 
     .container {
       background: var(--cg-color-surface-container-background, #18181b);
@@ -62,7 +59,7 @@ export class AiHeatmap extends LitElement {
       pointer-events: none;
       z-index: 10;
       white-space: nowrap;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
     }
     .tooltip-row { display: block; }
     .tooltip-value { font-weight: 700; color: var(--cg-brand-ai-accent, #dfff61); }
@@ -88,12 +85,8 @@ export class AiHeatmap extends LitElement {
       color: var(--cg-gray-500, #71717a);
       font-size: 13px;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .cell { transition: none; }
     }
-  `;
-
+  `];
   /** 2D data array (rows × cols) */
   @property({ type: Array }) data: number[][] = [];
 

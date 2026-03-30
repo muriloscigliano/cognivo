@@ -8,15 +8,11 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { hostBase, reducedMotion } from '../../styles/index.js';
 
 @customElement('ai-usage-meter')
 export class AiUsageMeter extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBase, reducedMotion, css`
     :host([hidden]) { display: none; }
 
     .meter {
@@ -123,11 +119,7 @@ export class AiUsageMeter extends LitElement {
       outline-offset: 2px;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .ring-fill { transition: none; }
-      .upgrade-btn { transition: none; }
-    }
-  `;
+  `];
 
   @property({ type: Number }) used = 0;
   @property({ type: Number }) limit = 100;

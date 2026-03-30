@@ -10,15 +10,13 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBase, reducedMotion } from '../../styles/index.js';
 
 @customElement('ai-badge')
 export class AiBadge extends LitElement {
-  static override styles = css`
+  static override styles = [hostBase, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
       align-items: center;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
       position: relative;
     }
 
@@ -143,7 +141,7 @@ export class AiBadge extends LitElement {
       opacity: 0;
       transition: opacity 150ms ease;
       z-index: 100;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
     }
     .tooltip::after {
       content: '';
@@ -168,12 +166,8 @@ export class AiBadge extends LitElement {
       white-space: normal;
       max-width: 220px;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .badge, .bar-fill, .spark-bar { transition: none; }
     }
-  `;
-
+  `];
   /** Confidence score 0-1 */
   @property({ type: Number }) score: number = 0.85;
 

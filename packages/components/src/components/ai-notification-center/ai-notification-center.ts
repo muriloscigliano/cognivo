@@ -7,6 +7,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface Notification {
   id: string;
@@ -19,12 +20,7 @@ interface Notification {
 
 @customElement('ai-notification-center')
 export class AiNotificationCenter extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
     :host([hidden]) { display: none; }
 
     .container {
@@ -169,10 +165,7 @@ export class AiNotificationCenter extends LitElement {
       padding: 32px 0;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .notification, .mark-all-btn, .dismiss-btn { transition: none; }
-    }
-  `;
+  `];
 
   @property({ type: Array }) notifications: Notification[] = [];
   @property({ type: Number }) maxVisible = 50;

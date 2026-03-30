@@ -7,6 +7,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface DiffLine {
   type: 'add' | 'remove' | 'unchanged';
@@ -16,12 +17,8 @@ interface DiffLine {
 
 @customElement('ai-diff-panel')
 export class AiDiffPanel extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    
 
     .panel {
       background: var(--cg-color-surface-container-background, #18181b);
@@ -162,9 +159,6 @@ export class AiDiffPanel extends LitElement {
       color: var(--cg-gray-500, #71717a);
       font-size: 13px;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .mode-btn { transition: none; }
     }
   
 
@@ -172,8 +166,7 @@ export class AiDiffPanel extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  `;
-
+  `];
   /** Text content before changes */
   @property({ type: String }) before: string = '';
 

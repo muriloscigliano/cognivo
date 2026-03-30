@@ -7,6 +7,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes, fadeInKeyframes } from '../../styles/index.js';
 
 interface Source {
   title: string;
@@ -16,12 +17,9 @@ interface Source {
 
 @customElement('ai-insight-card')
 export class AiInsightCard extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes, fadeInKeyframes, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
 
     .card {
@@ -38,7 +36,8 @@ export class AiInsightCard extends LitElement {
     }
     .card:hover {
       border-color: var(--cg-gray-600, #52525b);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
+      transform: translateY(var(--cg-interaction-hover-lift, -1px));
     }
     .card:focus-visible {
       outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
@@ -47,11 +46,6 @@ export class AiInsightCard extends LitElement {
     .card.selected {
       border-color: var(--cg-brand-ai-accent, #dfff61);
       background: rgba(223, 255, 97, 0.04);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .status-dot {
@@ -200,22 +194,8 @@ export class AiInsightCard extends LitElement {
     .skel-line:nth-child(1) { width: 40%; }
     .skel-line:nth-child(2) { width: 90%; }
     .skel-line:nth-child(3) { width: 60%; }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .card, .skel-icon, .skel-line { animation: none; }
-    }
-  
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `;
-
+  `];
   @property({ type: String }) type: 'explanation' | 'forecast' | 'anomaly' | 'optimization' | 'classification' = 'explanation';
   @property({ type: String }) text: string = '';
   @property({ type: Number }) confidence: number = 0;

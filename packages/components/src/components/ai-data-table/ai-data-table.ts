@@ -7,6 +7,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface Column {
   key: string;
@@ -23,12 +24,8 @@ interface Anomaly {
 
 @customElement('ai-data-table')
 export class AiDataTable extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    
     :host([hidden]) { display: none; }
 
     .container {
@@ -130,7 +127,7 @@ export class AiDataTable extends LitElement {
       white-space: nowrap;
       pointer-events: none;
       z-index: 10;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
     }
 
     .empty-state {
@@ -139,12 +136,8 @@ export class AiDataTable extends LitElement {
       color: #52525b;
       font-size: 13px;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      tbody tr, thead th.sortable { transition: none; }
     }
-  `;
-
+  `];
   @property({ type: Array }) columns: Column[] = [];
   @property({ type: Array }) data: Record<string, unknown>[] = [];
   @property({ type: Array }) anomalies: Anomaly[] = [];

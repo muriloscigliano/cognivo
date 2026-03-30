@@ -7,6 +7,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface AnalyticsSeries {
   name: string;
@@ -25,11 +26,8 @@ interface HoverPoint {
 
 @customElement('ai-analytics-chart')
 export class AiAnalyticsChart extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
       background: var(--cg-color-surface-base, #18181b);
       color: var(--cg-color-surface-base-text, #fafafa);
       border: 1px solid var(--cg-color-border-default, #27272a);
@@ -135,9 +133,6 @@ export class AiAnalyticsChart extends LitElement {
       font-size: 10px;
       fill: var(--cg-color-text-tertiary, #71717a);
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .data-line { transition: none; }
     }
   
 
@@ -145,8 +140,7 @@ export class AiAnalyticsChart extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  `;
-
+  `];
   @property({ type: Array }) series: AnalyticsSeries[] = [];
   @property({ type: String }) title = '';
   @property({ type: String }) yLabel = '';

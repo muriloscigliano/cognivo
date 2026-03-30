@@ -6,6 +6,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, spinKeyframes } from '../../styles/index.js';
 
 interface ToolCall {
   name: string;
@@ -15,12 +16,7 @@ interface ToolCall {
 
 @customElement('ai-tool-indicator')
 export class AiToolIndicator extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, spinKeyframes, css`
 
     .tools {
       display: flex;
@@ -71,10 +67,6 @@ export class AiToolIndicator extends LitElement {
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
     .check { color: var(--cg-green-400, #4ade80); font-size: 14px; }
     .error-icon { color: var(--cg-red-400, #f87171); font-size: 14px; }
 
@@ -119,16 +111,11 @@ export class AiToolIndicator extends LitElement {
     :host([compact]) .tool { padding: 3px 10px; font-size: 11px; }
     :host([compact]) .result { display: none; }
 
-    @media (prefers-reduced-motion: reduce) {
-      .tool, .spinner { animation: none; }
-    }
-  
-
     :focus-visible {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  `;
+  `];
 
   /** Tool calls array */
   @property({ type: Array }) tools: ToolCall[] = [];

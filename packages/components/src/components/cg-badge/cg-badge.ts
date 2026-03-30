@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBase, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-badge> — Semantic status badge with variants.
@@ -12,13 +13,7 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-badge')
 export class CgBadge extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBase, reducedMotion, css`
     .badge {
       display: inline-flex;
       align-items: center;
@@ -113,12 +108,7 @@ export class CgBadge extends LitElement {
       width: 10px;
       height: 10px;
     }
-  
-
-    @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; animation: none !important; }
-    }
-  `;
+  `];
 
   @property({ reflect: true }) variant: 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'accent' = 'neutral';
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';

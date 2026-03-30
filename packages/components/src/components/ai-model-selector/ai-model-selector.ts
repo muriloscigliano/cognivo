@@ -6,6 +6,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface AIModel {
   id: string;
@@ -19,12 +20,8 @@ interface AIModel {
 
 @customElement('ai-model-selector')
 export class AiModelSelector extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    
 
     .filter-row {
       display: flex;
@@ -116,12 +113,8 @@ export class AiModelSelector extends LitElement {
     .cost.high { background: rgba(239, 68, 68, 0.1); color: var(--cg-red-400, #f87171); }
 
     .empty { text-align: center; padding: 32px; color: var(--cg-gray-500, #71717a); font-size: 13px; }
-
-    @media (prefers-reduced-motion: reduce) {
-      .model-card, .filter-chip { transition: none; }
     }
-  `;
-
+  `];
   @property({ type: Array }) models: AIModel[] = [];
   @property({ type: String }) selected: string = '';
   @property({ type: Boolean }) multi: boolean = false;

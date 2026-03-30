@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
 
 /**
  * <cg-image-block> — Image with caption, loading state, and error fallback.
@@ -13,13 +14,7 @@ import { customElement, property, state } from 'lit/decorators.js';
  */
 @customElement('cg-image-block')
 export class CgImageBlock extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBlock, reducedMotion, shimmerKeyframes, css`
     figure {
       margin: 0;
       border-radius: var(--cg-border-radius-200, 24px);
@@ -54,28 +49,6 @@ export class CgImageBlock extends LitElement {
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
     }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-    @media (prefers-reduced-motion: reduce) { .skeleton { animation: none; background: var(--cg-gray-200, #e4e4e7); } }
-
-    .error-state {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: var(--cg-spacing-8, 8px);
-      color: var(--cg-gray-500, #71717a);
-      min-height: 120px;
-    }
-    .error-state svg { width: 32px; height: 32px; opacity: 0.4; }
-    .error-state span { font-size: var(--cg-font-size-xs, 12px); }
-    .retry-btn {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-text-accent, #e5ff6b);
-      background: none; border: none; cursor: pointer;
-      text-decoration: underline; padding: 0; font-family: inherit;
-    }
     .retry-btn:hover { opacity: 0.8; }
 
     figcaption {
@@ -101,7 +74,7 @@ export class CgImageBlock extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  `;
+  `];
 
   @property() src = '';
   @property() alt = '';

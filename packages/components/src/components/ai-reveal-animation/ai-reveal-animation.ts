@@ -7,16 +7,13 @@
  */
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 type RevealType = 'fade' | 'slide-up' | 'scale' | 'flip';
 
 @customElement('ai-reveal-animation')
 export class AiRevealAnimation extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-    }
+  static override styles = [hostBlock, reducedMotion, css`
 
     .wrapper {
       opacity: 0;
@@ -79,18 +76,7 @@ export class AiRevealAnimation extends LitElement {
       to   { opacity: 1; transform: perspective(600px) rotateX(0deg); }
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .wrapper,
-      .wrapper.visible.fade,
-      .wrapper.visible.slide-up,
-      .wrapper.visible.scale,
-      .wrapper.visible.flip {
-        animation: none !important;
-        opacity: 1;
-        transform: none;
-      }
-    }
-  `;
+  `];
 
   /** Animation type */
   @property({ type: String }) type: RevealType = 'fade';

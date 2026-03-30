@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface ListItem {
   title: string;
@@ -25,13 +26,7 @@ export interface ListItem {
  */
 @customElement('cg-list')
 export class CgList extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBlock, reducedMotion, css`
     .empty {
       text-align: center;
       padding: var(--cg-spacing-24, 24px);
@@ -164,14 +159,9 @@ export class CgList extends LitElement {
       flex-shrink: 0;
     }
   
-
-    @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; animation: none !important; }
-    }
-  
     .item { transition: background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)), transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)); }
     .item:hover { transform: translateX(2px); }
-  `;
+  `];
 
   @property({ type: Array }) items: ListItem[] = [];
   @property() variant: 'number' | 'bullet' | 'image' | 'plain' = 'bullet';

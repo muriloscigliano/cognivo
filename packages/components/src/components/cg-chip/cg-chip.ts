@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBase, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-chip> — Removable tag/chip.
@@ -16,13 +17,7 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-chip')
 export class CgChip extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBase, reducedMotion, css`
     .chip {
       display: inline-flex;
       align-items: center;
@@ -60,11 +55,6 @@ export class CgChip extends LitElement {
     .chip:active:not(.disabled) {
       transform: scale(var(--cg-interaction-press-scale, 0.97));
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .chip {
-        transition: opacity 100ms ease;
-      }
       .chip:active:not(.disabled) {
         transform: none;
       }
@@ -191,7 +181,7 @@ export class CgChip extends LitElement {
         0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
       outline: none;
     }
-  `;
+  `];
 
   @property({ type: String }) label = '';
   @property({ type: String, reflect: true }) variant: 'default' | 'success' | 'warning' | 'error' | 'accent' = 'default';

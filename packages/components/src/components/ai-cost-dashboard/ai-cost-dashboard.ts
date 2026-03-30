@@ -7,6 +7,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 interface CostEntry {
   date: string;
@@ -18,12 +19,9 @@ interface CostEntry {
 
 @customElement('ai-cost-dashboard')
 export class AiCostDashboard extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
     :host([hidden]) { display: none; }
 
@@ -204,17 +202,8 @@ export class AiCostDashboard extends LitElement {
       font-size: 13px;
       padding: 32px 0;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .budget-fill, .model-bar-fill, .trend-bar, .model-row { transition: none; }
     }
-  
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `;
-
+  `];
   @property({ type: Array }) entries: CostEntry[] = [];
   @property({ type: Number }) budget = 0;
   @property({ type: String }) period = '';

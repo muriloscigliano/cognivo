@@ -7,15 +7,11 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 @customElement('ai-prompt-template')
 export class AiPromptTemplate extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
     :host([hidden]) { display: none; }
 
     .container {
@@ -166,10 +162,7 @@ export class AiPromptTemplate extends LitElement {
       padding: 20px 0;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .mode-btn { transition: none; }
-    }
-  `;
+  `];
 
   @property({ type: String }) template = '';
   @property({ type: Object }) variables: Record<string, string> = {};

@@ -8,6 +8,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface PaletteCommand {
   id: string;
@@ -19,11 +20,9 @@ export interface PaletteCommand {
 
 @customElement('ai-command-palette')
 export class AiCommandPalette extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: contents;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
     :host([hidden]) { display: none; }
 
@@ -44,7 +43,7 @@ export class AiCommandPalette extends LitElement {
       background: var(--cg-color-surface, #18181b);
       border: 1px solid var(--cg-color-border, #27272a);
       border-radius: 12px;
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+      box-shadow: var(--cg-elevation-4, 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3));
       overflow: hidden;
     }
 
@@ -137,12 +136,8 @@ export class AiCommandPalette extends LitElement {
       color: var(--cg-color-text-tertiary, #71717a);
       font-size: 13px;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .cmd { transition: none; }
     }
-  `;
-
+  `];
   @property({ type: Array }) commands: PaletteCommand[] = [];
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String }) placeholder = 'Type a command\u2026';

@@ -7,15 +7,11 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 @customElement('ai-streaming-text')
 export class AiStreamingText extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
 
     .container {
       font-size: 14px;
@@ -81,10 +77,7 @@ export class AiStreamingText extends LitElement {
       font-style: italic;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .cursor { animation: none; opacity: 1; }
-    }
-  `;
+  `];
 
   /** Content to display */
   @property({ type: String }) content: string = '';

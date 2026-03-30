@@ -16,6 +16,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes } from '../../styles/index.js';
 
 interface DataField {
   label: string;
@@ -36,12 +37,9 @@ interface CardAction {
 
 @customElement('ai-data-card')
 export class AiDataCard extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
 
     .card {
@@ -49,10 +47,12 @@ export class AiDataCard extends LitElement {
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 12px;
       overflow: hidden;
-      transition: border-color 150ms;
+      transition: border-color 150ms, box-shadow 150ms, transform 150ms;
     }
     .card:hover {
       border-color: var(--cg-gray-600, #52525b);
+      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
+      transform: translateY(var(--cg-interaction-hover-lift, -1px));
     }
 
     /* ── Header ── */
@@ -299,11 +299,6 @@ export class AiDataCard extends LitElement {
     .skel-label { height: 10px; width: 30%; }
     .skel-value { height: 10px; width: 40%; }
 
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
     /* ── Empty state ── */
     .empty {
       padding: 24px;
@@ -311,18 +306,9 @@ export class AiDataCard extends LitElement {
       color: var(--cg-gray-500, #71717a);
       font-size: 12px;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .card, .row, .action-btn, .copy-btn { transition: none; }
       .skeleton .skel { animation: none; background: var(--cg-gray-800, #27272a); }
     }
-  
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `;
-
+  `];
   /** Card title */
   @property({ type: String }) title: string = '';
 

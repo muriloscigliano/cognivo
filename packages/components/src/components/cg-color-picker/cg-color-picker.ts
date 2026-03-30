@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 // color-data-values (these are data, not CSS styling)
 const DEFAULT_COLORS = [
@@ -20,13 +21,7 @@ const DEFAULT_COLORS = [
  */
 @customElement('cg-color-picker')
 export class CgColorPicker extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBlock, reducedMotion, css`
     .label {
       display: block;
       font-size: var(--cg-font-size-xs, 12px);
@@ -107,11 +102,7 @@ export class CgColorPicker extends LitElement {
         0 0 0 2px var(--cg-color-surface-base-background, #09090b),
         0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .swatch { transition: none; }
-    }
-  `;
+  `];
 
   @property() value = '';
   @property({ type: Array }) colors: string[] = DEFAULT_COLORS;

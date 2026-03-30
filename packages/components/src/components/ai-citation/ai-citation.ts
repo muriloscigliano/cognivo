@@ -7,6 +7,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, fadeInKeyframes } from '../../styles/index.js';
 
 interface CitationSource {
   title: string;
@@ -17,12 +18,8 @@ interface CitationSource {
 
 @customElement('ai-citation')
 export class AiCitation extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, fadeInKeyframes, css`
+    
 
     /* ── Inline mode ── */
     .inline { display: inline; }
@@ -62,11 +59,6 @@ export class AiCitation extends LitElement {
       margin: 8px 0;
       animation: fadeIn 200ms ease;
       max-width: 400px;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .source-header {
@@ -171,12 +163,8 @@ export class AiCitation extends LitElement {
       letter-spacing: 0.5px;
       margin-bottom: 8px;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .source-card { animation: none; }
     }
-  `;
-
+  `];
   /** Array of source objects */
   @property({ type: Array }) sources: CitationSource[] = [];
 

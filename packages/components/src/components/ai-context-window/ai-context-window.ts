@@ -6,6 +6,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 interface ContextSegment {
   label: string;
@@ -15,12 +16,9 @@ interface ContextSegment {
 
 @customElement('ai-context-window')
 export class AiContextWindow extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
 
     .container {
@@ -106,9 +104,6 @@ export class AiContextWindow extends LitElement {
       font-size: 11px; color: var(--cg-gray-500, #71717a);
     }
     .cache-icon { color: var(--cg-brand-ai-accent, #dfff61); }
-
-    @media (prefers-reduced-motion: reduce) {
-      .segment { transition: none; }
     }
   
 
@@ -116,13 +111,7 @@ export class AiContextWindow extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `;
-
+  `];
   @property({ type: Number }) total: number = 128000;
   @property({ type: Array }) segments: ContextSegment[] = [];
   @property({ type: Number }) cached: number = 0;

@@ -80,6 +80,23 @@ export class CgModal extends LitElement {
       transform: scale(1);
     }
 
+    /* ── Closing animation ── */
+    @keyframes modal-exit {
+      from { opacity: 1; transform: scale(1); }
+      to { opacity: 0; transform: scale(0.95); }
+    }
+    @keyframes backdrop-exit {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    .modal.closing {
+      animation: modal-exit 150ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+    }
+    .backdrop.closing {
+      pointer-events: auto;
+      animation: backdrop-exit 150ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .backdrop,
       .modal {
@@ -190,6 +207,7 @@ export class CgModal extends LitElement {
   @property({ type: Boolean }) persistent = false;
 
   @state() private _hasFooter = false;
+  @state() private _closing = false;
 
   private _previousOverflow = '';
   private _focusableElements: HTMLElement[] = [];
@@ -209,6 +227,10 @@ export class CgModal extends LitElement {
       if (this.open) {
         this._onOpen();
       } else {
+        if (changed.get('open') === true) {
+          this._closing = true;
+          setTimeout(() => { this._closing = false; }, 150);
+        }
         this._onClose();
       }
     }
@@ -300,7 +322,7 @@ export class CgModal extends LitElement {
   override render() {
     return html`
       <div
-        class="backdrop"
+        class="backdrop ${this._closing ? 'closing' : ''}"
         @click="${this._handleBackdropClick}"
         aria-hidden="true"
       ></div>
@@ -309,7 +331,7 @@ export class CgModal extends LitElement {
         @keydown="${this._handleKeydown}"
       >
         <div
-          class="modal"
+          class="modal ${this._closing ? 'closing' : ''}"
           role="dialog"
           aria-modal="true"
           aria-label="${this.title || 'Dialog'}"

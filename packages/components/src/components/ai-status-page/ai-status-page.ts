@@ -8,6 +8,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface StatusService {
   name: string;
@@ -18,12 +19,7 @@ export interface StatusService {
 
 @customElement('ai-status-page')
 export class AiStatusPage extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
     :host([hidden]) { display: none; }
 
     .page {
@@ -167,11 +163,7 @@ export class AiStatusPage extends LitElement {
       text-align: right;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .service-item { transition: none; }
-      .latency-bar-fill { transition: none; }
-    }
-  `;
+  `];
 
   @property({ type: Array }) services: StatusService[] = [];
 

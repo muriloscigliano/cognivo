@@ -7,17 +7,14 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, pulseKeyframes } from '../../styles/index.js';
 
 type Severity = 'low' | 'medium' | 'high' | 'critical';
 
 @customElement('ai-action-preview')
 export class AiActionPreview extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, pulseKeyframes, css`
+    
 
     .card {
       background: var(--cg-color-surface-cards-background, #18181b);
@@ -159,13 +156,9 @@ export class AiActionPreview extends LitElement {
       0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.3); }
       50% { box-shadow: 0 0 0 6px rgba(248, 113, 113, 0); }
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .card.critical { animation: none; }
       button { transition: none; }
     }
-  `;
-
+  `];
   @property({ type: String }) title = '';
   @property({ type: String }) description = '';
   @property({ type: String }) action = '';

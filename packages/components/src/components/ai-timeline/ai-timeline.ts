@@ -6,6 +6,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface TimelineStep {
   label: string;
@@ -17,12 +18,7 @@ interface TimelineStep {
 
 @customElement('ai-timeline')
 export class AiTimeline extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
 
     .timeline {
       display: flex;
@@ -181,17 +177,11 @@ export class AiTimeline extends LitElement {
     :host([compact]) .step-label { font-size: 12px; }
     :host([compact]) .detail, :host([compact]) .tools, :host([compact]) .duration-bar { display: none; }
 
-    @media (prefers-reduced-motion: reduce) {
-      .step, .dot.active { animation: none; }
-      .step.active .duration-fill { animation: none; width: 50%; }
-    }
-  
-
     :focus-visible {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  `;
+  `];
 
   /** Timeline steps */
   @property({ type: Array }) steps: TimelineStep[] = [];

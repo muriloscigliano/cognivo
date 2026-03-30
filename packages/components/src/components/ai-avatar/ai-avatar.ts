@@ -8,15 +8,12 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBase, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
 
 @customElement('ai-avatar')
 export class AiAvatar extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBase, reducedMotion, shimmerKeyframes, css`
+    
     :host([hidden]) { display: none; }
 
     .avatar {
@@ -100,17 +97,8 @@ export class AiAvatar extends LitElement {
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
     }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .skeleton { animation: none; background: #27272a; }
-    }
-  `;
-
+  `];
   @property({ type: String }) src = '';
   @property({ type: String }) name = '';
   @property({ type: String, reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';

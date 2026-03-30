@@ -92,6 +92,15 @@ export class CgDropdown extends LitElement {
       transform-origin: bottom right;
     }
 
+    /* ── Closing animation ── */
+    @keyframes dropdown-exit {
+      from { opacity: 1; transform: scale(1); }
+      to { opacity: 0; transform: scale(0.95); }
+    }
+    .menu.closing {
+      animation: dropdown-exit 100ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+    }
+
     /* Reduced motion */
     @media (prefers-reduced-motion: reduce) {
       .menu {
@@ -172,9 +181,17 @@ export class CgDropdown extends LitElement {
   @property({ type: Array }) items: DropdownItem[] = [];
 
   @state() private _activeIndex = -1;
+  @state() private _closing = false;
   @query('.menu') private _menu!: HTMLElement;
 
   private _outsideClickHandler = this._handleOutsideClick.bind(this);
+
+  override updated(changed: Map<string, unknown>) {
+    if (changed.has('open') && !this.open && changed.get('open') === true) {
+      this._closing = true;
+      setTimeout(() => { this._closing = false; }, 100);
+    }
+  }
 
   override connectedCallback() {
     super.connectedCallback();
@@ -313,7 +330,7 @@ export class CgDropdown extends LitElement {
         <slot name="trigger"></slot>
       </div>
       <div
-        class="menu"
+        class="menu ${this._closing ? 'closing' : ''}"
         role="menu"
         aria-label="Dropdown menu"
         @keydown="${this._handleKeydown}"

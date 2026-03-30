@@ -6,15 +6,11 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 @customElement('ai-token-tracker')
 export class AiTokenTracker extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
 
     /* Compact mode */
     .compact {
@@ -139,16 +135,11 @@ export class AiTokenTracker extends LitElement {
     .budget-fill.warning { background: var(--cg-yellow-400, #fbbf24); }
     .budget-fill.danger { background: var(--cg-red-400, #f87171); }
 
-    @media (prefers-reduced-motion: reduce) {
-      .latency-fill, .budget-fill, .compact { transition: none; }
-    }
-  
-
     :focus-visible {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  `;
+  `];
 
   @property({ type: Number }) inputTokens: number = 0;
   @property({ type: Number }) outputTokens: number = 0;

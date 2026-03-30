@@ -8,15 +8,12 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 @customElement('ai-empty-state')
 export class AiEmptyState extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: flex;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    
     :host([hidden]) { display: none; }
 
     .container {
@@ -134,13 +131,9 @@ export class AiEmptyState extends LitElement {
     .extra {
       margin-top: 16px;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .icon-wrapper { transition: none; }
       .action-btn { transition: none; }
     }
-  `;
-
+  `];
   @property({ type: String }) icon = '📭';
   @property({ type: String }) title = 'Nothing here yet';
   @property({ type: String }) description = '';

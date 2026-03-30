@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-table> — Data table with sortable columns, sticky header, and responsive scroll.
@@ -22,12 +23,7 @@ export interface TableColumn {
 
 @customElement('cg-table')
 export class CgTable extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
     .table-wrapper {
       overflow-x: auto;
       border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-table-border, #27272a);
@@ -93,7 +89,7 @@ export class CgTable extends LitElement {
   
     tbody tr { transition: background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)); }
     tbody tr:hover { background: rgba(255, 255, 255, 0.03); }
-  `;
+  `];
 
   @property({ type: Array }) columns: TableColumn[] = [];
   @property({ type: Array }) rows: unknown[][] = [];

@@ -6,6 +6,7 @@
  */
 import { LitElement, html, css, svg, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface SourceNode {
   id: string;
@@ -17,12 +18,7 @@ interface SourceNode {
 
 @customElement('ai-source-graph')
 export class AiSourceGraph extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
 
     .container {
       background: var(--cg-color-surface-container-background, #18181b);
@@ -92,16 +88,11 @@ export class AiSourceGraph extends LitElement {
 
     .empty { text-align: center; padding: 32px; color: var(--cg-gray-500, #71717a); font-size: 13px; }
 
-    @media (prefers-reduced-motion: reduce) {
-      .node-circle, .detail { transition: none; animation: none; }
-    }
-  
-
     :focus-visible {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  `;
+  `];
 
   @property({ type: Array }) sources: SourceNode[] = [];
   @property({ type: String }) responseId: string = 'Response';

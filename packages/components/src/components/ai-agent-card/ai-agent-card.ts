@@ -6,15 +6,13 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes, pulseKeyframes } from '../../styles/index.js';
 
 @customElement('ai-agent-card')
 export class AiAgentCard extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, pulseKeyframes, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
 
     .card {
@@ -26,7 +24,7 @@ export class AiAgentCard extends LitElement {
       cursor: pointer;
       position: relative;
     }
-    .card:hover { border-color: var(--cg-gray-600, #52525b); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .card:hover { border-color: var(--cg-gray-600, #52525b); box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2)); transform: translateY(var(--cg-interaction-hover-lift, -1px)); }
     .card:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }
     .card.active { border-color: var(--cg-brand-ai-accent, #dfff61); }
 
@@ -57,11 +55,6 @@ export class AiAgentCard extends LitElement {
     .status-dot.acting { background: #60a5fa; animation: pulse 1.5s ease-in-out infinite; }
     .status-dot.done { background: var(--cg-green-400, #4ade80); }
     .status-dot.error { background: var(--cg-red-400, #f87171); }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 currentColor; }
-      50% { opacity: 0.7; box-shadow: 0 0 0 4px transparent; }
-    }
 
     .status-label { font-size: 12px; font-weight: 600; color: var(--cg-gray-400, #a1a1aa); text-transform: capitalize; }
     .status-label.thinking { color: var(--cg-brand-ai-accent, #dfff61); }
@@ -108,17 +101,8 @@ export class AiAgentCard extends LitElement {
     }
     .action-btn:hover { color: var(--cg-color-surface-base-text, #fafafa); background: var(--cg-gray-700, #3f3f46); }
     .action-btn:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }
-
-    @media (prefers-reduced-motion: reduce) {
-      .status-dot, .card, .action-btn { animation: none; transition: none; }
     }
-  
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `;
-
+  `];
   @property({ type: String }) name: string = 'Agent';
   @property({ type: String }) role: string = '';
   @property({ type: String }) status: 'idle' | 'thinking' | 'acting' | 'done' | 'error' = 'idle';

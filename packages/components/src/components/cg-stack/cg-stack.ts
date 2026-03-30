@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-stack> — Flex layout container for composing child components.
@@ -11,12 +12,11 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-stack')
 export class CgStack extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
       display: flex;
       flex-direction: column;
       gap: var(--cg-spacing-16, 16px);
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
 
     /* Direction */
@@ -55,7 +55,7 @@ export class CgStack extends LitElement {
 
     /* Full width/height */
     :host([full]) { width: 100%; }
-  `;
+  `];
 
   @property({ reflect: true }) direction: 'row' | 'column' | 'row-reverse' | 'column-reverse' = 'column';
   @property({ reflect: true }) gap: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' = 'md';

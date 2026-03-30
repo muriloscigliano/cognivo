@@ -8,6 +8,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBase, reducedMotion } from '../../styles/index.js';
 
 export interface PresenceUser {
   name: string;
@@ -17,12 +18,9 @@ export interface PresenceUser {
 
 @customElement('ai-presence')
 export class AiPresence extends LitElement {
-  static override styles = css`
+  static override styles = [hostBase, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
       align-items: center;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
     }
     :host([hidden]) { display: none; }
 
@@ -130,11 +128,7 @@ export class AiPresence extends LitElement {
       opacity: 1;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .avatar-wrapper { transition: none; }
-      .tooltip { transition: none; }
-    }
-  `;
+  `];
 
   @property({ type: Array }) users: PresenceUser[] = [];
   @property({ type: Number, attribute: 'max-visible' }) maxVisible = 5;

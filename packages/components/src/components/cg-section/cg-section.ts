@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-section> — Foldable content section with streaming awareness.
@@ -14,13 +15,7 @@ import { customElement, property, state } from 'lit/decorators.js';
  */
 @customElement('cg-section')
 export class CgSection extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBlock, reducedMotion, css`
     :host([bordered]) {
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: var(--cg-border-radius-150, 12px);
@@ -117,14 +112,10 @@ export class CgSection extends LitElement {
     .content-inner {
       padding: 0 0 var(--cg-spacing-16, 16px);
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .content, .chevron { transition: none; }
-    }
   
     .header { transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)); }
     .header:hover { color: var(--cg-brand-ai-accent, #dfff61); }
-  `;
+  `];
 
   @property() title = '';
   @property() description = '';

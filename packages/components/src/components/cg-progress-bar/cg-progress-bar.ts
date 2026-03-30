@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-progress-bar> — Linear progress bar with label.
@@ -16,12 +17,9 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-progress-bar')
 export class CgProgressBar extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
       width: 100%;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     }
 
     .header {
@@ -67,11 +65,6 @@ export class CgProgressBar extends LitElement {
       position: relative;
       overflow: hidden;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .fill {
-        transition: width 100ms ease;
-      }
     }
 
     /* ── Variant colors ── */
@@ -110,11 +103,6 @@ export class CgProgressBar extends LitElement {
     :host([animated]) .fill::after {
       animation: stripe-move 1s linear infinite;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      :host([animated]) .fill::after {
-        animation: none;
-      }
     }
 
     @keyframes stripe-move {
@@ -127,11 +115,6 @@ export class CgProgressBar extends LitElement {
       width: 40% !important;
       animation: indeterminate-slide 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      :host([indeterminate]) .fill {
-        animation: indeterminate-pulse 2s ease-in-out infinite;
-      }
     }
 
     @keyframes indeterminate-slide {
@@ -144,7 +127,7 @@ export class CgProgressBar extends LitElement {
       0%, 100% { opacity: 0.4; }
       50% { opacity: 1; }
     }
-  `;
+  `];
 
   @property({ type: Number }) value = 0;
   @property({ type: String }) label = '';

@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBase, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-link> — Styled anchor element with variants.
@@ -13,13 +14,7 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-link')
 export class CgLink extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: inline-flex;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBase, reducedMotion, css`
     a {
       display: inline-flex;
       align-items: center;
@@ -97,11 +92,7 @@ export class CgLink extends LitElement {
       width: 100%;
       height: 100%;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      a, a::after { transition: none; }
-    }
-  `;
+  `];
 
   @property() href = '';
   @property({ reflect: true }) variant: 'default' | 'accent' | 'muted' | 'underline' = 'default';

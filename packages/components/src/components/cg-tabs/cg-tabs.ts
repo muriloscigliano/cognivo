@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface TabItem {
   value: string;
@@ -22,13 +23,7 @@ export interface TabItem {
  */
 @customElement('cg-tabs')
 export class CgTabs extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBlock, reducedMotion, css`
     .tab-list {
       display: flex;
       position: relative;
@@ -115,11 +110,7 @@ export class CgTabs extends LitElement {
     .panel {
       padding: var(--cg-spacing-16, 16px) 0;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .indicator { transition: none; }
-    }
-  `;
+  `];
 
   @property({ type: Array }) tabs: TabItem[] = [];
   @property() value = '';

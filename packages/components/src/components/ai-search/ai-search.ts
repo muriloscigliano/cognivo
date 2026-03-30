@@ -6,6 +6,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface SearchResult {
   title: string;
@@ -16,11 +17,8 @@ interface SearchResult {
 
 @customElement('ai-search')
 export class AiSearch extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
       position: relative;
     }
 
@@ -87,7 +85,7 @@ export class AiSearch extends LitElement {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 10px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--cg-elevation-3, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 10px 15px -3px rgba(0, 0, 0, 0.4));
       z-index: 100;
       max-height: 360px;
       overflow-y: auto;
@@ -183,17 +181,11 @@ export class AiSearch extends LitElement {
 
     .divider { height: 1px; background: var(--cg-gray-800, #27272a); margin: 4px 0; }
 
-    @media (prefers-reduced-motion: reduce) {
-      .dropdown { animation: none; }
-      .filter-tag, .result-item, .recent-item { transition: none; }
-    }
-  
-
     :focus-visible {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  `;
+  `];
 
   @property({ type: String }) placeholder: string = 'Search...';
   @property({ type: Array }) suggestions: string[] = [];

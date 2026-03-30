@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-carousel> — Scrollable content carousel.
@@ -14,11 +15,8 @@ import { customElement, property, state, query } from 'lit/decorators.js';
  */
 @customElement('cg-carousel')
 export class CgCarousel extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
       position: relative;
     }
 
@@ -108,12 +106,7 @@ export class CgCarousel extends LitElement {
       outline: 2px solid var(--cg-focus-ring-color, #c8e650);
       outline-offset: 2px;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .track { scroll-behavior: auto; }
-      .nav-btn, .dot { transition: none; }
-    }
-  `;
+  `];
 
   @property({ type: Boolean }) showDots = true;
   @property({ type: Boolean }) showArrows = true;

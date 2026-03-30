@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-chart> — Pure SVG chart component. No external deps.
@@ -25,13 +26,7 @@ const PALETTE_TOKENS = [
 
 @customElement('cg-chart')
 export class CgChart extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
-    }
-
+  static override styles = [hostBlock, reducedMotion, css`
     .chart-container {
       position: relative;
     }
@@ -198,12 +193,7 @@ export class CgChart extends LitElement {
       stroke-dasharray: 1000;
       animation: drawLine 1s ease-out forwards;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .bar-rect, .line-path { animation: none; }
-      .pie-slice, .bar-rect, .line-dot { transition: none; }
-    }
-  `;
+  `];
 
   @property({ type: Array }) data: ChartSeries[] = [];
   @property() type: 'bar' | 'horizontal-bar' | 'line' | 'area' | 'pie' | 'donut' = 'bar';

@@ -7,15 +7,12 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 @customElement('ai-error-boundary')
 export class AiErrorBoundary extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    
     :host([hidden]) { display: none; }
 
     .error-card {
@@ -143,12 +140,8 @@ export class AiErrorBoundary extends LitElement {
       border: 1px solid var(--cg-color-border-primary, #3f3f46);
     }
     .dismiss-btn:hover:not(:disabled) { filter: brightness(1.2); }
-
-    @media (prefers-reduced-motion: reduce) {
-      .btn { transition: none; }
     }
-  `;
-
+  `];
   @property({ type: String }) error = '';
   @property({ type: String }) code = '';
   @property({ type: Boolean }) retryable = true;

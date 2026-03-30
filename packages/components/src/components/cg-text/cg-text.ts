@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
  * <cg-text> — Semantic typography component.
@@ -12,11 +13,8 @@ import { customElement, property } from 'lit/decorators.js';
  */
 @customElement('cg-text')
 export class CgText extends LitElement {
-  static override styles = css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
       line-height: var(--cg-line-height-normal, 1.5);
       color: var(--cg-color-surface-base-text, #fafafa);
       margin: 0;
@@ -68,7 +66,7 @@ export class CgText extends LitElement {
       font: inherit;
       color: inherit;
     }
-  `;
+  `];
 
   @property() text = '';
   @property({ reflect: true }) size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' = 'md';

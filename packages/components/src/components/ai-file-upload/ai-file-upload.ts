@@ -8,6 +8,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface UploadedFile {
   name: string;
@@ -18,12 +19,8 @@ interface UploadedFile {
 
 @customElement('ai-file-upload')
 export class AiFileUpload extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    
     :host([hidden]) { display: none; }
 
     .dropzone {
@@ -120,12 +117,8 @@ export class AiFileUpload extends LitElement {
       font-size: 12px;
       margin-top: 8px;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .dropzone { transition: none; }
     }
-  `;
-
+  `];
   @property({ type: String }) accept = '';
   @property({ type: Number, attribute: 'max-size' }) maxSize = 10485760; // 10MB
   @property({ type: Boolean }) multiple = false;

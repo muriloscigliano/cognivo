@@ -15,6 +15,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement, query } from 'lit/decorators.js';
 import type { AiClient } from '@cognivo/core';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface MessageVersion {
   content: string;
@@ -31,12 +32,8 @@ interface Message {
 
 @customElement('ai-chat')
 export class AiChat extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    
 
     .chat {
       display: flex;
@@ -329,9 +326,6 @@ export class AiChat extends LitElement {
     .empty-text { font-size: 16px; font-weight: 500; }
 
     .wrapper { position: relative; display: flex; flex-direction: column; height: 100%; }
-
-    @media (prefers-reduced-motion: reduce) {
-      .msg, .cursor { animation: none; }
     }
   
 
@@ -339,8 +333,7 @@ export class AiChat extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
-  `;
-
+  `];
   @property({ type: Object }) aiClient: AiClient | null = null;
   @property({ type: Array }) dataset: unknown[] = [];
   @property({ type: Boolean }) showActions: boolean = true;

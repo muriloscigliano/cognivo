@@ -8,6 +8,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface ComparisonModel {
   name: string;
@@ -19,12 +20,8 @@ export interface ComparisonModel {
 
 @customElement('ai-model-comparison')
 export class AiModelComparison extends LitElement {
-  static override styles = css`
-    :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-      display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    
     :host([hidden]) { display: none; }
 
     .wrapper {
@@ -158,13 +155,9 @@ export class AiModelComparison extends LitElement {
       outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .score-bar-fill { transition: none; }
       .select-btn { transition: none; }
     }
-  `;
-
+  `];
   @property({ type: Array }) models: ComparisonModel[] = [];
 
   private _getMetrics(): string[] {
