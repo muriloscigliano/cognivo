@@ -66,10 +66,10 @@ export class CgInput extends LitElement {
       border-color: var(--cg-color-input-border-error, rgba(239, 68, 68, 0.5));
     }
     :host([error]) .wrapper.focused {
-      border-color: #ef4444;
+      border-color: var(--cg-color-status-error-text-default, #ef4444);
       box-shadow:
         0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-        0 0 0 4px rgba(239, 68, 68, 0.6);
+        0 0 0 4px var(--cg-color-status-error-background-default, rgba(239, 68, 68, 0.6));
     }
 
     /* Success */
@@ -77,10 +77,10 @@ export class CgInput extends LitElement {
       border-color: var(--cg-color-input-icon-success, #4ade80);
     }
     :host([success]) .wrapper.focused {
-      border-color: #4ade80;
+      border-color: var(--cg-color-status-success-text-default, #4ade80);
       box-shadow:
         0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-        0 0 0 4px rgba(74, 222, 128, 0.5);
+        0 0 0 4px var(--cg-color-status-success-background-default, rgba(74, 222, 128, 0.5));
     }
 
     /* Disabled */
@@ -184,12 +184,12 @@ export class CgInput extends LitElement {
 
     /* Error state label color */
     :host([error]) .field.floated .floating-label {
-      color: #ef4444;
+      color: var(--cg-color-status-error-text-default, #ef4444);
     }
 
     /* Success state label color */
     :host([success]) .field.floated .floating-label {
-      color: #4ade80;
+      color: var(--cg-color-status-success-text-default, #4ade80);
     }
 
     /* Disabled label */
@@ -252,8 +252,8 @@ export class CgInput extends LitElement {
       color: var(--cg-gray-500, #71717a);
       padding: 4px 12px 0;
     }
-    :host([error]) .helper { color: #ef4444; }
-    :host([success]) .helper { color: #4ade80; }
+    :host([error]) .helper { color: var(--cg-color-status-error-text-default, #ef4444); }
+    :host([success]) .helper { color: var(--cg-color-status-success-text-default, #4ade80); }
   `];
 
   @property({ reflect: true }) label = '';

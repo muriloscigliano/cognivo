@@ -54,14 +54,14 @@ export class CgSelect extends LitElement {
     :host([error]) .trigger { border-color: var(--cg-text-danger, #ef4444); }
     :host([error]) .trigger:focus-visible,
     :host([error]) .trigger.open {
-      border-color: #ef4444;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px rgba(239, 68, 68, 0.6);
+      border-color: var(--cg-color-status-error-text-default, #ef4444);
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-color-status-error-background-default, rgba(239, 68, 68, 0.6));
     }
     :host([success]) .trigger { border-color: var(--cg-color-input-icon-success, #4ade80); }
     :host([success]) .trigger:focus-visible,
     :host([success]) .trigger.open {
-      border-color: #4ade80;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px rgba(74, 222, 128, 0.5);
+      border-color: var(--cg-color-status-success-text-default, #4ade80);
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-color-status-success-background-default, rgba(74, 222, 128, 0.5));
     }
 
     .trigger-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

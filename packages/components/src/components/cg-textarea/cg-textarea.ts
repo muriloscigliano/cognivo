@@ -48,14 +48,14 @@ export class CgTextarea extends LitElement {
 
     :host([error]) textarea { border-color: var(--cg-text-danger, #ef4444); }
     :host([error]) textarea:focus {
-      border-color: #ef4444;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px rgba(239, 68, 68, 0.6);
+      border-color: var(--cg-color-status-error-text-default, #ef4444);
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-color-status-error-background-default, rgba(239, 68, 68, 0.6));
     }
 
     :host([success]) textarea { border-color: var(--cg-color-input-icon-success, #4ade80); }
     :host([success]) textarea:focus {
-      border-color: #4ade80;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px rgba(74, 222, 128, 0.5);
+      border-color: var(--cg-color-status-success-text-default, #4ade80);
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-color-status-success-background-default, rgba(74, 222, 128, 0.5));
     }
 
     :host([autoresize]) textarea { resize: none; overflow: hidden; }

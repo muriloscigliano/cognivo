@@ -50,18 +50,18 @@ describe('ai-streaming-text', () => {
   });
 
   it('append() adds content and sets streaming', async () => {
-    el.append('Hello ');
+    el.appendText('Hello ');
     await el.updateComplete;
     expect(el.content).toBe('Hello ');
     expect(el.streaming).toBe(true);
 
-    el.append('world');
+    el.appendText('world');
     await el.updateComplete;
     expect(el.content).toBe('Hello world');
   });
 
   it('complete() stops streaming', async () => {
-    el.append('Done');
+    el.appendText('Done');
     await el.updateComplete;
     expect(el.streaming).toBe(true);
 
@@ -71,7 +71,7 @@ describe('ai-streaming-text', () => {
   });
 
   it('reset() clears content and streaming', async () => {
-    el.append('test');
+    el.appendText('test');
     el.reset();
     await el.updateComplete;
     expect(el.content).toBe('');
@@ -81,7 +81,7 @@ describe('ai-streaming-text', () => {
   it('dispatches ai-streaming-chunk on append', async () => {
     let detail: any = null;
     el.addEventListener('ai-streaming-chunk', ((e: CustomEvent) => { detail = e.detail; }) as EventListener);
-    el.append('token');
+    el.appendText('token');
     expect(detail).not.toBeNull();
     expect(detail.chunk).toBe('token');
   });
