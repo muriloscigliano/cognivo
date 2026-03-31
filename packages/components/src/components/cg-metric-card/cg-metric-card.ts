@@ -138,7 +138,7 @@ export class CgMetricCard extends LitElement {
   `];
 
   /** Metric label */
-  @property() title = '';
+  @property() override title = '';
 
   /** Metric value (e.g. "$2.4M") */
   @property() value = '';

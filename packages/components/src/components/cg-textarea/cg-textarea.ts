@@ -3,12 +3,21 @@ import { customElement, property, state, query } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
- * <cg-textarea> — Multi-line text input with auto-resize and character count.
+ * @element cg-textarea
+ * Multi-line text input with optional auto-resize and character count.
  *
- * Better than OpenUI's TextArea:
- * - Auto-resize to content
- * - Character count with maxlength
- * - All states: default, hover, focus, disabled, readonly, error
+ * @example
+ * ```html
+ * <cg-textarea placeholder="Write something..." rows="4"></cg-textarea>
+ * <cg-textarea autoresize maxlength="500" error></cg-textarea>
+ * ```
+ *
+ * @fires {CustomEvent<{value: string}>} cg-input - On every input change
+ *
+ * @cssprop [--cg-color-input-background-default=#18181b] - Textarea background
+ * @cssprop [--cg-focus-ring-color=#c8e650] - Focus border color
+ * @cssprop [--cg-border-radius-150=12px] - Border radius
+ * @cssprop [--cg-text-danger=#ef4444] - Error state border color
  */
 @customElement('cg-textarea')
 export class CgTextarea extends LitElement {
@@ -28,8 +37,8 @@ export class CgTextarea extends LitElement {
       line-height: var(--cg-line-height-normal, 1.5);
       resize: vertical;
       outline: none;
-      transition: border-color var(--cg-motion-duration-normal, 150ms), box-shadow 0.15s;
       min-height: 80px;
+      transition: border-color var(--cg-motion-duration-normal, 150ms), box-shadow 0.15s, height 200ms ease-out;
     }
     textarea::placeholder { color: var(--cg-gray-500, #71717a); }
     textarea:hover:not(:disabled):not([readonly]) { border-color: var(--cg-focus-ring-color, #c8e650); }
@@ -38,7 +47,16 @@ export class CgTextarea extends LitElement {
     textarea[readonly] { background: var(--cg-color-surface-field-disable-background, #18181b); }
 
     :host([error]) textarea { border-color: var(--cg-text-danger, #ef4444); }
-    :host([error]) textarea:focus { box-shadow: 0 0 0 3px var(--cg-overlay-dark-medium, rgba(0, 0, 0, 0.3)); }
+    :host([error]) textarea:focus {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px rgba(239, 68, 68, 0.6);
+    }
+
+    :host([success]) textarea { border-color: var(--cg-color-input-icon-success, #4ade80); }
+    :host([success]) textarea:focus {
+      border-color: #4ade80;
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px rgba(74, 222, 128, 0.5);
+    }
 
     :host([autoresize]) textarea { resize: none; overflow: hidden; }
 
@@ -52,16 +70,22 @@ export class CgTextarea extends LitElement {
       color: var(--cg-gray-500, #71717a);
     }
     :host([error]) .count { color: var(--cg-text-danger, #ef4444); }
+
+    /* Size variants */
+    :host([size="sm"]) textarea { font-size: 12px; padding: 6px 8px; min-height: 60px; }
+    :host([size="lg"]) textarea { font-size: 16px; padding: 10px 16px; min-height: 100px; }
   `];
 
+  @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property() value = '';
   @property() placeholder = '';
   @property() name = '';
   @property({ type: Number }) rows = 3;
   @property({ type: Number }) maxlength = 0;
   @property({ type: Boolean, reflect: true }) disabled = false;
-  @property({ type: Boolean }) readonly = false;
+  @property({ type: Boolean, reflect: true }) readonly = false;
   @property({ type: Boolean, reflect: true }) error = false;
+  @property({ type: Boolean, reflect: true }) success = false;
   @property({ type: Boolean, reflect: true }) autoresize = false;
 
   @query('textarea') private _textarea!: HTMLTextAreaElement;

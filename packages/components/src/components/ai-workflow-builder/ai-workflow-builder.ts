@@ -78,7 +78,7 @@ export class AiWorkflowBuilder extends LitElement {
   `];
 
   @property({ type: Array }) steps: WorkflowStep[] = [];
-  @property({ type: String }) title: string = 'Workflow';
+  @property({ type: String }) override title: string = 'Workflow';
 
   private _icons: Record<string, string> = { start: '▶', agent: '🤖', tool: '🔧', condition: '◆', end: '⏹' };
   private _statusIcons: Record<string, string> = { complete: '✓', error: '✕', active: '●', pending: '○', skipped: '–' };

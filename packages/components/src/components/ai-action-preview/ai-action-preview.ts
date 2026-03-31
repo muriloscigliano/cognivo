@@ -159,7 +159,7 @@ export class AiActionPreview extends LitElement {
       button { transition: none; }
     }
   `];
-  @property({ type: String }) title = '';
+  @property({ type: String }) override title = '';
   @property({ type: String }) description = '';
   @property({ type: String }) action = '';
   @property({ type: String }) severity: Severity = 'low';

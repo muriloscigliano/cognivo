@@ -2,6 +2,7 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
 
+/** Image entry for cg-image-gallery, with source URL, alt text, and optional caption. */
 export interface GalleryImage { src: string; alt?: string; caption?: string; }
 
 /**

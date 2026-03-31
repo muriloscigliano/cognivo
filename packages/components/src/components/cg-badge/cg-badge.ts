@@ -3,13 +3,24 @@ import { customElement, property } from 'lit/decorators.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 
 /**
- * <cg-badge> — Semantic status badge with variants.
+ * @element cg-badge
+ * Semantic status badge with 6 color variants, optional dot indicator, and remove button.
  *
- * Better than OpenUI's Tag:
- * - Dot indicator variant
- * - Removable (x button)
- * - 6 semantic colors
- * - Size variants
+ * @example
+ * ```html
+ * <cg-badge variant="success" label="Active" dot></cg-badge>
+ * <cg-badge variant="danger" label="Error" removable></cg-badge>
+ * <cg-badge variant="accent" size="lg">Custom</cg-badge>
+ * ```
+ *
+ * @slot - Additional content after the label text
+ *
+ * @fires {CustomEvent<{label: string}>} cg-badge-remove - When the remove button is clicked
+ *
+ * @cssprop [--cg-color-badge-background-default] - Neutral badge background
+ * @cssprop [--cg-color-badge-text-default] - Neutral badge text color
+ * @cssprop [--cg-border-radius-100=8px] - Badge border radius (sm/md)
+ * @cssprop [--cg-font-size-xs=12px] - Badge font size (md)
  */
 @customElement('cg-badge')
 export class CgBadge extends LitElement {

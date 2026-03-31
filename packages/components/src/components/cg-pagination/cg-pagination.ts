@@ -3,17 +3,21 @@ import { customElement, property } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
- * <cg-pagination> — Page navigation.
+ * @element cg-pagination
+ * Page navigation with prev/next arrows, ellipsis gaps, and configurable siblings.
  *
- * Features:
- * - Page number buttons with prev/next arrows
- * - Ellipsis for gaps in page ranges
- * - Current page highlighted with accent
- * - Disabled prev on page 1, disabled next on last page
- * - Configurable siblings around current
- * - Optional first/last page buttons
- * - Full keyboard accessibility
- * - HeroUI timing + dual-layer focus ring + press scale
+ * @example
+ * ```html
+ * <cg-pagination total="20" current="5" siblings="1"></cg-pagination>
+ * <cg-pagination total="100" current="1" size="sm"></cg-pagination>
+ * ```
+ *
+ * @fires {CustomEvent<{page: number}>} cg-page-change - When a page button is clicked
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Active page background and focus ring
+ * @cssprop [--cg-color-surface-base-border=#27272a] - Page button border
+ * @cssprop [--cg-interaction-press-scale=0.97] - Press scale feedback
+ * @cssprop [--cg-font-size-sm=14px] - Page button font size (md)
  */
 @customElement('cg-pagination')
 export class CgPagination extends LitElement {
@@ -109,6 +113,13 @@ export class CgPagination extends LitElement {
       height: 16px;
     }
 
+    /* Size variants */
+    :host([size="sm"]) .page-btn { min-width: 28px; height: 28px; font-size: 12px; }
+    :host([size="sm"]) .ellipsis { min-width: 28px; height: 28px; font-size: 12px; }
+
+    :host([size="lg"]) .page-btn { min-width: 44px; height: 44px; font-size: 16px; }
+    :host([size="lg"]) .ellipsis { min-width: 44px; height: 44px; font-size: 16px; }
+
     @media (max-width: 480px) {
       .page-btn {
         min-width: 32px;
@@ -123,6 +134,7 @@ export class CgPagination extends LitElement {
     }
   `];
 
+  @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ type: Number }) total = 1;
   @property({ type: Number }) current = 1;
   @property({ type: Number }) siblings = 1;

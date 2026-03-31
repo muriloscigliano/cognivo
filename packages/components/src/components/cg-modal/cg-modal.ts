@@ -2,16 +2,27 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 /**
- * <cg-modal> — Modal dialog with backdrop blur and scale animation.
+ * @element cg-modal
+ * Modal dialog with backdrop blur, scale animation, focus trap, and scroll lock.
  *
- * Features:
- * - Backdrop with blur(4px) + dark overlay
- * - Content scales in (0.95->1, 200ms)
- * - Escape to close, focus trap (Tab cycles within modal)
- * - Slots for body content and footer
- * - Close X button, body scroll lock
- * - HeroUI timing + dual-layer focus ring
- * - prefers-reduced-motion support
+ * @example
+ * ```html
+ * <cg-modal title="Confirm" open size="sm">
+ *   <p>Are you sure?</p>
+ *   <div slot="footer"><cg-button>OK</cg-button></div>
+ * </cg-modal>
+ * ```
+ *
+ * @slot - Default slot for modal body content
+ * @slot footer - Action buttons area below the body
+ *
+ * @fires {CustomEvent} cg-modal-open - When the modal opens
+ * @fires {CustomEvent} cg-modal-close - When the modal closes
+ *
+ * @cssprop [--cg-color-surface-raised-background=#1e1e22] - Modal background
+ * @cssprop [--cg-border-radius-200=16px] - Modal border radius
+ * @cssprop [--cg-motion-easing-bounce=cubic-bezier(0.34,1.56,0.64,1)] - Open animation
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Close button focus ring
  */
 @customElement('cg-modal')
 export class CgModal extends LitElement {

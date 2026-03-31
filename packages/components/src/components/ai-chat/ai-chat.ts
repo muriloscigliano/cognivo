@@ -335,7 +335,7 @@ export class AiChat extends LitElement {
     }
   `];
   @property({ type: Object }) aiClient: AiClient | null = null;
-  @property({ type: Array }) dataset: unknown[] = [];
+  @property({ type: Array }) chatDataset: unknown[] = [];
   @property({ type: Boolean }) showActions: boolean = true;
   @property({ type: Boolean }) showFollowUps: boolean = true;
   @property({ type: String }) welcomeMessage: string = 'Ask me about your data!';
@@ -401,7 +401,7 @@ export class AiChat extends LitElement {
 
     try {
       const result = await (this.aiClient as any).runIntent('explain', {
-        dataset: this.dataset.length > 0 ? this.dataset : [{ info: 'No data provided' }],
+        dataset: this.chatDataset.length > 0 ? this.chatDataset : [{ info: 'No data provided' }],
         meta: { userQuestion: text, timeframe: 'monthly', unit: 'USD' },
       }) as Record<string, any>;
 

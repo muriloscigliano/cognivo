@@ -10,6 +10,7 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
  *           animated entrance, value labels on bars, percentage on pie
  */
 
+/** Data series entry for cg-chart, with label, numeric value, and optional color override. */
 export interface ChartSeries { label: string; value: number; color?: string; }
 
 /** Token names for chart palette — resolved at runtime via getComputedStyle */
@@ -197,7 +198,7 @@ export class CgChart extends LitElement {
 
   @property({ type: Array }) data: ChartSeries[] = [];
   @property() type: 'bar' | 'horizontal-bar' | 'line' | 'area' | 'pie' | 'donut' = 'bar';
-  @property() title = '';
+  @property() override title = '';
   @property() subtitle = '';
   @property({ type: Number }) height = 240;
   @property({ type: Boolean }) showLegend = true;

@@ -103,7 +103,7 @@ export class AiHeatmap extends LitElement {
   @property({ type: Boolean }) showValues: boolean = true;
 
   /** Title */
-  @property({ type: String }) title: string = '';
+  @property({ type: String }) override title: string = '';
 
   @state() private _tooltip: { x: number; y: number; row: string; col: string; value: number } | null = null;
 

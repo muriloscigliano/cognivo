@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
 
+/** Menu item for cg-dropdown, with id, label, optional icon, disabled state, and divider flag. */
 export interface DropdownItem {
   id: string;
   label: string;
@@ -10,16 +11,28 @@ export interface DropdownItem {
 }
 
 /**
- * <cg-dropdown> — Floating dropdown menu with scale+fade animation.
+ * @element cg-dropdown
+ * Floating dropdown menu with scale+fade animation and full keyboard navigation.
  *
- * Features:
- * - Click trigger to toggle, Escape to close
- * - Arrow key navigation through items
- * - Scale+fade entrance animation (scale 0.95->1, opacity 0->1, 200ms)
- * - Click outside to close
- * - Divider support, disabled items
- * - Full keyboard accessibility with ARIA
- * - HeroUI timing + dual-layer focus ring
+ * @example
+ * ```html
+ * <cg-dropdown
+ *   position="bottom-start"
+ *   .items=${[{id:'edit',label:'Edit'},{id:'delete',label:'Delete'}]}
+ * >
+ *   <cg-button slot="trigger">Actions</cg-button>
+ * </cg-dropdown>
+ * ```
+ *
+ * @slot trigger - The element that toggles the dropdown on click
+ *
+ * @fires {CustomEvent} cg-dropdown-open - When the menu opens
+ * @fires {CustomEvent} cg-dropdown-close - When the menu closes
+ * @fires {CustomEvent<{id: string, label: string}>} cg-dropdown-select - When an item is selected
+ *
+ * @cssprop [--cg-color-surface-raised-background=#1e1e22] - Menu background
+ * @cssprop [--cg-border-radius-150=12px] - Menu border radius
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Focus ring color
  */
 @customElement('cg-dropdown')
 export class CgDropdown extends LitElement {

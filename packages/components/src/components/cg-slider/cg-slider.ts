@@ -42,8 +42,18 @@ export class CgSlider extends LitElement {
 
     .range-labels { display: flex; justify-content: space-between; margin-top: var(--cg-spacing-4, 4px); }
     .range-label { font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-500, #71717a); }
+
+    /* Size variants */
+    :host([size="sm"]) input[type="range"] { height: 4px; }
+    :host([size="sm"]) input[type="range"]::-webkit-slider-thumb { width: 16px; height: 16px; }
+    :host([size="sm"]) input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; }
+
+    :host([size="lg"]) input[type="range"] { height: 8px; }
+    :host([size="lg"]) input[type="range"]::-webkit-slider-thumb { width: 24px; height: 24px; }
+    :host([size="lg"]) input[type="range"]::-moz-range-thumb { width: 24px; height: 24px; }
   `];
 
+  @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property() label = '';
   @property() name = '';
   @property({ type: Number }) value = 50;

@@ -104,7 +104,7 @@ export class AiAgentCard extends LitElement {
     }
   `];
   @property({ type: String }) name: string = 'Agent';
-  @property({ type: String }) role: string = '';
+  @property({ type: String }) override role: string = '';
   @property({ type: String }) status: 'idle' | 'thinking' | 'acting' | 'done' | 'error' = 'idle';
   @property({ type: String }) task: string = '';
   @property({ type: Array }) handoffChain: string[] = [];

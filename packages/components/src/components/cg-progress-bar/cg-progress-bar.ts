@@ -65,7 +65,6 @@ export class CgProgressBar extends LitElement {
       position: relative;
       overflow: hidden;
     }
-    }
 
     /* ── Variant colors ── */
     :host([variant="default"]) .fill {

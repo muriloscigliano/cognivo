@@ -151,7 +151,7 @@ export class AiDataPreview extends LitElement {
   @property({ attribute: false }) data: unknown = null;
   @property({ type: String }) format: 'json' | 'csv' | 'table' = 'json';
   @property({ type: Number }) maxRows = 50;
-  @property({ type: String }) title = 'Data Preview';
+  @property({ type: String }) override title = 'Data Preview';
 
   private _getRowCount(): number {
     if (Array.isArray(this.data)) return this.data.length;

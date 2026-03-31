@@ -205,6 +205,19 @@ export class CgCodeBlock extends LitElement {
       font-family: inherit;
     }
     .expand-btn:hover { color: var(--cg-color-code-text, #e4e4e7); }
+
+    /* Visually hidden but accessible to screen readers */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
   `];
 
   @property() code = '';
@@ -243,12 +256,13 @@ export class CgCodeBlock extends LitElement {
           </div>
           <div class="actions">
             ${this.language ? html`<span class="language">${this.language}</span>` : nothing}
-            <button class="action-btn ${this._copied ? 'copied' : ''}" @click=${this._copy} aria-label="Copy code">
+            <button class="action-btn ${this._copied ? 'copied' : ''}" @click=${this._copy} aria-label="Copy code to clipboard">
               ${this._copied
                 ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"></path></svg> Copied`
                 : html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg> Copy`
               }
             </button>
+            <span class="sr-only" role="status" aria-live="polite">${this._copied ? 'Copied!' : ''}</span>
           </div>
         </div>
 

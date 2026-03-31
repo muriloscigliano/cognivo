@@ -3,15 +3,22 @@ import { customElement, property } from 'lit/decorators.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 
 /**
- * <cg-switch> — Toggle switch with spring animation (HeroUI-quality).
+ * @element cg-switch
+ * Toggle switch with spring-animated thumb and three size variants.
  *
- * Features:
- * - Spring bounce on thumb movement (cubic-bezier overshoot)
- * - Scale press feedback
- * - Dual-layer focus ring
- * - Smooth track color transition
- * - Thumb shadow for depth
- * - prefers-reduced-motion respected
+ * @example
+ * ```html
+ * <cg-switch label="Dark mode" checked></cg-switch>
+ * <cg-switch label="Notifications" size="sm"></cg-switch>
+ * <cg-switch disabled label="Locked"></cg-switch>
+ * ```
+ *
+ * @fires {CustomEvent<{checked: boolean}>} cg-change - When toggled on/off
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Track color when checked
+ * @cssprop [--cg-gray-700=#3f3f46] - Track color when unchecked
+ * @cssprop [--cg-motion-easing-bounce=cubic-bezier(0.34,1.56,0.64,1)] - Thumb spring
+ * @cssprop [--cg-color-surface-base-text=#fafafa] - Label text color
  */
 @customElement('cg-switch')
 export class CgSwitch extends LitElement {

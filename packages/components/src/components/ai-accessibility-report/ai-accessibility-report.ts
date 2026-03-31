@@ -215,7 +215,7 @@ export class AiAccessibilityReport extends LitElement {
 
   @property({ type: Array }) issues: A11yIssue[] = [];
   @property({ type: Number }) score = 0;
-  @property({ type: String }) title = 'Accessibility Report';
+  @property({ type: String }) override title = 'Accessibility Report';
 
   @state() private _expanded = new Set<number>();
 

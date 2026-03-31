@@ -2,18 +2,25 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 /**
- * <cg-drawer> — Slide-in side panel.
+ * @element cg-drawer
+ * Slide-in side panel with backdrop, focus trap, and scroll lock.
  *
- * Features:
- * - Slides in from left or right with translateX animation
- * - Backdrop overlay with click-to-close (unless persistent)
- * - Close on Escape
- * - Close X button, slot for content
- * - Smooth 300ms slide transition with spring bounce
- * - Size variants (sm, md, lg, full)
- * - Body scroll lock when open
- * - Focus management
- * - prefers-reduced-motion support
+ * @example
+ * ```html
+ * <cg-drawer title="Settings" side="right" size="md" open>
+ *   <p>Drawer content here.</p>
+ * </cg-drawer>
+ * ```
+ *
+ * @slot - Default slot for drawer body content
+ *
+ * @fires {CustomEvent} cg-drawer-open - When the drawer opens
+ * @fires {CustomEvent} cg-drawer-close - When the drawer closes
+ *
+ * @cssprop [--cg-color-surface-raised-background=#1e1e22] - Panel background
+ * @cssprop [--cg-border-radius-200=16px] - Panel border radius
+ * @cssprop [--cg-motion-easing-bounce=cubic-bezier(0.34,1.56,0.64,1)] - Slide spring
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Close button focus ring
  */
 @customElement('cg-drawer')
 export class CgDrawer extends LitElement {
@@ -218,11 +225,19 @@ export class CgDrawer extends LitElement {
     document.addEventListener('keydown', this._keydownHandler);
     this.dispatchEvent(new CustomEvent('cg-drawer-open', { bubbles: true, composed: true }));
 
-    // Focus the close button or panel
+    // Focus the first focusable element inside the panel (close button as fallback)
     this.updateComplete.then(() => {
-      const closeBtn = this.shadowRoot?.querySelector('.close-btn') as HTMLElement;
-      if (closeBtn) {
-        closeBtn.focus();
+      const root = this.shadowRoot;
+      if (!root) return;
+      const selectors = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+      const shadowFocusable = [...(root.querySelectorAll<HTMLElement>(selectors) || [])];
+      const lightFocusable = [...this.querySelectorAll<HTMLElement>(selectors)];
+      const focusable = [...shadowFocusable, ...lightFocusable].filter(el => !el.closest('[hidden]') && el.offsetParent !== null);
+      if (focusable.length > 0) {
+        focusable[0]!.focus();
+      } else {
+        const panel = root.querySelector('.panel') as HTMLElement;
+        panel?.focus();
       }
     });
   }
@@ -246,6 +261,42 @@ export class CgDrawer extends LitElement {
     if (e.key === 'Escape' && this.closable) {
       e.preventDefault();
       this._requestClose();
+      return;
+    }
+
+    if (e.key === 'Tab') {
+      this._trapFocus(e);
+    }
+  }
+
+  private _trapFocus(e: KeyboardEvent) {
+    const root = this.shadowRoot;
+    if (!root) return;
+
+    const selectors = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    const shadowFocusable = [...(root.querySelectorAll<HTMLElement>(selectors) || [])];
+    const lightFocusable = [...this.querySelectorAll<HTMLElement>(selectors)];
+    const focusable = [...shadowFocusable, ...lightFocusable].filter(el => !el.closest('[hidden]') && el.offsetParent !== null);
+    if (focusable.length === 0) {
+      e.preventDefault();
+      return;
+    }
+
+    const first = focusable[0]!;
+    const last = focusable[focusable.length - 1]!;
+
+    const active = root.activeElement ?? document.activeElement;
+
+    if (e.shiftKey) {
+      if (active === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (active === last) {
+        e.preventDefault();
+        first.focus();
+      }
     }
   }
 
@@ -271,6 +322,7 @@ export class CgDrawer extends LitElement {
         role="dialog"
         aria-modal="true"
         aria-label="${this.title || 'Side panel'}"
+        tabindex="-1"
       >
         ${this.title || this.closable ? html`
           <div class="drawer-header">

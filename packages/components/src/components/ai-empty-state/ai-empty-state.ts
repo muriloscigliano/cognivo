@@ -135,7 +135,7 @@ export class AiEmptyState extends LitElement {
     }
   `];
   @property({ type: String }) icon = '📭';
-  @property({ type: String }) title = 'Nothing here yet';
+  @property({ type: String }) override title = 'Nothing here yet';
   @property({ type: String }) description = '';
   @property({ type: String, attribute: 'action-label' }) actionLabel = '';
   @property({ type: String, reflect: true }) variant: 'default' | 'error' | 'search' | 'ai' = 'default';

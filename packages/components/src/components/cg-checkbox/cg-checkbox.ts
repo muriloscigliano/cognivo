@@ -1,21 +1,30 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
- * <cg-checkbox> — Premium checkbox with HeroUI-quality animations.
+ * @element cg-checkbox
+ * Checkbox with animated tick draw, spring bounce, and indeterminate state.
  *
- * Features:
- * - Scale animation on check (scale 0.5→1 with spring bounce)
- * - Color transition on state change (200ms)
- * - Focus ring with dual-layer shadow
- * - Indeterminate state
- * - Press feedback (scale 0.95)
- * - prefers-reduced-motion respected
+ * @example
+ * ```html
+ * <cg-checkbox label="Accept terms" description="Required to continue"></cg-checkbox>
+ * <cg-checkbox checked label="Notifications"></cg-checkbox>
+ * <cg-checkbox indeterminate label="Select all"></cg-checkbox>
+ * ```
+ *
+ * @fires {CustomEvent<{checked: boolean, value: string}>} cg-change - When toggled
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Checked box background and border
+ * @cssprop [--cg-gray-600=#52525b] - Unchecked border color
+ * @cssprop [--cg-color-surface-base-text=#fafafa] - Label text color
+ * @cssprop [--cg-motion-easing-bounce=cubic-bezier(0.34,1.56,0.64,1)] - Bounce easing
  */
 @customElement('cg-checkbox')
 export class CgCheckbox extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
+    :host { display: inline-block; }
+
     label {
       display: inline-flex;
       align-items: flex-start;
@@ -23,6 +32,7 @@ export class CgCheckbox extends LitElement {
       cursor: pointer;
       padding: 4px 0;
       -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
     :host([disabled]) label {
       cursor: not-allowed;
@@ -36,17 +46,17 @@ export class CgCheckbox extends LitElement {
       flex-shrink: 0;
       margin-top: 1px;
       border: 2px solid var(--cg-gray-600, #52525b);
-      border-radius: 5px;
+      border-radius: 6px;
       background: transparent;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       transition:
-        background-color var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        border-color var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        box-shadow var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+        background-color 200ms var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        border-color 200ms var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        box-shadow 200ms var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        transform 250ms var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
     /* Hover */
@@ -60,7 +70,7 @@ export class CgCheckbox extends LitElement {
       transform: scale(0.9);
     }
 
-    /* Focus ring — dual layer like HeroUI */
+    /* Focus ring — dual layer */
     label:focus-visible .box {
       border-color: var(--cg-brand-ai-accent, #dfff61);
       box-shadow:
@@ -68,10 +78,11 @@ export class CgCheckbox extends LitElement {
         0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
 
-    /* Checked state — fill with spring animation */
+    /* ── Checked state ── */
     .box.checked {
       background: var(--cg-brand-ai-accent, #dfff61);
       border-color: var(--cg-brand-ai-accent, #dfff61);
+      animation: boxBounce 300ms var(--cg-motion-easing-bounce, cubic-bezier(0.34, 1.56, 0.64, 1));
     }
 
     /* Indeterminate */
@@ -80,18 +91,38 @@ export class CgCheckbox extends LitElement {
       border-color: var(--cg-brand-ai-accent, #dfff61);
     }
 
-    /* Check icon — scale in with spring bounce */
+    /* ── Animated tick ── */
     .check-icon {
       width: 12px;
       height: 12px;
       color: var(--cg-gray-black, #000000);
-      animation: checkIn 250ms var(--cg-motion-easing-bounce, cubic-bezier(0.34, 1.56, 0.64, 1)) forwards;
     }
 
-    @keyframes checkIn {
-      0% { transform: scale(0); opacity: 0; }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); opacity: 1; }
+    .check-icon .tick {
+      stroke-dasharray: 24;
+      stroke-dashoffset: 24;
+      animation: drawTick 300ms 50ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) forwards;
+    }
+
+    .check-icon .dash {
+      stroke-dasharray: 14;
+      stroke-dashoffset: 14;
+      animation: drawDash 250ms 50ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) forwards;
+    }
+
+    @keyframes drawTick {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes drawDash {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes boxBounce {
+      0% { transform: scale(1); }
+      40% { transform: scale(0.85); }
+      70% { transform: scale(1.05); }
+      100% { transform: scale(1); }
     }
 
     /* Hidden native input */
@@ -126,7 +157,8 @@ export class CgCheckbox extends LitElement {
   @property({ type: Boolean }) indeterminate = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
 
-  private _toggle() {
+  private _toggle(e: Event) {
+    e.preventDefault();
     if (this.disabled) return;
     this.checked = !this.checked;
     this.indeterminate = false;
@@ -146,7 +178,7 @@ export class CgCheckbox extends LitElement {
         aria-checked=${this.indeterminate ? 'mixed' : String(this.checked)}
         aria-disabled=${String(this.disabled)}
         @click=${this._toggle}
-        @keydown=${(e: KeyboardEvent) => { if (e.key === ' ') { e.preventDefault(); this._toggle(); } }}
+        @keydown=${(e: KeyboardEvent) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); this._toggle(e); } }}
       >
         <input type="checkbox" .checked=${this.checked} .indeterminate=${this.indeterminate}
           ?disabled=${this.disabled} name=${this.name} value=${this.value}
@@ -154,13 +186,13 @@ export class CgCheckbox extends LitElement {
 
         <span class="box ${state}">
           ${this.checked ? html`
-            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
-              <path d="M20 6L9 17l-5-5"></path>
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path class="tick" d="M20 6L9 17l-5-5"></path>
             </svg>
           ` : nothing}
           ${this.indeterminate ? html`
             <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
-              <path d="M5 12h14"></path>
+              <path class="dash" d="M5 12h14"></path>
             </svg>
           ` : nothing}
         </span>

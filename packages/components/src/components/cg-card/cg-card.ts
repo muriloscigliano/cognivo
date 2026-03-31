@@ -3,14 +3,29 @@ import { customElement, property } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 /**
- * <cg-card> — Container with header/body/footer slots.
+ * @element cg-card
+ * Container with header/body/footer slots and three visual variants.
  *
- * Better than OpenUI's Card + CardHeader:
- * - Single component (no separate CardHeader)
- * - Named slots: header, default (body), footer
- * - Hover elevation variant (for clickable cards)
- * - 3 visual variants: elevated, outlined, filled
- * - Padding control
+ * @example
+ * ```html
+ * <cg-card variant="outlined" padding="md">
+ *   <h3 slot="header">Title</h3>
+ *   <p>Card body content here.</p>
+ *   <div slot="footer"><cg-button>Action</cg-button></div>
+ * </cg-card>
+ * <cg-card variant="elevated" clickable>Clickable card</cg-card>
+ * ```
+ *
+ * @slot - Default slot for body content
+ * @slot header - Card header area (above body)
+ * @slot footer - Card footer area (below body)
+ *
+ * @fires {CustomEvent} cg-card-click - When a clickable card is clicked
+ *
+ * @cssprop [--cg-color-surface-cards-background=#18181b] - Card background
+ * @cssprop [--cg-color-surface-cards-border=#27272a] - Card border (outlined)
+ * @cssprop [--cg-border-radius-200=24px] - Card border radius
+ * @cssprop [--cg-interaction-hover-lift=-1px] - Clickable card hover lift
  */
 @customElement('cg-card')
 export class CgCard extends LitElement {

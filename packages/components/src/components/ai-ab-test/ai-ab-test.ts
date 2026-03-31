@@ -144,7 +144,7 @@ export class AiAbTest extends LitElement {
   @property({ type: String }) variantB = '';
   @property({ type: String }) labelA = 'A';
   @property({ type: String }) labelB = 'B';
-  @property({ type: String }) title = 'A/B Comparison';
+  @property({ type: String }) override title = 'A/B Comparison';
 
   @state() private _winner: 'a' | 'b' | 'tie' | null = null;
   @state() private _swapped = false;

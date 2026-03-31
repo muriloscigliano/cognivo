@@ -142,7 +142,7 @@ export class AiAnalyticsChart extends LitElement {
     }
   `];
   @property({ type: Array }) series: AnalyticsSeries[] = [];
-  @property({ type: String }) title = '';
+  @property({ type: String }) override title = '';
   @property({ type: String }) yLabel = '';
   @property({ type: Number }) height = 200;
 

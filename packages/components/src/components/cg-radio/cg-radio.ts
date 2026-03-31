@@ -3,15 +3,21 @@ import { customElement, property } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
- * <cg-radio> — Radio button with spring animation (HeroUI-quality).
+ * @element cg-radio
+ * Radio button with spring-animated inner dot. Use inside a `<cg-radio-group>`.
  *
- * Features:
- * - Inner dot scales in with spring bounce
- * - Dual-layer focus ring
- * - Press feedback (scale 0.95)
- * - Smooth border color transition
- * - Description text support
- * - prefers-reduced-motion respected
+ * @example
+ * ```html
+ * <cg-radio label="Option A" value="a" description="First choice"></cg-radio>
+ * <cg-radio label="Option B" value="b" checked></cg-radio>
+ * ```
+ *
+ * @fires {CustomEvent<{value: string, checked: true}>} cg-change - When selected
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Checked dot and border color
+ * @cssprop [--cg-gray-600=#52525b] - Unchecked border color
+ * @cssprop [--cg-color-surface-base-text=#fafafa] - Label text color
+ * @cssprop [--cg-motion-easing-bounce=cubic-bezier(0.34,1.56,0.64,1)] - Spring easing
  */
 @customElement('cg-radio')
 export class CgRadio extends LitElement {

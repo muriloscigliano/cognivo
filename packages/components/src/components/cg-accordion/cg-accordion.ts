@@ -2,6 +2,7 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
+/** Item definition for cg-accordion, with trigger label, content, and optional icon. */
 export interface AccordionItem {
   value: string;
   trigger: string;
@@ -11,16 +12,28 @@ export interface AccordionItem {
 }
 
 /**
- * <cg-accordion> — Expandable content sections.
+ * @element cg-accordion
+ * Expandable content sections with smooth CSS grid height animation.
  *
- * Features:
- * - Single or multiple open mode
- * - Smooth height animation (no max-height hack — uses CSS grid trick)
- * - 3 visual variants: default, card, bordered
- * - Disabled items
- * - Default open items
- * - Keyboard accessible
- * - Active indicator on the left
+ * @example
+ * ```html
+ * <cg-accordion
+ *   variant="card"
+ *   multiple
+ *   .items=${[
+ *     {value:'faq1', trigger:'What is Cognivo?', content:'An AI component library.'},
+ *     {value:'faq2', trigger:'Is it free?', content:'Yes, MIT licensed.'},
+ *   ]}
+ *   .defaultOpen=${['faq1']}
+ * ></cg-accordion>
+ * ```
+ *
+ * @fires {CustomEvent<{open: string[], toggled: string}>} cg-accordion-change - When an item is toggled
+ *
+ * @cssprop [--cg-focus-ring-color=#c8e650] - Active indicator and focus ring color
+ * @cssprop [--cg-text-accent=#e5ff6b] - Hover/active trigger text color
+ * @cssprop [--cg-color-surface-container-border=#27272a] - Item borders
+ * @cssprop [--cg-border-radius-150=12px] - Card/bordered variant radius
  */
 @customElement('cg-accordion')
 export class CgAccordion extends LitElement {
@@ -81,9 +94,11 @@ export class CgAccordion extends LitElement {
     }
 
     .trigger:focus-visible {
-      outline: 2px solid var(--cg-focus-ring-color, #c8e650);
-      outline-offset: -2px;
-      border-radius: 4px;
+      box-shadow:
+        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
+        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      outline: none;
+      border-radius: var(--cg-border-radius-100, 8px);
     }
 
     .trigger:disabled {
@@ -150,8 +165,16 @@ export class CgAccordion extends LitElement {
   
     .header { transition: background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)); }
     .header:hover { background: rgba(255, 255, 255, 0.03); }
+
+    /* Size variants */
+    :host([size="sm"]) .trigger { font-size: 13px; padding: 8px 12px; }
+    :host([size="sm"]) .content-inner { font-size: 13px; }
+
+    :host([size="lg"]) .trigger { font-size: 16px; padding: 16px 20px; }
+    :host([size="lg"]) .content-inner { font-size: 16px; }
   `];
 
+  @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ type: Array }) items: AccordionItem[] = [];
   @property({ type: Boolean }) multiple = false;
   @property({ reflect: true }) variant: 'default' | 'card' | 'bordered' = 'default';

@@ -126,7 +126,7 @@ export class AiKpiGrid extends LitElement {
       .skel-line { animation: none; background: var(--cg-gray-800, #27272a); }
     }
   `];
-  @property({ type: String }) title = '';
+  @property({ type: String }) override title = '';
   @property({ attribute: false }) kpis: KpiItem[] = [];
   @property({ type: Number }) columns = 2;
   @property({ type: Boolean }) loading = false;

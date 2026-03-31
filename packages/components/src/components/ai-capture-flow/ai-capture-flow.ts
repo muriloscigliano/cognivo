@@ -196,7 +196,7 @@ export class AiCaptureFlow extends LitElement {
   @property({ type: String }) previewUrl = '';
   @property({ type: String }) result = '';
   @property({ type: Number }) progress = 0;
-  @property({ type: String }) title = 'Capture';
+  @property({ type: String }) override title = 'Capture';
 
   @state() private _dragOver = false;
 

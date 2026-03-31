@@ -134,7 +134,7 @@ export class AiEmbeddingViz extends LitElement {
     }
   `];
   @property({ type: Array }) points: EmbeddingPoint[] = [];
-  @property({ type: String }) title = 'Embedding Visualization';
+  @property({ type: String }) override title = 'Embedding Visualization';
   @property({ type: Boolean }) showLabels = false;
 
   @state() private _hovered: EmbeddingPoint | null = null;

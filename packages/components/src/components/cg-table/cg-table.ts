@@ -13,6 +13,7 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
  * - Compact size variant
  */
 
+/** Column definition for cg-table, including key, label, alignment, and sortability. */
 export interface TableColumn {
   key: string;
   label: string;

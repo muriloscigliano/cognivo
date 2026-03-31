@@ -2,6 +2,7 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, pulseKeyframes } from '../../styles/index.js';
 
+/** Step definition for cg-steps, with title, description, and status (done/active/pending/error). */
 export interface StepItem {
   title: string;
   description?: string;

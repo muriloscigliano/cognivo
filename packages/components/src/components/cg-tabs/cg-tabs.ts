@@ -2,6 +2,7 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
+/** Tab definition for cg-tabs, with value, label, optional icon, disabled state, and badge count. */
 export interface TabItem {
   value: string;
   label: string;
@@ -11,15 +12,28 @@ export interface TabItem {
 }
 
 /**
- * <cg-tabs> — Tabs with animated sliding indicator, badges, keyboard nav.
+ * @element cg-tabs
+ * Tabbed navigation with animated sliding indicator, count badges, and keyboard nav.
  *
- * Features:
- * - Animated indicator bar that slides between tabs
- * - Optional count badge per tab
- * - Overflow scroll with hidden scrollbar
- * - Full keyboard navigation (Arrow keys, Home, End)
- * - ARIA tabs pattern
- * - Variant: underline (default), pills
+ * @example
+ * ```html
+ * <cg-tabs
+ *   .tabs=${[{value:'all',label:'All',count:12},{value:'active',label:'Active'}]}
+ *   value="all"
+ * >
+ *   <div slot="all">All items</div>
+ *   <div slot="active">Active items</div>
+ * </cg-tabs>
+ * ```
+ *
+ * @slot - Default fallback panel content
+ * @slot [value] - Named slot per tab value for panel content
+ *
+ * @fires {CustomEvent<{value: string, label: string}>} cg-tab-change - When a tab is selected
+ *
+ * @cssprop [--cg-focus-ring-color=#c8e650] - Indicator bar and focus outline color
+ * @cssprop [--cg-text-accent=#e5ff6b] - Active tab text color
+ * @cssprop [--cg-color-surface-container-background=#18181b] - Pills variant background
  */
 @customElement('cg-tabs')
 export class CgTabs extends LitElement {
@@ -110,8 +124,16 @@ export class CgTabs extends LitElement {
     .panel {
       padding: var(--cg-spacing-16, 16px) 0;
     }
+
+    /* Size variants */
+    :host([size="sm"]) .tab { font-size: 12px; padding: 6px 12px; }
+    :host([size="sm"]:not([variant="pills"])) .indicator { height: 2px; }
+
+    :host([size="lg"]) .tab { font-size: 16px; padding: 10px 20px; }
+    :host([size="lg"]:not([variant="pills"])) .indicator { height: 3px; }
   `];
 
+  @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ type: Array }) tabs: TabItem[] = [];
   @property() value = '';
   @property({ reflect: true }) variant: 'underline' | 'pills' = 'underline';

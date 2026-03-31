@@ -104,14 +104,25 @@ export class CgCallout extends LitElement {
     .dismiss:hover { opacity: 0.8; }
     .dismiss:focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
     .dismiss svg { width: 16px; height: 16px; }
+
+    @keyframes calloutExit {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-8px); }
+    }
+    .callout.dismissing {
+      animation: calloutExit 200ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+    }
   `];
 
   @property({ reflect: true }) variant: 'info' | 'success' | 'warning' | 'danger' | 'neutral' = 'info';
-  @property() title = '';
+  @property() override title = '';
   @property() description = '';
   @property({ type: Boolean }) dismissible = false;
 
   @state() private _dismissed = false;
+  @state() private _dismissing = false;
+
+  private _dismissTimer = 0;
 
   private _iconPaths: Record<string, string> = {
     info: 'M12 2a10 10 0 100 20 10 10 0 000-20zm0 5a1 1 0 011 1v4a1 1 0 01-2 0V8a1 1 0 011-1zm0 8a1 1 0 110 2 1 1 0 010-2z',
@@ -121,19 +132,28 @@ export class CgCallout extends LitElement {
     neutral: 'M12 2a10 10 0 100 20 10 10 0 000-20zm0 5a1 1 0 011 1v4a1 1 0 01-2 0V8a1 1 0 011-1zm0 8a1 1 0 110 2 1 1 0 010-2z',
   };
 
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    clearTimeout(this._dismissTimer);
+  }
+
   private _dismiss() {
-    this._dismissed = true;
-    this.setAttribute('hidden', '');
+    this._dismissing = true;
     this.dispatchEvent(new CustomEvent('cg-callout-dismiss', { bubbles: true, composed: true }));
+    this._dismissTimer = window.setTimeout(() => {
+      this._dismissed = true;
+      this._dismissing = false;
+      this.setAttribute('hidden', '');
+    }, 200);
   }
 
   override render() {
-    if (this._dismissed) return nothing;
+    if (this._dismissed && !this._dismissing) return nothing;
 
     const iconPath = this._iconPaths[this.variant] ?? this._iconPaths.info;
 
     return html`
-      <div class="callout" role="alert">
+      <div class="callout ${this._dismissing ? 'dismissing' : ''}" role="alert">
         <div class="icon">
           <slot name="icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

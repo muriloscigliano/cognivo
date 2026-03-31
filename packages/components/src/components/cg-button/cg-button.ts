@@ -3,14 +3,24 @@ import { customElement, property } from 'lit/decorators.js';
 import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
 
 /**
- * <cg-button> — Interactive button with variants, sizes, types, and loading state.
+ * @element cg-button
+ * A button with variants, sizes, loading state, and press feedback.
  *
- * Better than OpenUI's Button:
- * - Loading state with spinner
- * - Icon slots (prefix/suffix)
- * - Full keyboard accessibility
- * - All 8 states: default, hover, active, focus-visible, disabled, loading
- * - 3 variants × 3 sizes × 2 types = 18 visual combinations
+ * @example
+ * ```html
+ * <cg-button variant="primary" size="md">Click me</cg-button>
+ * <cg-button variant="secondary" loading>Saving...</cg-button>
+ * <cg-button type="danger"><span slot="prefix">🗑</span>Delete</cg-button>
+ * ```
+ *
+ * @slot - Default slot for button text/content
+ * @slot prefix - Icon or content before the label
+ * @slot suffix - Icon or content after the label
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Primary button background color
+ * @cssprop [--cg-component-button-height-md=38px] - Button height (md size)
+ * @cssprop [--cg-interaction-press-scale=0.97] - Scale on press/active
+ * @cssprop [--cg-motion-duration-fast=80ms] - Color transition speed
  */
 @customElement('cg-button')
 export class CgButton extends LitElement {

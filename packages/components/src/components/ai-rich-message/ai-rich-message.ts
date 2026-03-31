@@ -156,7 +156,7 @@ export class AiRichMessage extends LitElement {
 
   `];
 
-  @property({ type: String }) role: 'user' | 'assistant' | 'system' = 'assistant';
+  @property({ type: String }) override role: 'user' | 'assistant' | 'system' = 'assistant';
   @property({ type: String }) text = '';
   @property({ attribute: false }) cards: CardRef[] = [];
   @property({ type: String }) avatar = '';

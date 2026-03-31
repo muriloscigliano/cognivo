@@ -310,7 +310,7 @@ export class AiDataCard extends LitElement {
     }
   `];
   /** Card title */
-  @property({ type: String }) title: string = '';
+  @property({ type: String }) override title: string = '';
 
   /** Subtitle text */
   @property({ type: String }) subtitle: string = '';

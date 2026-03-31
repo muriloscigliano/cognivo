@@ -157,7 +157,7 @@ export class AiAlertCard extends LitElement {
       .action-btn, .dismiss { transition: none; }
     }
   `];
-  @property({ type: String }) title = '';
+  @property({ type: String }) override title = '';
   @property({ type: String }) message = '';
   @property({ type: String }) urgency: Urgency = 'info';
   @property({ type: String }) deadline = '';

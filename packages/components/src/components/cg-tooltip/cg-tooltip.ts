@@ -1,17 +1,28 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 /**
- * <cg-tooltip> — Hover/focus tooltip with arrow.
+ * @element cg-tooltip
+ * Hover/focus tooltip with arrow, viewport-aware positioning, and fade+scale animation.
  *
- * Features:
- * - Shows on hover/focus after configurable delay
- * - CSS arrow pointing to trigger element
- * - Fade+scale animation (150ms)
- * - Positioned relative to trigger
- * - role="tooltip", auto-hides on mouse leave
- * - Wraps child content via slot
- * - prefers-reduced-motion support
+ * @example
+ * ```html
+ * <cg-tooltip content="Save your work" position="top">
+ *   <cg-button>Save</cg-button>
+ * </cg-tooltip>
+ * <cg-tooltip position="bottom">
+ *   <cg-button>Rich</cg-button>
+ *   <div slot="content"><strong>Bold</strong> tooltip</div>
+ * </cg-tooltip>
+ * ```
+ *
+ * @slot - Default slot for the trigger element
+ * @slot content - Rich HTML tooltip content (alternative to `content` property)
+ *
+ * @cssprop [--cg-color-surface-overlay-background=#27272a] - Tooltip background
+ * @cssprop [--cg-font-size-xs=12px] - Tooltip font size
+ * @cssprop [--cg-border-radius-100=8px] - Tooltip border radius
+ * @cssprop [--cg-motion-duration-slow=150ms] - Fade+scale animation duration
  */
 @customElement('cg-tooltip')
 export class CgTooltip extends LitElement {
@@ -52,6 +63,11 @@ export class CgTooltip extends LitElement {
         transform var(--cg-motion-duration-slow, 150ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
+    /* Rich content slot may contain block elements */
+    .tooltip-content ::slotted(*) {
+      white-space: normal;
+    }
+
     :host([_visible]) .tooltip {
       opacity: 1;
       transform: scale(1);
@@ -59,8 +75,8 @@ export class CgTooltip extends LitElement {
 
     /* ── Closing animation ── */
     @keyframes tooltip-exit {
-      from { opacity: 1; }
-      to { opacity: 0; }
+      from { opacity: 1; transform: scale(1); }
+      to { opacity: 0; transform: scale(0.92); }
     }
     .tooltip.closing {
       animation: tooltip-exit 100ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
@@ -83,76 +99,76 @@ export class CgTooltip extends LitElement {
     }
 
     /* ── Top position (default) ── */
-    :host([position="top"]) .tooltip {
+    :host([_effective-position="top"]) .tooltip {
       bottom: 100%;
       left: 50%;
       transform-origin: bottom center;
       margin-bottom: 8px;
     }
-    :host([position="top"][_visible]) .tooltip {
+    :host([_effective-position="top"][_visible]) .tooltip {
       transform: scale(1) translateX(-50%);
     }
-    :host([position="top"]) .tooltip:not([style]) {
+    :host([_effective-position="top"]) .tooltip:not([style]) {
       transform: scale(0.92) translateX(-50%);
     }
-    :host([position="top"]) .arrow {
+    :host([_effective-position="top"]) .arrow {
       bottom: -4px;
       left: 50%;
       margin-left: -4px;
     }
 
     /* ── Bottom position ── */
-    :host([position="bottom"]) .tooltip {
+    :host([_effective-position="bottom"]) .tooltip {
       top: 100%;
       left: 50%;
       transform-origin: top center;
       margin-top: 8px;
     }
-    :host([position="bottom"][_visible]) .tooltip {
+    :host([_effective-position="bottom"][_visible]) .tooltip {
       transform: scale(1) translateX(-50%);
     }
-    :host([position="bottom"]) .tooltip:not([style]) {
+    :host([_effective-position="bottom"]) .tooltip:not([style]) {
       transform: scale(0.92) translateX(-50%);
     }
-    :host([position="bottom"]) .arrow {
+    :host([_effective-position="bottom"]) .arrow {
       top: -4px;
       left: 50%;
       margin-left: -4px;
     }
 
     /* ── Left position ── */
-    :host([position="left"]) .tooltip {
+    :host([_effective-position="left"]) .tooltip {
       right: 100%;
       top: 50%;
       transform-origin: right center;
       margin-right: 8px;
     }
-    :host([position="left"][_visible]) .tooltip {
+    :host([_effective-position="left"][_visible]) .tooltip {
       transform: scale(1) translateY(-50%);
     }
-    :host([position="left"]) .tooltip:not([style]) {
+    :host([_effective-position="left"]) .tooltip:not([style]) {
       transform: scale(0.92) translateY(-50%);
     }
-    :host([position="left"]) .arrow {
+    :host([_effective-position="left"]) .arrow {
       right: -4px;
       top: 50%;
       margin-top: -4px;
     }
 
     /* ── Right position ── */
-    :host([position="right"]) .tooltip {
+    :host([_effective-position="right"]) .tooltip {
       left: 100%;
       top: 50%;
       transform-origin: left center;
       margin-left: 8px;
     }
-    :host([position="right"][_visible]) .tooltip {
+    :host([_effective-position="right"][_visible]) .tooltip {
       transform: scale(1) translateY(-50%);
     }
-    :host([position="right"]) .tooltip:not([style]) {
+    :host([_effective-position="right"]) .tooltip:not([style]) {
       transform: scale(0.92) translateY(-50%);
     }
-    :host([position="right"]) .arrow {
+    :host([_effective-position="right"]) .arrow {
       left: -4px;
       top: 50%;
       margin-top: -4px;
@@ -164,25 +180,67 @@ export class CgTooltip extends LitElement {
   @property({ type: Number }) delay = 300;
   @property({ type: Boolean }) disabled = false;
 
-  @state()
   @property({ type: Boolean, reflect: true, attribute: '_visible' })
   private _visible = false;
 
   @state() private _closing = false;
 
+  /** Effective position after viewport edge detection (may differ from `position` prop). */
+  @property({ type: String, reflect: true, attribute: '_effective-position' })
+  private _effectivePosition: 'top' | 'bottom' | 'left' | 'right' = 'top';
+
   private _showTimeout: ReturnType<typeof setTimeout> | null = null;
   private _hideTimeout: ReturnType<typeof setTimeout> | null = null;
   private _tooltipId = `tooltip-${Math.random().toString(36).slice(2, 9)}`;
 
+  /** Check if the tooltip has rich slot content (named "content" slot). */
+  private get _hasContent(): boolean {
+    return !!this.content || !!this.querySelector('[slot="content"]');
+  }
+
+  /**
+   * Adjusts the effective position based on viewport edge detection.
+   * Called after the tooltip becomes visible so we can measure its bounding rect.
+   */
+  private _adjustPosition() {
+    const tooltipEl = this.shadowRoot?.querySelector('.tooltip') as HTMLElement | null;
+    if (!tooltipEl) return;
+
+    const rect = tooltipEl.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    let adjusted = this.position;
+
+    if (this.position === 'top' && rect.top < 0) {
+      adjusted = 'bottom';
+    } else if (this.position === 'bottom' && rect.bottom > vh) {
+      adjusted = 'top';
+    } else if (this.position === 'left' && rect.left < 0) {
+      adjusted = 'right';
+    } else if (this.position === 'right' && rect.right > vw) {
+      adjusted = 'left';
+    }
+
+    if (adjusted !== this._effectivePosition) {
+      this._effectivePosition = adjusted;
+    }
+  }
+
   private _show() {
-    if (this.disabled || !this.content) return;
+    if (this.disabled || !this._hasContent) return;
     if (this._hideTimeout) {
       clearTimeout(this._hideTimeout);
       this._hideTimeout = null;
       this._closing = false;
     }
+    // Reset effective position to the declared position before showing
+    this._effectivePosition = this.position;
     this._showTimeout = setTimeout(() => {
       this._visible = true;
+      // Adjust position after layout is calculated
+      requestAnimationFrame(() => {
+        this._adjustPosition();
+      });
     }, this.delay);
   }
 
@@ -196,6 +254,8 @@ export class CgTooltip extends LitElement {
     this._hideTimeout = setTimeout(() => {
       this._closing = false;
       this._visible = false;
+      // Reset effective position when hidden
+      this._effectivePosition = this.position;
     }, 100);
   }
 
@@ -225,10 +285,12 @@ export class CgTooltip extends LitElement {
         class="tooltip ${this._closing ? 'closing' : ''}"
         id="${this._tooltipId}"
         role="tooltip"
-        aria-hidden="${!this._visible}"
+        aria-hidden=${!this._visible ? 'true' : nothing}
       >
         <span class="arrow"></span>
-        ${this.content}
+        <span class="tooltip-content">
+          <slot name="content">${this.content}</slot>
+        </span>
       </div>
     `;
   }

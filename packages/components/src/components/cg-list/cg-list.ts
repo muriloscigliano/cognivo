@@ -2,6 +2,7 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
+/** Item definition for cg-list, with title, subtitle, image/icon, and optional action. */
 export interface ListItem {
   title: string;
   subtitle?: string;
@@ -13,16 +14,28 @@ export interface ListItem {
 }
 
 /**
- * <cg-list> — Rich list with multiple variants.
+ * @element cg-list
+ * Data list with bullet, number, image, or plain variants and optional item actions.
  *
- * Features:
- * - 3 variants: bullet, number, image
- * - Clickable items with hover state
- * - Action button per item
- * - Meta text (right-aligned, e.g. date/count)
- * - Divider control
- * - Empty state
- * - Keyboard accessible (items as buttons when clickable)
+ * @example
+ * ```html
+ * <cg-list
+ *   variant="image"
+ *   clickable
+ *   .items=${[
+ *     {title:'Alice', subtitle:'Engineer', image:'/alice.jpg', meta:'Online'},
+ *     {title:'Bob', subtitle:'Designer', image:'/bob.jpg', actionLabel:'View'},
+ *   ]}
+ * ></cg-list>
+ * ```
+ *
+ * @fires {CustomEvent<{item: ListItem, index: number}>} cg-list-click - When a clickable item is clicked
+ * @fires {CustomEvent<{item: ListItem, index: number, action: string}>} cg-list-action - When an item action button is clicked
+ *
+ * @cssprop [--cg-overlay-accent-subtle=rgba(223,255,97,0.06)] - Hover background
+ * @cssprop [--cg-text-accent=#e5ff6b] - Action button text color
+ * @cssprop [--cg-color-surface-container-border=#27272a] - Divider color
+ * @cssprop [--cg-color-surface-base-text=#fafafa] - Item title color
  */
 @customElement('cg-list')
 export class CgList extends LitElement {

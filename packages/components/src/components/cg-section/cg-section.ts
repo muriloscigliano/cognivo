@@ -117,7 +117,7 @@ export class CgSection extends LitElement {
     .header:hover { color: var(--cg-brand-ai-accent, #dfff61); }
   `];
 
-  @property() title = '';
+  @property() override title = '';
   @property() description = '';
   @property({ type: Boolean, reflect: true }) foldable = true;
   @property({ type: Boolean }) open = false;

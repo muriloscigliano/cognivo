@@ -209,7 +209,7 @@ export class AiTestRunner extends LitElement {
   `];
 
   @property({ type: Array }) tests: TestEntry[] = [];
-  @property({ type: String }) title = 'Test Results';
+  @property({ type: String }) override title = 'Test Results';
 
   @state() private _expanded = new Set<number>();
 

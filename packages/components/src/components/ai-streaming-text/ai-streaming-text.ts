@@ -92,7 +92,7 @@ export class AiStreamingText extends LitElement {
   @property({ type: Boolean }) markdown: boolean = true;
 
   /** Append text (for streaming) */
-  append(text: string) {
+  appendText(text: string) {
     this.content += text;
     this.streaming = true;
     this.dispatchEvent(new CustomEvent('ai-streaming-chunk', {

@@ -1,5 +1,5 @@
 /**
- * @cognivo/components — 40 Web Components built with Lit 3.x
+ * @cognivo/components — 125 Web Components built with Lit 3.x
  * All use Shadow DOM + --cg-* design tokens. Framework-agnostic.
  */
 
@@ -24,6 +24,7 @@ import { CgSelect } from './components/cg-select/cg-select.js';
 import { CgTextarea } from './components/cg-textarea/cg-textarea.js';
 import { CgCheckbox } from './components/cg-checkbox/cg-checkbox.js';
 import { CgRadio } from './components/cg-radio/cg-radio.js';
+import { CgRadioGroup } from './components/cg-radio-group/cg-radio-group.js';
 import { CgSwitch } from './components/cg-switch/cg-switch.js';
 import { CgSlider } from './components/cg-slider/cg-slider.js';
 import { CgForm } from './components/cg-form/cg-form.js';
@@ -154,7 +155,7 @@ export {
   CgStack, CgText, CgButton, CgCard, CgBadge, CgInput,
   CgSeparator, CgIcon, CgCallout, CgImage, CgLabel, CgMetricCard,
   // Wave 2: Data & Forms
-  CgTable, CgSelect, CgTextarea, CgCheckbox, CgRadio,
+  CgTable, CgSelect, CgTextarea, CgCheckbox, CgRadio, CgRadioGroup,
   CgSwitch, CgSlider, CgForm, CgDatePicker, CgButtonGroup,
   // Wave 3: Navigation & Content
   CgTabs, CgAccordion, CgSteps, CgCarousel, CgCodeBlock,

@@ -136,7 +136,7 @@ export class AiAudioPlayer extends LitElement {
     }
   `];
   @property({ type: String }) src = '';
-  @property({ type: String }) title = 'Audio';
+  @property({ type: String }) override title = 'Audio';
   @property({ type: Number }) duration = 0;
 
   @state() private _playing = false;

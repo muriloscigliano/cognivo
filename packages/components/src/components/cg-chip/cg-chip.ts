@@ -3,17 +3,23 @@ import { customElement, property } from 'lit/decorators.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 
 /**
- * <cg-chip> — Removable tag/chip.
+ * @element cg-chip
+ * Pill-shaped tag/chip with color variants, optional icon, and remove button.
  *
- * Features:
- * - Pill shape with color variants (semi-transparent bg)
- * - Optional remove X button with hover effect
- * - Optional leading icon
- * - Click handler + remove event
- * - Disabled state
- * - Press scale animation
- * - HeroUI timing + dual-layer focus ring
- * - prefers-reduced-motion support
+ * @example
+ * ```html
+ * <cg-chip label="TypeScript" variant="accent"></cg-chip>
+ * <cg-chip label="Bug" variant="error" removable icon="🐛"></cg-chip>
+ * <cg-chip label="Done" variant="success" disabled></cg-chip>
+ * ```
+ *
+ * @fires {CustomEvent<{label: string}>} cg-chip-click - When the chip is clicked
+ * @fires {CustomEvent<{label: string}>} cg-chip-remove - When the remove button is clicked
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Accent variant color
+ * @cssprop [--cg-interaction-press-scale=0.97] - Press scale feedback
+ * @cssprop [--cg-color-surface-base-border=#27272a] - Default variant border
+ * @cssprop [--cg-font-size-sm=14px] - Chip font size (md)
  */
 @customElement('cg-chip')
 export class CgChip extends LitElement {

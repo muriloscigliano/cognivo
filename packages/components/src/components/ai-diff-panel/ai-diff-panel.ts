@@ -168,23 +168,23 @@ export class AiDiffPanel extends LitElement {
     }
   `];
   /** Text content before changes */
-  @property({ type: String }) before: string = '';
+  @property({ type: String }) beforeCode: string = '';
 
   /** Text content after changes */
-  @property({ type: String }) after: string = '';
+  @property({ type: String }) afterCode: string = '';
 
   /** Display mode */
   @property({ type: String }) mode: 'side-by-side' | 'inline' = 'side-by-side';
 
   /** Panel title */
-  @property({ type: String }) title: string = 'Comparison';
+  @property({ type: String }) override title: string = 'Comparison';
 
   /** Column labels [before, after] */
   @property({ type: Array }) labels: [string, string] = ['Before', 'After'];
 
   private _computeDiff(): DiffLine[] {
-    const beforeLines = this.before.split('\n');
-    const afterLines = this.after.split('\n');
+    const beforeLines = this.beforeCode.split('\n');
+    const afterLines = this.afterCode.split('\n');
     const result: DiffLine[] = [];
     const max = Math.max(beforeLines.length, afterLines.length);
 
@@ -238,8 +238,8 @@ export class AiDiffPanel extends LitElement {
   }
 
   private _renderSideBySide() {
-    const beforeLines = this.before.split('\n');
-    const afterLines = this.after.split('\n');
+    const beforeLines = this.beforeCode.split('\n');
+    const afterLines = this.afterCode.split('\n');
     const diff = this._computeDiff();
 
     // Build parallel arrays
@@ -297,7 +297,7 @@ export class AiDiffPanel extends LitElement {
   }
 
   override render() {
-    if (!this.before && !this.after) {
+    if (!this.beforeCode && !this.afterCode) {
       return html`<div class="panel"><div class="empty">No content to compare</div></div>`;
     }
 

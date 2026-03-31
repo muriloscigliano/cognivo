@@ -184,7 +184,7 @@ export class AiBatchProgress extends LitElement {
   @property({ type: Number }) total = 0;
   @property({ type: Number }) completed = 0;
   @property({ type: Number }) failed = 0;
-  @property({ type: String }) title = 'Batch Job';
+  @property({ type: String }) override title = 'Batch Job';
   @property({ type: String }) status: 'running' | 'complete' | 'failed' | 'paused' = 'running';
 
   private get _pending(): number {

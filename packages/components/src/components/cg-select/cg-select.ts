@@ -3,15 +3,27 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
- * <cg-select> — Dropdown select with search, keyboard nav, and multi-select.
+ * @element cg-select
+ * Dropdown select with optional search filtering and keyboard navigation.
  *
- * Better than OpenUI's Select (which uses Radix):
- * - No React dependency (pure Web Component)
- * - Searchable/filterable
- * - Keyboard navigation (arrow keys, enter, escape)
- * - All states: default, hover, focus, disabled, error, open
+ * @example
+ * ```html
+ * <cg-select
+ *   placeholder="Choose a fruit"
+ *   .options=${[{value:'apple',label:'Apple'},{value:'banana',label:'Banana'}]}
+ * ></cg-select>
+ * <cg-select searchable error .options=${items}></cg-select>
+ * ```
+ *
+ * @fires {CustomEvent<{value: string, label: string}>} cg-change - When a selection is made
+ *
+ * @cssprop [--cg-color-input-background-default=#18181b] - Trigger background
+ * @cssprop [--cg-color-surface-container-background=#18181b] - Dropdown panel background
+ * @cssprop [--cg-focus-ring-color=#c8e650] - Focus/hover border accent
+ * @cssprop [--cg-border-radius-150=12px] - Border radius for trigger and dropdown
  */
 
+/** Option entry for cg-select, with value, display label, and optional disabled state. */
 export interface SelectOption {
   value: string;
   label: string;
@@ -40,6 +52,17 @@ export class CgSelect extends LitElement {
     .trigger.open { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
     .trigger.disabled { opacity: 0.5; cursor: not-allowed; background: var(--cg-color-surface-field-disable-background, #18181b); }
     :host([error]) .trigger { border-color: var(--cg-text-danger, #ef4444); }
+    :host([error]) .trigger:focus-visible,
+    :host([error]) .trigger.open {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px rgba(239, 68, 68, 0.6);
+    }
+    :host([success]) .trigger { border-color: var(--cg-color-input-icon-success, #4ade80); }
+    :host([success]) .trigger:focus-visible,
+    :host([success]) .trigger.open {
+      border-color: #4ade80;
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px rgba(74, 222, 128, 0.5);
+    }
 
     .trigger-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .placeholder { color: var(--cg-gray-500, #71717a); }
@@ -54,6 +77,11 @@ export class CgSelect extends LitElement {
       border-radius: var(--cg-border-radius-150, 12px);
       box-shadow: var(--cg-shadow-md-x, 0px) var(--cg-shadow-md-y, 4px) var(--cg-shadow-md-blur, 12px) var(--cg-shadow-md-spread, 0px) var(--cg-shadow-md-Color, #000000);
       max-height: 240px; overflow-y: auto;
+      opacity: 0; transform: translateY(-4px) scale(0.98); pointer-events: none;
+      transition: opacity 150ms, transform 150ms;
+    }
+    .dropdown.open {
+      opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
     }
     .dropdown[hidden] { display: none; }
 
@@ -78,14 +106,23 @@ export class CgSelect extends LitElement {
     .search input:focus { border-color: var(--cg-focus-ring-color, #c8e650); }
 
     .empty-msg { padding: var(--cg-spacing-12, 12px); text-align: center; color: var(--cg-gray-500, #71717a); font-size: var(--cg-font-size-sm, 14px); }
+
+    /* Size variants */
+    :host([size="sm"]) .trigger { min-height: 32px; font-size: 12px; padding: 0 8px; }
+    :host([size="sm"]) .option { font-size: 12px; }
+
+    :host([size="lg"]) .trigger { min-height: 48px; font-size: 16px; padding: 0 16px; }
+    :host([size="lg"]) .option { font-size: 16px; }
   `];
 
+  @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ type: Array }) options: SelectOption[] = [];
   @property() value = '';
   @property() placeholder = 'Select...';
   @property() name = '';
   @property({ type: Boolean }) disabled = false;
   @property({ type: Boolean, reflect: true }) error = false;
+  @property({ type: Boolean, reflect: true }) success = false;
   @property({ type: Boolean }) searchable = false;
 
   @state() private _open = false;
@@ -165,7 +202,7 @@ export class CgSelect extends LitElement {
         </svg>
       </div>
 
-      <div class="dropdown" ?hidden=${!this._open} role="listbox">
+      <div class="dropdown ${this._open ? 'open' : ''}" ?hidden=${!this._open} role="listbox">
         ${this.searchable ? html`
           <div class="search">
             <input

@@ -246,7 +246,7 @@ export class AiResultPanel extends LitElement {
     }
   `];
 
-  @property({ type: String }) title: string = 'AI Analysis';
+  @property({ type: String }) override title: string = 'AI Analysis';
   @property({ type: String }) explanation: string = '';
   @property({ type: Array }) bullets: string[] = [];
   @property({ type: Array }) drivers: Driver[] = [];
