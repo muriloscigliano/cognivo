@@ -25,7 +25,7 @@ export class CgDatePicker extends LitElement {
       transition: border-color var(--cg-motion-duration-normal, 150ms), box-shadow 0.15s;
     }
     input:hover:not(:disabled) { border-color: var(--cg-focus-ring-color, #c8e650); }
-    input:focus { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
+    input:focus { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: 0 0 8px rgba(223, 255, 97, 0.15), 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
     input:disabled { opacity: 0.5; cursor: not-allowed; }
     :host([error]) input { border-color: var(--cg-text-danger, #ef4444); }
   `];

@@ -44,12 +44,13 @@ export class CgSelect extends LitElement {
       font: inherit; font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-surface-base-text, #fafafa);
       cursor: pointer; min-height: 40px;
-      transition: border-color var(--cg-motion-duration-normal, 150ms), box-shadow 0.15s;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), 0 0 0 0px transparent;
+      transition: border-color var(--cg-motion-duration-normal, 150ms), box-shadow 150ms ease;
       outline: none;
     }
     .trigger:hover:not(.disabled) { border-color: var(--cg-focus-ring-color, #c8e650); }
-    .trigger:focus-visible { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
-    .trigger.open { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
+    .trigger:focus-visible { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
+    .trigger.open { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
     .trigger.disabled { opacity: 0.5; cursor: not-allowed; background: var(--cg-color-surface-field-disable-background, #18181b); }
     :host([error]) .trigger { border-color: var(--cg-text-danger, #ef4444); }
     :host([error]) .trigger:focus-visible,
@@ -75,7 +76,7 @@ export class CgSelect extends LitElement {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: var(--cg-border-radius-150, 12px);
-      box-shadow: var(--cg-shadow-md-x, 0px) var(--cg-shadow-md-y, 4px) var(--cg-shadow-md-blur, 12px) var(--cg-shadow-md-spread, 0px) var(--cg-shadow-md-Color, #000000);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), var(--cg-shadow-md-x, 0px) var(--cg-shadow-md-y, 4px) var(--cg-shadow-md-blur, 12px) var(--cg-shadow-md-spread, 0px) var(--cg-shadow-md-Color, #000000);
       max-height: 240px; overflow-y: auto;
       opacity: 0; transform: translateY(-4px) scale(0.98); pointer-events: none;
       transition: opacity 150ms, transform 150ms;
@@ -89,10 +90,10 @@ export class CgSelect extends LitElement {
       padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); border-radius: var(--cg-border-radius-50, 4px); cursor: pointer;
       font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-surface-base-text, #fafafa);
-      transition: background var(--cg-motion-duration-fast, 80ms);
+      transition: background var(--cg-motion-duration-fast, 80ms), transform 150ms ease;
       display: flex; align-items: center; gap: var(--cg-spacing-8, 8px);
     }
-    .option:hover { background: var(--cg-color-action-tertiary-background-hover, #27272a); }
+    .option:hover { background: var(--cg-color-action-tertiary-background-hover, #27272a); transform: scale(1.01); }
     .option.selected { background: var(--cg-color-action-tertiary-background-hover, #27272a); color: var(--cg-text-accent, #e5ff6b); font-weight: 500; }
     .option.highlighted { background: var(--cg-color-action-tertiary-background-hover, #27272a); }
     .option.disabled { opacity: 0.4; cursor: not-allowed; }

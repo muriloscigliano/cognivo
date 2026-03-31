@@ -63,6 +63,7 @@ export class CgCheckbox extends LitElement {
     :host(:not([disabled])) label:hover .box {
       border-color: var(--cg-brand-ai-accent, #dfff61);
       background: rgba(223, 255, 97, 0.06);
+      box-shadow: 0 0 8px rgba(223, 255, 97, 0.15);
     }
 
     /* Pressed */

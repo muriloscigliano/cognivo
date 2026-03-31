@@ -116,7 +116,21 @@ export class CgAutocomplete extends LitElement {
       font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-surface-base-text, #fafafa);
       cursor: pointer;
-      transition: background 100ms ease;
+      transition: background 100ms ease, opacity 150ms ease, transform 150ms ease;
+      animation: optionIn 200ms cubic-bezier(0.2, 0, 0, 1) both;
+    }
+    .option:nth-child(1) { animation-delay: 0ms; }
+    .option:nth-child(2) { animation-delay: 30ms; }
+    .option:nth-child(3) { animation-delay: 60ms; }
+    .option:nth-child(4) { animation-delay: 90ms; }
+    .option:nth-child(5) { animation-delay: 120ms; }
+    .option:nth-child(6) { animation-delay: 150ms; }
+    .option:nth-child(7) { animation-delay: 180ms; }
+    .option:nth-child(8) { animation-delay: 210ms; }
+
+    @keyframes optionIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .option:hover, .option.active {
       background: var(--cg-color-action-secondary-background-hover, #3f3f46);

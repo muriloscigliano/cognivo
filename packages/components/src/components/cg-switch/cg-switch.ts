@@ -39,6 +39,7 @@ export class CgSwitch extends LitElement {
       height: 24px;
       border-radius: 9999px;
       background: var(--cg-gray-700, #3f3f46);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
       transition: background-color var(--cg-motion-duration-normal, 150ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       flex-shrink: 0;
     }
@@ -66,6 +67,7 @@ export class CgSwitch extends LitElement {
     /* Thumb checked — slide right with spring bounce */
     .track.checked .thumb {
       transform: translateX(20px);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 8px rgba(223, 255, 97, 0.3);
     }
 
     /* ── Press feedback ── */

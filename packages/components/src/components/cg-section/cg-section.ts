@@ -20,6 +20,7 @@ export class CgSection extends LitElement {
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: var(--cg-border-radius-150, 12px);
       padding: 0 var(--cg-spacing-16, 16px);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
     :host(:not([bordered])) {

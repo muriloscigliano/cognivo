@@ -39,6 +39,18 @@ export class CgAvatarGroup extends LitElement {
       flex-shrink: 0;
       cursor: pointer;
       transition: transform var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)), margin var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+      animation: avatarIn 250ms cubic-bezier(0.2, 0, 0, 1) both;
+    }
+    .avatar:nth-child(1) { animation-delay: 0ms; }
+    .avatar:nth-child(2) { animation-delay: 50ms; }
+    .avatar:nth-child(3) { animation-delay: 100ms; }
+    .avatar:nth-child(4) { animation-delay: 150ms; }
+    .avatar:nth-child(5) { animation-delay: 200ms; }
+    .avatar:nth-child(6) { animation-delay: 250ms; }
+
+    @keyframes avatarIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     .group:hover .avatar { margin-left: 0 !important; }

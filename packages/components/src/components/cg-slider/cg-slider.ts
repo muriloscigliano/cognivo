@@ -20,6 +20,7 @@ export class CgSlider extends LitElement {
       width: 100%; height: 6px; -webkit-appearance: none; appearance: none;
       background: var(--cg-color-slider-track-background, #d4d4d8); border-radius: 3px; outline: none;
       cursor: pointer;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
     }
     input[type="range"]:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -32,7 +33,7 @@ export class CgSlider extends LitElement {
     }
     input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
     input[type="range"]::-webkit-slider-thumb:active { transform: scale(var(--cg-interaction-press-scale, 0.97)); }
-    input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
+    input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px rgba(223, 255, 97, 0.25); }
 
     input[type="range"]::-moz-range-thumb {
       width: 20px; height: 20px; background: var(--cg-color-slider-thumb-background, #dfff61);

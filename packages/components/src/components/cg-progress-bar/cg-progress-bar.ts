@@ -50,6 +50,7 @@ export class CgProgressBar extends LitElement {
       border-radius: 999px;
       overflow: hidden;
       position: relative;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
     }
 
     /* Sizes */
@@ -68,7 +69,8 @@ export class CgProgressBar extends LitElement {
 
     /* ── Variant colors ── */
     :host([variant="default"]) .fill {
-      background: var(--cg-brand-ai-accent, #dfff61);
+      background: linear-gradient(90deg, var(--cg-brand-ai-accent, #dfff61), var(--cg-brand-ai-highlight, #e2ff70));
+      box-shadow: 0 0 8px rgba(223, 255, 97, 0.3);
     }
     :host([variant="success"]) .fill {
       background: var(--cg-color-status-success-text-default, #22c55e);

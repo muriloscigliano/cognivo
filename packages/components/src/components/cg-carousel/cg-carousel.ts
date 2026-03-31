@@ -66,6 +66,7 @@ export class CgCarousel extends LitElement {
     .nav-btn:hover {
       box-shadow: var(--cg-shadow-lg-x, 0px) var(--cg-shadow-lg-y, 8px) var(--cg-shadow-lg-blur, 24px) var(--cg-shadow-lg-spread, 0px) var(--cg-shadow-lg-Color, #616161);
       background: var(--cg-color-surface-container-background, #18181b);
+      transform: translateY(-50%) scale(1.08);
     }
     .nav-btn:focus-visible {
       outline: 2px solid var(--cg-focus-ring-color, #c8e650);

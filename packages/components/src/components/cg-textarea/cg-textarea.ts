@@ -38,11 +38,12 @@ export class CgTextarea extends LitElement {
       resize: vertical;
       outline: none;
       min-height: 80px;
-      transition: border-color var(--cg-motion-duration-normal, 150ms), box-shadow 0.15s, height 200ms ease-out;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 0px transparent;
+      transition: border-color var(--cg-motion-duration-normal, 150ms), box-shadow 150ms ease, height 200ms ease-out;
     }
     textarea::placeholder { color: var(--cg-gray-500, #71717a); }
     textarea:hover:not(:disabled):not([readonly]) { border-color: var(--cg-focus-ring-color, #c8e650); }
-    textarea:focus { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
+    textarea:focus { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
     textarea:disabled { opacity: 0.5; cursor: not-allowed; background: var(--cg-color-surface-field-disable-background, #18181b); }
     textarea[readonly] { background: var(--cg-color-surface-field-disable-background, #18181b); }
 

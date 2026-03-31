@@ -89,6 +89,7 @@ export class CgChip extends LitElement {
     }
     :host([variant="default"]) .chip:hover:not(.disabled) {
       background: rgba(161, 161, 170, 0.18);
+      transform: scale(1.02);
     }
 
     /* ── Variant: success ── */
@@ -99,6 +100,7 @@ export class CgChip extends LitElement {
     }
     :host([variant="success"]) .chip:hover:not(.disabled) {
       background: rgba(34, 197, 94, 0.2);
+      transform: scale(1.02);
     }
 
     /* ── Variant: warning ── */
@@ -109,6 +111,7 @@ export class CgChip extends LitElement {
     }
     :host([variant="warning"]) .chip:hover:not(.disabled) {
       background: rgba(245, 158, 11, 0.2);
+      transform: scale(1.02);
     }
 
     /* ── Variant: error ── */
@@ -119,6 +122,7 @@ export class CgChip extends LitElement {
     }
     :host([variant="error"]) .chip:hover:not(.disabled) {
       background: rgba(239, 68, 68, 0.2);
+      transform: scale(1.02);
     }
 
     /* ── Variant: accent ── */
@@ -129,6 +133,7 @@ export class CgChip extends LitElement {
     }
     :host([variant="accent"]) .chip:hover:not(.disabled) {
       background: rgba(223, 255, 97, 0.2);
+      transform: scale(1.02);
     }
 
     /* ── Icon ── */

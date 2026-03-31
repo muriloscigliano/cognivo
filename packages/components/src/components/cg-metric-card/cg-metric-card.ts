@@ -18,11 +18,12 @@ import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.j
 export class CgMetricCard extends LitElement {
   static override styles = [hostBlock, reducedMotion, shimmerKeyframes, css`
     .card {
-      background: var(--cg-color-surface-container-background, #18181b);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%), var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 12px;
       padding: 18px 20px;
       min-width: 140px;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       transition: all 150ms ease;
     }
     :host([size="sm"]) .card { padding: 12px 14px; min-width: 110px; }
@@ -71,6 +72,15 @@ export class CgMetricCard extends LitElement {
       color: var(--cg-color-surface-base-text, #fafafa);
       line-height: 1.2;
       letter-spacing: -0.02em;
+      transition: transform 300ms ease;
+    }
+    .value.pulse {
+      animation: valuePulse 400ms ease;
+    }
+    @keyframes valuePulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
     }
     :host([size="sm"]) .value { font-size: 1.25rem; }
     :host([size="lg"]) .value { font-size: 2.25rem; }

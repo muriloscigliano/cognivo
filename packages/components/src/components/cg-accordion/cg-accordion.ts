@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, entranceStagger } from '../../styles/index.js';
 
 /** Item definition for cg-accordion, with trigger label, content, and optional icon. */
 export interface AccordionItem {
@@ -37,7 +37,7 @@ export interface AccordionItem {
  */
 @customElement('cg-accordion')
 export class CgAccordion extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
+  static override styles = [hostBlock, reducedMotion, entranceStagger, css`
     .item {
       border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
     }
@@ -49,6 +49,7 @@ export class CgAccordion extends LitElement {
       border-radius: var(--cg-border-radius-150, 12px);
       margin-bottom: var(--cg-spacing-8, 8px);
       overflow: hidden;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
     :host([variant="card"]) .item:last-child { margin-bottom: 0; }
 
@@ -156,6 +157,10 @@ export class CgAccordion extends LitElement {
       font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-gray-600, #52525b);
       line-height: 1.65;
+    }
+
+    .item.open .content-inner {
+      animation: staggerFadeIn 200ms ease-out both;
     }
 
     :host(:not([variant])) .content-inner,

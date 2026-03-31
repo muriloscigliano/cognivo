@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, entranceStagger } from '../../styles/index.js';
 
 /** Item definition for cg-list, with title, subtitle, image/icon, and optional action. */
 export interface ListItem {
@@ -39,7 +39,7 @@ export interface ListItem {
  */
 @customElement('cg-list')
 export class CgList extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
+  static override styles = [hostBlock, reducedMotion, entranceStagger, css`
     .empty {
       text-align: center;
       padding: var(--cg-spacing-24, 24px);
@@ -172,8 +172,8 @@ export class CgList extends LitElement {
       flex-shrink: 0;
     }
   
-    .item { transition: background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)), transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)); }
-    .item:hover { transform: translateX(2px); }
+    .item { transition: background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)), transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)); animation: staggerFadeIn 200ms ease-out both; animation-delay: calc(var(--stagger-index, 0) * 40ms); }
+    .item:hover { transform: translateX(2px); background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.06)); }
   `];
 
   @property({ type: Array }) items: ListItem[] = [];
@@ -209,6 +209,7 @@ export class CgList extends LitElement {
     return html`${this.items.map((item, i) => html`
       <div
         class="item"
+        style="--stagger-index: ${i}"
         tabindex=${this.clickable ? '0' : nothing}
         role=${this.clickable ? 'button' : nothing}
         @click=${() => this._handleItemClick(item, i)}

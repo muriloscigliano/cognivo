@@ -47,6 +47,7 @@ export class CgTable extends LitElement {
       border-bottom: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-table-border, #27272a);
       white-space: nowrap;
       user-select: none;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
     :host([compact]) th { padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); }
 
@@ -89,7 +90,7 @@ export class CgTable extends LitElement {
     }
   
     tbody tr { transition: background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)); }
-    tbody tr:hover { background: rgba(255, 255, 255, 0.03); }
+    tbody tr:hover { background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.04)); }
   `];
 
   @property({ type: Array }) columns: TableColumn[] = [];

@@ -53,6 +53,7 @@ export class CgRadio extends LitElement {
     /* Hover */
     :host(:not([disabled])) label:hover .circle {
       border-color: var(--cg-brand-ai-accent, #dfff61);
+      box-shadow: 0 0 8px rgba(223, 255, 97, 0.15);
     }
 
     /* Press */

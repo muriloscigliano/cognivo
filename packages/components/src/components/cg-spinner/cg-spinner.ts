@@ -26,6 +26,7 @@ export class CgSpinner extends LitElement {
       border-style: solid;
       border-color: var(--cg-color-surface-base-border, #27272a);
       animation: spin 0.8s linear infinite;
+      filter: drop-shadow(0 0 4px var(--cg-brand-ai-accent, rgba(223, 255, 97, 0.3)));
     }
 
     /* ── Sizes ── */

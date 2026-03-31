@@ -29,6 +29,8 @@ export class CgCallout extends LitElement {
       border-radius: var(--cg-border-radius-150, 12px);
       border: 1px solid;
       line-height: var(--cg-line-height-normal, 1.5);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     /* Variants */

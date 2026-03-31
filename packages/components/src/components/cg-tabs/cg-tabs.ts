@@ -57,6 +57,7 @@ export class CgTabs extends LitElement {
       height: 2px;
       background: var(--cg-focus-ring-color, #c8e650);
       border-radius: 1px;
+      box-shadow: 0 0 8px var(--cg-brand-ai-accent, rgba(223, 255, 97, 0.3));
       transition: left var(--cg-motion-duration-slow, 0.25s) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)), width var(--cg-motion-duration-slow, 0.25s) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
@@ -77,7 +78,7 @@ export class CgTabs extends LitElement {
       position: relative;
     }
 
-    .tab:hover:not(.disabled) { color: var(--cg-color-surface-base-text, #fafafa); }
+    .tab:hover:not(.disabled) { color: var(--cg-color-surface-base-text, #fafafa); background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.06)); border-radius: var(--cg-border-radius-100, 8px); }
     .tab.active { color: var(--cg-text-accent, #e5ff6b); font-weight: var(--cg-font-weight-semibold, 600); }
     .tab.disabled { opacity: 0.4; cursor: not-allowed; }
 

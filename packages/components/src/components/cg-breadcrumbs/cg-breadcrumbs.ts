@@ -91,7 +91,7 @@ export class CgBreadcrumbs extends LitElement {
 
     .crumb-link:hover {
       color: var(--cg-color-text-primary, #fafafa);
-      background: var(--cg-color-surface-hover-background, rgba(255, 255, 255, 0.06));
+      background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.06));
     }
 
     .crumb-link:active {

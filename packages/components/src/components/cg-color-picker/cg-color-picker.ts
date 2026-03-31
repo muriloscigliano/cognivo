@@ -45,7 +45,7 @@ export class CgColorPicker extends LitElement {
       position: relative;
       transition: transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)), box-shadow 200ms ease;
     }
-    .swatch:hover { transform: scale(1.15); z-index: 1; }
+    .swatch:hover { transform: scale(1.1); z-index: 1; }
     .swatch:active { transform: scale(var(--cg-interaction-press-scale, 0.97)); }
 
     .swatch .fill {

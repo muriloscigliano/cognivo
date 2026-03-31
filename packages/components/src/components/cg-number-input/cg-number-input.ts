@@ -22,7 +22,8 @@ export class CgNumberInput extends LitElement {
       border-radius: var(--cg-border-radius-150, 12px);
       background: var(--cg-color-input-background-default, #18181b);
       overflow: hidden;
-      transition: border-color 200ms ease-out, box-shadow 200ms ease-out;
+      box-shadow: 0 0 0 0px transparent, 0 0 0 0px transparent;
+      transition: border-color 200ms ease-out, box-shadow 150ms ease;
     }
     .wrapper.focused {
       border-color: var(--cg-brand-ai-accent, #dfff61);
@@ -49,7 +50,7 @@ export class CgNumberInput extends LitElement {
       -webkit-user-select: none;
       user-select: none;
     }
-    .btn:hover:not(:disabled) { background: var(--cg-color-action-secondary-background-hover, #3f3f46); }
+    .btn:hover:not(:disabled) { background: var(--cg-color-action-secondary-background-hover, #3f3f46); transform: scale(1.05); }
     .btn:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale, 0.97)); }
     .btn:disabled { cursor: not-allowed; opacity: 0.4; }
     .btn:focus-visible {

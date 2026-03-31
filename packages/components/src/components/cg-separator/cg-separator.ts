@@ -32,7 +32,7 @@ export class CgSeparator extends LitElement {
 
     .line {
       flex: 1;
-      background: var(--cg-color-surface-container-border, #27272a);
+      background: linear-gradient(to right, transparent, var(--cg-gray-700, #3f3f46) 20%, var(--cg-gray-700, #3f3f46) 80%, transparent);
     }
 
     :host([orientation="horizontal"]) .line {
@@ -43,6 +43,7 @@ export class CgSeparator extends LitElement {
     :host([orientation="vertical"]) .line {
       width: 1px;
       min-height: 16px;
+      background: linear-gradient(to bottom, transparent, var(--cg-gray-700, #3f3f46) 20%, var(--cg-gray-700, #3f3f46) 80%, transparent);
     }
 
     /* Spacing variants */

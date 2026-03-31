@@ -74,6 +74,7 @@ export class CgModal extends LitElement {
       border: 1px solid var(--cg-color-surface-base-border, #27272a);
       border-radius: var(--cg-border-radius-200, 16px);
       box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
         0 20px 25px -5px rgba(0, 0, 0, 0.4),
         0 8px 10px -6px rgba(0, 0, 0, 0.3);
       overflow: hidden;
@@ -131,6 +132,7 @@ export class CgModal extends LitElement {
       justify-content: space-between;
       padding: var(--cg-spacing-16, 16px) var(--cg-spacing-24, 24px);
       border-bottom: 1px solid var(--cg-color-surface-base-border, #27272a);
+      border-image: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.06), transparent) 1;
       flex-shrink: 0;
     }
 

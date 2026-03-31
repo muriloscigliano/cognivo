@@ -37,9 +37,10 @@ export class CgInput extends LitElement {
       border: 1px solid var(--cg-color-input-border-default, #3f3f46);
       border-radius: var(--cg-border-radius-150, 12px);
       background: var(--cg-color-input-background-default, #18181b);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), 0 0 0 0px transparent, 0 0 0 0px transparent;
       transition:
         border-color 200ms ease-out,
-        box-shadow 200ms ease-out;
+        box-shadow 150ms ease;
       min-height: var(--cg-component-input-height-md, 40px);
       position: relative;
     }
@@ -57,6 +58,7 @@ export class CgInput extends LitElement {
     .wrapper.focused {
       border-color: var(--cg-brand-ai-accent, #dfff61);
       box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
         0 0 0 2px var(--cg-color-surface-base-background, #09090b),
         0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }

@@ -35,6 +35,18 @@ export class CgOtpInput extends LitElement {
       caret-color: var(--cg-brand-ai-accent, #dfff61);
       outline: none;
       transition: border-color 200ms ease-out, box-shadow 200ms ease-out, transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+      animation: otpCellIn 250ms cubic-bezier(0.2, 0, 0, 1) both;
+    }
+    .box:nth-child(1) { animation-delay: 0ms; }
+    .box:nth-child(2) { animation-delay: 40ms; }
+    .box:nth-child(3) { animation-delay: 80ms; }
+    .box:nth-child(4) { animation-delay: 120ms; }
+    .box:nth-child(5) { animation-delay: 160ms; }
+    .box:nth-child(6) { animation-delay: 200ms; }
+
+    @keyframes otpCellIn {
+      from { opacity: 0; transform: translateY(4px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .box:hover:not(:disabled) {
@@ -44,6 +56,7 @@ export class CgOtpInput extends LitElement {
     .box:focus {
       border-color: var(--cg-brand-ai-accent, #dfff61);
       box-shadow:
+        0 0 8px rgba(223, 255, 97, 0.2),
         0 0 0 2px var(--cg-color-surface-base-background, #09090b),
         0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
       transform: scale(1.05);

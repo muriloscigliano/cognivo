@@ -41,10 +41,29 @@ export class CgButton extends LitElement {
         transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
         background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
         border-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        box-shadow var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+        box-shadow 150ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1));
       -webkit-font-smoothing: antialiased;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 0 0 0px transparent, 0 0 0 0px transparent;
+    }
+
+    /* Ripple effect */
+    button::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+      opacity: 0;
+      transform: scale(0);
+      transition: transform 400ms ease-out, opacity 400ms ease-out;
+      pointer-events: none;
+      border-radius: inherit;
+    }
+    button:active:not(:disabled)::after {
+      opacity: 1;
+      transform: scale(2.5);
+      transition: 0s;
     }
 
     /* Press scale — HeroUI pattern */
@@ -52,7 +71,7 @@ export class CgButton extends LitElement {
       transform: scale(var(--cg-interaction-press-scale, 0.97));
     }
 
-    /* Focus ring — dual layer */
+    /* Focus ring — animated dual layer */
     button:focus-visible {
       box-shadow:
         0 0 0 2px var(--cg-color-surface-base-background, #09090b),

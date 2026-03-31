@@ -60,8 +60,10 @@ export class CgDrawer extends LitElement {
       background: var(--cg-color-surface-raised-background, #1e1e22);
       border: 1px solid var(--cg-color-surface-base-border, #27272a);
       box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
         0 20px 25px -5px rgba(0, 0, 0, 0.4),
         0 8px 10px -6px rgba(0, 0, 0, 0.3);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       overflow: hidden;
       transition: transform 300ms var(--cg-motion-easing-bounce, cubic-bezier(0.34, 1.56, 0.64, 1));
     }

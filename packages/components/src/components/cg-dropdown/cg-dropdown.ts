@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
+import { entranceStagger } from '../../styles/index.js';
 
 /** Menu item for cg-dropdown, with id, label, optional icon, disabled state, and divider flag. */
 export interface DropdownItem {
@@ -36,7 +37,7 @@ export interface DropdownItem {
  */
 @customElement('cg-dropdown')
 export class CgDropdown extends LitElement {
-  static override styles = css`
+  static override styles = [entranceStagger, css`
     :host {
       transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       display: inline-block;
@@ -60,8 +61,10 @@ export class CgDropdown extends LitElement {
       border: 1px solid var(--cg-color-surface-base-border, #27272a);
       border-radius: var(--cg-border-radius-150, 12px);
       box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
         0 4px 6px -1px rgba(0, 0, 0, 0.3),
         0 10px 15px -3px rgba(0, 0, 0, 0.4);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
 
       /* Animation — scale+fade entrance */
       opacity: 0;
@@ -142,12 +145,16 @@ export class CgDropdown extends LitElement {
       text-overflow: ellipsis;
       transition:
         background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+        color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+        transform var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
       -webkit-font-smoothing: antialiased;
+      animation: staggerFadeIn 200ms ease-out both;
+      animation-delay: calc(var(--stagger-index, 0) * 40ms);
     }
 
     .menu-item:hover:not(.disabled) {
       background: var(--cg-color-surface-hover-background, rgba(255, 255, 255, 0.06));
+      transform: scale(1.01);
     }
 
     .menu-item:active:not(.disabled) {
@@ -187,7 +194,7 @@ export class CgDropdown extends LitElement {
       margin: var(--cg-spacing-4, 4px) 0;
       background: var(--cg-color-surface-base-border, #27272a);
     }
-  `;
+  `];
 
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String, reflect: true }) position: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' = 'bottom-start';
@@ -359,6 +366,7 @@ export class CgDropdown extends LitElement {
               role="menuitem"
               tabindex="${this.open && !item.disabled ? '0' : '-1'}"
               aria-disabled="${item.disabled ? 'true' : 'false'}"
+              style="--stagger-index: ${index}"
               @click="${() => this._selectItem(item)}"
             >
               ${item.icon ? html`<span class="menu-item-icon">${item.icon}</span>` : nothing}

@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { hostBase, reducedMotion } from '../../styles/index.js';
+import { hostBase, reducedMotion, entranceStagger, dotPulseKeyframes } from '../../styles/index.js';
 
 /**
  * @element cg-badge
@@ -24,7 +24,11 @@ import { hostBase, reducedMotion } from '../../styles/index.js';
  */
 @customElement('cg-badge')
 export class CgBadge extends LitElement {
-  static override styles = [hostBase, reducedMotion, css`
+  static override styles = [hostBase, reducedMotion, entranceStagger, dotPulseKeyframes, css`
+    :host {
+      animation: staggerFadeIn 200ms ease-out both;
+    }
+
     .badge {
       display: inline-flex;
       align-items: center;
@@ -91,6 +95,7 @@ export class CgBadge extends LitElement {
       border-radius: var(--cg-border-radius-full, 99999px);
       background: currentColor;
       flex-shrink: 0;
+      animation: dotPulse 2s ease-in-out infinite;
     }
 
     /* Remove button */

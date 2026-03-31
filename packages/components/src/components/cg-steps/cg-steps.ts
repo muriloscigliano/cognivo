@@ -29,6 +29,28 @@ export class CgSteps extends LitElement {
     .step-v {
       display: flex;
       gap: var(--cg-spacing-12, 12px);
+      animation: stepIn 300ms cubic-bezier(0.2, 0, 0, 1) both;
+    }
+    .step-v:nth-child(1) { animation-delay: 0ms; }
+    .step-v:nth-child(2) { animation-delay: 60ms; }
+    .step-v:nth-child(3) { animation-delay: 120ms; }
+    .step-v:nth-child(4) { animation-delay: 180ms; }
+    .step-v:nth-child(5) { animation-delay: 240ms; }
+    .step-v:nth-child(6) { animation-delay: 300ms; }
+
+    .step-h {
+      animation: stepIn 300ms cubic-bezier(0.2, 0, 0, 1) both;
+    }
+    .step-h:nth-child(1) { animation-delay: 0ms; }
+    .step-h:nth-child(2) { animation-delay: 60ms; }
+    .step-h:nth-child(3) { animation-delay: 120ms; }
+    .step-h:nth-child(4) { animation-delay: 180ms; }
+    .step-h:nth-child(5) { animation-delay: 240ms; }
+    .step-h:nth-child(6) { animation-delay: 300ms; }
+
+    @keyframes stepIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .indicator-v {
@@ -83,6 +105,7 @@ export class CgSteps extends LitElement {
       border: 2px solid var(--cg-gray-300, #d4d4d8);
       color: var(--cg-gray-500, #71717a);
       background: var(--cg-color-surface-container-background, #18181b);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
       flex-shrink: 0;
       position: relative;
       transition: all var(--cg-motion-duration-slow, 250ms) ease;
