@@ -1,18 +1,25 @@
 /**
- * <ai-data-card> — Compact Inline Data Display
+ * @element ai-data-card
+ * Compact key-value data card with typed formatting, header badge, footer actions, and loading skeleton.
  *
- * A mini key-value table for embedding in chat messages, tool results,
- * insight cards. Shows structured data like invoices, orders, summaries.
+ * @example
+ * ```html
+ * <ai-data-card
+ *   title="Invoice #4821"
+ *   icon="🧾"
+ *   headerStatus="success" headerStatusLabel="Paid"
+ *   .fields=${[
+ *     {label:'Amount', value:'$1,240.00', type:'currency'},
+ *     {label:'Status', value:'Completed', type:'status', status:'success'}
+ *   ]}
+ *   .actions=${[{id:'view', label:'View Details', variant:'primary'}]}
+ * ></ai-data-card>
+ * ```
  *
- * Features:
- * - Key-value rows with optional type formatting (currency, date, status, badge)
- * - Header with title, icon, and optional action button
- * - Status row with color-coded dot
- * - Footer with optional action buttons
- * - Compact and expanded modes
- * - Loading skeleton
- * - Clickable rows
- * - Dark-first, fully accessible
+ * @fires {CustomEvent<{actionId, actionLabel}>} ai-data-card-action - Footer action clicked
+ * @fires {CustomEvent<{label, value, type}>} ai-data-card-row-click - Row clicked
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Primary button, link, and currency text color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';

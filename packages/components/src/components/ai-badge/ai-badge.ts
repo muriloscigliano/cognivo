@@ -1,12 +1,20 @@
 /**
- * <ai-badge> — AI Confidence System
+ * @element ai-badge
+ * AI confidence badge with three sizes (sm/md/lg), color-coded levels, tooltip, and optional sparkline.
  *
- * 3 sizes: sm (inline), md (pill), lg (card with bar)
- * Animated score transitions on change
- * Tooltip with explanation on hover/focus
- * History sparkline (optional)
- * Keyboard accessible (Tab, Enter/Space for tooltip)
- * Customizable thresholds
+ * @example
+ * ```html
+ * <ai-badge score="0.92" size="sm"></ai-badge>
+ * <ai-badge score="0.45" size="lg" explanation="Low training data coverage"
+ *   .history=${[0.3, 0.4, 0.42, 0.45]}></ai-badge>
+ * ```
+ *
+ * @fires {CustomEvent<{score: number, level: string}>} ai-badge-click - Badge clicked
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Focus ring color
+ * @cssprop [--cg-green-400=#4ade80] - High confidence color
+ * @cssprop [--cg-yellow-400=#fbbf24] - Medium confidence color
+ * @cssprop [--cg-red-400=#f87171] - Low confidence color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

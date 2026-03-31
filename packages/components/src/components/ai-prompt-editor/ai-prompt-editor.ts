@@ -1,8 +1,25 @@
 /**
- * <ai-prompt-editor> — Prompt Version History
+ * @element ai-prompt-editor
+ * Split-pane prompt version editor with a sidebar listing versions and
+ * a main content area for viewing or editing prompts. Supports version
+ * selection, inline editing, save, and activate actions.
  *
- * Version list, diff view between versions, active indicator,
- * edit mode with save. Essential for prompt engineering.
+ * @example
+ * ```html
+ * <ai-prompt-editor
+ *   .versions=${[
+ *     { id: 'v2', content: 'You are a helpful assistant...', timestamp: Date.now(), active: true },
+ *     { id: 'v1', content: 'You are an AI...', timestamp: Date.now() - 86400000, author: 'Alice' }
+ *   ]}
+ *   editable
+ * ></ai-prompt-editor>
+ * ```
+ *
+ * @prop {PromptVersion[]} versions - Array of prompt version objects
+ * @prop {boolean} editable - Enable edit mode
+ *
+ * @fires {CustomEvent<{versionId: string, content: string}>} ai-prompt-save - When a version is saved
+ * @fires {CustomEvent<{versionId: string}>} ai-prompt-activate - When a version is activated
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

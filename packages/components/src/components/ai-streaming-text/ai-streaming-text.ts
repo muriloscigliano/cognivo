@@ -1,9 +1,25 @@
 /**
- * <ai-streaming-text> — Standalone Streaming Text Renderer
+ * @element ai-streaming-text
+ * Token-by-token text renderer with blinking cursor and basic markdown
+ * support. Use the `appendText()` method to stream content incrementally
+ * and `complete()` to finish. Call `reset()` to clear.
  *
- * Token-by-token text rendering with blinking cursor,
- * basic markdown support, speed control.
- * Use append(text) to add content, complete() to finish.
+ * @example
+ * ```html
+ * <ai-streaming-text content="Hello **world**" streaming markdown showCursor></ai-streaming-text>
+ * ```
+ *
+ * @prop {string} content - Current text content
+ * @prop {boolean} streaming - Whether content is actively streaming
+ * @prop {boolean} showCursor - Show blinking cursor (default true)
+ * @prop {boolean} markdown - Render basic markdown (default true)
+ *
+ * @method appendText(text: string) - Append a text chunk and set streaming=true
+ * @method complete() - Mark streaming as finished
+ * @method reset() - Clear all content
+ *
+ * @fires {CustomEvent<{chunk: string, total: string}>} ai-streaming-chunk - On each appended chunk
+ * @fires {CustomEvent<{content: string}>} ai-streaming-complete - When streaming completes
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

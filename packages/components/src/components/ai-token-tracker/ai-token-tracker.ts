@@ -1,8 +1,25 @@
 /**
- * <ai-token-tracker> — Cost & Usage Display
+ * @element ai-token-tracker
+ * LLM token usage and cost display with compact (inline badge) and
+ * detailed (card with metrics grid) modes. Shows input/output tokens,
+ * cost, latency bar, model badge, and optional budget progress bar.
  *
- * Compact or detailed view of LLM token usage, cost, latency.
- * Budget progress bar. Session aggregation.
+ * @example
+ * ```html
+ * <ai-token-tracker mode="compact" inputTokens="1200" outputTokens="340" cost="0.0042" latency="890"></ai-token-tracker>
+ * <ai-token-tracker mode="detailed" inputTokens="1200" outputTokens="340" cost="0.0042"
+ *   latency="890" model="gpt-4" budget="1.00"></ai-token-tracker>
+ * ```
+ *
+ * @prop {number} inputTokens - Input token count
+ * @prop {number} outputTokens - Output token count
+ * @prop {number} cost - Cost in dollars
+ * @prop {number} latency - Response latency in ms
+ * @prop {string} model - Model name for the badge
+ * @prop {number} budget - Max cost budget (shows progress bar when > 0)
+ * @prop {'compact'|'detailed'} mode - Display mode (default 'compact')
+ *
+ * @fires {CustomEvent} ai-token-click - When the compact badge is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';

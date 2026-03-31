@@ -1,8 +1,24 @@
 /**
- * <ai-toast> — Notification Queue
+ * @element ai-toast
+ * Fixed-position toast notification stack with auto-dismiss progress bars,
+ * slide-in/out animations, and queue management. Use the imperative API
+ * to show notifications: `show(message, type, duration)`.
  *
- * Floating toast notifications with auto-dismiss, progress bar, stacking.
- * API: show(message, type, duration), dismiss(id), clear().
+ * @example
+ * ```html
+ * <ai-toast position="top-right"></ai-toast>
+ * <script>
+ *   document.querySelector('ai-toast').show('Model updated successfully', 'success', 4000);
+ * </script>
+ * ```
+ *
+ * @prop {'top-right'|'top-left'|'bottom-right'|'bottom-left'} position - Screen position
+ *
+ * @method show(message: string, type?: string, duration?: number): string - Show a toast, returns its ID
+ * @method dismiss(id: string) - Dismiss a specific toast
+ * @method clear() - Remove all toasts
+ *
+ * @fires {CustomEvent<{id: string, reason: string}>} ai-toast-dismiss - When a toast is dismissed
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { state, customElement, property } from 'lit/decorators.js';

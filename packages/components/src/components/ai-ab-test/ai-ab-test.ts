@@ -1,9 +1,21 @@
 /**
- * <ai-ab-test> — Side-by-side A/B comparison with vote buttons
+ * @element ai-ab-test
+ * Side-by-side A/B comparison card with vote buttons and swap control.
  *
- * Props: variantA, variantB, labelA, labelB, title
- * Events: ai-ab-vote (detail: {winner}), ai-ab-compare
- * Features: Two columns, vote buttons, swap, visual highlight on vote
+ * @example
+ * ```html
+ * <ai-ab-test
+ *   variantA="Response using GPT-4"
+ *   variantB="Response using Claude"
+ *   labelA="GPT-4" labelB="Claude"
+ *   title="Model Comparison"
+ * ></ai-ab-test>
+ * ```
+ *
+ * @fires {CustomEvent<{winner: 'a'|'b'|'tie'}>} ai-ab-vote - User voted for a winner
+ * @fires {CustomEvent} ai-ab-compare - User clicked the Compare button
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Accent color for selected vote and hover states
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

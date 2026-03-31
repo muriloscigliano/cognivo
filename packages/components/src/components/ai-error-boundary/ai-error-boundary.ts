@@ -1,9 +1,19 @@
 /**
- * <ai-error-boundary> — Error Display with Retry for AI Failures
+ * @element ai-error-boundary
+ * Error display card for AI failures with error code badge, expandable details, retry, and dismiss.
  *
- * Error icon, message, code badge, expandable details.
- * Retry and Dismiss buttons.
- * Keyboard accessible, aria-live for announcements.
+ * @example
+ * ```html
+ * <ai-error-boundary
+ *   error="Model returned an empty response"
+ *   code="ERR_EMPTY_RESPONSE"
+ *   details="Request ID: abc-123, latency: 4200ms"
+ *   retryable
+ * ></ai-error-boundary>
+ * ```
+ *
+ * @fires {CustomEvent} ai-error-retry - Retry button clicked
+ * @fires {CustomEvent} ai-error-dismiss - Dismiss button clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

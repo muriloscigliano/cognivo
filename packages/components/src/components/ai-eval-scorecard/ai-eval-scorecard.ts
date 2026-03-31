@@ -1,8 +1,23 @@
 /**
- * <ai-eval-scorecard> — LLM Evaluation Display
+ * @element ai-eval-scorecard
+ * LLM evaluation scorecard with metric bars, overall letter grade, comparison deltas, and explanations.
  *
- * Shows quality scores: relevance, coherence, safety, hallucination.
- * Overall grade A-F. Comparison deltas. Expandable explanations.
+ * @example
+ * ```html
+ * <ai-eval-scorecard
+ *   grade="B+"
+ *   .scores=${[
+ *     {metric:'Relevance', value:0.88, explanation:'Strong topical alignment'},
+ *     {metric:'Safety', value:0.95},
+ *     {metric:'Hallucination', value:0.12}
+ *   ]}
+ *   .comparison=${{Relevance: 0.05, Safety: -0.02}}
+ * ></ai-eval-scorecard>
+ * ```
+ *
+ * @fires {CustomEvent<{metric: string, value: number}>} ai-eval-metric-click - Metric row clicked
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Grade badge and focus ring accent
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

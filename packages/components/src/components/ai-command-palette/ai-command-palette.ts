@@ -1,10 +1,22 @@
 /**
- * <ai-command-palette> — Command-K palette with fuzzy search.
+ * @element ai-command-palette
+ * Cmd+K modal palette with fuzzy search, category grouping, keyboard navigation, and shortcut badges.
  *
- * Props: commands, open, placeholder
- * Events: ai-command-select, ai-command-close
- * Features: Modal overlay, search input, filtered list grouped by category,
- *           keyboard nav (up/down/enter/escape), shortcut badges, match highlight
+ * @example
+ * ```html
+ * <ai-command-palette
+ *   .commands=${[
+ *     {id:'new-chat', label:'New Chat', shortcut:'Ctrl+N', category:'AI'},
+ *     {id:'export', label:'Export Data', icon:'📦', category:'Data'}
+ *   ]}
+ *   open
+ * ></ai-command-palette>
+ * ```
+ *
+ * @fires {CustomEvent<{id: string, label: string}>} ai-command-select - Command selected
+ * @fires {CustomEvent} ai-command-close - Palette closed (Escape or overlay click)
+ *
+ * @cssprop [--cg-color-accent=#dfff61] - Match highlight and focus outline color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';

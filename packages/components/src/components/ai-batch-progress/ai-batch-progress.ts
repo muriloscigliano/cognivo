@@ -1,9 +1,21 @@
 /**
- * <ai-batch-progress> — Batch job progress display
+ * @element ai-batch-progress
+ * Batch job progress tracker with segmented success/fail bar, stats, and pause/cancel/retry controls.
  *
- * Props: total, completed, failed, title, status
- * Events: ai-batch-pause, ai-batch-cancel, ai-batch-retry
- * Features: Progress bar with success/fail segments, percentage, ETA, action buttons
+ * @example
+ * ```html
+ * <ai-batch-progress
+ *   total="500" completed="312" failed="8"
+ *   title="Embedding Generation"
+ *   status="running"
+ * ></ai-batch-progress>
+ * ```
+ *
+ * @fires {CustomEvent<{total, completed, failed, status}>} ai-batch-pause - Pause clicked
+ * @fires {CustomEvent<{total, completed, failed, status}>} ai-batch-cancel - Cancel clicked
+ * @fires {CustomEvent<{total, completed, failed, status}>} ai-batch-retry - Retry/Resume clicked
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Accent for percentage text
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';

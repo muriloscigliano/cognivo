@@ -1,8 +1,29 @@
 /**
- * <ai-search> — AI-Powered Search
+ * @element ai-search
+ * AI-powered search input with dropdown results, faceted filter chips,
+ * AI-generated suggestions, recent search history, and full keyboard
+ * navigation (arrow keys, Enter, Escape).
  *
- * Search input with AI suggestions, faceted filters,
- * recent searches, result preview, keyboard navigation.
+ * @example
+ * ```html
+ * <ai-search
+ *   placeholder="Search docs..."
+ *   .results=${[{ title: 'Getting Started', description: 'Quick start guide', icon: '📄' }]}
+ *   .suggestions=${['How to deploy', 'API authentication']}
+ *   .filters=${['Docs', 'API', 'Blog']}
+ *   .recentSearches=${['setup guide', 'rate limits']}
+ * ></ai-search>
+ * ```
+ *
+ * @prop {string} placeholder - Input placeholder text
+ * @prop {SearchResult[]} results - Search result items
+ * @prop {string[]} suggestions - AI-generated query suggestions
+ * @prop {string[]} filters - Available filter categories
+ * @prop {string[]} recentSearches - Recently searched terms
+ *
+ * @fires {CustomEvent<{query: string, filters: string[]}>} ai-search-query - When query changes
+ * @fires {CustomEvent<{result: SearchResult}>} ai-search-select - When a result is selected
+ * @fires {CustomEvent<{filters: string[]}>} ai-search-filter - When filters change
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

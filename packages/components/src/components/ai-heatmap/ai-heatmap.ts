@@ -1,8 +1,20 @@
 /**
- * <ai-heatmap> — Matrix Heatmap Chart
+ * @element ai-heatmap
+ * SVG matrix heatmap for confusion matrices, correlations, or feature importance with hover tooltips.
  *
- * Color-coded grid for confusion matrices, correlation tables,
- * feature importance grids. Pure SVG, no dependencies.
+ * @example
+ * ```html
+ * <ai-heatmap
+ *   title="Confusion Matrix"
+ *   .data=${[[45,5],[3,47]]}
+ *   .rowLabels=${['Cat','Dog']}
+ *   .colLabels=${['Pred Cat','Pred Dog']}
+ *   colorScale="sequential"
+ *   showValues
+ * ></ai-heatmap>
+ * ```
+ *
+ * @fires {CustomEvent<{row, col, value}>} ai-heatmap-cell-click - Cell clicked
  */
 import { LitElement, html, css, svg, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

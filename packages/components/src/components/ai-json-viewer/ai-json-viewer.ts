@@ -1,10 +1,23 @@
 /**
- * <ai-json-viewer> — Collapsible JSON tree with syntax coloring.
+ * @element ai-json-viewer
+ * Interactive JSON tree viewer with collapsible nodes, syntax highlighting,
+ * and circular reference detection. Supports nested objects and arrays
+ * with expand/collapse per node and item counts.
  *
- * Props: data, expanded, maxDepth
- * Events: ai-json-path-click
- * Features: Recursive tree with expand/collapse per node, syntax colors,
- *           copy path on click, line count
+ * @example
+ * ```html
+ * <ai-json-viewer .data=${{ name: 'Claude', version: 3 }} expanded max-depth="4"></ai-json-viewer>
+ * ```
+ *
+ * @prop {unknown} data - JSON-serializable data to display
+ * @prop {boolean} expanded - Whether nodes start expanded (default true)
+ * @prop {number} maxDepth - Maximum nesting depth before auto-collapse (default 5)
+ *
+ * @fires {CustomEvent<{path: string}>} ai-json-path-click - When a key label is clicked
+ *
+ * @cssprop [--cg-font-family-mono] - Monospace font for the viewer
+ * @cssprop [--cg-color-surface] - Background color of the root container
+ * @cssprop [--cg-color-accent] - Accent color for number values
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';

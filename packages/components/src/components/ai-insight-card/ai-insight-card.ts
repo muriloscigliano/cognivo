@@ -1,9 +1,25 @@
 /**
- * <ai-insight-card> — Actionable AI Insight
+ * @element ai-insight-card
+ * Actionable AI insight card with type-specific icons, expandable detail, source links, and status badge.
  *
- * SVG icons (not emoji), expandable detail, action buttons,
- * source attribution, loading skeleton, status indicator,
- * selected state, animated entry, keyboard accessible.
+ * @example
+ * ```html
+ * <ai-insight-card
+ *   type="anomaly"
+ *   text="Revenue dropped 18% on March 12, correlating with API outage."
+ *   confidence="0.91"
+ *   timestamp="2 hours ago"
+ *   expandable
+ *   .sources=${[{title:'Incident Report', url:'/incidents/42'}]}
+ * ></ai-insight-card>
+ * ```
+ *
+ * @fires {CustomEvent<{type, text}>} ai-insight-click - Card body clicked
+ * @fires {CustomEvent<{type, text, expanded}>} ai-insight-expand - Expand toggled
+ * @fires {CustomEvent<{type, text}>} ai-insight-dismiss - Dismiss action
+ * @fires {CustomEvent<{type, text}>} ai-insight-bookmark - Bookmark action
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Focus ring and selected border
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';

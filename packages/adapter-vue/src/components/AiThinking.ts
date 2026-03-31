@@ -1,5 +1,10 @@
 import { createVueWrapper } from '../create-wrapper.js';
 
+export interface AiThinkingProps {
+  text?: string;
+  shimmer?: boolean;
+}
+
 export const AiThinking = createVueWrapper(
   'ai-thinking',
   {

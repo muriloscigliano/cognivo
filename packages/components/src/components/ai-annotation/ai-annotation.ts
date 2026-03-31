@@ -1,8 +1,22 @@
 /**
- * <ai-annotation> — Text Annotation Layer
+ * @element ai-annotation
+ * Text annotation layer with colored highlights, label toolbar, and editable selection mode.
  *
- * Highlight text with labels and confidence scores.
- * Pre-annotated display + editable mode for new annotations.
+ * @example
+ * ```html
+ * <ai-annotation
+ *   content="Claude is made by Anthropic in San Francisco."
+ *   .annotations=${[{start:0, end:6, label:'Person', confidence:0.95}]}
+ *   .labels=${[{name:'Person', color:'#60a5fa'},{name:'Organization', color:'#4ade80'}]}
+ *   editable
+ * ></ai-annotation>
+ * ```
+ *
+ * @fires {CustomEvent<{annotation: Annotation}>} ai-annotation-select - Annotation span clicked
+ * @fires {CustomEvent<{annotation: Annotation}>} ai-annotation-remove - Annotation removed
+ * @fires {CustomEvent<{annotation: Annotation, text: string}>} ai-annotation-add - New annotation created via selection
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Focus ring color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

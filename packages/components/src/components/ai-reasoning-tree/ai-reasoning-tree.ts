@@ -1,9 +1,22 @@
 /**
- * <ai-reasoning-tree> — Chain-of-Thought Visualizer
+ * @element ai-reasoning-tree
+ * Expandable tree visualizing multi-step AI chain-of-thought reasoning.
+ * Each node has a type (thought/action/observation/conclusion), confidence
+ * score, and optional children. Supports path highlighting and expand/collapse all.
  *
- * Expandable tree showing multi-step AI reasoning.
- * Node types: thought, action, observation, conclusion.
- * Confidence per step. Highlight path to answer.
+ * @example
+ * ```html
+ * <ai-reasoning-tree .nodes=${[
+ *   { id: '1', type: 'thought', content: 'The user wants a summary...', confidence: 0.9,
+ *     children: [{ id: '2', type: 'action', content: 'Search knowledge base', confidence: 0.85 }] }
+ * ]} .highlightPath=${['1', '2']}></ai-reasoning-tree>
+ * ```
+ *
+ * @prop {ReasoningNode[]} nodes - Root-level reasoning nodes (recursive tree)
+ * @prop {string[]} highlightPath - Array of node IDs to visually highlight
+ *
+ * @fires {CustomEvent<{id: string, expanded: boolean}>} ai-reasoning-expand - When a node is toggled
+ * @fires {CustomEvent<{id: string, type: string, content: string}>} ai-reasoning-node-click - When a node is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

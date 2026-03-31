@@ -1,9 +1,31 @@
 /**
- * <ai-result-panel> — Analysis Dashboard
+ * @element ai-result-panel
+ * Collapsible AI analysis dashboard with tabbed views (Summary, Data, Sources).
+ * Shows explanation text, bullet points, sortable impact driver bars, confidence
+ * badge, copy/export actions, and optional streaming indicator.
  *
- * Collapsible, tabbed views (Summary/Data/Sources),
- * animated driver bars, sorting, export actions,
- * streaming support, confidence breakdown, actions toolbar.
+ * @example
+ * ```html
+ * <ai-result-panel
+ *   title="Market Analysis"
+ *   explanation="Revenue grew 12% driven by enterprise adoption."
+ *   .bullets=${['Enterprise ARR up 18%', 'Churn reduced to 3.2%']}
+ *   .drivers=${[{ factor: 'Enterprise', impact: 42 }, { factor: 'Churn', impact: -8 }]}
+ *   confidence="87"
+ *   collapsible
+ * ></ai-result-panel>
+ * ```
+ *
+ * @prop {string} title - Panel header title
+ * @prop {string} explanation - Summary paragraph text
+ * @prop {string[]} bullets - Key takeaway bullet points
+ * @prop {Driver[]} drivers - Impact driver bars with factor and impact percentage
+ * @prop {number} confidence - Confidence score (0-100)
+ * @prop {boolean} collapsible - Allow collapsing the panel
+ * @prop {boolean} streaming - Show streaming/loading indicator
+ *
+ * @fires {CustomEvent<{format: string}>} ai-result-export - When export is clicked
+ * @fires {CustomEvent<{content: string}>} ai-result-copy - When copy is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

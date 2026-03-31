@@ -1,9 +1,28 @@
 /**
- * <ai-onboarding> — Step-by-Step AI Feature Tutorial
+ * @element ai-onboarding
+ * Step-by-step onboarding card with progress dots, navigation buttons,
+ * and optional dismiss. Ideal for introducing AI features to new users.
  *
- * Step counter, prev/next buttons, dismiss X.
- * Progress dots, highlight current step.
- * Keyboard accessible with focus management.
+ * @example
+ * ```html
+ * <ai-onboarding
+ *   .steps=${[
+ *     { title: 'Welcome', description: 'Let us show you around.' },
+ *     { title: 'Ask anything', description: 'Type a question to get started.' }
+ *   ]}
+ *   active="0"
+ *   dismissible
+ * ></ai-onboarding>
+ * ```
+ *
+ * @prop {OnboardingStep[]} steps - Array of step objects with title and description
+ * @prop {number} active - Index of the current step (default 0)
+ * @prop {boolean} dismissible - Show dismiss button (default true)
+ *
+ * @fires {CustomEvent<{step: number}>} ai-onboarding-next - When Next is clicked
+ * @fires {CustomEvent<{step: number}>} ai-onboarding-prev - When Back is clicked
+ * @fires ai-onboarding-complete - When Done is clicked on the last step
+ * @fires {CustomEvent<{step: number}>} ai-onboarding-dismiss - When dismissed
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

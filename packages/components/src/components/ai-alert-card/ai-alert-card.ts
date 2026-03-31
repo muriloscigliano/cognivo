@@ -1,8 +1,23 @@
 /**
- * <ai-alert-card> — Priority alert with urgency, deadline, and action button.
+ * @element ai-alert-card
+ * Priority alert card with urgency-colored border, deadline badge, action button, and dismissal.
  *
- * Colored left border by urgency, icon per urgency level, deadline badge,
- * action button, dismiss X, pulse animation for critical.
+ * @example
+ * ```html
+ * <ai-alert-card
+ *   title="Token budget exceeded"
+ *   urgency="urgent"
+ *   message="Context window is at 98% capacity."
+ *   deadline="2h remaining"
+ *   actionLabel="Truncate"
+ * ></ai-alert-card>
+ * ```
+ *
+ * @fires {CustomEvent<{title: string, urgency: string}>} ai-alert-action - Action button clicked
+ * @fires {CustomEvent<{title: string}>} ai-alert-dismiss - Dismiss button clicked
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Focus ring color
+ * @cssprop [--cg-red-400=#f87171] - Critical urgency pulse and border
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';

@@ -1,5 +1,17 @@
 import { createVueWrapper } from '../create-wrapper.js';
 
+export interface CgTextareaProps {
+  value?: string;
+  placeholder?: string;
+  name?: string;
+  rows?: number;
+  maxlength?: number;
+  disabled?: boolean;
+  readonly?: boolean;
+  error?: boolean;
+  autoresize?: boolean;
+}
+
 export const CgTextarea = createVueWrapper(
   'cg-textarea',
   {

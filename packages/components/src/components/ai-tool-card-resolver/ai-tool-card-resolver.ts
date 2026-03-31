@@ -1,10 +1,26 @@
 /**
- * <ai-tool-card-resolver> — Dynamic card renderer for tool call outputs.
+ * @element ai-tool-card-resolver
+ * Dynamic card renderer that maps tool call names to registered web
+ * components via a registry. Shows a loading skeleton while resolving,
+ * falls back to raw JSON display if no match, and includes an error
+ * boundary if the resolved component throws.
  *
- * Maps a tool call name to a registered component tag, creates
- * that element, and passes tool data as a property. Shows loading
- * skeleton while resolving. Falls back to raw JSON if no match.
- * Error boundary if the resolved component throws.
+ * @example
+ * ```html
+ * <ai-tool-card-resolver
+ *   toolName="invoice"
+ *   .toolData=${{ id: 'INV-001', total: 250 }}
+ *   .registry=${{ invoice: 'app-invoice-card', chart: 'app-chart-card' }}
+ * ></ai-tool-card-resolver>
+ * ```
+ *
+ * @prop {string} toolName - Tool call name to resolve (e.g. 'invoice')
+ * @prop {unknown} toolData - Data passed to the resolved component
+ * @prop {Record<string, string>} registry - Map of tool names to component tag names
+ * @prop {boolean} loading - Force loading skeleton display
+ *
+ * @fires {CustomEvent<{toolName: string, action: string}>} ai-tool-card-action - Proxied from resolved component
+ * @fires {CustomEvent<{toolName: string, error: string}>} ai-tool-card-error - When resolution fails
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';

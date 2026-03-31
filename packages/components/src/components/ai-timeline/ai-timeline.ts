@@ -1,8 +1,22 @@
 /**
- * <ai-timeline> — Execution Timeline
+ * @element ai-timeline
+ * Vertical execution timeline showing agent steps with status dots
+ * (pending/active/complete/error), duration bars, tool tags, and
+ * expandable detail panels. Active steps show a pulse animation.
  *
- * Vertical timeline showing agent steps: pending → active → complete → error.
- * Expandable details, duration bars, live animated entry.
+ * @example
+ * ```html
+ * <ai-timeline .steps=${[
+ *   { label: 'Parse query', status: 'complete', duration: 120, tools: ['tokenizer'] },
+ *   { label: 'Retrieve context', status: 'active' },
+ *   { label: 'Generate response', status: 'pending' }
+ * ]}></ai-timeline>
+ * ```
+ *
+ * @prop {TimelineStep[]} steps - Array of timeline step objects
+ * @prop {boolean} compact - Hide details, tools, and duration bars
+ *
+ * @fires {CustomEvent<{index: number, step: TimelineStep}>} ai-timeline-step-click - When a step is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';

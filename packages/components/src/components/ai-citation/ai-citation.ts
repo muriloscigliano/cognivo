@@ -1,9 +1,18 @@
 /**
- * <ai-citation> — Source Attribution
+ * @element ai-citation
+ * Inline numbered citation badges or bibliography list with expandable source cards and relevance dots.
  *
- * Inline numbered citations [1][2][3] with expandable source cards.
- * List mode for bibliography-style display.
- * Relevance indicators, link-out, excerpt display.
+ * @example
+ * ```html
+ * <ai-citation mode="inline" .sources=${[
+ *   {title:'Attention Is All You Need', url:'https://arxiv.org/abs/1706.03762', relevance:0.95},
+ *   {title:'BERT Paper', excerpt:'We introduce a new language representation model...'}
+ * ]}></ai-citation>
+ * ```
+ *
+ * @fires {CustomEvent<{index: number, source: CitationSource}>} ai-citation-click - Citation badge clicked
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Badge background tint and source title link color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

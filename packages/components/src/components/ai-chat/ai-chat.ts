@@ -1,16 +1,25 @@
 /**
- * <ai-chat> — Production AI Chat Interface
+ * @element ai-chat
+ * Full-featured AI chat interface with streaming, markdown rendering, message actions, and follow-up chips.
  *
- * Streaming: token-by-token text rendering via streamResponse()
- * Stop generation: button during streaming
- * Markdown: AI responses render bold, italic, code, lists, links
- * Message actions: Copy, Regenerate, Rate (👍/👎) per AI message
- * Message branching: regenerate creates versions, nav between them
- * Follow-up: after AI response, show suggestion chips
- * Typing indicator: ai-thinking with stages during generation
- * Conversation export: exportConversation() → markdown string
- * Avatar customization: userAvatar, aiAvatar props
- * Scroll management: auto-scroll during streaming, scroll-to-bottom button
+ * @example
+ * ```html
+ * <ai-chat
+ *   .aiClient=${myClient}
+ *   welcomeMessage="Ask me anything!"
+ *   placeholder="Type a message..."
+ * ></ai-chat>
+ * ```
+ *
+ * @fires {CustomEvent<{message: string}>} ai-message-sent - User sent a message
+ * @fires {CustomEvent<{message: string}>} ai-response-received - AI response completed
+ * @fires {CustomEvent<{error: string}>} ai-error - AI request failed
+ * @fires {CustomEvent} ai-chat-stop - User stopped generation
+ * @fires {CustomEvent<{content: string}>} ai-chat-copy - Message copied
+ * @fires {CustomEvent<{messageId: string}>} ai-chat-regenerate - Regenerate requested
+ * @fires {CustomEvent<{messageId: string, rating: 'up'|'down'}>} ai-chat-rate - Message rated
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - AI avatar gradient, links, send button, streaming cursor
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement, query } from 'lit/decorators.js';

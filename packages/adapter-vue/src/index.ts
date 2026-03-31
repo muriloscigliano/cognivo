@@ -10,8 +10,10 @@ export { createVueWrapper } from './create-wrapper.js';
 export type { WrapperPropDef } from './create-wrapper.js';
 
 export { AiThinking } from './components/AiThinking.js';
+export type { AiThinkingProps } from './components/AiThinking.js';
 export { AiBadge } from './components/AiBadge.js';
 export { AiChat } from './components/AiChat.js';
+export type { AiChatProps } from './components/AiChat.js';
 export { AiResultPanel } from './components/AiResultPanel.js';
 export { AiChartSummary } from './components/AiChartSummary.js';
 export { AiInsightCard } from './components/AiInsightCard.js';
@@ -89,17 +91,84 @@ export { AiAlertCard } from "./components/AiAlertCard.js";
 export { AiRevealAnimation } from "./components/AiRevealAnimation.js";
 export { AiRichMessage } from "./components/AiRichMessage.js";
 export { AiDataCard } from "./components/AiDataCard.js";
+// Layout
+export { CgStack } from './components/CgStack.js';
+export { CgSection } from './components/CgSection.js';
+
+// Typography
+export { CgText } from './components/CgText.js';
+export { CgLabel } from './components/CgLabel.js';
+export { CgMarkdown } from './components/CgMarkdown.js';
+
+// Display
+export { CgBadge } from './components/CgBadge.js';
+export type { CgBadgeProps } from './components/CgBadge.js';
+export { CgBadgeGroup } from './components/CgBadgeGroup.js';
+export { CgIcon } from './components/CgIcon.js';
+export { CgImage } from './components/CgImage.js';
+export { CgImageBlock } from './components/CgImageBlock.js';
+export { CgImageGallery } from './components/CgImageGallery.js';
+export { CgCallout } from './components/CgCallout.js';
+export { CgSeparator } from './components/CgSeparator.js';
+export { CgCodeBlock } from './components/CgCodeBlock.js';
+export { CgMetricCard } from './components/CgMetricCard.js';
+export { CgCard } from './components/CgCard.js';
+export type { CgCardProps } from './components/CgCard.js';
+
+// Form Controls
+export { CgButton } from './components/CgButton.js';
+export type { CgButtonProps } from './components/CgButton.js';
+export { CgButtonGroup } from './components/CgButtonGroup.js';
+export { CgInput } from './components/CgInput.js';
+export type { CgInputProps } from './components/CgInput.js';
+export { CgTextarea } from './components/CgTextarea.js';
+export type { CgTextareaProps } from './components/CgTextarea.js';
+export { CgSelect } from './components/CgSelect.js';
+export type { CgSelectProps, CgSelectOption } from './components/CgSelect.js';
+export { CgCheckbox } from './components/CgCheckbox.js';
+export type { CgCheckboxProps } from './components/CgCheckbox.js';
+export { CgRadio } from './components/CgRadio.js';
+export type { CgRadioProps } from './components/CgRadio.js';
+export { CgRadioGroup } from './components/CgRadioGroup.js';
+export type { CgRadioGroupProps } from './components/CgRadioGroup.js';
+export { CgSwitch } from './components/CgSwitch.js';
+export type { CgSwitchProps } from './components/CgSwitch.js';
+export { CgSlider } from './components/CgSlider.js';
+export { CgDatePicker } from './components/CgDatePicker.js';
+export { CgForm } from './components/CgForm.js';
+
+// Navigation & Containers
+export { CgTabs } from './components/CgTabs.js';
+export type { CgTabsProps, CgTabItem } from './components/CgTabs.js';
+export { CgAccordion } from './components/CgAccordion.js';
+export type { CgAccordionProps, CgAccordionItem } from './components/CgAccordion.js';
+export { CgSteps } from './components/CgSteps.js';
+export { CgCarousel } from './components/CgCarousel.js';
+
+// Data Display
+export { CgTable } from './components/CgTable.js';
+export { CgList } from './components/CgList.js';
+export { CgChart } from './components/CgChart.js';
+
+// Interactive
+export { CgFollowUp } from './components/CgFollowUp.js';
+
 // Foundation Primitives
 export { CgDropdown } from "./components/CgDropdown.js";
+export type { CgDropdownProps, CgDropdownItem } from "./components/CgDropdown.js";
 export { CgModal } from "./components/CgModal.js";
+export type { CgModalProps } from "./components/CgModal.js";
 export { CgTooltip } from "./components/CgTooltip.js";
+export type { CgTooltipProps } from "./components/CgTooltip.js";
 export { CgProgressBar } from "./components/CgProgressBar.js";
 export { CgSpinner } from "./components/CgSpinner.js";
 export { CgSkeleton } from "./components/CgSkeleton.js";
 export { CgDrawer } from "./components/CgDrawer.js";
+export type { CgDrawerProps } from "./components/CgDrawer.js";
 export { CgBreadcrumbs } from "./components/CgBreadcrumbs.js";
 export { CgPagination } from "./components/CgPagination.js";
 export { CgChip } from "./components/CgChip.js";
+export type { CgChipProps } from "./components/CgChip.js";
 export { CgNumberInput } from "./components/CgNumberInput.js";
 export { CgOtpInput } from "./components/CgOtpInput.js";
 export { CgAutocomplete } from "./components/CgAutocomplete.js";

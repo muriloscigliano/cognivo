@@ -1,4 +1,14 @@
 import { createVueWrapper } from '../create-wrapper.js';
+
+export interface CgChipProps {
+  label?: string;
+  variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
+  removable?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+  icon?: string;
+  disabled?: boolean;
+}
+
 export const CgChip = createVueWrapper('cg-chip', {
   label: { type: [String, Array, Object, Number, Boolean] },
   variant: { type: [String, Array, Object, Number, Boolean] },

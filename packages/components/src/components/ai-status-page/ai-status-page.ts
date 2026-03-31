@@ -1,10 +1,20 @@
 /**
- * <ai-status-page> — System Health Dashboard for AI Services
+ * @element ai-status-page
+ * System health dashboard showing AI service statuses with color-coded
+ * dots (operational/degraded/down/maintenance), latency bars, uptime
+ * percentages, and an overall system status badge.
  *
- * Service list with status dots, overall status badge.
- * Latency bars, uptime percentages.
- * Click on service for details.
- * Keyboard accessible with proper list semantics.
+ * @example
+ * ```html
+ * <ai-status-page .services=${[
+ *   { name: 'Chat API', status: 'operational', latency: 120, uptime: 99.98 },
+ *   { name: 'Embedding Service', status: 'degraded', latency: 850, uptime: 99.5 }
+ * ]}></ai-status-page>
+ * ```
+ *
+ * @prop {StatusService[]} services - Array of service entries with name, status, latency, uptime
+ *
+ * @fires {CustomEvent<{service: StatusService}>} ai-status-service-click - When a service row is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';

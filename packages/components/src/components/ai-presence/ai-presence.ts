@@ -1,10 +1,24 @@
 /**
- * <ai-presence> — Who's Online Indicator
+ * @element ai-presence
+ * Overlapping avatar stack showing online users with status dots
+ * (online/away/offline). Displays "+N more" overflow badge and
+ * tooltips on hover/focus.
  *
- * Overlapping avatar circles with status dots.
- * "+N more" badge when exceeding maxVisible.
- * Tooltip on hover/focus for each user.
- * Keyboard accessible with Tab navigation.
+ * @example
+ * ```html
+ * <ai-presence
+ *   .users=${[
+ *     { name: 'Alice', status: 'online', avatar: '/avatars/alice.jpg' },
+ *     { name: 'Bob', status: 'away' }
+ *   ]}
+ *   max-visible="4"
+ * ></ai-presence>
+ * ```
+ *
+ * @prop {PresenceUser[]} users - Array of user objects with name, status, and optional avatar URL
+ * @prop {number} maxVisible - Max avatars before showing overflow badge (default 5)
+ *
+ * @fires {CustomEvent<{user: PresenceUser}>} ai-presence-user-click - When an avatar is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

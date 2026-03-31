@@ -1,8 +1,23 @@
 /**
- * <ai-agent-card> — Multi-Agent Status Card
+ * @element ai-agent-card
+ * Status card for multi-agent orchestration showing name, role, live status, task, and handoff chain.
  *
- * Shows agent name, role, status (idle/thinking/acting/done/error),
- * current task, handoff chain, capabilities. For multi-agent orchestration UIs.
+ * @example
+ * ```html
+ * <ai-agent-card
+ *   name="Researcher"
+ *   role="Data Analyst"
+ *   status="thinking"
+ *   task="Querying vector store..."
+ *   .capabilities=${['search','summarize']}
+ * ></ai-agent-card>
+ * ```
+ *
+ * @fires {CustomEvent<{name: string, role: string, status: string}>} ai-agent-select - Card clicked
+ * @fires {CustomEvent<{name: string}>} ai-agent-pause - Pause button clicked
+ * @fires {CustomEvent<{name: string}>} ai-agent-cancel - Cancel button clicked
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Active border and thinking dot color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';

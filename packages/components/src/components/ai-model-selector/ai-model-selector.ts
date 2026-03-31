@@ -1,8 +1,24 @@
 /**
- * <ai-model-selector> — Agent/Model Picker
+ * @element ai-model-selector
+ * Card grid for picking AI models. Shows name, provider, capabilities,
+ * and cost tier. Supports single or multi-select with capability filtering.
+ * Multi-select triggers a comparison event when two models are chosen.
  *
- * Card grid for selecting AI models. Shows name, provider, capabilities, cost.
- * Multi-select for comparison. Filter by capability.
+ * @example
+ * ```html
+ * <ai-model-selector
+ *   .models=${[{ id: 'gpt4', name: 'GPT-4', provider: 'OpenAI', capabilities: ['vision', 'code'], costTier: 'high' }]}
+ *   selected="gpt4"
+ *   multi
+ * ></ai-model-selector>
+ * ```
+ *
+ * @prop {AIModel[]} models - Available models array
+ * @prop {string} selected - Initially selected model ID
+ * @prop {boolean} multi - Enable multi-select mode
+ *
+ * @fires {CustomEvent<{selected: string[], model: AIModel}>} ai-model-select - When a model is selected
+ * @fires {CustomEvent<{models: AIModel[]}>} ai-model-compare - When exactly 2 models are selected (multi mode)
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

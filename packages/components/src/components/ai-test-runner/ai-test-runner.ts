@@ -1,9 +1,22 @@
 /**
- * <ai-test-runner> — AI evaluation test results display.
+ * @element ai-test-runner
+ * AI evaluation test results panel. Displays a list of tests with
+ * pass/fail/running/pending status icons, duration, optional scores,
+ * expandable expected/actual details, summary bar, and a "Run All" button.
  *
- * Props: tests, title
- * Events: ai-test-run, ai-test-click
- * Features: Test list with pass/fail icons, duration, run all button, summary bar, expandable details
+ * @example
+ * ```html
+ * <ai-test-runner title="Eval Suite" .tests=${[
+ *   { name: 'Summarization accuracy', status: 'pass', duration: 340, score: 92 },
+ *   { name: 'Hallucination check', status: 'fail', duration: 210, expected: 'No hallucinations', actual: 'Found 2 claims' }
+ * ]}></ai-test-runner>
+ * ```
+ *
+ * @prop {TestEntry[]} tests - Array of test entries with name, status, duration, score, expected, actual
+ * @prop {string} title - Panel header title (default 'Test Results')
+ *
+ * @fires {CustomEvent<{tests: string[]}>} ai-test-run - When "Run All" is clicked
+ * @fires {CustomEvent<{index: number, test: TestEntry}>} ai-test-click - When a test row is toggled
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';

@@ -1,9 +1,24 @@
 /**
- * <ai-reveal-animation> — Dramatic card entrance animation wrapper.
+ * @element ai-reveal-animation
+ * Entrance animation wrapper that reveals slotted content with fade,
+ * slide-up, scale, or flip animations. Respects prefers-reduced-motion
+ * and dispatches a completion event.
  *
- * Wraps any child content via slot. When `visible` becomes true,
- * plays the selected animation type. Dispatches complete event
- * after animation finishes. Respects prefers-reduced-motion.
+ * @example
+ * ```html
+ * <ai-reveal-animation type="slide-up" delay="200" duration="500" visible>
+ *   <ai-result-panel title="Results"></ai-result-panel>
+ * </ai-reveal-animation>
+ * ```
+ *
+ * @prop {'fade'|'slide-up'|'scale'|'flip'} type - Animation type (default 'fade')
+ * @prop {number} delay - Delay before animation starts in ms (default 0)
+ * @prop {number} duration - Animation duration in ms (default 400)
+ * @prop {boolean} visible - Trigger the reveal animation
+ *
+ * @fires ai-reveal-complete - When the animation finishes
+ *
+ * @slot - Content to reveal
  */
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';

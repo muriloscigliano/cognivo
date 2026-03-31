@@ -1,9 +1,24 @@
 /**
- * <ai-webhook-config> — Webhook endpoint configuration panel.
+ * @element ai-webhook-config
+ * Webhook endpoint management panel. Lists configured webhooks with URL,
+ * event tags, on/off toggle, test and delete actions. Includes an "Add
+ * Webhook" form with URL input and event selection chips.
  *
- * Props: webhooks, availableEvents
- * Events: ai-webhook-create, ai-webhook-toggle, ai-webhook-delete, ai-webhook-test
- * Features: Webhook list with URL, event tags, toggle on/off, delete, "Test" button, add new webhook form
+ * @example
+ * ```html
+ * <ai-webhook-config
+ *   .webhooks=${[{ id: 'wh1', url: 'https://example.com/hook', events: ['model.complete'], active: true }]}
+ *   .availableEvents=${['model.complete', 'model.error', 'usage.limit']}
+ * ></ai-webhook-config>
+ * ```
+ *
+ * @prop {WebhookEntry[]} webhooks - Array of configured webhook entries
+ * @prop {string[]} availableEvents - Event types available for subscription
+ *
+ * @fires {CustomEvent<{url: string, events: string[]}>} ai-webhook-create - When a new webhook is created
+ * @fires {CustomEvent<{id: string, active: boolean}>} ai-webhook-toggle - When a webhook is toggled on/off
+ * @fires {CustomEvent<{id: string}>} ai-webhook-delete - When a webhook is deleted
+ * @fires {CustomEvent<{id: string, url: string}>} ai-webhook-test - When a webhook test is triggered
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';

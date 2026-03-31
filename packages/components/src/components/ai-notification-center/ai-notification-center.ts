@@ -1,9 +1,22 @@
 /**
- * <ai-notification-center> — Grouped notification inbox for AI events
+ * @element ai-notification-center
+ * Grouped notification inbox for AI events. Displays notifications
+ * organized by type, with unread badges, mark-all-read, and
+ * individual dismiss actions.
  *
- * Props: notifications, maxVisible
- * Events: ai-notification-click, ai-notification-dismiss, ai-notification-read-all
- * Features: Grouped by type, unread badge, mark all as read, dismiss, empty state
+ * @example
+ * ```html
+ * <ai-notification-center .notifications=${[
+ *   { id: '1', title: 'Model updated', message: 'GPT-4 Turbo is now available', type: 'system', timestamp: '2 min ago' }
+ * ]} maxVisible="20"></ai-notification-center>
+ * ```
+ *
+ * @prop {Notification[]} notifications - Array of notification objects
+ * @prop {number} maxVisible - Max notifications to render (default 50)
+ *
+ * @fires {CustomEvent<{id: string, notification: object}>} ai-notification-click - When a notification is clicked
+ * @fires {CustomEvent<{id: string}>} ai-notification-dismiss - When a notification is dismissed
+ * @fires ai-notification-read-all - When "Mark all read" is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

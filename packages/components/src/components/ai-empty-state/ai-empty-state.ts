@@ -1,10 +1,20 @@
 /**
- * <ai-empty-state> — Contextual Empty State for AI Features
+ * @element ai-empty-state
+ * Centered empty state placeholder with icon, title, description, and optional action button.
  *
- * Centered layout with large icon, title, description.
- * Optional action button.
- * Variant-specific styling (default/error/search/ai).
- * Keyboard accessible.
+ * @example
+ * ```html
+ * <ai-empty-state
+ *   variant="ai"
+ *   title="No insights yet"
+ *   description="Run an analysis to generate AI insights."
+ *   action-label="Start Analysis"
+ * ></ai-empty-state>
+ * ```
+ *
+ * @fires {CustomEvent} ai-empty-action - Action button clicked
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Action button and AI variant accent
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';

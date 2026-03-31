@@ -1,10 +1,22 @@
 /**
- * <ai-usage-meter> — Rate Limit / Quota Display
+ * @element ai-usage-meter
+ * Circular SVG progress ring displaying API usage against a quota limit.
+ * Color shifts to warning (80%) and danger (95%) tiers. Shows an "Upgrade
+ * Plan" button when usage exceeds 80%.
  *
- * Circular SVG progress ring with percentage.
- * Warning at 80%, danger at 95%.
- * "Upgrade" button when nearing limit.
- * Keyboard accessible, reduced-motion safe.
+ * @example
+ * ```html
+ * <ai-usage-meter used="8500" limit="10000" label="API Calls" unit="requests"
+ *   reset-date="Apr 1"></ai-usage-meter>
+ * ```
+ *
+ * @prop {number} used - Current usage count
+ * @prop {number} limit - Maximum quota (default 100)
+ * @prop {string} label - Metric label (default 'Usage')
+ * @prop {string} unit - Unit label (default 'requests')
+ * @prop {string} resetDate - When the quota resets (e.g. 'Apr 1')
+ *
+ * @fires ai-usage-upgrade - When the "Upgrade Plan" button is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';

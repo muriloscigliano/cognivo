@@ -1,10 +1,17 @@
 /**
- * <ai-avatar> — User/agent avatar with status ring.
+ * @element ai-avatar
+ * User or agent avatar with image/initials fallback, status indicator dot, and type-colored ring.
  *
- * Props: src, name, size, status, type
- * Events: ai-avatar-click
- * Features: Image with fallback to initials, status dot ring,
- *           type-specific border color, loading skeleton
+ * @example
+ * ```html
+ * <ai-avatar name="Jane Doe" src="/avatars/jane.jpg" size="lg" status="online" type="user"></ai-avatar>
+ * <ai-avatar name="Claude" type="agent" status="busy"></ai-avatar>
+ * ```
+ *
+ * @fires {CustomEvent<{name: string, type: string}>} ai-avatar-click - Avatar clicked
+ *
+ * @cssprop [--cg-color-accent=#dfff61] - Agent ring and focus outline color
+ * @cssprop [--cg-color-surface=#27272a] - Inner circle background for initials
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';

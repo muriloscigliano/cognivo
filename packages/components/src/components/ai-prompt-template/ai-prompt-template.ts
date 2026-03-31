@@ -1,9 +1,24 @@
 /**
- * <ai-prompt-template> — Prompt template editor with variable slots
+ * @element ai-prompt-template
+ * Prompt template editor with {{variable}} highlighting, inline variable
+ * inputs, and edit/preview toggle. Variables are auto-detected from the
+ * template string and rendered as editable fields.
  *
- * Props: template, variables, editable
- * Events: ai-template-change, ai-template-variable-change
- * Features: Highlights {{variables}} in lime, inline inputs, preview mode
+ * @example
+ * ```html
+ * <ai-prompt-template
+ *   template="Summarize {{topic}} for a {{audience}} audience."
+ *   .variables=${{ topic: 'quantum computing', audience: 'beginner' }}
+ *   editable
+ * ></ai-prompt-template>
+ * ```
+ *
+ * @prop {string} template - Template string with {{variable}} placeholders
+ * @prop {Record<string, string>} variables - Variable name-to-value map
+ * @prop {boolean} editable - Allow editing the template and variables (default true)
+ *
+ * @fires {CustomEvent<{template: string}>} ai-template-change - When the template text changes
+ * @fires {CustomEvent<{variable: string, value: string}>} ai-template-variable-change - When a variable value changes
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

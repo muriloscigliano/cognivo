@@ -1,13 +1,29 @@
 /**
- * <ai-thinking> — Full AI Loading System
+ * @element ai-thinking
+ * Versatile AI loading indicator with three variants (dots, spinner, skeleton),
+ * three sizes (sm, md, lg), stage cycling, tool call badges, optional cancel
+ * button, determinate progress bar, and configurable display delay.
  *
- * 3 variants: dots (default), spinner, skeleton
- * 3 sizes: sm (inline), md (block), lg (full-width)
- * Stages: cycle through status messages ("Connecting...", "Analyzing...")
- * Tools: show tool call badges with status (loading/complete/error)
- * Cancel: optional cancel button
- * Progress: optional determinate progress bar (0-100)
- * Delay: 200ms default delay before showing (no flash for fast responses)
+ * @example
+ * ```html
+ * <ai-thinking text="Analyzing" variant="dots" size="md" shimmer cancelable></ai-thinking>
+ * <ai-thinking variant="skeleton" size="lg"></ai-thinking>
+ * <ai-thinking text="Processing" .stages=${['Connecting...', 'Analyzing...', 'Generating...']}
+ *   .tools=${[{ name: 'web_search', status: 'complete' }]} progress="65"></ai-thinking>
+ * ```
+ *
+ * @prop {string} text - Display text (default 'Thinking')
+ * @prop {'dots'|'spinner'|'skeleton'} variant - Visual variant (default 'dots')
+ * @prop {'sm'|'md'|'lg'} size - Component size (default 'md')
+ * @prop {boolean} shimmer - Enable shimmer text effect
+ * @prop {string[]} stages - Status messages to cycle through
+ * @prop {boolean} cancelable - Show cancel button
+ * @prop {ToolCall[]} tools - Tool call badges with status
+ * @prop {number} progress - Determinate progress 0-100 (-1 for indeterminate)
+ * @prop {number} delay - Delay in ms before showing (default 200)
+ *
+ * @fires ai-thinking-cancel - When cancel button is clicked
+ * @fires {CustomEvent<{stage: string, index: number}>} ai-thinking-stage-change - When stage cycles
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

@@ -1,9 +1,17 @@
 /**
- * <ai-cost-dashboard> — Aggregate token/cost usage over time
+ * @element ai-cost-dashboard
+ * Aggregate AI cost dashboard with summary cards, budget bar, per-model breakdown, and daily trend chart.
  *
- * Props: entries, budget, period
- * Events: ai-cost-entry-click
- * Features: Total cost summary, per-model breakdown bars, budget progress, daily trend
+ * @example
+ * ```html
+ * <ai-cost-dashboard
+ *   .entries=${[{date:'2024-03-15', model:'gpt-4o', inputTokens:50000, outputTokens:12000, cost:0.42}]}
+ *   budget="50"
+ *   period="March 2024"
+ * ></ai-cost-dashboard>
+ * ```
+ *
+ * @fires {CustomEvent<{model: string, cost: number}>} ai-cost-entry-click - Model row clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

@@ -1,5 +1,18 @@
 import { createVueWrapper } from '../create-wrapper.js';
 
+export interface CgTabItem {
+  label: string;
+  value: string;
+  disabled?: boolean;
+  icon?: string;
+}
+
+export interface CgTabsProps {
+  tabs?: CgTabItem[];
+  value?: string;
+  variant?: 'default' | 'pills' | 'underline';
+}
+
 export const CgTabs = createVueWrapper(
   'cg-tabs',
   {

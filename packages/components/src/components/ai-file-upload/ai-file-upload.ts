@@ -1,10 +1,21 @@
 /**
- * <ai-file-upload> — Drag-Drop File Upload for AI Processing
+ * @element ai-file-upload
+ * Drag-and-drop file upload zone with accept filter, size limit, file list, and remove controls.
  *
- * Dashed border drop zone with file list.
- * Supports accept filter, max size, multiple files.
- * Remove button per file, drop highlight state.
- * Keyboard accessible, no innerHTML with user content.
+ * @example
+ * ```html
+ * <ai-file-upload
+ *   accept=".pdf,.csv"
+ *   max-size="5242880"
+ *   multiple
+ *   label="Drop training data here"
+ * ></ai-file-upload>
+ * ```
+ *
+ * @fires {CustomEvent<{files: UploadedFile[]}>} ai-file-select - Files selected or dropped
+ * @fires {CustomEvent<{error: string}>} ai-file-error - File validation failed (size/type)
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Drop zone hover border and focus ring
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

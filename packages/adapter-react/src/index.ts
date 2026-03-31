@@ -124,6 +124,9 @@ export type { CgCheckboxProps } from './components/CgCheckbox.js';
 export { CgRadio } from './components/CgRadio.js';
 export type { CgRadioProps } from './components/CgRadio.js';
 
+export { CgRadioGroup } from './components/CgRadioGroup.js';
+export type { CgRadioGroupProps } from './components/CgRadioGroup.js';
+
 export { CgSwitch } from './components/CgSwitch.js';
 export type { CgSwitchProps } from './components/CgSwitch.js';
 

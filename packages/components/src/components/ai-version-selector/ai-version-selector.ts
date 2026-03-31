@@ -1,9 +1,22 @@
 /**
- * <ai-version-selector> — Model version picker with rollout percentage.
+ * @element ai-version-selector
+ * Radio-group version picker for AI models with status badges
+ * (active/canary/deprecated), rollout percentage sliders,
+ * "Promote to 100%" buttons, and deprecation warnings.
  *
- * Props: versions, selected
- * Events: ai-version-select, ai-version-rollout-change
- * Features: Version list with status badges, rollout % slider, "Promote to 100%" button, deprecation warning
+ * @example
+ * ```html
+ * <ai-version-selector selected="v2" .versions=${[
+ *   { id: 'v2', label: 'v2.1-stable', status: 'active', rolloutPercent: 100, date: 'Mar 15' },
+ *   { id: 'v3', label: 'v3.0-canary', status: 'canary', rolloutPercent: 10, date: 'Mar 28' }
+ * ]}></ai-version-selector>
+ * ```
+ *
+ * @prop {VersionEntry[]} versions - Array of version entries
+ * @prop {string} selected - Currently selected version ID
+ *
+ * @fires {CustomEvent<{id: string, label: string}>} ai-version-select - When a version is selected
+ * @fires {CustomEvent<{id: string, rolloutPercent: number}>} ai-version-rollout-change - When rollout slider or promote button changes
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';

@@ -1,6 +1,11 @@
 import { type PropType } from 'vue';
 import { createVueWrapper } from '../create-wrapper.js';
 
+export interface AiChatProps {
+  aiClient?: unknown;
+  dataset?: unknown[];
+}
+
 export const AiChat = createVueWrapper(
   'ai-chat',
   {

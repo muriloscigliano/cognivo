@@ -1,8 +1,22 @@
 /**
- * <ai-guardrail> — Safety Filter Display
+ * @element ai-guardrail
+ * Content safety filter display with policy check list, blocked content, and optional override controls.
  *
- * Shows content policy checks, blocked content, override controls.
- * Status: safe (green), flagged (yellow), blocked (red).
+ * @example
+ * ```html
+ * <ai-guardrail
+ *   status="flagged"
+ *   severityLevel="medium"
+ *   .checks=${[{policy:'PII Detection', passed:false, detail:'Email address found'}]}
+ *   allowOverride
+ * ></ai-guardrail>
+ * ```
+ *
+ * @fires {CustomEvent} ai-guardrail-override - Override button clicked
+ * @fires {CustomEvent} ai-guardrail-report - Report button clicked
+ * @fires {CustomEvent} ai-guardrail-reveal - Blocked content revealed
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Safe status accent
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

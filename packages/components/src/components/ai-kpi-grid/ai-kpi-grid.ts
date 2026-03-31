@@ -1,9 +1,24 @@
 /**
- * <ai-kpi-grid> — Multiple KPIs in one card.
+ * @element ai-kpi-grid
+ * Dashboard card displaying multiple KPI metrics in a configurable grid.
+ * Each cell shows label, value, trend arrow, and optional icon.
+ * Includes a loading skeleton state.
  *
- * Grid layout (configurable columns), each KPI shows label, value,
- * trend arrow + delta, optional icon. Loading skeleton state.
- * Card wrapper with title.
+ * @example
+ * ```html
+ * <ai-kpi-grid
+ *   title="Performance"
+ *   columns="3"
+ *   .kpis=${[{ label: 'Revenue', value: '$12.4K', delta: '+8.2%', trend: 'up' }]}
+ * ></ai-kpi-grid>
+ * ```
+ *
+ * @prop {string} title - Card header title
+ * @prop {KpiItem[]} kpis - Array of KPI items with label, value, delta, trend, icon
+ * @prop {number} columns - Number of grid columns (default 2)
+ * @prop {boolean} loading - Show skeleton loading state
+ *
+ * @fires {CustomEvent<{label: string, value: string}>} ai-kpi-click - When a KPI cell is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';

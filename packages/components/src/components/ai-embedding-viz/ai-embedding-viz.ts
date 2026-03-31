@@ -1,9 +1,20 @@
 /**
- * <ai-embedding-viz> — 2D scatter plot of vector embeddings
+ * @element ai-embedding-viz
+ * 2D SVG scatter plot for visualizing vector embeddings with color-coded clusters and hover tooltips.
  *
- * Props: points, title, showLabels
- * Events: ai-embedding-point-click
- * Features: SVG scatter plot, color-coded clusters, hover tooltip, static view
+ * @example
+ * ```html
+ * <ai-embedding-viz
+ *   .points=${[
+ *     {x:0.2, y:0.8, label:'cat', cluster:'animals'},
+ *     {x:0.7, y:0.3, label:'car', cluster:'vehicles'}
+ *   ]}
+ *   title="Semantic Clusters"
+ *   showLabels
+ * ></ai-embedding-viz>
+ * ```
+ *
+ * @fires {CustomEvent<{point: EmbeddingPoint}>} ai-embedding-point-click - Point clicked
  */
 import { LitElement, html, css, nothing, svg } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

@@ -1,10 +1,20 @@
 /**
- * <ai-model-comparison> — Full Comparison Table of Model Capabilities
+ * @element ai-model-comparison
+ * Side-by-side comparison table for AI models. Renders metrics as rows
+ * with color-coded score bars, highlights the best score per metric,
+ * and includes cost tier and context window info.
  *
- * Table with models as columns, metrics as rows.
- * Color-coded scores, highlight best per row.
- * Click to select a model.
- * Keyboard accessible with proper table semantics.
+ * @example
+ * ```html
+ * <ai-model-comparison .models=${[
+ *   { name: 'GPT-4', provider: 'OpenAI', scores: { reasoning: 92, coding: 88 }, costTier: '$$$', contextWindow: 128000 },
+ *   { name: 'Claude 3', provider: 'Anthropic', scores: { reasoning: 95, coding: 91 }, costTier: '$$', contextWindow: 200000 }
+ * ]}></ai-model-comparison>
+ * ```
+ *
+ * @prop {ComparisonModel[]} models - Array of models with name, provider, scores, costTier, contextWindow
+ *
+ * @fires {CustomEvent<{model: ComparisonModel}>} ai-comparison-select - When a model's Select button is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';

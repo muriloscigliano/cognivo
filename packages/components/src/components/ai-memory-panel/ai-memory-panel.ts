@@ -1,8 +1,25 @@
 /**
- * <ai-memory-panel> — Agent Memory Display
+ * @element ai-memory-panel
+ * Tabbed panel for viewing and managing agent memory. Displays short-term
+ * (conversation) and long-term (persisted) memories with type badges,
+ * search, pin, and delete actions.
  *
- * Short-term (conversation) vs long-term (persisted) memories.
- * Search, delete, pin. Memory type badges.
+ * @example
+ * ```html
+ * <ai-memory-panel
+ *   .shortTerm=${[{ id: '1', content: 'User prefers dark mode', type: 'preference', timestamp: Date.now() }]}
+ *   .longTerm=${[]}
+ *   searchable
+ * ></ai-memory-panel>
+ * ```
+ *
+ * @prop {Memory[]} shortTerm - Short-term conversation memories
+ * @prop {Memory[]} longTerm - Long-term persisted memories
+ * @prop {boolean} searchable - Enable search input (default true)
+ *
+ * @fires {CustomEvent<{id: string, type: string}>} ai-memory-delete - When a memory is deleted
+ * @fires {CustomEvent<{id: string, pinned: boolean}>} ai-memory-pin - When a memory is pinned/unpinned
+ * @fires {CustomEvent<{query: string}>} ai-memory-search - When search query changes (debounced)
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

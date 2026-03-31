@@ -1,9 +1,20 @@
 /**
- * <ai-feature-flag> — Feature flag toggle for AI capabilities.
+ * @element ai-feature-flag
+ * Feature flag management panel with toggle switches, environment badges, search, and enable/disable grouping.
  *
- * Props: flags, environment
- * Events: ai-flag-toggle, ai-flag-click
- * Features: Flag list with toggle switches, environment badges, description, search/filter, grouped by enabled/disabled
+ * @example
+ * ```html
+ * <ai-feature-flag
+ *   environment="staging"
+ *   .flags=${[
+ *     {id:'rag', name:'RAG Pipeline', enabled:true, description:'Vector search retrieval'},
+ *     {id:'streaming', name:'Streaming', enabled:false}
+ *   ]}
+ * ></ai-feature-flag>
+ * ```
+ *
+ * @fires {CustomEvent<{id: string, enabled: boolean}>} ai-flag-toggle - Flag toggled on/off
+ * @fires {CustomEvent<{id: string}>} ai-flag-click - Flag row clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';

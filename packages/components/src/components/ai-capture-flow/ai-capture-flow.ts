@@ -1,8 +1,22 @@
 /**
- * <ai-capture-flow> — Multi-step capture: upload → preview → process → result.
+ * @element ai-capture-flow
+ * Multi-step capture wizard: upload, preview, processing, and result with step indicator.
  *
- * Step indicator at top. Drag-drop upload zone, preview with confirm/retake,
- * processing with progress bar, result display with done button.
+ * @example
+ * ```html
+ * <ai-capture-flow
+ *   step="upload"
+ *   accept=".pdf,.jpg,.png"
+ *   title="Document Scan"
+ * ></ai-capture-flow>
+ * ```
+ *
+ * @fires {CustomEvent<{file: File}>} ai-capture-file - File selected or dropped
+ * @fires {CustomEvent} ai-capture-confirm - User confirmed the preview
+ * @fires {CustomEvent} ai-capture-retry - User chose to retake/retry
+ * @fires {CustomEvent} ai-capture-complete - User clicked Done on the result
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Step dots, progress fill, and primary button color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';

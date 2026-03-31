@@ -1,10 +1,17 @@
 /**
- * <ai-copy-button> — One-click copy with confirmation.
+ * @element ai-copy-button
+ * One-click clipboard copy with animated confirmation state and three display variants.
  *
- * Props: value, label, variant, timeout
- * Events: ai-copy-success, ai-copy-error
- * Features: Click to copy to clipboard, "Copied!" confirmation with checkmark,
- *           auto-resets after timeout, icon-only variant for inline use
+ * @example
+ * ```html
+ * <ai-copy-button value="sk-abc123..." label="Copy API Key"></ai-copy-button>
+ * <ai-copy-button value="hello world" variant="icon-only"></ai-copy-button>
+ * ```
+ *
+ * @fires {CustomEvent<{value: string}>} ai-copy-success - Content copied to clipboard
+ * @fires {CustomEvent<{error: string}>} ai-copy-error - Clipboard write failed
+ *
+ * @cssprop [--cg-color-accent=#dfff61] - Focus ring and copied-state text color
  */
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';

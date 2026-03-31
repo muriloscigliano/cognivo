@@ -1,9 +1,20 @@
 /**
- * <ai-data-table> — AI-enhanced table with anomaly highlighting and smart sorting
+ * @element ai-data-table
+ * Data table with sortable columns, AI-detected anomaly cell highlighting, and click events.
  *
- * Props: columns, data, anomalies, sortable
- * Events: ai-data-sort, ai-data-cell-click, ai-data-anomaly-click
- * Features: Sort on column click, anomaly cells highlighted, row hover, tooltips
+ * @example
+ * ```html
+ * <ai-data-table
+ *   .columns=${[{key:'name', label:'Name'}, {key:'score', label:'Score', type:'number'}]}
+ *   .data=${[{name:'Alice', score:92}, {name:'Bob', score:12}]}
+ *   .anomalies=${[{row:1, col:'score', severity:'high', reason:'Unusually low'}]}
+ *   sortable
+ * ></ai-data-table>
+ * ```
+ *
+ * @fires {CustomEvent<{key, direction}>} ai-data-sort - Column header clicked for sorting
+ * @fires {CustomEvent<{row, col, value}>} ai-data-cell-click - Cell clicked
+ * @fires {CustomEvent<{row, col, severity, reason}>} ai-data-anomaly-click - Anomaly cell clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

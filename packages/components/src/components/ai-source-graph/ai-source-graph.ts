@@ -1,8 +1,24 @@
 /**
- * <ai-source-graph> — Knowledge Source Attribution Graph
+ * @element ai-source-graph
+ * SVG radial graph visualizing which knowledge sources contributed to an
+ * AI response. Line thickness indicates attribution weight. Click a node
+ * to expand source details with type badge and excerpt.
  *
- * SVG node graph showing which sources contributed to a response.
- * Connection strength = line thickness. Click to expand source details.
+ * @example
+ * ```html
+ * <ai-source-graph
+ *   responseId="resp-42"
+ *   .sources=${[
+ *     { id: 's1', title: 'API Docs', type: 'doc', weight: 0.8, excerpt: 'Rate limits apply...' },
+ *     { id: 's2', title: 'Stack Overflow', type: 'web', weight: 0.4 }
+ *   ]}
+ * ></ai-source-graph>
+ * ```
+ *
+ * @prop {SourceNode[]} sources - Array of source nodes with id, title, type, weight, excerpt
+ * @prop {string} responseId - Label for the center node (default 'Response')
+ *
+ * @fires {CustomEvent<{id: string, title: string, type: string, weight: number}>} ai-source-click - When a source node is clicked
  */
 import { LitElement, html, css, svg, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

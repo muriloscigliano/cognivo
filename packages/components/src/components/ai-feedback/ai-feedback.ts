@@ -1,8 +1,20 @@
 /**
- * <ai-feedback> — User Feedback Widget
+ * @element ai-feedback
+ * User feedback widget with thumbs/stars/emoji modes, selectable issue tags, and optional comment field.
  *
- * Modes: thumbs (👍/👎), stars (1-5), emoji, custom.
- * Optional comment textarea, issue tags, submitted state.
+ * @example
+ * ```html
+ * <ai-feedback
+ *   mode="thumbs"
+ *   messageId="msg-42"
+ *   .tags=${['Inaccurate','Too long','Offensive']}
+ *   showComment
+ * ></ai-feedback>
+ * ```
+ *
+ * @fires {CustomEvent<{rating, tags, comment, messageId}>} ai-feedback-submit - Feedback submitted
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Selected rating and submit button accent
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

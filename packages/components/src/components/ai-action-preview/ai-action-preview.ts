@@ -1,9 +1,22 @@
 /**
- * <ai-action-preview> — Confirmation card before executing an AI action.
+ * @element ai-action-preview
+ * Confirmation card for dangerous or irreversible AI actions with severity badge and optional countdown.
  *
- * Shows title, severity badge, key-value details, and confirm/cancel
- * buttons. Optional countdown timer for auto-confirm. Pulse animation
- * for critical severity.
+ * @example
+ * ```html
+ * <ai-action-preview
+ *   title="Delete training data"
+ *   severity="critical"
+ *   .details=${{Dataset: 'prod-v2', Rows: '14,200'}}
+ *   countdown="10"
+ * ></ai-action-preview>
+ * ```
+ *
+ * @fires {CustomEvent<{action: string, details: Record<string,string>}>} ai-action-confirm - User confirmed
+ * @fires {CustomEvent<{action: string}>} ai-action-cancel - User cancelled
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Confirm button and focus ring color
+ * @cssprop [--cg-red-400=#f87171] - Critical severity border and pulse
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';

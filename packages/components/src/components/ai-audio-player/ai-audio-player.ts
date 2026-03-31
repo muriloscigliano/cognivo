@@ -1,9 +1,21 @@
 /**
- * <ai-audio-player> — Audio Playback with Waveform Visualization
+ * @element ai-audio-player
+ * Audio player with decorative waveform visualization, progress seek bar, and speed control.
  *
- * Play/pause button, progress bar, time display.
- * Decorative waveform bars, speed control (1x/1.5x/2x).
- * Fully keyboard accessible.
+ * @example
+ * ```html
+ * <ai-audio-player
+ *   src="/audio/podcast-ep12.mp3"
+ *   title="Episode 12: AI Safety"
+ *   duration="1842"
+ * ></ai-audio-player>
+ * ```
+ *
+ * @fires {CustomEvent} ai-audio-play - Playback started
+ * @fires {CustomEvent} ai-audio-pause - Playback paused
+ * @fires {CustomEvent} ai-audio-end - Playback reached the end
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Play button, waveform progress, and seek fill color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

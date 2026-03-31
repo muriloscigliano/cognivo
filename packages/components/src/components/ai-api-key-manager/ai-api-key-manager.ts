@@ -1,9 +1,20 @@
 /**
- * <ai-api-key-manager> — API key display, create, rotate, and delete.
+ * @element ai-api-key-manager
+ * API key management panel with masked display, copy, revoke, delete, and create controls.
  *
- * Props: keys, maxKeys
- * Events: ai-key-create, ai-key-revoke, ai-key-delete
- * Features: Key list with masked display, copy button, revoke/delete actions, create new button, status badges
+ * @example
+ * ```html
+ * <ai-api-key-manager
+ *   .keys=${[{id:'1', name:'Production', prefix:'sk-abc', createdAt:'2024-01-15', status:'active'}]}
+ *   maxKeys="5"
+ * ></ai-api-key-manager>
+ * ```
+ *
+ * @fires {CustomEvent} ai-key-create - Create button clicked
+ * @fires {CustomEvent<{id: string, name: string}>} ai-key-revoke - Revoke button clicked
+ * @fires {CustomEvent<{id: string, name: string}>} ai-key-delete - Delete button clicked
+ *
+ * @cssprop [--cg-color-accent=#dfff61] - Create button and focus ring color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';

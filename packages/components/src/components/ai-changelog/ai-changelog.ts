@@ -1,9 +1,17 @@
 /**
- * <ai-changelog> — Version history feed for AI model/prompt changes
+ * @element ai-changelog
+ * Timeline-style version history feed with type badges, expandable details, and rollback buttons.
  *
- * Props: entries (array of {version, date, author?, changes, type})
- * Events: ai-changelog-entry-click, ai-changelog-rollback
- * Features: Timeline feed with type badges, expandable details, rollback button
+ * @example
+ * ```html
+ * <ai-changelog .entries=${[
+ *   {version:'v2.1', date:'2024-03-15', type:'model', changes:'Upgraded to GPT-4o', author:'ops'},
+ *   {version:'v2.0', date:'2024-03-01', type:'prompt', changes:'Revised system prompt'}
+ * ]}></ai-changelog>
+ * ```
+ *
+ * @fires {CustomEvent<{version, type, date}>} ai-changelog-entry-click - Entry card clicked
+ * @fires {CustomEvent<{version, type}>} ai-changelog-rollback - Rollback button clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

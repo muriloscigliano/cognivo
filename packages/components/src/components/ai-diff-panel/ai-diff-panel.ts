@@ -1,9 +1,20 @@
 /**
- * <ai-diff-panel> — Data Comparison View
+ * @element ai-diff-panel
+ * Side-by-side or inline text diff view with additions, removals, and change statistics bar.
  *
- * Side-by-side or inline diff of two text blocks.
- * Shows additions (green), removals (red), unchanged (gray).
- * Stats bar with change counts. Keyboard navigable.
+ * @example
+ * ```html
+ * <ai-diff-panel
+ *   beforeCode="The quick brown fox"
+ *   afterCode="The fast brown fox jumps"
+ *   mode="side-by-side"
+ *   .labels=${['Original','Revised']}
+ * ></ai-diff-panel>
+ * ```
+ *
+ * @fires {CustomEvent<{line: DiffLine}>} ai-diff-select - Diff line clicked
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Focus ring color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

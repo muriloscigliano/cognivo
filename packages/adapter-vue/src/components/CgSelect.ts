@@ -1,5 +1,21 @@
 import { createVueWrapper } from '../create-wrapper.js';
 
+export interface CgSelectOption {
+  label: string;
+  value: string;
+  disabled?: boolean;
+}
+
+export interface CgSelectProps {
+  options?: CgSelectOption[];
+  value?: string;
+  placeholder?: string;
+  name?: string;
+  disabled?: boolean;
+  error?: boolean;
+  searchable?: boolean;
+}
+
 export const CgSelect = createVueWrapper(
   'cg-select',
   {

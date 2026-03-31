@@ -1,5 +1,19 @@
 import { createVueWrapper } from '../create-wrapper.js';
 
+export interface CgInputProps {
+  value?: string;
+  placeholder?: string;
+  name?: string;
+  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  readonly?: boolean;
+  error?: boolean;
+  success?: boolean;
+  clearable?: boolean;
+  maxlength?: number;
+}
+
 export const CgInput = createVueWrapper(
   'cg-input',
   {

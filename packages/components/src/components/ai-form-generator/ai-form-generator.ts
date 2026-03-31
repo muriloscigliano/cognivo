@@ -1,8 +1,22 @@
 /**
- * <ai-form-generator> — Dynamic AI Form
+ * @element ai-form-generator
+ * Dynamic form rendered from a JSON schema with field validation, ideal for LLM-generated forms.
  *
- * Renders forms from JSON schema. The LLM describes fields,
- * this component renders them with validation.
+ * @example
+ * ```html
+ * <ai-form-generator
+ *   .schema=${{title:'Feedback', fields:[
+ *     {name:'rating', type:'number', label:'Rating', min:1, max:5, required:true},
+ *     {name:'comment', type:'textarea', label:'Comment'}
+ *   ]}}
+ * ></ai-form-generator>
+ * ```
+ *
+ * @fires {CustomEvent<{name, value, values}>} ai-form-change - Field value changed
+ * @fires {CustomEvent<{valid, errors}>} ai-form-validate - Validation result after submit attempt
+ * @fires {CustomEvent<{values}>} ai-form-submit - Form submitted with all values
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Submit button and focus ring color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

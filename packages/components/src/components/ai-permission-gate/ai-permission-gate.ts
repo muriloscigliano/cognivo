@@ -1,9 +1,24 @@
 /**
- * <ai-permission-gate> — Role-based access control display for AI features
+ * @element ai-permission-gate
+ * Role-based access control panel showing which AI features are allowed
+ * or denied for the current role. Denied features show a "Request Access"
+ * button. Includes an allowed/denied summary footer.
  *
- * Props: permissions, currentRole
- * Events: ai-permission-request
- * Features: Feature list with allow/deny icons per role, request access button
+ * @example
+ * ```html
+ * <ai-permission-gate
+ *   currentRole="editor"
+ *   .permissions=${[
+ *     { feature: 'Code Generation', role: 'editor', allowed: true },
+ *     { feature: 'Fine-tuning', role: 'editor', allowed: false, reason: 'Admin only' }
+ *   ]}
+ * ></ai-permission-gate>
+ * ```
+ *
+ * @prop {Permission[]} permissions - Array of permission entries
+ * @prop {string} currentRole - Active role to filter permissions by
+ *
+ * @fires {CustomEvent<{feature: string, role: string}>} ai-permission-request - When "Request Access" is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';

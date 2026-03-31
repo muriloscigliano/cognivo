@@ -1,8 +1,23 @@
 /**
- * <ai-context-window> — Token Budget Tracker
+ * @element ai-context-window
+ * Segmented token budget bar showing context window usage with color-coded segments and cache indicator.
  *
- * Segmented bar showing context window usage.
- * Color-coded sections, warning states, cache indicators.
+ * @example
+ * ```html
+ * <ai-context-window
+ *   total="128000"
+ *   .segments=${[
+ *     {label:'System prompt', tokens:2400},
+ *     {label:'Conversation', tokens:45000, color:'#60a5fa'},
+ *     {label:'Tools', tokens:8000}
+ *   ]}
+ *   cached="12000"
+ * ></ai-context-window>
+ * ```
+ *
+ * @fires {CustomEvent<{label: string, tokens: number}>} ai-context-segment-click - Segment clicked
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Cache indicator icon color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';

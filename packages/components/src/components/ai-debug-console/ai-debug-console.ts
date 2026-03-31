@@ -1,9 +1,20 @@
 /**
- * <ai-debug-console> — Expandable debug panel for AI request/response inspection.
+ * @element ai-debug-console
+ * Collapsible debug panel for inspecting AI requests, responses, and errors with expandable JSON.
  *
- * Props: entries, open, maxEntries
- * Events: ai-debug-toggle, ai-debug-clear
- * Features: Collapsible panel, color-coded entry types, timestamp, expandable JSON content, clear button, entry count badge
+ * @example
+ * ```html
+ * <ai-debug-console
+ *   .entries=${[{type:'request', timestamp:'12:34:05', content:'{"model":"gpt-4o"}'}]}
+ *   open
+ *   maxEntries="200"
+ * ></ai-debug-console>
+ * ```
+ *
+ * @fires {CustomEvent<{open: boolean}>} ai-debug-toggle - Panel toggled open/closed
+ * @fires {CustomEvent} ai-debug-clear - Clear button clicked
+ *
+ * @cssprop [--cg-color-accent=#dfff61] - Focus ring and toggle highlight
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';

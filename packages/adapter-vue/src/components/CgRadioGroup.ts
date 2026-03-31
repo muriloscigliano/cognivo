@@ -1,23 +1,21 @@
 import { createVueWrapper } from '../create-wrapper.js';
 
-export interface CgRadioProps {
-  label?: string;
-  description?: string;
+export interface CgRadioGroupProps {
   name?: string;
   value?: string;
-  checked?: boolean;
+  label?: string;
   disabled?: boolean;
+  orientation?: 'vertical' | 'horizontal';
 }
 
-export const CgRadio = createVueWrapper(
-  'cg-radio',
+export const CgRadioGroup = createVueWrapper(
+  'cg-radio-group',
   {
-    label: { type: String, default: '' },
-    description: { type: String, default: '' },
     name: { type: String, default: '' },
     value: { type: String, default: '' },
-    checked: { type: Boolean, default: false },
+    label: { type: String, default: '' },
     disabled: { type: Boolean, default: false },
+    orientation: { type: String, default: 'vertical' },
   },
   {
     'change': 'cg-change',

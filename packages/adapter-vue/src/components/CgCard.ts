@@ -1,5 +1,11 @@
 import { createVueWrapper } from '../create-wrapper.js';
 
+export interface CgCardProps {
+  variant?: 'default' | 'outlined' | 'elevated' | 'filled';
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+  clickable?: boolean;
+}
+
 export const CgCard = createVueWrapper(
   'cg-card',
   {

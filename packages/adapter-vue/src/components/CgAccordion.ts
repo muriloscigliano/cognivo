@@ -1,5 +1,19 @@
 import { createVueWrapper } from '../create-wrapper.js';
 
+export interface CgAccordionItem {
+  label: string;
+  value: string;
+  content?: string;
+  disabled?: boolean;
+}
+
+export interface CgAccordionProps {
+  items?: CgAccordionItem[];
+  multiple?: boolean;
+  variant?: 'default' | 'bordered' | 'separated';
+  defaultOpen?: string[];
+}
+
 export const CgAccordion = createVueWrapper(
   'cg-accordion',
   {

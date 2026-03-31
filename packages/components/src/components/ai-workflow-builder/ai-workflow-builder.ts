@@ -1,8 +1,23 @@
 /**
- * <ai-workflow-builder> — Visual Agent Workflow DAG
+ * @element ai-workflow-builder
+ * Visual agent workflow rendered as a vertical DAG (directed acyclic graph).
+ * Each step displays a type icon (start/agent/tool/condition/end), label,
+ * description, and status with connecting lines between steps.
  *
- * Define agent workflows as connected steps. Each step has a type,
- * label, status, and connections. Renders as a vertical flow.
+ * @example
+ * ```html
+ * <ai-workflow-builder title="Support Agent" .steps=${[
+ *   { id: '1', label: 'Receive Query', type: 'start', status: 'complete' },
+ *   { id: '2', label: 'Classify Intent', type: 'agent', status: 'active', description: 'Using GPT-4' },
+ *   { id: '3', label: 'Search KB', type: 'tool', status: 'pending', next: ['4'] },
+ *   { id: '4', label: 'Respond', type: 'end', status: 'pending' }
+ * ]}></ai-workflow-builder>
+ * ```
+ *
+ * @prop {WorkflowStep[]} steps - Array of workflow step objects
+ * @prop {string} title - Workflow header title (default 'Workflow')
+ *
+ * @fires {CustomEvent<{id: string, label: string, type: string, status: string}>} ai-workflow-step-click - When a step is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

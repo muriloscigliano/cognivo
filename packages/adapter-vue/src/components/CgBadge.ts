@@ -1,5 +1,13 @@
 import { createVueWrapper } from '../create-wrapper.js';
 
+export interface CgBadgeProps {
+  variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info';
+  size?: 'sm' | 'md' | 'lg';
+  label?: string;
+  dot?: boolean;
+  removable?: boolean;
+}
+
 export const CgBadge = createVueWrapper(
   'cg-badge',
   {

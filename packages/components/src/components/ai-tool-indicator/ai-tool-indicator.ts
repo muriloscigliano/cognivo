@@ -1,8 +1,21 @@
 /**
- * <ai-tool-indicator> — Tool Call Progress
+ * @element ai-tool-indicator
+ * Displays LLM tool/function call progress with humanized names,
+ * spinner/check/error status icons, and expandable result panels.
+ * Supports compact inline mode for embedding in chat messages.
  *
- * Shows LLM tool/function call status: loading → complete → error.
- * Humanized names, expandable results, animated entry.
+ * @example
+ * ```html
+ * <ai-tool-indicator .tools=${[
+ *   { name: 'web_search', status: 'complete', result: 'Found 3 relevant pages' },
+ *   { name: 'code_execution', status: 'loading' }
+ * ]}></ai-tool-indicator>
+ * ```
+ *
+ * @prop {ToolCall[]} tools - Array of tool calls with name, status, and optional result
+ * @prop {boolean} compact - Inline compact display mode
+ *
+ * @fires {CustomEvent<{index: number, tool: ToolCall}>} ai-tool-click - When a tool row is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';

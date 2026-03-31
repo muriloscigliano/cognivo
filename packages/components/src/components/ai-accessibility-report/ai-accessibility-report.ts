@@ -1,9 +1,20 @@
 /**
- * <ai-accessibility-report> — WCAG compliance report display.
+ * @element ai-accessibility-report
+ * WCAG compliance report with score circle, severity breakdown, and expandable issue list.
  *
- * Props: issues, score, title
- * Events: ai-a11y-issue-click
- * Features: Overall score circle, severity breakdown, issue list with WCAG level badges, expandable descriptions, element selector display
+ * @example
+ * ```html
+ * <ai-accessibility-report
+ *   .issues=${[{rule:'color-contrast', level:'AA', severity:'error', description:'Low contrast ratio'}]}
+ *   score="72"
+ *   title="Page Audit"
+ * ></ai-accessibility-report>
+ * ```
+ *
+ * @fires {CustomEvent<{issue: A11yIssue, index: number}>} ai-a11y-issue-click - Issue row clicked/expanded
+ *
+ * @cssprop [--cg-color-accent=#dfff61] - Focus ring and accent color
+ * @cssprop [--cg-color-surface-base=#18181b] - Card background
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';

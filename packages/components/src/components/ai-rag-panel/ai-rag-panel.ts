@@ -1,8 +1,21 @@
 /**
- * <ai-rag-panel> — Retrieved Document Display
+ * @element ai-rag-panel
+ * Retrieval-Augmented Generation (RAG) results panel. Displays retrieved
+ * documents with relevance scores, source type badges, excerpts, and
+ * relevance bars. Supports filtering by type and click-to-expand.
  *
- * Shows documents/chunks retrieved by RAG with relevance scores,
- * source links, and highlighted matched passages.
+ * @example
+ * ```html
+ * <ai-rag-panel .documents=${[
+ *   { title: 'API Guide', source: 'docs.example.com', excerpt: 'Authentication uses...', relevance: 0.92, type: 'doc' }
+ * ]} query="authentication" sortBy="relevance"></ai-rag-panel>
+ * ```
+ *
+ * @prop {RagDocument[]} documents - Array of retrieved documents
+ * @prop {string} query - The search query (used for context)
+ * @prop {string} sortBy - Sort order: 'relevance' | 'recency' | 'source'
+ *
+ * @fires {CustomEvent<{index: number, document: object}>} ai-rag-document-click - When a document is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

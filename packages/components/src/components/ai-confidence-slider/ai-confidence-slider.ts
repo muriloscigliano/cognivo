@@ -1,8 +1,19 @@
 /**
- * <ai-confidence-slider> — Quality Threshold Control
+ * @element ai-confidence-slider
+ * Gradient range slider for setting confidence thresholds with presets and distribution histogram.
  *
- * Slider with color gradient, live result count, preset buttons,
- * and mini distribution histogram.
+ * @example
+ * ```html
+ * <ai-confidence-slider
+ *   value="70"
+ *   resultCount="42" totalCount="100"
+ *   .distribution=${[2,5,8,12,20,30,15,6,1,1]}
+ * ></ai-confidence-slider>
+ * ```
+ *
+ * @fires {CustomEvent<{value: number}>} ai-confidence-change - Slider value changed or preset clicked
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - Slider thumb border, value badge highlight, active preset
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';

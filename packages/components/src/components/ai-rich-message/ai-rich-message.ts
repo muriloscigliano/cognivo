@@ -1,9 +1,30 @@
 /**
- * <ai-rich-message> — Chat message with embedded cards/components inline.
+ * @element ai-rich-message
+ * Chat message bubble supporting user, assistant, and system roles.
+ * Renders avatar, text with paragraph splitting, embedded tool cards,
+ * action buttons, and timestamp. User messages get accent styling.
  *
- * Message bubble with avatar, text, rendered card slots below text,
- * action buttons row at bottom. Timestamp. Different styling for
- * user vs assistant vs system roles.
+ * @example
+ * ```html
+ * <ai-rich-message
+ *   role="assistant"
+ *   text="Here are the results of my analysis."
+ *   timestamp="2:34 PM"
+ *   .actions=${[{ label: 'Regenerate', id: 'regen' }]}
+ * ></ai-rich-message>
+ * ```
+ *
+ * @prop {'user'|'assistant'|'system'} role - Message sender role
+ * @prop {string} text - Message text content
+ * @prop {string} avatar - Avatar image URL (falls back to initials)
+ * @prop {string} timestamp - Display timestamp
+ * @prop {CardRef[]} cards - Embedded tool card components to render
+ * @prop {ActionRef[]} actions - Action buttons shown below the message
+ *
+ * @fires {CustomEvent<{actionId: string}>} ai-message-action - When an action button is clicked
+ * @fires {CustomEvent<{cardIndex: number}>} ai-message-card-action - When a card emits an action
+ *
+ * @slot - Additional content inside the message bubble
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';

@@ -1,10 +1,22 @@
 /**
- * <ai-progress-steps> — Multi-phase AI pipeline progress.
+ * @element ai-progress-steps
+ * Horizontal step indicator for multi-phase AI pipelines. Shows connected
+ * dots with status icons (pending/active/complete/error), pulse animation
+ * on the active phase, and optional duration labels. Supports compact mode.
  *
- * Props: phases, compact
- * Events: ai-progress-phase-click
- * Features: Horizontal step bar with connecting lines, status icons,
- *           active phase pulse animation, duration display, compact mode
+ * @example
+ * ```html
+ * <ai-progress-steps .phases=${[
+ *   { label: 'Retrieve', status: 'complete', duration: '0.3s' },
+ *   { label: 'Analyze', status: 'active' },
+ *   { label: 'Generate', status: 'pending' }
+ * ]}></ai-progress-steps>
+ * ```
+ *
+ * @prop {ProgressPhase[]} phases - Array of phase objects with label, status, duration
+ * @prop {boolean} compact - Hide labels and shrink dots
+ *
+ * @fires {CustomEvent<{label: string, status: string, index: number}>} ai-progress-phase-click - When a phase is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';

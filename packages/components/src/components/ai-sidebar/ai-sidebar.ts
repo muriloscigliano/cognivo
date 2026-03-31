@@ -1,10 +1,29 @@
 /**
- * <ai-sidebar> — Collapsible app sidebar with sections.
+ * @element ai-sidebar
+ * Collapsible application sidebar with grouped sections. Each item
+ * supports an icon, label, and badge. Collapses to icon-only mode
+ * with a smooth width transition.
  *
- * Props: sections, collapsed, activeId
- * Events: ai-sidebar-item-click, ai-sidebar-collapse
- * Features: section headers, optional icon+badge, collapse to icon-only,
- *           active item highlight, smooth width transition
+ * @example
+ * ```html
+ * <ai-sidebar
+ *   active-id="chat"
+ *   .sections=${[{
+ *     title: 'Tools',
+ *     items: [
+ *       { id: 'chat', label: 'Chat', icon: '💬', badge: '3' },
+ *       { id: 'search', label: 'Search', icon: '🔍' }
+ *     ]
+ *   }]}
+ * ></ai-sidebar>
+ * ```
+ *
+ * @prop {SidebarSection[]} sections - Array of section groups with title and items
+ * @prop {boolean} collapsed - Whether sidebar is in icon-only mode
+ * @prop {string} activeId - ID of the currently active item
+ *
+ * @fires {CustomEvent<{id: string, label: string}>} ai-sidebar-item-click - When an item is clicked
+ * @fires {CustomEvent<{collapsed: boolean}>} ai-sidebar-collapse - When collapse state toggles
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';

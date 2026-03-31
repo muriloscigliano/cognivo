@@ -1,9 +1,21 @@
 /**
- * <ai-data-preview> — Preview structured data before AI processing.
+ * @element ai-data-preview
+ * Structured data preview with JSON syntax coloring, CSV/table formatting, and confirm/cancel actions.
  *
- * Props: data, format, maxRows, title
- * Events: ai-data-confirm, ai-data-cancel
- * Features: Formatted display (JSON syntax colored, CSV as table, array as table), row count, size indicator, confirm/cancel buttons
+ * @example
+ * ```html
+ * <ai-data-preview
+ *   .data=${[{name:'Alice', score:92}, {name:'Bob', score:87}]}
+ *   format="table"
+ *   title="Training Data"
+ *   maxRows="25"
+ * ></ai-data-preview>
+ * ```
+ *
+ * @fires {CustomEvent<{data: unknown, format: string}>} ai-data-confirm - Confirm button clicked
+ * @fires {CustomEvent} ai-data-cancel - Cancel button clicked
+ *
+ * @cssprop [--cg-color-accent=#dfff61] - Confirm button and JSON key color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';

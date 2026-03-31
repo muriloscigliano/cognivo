@@ -1,8 +1,23 @@
 /**
- * <ai-chart-summary> — Interactive Insight Overlay
+ * @element ai-chart-summary
+ * AI-generated insight overlay for charts with trends, confidence badge, type tags, and refresh.
  *
- * Confidence score, interactive trend clicks, drill-down links,
- * insight type badges, time range, refresh, loading, compact mode.
+ * @example
+ * ```html
+ * <ai-chart-summary
+ *   summary="Revenue grew 23% MoM driven by enterprise tier."
+ *   confidence="0.87"
+ *   type="forecast"
+ *   .trends=${[{label:'Revenue', direction:'up', value:'+23%'}]}
+ *   timeRange="Last 30 days"
+ * ></ai-chart-summary>
+ * ```
+ *
+ * @fires {CustomEvent<{collapsed: boolean}>} ai-summary-toggle - Collapsed/expanded
+ * @fires {CustomEvent<{label, direction, value}>} ai-summary-trend-click - Trend chip clicked
+ * @fires {CustomEvent} ai-summary-refresh - Refresh button clicked
+ *
+ * @cssprop [--cg-brand-ai-accent=#dfff61] - AI dot, label, and hover accent
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

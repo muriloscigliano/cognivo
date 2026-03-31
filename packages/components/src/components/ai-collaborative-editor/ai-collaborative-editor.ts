@@ -1,9 +1,21 @@
 /**
- * <ai-collaborative-editor> — Text editor with cursor presence indicators.
+ * @element ai-collaborative-editor
+ * Monospace text editor with multi-user cursor presence overlay, word/char counts, and live editing.
  *
- * Props: content, cursors, editable, placeholder
- * Events: ai-editor-change, ai-editor-cursor-move
- * Features: Textarea with colored cursor markers overlay, user labels at cursor positions, char/word count
+ * @example
+ * ```html
+ * <ai-collaborative-editor
+ *   content="Hello world"
+ *   .cursors=${[{user:'Alice', position:5, color:'#60a5fa'}]}
+ *   editable
+ * ></ai-collaborative-editor>
+ * ```
+ *
+ * @fires {CustomEvent<{content: string}>} ai-editor-change - Content changed
+ * @fires {CustomEvent<{position, selectionStart, selectionEnd}>} ai-editor-cursor-move - Cursor moved
+ *
+ * @cssprop [--cg-color-accent=#dfff61] - Caret color and focus ring
+ * @cssprop [--cg-font-family-mono] - Editor font family
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';

@@ -1,10 +1,23 @@
 /**
- * <ai-keyboard-shortcuts> — Shortcut Hint Overlay
+ * @element ai-keyboard-shortcuts
+ * Modal overlay displaying grouped keyboard shortcuts with searchable
+ * key badge UI. Closes on Escape or backdrop click.
  *
- * Modal overlay with grouped shortcuts.
- * Key badges styled like keyboard keys.
- * Close on Escape, search filter.
- * Focus trap and keyboard accessible.
+ * @example
+ * ```html
+ * <ai-keyboard-shortcuts
+ *   .shortcuts=${[{ keys: ['Ctrl', 'K'], description: 'Open search', category: 'Navigation' }]}
+ *   open
+ * ></ai-keyboard-shortcuts>
+ * ```
+ *
+ * @prop {ShortcutEntry[]} shortcuts - Array of shortcut definitions with keys, description, category
+ * @prop {boolean} open - Whether the modal is visible
+ *
+ * @fires ai-shortcuts-close - When the modal is dismissed
+ *
+ * @cssprop [--cg-font-family-mono] - Font for key badges
+ * @cssprop [--cg-color-bg-primary] - Modal background color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';

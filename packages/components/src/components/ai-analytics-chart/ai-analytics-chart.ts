@@ -1,9 +1,20 @@
 /**
- * <ai-analytics-chart> — Multi-series time-series SVG line chart for AI metrics.
+ * @element ai-analytics-chart
+ * Responsive multi-series SVG line chart with axis labels, legend, and hover tooltips.
  *
- * Props: series, title, yLabel, height
- * Events: ai-analytics-point-hover
- * Features: Multiple colored lines, X/Y axis labels, hover tooltip, responsive width, legend
+ * @example
+ * ```html
+ * <ai-analytics-chart
+ *   title="Latency (ms)"
+ *   yLabel="ms"
+ *   .series=${[{name:'p50', color:'#4ade80', data:[{x:'Mon',y:120},{x:'Tue',y:98}]}]}
+ * ></ai-analytics-chart>
+ * ```
+ *
+ * @fires {CustomEvent<{series: string, x: string, y: number}>} ai-analytics-point-hover - Data point hovered
+ *
+ * @cssprop [--cg-color-surface-base=#18181b] - Chart background
+ * @cssprop [--cg-color-border-default=#27272a] - Grid line and border color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
