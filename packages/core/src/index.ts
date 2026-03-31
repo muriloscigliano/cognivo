@@ -75,4 +75,4 @@ export type { AgentTask, AgentTaskResult, AgentPlan, CoordinatorConfig } from '.
 export { AgentCoordinator } from './agents/coordinator';
 
 // Version
-export const VERSION = '0.0.0';
+export const VERSION = '0.3.0';

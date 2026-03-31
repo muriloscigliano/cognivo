@@ -1,7 +1,129 @@
 /**
  * Component page renderer — builds HTML from registry metadata.
+ * Includes interactive playground with live prop editing.
  */
-import type { ComponentMeta } from './registry';
+import type { ComponentMeta, PropMeta } from './registry';
+
+// ─── Prop Control Generator ────────────────────────────────────────────────
+
+function inferControlType(prop: PropMeta): 'select' | 'boolean' | 'number' | 'text' | 'color' {
+  const t = prop.type.toLowerCase();
+  if (t === 'boolean') return 'boolean';
+  if (t === 'number') return 'number';
+  if (t.includes('|') && t.includes('"')) return 'select';
+  if (t.includes('color') || prop.name.includes('color')) return 'color';
+  return 'text';
+}
+
+function extractOptions(type: string): string[] {
+  return [...type.matchAll(/"([^"]+)"/g)].map(m => m[1]!);
+}
+
+function createPropControl(
+  prop: PropMeta,
+  element: HTMLElement,
+  codeOutput: HTMLElement,
+  tag: string,
+  allProps: Map<string, unknown>,
+): HTMLElement {
+  const row = document.createElement('div');
+  row.className = 'control-row';
+
+  const label = document.createElement('label');
+  label.className = 'control-label';
+  label.textContent = prop.name;
+
+  const controlType = inferControlType(prop);
+  let input: HTMLElement;
+
+  const updateElement = (value: unknown) => {
+    allProps.set(prop.name, value);
+    if (typeof value === 'boolean') {
+      if (value) element.setAttribute(prop.name, '');
+      else element.removeAttribute(prop.name);
+    } else {
+      (element as any)[prop.name] = value;
+    }
+    updateCodeOutput(tag, allProps, codeOutput);
+  };
+
+  switch (controlType) {
+    case 'boolean': {
+      const toggle = document.createElement('div');
+      toggle.className = 'control-toggle';
+      const defaultVal = prop.default === 'true';
+      toggle.innerHTML = `<cg-switch size="sm" ${defaultVal ? 'checked' : ''} label=""></cg-switch>`;
+      const sw = toggle.querySelector('cg-switch')!;
+      sw.addEventListener('cg-change', (e: Event) => {
+        updateElement((e as CustomEvent).detail.checked);
+      });
+      input = toggle;
+      break;
+    }
+    case 'select': {
+      const select = document.createElement('select');
+      select.className = 'control-select';
+      const options = extractOptions(prop.type);
+      for (const opt of options) {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        if (prop.default?.replace(/"/g, '') === opt) option.selected = true;
+        select.appendChild(option);
+      }
+      select.addEventListener('change', () => updateElement(select.value));
+      input = select;
+      break;
+    }
+    case 'number': {
+      const num = document.createElement('input');
+      num.type = 'number';
+      num.className = 'control-input';
+      num.value = prop.default ?? '0';
+      num.addEventListener('input', () => updateElement(Number(num.value)));
+      input = num;
+      break;
+    }
+    case 'color': {
+      const color = document.createElement('input');
+      color.type = 'color';
+      color.className = 'control-color';
+      color.value = prop.default ?? '#ffffff';
+      color.addEventListener('input', () => updateElement(color.value));
+      input = color;
+      break;
+    }
+    default: {
+      const text = document.createElement('input');
+      text.type = 'text';
+      text.className = 'control-input';
+      text.value = prop.default?.replace(/"/g, '') ?? '';
+      text.placeholder = prop.name;
+      text.addEventListener('input', () => updateElement(text.value));
+      input = text;
+      break;
+    }
+  }
+
+  row.appendChild(label);
+  row.appendChild(input);
+  return row;
+}
+
+function updateCodeOutput(tag: string, props: Map<string, unknown>, output: HTMLElement) {
+  let attrs = '';
+  for (const [key, value] of props) {
+    if (value === '' || value === false || value === undefined || value === null) continue;
+    if (value === true) {
+      attrs += ` ${key}`;
+    } else {
+      attrs += ` ${key}="${value}"`;
+    }
+  }
+  output.textContent = `<${tag}${attrs}></${tag}>`;
+}
+
+// ─── Component Page Renderer ───────────────────────────────────────────────
 
 /** Render a full component page into the container */
 export function renderComponentPage(container: HTMLElement, comp: ComponentMeta) {
@@ -19,8 +141,107 @@ export function renderComponentPage(container: HTMLElement, comp: ComponentMeta)
   `;
   container.appendChild(header);
 
-  // Examples
+  // ── Interactive Playground ──
+  if (comp.props.length > 0) {
+    const playground = document.createElement('div');
+    playground.className = 'playground';
+
+    const playgroundTitle = document.createElement('h2');
+    playgroundTitle.className = 'section-title';
+    playgroundTitle.textContent = 'Playground';
+    playground.appendChild(playgroundTitle);
+
+    const playgroundGrid = document.createElement('div');
+    playgroundGrid.className = 'playground-grid';
+
+    // Left: Live preview
+    const previewPane = document.createElement('div');
+    previewPane.className = 'playground-preview';
+
+    const previewLabel = document.createElement('div');
+    previewLabel.className = 'playground-label';
+    previewLabel.textContent = 'Preview';
+    previewPane.appendChild(previewLabel);
+
+    const previewArea = document.createElement('div');
+    previewArea.className = 'preview-area';
+    previewPane.appendChild(previewArea);
+
+    // Create the live element
+    const liveElement = document.createElement(comp.tag);
+    // Set defaults
+    for (const p of comp.props) {
+      if (p.default && p.default !== '—') {
+        const val = p.default.replace(/"/g, '');
+        if (p.type === 'boolean') {
+          if (val === 'true') (liveElement as any)[p.name] = true;
+        } else if (p.type === 'number') {
+          (liveElement as any)[p.name] = Number(val);
+        } else {
+          (liveElement as any)[p.name] = val;
+        }
+      }
+    }
+    // Add default content for components that need it
+    if (['cg-button', 'cg-chip', 'cg-link'].includes(comp.tag)) {
+      liveElement.textContent = comp.name;
+    }
+    previewArea.appendChild(liveElement);
+
+    // Code output
+    const codePane = document.createElement('div');
+    codePane.className = 'playground-code';
+
+    const codeLabel = document.createElement('div');
+    codeLabel.className = 'playground-label';
+    codeLabel.innerHTML = 'Code <button class="copy-btn-sm">Copy</button>';
+    codePane.appendChild(codeLabel);
+
+    const codeOutput = document.createElement('pre');
+    codeOutput.className = 'code-output';
+    codePane.appendChild(codeOutput);
+
+    // Initialize code output
+    const propState = new Map<string, unknown>();
+    updateCodeOutput(comp.tag, propState, codeOutput);
+
+    // Copy button
+    codeLabel.querySelector('.copy-btn-sm')?.addEventListener('click', () => {
+      navigator.clipboard?.writeText(codeOutput.textContent || '');
+      const btn = codeLabel.querySelector('.copy-btn-sm')!;
+      btn.textContent = '✓';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+    });
+
+    // Right: Prop controls
+    const controlsPane = document.createElement('div');
+    controlsPane.className = 'playground-controls';
+
+    const controlsLabel = document.createElement('div');
+    controlsLabel.className = 'playground-label';
+    controlsLabel.textContent = 'Props';
+    controlsPane.appendChild(controlsLabel);
+
+    for (const prop of comp.props) {
+      const control = createPropControl(prop, liveElement, codeOutput, comp.tag, propState);
+      controlsPane.appendChild(control);
+    }
+
+    playgroundGrid.appendChild(previewPane);
+    playgroundGrid.appendChild(controlsPane);
+    playground.appendChild(playgroundGrid);
+    playground.appendChild(codePane);
+
+    container.appendChild(playground);
+  }
+
+  // ── Examples ──
   if (comp.examples.length > 0) {
+    const exTitle = document.createElement('h2');
+    exTitle.className = 'section-title';
+    exTitle.textContent = 'Examples';
+    container.appendChild(exTitle);
+
     const exSection = document.createElement('div');
     exSection.className = 'examples';
 
@@ -28,24 +249,20 @@ export function renderComponentPage(container: HTMLElement, comp: ComponentMeta)
       const card = document.createElement('div');
       card.className = 'example-card';
 
-      // Label
       const label = document.createElement('div');
       label.className = 'example-label';
       label.textContent = ex.label;
       card.appendChild(label);
 
-      // Live preview
       const preview = document.createElement('div');
       preview.className = 'example-preview';
       preview.innerHTML = ex.html;
       card.appendChild(preview);
 
-      // Run setup function if provided (for setting JS properties)
       if (ex.setup) {
         requestAnimationFrame(() => ex.setup!(preview));
       }
 
-      // Code
       const codeWrapper = document.createElement('div');
       codeWrapper.className = 'example-code';
       codeWrapper.textContent = ex.html.trim();
@@ -63,29 +280,28 @@ export function renderComponentPage(container: HTMLElement, comp: ComponentMeta)
 
       exSection.appendChild(card);
     }
-
     container.appendChild(exSection);
   }
 
-  // Props table
+  // ── Props table ──
   if (comp.props.length > 0) {
     const title = document.createElement('h2');
     title.className = 'section-title';
-    title.textContent = 'Props';
+    title.textContent = 'API Reference';
     container.appendChild(title);
 
     const table = document.createElement('table');
     table.className = 'props-table';
     table.innerHTML = `
       <thead>
-        <tr><th>Name</th><th>Type</th><th>Default</th><th>Description</th></tr>
+        <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
       </thead>
       <tbody>
         ${comp.props.map(p => `
           <tr>
-            <td>${p.name}</td>
-            <td>${p.type}</td>
-            <td>${p.default ?? '—'}</td>
+            <td><code>${p.name}</code></td>
+            <td><code>${p.type}</code></td>
+            <td>${p.default ? `<code>${p.default}</code>` : '—'}</td>
             <td>${p.description}</td>
           </tr>
         `).join('')}
@@ -94,7 +310,7 @@ export function renderComponentPage(container: HTMLElement, comp: ComponentMeta)
     container.appendChild(table);
   }
 
-  // Events table
+  // ── Events table ──
   if (comp.events.length > 0) {
     const title = document.createElement('h2');
     title.className = 'section-title';
@@ -105,13 +321,13 @@ export function renderComponentPage(container: HTMLElement, comp: ComponentMeta)
     table.className = 'props-table';
     table.innerHTML = `
       <thead>
-        <tr><th>Name</th><th>Detail</th><th>Description</th></tr>
+        <tr><th>Event</th><th>Detail</th><th>Description</th></tr>
       </thead>
       <tbody>
         ${comp.events.map(e => `
           <tr>
-            <td>${e.name}</td>
-            <td>${e.detail}</td>
+            <td><code>${e.name}</code></td>
+            <td><code>${e.detail}</code></td>
             <td>${e.description}</td>
           </tr>
         `).join('')}
@@ -127,9 +343,9 @@ export function renderWelcome(container: HTMLElement, count: number) {
     <div class="welcome">
       <h1>Welcome to <span class="accent">Cognivo</span></h1>
       <p>
-        The AI-native component library built with Lit Web Components. Framework-agnostic,
-        dark-first, accessible, and powered by 1,760 design tokens. Every component works
-        in React, Vue, Angular, Svelte, or vanilla HTML.
+        The AI-native component library with cognitive psychology integration.
+        125 Web Components built with Lit 3 — framework-agnostic, dark-first,
+        accessible, and powered by 1,800+ design tokens.
       </p>
 
       <div class="stat-row">
@@ -138,22 +354,44 @@ export function renderWelcome(container: HTMLElement, count: number) {
           <div class="stat-label">Components</div>
         </div>
         <div class="stat">
-          <div class="stat-value">19</div>
+          <div class="stat-value">73</div>
           <div class="stat-label">AI-Native</div>
         </div>
         <div class="stat">
-          <div class="stat-value">1,760</div>
+          <div class="stat-value">1,800+</div>
           <div class="stat-label">Tokens</div>
         </div>
         <div class="stat">
-          <div class="stat-value">70KB</div>
-          <div class="stat-label">Gzipped</div>
+          <div class="stat-value">842</div>
+          <div class="stat-label">Tests</div>
         </div>
       </div>
 
-      <p style="color: var(--text-muted); font-size: 13px;">
-        Click a component in the sidebar to view live examples, props, and code snippets.
-        Use <kbd style="padding: 1px 6px; border-radius: 4px; background: var(--bg-raised); border: 1px solid var(--border); font-size: 11px;">⌘K</kbd> to search.
+      <div class="welcome-features">
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <div class="feature-title">Premium Visual Polish</div>
+          <div class="feature-desc">Glassmorphism, ripple effects, spring animations, glow effects, 5-level elevation system</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <div class="feature-title">AI-Native Components</div>
+          <div class="feature-desc">Streaming text, thinking indicators, confidence sliders, chat, reasoning trees</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <div class="feature-title">Cognitive Psychology</div>
+          <div class="feature-desc">180 cognitive bias cards, design advisor, bias-aware component registry</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">♿</div>
+          <div class="feature-title">Fully Accessible</div>
+          <div class="feature-desc">ARIA, keyboard navigation, focus traps, prefers-reduced-motion, screen reader support</div>
+        </div>
+      </div>
+
+      <p style="color: var(--text-muted); font-size: 13px; margin-top: 24px;">
+        Click a component in the sidebar to try the <strong>interactive playground</strong> — edit props live and see changes instantly.
       </p>
     </div>
   `;
