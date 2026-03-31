@@ -66,6 +66,17 @@ export class CgProgressBar extends LitElement {
       position: relative;
       overflow: hidden;
     }
+    .fill::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      animation: fillShimmer 2s ease-in-out infinite;
+    }
+    @keyframes fillShimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
 
     /* ── Variant colors ── */
     :host([variant="default"]) .fill {

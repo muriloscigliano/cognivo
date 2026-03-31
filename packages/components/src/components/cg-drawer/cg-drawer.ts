@@ -57,7 +57,9 @@ export class CgDrawer extends LitElement {
       z-index: 9999;
       display: flex;
       flex-direction: column;
-      background: var(--cg-color-surface-raised-background, #1e1e22);
+      backdrop-filter: blur(16px) saturate(1.3);
+      -webkit-backdrop-filter: blur(16px) saturate(1.3);
+      background: rgba(24, 24, 27, 0.85);
       border: 1px solid var(--cg-color-surface-base-border, #27272a);
       box-shadow:
         inset 0 1px 0 0 rgba(255, 255, 255, 0.05),

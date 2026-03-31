@@ -47,6 +47,7 @@ export class CgSwitch extends LitElement {
     /* Track checked */
     .track.checked {
       background: var(--cg-brand-ai-accent, #dfff61);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), 0 0 12px -2px var(--cg-brand-ai-accent, rgba(223, 255, 97, 0.35));
     }
 
     /* ── Thumb ── */

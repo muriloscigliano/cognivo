@@ -65,6 +65,23 @@ export class CgCard extends LitElement {
     /* ── Interactive (clickable) ── */
     :host([clickable]) .card {
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    :host([clickable]) .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, var(--cg-brand-ai-accent, #dfff61) 0%, rgba(129, 140, 248, 0.5) 100%);
+      opacity: 0.05;
+      transform: translateY(102%);
+      transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 0;
+      border-radius: inherit;
+      pointer-events: none;
+    }
+    :host([clickable]) .card:hover::before {
+      transform: translateY(0);
     }
     :host([clickable]) .card:hover {
       box-shadow: var(--cg-shadow-md-x, 0px) var(--cg-shadow-md-y, 4px) var(--cg-shadow-md-blur, 12px) var(--cg-shadow-md-spread, 0px) var(--cg-shadow-md-Color, #000000);
@@ -84,6 +101,12 @@ export class CgCard extends LitElement {
     :host([padding="sm"]) .body { padding: var(--cg-spacing-12, 12px); }
     :host([padding="md"]) .body { padding: var(--cg-spacing-16, 16px) var(--cg-spacing-24, 24px); }
     :host([padding="lg"]) .body { padding: var(--cg-spacing-24, 24px); }
+
+    /* ── Content z-index for liquid fill ── */
+    .header, .body, .footer {
+      position: relative;
+      z-index: 1;
+    }
 
     /* ── Header slot ── */
     .header {

@@ -107,6 +107,7 @@ export class CgButton extends LitElement {
     }
     :host([variant="primary"]) button:not(:disabled):hover {
       background: var(--cg-color-action-primary-background-hover, #e2ff70);
+      box-shadow: 0 0 16px -4px var(--cg-brand-ai-accent, rgba(223, 255, 97, 0.5));
     }
     :host([variant="primary"]) button:not(:disabled):active {
       background: var(--cg-color-action-primary-background-active, #dfff61);

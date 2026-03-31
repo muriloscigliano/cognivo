@@ -176,6 +176,7 @@ export class CgInput extends LitElement {
       transform: translateY(-100%);
       font-size: 10px;
       color: var(--cg-brand-ai-accent, #dfff61);
+      text-shadow: 0 0 12px var(--cg-brand-ai-accent, rgba(223, 255, 97, 0.3));
     }
     :host([size="sm"]) .field.floated .floating-label {
       font-size: 9px;

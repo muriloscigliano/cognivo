@@ -146,3 +146,97 @@ export const glowHover = css`
     box-shadow: 0 0 20px -5px var(--cg-brand-ai-accent, rgba(223, 255, 97, 0.4));
   }
 `;
+
+// ─────────────────────────────────────────────────────────
+// Advanced Effects — cutting-edge CSS techniques
+// ─────────────────────────────────────────────────────────
+
+/**
+ * Dark glassmorphism card — frosted glass with layered shadows.
+ * The saturate(1.2) adds vibrancy behind the blur.
+ * Use sparingly: max 2-3 glass elements per viewport.
+ */
+export const glassCard = css`
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+`;
+
+/**
+ * Noise texture overlay for premium dark surfaces.
+ * Inline SVG avoids external file dependencies in Shadow DOM.
+ * The mix-blend-mode: overlay enhances surfaces without washing out.
+ */
+export const noiseOverlay = css`
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0.035;
+    pointer-events: none;
+    z-index: 1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+`;
+
+/**
+ * Liquid fill hover — gradient sweeps up from bottom on hover.
+ * More dramatic than colorMatchedHover, for hero/featured elements.
+ */
+export const liquidFillHover = css`
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      var(--cg-brand-ai-accent, #dfff61) 0%,
+      rgba(129, 140, 248, 0.5) 100%
+    );
+    opacity: 0.06;
+    transform: translateY(102%);
+    transition: transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+    z-index: -1;
+    border-radius: inherit;
+  }
+  &:hover::before {
+    transform: translateY(0);
+  }
+`;
+
+/**
+ * AI processing glow ring — rotating conic gradient border.
+ * Register --cg-border-angle via CSS.registerProperty() in connectedCallback.
+ */
+export const aiGlowRing = css`
+  @keyframes cgBorderSpin {
+    to { --cg-border-angle: 360deg; }
+  }
+`;
+
+/**
+ * Scroll-driven reveal animation.
+ * Elements fade+slide in as they enter the viewport.
+ * Progressive enhancement — works in Chrome 115+, Firefox 110+, Safari 18+.
+ */
+export const scrollReveal = css`
+  @keyframes cgScrollReveal {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+`;

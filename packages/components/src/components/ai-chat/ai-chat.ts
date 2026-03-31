@@ -108,6 +108,9 @@ export class AiChat extends LitElement {
       border-radius: 14px;
       line-height: 1.5;
       font-size: 14px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
     .msg.user .bubble {
       background: rgba(34, 197, 94, 0.12);

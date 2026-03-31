@@ -67,10 +67,13 @@ export class CgModal extends LitElement {
 
     .modal {
       position: relative;
+      isolation: isolate;
       display: flex;
       flex-direction: column;
       max-height: calc(100vh - 64px);
-      background: var(--cg-color-surface-raised-background, #1e1e22);
+      backdrop-filter: blur(16px) saturate(1.3);
+      -webkit-backdrop-filter: blur(16px) saturate(1.3);
+      background: rgba(24, 24, 27, 0.85);
       border: 1px solid var(--cg-color-surface-base-border, #27272a);
       border-radius: var(--cg-border-radius-200, 16px);
       box-shadow:
@@ -85,6 +88,18 @@ export class CgModal extends LitElement {
       transition:
         opacity var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
         transform 250ms var(--cg-motion-easing-bounce, cubic-bezier(0.34, 1.56, 0.64, 1));
+    }
+
+    .modal::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
     }
 
     :host([open]) .modal {
