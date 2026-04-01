@@ -56,7 +56,6 @@ export class CgOtpInput extends LitElement {
     .box:focus {
       border-color: var(--cg-brand-ai-accent, #dfff61);
       box-shadow:
-        0 0 8px rgba(223, 255, 97, 0.2),
         0 0 0 2px var(--cg-color-surface-base-background, #09090b),
         0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
       transform: scale(1.05);

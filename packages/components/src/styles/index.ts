@@ -37,7 +37,6 @@ export {
   valueChangePulseKeyframes,
   entranceStagger,
   exitFadeScaleKeyframes,
-  glowHover,
   glassCard,
   noiseOverlay,
   liquidFillHover,

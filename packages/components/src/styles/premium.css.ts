@@ -140,13 +140,6 @@ export const exitFadeScaleKeyframes = css`
   }
 `;
 
-/** Accent glow on hover — diffuse box-shadow with brand color. */
-export const glowHover = css`
-  &:hover:not(:disabled):not([disabled]) {
-    box-shadow: 0 0 20px -5px var(--cg-brand-ai-accent, rgba(223, 255, 97, 0.4));
-  }
-`;
-
 // ─────────────────────────────────────────────────────────
 // Advanced Effects — cutting-edge CSS techniques
 // ─────────────────────────────────────────────────────────

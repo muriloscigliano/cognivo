@@ -83,7 +83,6 @@ export class CgFollowUp extends LitElement {
       border-color: var(--cg-brand-ai-accent, #dfff61);
       color: var(--cg-brand-ai-accent, #dfff61);
       background: rgba(223, 255, 97, 0.06);
-      box-shadow: 0 0 12px rgba(223, 255, 97, 0.08);
     }
     button:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale, 0.97)); }
     button:focus-visible {

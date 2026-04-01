@@ -75,9 +75,17 @@ export class CgTextarea extends LitElement {
     /* Size variants */
     :host([size="sm"]) textarea { font-size: 12px; padding: 6px 8px; min-height: 60px; }
     :host([size="lg"]) textarea { font-size: 16px; padding: 10px 16px; min-height: 100px; }
+
+    /* ── Rounded overrides ── */
+    :host([rounded="none"]) textarea { border-radius: 0; }
+    :host([rounded="sm"]) textarea { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) textarea { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) textarea { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) textarea { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property() value = '';
   @property() placeholder = '';
   @property() name = '';

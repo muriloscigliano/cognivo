@@ -114,9 +114,22 @@ export class CgSelect extends LitElement {
 
     :host([size="lg"]) .trigger { min-height: 48px; font-size: 16px; padding: 0 16px; }
     :host([size="lg"]) .option { font-size: 16px; }
+
+    /* ── Rounded overrides ── */
+    :host([rounded="none"]) .trigger { border-radius: 0; }
+    :host([rounded="none"]) .dropdown { border-radius: 0; }
+    :host([rounded="sm"]) .trigger { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="sm"]) .dropdown { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .trigger { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="md"]) .dropdown { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .trigger { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="lg"]) .dropdown { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .trigger { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="full"]) .dropdown { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) options: SelectOption[] = [];
   @property() value = '';
   @property() placeholder = 'Select...';

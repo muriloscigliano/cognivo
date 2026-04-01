@@ -49,6 +49,13 @@ export class CgInput extends LitElement {
     :host([size="sm"]) .wrapper { min-height: var(--cg-component-input-height-sm, 32px); padding: 0 var(--cg-spacing-8, 8px); }
     :host([size="lg"]) .wrapper { min-height: var(--cg-component-input-height-lg, 48px); padding: 0 var(--cg-spacing-16, 16px); }
 
+    /* Rounded variants */
+    :host([rounded="none"]) .wrapper { border-radius: 0; }
+    :host([rounded="sm"]) .wrapper { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .wrapper { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .wrapper { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .wrapper { border-radius: var(--cg-border-radius-full, 99999px); }
+
     /* Hover */
     .wrapper:hover:not(.disabled):not(.readonly) {
       border-color: var(--cg-color-input-border-hover, #dfff61);
@@ -179,7 +186,6 @@ export class CgInput extends LitElement {
       transform: translateY(0);
       font-size: 10px;
       color: var(--cg-brand-ai-accent, #dfff61);
-      text-shadow: 0 0 12px var(--cg-brand-ai-accent, rgba(223, 255, 97, 0.3));
     }
     :host([size="sm"]) .field.floated .floating-label {
       top: 2px;
@@ -274,6 +280,7 @@ export class CgInput extends LitElement {
   @property() helper = '';
   @property({ reflect: true }) type: 'text' | 'email' | 'password' | 'number' | 'url' | 'search' | 'tel' = 'text';
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Boolean, reflect: true }) disabled = false;
   @property({ type: Boolean }) readonly = false;
   @property({ type: Boolean, reflect: true }) error = false;

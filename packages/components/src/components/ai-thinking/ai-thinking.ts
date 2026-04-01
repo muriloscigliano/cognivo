@@ -39,7 +39,6 @@ interface ToolCall {
 export class AiThinking extends LitElement {
   static override styles = [hostBase, reducedMotion, css`
     :host {
-      filter: drop-shadow(0 0 8px var(--cg-brand-ai-accent, rgba(223, 255, 97, 0.25)));
     }
     :host([size="md"]), :host([size="lg"]) {
       display: flex;

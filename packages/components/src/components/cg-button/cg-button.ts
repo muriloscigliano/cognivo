@@ -99,6 +99,13 @@ export class CgButton extends LitElement {
       min-height: var(--cg-component-button-height-lg, 44px);
     }
 
+    /* ── Rounded overrides ── */
+    :host([rounded="none"]) button { border-radius: 0; }
+    :host([rounded="sm"]) button { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) button { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) button { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) button { border-radius: var(--cg-border-radius-full, 99999px); }
+
     /* ── Primary variant ── */
     :host([variant="primary"]) button {
       background: var(--cg-color-action-primary-background-default, #dfff61);
@@ -107,7 +114,6 @@ export class CgButton extends LitElement {
     }
     :host([variant="primary"]) button:not(:disabled):hover {
       background: var(--cg-color-action-primary-background-hover, #e2ff70);
-      box-shadow: 0 0 16px -4px var(--cg-brand-ai-accent, rgba(223, 255, 97, 0.5));
     }
     :host([variant="primary"]) button:not(:disabled):active {
       background: var(--cg-color-action-primary-background-active, #dfff61);
@@ -185,6 +191,7 @@ export class CgButton extends LitElement {
 
   @property({ reflect: true }) variant: 'primary' | 'secondary' | 'tertiary' = 'primary';
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ reflect: true }) type: 'normal' | 'danger' = 'normal';
   @property({ type: Boolean, reflect: true }) disabled = false;
   @property({ type: Boolean, reflect: true }) loading = false;

@@ -57,8 +57,6 @@ export class CgTabs extends LitElement {
       height: 2px;
       background: var(--cg-focus-ring-color, #c8e650);
       border-radius: 1px;
-      box-shadow: 0 0 8px var(--cg-brand-ai-accent, rgba(223, 255, 97, 0.3));
-      filter: drop-shadow(0 0 6px var(--cg-brand-ai-accent, rgba(223, 255, 97, 0.4)));
       transition: left var(--cg-motion-duration-slow, 0.25s) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)), width var(--cg-motion-duration-slow, 0.25s) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
 
