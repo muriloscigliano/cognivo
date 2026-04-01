@@ -1,6 +1,6 @@
 {
   "name": "@cognivo/design-advisor",
-  "version": "0.0.1",
+  "version": "0.3.0",
   "description": "Cognitive psychology-based design analysis and advisory system",
   "type": "module",
   "main": "./dist/index.js",

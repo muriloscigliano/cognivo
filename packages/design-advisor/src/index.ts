@@ -97,7 +97,7 @@ export { BiasCardElement, BiasLibraryElement } from './components/index.js';
 // VERSION
 // ============================================================================
 
-export const VERSION = '0.0.1';
+export const VERSION = '0.3.0';
 
 export const LIBRARY_INFO = {
   name: '@cognivo/design-advisor',
