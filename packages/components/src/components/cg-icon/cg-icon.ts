@@ -186,7 +186,7 @@ export class CgIcon extends LitElement {
     if (solarName.startsWith('solar:')) {
       solarName = solarName.slice(6);
     } else if (ALIASES[solarName]) {
-      solarName = ALIASES[solarName];
+      solarName = ALIASES[solarName]!;
     }
     const icon = SOLAR_ICONS[solarName];
     if (icon) return { body: icon.body, width: icon.width || 24, height: icon.height || 24 };
@@ -197,7 +197,7 @@ export class CgIcon extends LitElement {
   private async _fetchFromApi() {
     let solarName = this.name;
     if (solarName.startsWith('solar:')) solarName = solarName.slice(6);
-    else if (ALIASES[solarName]) solarName = ALIASES[solarName];
+    else if (ALIASES[solarName]) solarName = ALIASES[solarName]!;
 
     // Check cache
     if (API_CACHE.has(solarName)) {

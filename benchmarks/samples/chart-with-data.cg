@@ -1,0 +1,12 @@
+root = Stack([header, layout], "column", "lg")
+header = TextContent("Revenue Dashboard", "2xl", "bold")
+layout = Stack([metric, chart], "row", "lg")
+metric = Card([metricContent], "elevated", "md")
+metricContent = Stack([metricTitle, metricValue, metricDelta], "column", "xs")
+metricTitle = TextContent("Total Revenue", "sm", "medium", "muted")
+metricValue = TextContent("$1,284,000", "3xl", "bold")
+metricDelta = Badge("Up 8.4%", "success", "md", true)
+chart = Card([chartTitle, barChart], "elevated", "md")
+chartTitle = TextContent("Monthly Revenue", "lg", "semibold")
+barChart = Chart(chartData, "bar", "", "", 200, true, true, true)
+chartData = [{label: "Oct", value: 198000}, {label: "Nov", value: 205000}, {label: "Dec", value: 214000}, {label: "Jan", value: 210000}, {label: "Feb", value: 223000}, {label: "Mar", value: 234000}]

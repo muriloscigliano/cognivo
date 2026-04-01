@@ -238,7 +238,7 @@ export class AiDataPreview extends LitElement {
     if (typeof this.data !== 'string') return this._renderJson();
     const lines = this.data.split('\n').filter(Boolean);
     if (lines.length === 0) return html`<pre>${this.data}</pre>`;
-    const headers = lines[0].split(',').map(h => h.trim());
+    const headers = lines[0]!.split(',').map(h => h.trim());
     const dataLines = lines.slice(1, this.maxRows + 1);
     const rows = dataLines.map(line => {
       const vals = line.split(',');

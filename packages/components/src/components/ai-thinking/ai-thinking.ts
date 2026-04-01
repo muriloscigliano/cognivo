@@ -323,7 +323,7 @@ export class AiThinking extends LitElement {
   }
 
   private get _displayText(): string {
-    if (this.stages.length > 0) return this.stages[this._stageIndex];
+    if (this.stages.length > 0) return this.stages[this._stageIndex]!;
     return this.text;
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "@cognivo/adapter-openai",
-  "version": "0.0.0",
+  "version": "0.3.0",
   "description": "OpenAI adapter for Cognivo AI components",
   "keywords": ["openai", "gpt-4", "ai", "adapter", "cognivo"],
   "license": "MIT",

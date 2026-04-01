@@ -238,8 +238,8 @@ export class AiRichMessage extends LitElement {
         ${this.cards.map((card, idx) => {
           try {
             const el = document.createElement(card.type);
-            (el as Record<string, unknown>)['data'] = card.data;
-            (el as Record<string, unknown>)['toolData'] = card.data;
+            (el as unknown as Record<string, unknown>)['data'] = card.data;
+            (el as unknown as Record<string, unknown>)['toolData'] = card.data;
             el.addEventListener('ai-tool-card-action', ((e: CustomEvent) => {
               this._dispatch('ai-message-card-action', {
                 cardIndex: idx, action: e.detail?.action, data: e.detail?.data,

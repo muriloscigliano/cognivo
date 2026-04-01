@@ -171,7 +171,7 @@ export class AiProgressSteps extends LitElement {
     return html`
       <div class="steps" role="list" aria-label="Progress steps">
         ${this.phases.map((phase, i) => {
-          const prevDone = i > 0 && (this.phases[i - 1].status === 'complete');
+          const prevDone = i > 0 && (this.phases[i - 1]!.status === 'complete');
           return html`
             <button
               class="step"

@@ -160,7 +160,7 @@ export class AiEmbeddingViz extends LitElement {
 
     if (!this._clusterColorMap.has(point.cluster)) {
       const idx = this._clusterColorMap.size % CLUSTER_COLORS.length;
-      this._clusterColorMap.set(point.cluster, CLUSTER_COLORS[idx]);
+      this._clusterColorMap.set(point.cluster, CLUSTER_COLORS[idx]!);
     }
     return this._clusterColorMap.get(point.cluster)!;
   }

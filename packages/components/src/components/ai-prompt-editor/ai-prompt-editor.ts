@@ -176,7 +176,7 @@ export class AiPromptEditor extends LitElement {
   override updated(changed: Map<string, unknown>) {
     if (changed.has('versions') && this.versions.length > 0 && !this._selectedId) {
       const active = this.versions.find(v => v.active);
-      this._selectedId = active?.id || this.versions[0].id;
+      this._selectedId = active?.id || this.versions[0]!.id;
     }
   }
 

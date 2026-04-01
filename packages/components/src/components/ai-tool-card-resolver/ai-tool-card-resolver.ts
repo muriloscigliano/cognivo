@@ -159,8 +159,8 @@ export class AiToolCardResolver extends LitElement {
 
     try {
       const el = document.createElement(tag);
-      (el as Record<string, unknown>)['data'] = this.toolData;
-      (el as Record<string, unknown>)['toolData'] = this.toolData;
+      (el as unknown as Record<string, unknown>)['data'] = this.toolData;
+      (el as unknown as Record<string, unknown>)['toolData'] = this.toolData;
       el.addEventListener('ai-tool-card-action', ((e: CustomEvent) => {
         this._dispatch('ai-tool-card-action', {
           toolName: this.toolName, action: e.detail?.action, data: e.detail?.data,

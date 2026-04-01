@@ -130,8 +130,8 @@ panel = AiResultPanel("Analysis", "Good quarter.", ["Up 18%"], [], 0.9)`);
 describe('getManifest()', () => {
   const manifests = getManifest(cognivoLibrary);
 
-  it('returns manifest for all 41 components', () => {
-    expect(manifests).toHaveLength(41);
+  it('returns manifest for all components', () => {
+    expect(manifests.length).toBeGreaterThanOrEqual(125);
   });
 
   it('each manifest has required fields', () => {

@@ -127,7 +127,7 @@ export class CgColorPicker extends LitElement {
     else if (e.key === 'ArrowUp') { idx = Math.max(idx - this.columns, 0); }
     else if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      if (idx >= 0) this._select(this.colors[idx]);
+      if (idx >= 0) this._select(this.colors[idx]!);
       return;
     } else { return; }
 

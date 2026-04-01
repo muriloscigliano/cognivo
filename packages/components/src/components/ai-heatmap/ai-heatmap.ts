@@ -173,7 +173,7 @@ export class AiHeatmap extends LitElement {
         row, col,
         rowLabel: this.rowLabels[row] || `Row ${row}`,
         colLabel: this.colLabels[col] || `Col ${col}`,
-        value: this.data[row][col],
+        value: this.data[row]![col]!,
       },
     }));
   }
@@ -186,7 +186,7 @@ export class AiHeatmap extends LitElement {
       y: rect.top - hostRect.top - 8,
       row: this.rowLabels[row] || `Row ${row}`,
       col: this.colLabels[col] || `Col ${col}`,
-      value: this.data[row][col],
+      value: this.data[row]![col]!,
     };
   }
 

@@ -202,7 +202,7 @@ export class AiPromptTemplate extends LitElement {
       if (match.index > lastIndex) {
         parts.push(remaining.slice(lastIndex, match.index));
       }
-      parts.push({ varName: match[1] });
+      parts.push({ varName: match[1]! });
       lastIndex = regex.lastIndex;
     }
     if (lastIndex < remaining.length) {

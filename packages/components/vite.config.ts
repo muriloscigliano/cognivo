@@ -12,8 +12,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      formats: ['es'],
-      fileName: 'index',
+      name: 'Cognivo',
+      formats: ['es', 'iife'],
+      fileName: (format) => format === 'iife' ? 'cognivo.min' : 'index',
     },
     rollupOptions: {
       // DON'T mark lit as external - bundle it so browser can use it!

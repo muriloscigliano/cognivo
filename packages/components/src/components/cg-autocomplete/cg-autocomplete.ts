@@ -196,7 +196,7 @@ export class CgAutocomplete extends LitElement {
       this._activeIndex = Math.max(this._activeIndex - 1, 0);
     } else if (e.key === 'Enter' && this._activeIndex >= 0 && list[this._activeIndex]) {
       e.preventDefault();
-      this._select(list[this._activeIndex]);
+      this._select(list[this._activeIndex]!);
     } else if (e.key === 'Escape') {
       this._open = false;
     }

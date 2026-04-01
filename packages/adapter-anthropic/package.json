@@ -1,6 +1,6 @@
 {
   "name": "@cognivo/adapter-anthropic",
-  "version": "0.0.0",
+  "version": "0.3.0",
   "description": "Anthropic Claude adapter for Cognivo AI components",
   "keywords": ["anthropic", "claude", "ai", "adapter", "cognivo"],
   "license": "MIT",

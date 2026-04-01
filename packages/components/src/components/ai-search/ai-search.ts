@@ -246,11 +246,11 @@ export class AiSearch extends LitElement {
 
   private _selectHighlighted() {
     if (this._highlightIndex < this.results.length) {
-      this._selectResult(this.results[this._highlightIndex]);
+      this._selectResult(this.results[this._highlightIndex]!);
     } else {
       const sIdx = this._highlightIndex - this.results.length;
       if (sIdx < this.suggestions.length) {
-        this._query = this.suggestions[sIdx];
+        this._query = this.suggestions[sIdx]!;
         this.dispatchEvent(new CustomEvent('ai-search-query', { bubbles: true, composed: true, detail: { query: this._query, filters: [...this._activeFilters] } }));
       }
     }
