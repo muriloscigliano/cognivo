@@ -179,14 +179,11 @@ export class AiAlertCard extends LitElement {
   @property({ type: String }) actionLabel = '';
   @property({ type: Boolean }) dismissible = true;
 
-  private _urgencyIcon(): string {
-    const icons: Record<Urgency, string> = {
-      info: '\u2139',       // ℹ
-      warning: '\u26A0',    // ⚠
-      urgent: '\u26A1',     // ⚡
-      critical: '\u2716',   // ✖
-    };
-    return icons[this.urgency];
+  private _urgencyIcon(): unknown {
+    if (this.urgency === 'info') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>`;
+    if (this.urgency === 'warning') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>`;
+    if (this.urgency === 'urgent') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`;
+    return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`;
   }
 
   private _handleAction() {
@@ -218,7 +215,7 @@ export class AiAlertCard extends LitElement {
             <span class="title">${this.title}</span>
             ${this.deadline ? html`
               <span class="deadline" aria-label="Deadline: ${this.deadline}">
-                <span aria-hidden="true">&#9200;</span>
+                <span aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
                 ${this.deadline}
               </span>
             ` : nothing}
@@ -240,7 +237,7 @@ export class AiAlertCard extends LitElement {
             class="dismiss"
             @click=${this._handleDismiss}
             aria-label="Dismiss alert"
-          >&#10005;</button>
+          ><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
         ` : nothing}
       </div>
     `;

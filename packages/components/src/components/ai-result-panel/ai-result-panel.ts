@@ -143,7 +143,7 @@ export class AiResultPanel extends LitElement {
       line-height: 1.5;
     }
     .bullet::before {
-      content: '→';
+      content: '--';
       color: var(--cg-brand-ai-accent, #dfff61);
       font-weight: 700;
       flex-shrink: 0;
@@ -321,7 +321,7 @@ export class AiResultPanel extends LitElement {
         <div class="drivers-header">
           <span class="drivers-label">Impact Drivers</span>
           <button class="sort-btn" @click=${() => { this._sortAsc = !this._sortAsc; }}>
-            Sort ${this._sortAsc ? '↑' : '↓'}
+            Sort ${this._sortAsc ? html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5m-7 7l7-7 7 7"/></svg>` : html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m7-7l-7 7-7-7"/></svg>`}
           </button>
         </div>
         <div class="drivers">
@@ -382,7 +382,7 @@ export class AiResultPanel extends LitElement {
       <div class="panel ${this._collapsed ? 'collapsed' : ''}" role="region" aria-label="${this.title}">
         <div class="header" @click=${this._toggleCollapse}>
           <div class="header-left">
-            ${this.collapsible ? html`<span class="collapse-icon" aria-hidden="true">▼</span>` : nothing}
+            ${this.collapsible ? html`<span class="collapse-icon" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>` : nothing}
             <span class="title">${this.title}</span>
             ${this.confidence > 0 ? html`<ai-badge score="${this.confidence}" size="sm"></ai-badge>` : nothing}
           </div>

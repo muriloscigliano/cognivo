@@ -9,7 +9,7 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
  * @example
  * ```html
  * <cg-input label="Email" type="email" placeholder="you@example.com"></cg-input>
- * <cg-input label="Search" clearable><span slot="prefix">🔍</span></cg-input>
+ * <cg-input label="Search" clearable><span slot="prefix">[search icon]</span></cg-input>
  * <cg-input label="Bio" maxlength="200" error helper="Too long"></cg-input>
  * ```
  *

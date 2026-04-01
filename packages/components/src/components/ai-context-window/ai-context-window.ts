@@ -202,7 +202,7 @@ export class AiContextWindow extends LitElement {
 
         ${this.cached > 0 ? html`
           <div class="cache-row">
-            <span class="cache-icon">⚡</span>
+            <span class="cache-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
             <span>${this.cached.toLocaleString()} tokens cached (prompt caching)</span>
           </div>
         ` : nothing}

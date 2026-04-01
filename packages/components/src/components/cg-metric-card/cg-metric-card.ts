@@ -220,7 +220,11 @@ export class CgMetricCard extends LitElement {
       `;
     }
 
-    const arrow = this.trend === 'up' ? '↑' : this.trend === 'down' ? '↓' : '→';
+    const arrow = this.trend === 'up'
+      ? html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5m-7 7l7-7 7 7"/></svg>`
+      : this.trend === 'down'
+      ? html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m7-7l-7 7-7-7"/></svg>`
+      : html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>`;
     const ariaLabel = `${this.title}: ${this.value}${this.delta ? `, ${this.delta} ${this.trend}` : ''}`;
 
     return html`

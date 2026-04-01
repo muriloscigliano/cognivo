@@ -120,7 +120,7 @@ export class AiSourceGraph extends LitElement {
   };
 
   private _typeIcons: Record<string, string> = {
-    doc: '📄', web: '🌐', database: '🗄', api: '⚡',
+    doc: 'DOC', web: 'WEB', database: 'DB', api: 'API',
   };
 
   private _handleSourceClick(source: SourceNode) {

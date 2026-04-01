@@ -216,7 +216,7 @@ export class AiModelSelector extends LitElement {
             @click=${() => this._handleSelect(m)}
             @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleSelect(m); } }}>
 
-            ${this._selectedIds.has(m.id) ? html`<div class="check">✓</div>` : nothing}
+            ${this._selectedIds.has(m.id) ? html`<div class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>` : nothing}
 
             <div class="model-header">
               ${m.icon ? html`<span class="model-icon">${m.icon}</span>` : nothing}

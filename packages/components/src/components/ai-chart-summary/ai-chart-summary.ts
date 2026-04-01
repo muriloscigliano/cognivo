@@ -239,11 +239,11 @@ export class AiChartSummary extends LitElement {
           ${this.timeRange ? html`<span class="time-range">${this.timeRange}</span>` : nothing}
 
           <div class="header-actions">
-            <button class="icon-btn" @click=${this._handleRefresh} title="Refresh" aria-label="Refresh insight">↻</button>
+            <button class="icon-btn" @click=${this._handleRefresh} title="Refresh" aria-label="Refresh insight"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></button>
             ${this.collapsible ? html`
               <button class="icon-btn" @click=${this._toggle}
                 aria-expanded="${!this._collapsed}" aria-label="${this._collapsed ? 'Show' : 'Hide'} insight">
-                ${this._collapsed ? '▼' : '▲'}
+                ${this._collapsed ? html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>` : html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>`}
               </button>
             ` : nothing}
           </div>
@@ -257,7 +257,7 @@ export class AiChartSummary extends LitElement {
               <span class="trend ${t.direction}" @click=${() => this._handleTrendClick(t)}
                 role="button" tabindex="0" aria-label="${t.label}: ${t.value} (${t.direction})">
                 <span class="trend-icon" aria-hidden="true">
-                  ${t.direction === 'up' ? '↑' : t.direction === 'down' ? '↓' : '→'}
+                  ${t.direction === 'up' ? html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5m-7 7l7-7 7 7"/></svg>` : t.direction === 'down' ? html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m7-7l-7 7-7-7"/></svg>` : html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>`}
                 </span>
                 ${t.label}: ${t.value}
               </span>

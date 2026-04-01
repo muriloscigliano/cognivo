@@ -88,7 +88,13 @@ function updateBiasPanel(result: ParseResult) {
     return;
   }
   const html = suggestions.map(s => {
-    const icon = s.severity === 'critical' ? '🔴' : s.severity === 'high' ? '🟠' : s.severity === 'medium' ? '🟡' : '🟢';
+    const icon = s.severity === 'critical'
+      ? '<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#EF4444"/></svg>'
+      : s.severity === 'high'
+      ? '<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#F97316"/></svg>'
+      : s.severity === 'medium'
+      ? '<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#F59E0B"/></svg>'
+      : '<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#10B981"/></svg>';
     return `<div class="bias-item">
       <div class="bias-header">${icon} <strong>${s.biasName}</strong> <span class="bias-severity ${s.severity}">${s.severity}</span></div>
       <div class="bias-components">Components: ${s.components.join(', ')} (${s.occurrences}×)</div>
@@ -173,7 +179,7 @@ async function generateWithLLM() {
 
   // Setup
   abortController = new AbortController();
-  generateBtn.textContent = '⏹ Stop';
+  generateBtn.textContent = 'Stop';
   generateBtn.onclick = stopGeneration;
   streamBtn.disabled = true;
   parseBtn.disabled = true;
@@ -270,7 +276,7 @@ function stopGeneration() {
 }
 
 function resetGenerateBtn() {
-  generateBtn.textContent = '🤖 Generate';
+  generateBtn.textContent = 'Generate';
   generateBtn.onclick = generateWithLLM;
   streamBtn.disabled = false;
   parseBtn.disabled = false;

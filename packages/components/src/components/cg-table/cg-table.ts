@@ -152,7 +152,7 @@ export class CgTable extends LitElement {
                   aria-sort=${this._sortKey === col.key ? this._sortDir === 'asc' ? 'ascending' : 'descending' : nothing}
                 >
                   ${col.label}
-                  ${col.sortable ? html`<span class="sort-icon">${this._sortKey === col.key ? (this._sortDir === 'asc' ? '↑' : '↓') : '↕'}</span>` : nothing}
+                  ${col.sortable ? html`<span class="sort-icon">${this._sortKey === col.key ? (this._sortDir === 'asc' ? html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5m-7 7l7-7 7 7"/></svg>` : html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m7-7l-7 7-7-7"/></svg>`) : html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14m-5-4l5 5 5-5m-10-6l5-5 5 5"/></svg>`}</span>` : nothing}
                 </th>
               `)}
             </tr>

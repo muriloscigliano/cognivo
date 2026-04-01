@@ -182,7 +182,14 @@ export class AiFeedback extends LitElement {
   @state() private _submitted: boolean = false;
   @state() private _hoverStar: number = 0;
 
-  private _emojis = ['😡', '😕', '😐', '🙂', '😄'];
+  private _emojiLabels = ['Angry', 'Confused', 'Neutral', 'Happy', 'Very Happy'];
+  private _renderEmoji(index: number): unknown {
+    if (index === 0) return html`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`;
+    if (index === 1) return html`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-1-4-1-4 1-4 1"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`;
+    if (index === 2) return html`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`;
+    if (index === 3) return html`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`;
+    return html`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 13s1.5 3 4 3 4-3 4-3"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`;
+  }
 
   private _handleThumb(value: number) {
     this._rating = this._rating === value ? null : value;
@@ -231,7 +238,7 @@ export class AiFeedback extends LitElement {
     if (this._submitted) {
       return html`
         <div class="submitted" aria-live="polite" role="status">
-          <span class="submitted-icon">✓</span>
+          <span class="submitted-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
           <span>Thank you for your feedback!</span>
         </div>
       `;
@@ -242,8 +249,8 @@ export class AiFeedback extends LitElement {
         <div class="rating-row">
           <span class="rating-label">Rate:</span>
           ${this.mode === 'thumbs' ? html`
-            <button class="thumb-btn ${this._rating === 1 ? 'selected-up' : ''}" @click=${() => this._handleThumb(1)} aria-label="Good" title="Good">👍</button>
-            <button class="thumb-btn ${this._rating === 0 ? 'selected-down' : ''}" @click=${() => this._handleThumb(0)} aria-label="Bad" title="Bad">👎</button>
+            <button class="thumb-btn ${this._rating === 1 ? 'selected-up' : ''}" @click=${() => this._handleThumb(1)} aria-label="Good" title="Good"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg></button>
+            <button class="thumb-btn ${this._rating === 0 ? 'selected-down' : ''}" @click=${() => this._handleThumb(0)} aria-label="Bad" title="Bad"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15V19a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg></button>
           ` : nothing}
 
           ${this.mode === 'stars' ? html`
@@ -252,15 +259,15 @@ export class AiFeedback extends LitElement {
                 @click=${() => this._handleStar(n)}
                 @mouseenter=${() => { this._hoverStar = n; }}
                 @mouseleave=${() => { this._hoverStar = 0; }}
-                aria-label="${n} star${n > 1 ? 's' : ''}">★</button>
+                aria-label="${n} star${n > 1 ? 's' : ''}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
             `)}
           ` : nothing}
 
           ${this.mode === 'emoji' ? html`
-            ${this._emojis.map((e, i) => html`
+            ${this._emojiLabels.map((label, i) => html`
               <button class="emoji-btn ${this._rating === i ? 'selected' : ''}"
                 @click=${() => this._handleEmoji(i)}
-                aria-label="Rating ${i + 1} of 5: ${e}">${e}</button>
+                aria-label="Rating ${i + 1} of 5: ${label}">${this._renderEmoji(i)}</button>
             `)}
           ` : nothing}
         </div>

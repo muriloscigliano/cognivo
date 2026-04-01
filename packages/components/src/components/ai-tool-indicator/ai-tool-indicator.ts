@@ -168,8 +168,8 @@ export class AiToolIndicator extends LitElement {
   }
 
   private _renderStatusIcon(status: string) {
-    if (status === 'complete') return html`<span class="check">✓</span>`;
-    if (status === 'error') return html`<span class="error-icon">✕</span>`;
+    if (status === 'complete') return html`<span class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>`;
+    if (status === 'error') return html`<span class="error-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>`;
     return html`<div class="spinner"></div>`;
   }
 

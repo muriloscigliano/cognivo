@@ -250,7 +250,7 @@ export class AiAudioPlayer extends LitElement {
           class="play-btn"
           aria-label=${this._playing ? 'Pause' : 'Play'}
           @click=${this._togglePlay}
-        >${this._playing ? '⏸' : '▶'}</button>
+        >${this._playing ? html`<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>` : html`<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`}</button>
 
         <div class="content">
           <div class="title-row">

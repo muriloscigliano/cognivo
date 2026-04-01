@@ -8,7 +8,7 @@
  * ```html
  * <ai-search
  *   placeholder="Search docs..."
- *   .results=${[{ title: 'Getting Started', description: 'Quick start guide', icon: '📄' }]}
+ *   .results=${[{ title: 'Getting Started', description: 'Quick start guide', icon: '[doc icon]' }]}
  *   .suggestions=${['How to deploy', 'API authentication']}
  *   .filters=${['Docs', 'API', 'Blog']}
  *   .recentSearches=${['setup guide', 'rate limits']}
@@ -287,7 +287,7 @@ export class AiSearch extends LitElement {
     return html`
       <div class="search-wrapper" role="combobox" aria-expanded="${showDropdown}" aria-haspopup="listbox">
         <div class="input-row">
-          <span class="search-icon" aria-hidden="true">🔍</span>
+          <span class="search-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span>
           <input type="text"
             .value=${this._query}
             .placeholder=${this.placeholder}
@@ -297,8 +297,8 @@ export class AiSearch extends LitElement {
             @blur=${this._handleBlur}
             @keydown=${this._handleKeyDown} />
           ${this._query ? html`
-            <button class="clear-btn" @click=${this._handleClear} aria-label="Clear search">✕</button>
-          ` : html`<span class="shortcut">⌘K</span>`}
+            <button class="clear-btn" @click=${this._handleClear} aria-label="Clear search"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+          ` : html`<span class="shortcut"><kbd>Cmd</kbd>+<kbd>K</kbd></span>`}
         </div>
 
         ${showDropdown ? html`
@@ -334,7 +334,7 @@ export class AiSearch extends LitElement {
               ${this.suggestions.map((s, i) => html`
                 <div class="result-item ${(i + this.results.length) === this._highlightIndex ? 'highlighted' : ''}"
                   role="option" @mousedown=${(e: Event) => { e.preventDefault(); this._query = s; }}>
-                  <span class="result-icon" style="color: var(--cg-brand-ai-accent, #dfff61);">✦</span>
+                  <span class="result-icon" style="color: var(--cg-brand-ai-accent, #dfff61);"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg></span>
                   <div class="result-info"><div class="result-title">${s}</div></div>
                 </div>
               `)}

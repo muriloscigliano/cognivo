@@ -9,7 +9,7 @@ import { hostBase, reducedMotion } from '../../styles/index.js';
  * @example
  * ```html
  * <cg-chip label="TypeScript" variant="accent"></cg-chip>
- * <cg-chip label="Bug" variant="error" removable icon="🐛"></cg-chip>
+ * <cg-chip label="Bug" variant="error" removable icon="[bug icon]"></cg-chip>
  * <cg-chip label="Done" variant="success" disabled></cg-chip>
  * ```
  *

@@ -10,7 +10,7 @@ import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
  * ```html
  * <cg-button variant="primary" size="md">Click me</cg-button>
  * <cg-button variant="secondary" loading>Saving...</cg-button>
- * <cg-button type="danger"><span slot="prefix">🗑</span>Delete</cg-button>
+ * <cg-button type="danger"><span slot="prefix">[trash icon]</span>Delete</cg-button>
  * ```
  *
  * @slot - Default slot for button text/content

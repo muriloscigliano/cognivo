@@ -227,8 +227,8 @@ export class AiMemoryPanel extends LitElement {
               </div>
               <div class="memory-actions">
                 <button class="mem-btn ${m.pinned ? 'pinned-btn' : ''}" @click=${() => this._handlePin(m)}
-                  title="${m.pinned ? 'Unpin' : 'Pin'}" aria-label="${m.pinned ? 'Unpin' : 'Pin'} memory">📌</button>
-                <button class="mem-btn" @click=${() => this._handleDelete(m)} title="Delete" aria-label="Delete memory">✕</button>
+                  title="${m.pinned ? 'Unpin' : 'Pin'}" aria-label="${m.pinned ? 'Unpin' : 'Pin'} memory"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 17v5m-4-9.26a2 2 0 01.88-1.66L12 9l3.12 2.08a2 2 0 01.88 1.66V15H8v-2.26zM9 9V4a1 1 0 011-1h4a1 1 0 011 1v5"/></svg></button>
+                <button class="mem-btn" @click=${() => this._handleDelete(m)} title="Delete" aria-label="Delete memory"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
               </div>
             </div>
           `)}

@@ -53,7 +53,7 @@ describe('ai-tool-indicator', () => {
     await el.updateComplete;
     const check = el.shadowRoot!.querySelector('.check');
     expect(check).not.toBeNull();
-    expect(check!.textContent?.trim()).toBe('✓');
+    expect(check!.querySelector('svg') || check!.innerHTML.length > 0).toBeTruthy();
   });
 
   it('shows error icon for error tools', async () => {

@@ -11,8 +11,8 @@
  *   .sections=${[{
  *     title: 'Tools',
  *     items: [
- *       { id: 'chat', label: 'Chat', icon: '💬', badge: '3' },
- *       { id: 'search', label: 'Search', icon: '🔍' }
+ *       { id: 'chat', label: 'Chat', icon: '[chat icon]', badge: '3' },
+ *       { id: 'search', label: 'Search', icon: '[search icon]' }
  *     ]
  *   }]}
  * ></ai-sidebar>

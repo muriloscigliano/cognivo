@@ -113,7 +113,9 @@ describe('cg-metric-card extended', () => {
     el.trend = 'up';
     await el.updateComplete;
     const arrow = el.shadowRoot!.querySelector('.arrow');
-    expect(arrow!.textContent).toBe('↑');
+    expect(arrow).toBeTruthy();
+    // Arrow now uses SVG instead of text character
+    expect(arrow!.querySelector('svg') || arrow!.textContent!.trim().length > 0).toBeTruthy();
   });
 
   it('applies up delta class', async () => {

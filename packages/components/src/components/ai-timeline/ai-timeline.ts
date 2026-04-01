@@ -205,11 +205,11 @@ export class AiTimeline extends LitElement {
 
   private _expandedIndex: number = -1;
 
-  private _getIcon(status: string): string {
-    if (status === 'complete') return '✓';
-    if (status === 'error') return '✕';
-    if (status === 'active') return '●';
-    return '○';
+  private _getIcon(status: string): unknown {
+    if (status === 'complete') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
+    if (status === 'error') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`;
+    if (status === 'active') return html`<svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>`;
+    return html`<svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
   }
 
   private _formatDuration(ms?: number): string {

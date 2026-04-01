@@ -585,7 +585,7 @@ export class AiChat extends LitElement {
       return html`
         <div class="chat">
           <div class="empty" role="status">
-            <div class="empty-icon">🤖</div>
+            <div class="empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="18" height="12" rx="3"/><circle cx="9" cy="14" r="1.5"/><circle cx="15" cy="14" r="1.5"/><path d="M12 2v4M8 8V6a4 4 0 018 0v2"/></svg></div>
             <div class="empty-text">Set <code>aiClient</code> to start chatting</div>
           </div>
         </div>
@@ -600,7 +600,7 @@ export class AiChat extends LitElement {
           <div class="messages" role="log" aria-live="polite" aria-label="Chat messages" @scroll=${this._handleScroll}>
             ${this._messages.length === 0 && !this._isThinking ? html`
               <div class="empty">
-                <div class="empty-icon">💬</div>
+                <div class="empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></div>
                 <div class="empty-text">${this.welcomeMessage}</div>
               </div>
             ` : this._messages.map(msg => {
@@ -617,19 +617,19 @@ export class AiChat extends LitElement {
                     ${msg.role === 'ai' && this.showActions && !this._isStreaming ? html`
                       <div class="actions">
                         <button class="action-btn ${this._copiedId === msg.id ? 'copied' : ''}" @click=${() => this._handleCopy(msg)} title="Copy">
-                          ${this._copiedId === msg.id ? '✓ Copied' : 'Copy'}
+                          ${this._copiedId === msg.id ? html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Copied` : 'Copy'}
                         </button>
-                        <button class="action-btn" @click=${() => this._handleRegenerate(msg)} title="Regenerate">↻ Retry</button>
-                        <button class="action-btn" @click=${() => this._handleRate(msg, 'up')} title="Good">👍</button>
-                        <button class="action-btn" @click=${() => this._handleRate(msg, 'down')} title="Bad">👎</button>
+                        <button class="action-btn" @click=${() => this._handleRegenerate(msg)} title="Regenerate"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg> Retry</button>
+                        <button class="action-btn" @click=${() => this._handleRate(msg, 'up')} title="Good"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg></button>
+                        <button class="action-btn" @click=${() => this._handleRate(msg, 'down')} title="Bad"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15V19a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg></button>
                       </div>
                     ` : nothing}
 
                     ${msg.versions.length > 1 ? html`
                       <div class="version-nav">
-                        <button class="version-btn" ?disabled=${msg.activeVersion === 0} @click=${() => this._switchVersion(msg, -1)}>←</button>
+                        <button class="version-btn" ?disabled=${msg.activeVersion === 0} @click=${() => this._switchVersion(msg, -1)}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m7 7l-7-7 7-7"/></svg></button>
                         <span>${msg.activeVersion + 1} / ${msg.versions.length}</span>
-                        <button class="version-btn" ?disabled=${msg.activeVersion === msg.versions.length - 1} @click=${() => this._switchVersion(msg, 1)}>→</button>
+                        <button class="version-btn" ?disabled=${msg.activeVersion === msg.versions.length - 1} @click=${() => this._switchVersion(msg, 1)}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
                       </div>
                     ` : nothing}
                   </div>
@@ -645,11 +645,11 @@ export class AiChat extends LitElement {
           </div>
 
           ${this._showScrollBtn ? html`
-            <button class="scroll-btn" @click=${this._scrollToBottom} aria-label="Scroll to bottom">↓</button>
+            <button class="scroll-btn" @click=${this._scrollToBottom} aria-label="Scroll to bottom"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m7-7l-7 7-7-7"/></svg></button>
           ` : nothing}
 
           ${(this._isStreaming || this._isThinking) ? html`
-            <button class="stop-btn" @click=${this._handleStop}>■ Stop generating</button>
+            <button class="stop-btn" @click=${this._handleStop}><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg> Stop generating</button>
           ` : nothing}
 
           ${this._followUps.length > 0 && this.showFollowUps ? html`

@@ -209,7 +209,7 @@ export function renderComponentPage(container: HTMLElement, comp: ComponentMeta)
     codeLabel.querySelector('.copy-btn-sm')?.addEventListener('click', () => {
       navigator.clipboard?.writeText(codeOutput.textContent || '');
       const btn = codeLabel.querySelector('.copy-btn-sm')!;
-      btn.textContent = '✓';
+      btn.textContent = 'Copied';
       setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
     });
 
@@ -272,7 +272,7 @@ export function renderComponentPage(container: HTMLElement, comp: ComponentMeta)
       copyBtn.textContent = 'Copy';
       copyBtn.addEventListener('click', () => {
         navigator.clipboard?.writeText(ex.html.trim());
-        copyBtn.textContent = '✓ Copied';
+        copyBtn.textContent = 'Copied';
         setTimeout(() => { copyBtn.textContent = 'Copy'; }, 2000);
       });
       codeWrapper.appendChild(copyBtn);
@@ -369,22 +369,22 @@ export function renderWelcome(container: HTMLElement, count: number) {
 
       <div class="welcome-features">
         <div class="feature-card">
-          <div class="feature-icon">🎨</div>
+          <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="15.5" r="2.5"/><circle cx="8.5" cy="15.5" r="2.5"/><line x1="13.5" y1="9" x2="17.5" y2="13"/><line x1="13.5" y1="9" x2="8.5" y2="13"/></svg></div>
           <div class="feature-title">Premium Visual Polish</div>
           <div class="feature-desc">Glassmorphism, ripple effects, spring animations, glow effects, 5-level elevation system</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🤖</div>
+          <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="12" r="1.5" fill="var(--accent)"/><circle cx="15" cy="12" r="1.5" fill="var(--accent)"/></svg></div>
           <div class="feature-title">AI-Native Components</div>
           <div class="feature-desc">Streaming text, thinking indicators, confidence sliders, chat, reasoning trees</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🧠</div>
+          <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M12 2C8 2 4 6 4 10c0 4 4 6 4 8h8c0-2 4-4 4-8 0-4-4-8-8-8z"/><line x1="10" y1="22" x2="14" y2="22"/></svg></div>
           <div class="feature-title">Cognitive Psychology</div>
           <div class="feature-desc">180 cognitive bias cards, design advisor, bias-aware component registry</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">♿</div>
+          <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8a2 2 0 0 0-2 2v4a2 2 0 0 0 4 0v-4a2 2 0 0 0-2-2z"/><path d="M8 16h8"/></svg></div>
           <div class="feature-title">Fully Accessible</div>
           <div class="feature-desc">ARIA, keyboard navigation, focus traps, prefers-reduced-motion, screen reader support</div>
         </div>

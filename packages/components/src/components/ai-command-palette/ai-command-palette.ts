@@ -7,7 +7,7 @@
  * <ai-command-palette
  *   .commands=${[
  *     {id:'new-chat', label:'New Chat', shortcut:'Ctrl+N', category:'AI'},
- *     {id:'export', label:'Export Data', icon:'📦', category:'Data'}
+ *     {id:'export', label:'Export Data', icon:'[box icon]', category:'Data'}
  *   ]}
  *   open
  * ></ai-command-palette>

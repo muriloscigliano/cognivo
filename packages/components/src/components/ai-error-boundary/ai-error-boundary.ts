@@ -169,7 +169,7 @@ export class AiErrorBoundary extends LitElement {
     return html`
       <div class="error-card" role="alert" aria-live="assertive">
         <div class="header">
-          <span class="icon" aria-hidden="true">⚠️</span>
+          <span class="icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></span>
           <div class="header-content">
             <div class="title-row">
               <span class="title">Something went wrong</span>

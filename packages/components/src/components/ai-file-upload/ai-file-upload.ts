@@ -218,7 +218,7 @@ export class AiFileUpload extends LitElement {
         @click=${this._handleClick}
         @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleClick(); } }}
       >
-        <div class="drop-icon">📁</div>
+        <div class="drop-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
         <div class="drop-label">${this.label}</div>
         <div class="drop-hint">
           ${this.accept ? `Accepted: ${this.accept}` : 'Any file type'}
@@ -236,12 +236,12 @@ export class AiFileUpload extends LitElement {
         <div class="file-list" role="list" aria-label="Selected files">
           ${this._files.map((f, i) => html`
             <div class="file-item" role="listitem">
-              <span class="file-icon">📄</span>
+              <span class="file-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
               <div class="file-info">
                 <div class="file-name">${f.name}</div>
                 <div class="file-meta">${f.type || 'unknown'} · ${this._formatSize(f.size)}</div>
               </div>
-              <button class="remove-btn" aria-label="Remove ${f.name}" @click=${() => this._removeFile(i)}>✕</button>
+              <button class="remove-btn" aria-label="Remove ${f.name}" @click=${() => this._removeFile(i)}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
             </div>
           `)}
         </div>

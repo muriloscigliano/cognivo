@@ -230,7 +230,7 @@ export class AiKeyboardShortcuts extends LitElement {
         <div class="modal" role="dialog" aria-label="Keyboard shortcuts" aria-modal="true">
           <div class="modal-header">
             <span class="modal-title">Keyboard Shortcuts</span>
-            <button class="close-btn" aria-label="Close shortcuts" @click=${this._close}>✕</button>
+            <button class="close-btn" aria-label="Close shortcuts" @click=${this._close}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
           </div>
           <input
             class="search-input"

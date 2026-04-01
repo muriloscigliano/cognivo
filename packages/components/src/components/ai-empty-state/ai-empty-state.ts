@@ -144,7 +144,7 @@ export class AiEmptyState extends LitElement {
       .action-btn { transition: none; }
     }
   `];
-  @property({ type: String }) icon = '📭';
+  @property({ type: String }) icon = '';
   @property({ type: String }) override title = 'Nothing here yet';
   @property({ type: String }) description = '';
   @property({ type: String, attribute: 'action-label' }) actionLabel = '';
@@ -161,7 +161,7 @@ export class AiEmptyState extends LitElement {
     return html`
       <div class="container" role="status" aria-label="${this.title}">
         <div class="icon-wrapper" aria-hidden="true">
-          ${this.icon}
+          ${this.icon || html`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 8h20M6 12h4m-4 4h8"/></svg>`}
         </div>
         <h3 class="title">${this.title}</h3>
         ${this.description

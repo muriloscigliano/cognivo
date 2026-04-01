@@ -205,11 +205,11 @@ export class AiBadge extends LitElement {
     return 'low';
   }
 
-  private _getIcon(): string {
+  private _getIcon(): unknown {
     const level = this._getLevel();
-    if (level === 'high') return '✓';
-    if (level === 'medium') return '●';
-    return '!';
+    if (level === 'high') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
+    if (level === 'medium') return html`<svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>`;
+    return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>`;
   }
 
   private _handleClick() {

@@ -288,8 +288,8 @@ export class AiInsightCard extends LitElement {
         ${this.status && this.status !== 'dismissed' ? html`<div class="status-dot ${this.status}" aria-hidden="true"></div>` : nothing}
 
         <div class="actions">
-          <button class="action-btn" @click=${this._handleBookmark} title="Bookmark" aria-label="Bookmark">★</button>
-          <button class="action-btn" @click=${this._handleDismiss} title="Dismiss" aria-label="Dismiss">✕</button>
+          <button class="action-btn" @click=${this._handleBookmark} title="Bookmark" aria-label="Bookmark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+          <button class="action-btn" @click=${this._handleDismiss} title="Dismiss" aria-label="Dismiss"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
         </div>
 
         <div class="icon-area ${this.type}" aria-hidden="true" .innerHTML=${this._getIcon()}></div>

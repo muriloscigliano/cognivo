@@ -153,10 +153,10 @@ export class AiGuardrail extends LitElement {
 
   @state() private _revealed: boolean = false;
 
-  private _getStatusIcon(): string {
-    if (this.status === 'safe') return '✓';
-    if (this.status === 'flagged') return '⚠';
-    return '✕';
+  private _getStatusIcon(): unknown {
+    if (this.status === 'safe') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
+    if (this.status === 'flagged') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>`;
+    return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`;
   }
 
   private _getStatusText(): string {
@@ -193,7 +193,7 @@ export class AiGuardrail extends LitElement {
             <div class="checks-label">Policy Checks (${this.checks.filter(c => c.passed).length}/${this.checks.length} passed)</div>
             ${this.checks.map(c => html`
               <div class="check">
-                <span class="check-icon ${c.passed ? 'pass' : 'fail'}">${c.passed ? '✓' : '✕'}</span>
+                <span class="check-icon ${c.passed ? 'pass' : 'fail'}">${c.passed ? html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>` : html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`}</span>
                 <div class="check-info">
                   <div class="check-policy">${c.policy}</div>
                   ${c.reason ? html`<div class="check-reason">${c.reason}</div>` : nothing}

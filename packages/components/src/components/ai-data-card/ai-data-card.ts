@@ -6,7 +6,7 @@
  * ```html
  * <ai-data-card
  *   title="Invoice #4821"
- *   icon="🧾"
+ *   icon="[receipt icon]"
  *   headerStatus="success" headerStatusLabel="Paid"
  *   .fields=${[
  *     {label:'Amount', value:'$1,240.00', type:'currency'},
@@ -483,7 +483,7 @@ export class AiDataCard extends LitElement {
                       @click=${(e: Event) => { e.stopPropagation(); this._handleCopy(field); }}
                       aria-label="Copy ${field.label}"
                       title="${this._copiedField === field.label ? 'Copied!' : 'Copy'}">
-                      ${this._copiedField === field.label ? '✓' : '📋'}
+                      ${this._copiedField === field.label ? html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>` : html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`}
                     </button>
                   ` : nothing}
                 </span>

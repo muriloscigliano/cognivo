@@ -195,7 +195,7 @@ export class AiOnboarding extends LitElement {
         <div class="header">
           <span class="step-label">Step ${this.active + 1} of ${this.steps.length}</span>
           ${this.dismissible
-            ? html`<button class="dismiss-btn" aria-label="Dismiss onboarding" @click=${this._dismiss}>✕</button>`
+            ? html`<button class="dismiss-btn" aria-label="Dismiss onboarding" @click=${this._dismiss}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`
             : nothing}
         </div>
         <h3 class="title">${step.title}</h3>

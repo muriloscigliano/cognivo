@@ -95,8 +95,21 @@ export class AiWorkflowBuilder extends LitElement {
   @property({ type: Array }) steps: WorkflowStep[] = [];
   @property({ type: String }) override title: string = 'Workflow';
 
-  private _icons: Record<string, string> = { start: '▶', agent: '🤖', tool: '🔧', condition: '◆', end: '⏹' };
-  private _statusIcons: Record<string, string> = { complete: '✓', error: '✕', active: '●', pending: '○', skipped: '–' };
+  private _getTypeIcon(type: string): unknown {
+    if (type === 'start') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+    if (type === 'agent') return html`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="18" height="12" rx="3"/><circle cx="9" cy="14" r="1.5"/><circle cx="15" cy="14" r="1.5"/><path d="M12 2v4M8 8V6a4 4 0 018 0v2"/></svg>`;
+    if (type === 'tool') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>`;
+    if (type === 'condition') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l10 10-10 10L2 12z"/></svg>`;
+    if (type === 'end') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>`;
+    return html`<svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>`;
+  }
+  private _getStatusIcon(status: string): unknown {
+    if (status === 'complete') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
+    if (status === 'error') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`;
+    if (status === 'active') return html`<svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>`;
+    if (status === 'pending') return html`<svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
+    return html`<span>--</span>`;
+  }
 
   private _handleStepClick(step: WorkflowStep) {
     this.dispatchEvent(new CustomEvent('ai-workflow-step-click', {
@@ -120,13 +133,13 @@ export class AiWorkflowBuilder extends LitElement {
             <div class="step ${step.status || 'pending'}" tabindex="0" role="listitem"
               @click=${() => this._handleStepClick(step)}
               @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleStepClick(step); } }}>
-              <div class="step-icon ${step.type}" aria-hidden="true">${this._icons[step.type] || '•'}</div>
+              <div class="step-icon ${step.type}" aria-hidden="true">${this._getTypeIcon(step.type)}</div>
               <div class="step-info">
                 <div class="step-type">${step.type}</div>
                 <div class="step-label">${step.label}</div>
                 ${step.description ? html`<div class="step-desc">${step.description}</div>` : nothing}
               </div>
-              <span class="step-status" aria-hidden="true">${this._statusIcons[step.status || 'pending']}</span>
+              <span class="step-status" aria-hidden="true">${this._getStatusIcon(step.status || 'pending')}</span>
             </div>
           `)}
         </div>

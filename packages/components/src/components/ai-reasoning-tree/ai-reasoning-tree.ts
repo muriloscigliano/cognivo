@@ -182,9 +182,12 @@ export class AiReasoningTree extends LitElement {
     this._collapsed = ids;
   }
 
-  private _getIcon(type: string): string {
-    const icons: Record<string, string> = { thought: '💭', action: '⚡', observation: '👁', conclusion: '✓' };
-    return icons[type] || '•';
+  private _getIcon(type: string): unknown {
+    if (type === 'thought') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>`;
+    if (type === 'action') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`;
+    if (type === 'observation') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+    if (type === 'conclusion') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
+    return html`<svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>`;
   }
 
   private _getConfClass(c?: number): string {
@@ -206,7 +209,7 @@ export class AiReasoningTree extends LitElement {
           @click=${() => { if (hasChildren) this._toggleNode(node.id); this._handleNodeClick(node); }}
           @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (hasChildren) this._toggleNode(node.id); this._handleNodeClick(node); } }}>
 
-          ${hasChildren ? html`<span class="expand-icon">▶</span>` : html`<span class="expand-icon"></span>`}
+          ${hasChildren ? html`<span class="expand-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>` : html`<span class="expand-icon"></span>`}
           <div class="node-icon ${node.type}" aria-hidden="true">${this._getIcon(node.type)}</div>
           <span class="type-label ${node.type}">${node.type}</span>
           <span class="node-content">${node.content}</span>

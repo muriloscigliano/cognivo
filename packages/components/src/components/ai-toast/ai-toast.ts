@@ -150,11 +150,13 @@ export class AiToast extends LitElement {
   private _counter = 0;
   private _timers: Map<string, ReturnType<typeof setTimeout>> = new Map();
 
-  private _getIcon(type: string): string {
-    const icons: Record<string, string> = {
-      info: 'ℹ', success: '✓', warning: '!', error: '✕', ai: 'AI',
-    };
-    return icons[type] || 'ℹ';
+  private _getIcon(type: string): unknown {
+    if (type === 'info') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>`;
+    if (type === 'success') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
+    if (type === 'warning') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>`;
+    if (type === 'error') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`;
+    if (type === 'ai') return html`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="18" height="12" rx="3"/><circle cx="9" cy="14" r="1.5"/><circle cx="15" cy="14" r="1.5"/><path d="M12 2v4M8 8V6a4 4 0 018 0v2"/></svg>`;
+    return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>`;
   }
 
   private _maxQueue = 8;
@@ -231,7 +233,7 @@ export class AiToast extends LitElement {
             <div class="content">
               <div class="message">${t.message}</div>
             </div>
-            <button class="dismiss" @click=${() => this.dismiss(t.id)} aria-label="Dismiss notification">✕</button>
+            <button class="dismiss" @click=${() => this.dismiss(t.id)} aria-label="Dismiss notification"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
             ${t.duration > 0 ? html`
               <div class="progress" style="animation-duration: ${t.duration}ms"></div>
             ` : nothing}

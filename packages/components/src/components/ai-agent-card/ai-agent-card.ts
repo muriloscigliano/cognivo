@@ -124,7 +124,7 @@ export class AiAgentCard extends LitElement {
   @property({ type: String }) task: string = '';
   @property({ type: Array }) handoffChain: string[] = [];
   @property({ type: Array }) capabilities: string[] = [];
-  @property({ type: String }) avatar: string = '🤖';
+  @property({ type: String }) avatar: string = '';
 
   private _handleClick() {
     this.dispatchEvent(new CustomEvent('ai-agent-select', {
@@ -154,13 +154,13 @@ export class AiAgentCard extends LitElement {
 
         ${isActive ? html`
           <div class="actions">
-            <button class="action-btn" @click=${this._handlePause} title="Pause" aria-label="Pause agent">⏸</button>
-            <button class="action-btn" @click=${this._handleCancel} title="Cancel" aria-label="Cancel agent">✕</button>
+            <button class="action-btn" @click=${this._handlePause} title="Pause" aria-label="Pause agent"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg></button>
+            <button class="action-btn" @click=${this._handleCancel} title="Cancel" aria-label="Cancel agent"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
           </div>
         ` : nothing}
 
         <div class="header">
-          <div class="avatar" aria-hidden="true">${this.avatar}</div>
+          <div class="avatar" aria-hidden="true">${this.avatar || html`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="18" height="12" rx="3"/><circle cx="9" cy="14" r="1.5"/><circle cx="15" cy="14" r="1.5"/><path d="M12 2v4M8 8V6a4 4 0 018 0v2"/></svg>`}</div>
           <div class="info">
             <div class="name">${this.name}</div>
             ${this.role ? html`<div class="role">${this.role}</div>` : nothing}
@@ -177,7 +177,7 @@ export class AiAgentCard extends LitElement {
         ${this.handoffChain.length > 0 ? html`
           <div class="handoff">
             ${this.handoffChain.map((step, i) => html`
-              ${i > 0 ? html`<span class="handoff-arrow">→</span>` : nothing}
+              ${i > 0 ? html`<span class="handoff-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></span>` : nothing}
               <span class="handoff-step ${i === this.handoffChain.length - 1 ? 'current' : ''}">${step}</span>
             `)}
           </div>

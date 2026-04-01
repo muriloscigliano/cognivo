@@ -340,8 +340,8 @@ export class AiThinking extends LitElement {
   }
 
   private _renderToolIcon(status: string) {
-    if (status === 'complete') return html`<span>✓</span>`;
-    if (status === 'error') return html`<span>✕</span>`;
+    if (status === 'complete') return html`<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>`;
+    if (status === 'error') return html`<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>`;
     return html`<span style="width:10px;height:10px;border:1.5px solid currentColor;border-top-color:transparent;border-radius:50%;display:block;"></span>`;
   }
 
