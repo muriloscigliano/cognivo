@@ -10,8 +10,8 @@ import DocsLayout from '../layouts/DocsLayout.astro';
     <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Installation</h2>
     <p style="margin-bottom: 1rem;">Install the core package and an adapter for your AI provider:</p>
     <pre><code>pnpm add @cognivo/core @cognivo/adapter-openai</code></pre>
-    <p style="margin-top: 1rem; margin-bottom: 1rem;">For UI components (Lit web components):</p>
-    <pre><code>pnpm add @cognivo/components</code></pre>
+    <p style="margin-top: 1rem; margin-bottom: 1rem;">For UI components and design tokens (Lit web components):</p>
+    <pre><code>pnpm add @cognivo/components @cognivo/tokens</code></pre>
     <p style="margin-top: 1rem; margin-bottom: 1rem;">For the cognitive bias design advisor:</p>
     <pre><code>pnpm add @cognivo/design-advisor</code></pre>
   </section>
@@ -47,6 +47,22 @@ const result = await client.run(context);</code></pre>
   </section>
 
   <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Quick Start: Generative UI</h2>
+    <p style="margin-bottom: 1rem;">Stream AI-generated UI components in real time with the gen-ui packages:</p>
+    <pre><code>pnpm add @cognivo/gen-ui @cognivo/gen-ui-lit</code></pre>
+    <pre style="margin-top: 1rem;"><code>import {'{'} cognivoLibrary, createStreamingParser {'}'} from '@cognivo/gen-ui';
+import {'{'} LitRenderer {'}'} from '@cognivo/gen-ui-lit';
+
+const renderer = new LitRenderer(cognivoLibrary);
+const parser = createStreamingParser(cognivoLibrary.toJSONSchema());
+
+for await (const token of llmStream) {'{'}
+  const result = parser.push(token);
+  if (result.root) renderer.render(result, container);
+{'}'}</code></pre>
+  </section>
+
+  <section style="margin-bottom: 2.5rem;">
     <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Quick Start: Design Advisor</h2>
     <p style="margin-bottom: 1rem;">Access the cognitive bias library to improve your design decisions:</p>
     <pre><code>import {'{'} BiasRegistry, queryBiases {'}'} from '@cognivo/design-advisor';
@@ -60,12 +76,25 @@ console.log(anchoringBias.name);        // "Anchoring Bias"
 console.log(anchoringBias.description); // Full description with design implications</code></pre>
   </section>
 
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Dark Mode</h2>
+    <p style="margin-bottom: 1rem;">All components and tokens support dark mode out of the box. Set the <code>data-theme</code> attribute on your root element:</p>
+    <pre><code>&lt;html data-theme="dark"&gt;</code></pre>
+    <p style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;">All <code>--cg-*</code> tokens automatically adapt to the selected theme.</p>
+  </section>
+
+  <section style="margin-bottom: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Interactive Showcase</h2>
+    <p style="margin-bottom: 1rem;">See all 125 components in action with live examples:</p>
+    <p><a href="/showcase.html" style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--color-primary); color: white; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-decoration: none;">View Showcase &rarr;</a></p>
+  </section>
+
   <section>
     <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Next Steps</h2>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
       <a href="/components" style="display: block; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 1.25rem;">
         <strong style="display: block; margin-bottom: 0.25rem;">Components</strong>
-        <span style="color: #6b7280; font-size: 0.9rem;">Explore the 6 AI web components</span>
+        <span style="color: #6b7280; font-size: 0.9rem;">Explore 125 web components</span>
       </a>
       <a href="/core" style="display: block; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 1.25rem;">
         <strong style="display: block; margin-bottom: 0.25rem;">Core API</strong>

@@ -5,7 +5,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 <DocsLayout title="Design Advisor">
   <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Design Advisor</h1>
   <p style="color: #6b7280; margin-bottom: 1rem;">
-    <code>@cognivo/design-advisor</code> provides a comprehensive library of 180 cognitive biases with design implications,
+    <code>@cognivo/design-advisor</code> <strong>v0.3.0</strong> provides a comprehensive library of 184 cognitive biases with design implications,
     examples, and implementation guidance. Use it to make psychology-informed design decisions.
   </p>
   <p style="margin-bottom: 2rem;">
@@ -21,7 +21,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 
   <section style="margin-bottom: 2.5rem;">
     <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Bias Library</h2>
-    <p style="margin-bottom: 1rem;">Access individual biases directly or search the full library of 180 biases:</p>
+    <p style="margin-bottom: 1rem;">Access individual biases directly or search the full library of 184 biases:</p>
     <pre><code>import {'{'}
   anchoringBias,
   lossAversion,
@@ -46,7 +46,7 @@ const pricingBiases = getBiasesByTag('pricing');
 const results = searchBiases('conversion');
 
 // Browse all
-console.log(allBiases.length);          // 180</code></pre>
+console.log(allBiases.length);          // 184</code></pre>
   </section>
 
   <section style="margin-bottom: 2.5rem;">
@@ -68,7 +68,7 @@ const recommendations = recommendBiases({'{'}
 
 // Library statistics
 const stats = getStatistics();
-console.log(stats);  // {'{'} total: 180, byCategory: {'{'} ... {'}'} {'}'}</code></pre>
+console.log(stats);  // {'{'} total: 184, byCategory: {'{'} ... {'}'} {'}'}</code></pre>
   </section>
 
   <section style="margin-bottom: 2.5rem;">
@@ -102,16 +102,35 @@ const all = await registry.getAll();</code></pre>
 {'}'}</code></pre>
   </section>
 
-  <section>
+  <section style="margin-bottom: 2.5rem;">
     <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Web Components</h2>
-    <p style="margin-bottom: 1rem;">The design advisor also includes web components for browsing biases in the browser:</p>
+    <p style="margin-bottom: 1rem;">Two web components for embedding the bias library directly in your app:</p>
     <pre><code>import {'{'} BiasCardElement, BiasLibraryElement {'}'} from '@cognivo/design-advisor';
 
+// &lt;bias-card&gt; — Display a single bias card with full details
+// &lt;bias-library&gt; — Full browsable library with search, filter, and category navigation
+
 // Use in HTML:
-// &lt;bias-card&gt;&lt;/bias-card&gt;       - Single bias card display
-// &lt;bias-library&gt;&lt;/bias-library&gt; - Full browsable library with search &amp; filters</code></pre>
+// &lt;bias-card bias-id="anchoring-bias"&gt;&lt;/bias-card&gt;
+// &lt;bias-library&gt;&lt;/bias-library&gt;</code></pre>
+  </section>
+
+  <section>
+    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Search, Query & Recommend API</h2>
+    <p style="margin-bottom: 1rem;">Three ways to find the right biases for your design context:</p>
+    <pre><code>import {'{'} searchBiases, queryBiases, recommendBiases {'}'} from '@cognivo/design-advisor';
+
+// Full-text search
+const results = searchBiases('conversion');
+
+// Structured query by category and tags
+const biases = queryBiases({'{'} category: 'decision', tags: ['pricing'] {'}'});
+
+// Context-aware recommendations
+const recs = recommendBiases({'{'} page: 'checkout', goals: ['reduce abandonment'] {'}'});</code></pre>
     <p style="margin-top: 1rem; font-size: 0.9rem;">
-      <a href="/showcase.html">See the live bias library browser</a>
+      <a href="/showcase.html">See the live bias library browser</a> |
+      <a href="/biases">Interactive bias explorer</a>
     </p>
   </section>
 </DocsLayout>
