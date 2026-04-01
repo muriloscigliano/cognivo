@@ -960,6 +960,42 @@ export const registry: ComponentMeta[] = [
     since: 'v0.4.0',
   },
   {
+    tag: 'ai-alert-card', name: 'Alert Card', category: 'ai-workflow',
+    description: 'Urgent notification card with urgency levels, deadline, action button, and dismissible option.',
+    props: [
+      { name: 'title', type: 'string', description: 'Alert title' },
+      { name: 'message', type: 'string', description: 'Alert message body' },
+      { name: 'urgency', type: '"info" | "warning" | "error" | "critical"', default: '"info"', description: 'Urgency level' },
+      { name: 'deadline', type: 'string', description: 'Deadline timestamp' },
+      { name: 'actionLabel', type: 'string', description: 'Action button text' },
+      { name: 'dismissible', type: 'boolean', default: 'true', description: 'Allow dismissal' },
+    ],
+    events: [
+      { name: 'ai-alert-action', detail: '{title}', description: 'Action button clicked' },
+      { name: 'ai-alert-dismiss', detail: '{title}', description: 'Alert dismissed' },
+    ],
+    examples: [
+      { label: 'Urgency levels', html: `<cg-stack gap="sm"><ai-alert-card title="System Update" message="New version available" urgency="info" actionLabel="Update"></ai-alert-card><ai-alert-card title="High CPU" message="Server exceeding 90% utilization" urgency="warning"></ai-alert-card><ai-alert-card title="Outage Detected" message="API endpoint unreachable" urgency="critical" actionLabel="View Status"></ai-alert-card></cg-stack>` },
+    ],
+    since: 'v0.3.0',
+  },
+  {
+    tag: 'ai-kpi-grid', name: 'KPI Grid', category: 'ai-viz',
+    description: 'Dashboard KPI grid with metric cards, trend indicators, sparklines, and loading skeletons.',
+    props: [
+      { name: 'title', type: 'string', description: 'Grid title' },
+      { name: 'kpis', type: 'KpiItem[]', description: 'Array of KPI objects with label, value, delta, trend' },
+      { name: 'columns', type: 'number', default: '2', description: 'Number of grid columns' },
+      { name: 'loading', type: 'boolean', default: 'false', description: 'Show loading skeletons' },
+    ],
+    events: [],
+    examples: [
+      { label: 'Basic grid', html: `<ai-kpi-grid title="Key Metrics" columns="3"></ai-kpi-grid>`, setup: (el) => { const g = el.querySelector('ai-kpi-grid') as any; if (g) g.kpis = [{label:'Revenue',value:'$2.4M',delta:'+18%',trend:'up'},{label:'Users',value:'12.5K',delta:'+5%',trend:'up'},{label:'Churn',value:'1.8%',delta:'-0.3%',trend:'down'}]; } },
+      { label: 'Loading', html: `<ai-kpi-grid title="Loading..." loading columns="2"></ai-kpi-grid>` },
+    ],
+    since: 'v0.3.0',
+  },
+  {
     tag: 'ai-reasoning-tree', name: 'Reasoning Tree', category: 'ai-workflow',
     description: 'Expandable chain-of-thought visualizer. Shows multi-step AI reasoning with node types, confidence, and highlight path.',
     props: [

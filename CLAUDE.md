@@ -14,7 +14,7 @@ Monorepo with pnpm workspaces + Turborepo.
 ## Packages
 - `packages/gen-ui` — Streaming parser, component registry, prompt gen, bias engine (110 tests)
 - `packages/gen-ui-lit` — Lit renderer for generative UI
-- `packages/components` — 125 Lit web components (52 foundation + 73 AI-native), 437 tests
+- `packages/components` — 125 Lit web components (52 foundation + 73 AI-native), 842 tests
 - `packages/tokens` — 1,800+ design tokens, 3-tier system, 5-level elevation, palette generator
 - `packages/adapter-react` — React wrappers with TypeScript props
 - `packages/adapter-vue` — Vue wrappers with TypeScript props
