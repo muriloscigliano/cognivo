@@ -105,6 +105,7 @@ export class CgInput extends LitElement {
       display: flex;
       align-items: center;
       min-width: 0;
+      min-height: 100%;
     }
 
     input {
@@ -156,8 +157,9 @@ export class CgInput extends LitElement {
       font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-input-text-placeholder, #71717a);
       pointer-events: none;
-      transform-origin: left center;
+      transform-origin: left top;
       transition:
+        top 200ms var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
         transform 200ms var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
         font-size 200ms var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
         color 150ms ease;
@@ -171,17 +173,20 @@ export class CgInput extends LitElement {
     :host([size="sm"]) .floating-label { font-size: var(--cg-font-size-xs, 12px); }
     :host([size="lg"]) .floating-label { font-size: var(--cg-font-size-base, 16px); }
 
-    /* Floated state — label shrinks and moves to top */
+    /* Floated state — label shrinks and moves to top INSIDE the input */
     .field.floated .floating-label {
-      transform: translateY(-100%);
+      top: 4px;
+      transform: translateY(0);
       font-size: 10px;
       color: var(--cg-brand-ai-accent, #dfff61);
       text-shadow: 0 0 12px var(--cg-brand-ai-accent, rgba(223, 255, 97, 0.3));
     }
     :host([size="sm"]) .field.floated .floating-label {
+      top: 2px;
       font-size: 9px;
     }
     :host([size="lg"]) .field.floated .floating-label {
+      top: 6px;
       font-size: 11px;
     }
 
@@ -200,12 +205,15 @@ export class CgInput extends LitElement {
       color: var(--cg-gray-600, #52525b);
     }
 
-    /* ── Slots ── */
+    /* ── Slots — hidden by default, shown when content is slotted ── */
     .prefix, .suffix {
-      display: flex;
+      display: none;
       align-items: center;
       color: var(--cg-color-input-icon-default, #dfff61);
       flex-shrink: 0;
+    }
+    .prefix.has-content, .suffix.has-content {
+      display: flex;
     }
 
     /* ── Clear button ── */
@@ -275,6 +283,8 @@ export class CgInput extends LitElement {
   @property() autocomplete = 'off';
 
   @state() private _focused = false;
+  @state() private _hasPrefix = false;
+  @state() private _hasSuffix = false;
 
   @query('input') private _input!: HTMLInputElement;
 
@@ -311,7 +321,9 @@ export class CgInput extends LitElement {
 
     return html`
       <div class=${wrapperClasses}>
-        <span class="prefix"><slot name="prefix"></slot></span>
+        <span class="prefix ${this._hasPrefix ? 'has-content' : ''}">
+          <slot name="prefix" @slotchange=${(e: Event) => { this._hasPrefix = (e.target as HTMLSlotElement).assignedNodes().length > 0; }}></slot>
+        </span>
 
         <div class=${fieldClasses}>
           ${this.label ? html`<span class="floating-label">${this.label}</span>` : nothing}
@@ -341,7 +353,9 @@ export class CgInput extends LitElement {
           </button>
         ` : nothing}
         ${this.maxlength ? html`<span class="count">${this.value.length}/${this.maxlength}</span>` : nothing}
-        <span class="suffix"><slot name="suffix"></slot></span>
+        <span class="suffix ${this._hasSuffix ? 'has-content' : ''}">
+          <slot name="suffix" @slotchange=${(e: Event) => { this._hasSuffix = (e.target as HTMLSlotElement).assignedNodes().length > 0; }}></slot>
+        </span>
       </div>
       ${this.helper ? html`<div class="helper" id="helper">${this.helper}</div>` : nothing}
     `;
