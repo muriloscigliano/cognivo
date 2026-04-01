@@ -7,9 +7,11 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
+  snapshotDir: './e2e/snapshots',
   use: {
     baseURL: 'http://localhost:3456',
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
   },
   projects: [
     {
@@ -21,6 +23,6 @@ export default defineConfig({
     command: 'pnpm --filter @cognivo/gen-ui-demo dev',
     port: 3456,
     reuseExistingServer: !process.env.CI,
-    timeout: 15000,
+    timeout: 30000,
   },
 });

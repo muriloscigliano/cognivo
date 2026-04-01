@@ -1,19 +1,11 @@
 import { test, expect } from '@playwright/test';
 
-const SHOWCASE = '/docs/public/showcase';
+const SHOWCASE = '/showcase.html';
 
-test.describe('Accessibility', () => {
+test.describe('Accessibility — Page Structure', () => {
   test('page has valid lang attribute', async ({ page }) => {
     await page.goto(SHOWCASE);
-    const html = page.locator('html');
-    await expect(html).toHaveAttribute('lang', 'en');
-  });
-
-  test('page header has h1', async ({ page }) => {
-    await page.goto(SHOWCASE);
-    const h1 = page.locator('#page-header h1');
-    await expect(h1).toHaveCount(1);
-    await expect(h1).toHaveText('Cognivo');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   });
 
   test('page has viewport meta tag', async ({ page }) => {
@@ -28,28 +20,20 @@ test.describe('Accessibility', () => {
     const focused = page.locator(':focus');
     await expect(focused).toBeVisible();
   });
+});
 
-  test('buttons have visible text content', async ({ page }) => {
-    await page.goto(SHOWCASE);
-    // Only check buttons in the page itself, not inside shadow DOM
-    const buttons = page.locator('body > .container button, #page-header button');
-    const count = await buttons.count();
-    expect(count).toBeGreaterThan(0);
-    for (let i = 0; i < count; i++) {
-      const text = await buttons.nth(i).textContent();
-      expect(text?.trim().length).toBeGreaterThan(0);
-    }
+test.describe('Accessibility — Component Pages', () => {
+  test('button component has ARIA props table', async ({ page }) => {
+    await page.goto(SHOWCASE + '#cg-button');
+    await page.waitForSelector('.props-table', { timeout: 5000 });
+    const table = page.locator('.props-table').first();
+    await expect(table).toBeVisible();
   });
 
-  test('component sections have descriptive headings', async ({ page }) => {
-    await page.goto(SHOWCASE);
-    // Only check h2s in the container, not in shadow DOM
-    const h2s = page.locator('body > .container h2');
-    const count = await h2s.count();
-    expect(count).toBeGreaterThanOrEqual(7);
-    for (let i = 0; i < count; i++) {
-      const text = await h2s.nth(i).textContent();
-      expect(text?.trim().length).toBeGreaterThan(0);
-    }
+  test('modal page documents ARIA attributes', async ({ page }) => {
+    await page.goto(SHOWCASE + '#cg-modal');
+    await page.waitForSelector('.page-desc', { timeout: 5000 });
+    const desc = page.locator('.page-desc');
+    await expect(desc).toBeVisible();
   });
 });

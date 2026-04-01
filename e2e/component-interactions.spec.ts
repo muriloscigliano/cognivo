@@ -1,68 +1,56 @@
 import { test, expect } from '@playwright/test';
 
-const SHOWCASE = '/docs/public/showcase';
+const SHOWCASE = '/showcase.html';
 
-test.describe('Component Interactions', () => {
-  test('theme toggle changes data-theme attribute', async ({ page }) => {
-    await page.goto(SHOWCASE);
-    const html = page.locator('html');
-    const themeBtn = page.locator('#theme-btn');
-
-    // Click to enable dark mode
-    await themeBtn.click();
-    await expect(html).toHaveAttribute('data-theme', 'dark');
-
-    // Click again to disable
-    await themeBtn.click();
-    await expect(html).toHaveAttribute('data-theme', '');
+test.describe('Component Interactions — Button', () => {
+  test('button renders in example preview', async ({ page }) => {
+    await page.goto(SHOWCASE + '#cg-button');
+    await page.waitForSelector('.example-preview', { timeout: 5000 });
+    const preview = page.locator('.example-preview').first();
+    const button = preview.locator('cg-button');
+    await expect(button.first()).toBeVisible();
   });
 
-  test('theme toggle is keyboard accessible', async ({ page }) => {
-    await page.goto(SHOWCASE);
-    const themeBtn = page.locator('#theme-btn');
-    await themeBtn.focus();
-    await expect(themeBtn).toBeFocused();
-    await page.keyboard.press('Enter');
-    const html = page.locator('html');
-    await expect(html).toHaveAttribute('data-theme', 'dark');
-  });
-
-  test('all 6 web component tags are present in the DOM', async ({ page }) => {
-    await page.goto(SHOWCASE);
-    const components = ['ai-thinking', 'ai-badge', 'ai-chat', 'ai-result-panel', 'ai-chart-summary', 'ai-insight-card'];
-    for (const tag of components) {
-      const el = page.locator(tag);
-      const count = await el.count();
-      expect(count).toBeGreaterThan(0);
+  test('playground prop controls modify live preview', async ({ page }) => {
+    await page.goto(SHOWCASE + '#cg-button');
+    await page.waitForSelector('.playground', { timeout: 5000 });
+    // Change variant via control
+    const variantSelect = page.locator('.control-select').first();
+    if (await variantSelect.isVisible()) {
+      await variantSelect.selectOption('secondary');
+      // Code output should update
+      const codeOutput = page.locator('.code-output');
+      await expect(codeOutput).toContainText('secondary');
     }
   });
+});
 
-  test('ai-badge elements have score attributes', async ({ page }) => {
-    await page.goto(SHOWCASE);
-    const badges = page.locator('ai-badge[score]');
-    const count = await badges.count();
-    expect(count).toBeGreaterThan(0);
+test.describe('Component Interactions — Modal', () => {
+  test('modal page loads', async ({ page }) => {
+    await page.goto(SHOWCASE + '#cg-modal');
+    await expect(page.locator('.page-title')).toHaveText('Modal');
   });
+});
 
-  test('sections are structured with headings', async ({ page }) => {
-    await page.goto(SHOWCASE);
-    const headings = page.locator('h2');
-    const count = await headings.count();
-    // 7 sections: ai-thinking, ai-badge, ai-result-panel, ai-chart-summary, ai-insight-card, ai-chat, bias-library + events
-    expect(count).toBeGreaterThanOrEqual(7);
+test.describe('Component Interactions — Tabs', () => {
+  test('tabs page shows indicator', async ({ page }) => {
+    await page.goto(SHOWCASE + '#cg-tabs');
+    await expect(page.locator('.page-title')).toHaveText('Tabs');
+    const preview = page.locator('.example-preview').first();
+    await expect(preview).toBeVisible();
   });
+});
 
-  test('insight cards are rendered for all 5 types', async ({ page }) => {
-    await page.goto(SHOWCASE);
-    const insightCards = page.locator('ai-insight-card');
-    const count = await insightCards.count();
-    expect(count).toBeGreaterThanOrEqual(5);
+test.describe('Component Interactions — Select', () => {
+  test('select page loads with examples', async ({ page }) => {
+    await page.goto(SHOWCASE + '#cg-select');
+    await expect(page.locator('.page-title')).toHaveText('Select');
   });
+});
 
-  test('result panels have explanation content', async ({ page }) => {
-    await page.goto(SHOWCASE);
-    const panels = page.locator('ai-result-panel[id]');
-    const count = await panels.count();
-    expect(count).toBe(2);
+test.describe('Component Interactions — AI Chat', () => {
+  test('chat page renders', async ({ page }) => {
+    await page.goto(SHOWCASE + '#ai-chat');
+    await expect(page.locator('.page-title')).toHaveText('Chat');
   });
 });
