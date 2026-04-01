@@ -498,6 +498,49 @@ export const AiChatDef = defineComponent({
 // Pre-built Libraries
 // ─────────────────────────────────────────────────────────────────────────────
 
+export const BreadcrumbsDef = defineComponent({
+  name: 'Breadcrumbs', tagName: 'cg-breadcrumbs',
+  props: z.object({
+    items: z.array(z.object({ label: z.string(), href: z.string().optional() })),
+    maxVisible: z.number().optional(),
+    separator: z.string().optional(),
+  }),
+  description: 'Navigation breadcrumb trail with responsive collapse and custom separator',
+});
+
+export const PaginationDef = defineComponent({
+  name: 'Pagination', tagName: 'cg-pagination',
+  props: z.object({
+    total: z.number(),
+    current: z.number().optional(),
+    siblings: z.number().optional(),
+  }),
+  description: 'Page navigation with prev/next, ellipsis, and keyboard accessible buttons',
+});
+
+export const ProgressBarDef = defineComponent({
+  name: 'ProgressBar', tagName: 'cg-progress-bar',
+  props: z.object({
+    value: z.number(),
+    variant: z.enum(['default', 'success', 'warning', 'danger']).optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    label: z.string().optional(),
+    striped: z.boolean().optional(),
+    indeterminate: z.boolean().optional(),
+  }),
+  description: 'Progress indicator with gradient fill, striped pattern, indeterminate animation',
+});
+
+export const SpinnerDef = defineComponent({
+  name: 'Spinner', tagName: 'cg-spinner',
+  props: z.object({
+    size: z.enum(['xs', 'sm', 'md', 'lg', 'xl']).optional(),
+    variant: z.enum(['default', 'accent', 'white']).optional(),
+    label: z.string().optional(),
+  }),
+  description: 'Loading spinner with 5 sizes, 3 color variants, and accessible label',
+});
+
 const ALL_COMPONENTS = [
   // Layout
   StackDef, TextContentDef, SeparatorDef, IconDef, CardDef,
@@ -508,9 +551,11 @@ const ALL_COMPONENTS = [
   // Data Display
   MetricCardDef, BadgeDef, BadgeGroupDef, TableDef, ImageDef, ImageBlockDef, ImageGalleryDef,
   // Navigation
-  TabsDef, AccordionDef, StepsDef, CarouselDef,
+  TabsDef, AccordionDef, StepsDef, CarouselDef, BreadcrumbsDef, PaginationDef,
   // Content
   CalloutDef, CodeBlockDef, MarkdownDef,
+  // Feedback
+  ProgressBarDef, SpinnerDef,
   // Chat
   ListDef, SectionDef, FollowUpDef, ChartDef,
   // AI
@@ -518,7 +563,7 @@ const ALL_COMPONENTS = [
 ];
 
 /**
- * Full Cognivo library — all 40 components registered for LLM generation.
+ * Full Cognivo library — 44 components registered for LLM generation.
  */
 export const cognivoLibrary: Library = createLibrary({
   root: 'Stack',

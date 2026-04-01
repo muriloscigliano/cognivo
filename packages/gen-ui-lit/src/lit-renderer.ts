@@ -57,17 +57,17 @@ export class LitRenderer implements RendererAdapter {
       return;
     }
 
+    const wrapper = this.wrapWithTrustIndicator(result);
     const el = this.createElementFromNode(result.root);
     if (el) {
       this.currentRoot = el;
-      container.appendChild(el);
+      wrapper.appendChild(el);
+      container.appendChild(wrapper);
     }
   }
 
   /**
    * Update: re-render with a new ParseResult.
-   * For simplicity, we re-create the tree. Web Component property
-   * updates are cheap and the tree is typically small.
    */
   update(result: ParseResult): void {
     if (!this.container) return;
@@ -80,14 +80,24 @@ export class LitRenderer implements RendererAdapter {
         const thinking = document.createElement('ai-thinking');
         this.container.appendChild(thinking);
       }
+      // Show error state if parser failed
+      if ((result.meta as Record<string, unknown>).parseError) {
+        const errEl = document.createElement('div');
+        errEl.setAttribute('data-gen-ui-error', 'true');
+        errEl.style.cssText = 'padding: 12px; border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; color: #f87171; font-size: 13px;';
+        errEl.textContent = `Generation error: ${(result.meta as Record<string, unknown>).parseError}`;
+        this.container.appendChild(errEl);
+      }
       this.currentRoot = null;
       return;
     }
 
+    const wrapper = this.wrapWithTrustIndicator(result);
     const el = this.createElementFromNode(result.root);
     if (el) {
       this.currentRoot = el;
-      this.container.appendChild(el);
+      wrapper.appendChild(el);
+      this.container.appendChild(wrapper);
     }
   }
 
@@ -104,28 +114,49 @@ export class LitRenderer implements RendererAdapter {
   }
 
   /**
+   * Wrap rendered output with an AI-generated trust indicator.
+   * Marks content as AI-generated for transparency.
+   */
+  private wrapWithTrustIndicator(result: ParseResult): HTMLElement {
+    const wrapper = document.createElement('div');
+    wrapper.setAttribute('data-ai-generated', 'true');
+    wrapper.setAttribute('role', 'region');
+    wrapper.setAttribute('aria-label', 'AI-generated content');
+
+    if (result.meta.incomplete) {
+      wrapper.setAttribute('data-streaming', 'true');
+    }
+
+    return wrapper;
+  }
+
+  /**
    * Recursively create a DOM element from an ElementNode.
    */
   private createElementFromNode(node: ElementNode): HTMLElement | null {
     const tagName = this.library.getTagName(node.typeName);
     if (!tagName) {
-      // Unknown component — try using the typeName as-is (lowercase)
-      // or create a generic container
       const fallback = document.createElement('div');
       fallback.setAttribute('data-component', node.typeName);
       fallback.setAttribute('data-unknown', 'true');
+      fallback.style.cssText = 'padding: 8px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 6px; font-size: 12px; color: rgba(255,255,255,0.4);';
+      fallback.textContent = `Unknown: ${node.typeName}`;
       this.setProps(fallback, node.props);
       return fallback;
     }
 
     const el = document.createElement(tagName);
 
-    // If the node is partial (streaming), add a visual indicator
+    // If the node is partial (streaming), show a shimmer skeleton overlay
     if (node.partial) {
       el.setAttribute('data-partial', 'true');
+      el.style.position = 'relative';
+      const shimmer = document.createElement('div');
+      shimmer.setAttribute('data-partial-indicator', 'true');
+      shimmer.style.cssText = 'position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg,transparent 25%,rgba(255,255,255,0.04) 50%,transparent 75%);background-size:200% 100%;animation:shimmer 1.5s linear infinite;pointer-events:none;z-index:10;';
+      el.appendChild(shimmer);
     }
 
-    // Set props on the element
     this.setProps(el, node.props);
 
     return el;

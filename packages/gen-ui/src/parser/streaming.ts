@@ -85,11 +85,39 @@ export function createStreamParser(cat?: ParamMap): StreamParser {
     return buildResult(allSyms, fid, wasIncomplete, completedCount + stmts.length, cat);
   }
 
+  let lastGoodResult: ParseResult = emptyResult();
+  let lastError: string | null = null;
+
   return {
     push(chunk) {
       buf += chunk;
-      return currentResult();
+      try {
+        const result = currentResult();
+        lastGoodResult = result;
+        lastError = null;
+        return result;
+      } catch (e) {
+        // On parse error, return last good result with error metadata
+        // instead of crashing the stream
+        lastError = e instanceof Error ? e.message : String(e);
+        return {
+          ...lastGoodResult,
+          meta: {
+            ...lastGoodResult.meta,
+            incomplete: true,
+            parseError: lastError,
+          },
+        };
+      }
     },
-    getResult: currentResult,
+    getResult() {
+      try {
+        return currentResult();
+      } catch {
+        return lastGoodResult;
+      }
+    },
+    /** Last parse error message, or null if no errors. */
+    get lastError() { return lastError; },
   };
 }

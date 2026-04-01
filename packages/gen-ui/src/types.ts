@@ -158,4 +158,6 @@ export interface StreamParser {
   push(chunk: string): ParseResult;
   /** Get the latest ParseResult without consuming new data. */
   getResult(): ParseResult;
+  /** Last parse error message, or null if no errors. */
+  readonly lastError: string | null;
 }
