@@ -194,10 +194,18 @@ export class CgDropdown extends LitElement {
       margin: var(--cg-spacing-4, 4px) 0;
       background: var(--cg-color-surface-base-border, #27272a);
     }
+
+    /* Rounded variants */
+    :host([rounded="none"]) .menu { border-radius: 0; }
+    :host([rounded="sm"]) .menu { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .menu { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .menu { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .menu { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String, reflect: true }) position: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' = 'bottom-start';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) items: DropdownItem[] = [];
 
   @state() private _activeIndex = -1;

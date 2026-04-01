@@ -145,6 +145,13 @@ export class CgMetricCard extends LitElement {
     .skel-title { width: 60%; height: 10px; margin-bottom: 10px; }
     .skel-value { width: 45%; height: 22px; margin-bottom: 10px; }
     .skel-delta { width: 30%; height: 14px; }
+
+    /* Rounded variants */
+    :host([rounded="none"]) .card { border-radius: 0; }
+    :host([rounded="sm"]) .card { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .card { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .card { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .card { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
   /** Metric label */
@@ -170,6 +177,9 @@ export class CgMetricCard extends LitElement {
 
   /** Card size */
   @property({ type: String, reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
+
+  /** Border radius */
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
 
   /** Loading skeleton state */
   @property({ type: Boolean }) loading = false;

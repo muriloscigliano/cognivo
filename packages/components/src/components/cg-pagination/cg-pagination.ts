@@ -133,9 +133,17 @@ export class CgPagination extends LitElement {
         height: 32px;
       }
     }
+
+    /* Rounded variants */
+    :host([rounded="none"]) .page-btn { border-radius: 0; }
+    :host([rounded="sm"]) .page-btn { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .page-btn { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .page-btn { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .page-btn { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
   @property({ type: Number }) total = 1;
   @property({ type: Number }) current = 1;
   @property({ type: Number }) siblings = 1;

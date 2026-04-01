@@ -226,11 +226,19 @@ export class CgModal extends LitElement {
     .footer-wrapper {
       display: contents;
     }
+
+    /* Rounded variants */
+    :host([rounded="none"]) .modal { border-radius: 0; }
+    :host([rounded="sm"]) .modal { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .modal { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .modal { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .modal { border-radius: var(--cg-border-radius-full, 99999px); }
   `;
 
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String }) override title = '';
   @property({ type: String, reflect: true }) size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Boolean }) closable = true;
   @property({ type: Boolean }) persistent = false;
 

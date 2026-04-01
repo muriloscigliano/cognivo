@@ -88,9 +88,17 @@ export class CgImageGallery extends LitElement {
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
     }
+
+    /* Rounded variants */
+    :host([rounded="none"]) .grid { border-radius: 0; }
+    :host([rounded="sm"]) .grid { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .grid { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .grid { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .grid { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
   @property({ type: Array }) images: GalleryImage[] = [];
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Number }) maxVisible = 5;
 
   @state() private _loadedSet = new Set<number>();

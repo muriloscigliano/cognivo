@@ -83,9 +83,17 @@ export class CgOtpInput extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
+
+    /* Rounded variants */
+    :host([rounded="none"]) .box { border-radius: 0; }
+    :host([rounded="sm"]) .box { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .box { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .box { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .box { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
   @property({ type: Number }) length = 6;
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
   @property() value = '';
   @property({ type: Boolean, reflect: true }) disabled = false;
   @property({ type: Boolean, reflect: true }) error = false;

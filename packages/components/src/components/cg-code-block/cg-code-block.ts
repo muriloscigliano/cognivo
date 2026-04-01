@@ -220,9 +220,17 @@ export class CgCodeBlock extends LitElement {
       white-space: nowrap;
       border: 0;
     }
+
+    /* Rounded variants */
+    :host([rounded="none"]) .wrapper { border-radius: 0; }
+    :host([rounded="sm"]) .wrapper { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .wrapper { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .wrapper { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .wrapper { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
   @property() code = '';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property() language = '';
   @property() filename = '';
   @property({ type: Boolean, attribute: 'line-numbers', reflect: true }) lineNumbers = false;

@@ -88,6 +88,13 @@ export class CgBadge extends LitElement {
       border-color: var(--cg-color-status-info-border-default, rgba(59, 130, 246, 0.25));
     }
 
+    /* Rounded variants */
+    :host([rounded="none"]) .badge { border-radius: 0; }
+    :host([rounded="sm"]) .badge { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .badge { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .badge { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .badge { border-radius: var(--cg-border-radius-full, 99999px); }
+
     /* Dot indicator */
     .dot {
       width: 6px;
@@ -128,6 +135,7 @@ export class CgBadge extends LitElement {
 
   @property({ reflect: true }) variant: 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'accent' = 'neutral';
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property() label = '';
   @property({ type: Boolean }) dot = false;
   @property({ type: Boolean }) removable = false;

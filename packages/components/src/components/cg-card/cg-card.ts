@@ -135,10 +135,18 @@ export class CgCard extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
+
+    /* Rounded variants */
+    :host([rounded="none"]) .card { border-radius: 0; }
+    :host([rounded="sm"]) .card { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .card { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .card { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .card { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
   @property({ reflect: true }) variant: 'elevated' | 'outlined' | 'filled' = 'elevated';
   @property({ reflect: true }) padding: 'none' | 'sm' | 'md' | 'lg' = 'md';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Boolean, reflect: true }) clickable = false;
 
   private _handleClick() {

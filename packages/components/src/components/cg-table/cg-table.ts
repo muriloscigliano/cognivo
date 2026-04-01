@@ -30,6 +30,12 @@ export class CgTable extends LitElement {
       border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-table-border, #27272a);
       border-radius: var(--cg-border-radius-150, 12px);
     }
+    /* Rounded variants */
+    :host([rounded="none"]) .table-wrapper { border-radius: 0; }
+    :host([rounded="sm"]) .table-wrapper { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .table-wrapper { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .table-wrapper { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .table-wrapper { border-radius: var(--cg-border-radius-full, 99999px); }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -98,6 +104,7 @@ export class CgTable extends LitElement {
   @property({ type: Boolean, reflect: true }) striped = false;
   @property({ type: Boolean, reflect: true }) compact = false;
   @property() emptyText = 'No data';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
 
   @state() private _sortKey = '';
   @state() private _sortDir: 'asc' | 'desc' = 'asc';

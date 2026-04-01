@@ -22,6 +22,13 @@ export class CgImageBlock extends LitElement {
       background: var(--cg-color-surface-container-background, #18181b);
     }
 
+    /* Rounded variants */
+    :host([rounded="none"]) figure { border-radius: 0; }
+    :host([rounded="sm"]) figure { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) figure { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) figure { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) figure { border-radius: var(--cg-border-radius-full, 99999px); }
+
     .image-container {
       position: relative;
       overflow: hidden;
@@ -83,6 +90,7 @@ export class CgImageBlock extends LitElement {
   @property() sourceUrl = '';
   @property({ reflect: true }) ratio: '16:9' | '4:3' | '1:1' | '3:2' | 'auto' = 'auto';
   @property({ type: Boolean, reflect: true }) clickable = false;
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
 
   @state() private _loading = true;
   @state() private _error = false;

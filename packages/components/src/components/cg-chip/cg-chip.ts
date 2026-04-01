@@ -136,6 +136,13 @@ export class CgChip extends LitElement {
       transform: scale(1.02);
     }
 
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .chip { border-radius: 0; }
+    :host([rounded="sm"]) .chip { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .chip { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .chip { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .chip { border-radius: var(--cg-border-radius-full, 99999px); }
+
     /* ── Icon ── */
     .chip-icon {
       display: inline-flex;
@@ -198,6 +205,7 @@ export class CgChip extends LitElement {
   @property({ type: String, reflect: true }) variant: 'default' | 'success' | 'warning' | 'error' | 'accent' = 'default';
   @property({ type: Boolean }) removable = false;
   @property({ type: String, reflect: true }) size: 'sm' | 'md' = 'md';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'full';
   @property({ type: String }) icon = '';
   @property({ type: Boolean }) disabled = false;
 

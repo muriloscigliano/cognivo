@@ -174,9 +174,17 @@ export class CgList extends LitElement {
   
     .item { transition: background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)), transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)); animation: staggerFadeIn 200ms ease-out both; animation-delay: calc(var(--stagger-index, 0) * 40ms); }
     .item:hover { transform: translateX(2px); background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.06)); }
+
+    /* Rounded variants */
+    :host([rounded="none"]) .item { border-radius: 0; }
+    :host([rounded="sm"]) .item { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .item { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .item { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .item { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
   @property({ type: Array }) items: ListItem[] = [];
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
   @property() variant: 'number' | 'bullet' | 'image' | 'plain' = 'bullet';
   @property({ type: Boolean, reflect: true }) dividers = true;
   @property({ type: Boolean, reflect: true }) hoverable = false;

@@ -149,9 +149,17 @@ export class CgAutocomplete extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
+
+    /* Rounded variants */
+    :host([rounded="none"]) .input-wrap { border-radius: 0; }
+    :host([rounded="sm"]) .input-wrap { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .input-wrap { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .input-wrap { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .input-wrap { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
   @property({ type: Array }) options: AutocompleteOption[] = [];
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property() value = '';
   @property() placeholder = '';
   @property() label = '';

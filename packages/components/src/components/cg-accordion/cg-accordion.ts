@@ -177,9 +177,17 @@ export class CgAccordion extends LitElement {
 
     :host([size="lg"]) .trigger { font-size: 16px; padding: 16px 20px; }
     :host([size="lg"]) .content-inner { font-size: 16px; }
+
+    /* Rounded variants */
+    :host([rounded="none"]) .item { border-radius: 0; }
+    :host([rounded="sm"]) .item { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .item { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .item { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .item { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) items: AccordionItem[] = [];
   @property({ type: Boolean }) multiple = false;
   @property({ reflect: true }) variant: 'default' | 'card' | 'bordered' = 'default';

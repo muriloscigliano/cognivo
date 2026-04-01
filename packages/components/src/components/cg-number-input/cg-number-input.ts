@@ -36,6 +36,13 @@ export class CgNumberInput extends LitElement {
     }
     .wrapper.disabled { opacity: 0.5; cursor: not-allowed; }
 
+    /* Rounded variants */
+    :host([rounded="none"]) .wrapper { border-radius: 0; }
+    :host([rounded="sm"]) .wrapper { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .wrapper { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .wrapper { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .wrapper { border-radius: var(--cg-border-radius-full, 99999px); }
+
     .btn {
       display: flex;
       align-items: center;
@@ -94,6 +101,7 @@ export class CgNumberInput extends LitElement {
   @property() label = '';
   @property({ type: Boolean, reflect: true }) disabled = false;
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
 
   @state() private _focused = false;
   private _repeatTimer = 0;

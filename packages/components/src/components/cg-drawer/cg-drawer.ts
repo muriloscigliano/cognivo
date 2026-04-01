@@ -195,11 +195,24 @@ export class CgDrawer extends LitElement {
       font-size: var(--cg-font-size-sm, 14px);
       line-height: var(--cg-line-height-relaxed, 1.625);
     }
+
+    /* Rounded variants */
+    :host([rounded="none"][side="left"]) .panel { border-radius: 0; }
+    :host([rounded="none"][side="right"]) .panel { border-radius: 0; }
+    :host([rounded="sm"][side="left"]) .panel { border-radius: 0 var(--cg-border-radius-50, 4px) var(--cg-border-radius-50, 4px) 0; }
+    :host([rounded="sm"][side="right"]) .panel { border-radius: var(--cg-border-radius-50, 4px) 0 0 var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"][side="left"]) .panel { border-radius: 0 var(--cg-border-radius-100, 8px) var(--cg-border-radius-100, 8px) 0; }
+    :host([rounded="md"][side="right"]) .panel { border-radius: var(--cg-border-radius-100, 8px) 0 0 var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"][side="left"]) .panel { border-radius: 0 var(--cg-border-radius-150, 12px) var(--cg-border-radius-150, 12px) 0; }
+    :host([rounded="lg"][side="right"]) .panel { border-radius: var(--cg-border-radius-150, 12px) 0 0 var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"][side="left"]) .panel { border-radius: 0 var(--cg-border-radius-full, 99999px) var(--cg-border-radius-full, 99999px) 0; }
+    :host([rounded="full"][side="right"]) .panel { border-radius: var(--cg-border-radius-full, 99999px) 0 0 var(--cg-border-radius-full, 99999px); }
   `;
 
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String, reflect: true }) side: 'left' | 'right' = 'right';
   @property({ type: String, reflect: true }) size: 'sm' | 'md' | 'lg' | 'full' = 'md';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: String }) override title = '';
   @property({ type: Boolean }) closable = true;
   @property({ type: Boolean }) persistent = false;

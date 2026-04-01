@@ -114,9 +114,17 @@ export class CgCallout extends LitElement {
     .callout.dismissing {
       animation: calloutExit 200ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
     }
+
+    /* Rounded variants */
+    :host([rounded="none"]) .callout { border-radius: 0; }
+    :host([rounded="sm"]) .callout { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .callout { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .callout { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .callout { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
   @property({ reflect: true }) variant: 'info' | 'success' | 'warning' | 'danger' | 'neutral' = 'info';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property() override title = '';
   @property() description = '';
   @property({ type: Boolean }) dismissible = false;

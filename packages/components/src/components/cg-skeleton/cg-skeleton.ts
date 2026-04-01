@@ -31,6 +31,13 @@ export class CgSkeleton extends LitElement {
       background: var(--cg-color-surface-base-border, #27272a);
     }
 
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .skeleton { border-radius: 0; }
+    :host([rounded="sm"]) .skeleton { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .skeleton { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .skeleton { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .skeleton { border-radius: var(--cg-border-radius-full, 99999px); }
+
     /* ── Variants ── */
     .rectangular {
       border-radius: var(--cg-border-radius-100, 8px);
@@ -68,6 +75,7 @@ export class CgSkeleton extends LitElement {
   @property({ type: String }) height = '';
   @property({ type: Number }) lines = 3;
   @property({ type: Boolean, reflect: true }) animated = true;
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
 
   private _getDefaultHeight(): string {
     if (this.height) return this.height;

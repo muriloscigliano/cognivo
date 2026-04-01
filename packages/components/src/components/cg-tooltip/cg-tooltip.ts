@@ -174,9 +174,17 @@ export class CgTooltip extends LitElement {
       top: 50%;
       margin-top: -4px;
     }
+
+    /* Rounded variants */
+    :host([rounded="none"]) .tooltip { border-radius: 0; }
+    :host([rounded="sm"]) .tooltip { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .tooltip { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .tooltip { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .tooltip { border-radius: var(--cg-border-radius-full, 99999px); }
   `;
 
   @property({ type: String }) content = '';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
   @property({ type: String, reflect: true }) position: 'top' | 'bottom' | 'left' | 'right' = 'top';
   @property({ type: Number }) delay = 300;
   @property({ type: Boolean }) disabled = false;
