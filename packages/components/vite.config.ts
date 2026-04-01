@@ -14,7 +14,7 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'Cognivo',
       formats: ['es', 'iife'],
-      fileName: (format) => format === 'iife' ? 'cognivo.min' : 'index',
+      fileName: (format) => format === 'iife' ? 'cognivo.min.js' : 'index.js',
     },
     rollupOptions: {
       // DON'T mark lit as external - bundle it so browser can use it!
