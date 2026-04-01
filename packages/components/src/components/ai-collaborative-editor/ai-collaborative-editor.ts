@@ -19,7 +19,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 export interface EditorCursor {
   user: string;
@@ -29,13 +29,16 @@ export interface EditorCursor {
 
 @customElement('ai-collaborative-editor')
 export class AiCollaborativeEditor extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
       background: var(--cg-color-surface-base, #18181b);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       color: var(--cg-color-surface-base-text, #fafafa);
       border: 1px solid var(--cg-color-border-default, #27272a);
       border-radius: var(--cg-radius-lg, 12px);
       overflow: hidden;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
     }
     :host([hidden]) { display: none; }
 
@@ -135,6 +138,15 @@ export class AiCollaborativeEditor extends LitElement {
       width: 6px;
       height: 6px;
       border-radius: 50%;
+      transition: transform 150ms ease;
+    }
+    .presence-dot:hover {
+      transform: scale(1.3);
+    }
+
+    /* Basic hover transitions on interactive elements */
+    textarea:hover {
+      border-color: var(--cg-color-border-default, #3f3f46);
     }
     }
   `];

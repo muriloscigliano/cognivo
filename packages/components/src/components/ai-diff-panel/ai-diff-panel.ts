@@ -18,7 +18,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 interface DiffLine {
   type: 'add' | 'remove' | 'unchanged';
@@ -28,14 +28,23 @@ interface DiffLine {
 
 @customElement('ai-diff-panel')
 export class AiDiffPanel extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
-    
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
+    :host {
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+    }
 
     .panel {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 12px;
       overflow: hidden;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      transition: border-color 200ms ease, box-shadow 200ms ease;
+    }
+    .panel:hover {
+      border-color: var(--cg-gray-600, #52525b);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
     }
 
     /* Header */

@@ -18,7 +18,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 export interface ComparisonModel {
   name: string;
@@ -30,8 +30,10 @@ export interface ComparisonModel {
 
 @customElement('ai-model-comparison')
 export class AiModelComparison extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
-    
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
+    :host {
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+    }
     :host([hidden]) { display: none; }
 
     .wrapper {
@@ -39,6 +41,8 @@ export class AiModelComparison extends LitElement {
       border: 1px solid var(--cg-color-border-primary, #27272a);
       border-radius: 12px;
       background: var(--cg-color-bg-primary, #18181b);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     table {

@@ -49,6 +49,8 @@ export class AiInsightCard extends LitElement {
       transition: all 200ms ease;
       position: relative;
       animation: fadeIn 300ms ease;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
     .card:hover {
       border-color: var(--cg-gray-600, #52525b);

@@ -18,7 +18,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 export interface A11yIssue {
   rule: string;
@@ -30,13 +30,16 @@ export interface A11yIssue {
 
 @customElement('ai-accessibility-report')
 export class AiAccessibilityReport extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
       background: var(--cg-color-surface-base, #18181b);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       color: var(--cg-color-surface-base-text, #fafafa);
       border: 1px solid var(--cg-color-border-default, #27272a);
       border-radius: var(--cg-radius-lg, 12px);
       padding: var(--cg-spacing-16, 16px);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
     }
     :host([hidden]) { display: none; }
 

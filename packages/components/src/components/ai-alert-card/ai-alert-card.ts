@@ -34,6 +34,7 @@ export class AiAlertCard extends LitElement {
 
     .card {
       background: var(--cg-color-surface-cards-background, #18181b);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-cards-border, #27272a);
       border-radius: var(--cg-border-radius-200, 12px);
       padding: 16px 16px 16px 20px;
@@ -43,6 +44,7 @@ export class AiAlertCard extends LitElement {
       position: relative;
       border-left: 4px solid transparent;
       transition: box-shadow 150ms ease, transform 150ms ease;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
     .card:hover {
       box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));

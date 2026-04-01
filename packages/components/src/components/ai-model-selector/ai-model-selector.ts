@@ -22,7 +22,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 interface AIModel {
   id: string;
@@ -36,8 +36,10 @@ interface AIModel {
 
 @customElement('ai-model-selector')
 export class AiModelSelector extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
-    
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
+    :host {
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+    }
 
     .filter-row {
       display: flex;
@@ -74,6 +76,8 @@ export class AiModelSelector extends LitElement {
       cursor: pointer;
       transition: all 150ms;
       position: relative;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
     .model-card:hover { border-color: var(--cg-gray-600, #52525b); }
     .model-card:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }

@@ -22,7 +22,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBase, reducedMotion } from '../../styles/index.js';
+import { hostBase, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 export interface PresenceUser {
   name: string;
@@ -32,15 +32,18 @@ export interface PresenceUser {
 
 @customElement('ai-presence')
 export class AiPresence extends LitElement {
-  static override styles = [hostBase, reducedMotion, css`
+  static override styles = [hostBase, reducedMotion, fadeSlideInKeyframes, css`
     :host {
       align-items: center;
+      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
     }
     :host([hidden]) { display: none; }
 
     .container {
       display: flex;
       align-items: center;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     .avatar-stack {

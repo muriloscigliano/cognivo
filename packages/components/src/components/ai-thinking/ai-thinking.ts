@@ -51,6 +51,8 @@ export class AiThinking extends LitElement {
       align-items: center;
       gap: 8px;
       width: 100%;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
     :host([size="lg"]) .container {
       flex-direction: column;

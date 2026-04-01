@@ -32,12 +32,14 @@ export class AiAgentCard extends LitElement {
 
     .card {
       background: var(--cg-color-surface-container-background, #18181b);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 12px;
       padding: 16px;
       transition: all 150ms;
       cursor: pointer;
       position: relative;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
     .card:hover { border-color: var(--cg-gray-600, #52525b); box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2)); transform: translateY(var(--cg-interaction-hover-lift, -1px)); }
     .card:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }

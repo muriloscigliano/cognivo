@@ -20,7 +20,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 interface FormField {
   name: string;
@@ -45,14 +45,18 @@ interface FormSchema {
 
 @customElement('ai-form-generator')
 export class AiFormGenerator extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
-    
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
+    :host {
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+    }
 
     .form {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 12px;
       overflow: hidden;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     .form-header {

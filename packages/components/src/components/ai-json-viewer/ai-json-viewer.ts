@@ -21,16 +21,17 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 @customElement('ai-json-viewer')
 export class AiJsonViewer extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
       font-family: var(--cg-font-family-mono, 'JetBrains Mono', 'Fira Code', monospace);
       font-size: 13px;
       line-height: 1.6;
       color: var(--cg-color-text-primary, #fafafa);
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
     }
     :host([hidden]) { display: none; }
 
@@ -40,6 +41,8 @@ export class AiJsonViewer extends LitElement {
       border-radius: 8px;
       padding: 12px 16px;
       overflow-x: auto;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     .line {

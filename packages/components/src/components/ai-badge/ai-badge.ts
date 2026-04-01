@@ -18,14 +18,15 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBase, reducedMotion } from '../../styles/index.js';
+import { hostBase, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 @customElement('ai-badge')
 export class AiBadge extends LitElement {
-  static override styles = [hostBase, reducedMotion, css`
+  static override styles = [hostBase, reducedMotion, fadeSlideInKeyframes, css`
     :host {
       align-items: center;
       position: relative;
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
     }
 
     /* ── Base badge ── */
@@ -37,6 +38,8 @@ export class AiBadge extends LitElement {
       transition: all 200ms ease;
       border: 1px solid transparent;
       position: relative;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
     .badge:focus-visible {
       outline: 2px solid var(--cg-brand-ai-accent, #dfff61);

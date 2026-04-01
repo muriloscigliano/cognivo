@@ -20,7 +20,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, spinKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion, spinKeyframes, fadeSlideInKeyframes } from '../../styles/index.js';
 
 export interface TestEntry {
   name: string;
@@ -33,13 +33,16 @@ export interface TestEntry {
 
 @customElement('ai-test-runner')
 export class AiTestRunner extends LitElement {
-  static override styles = [hostBlock, reducedMotion, spinKeyframes, css`
+  static override styles = [hostBlock, reducedMotion, spinKeyframes, fadeSlideInKeyframes, css`
     :host {
       background: var(--cg-color-surface-base, #18181b);
       color: var(--cg-color-surface-base-text, #fafafa);
       border: 1px solid var(--cg-color-border-default, #27272a);
       border-radius: var(--cg-radius-lg, 12px);
       padding: var(--cg-spacing-16, 16px);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
     }
     :host([hidden]) { display: none; }
 

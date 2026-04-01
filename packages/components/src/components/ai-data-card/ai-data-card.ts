@@ -51,10 +51,12 @@ export class AiDataCard extends LitElement {
 
     .card {
       background: var(--cg-color-surface-container-background, #18181b);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 12px;
       overflow: hidden;
       transition: border-color 150ms, box-shadow 150ms, transform 150ms;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
     .card:hover {
       border-color: var(--cg-gray-600, #52525b);

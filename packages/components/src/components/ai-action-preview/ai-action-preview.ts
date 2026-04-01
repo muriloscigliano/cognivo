@@ -20,22 +20,26 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, pulseKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion, pulseKeyframes, fadeSlideInKeyframes } from '../../styles/index.js';
 
 type Severity = 'low' | 'medium' | 'high' | 'critical';
 
 @customElement('ai-action-preview')
 export class AiActionPreview extends LitElement {
-  static override styles = [hostBlock, reducedMotion, pulseKeyframes, css`
-    
+  static override styles = [hostBlock, reducedMotion, pulseKeyframes, fadeSlideInKeyframes, css`
+    :host {
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+    }
 
     .card {
       background: var(--cg-color-surface-cards-background, #18181b);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-cards-border, #27272a);
       border-radius: var(--cg-border-radius-200, 12px);
       padding: 20px;
       position: relative;
       overflow: hidden;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
     .card.critical {
       border-color: var(--cg-red-400, #f87171);

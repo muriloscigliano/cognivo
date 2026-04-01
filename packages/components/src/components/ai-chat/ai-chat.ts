@@ -51,9 +51,11 @@ export class AiChat extends LitElement {
       min-height: 400px;
       max-height: 800px;
       background: var(--cg-color-surface-container-background, #18181b);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border-radius: 16px;
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       overflow: hidden;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
     /* ── Messages ── */

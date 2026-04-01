@@ -19,19 +19,24 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 @customElement('ai-ab-test')
 export class AiAbTest extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
+    :host {
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+    }
     :host([hidden]) { display: none; }
 
     .container {
       background: #18181b;
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid #27272a;
       border-radius: 12px;
       padding: 20px;
       color: #fafafa;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
     .header {

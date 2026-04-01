@@ -35,10 +35,12 @@ export class AiCostDashboard extends LitElement {
 
     .container {
       background: #18181b;
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid #27272a;
       border-radius: 12px;
       padding: 20px;
       color: #fafafa;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
     .header {

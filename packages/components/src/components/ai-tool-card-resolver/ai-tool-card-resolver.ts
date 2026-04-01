@@ -24,17 +24,22 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion, shimmerKeyframes, fadeSlideInKeyframes } from '../../styles/index.js';
 
 @customElement('ai-tool-card-resolver')
 export class AiToolCardResolver extends LitElement {
-  static override styles = [hostBlock, reducedMotion, shimmerKeyframes, css`
+  static override styles = [hostBlock, reducedMotion, shimmerKeyframes, fadeSlideInKeyframes, css`
+    :host {
+      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+    }
 
     .card {
       background: var(--cg-color-surface-cards-background, #18181b);
       border: 1px solid var(--cg-color-surface-cards-border, #27272a);
       border-radius: var(--cg-border-radius-200, 12px);
       overflow: hidden;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     /* ── Loading skeleton ── */

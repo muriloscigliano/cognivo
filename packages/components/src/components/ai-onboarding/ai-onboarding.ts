@@ -26,7 +26,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 export interface OnboardingStep {
   title: string;
@@ -36,7 +36,10 @@ export interface OnboardingStep {
 
 @customElement('ai-onboarding')
 export class AiOnboarding extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
+    :host {
+      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+    }
     :host([hidden]) { display: none; }
 
     .card {
@@ -46,6 +49,8 @@ export class AiOnboarding extends LitElement {
       padding: 24px;
       position: relative;
       max-width: 420px;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     .header {

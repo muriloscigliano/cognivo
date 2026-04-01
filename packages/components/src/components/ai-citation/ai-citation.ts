@@ -28,7 +28,7 @@ interface CitationSource {
 @customElement('ai-citation')
 export class AiCitation extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeInKeyframes, css`
-    
+
 
     /* ── Inline mode ── */
     .inline { display: inline; }
@@ -62,12 +62,14 @@ export class AiCitation extends LitElement {
     /* ── Source card (expanded) ── */
     .source-card {
       background: var(--cg-color-surface-container-background, #18181b);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       border-radius: 10px;
       padding: 12px 14px;
       margin: 8px 0;
       animation: fadeIn 200ms ease;
       max-width: 400px;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
     .source-header {

@@ -39,6 +39,8 @@ export class AiTimeline extends LitElement {
       flex-direction: column;
       gap: 0;
       position: relative;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     .step {

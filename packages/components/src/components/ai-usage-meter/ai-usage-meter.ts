@@ -20,11 +20,14 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import { hostBase, reducedMotion } from '../../styles/index.js';
+import { hostBase, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 @customElement('ai-usage-meter')
 export class AiUsageMeter extends LitElement {
-  static override styles = [hostBase, reducedMotion, css`
+  static override styles = [hostBase, reducedMotion, fadeSlideInKeyframes, css`
+    :host {
+      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+    }
     :host([hidden]) { display: none; }
 
     .meter {
@@ -37,6 +40,8 @@ export class AiUsageMeter extends LitElement {
       border: 1px solid var(--cg-color-border-primary, #27272a);
       border-radius: 16px;
       min-width: 180px;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     .ring-wrapper {

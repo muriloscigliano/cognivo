@@ -53,6 +53,8 @@ export class AiSearch extends LitElement {
       border-radius: 10px;
       padding: 0 12px;
       transition: border-color 200ms;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
     .input-row:focus-within { border-color: var(--cg-brand-ai-accent, #dfff61); }
 

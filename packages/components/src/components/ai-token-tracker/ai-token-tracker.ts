@@ -23,11 +23,14 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 @customElement('ai-token-tracker')
 export class AiTokenTracker extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
+    :host {
+      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+    }
 
     /* Compact mode */
     .compact {
@@ -43,6 +46,8 @@ export class AiTokenTracker extends LitElement {
       color: var(--cg-gray-400, #a1a1aa);
       cursor: pointer;
       transition: all 150ms;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
     .compact:hover { border-color: var(--cg-gray-600, #52525b); }
     .compact .sep { color: var(--cg-gray-700, #3f3f46); }
@@ -56,6 +61,8 @@ export class AiTokenTracker extends LitElement {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 10px;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     .detail-header {

@@ -15,12 +15,14 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { hostBase, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
+import { hostBase, reducedMotion, shimmerKeyframes, fadeSlideInKeyframes } from '../../styles/index.js';
 
 @customElement('ai-avatar')
 export class AiAvatar extends LitElement {
-  static override styles = [hostBase, reducedMotion, shimmerKeyframes, css`
-    
+  static override styles = [hostBase, reducedMotion, shimmerKeyframes, fadeSlideInKeyframes, css`
+    :host {
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+    }
     :host([hidden]) { display: none; }
 
     .avatar {
@@ -59,8 +61,10 @@ export class AiAvatar extends LitElement {
       align-items: center;
       justify-content: center;
       background: var(--cg-color-surface, #27272a);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       color: var(--cg-color-text-primary, #fafafa);
       font-weight: 600;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
     /* Sizes */

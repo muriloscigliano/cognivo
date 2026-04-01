@@ -15,12 +15,14 @@
  */
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { hostBase, reducedMotion } from '../../styles/index.js';
+import { hostBase, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 @customElement('ai-copy-button')
 export class AiCopyButton extends LitElement {
-  static override styles = [hostBase, reducedMotion, css`
-    
+  static override styles = [hostBase, reducedMotion, fadeSlideInKeyframes, css`
+    :host {
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+    }
     :host([hidden]) { display: none; }
 
     .copy-btn {
@@ -34,6 +36,8 @@ export class AiCopyButton extends LitElement {
       border-radius: 6px;
       transition: background 150ms ease, color 150ms ease, transform 100ms ease;
       white-space: nowrap;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
     .copy-btn:active {
       transform: scale(var(--cg-interaction-press-scale, 0.97));

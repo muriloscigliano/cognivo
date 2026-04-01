@@ -20,7 +20,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 export interface PaletteCommand {
   id: string;
@@ -32,7 +32,7 @@ export interface PaletteCommand {
 
 @customElement('ai-command-palette')
 export class AiCommandPalette extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
       display: contents;
     }
@@ -53,10 +53,12 @@ export class AiCommandPalette extends LitElement {
       width: 100%;
       max-width: 520px;
       background: var(--cg-color-surface, #18181b);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-border, #27272a);
       border-radius: 12px;
-      box-shadow: var(--cg-elevation-4, 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3));
+      box-shadow: var(--cg-elevation-4, 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       overflow: hidden;
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
     }
 
     .search-wrap {

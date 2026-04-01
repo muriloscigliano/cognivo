@@ -28,7 +28,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 interface CardRef {
   type: string;
@@ -42,7 +42,10 @@ interface ActionRef {
 
 @customElement('ai-rich-message')
 export class AiRichMessage extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
+    :host {
+      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+    }
 
     .message {
       display: flex;
@@ -96,6 +99,8 @@ export class AiRichMessage extends LitElement {
       font-size: 14px;
       line-height: 1.6;
       color: var(--cg-color-surface-base-text, #fafafa);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
     .message.assistant .bubble-body {
       background: var(--cg-color-surface-cards-background, #18181b);

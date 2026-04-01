@@ -18,7 +18,7 @@
  */
 import { LitElement, html, css, nothing, svg } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 interface EmbeddingPoint {
   x: number;
@@ -35,8 +35,10 @@ const CLUSTER_COLORS = [
 
 @customElement('ai-embedding-viz')
 export class AiEmbeddingViz extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
-    
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
+    :host {
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+    }
     :host([hidden]) { display: none; }
 
     .container {
@@ -45,6 +47,8 @@ export class AiEmbeddingViz extends LitElement {
       border-radius: 12px;
       padding: 20px;
       color: #fafafa;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     .header {
