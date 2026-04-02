@@ -100,7 +100,7 @@ export class AiProgressSteps extends LitElement {
     .dot[data-status="complete"] {
       border-color: var(--cg-color-accent, #dfff61);
       background: var(--cg-color-accent, #dfff61);
-      color: #18181b;
+      color: var(--cg-color-surface-container-background, #18181b);
     }
     .dot[data-status="active"] {
       border-color: var(--cg-color-accent, #dfff61);
@@ -108,9 +108,9 @@ export class AiProgressSteps extends LitElement {
       animation: pulse 1.5s ease-in-out infinite;
     }
     .dot[data-status="error"] {
-      border-color: #ef4444;
+      border-color: var(--cg-color-status-error-text-default, #ef4444);
       background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
+      color: var(--cg-color-status-error-text-default, #ef4444);
     }
 
     @keyframes pulse {
@@ -136,7 +136,7 @@ export class AiProgressSteps extends LitElement {
       color: var(--cg-color-accent, #dfff61);
     }
     .step[data-status="error"] .label {
-      color: #ef4444;
+      color: var(--cg-color-status-error-text-default, #ef4444);
     }
 
     .duration {

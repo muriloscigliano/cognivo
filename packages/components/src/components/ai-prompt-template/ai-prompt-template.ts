@@ -33,11 +33,11 @@ export class AiPromptTemplate extends LitElement {
     :host([hidden]) { display: none; }
 
     .container {
-      background: #18181b;
-      border: 1px solid #27272a;
+      background: var(--cg-color-surface-container-background, #18181b);
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 12px;
       padding: 20px;
-      color: #fafafa;
+      color: var(--cg-color-surface-base-text, #fafafa);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
@@ -61,8 +61,8 @@ export class AiPromptTemplate extends LitElement {
 
     .mode-btn {
       background: transparent;
-      border: 1px solid #27272a;
-      color: #71717a;
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
+      color: var(--cg-gray-500, #71717a);
       font-size: 11px;
       padding: 4px 10px;
       border-radius: 6px;
@@ -70,21 +70,21 @@ export class AiPromptTemplate extends LitElement {
       transition: all 150ms ease;
     }
     .mode-btn.active {
-      background: #dfff61;
-      color: #18181b;
-      border-color: #dfff61;
+      background: var(--cg-brand-ai-accent, #dfff61);
+      color: var(--cg-color-surface-container-background, #18181b);
+      border-color: var(--cg-brand-ai-accent, #dfff61);
       font-weight: 600;
     }
-    .mode-btn:hover:not(.active) { border-color: #3f3f46; color: #a1a1aa; }
+    .mode-btn:hover:not(.active) { border-color: var(--cg-gray-700, #3f3f46); color: var(--cg-gray-400, #a1a1aa); }
     .mode-btn:focus-visible {
-      outline: 2px solid #dfff61;
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
 
     /* ── Template editor area ── */
     .template-area {
       background: #09090b;
-      border: 1px solid #27272a;
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 8px;
       padding: 16px;
       min-height: 80px;
@@ -97,7 +97,7 @@ export class AiPromptTemplate extends LitElement {
 
     .template-textarea {
       background: #09090b;
-      border: 1px solid #27272a;
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 8px;
       padding: 16px;
       min-height: 80px;
@@ -110,13 +110,13 @@ export class AiPromptTemplate extends LitElement {
       resize: vertical;
     }
     .template-textarea:focus-visible {
-      outline: 2px solid #dfff61;
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: -2px;
     }
 
     .var-highlight {
       background: rgba(223, 255, 97, 0.15);
-      color: #dfff61;
+      color: var(--cg-brand-ai-accent, #dfff61);
       padding: 1px 4px;
       border-radius: 3px;
       font-weight: 600;
@@ -137,7 +137,7 @@ export class AiPromptTemplate extends LitElement {
     .variables-title {
       font-size: 12px;
       font-weight: 600;
-      color: #a1a1aa;
+      color: var(--cg-gray-400, #a1a1aa);
       margin-bottom: 8px;
     }
 
@@ -151,7 +151,7 @@ export class AiPromptTemplate extends LitElement {
     .var-name {
       font-size: 12px;
       font-weight: 600;
-      color: #dfff61;
+      color: var(--cg-brand-ai-accent, #dfff61);
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       min-width: 100px;
     }
@@ -159,15 +159,15 @@ export class AiPromptTemplate extends LitElement {
     .var-input {
       flex: 1;
       background: #09090b;
-      border: 1px solid #27272a;
-      color: #fafafa;
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
+      color: var(--cg-color-surface-base-text, #fafafa);
       font-size: 12px;
       padding: 6px 10px;
       border-radius: 6px;
       font-family: inherit;
     }
     .var-input:focus-visible {
-      outline: 2px solid #dfff61;
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: -2px;
     }
     .var-input:disabled {
@@ -177,7 +177,7 @@ export class AiPromptTemplate extends LitElement {
 
     .empty-state {
       text-align: center;
-      color: #52525b;
+      color: var(--cg-gray-600, #52525b);
       font-size: 13px;
       padding: 20px 0;
     }

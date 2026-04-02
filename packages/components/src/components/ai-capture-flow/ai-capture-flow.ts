@@ -70,11 +70,11 @@ export class AiCaptureFlow extends LitElement {
     }
     .step-dot.done {
       background: var(--cg-brand-ai-accent, #dfff61);
-      color: #09090b;
+      color: var(--cg-color-surface-base-background, #09090b);
     }
     .step-dot.active {
       background: var(--cg-brand-ai-accent, #dfff61);
-      color: #09090b;
+      color: var(--cg-color-surface-base-background, #09090b);
       box-shadow: 0 0 0 3px rgba(223, 255, 97, 0.25);
     }
     .step-dot.pending {
@@ -198,7 +198,7 @@ export class AiCaptureFlow extends LitElement {
     }
     .btn-primary {
       background: var(--cg-brand-ai-accent, #dfff61);
-      color: #09090b;
+      color: var(--cg-color-surface-base-background, #09090b);
     }
     .btn-primary:hover { filter: brightness(0.9); }
     .btn-secondary {

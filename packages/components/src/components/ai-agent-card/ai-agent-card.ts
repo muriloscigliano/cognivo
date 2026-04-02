@@ -69,13 +69,13 @@ export class AiAgentCard extends LitElement {
     }
     .status-dot.idle { background: var(--cg-gray-600, #52525b); }
     .status-dot.thinking { background: var(--cg-brand-ai-accent, #dfff61); animation: pulse 1.5s ease-in-out infinite; }
-    .status-dot.acting { background: #60a5fa; animation: pulse 1.5s ease-in-out infinite; }
+    .status-dot.acting { background: var(--cg-color-status-info-text-default, #60a5fa); animation: pulse 1.5s ease-in-out infinite; }
     .status-dot.done { background: var(--cg-green-400, #4ade80); }
     .status-dot.error { background: var(--cg-red-400, #f87171); }
 
     .status-label { font-size: 12px; font-weight: 600; color: var(--cg-gray-400, #a1a1aa); text-transform: capitalize; }
     .status-label.thinking { color: var(--cg-brand-ai-accent, #dfff61); }
-    .status-label.acting { color: #60a5fa; }
+    .status-label.acting { color: var(--cg-color-status-info-text-default, #60a5fa); }
     .status-label.done { color: var(--cg-green-400, #4ade80); }
     .status-label.error { color: var(--cg-red-400, #f87171); }
 

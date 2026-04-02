@@ -88,10 +88,10 @@ export class AiInsightCard extends LitElement {
     }
     .icon-area svg { width: 20px; height: 20px; }
     .icon-area.explanation { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
-    .icon-area.forecast { background: rgba(223, 255, 97, 0.12); color: #dfff61; }
+    .icon-area.forecast { background: rgba(223, 255, 97, 0.12); color: var(--cg-brand-ai-accent, #dfff61); }
     .icon-area.anomaly { background: rgba(239, 68, 68, 0.12); color: #f87171; }
     .icon-area.optimization { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
-    .icon-area.classification { background: rgba(34, 197, 94, 0.12); color: #4ade80; }
+    .icon-area.classification { background: rgba(34, 197, 94, 0.12); color: var(--cg-color-status-success-text-default, #4ade80); }
 
     .content { flex: 1; min-width: 0; }
 

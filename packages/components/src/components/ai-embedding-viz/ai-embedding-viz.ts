@@ -42,11 +42,11 @@ export class AiEmbeddingViz extends LitElement {
     :host([hidden]) { display: none; }
 
     .container {
-      background: #18181b;
-      border: 1px solid #27272a;
+      background: var(--cg-color-surface-container-background, #18181b);
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 12px;
       padding: 20px;
-      color: #fafafa;
+      color: var(--cg-color-surface-base-text, #fafafa);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
@@ -65,13 +65,13 @@ export class AiEmbeddingViz extends LitElement {
 
     .point-count {
       font-size: 11px;
-      color: #71717a;
+      color: var(--cg-gray-500, #71717a);
     }
 
     .chart-area {
       position: relative;
-      background: #09090b;
-      border: 1px solid #27272a;
+      background: var(--cg-color-surface-base-background, #09090b);
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 8px;
       overflow: hidden;
     }
@@ -88,20 +88,20 @@ export class AiEmbeddingViz extends LitElement {
     }
     .point:hover { r: 7; }
     .point:focus-visible {
-      outline: 2px solid #dfff61;
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
 
     .point-label {
       font-size: 9px;
-      fill: #a1a1aa;
+      fill: var(--cg-gray-400, #a1a1aa);
       pointer-events: none;
     }
 
     .tooltip {
       position: absolute;
       background: #09090b;
-      border: 1px solid #3f3f46;
+      border: 1px solid var(--cg-gray-700, #3f3f46);
       color: #e4e4e7;
       font-size: 11px;
       padding: 6px 10px;
@@ -126,7 +126,7 @@ export class AiEmbeddingViz extends LitElement {
       align-items: center;
       gap: 4px;
       font-size: 11px;
-      color: #a1a1aa;
+      color: var(--cg-gray-400, #a1a1aa);
     }
 
     .legend-dot {
@@ -137,14 +137,14 @@ export class AiEmbeddingViz extends LitElement {
 
     .empty-state {
       text-align: center;
-      color: #52525b;
+      color: var(--cg-gray-600, #52525b);
       font-size: 13px;
       padding: 32px 0;
     }
 
     .axis-label {
       font-size: 9px;
-      fill: #52525b;
+      fill: var(--cg-gray-600, #52525b);
     }
     }
   `];

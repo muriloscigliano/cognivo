@@ -167,9 +167,9 @@ export class AiDebugConsole extends LitElement {
     }
 
     .type-request { background: #60a5fa; }
-    .type-response { background: #4ade80; }
+    .type-response { background: var(--cg-color-status-success-text-default, #4ade80); }
     .type-error { background: #f87171; }
-    .type-info { background: #a1a1aa; }
+    .type-info { background: var(--cg-gray-400, #a1a1aa); }
 
     .type-label {
       font-weight: var(--cg-font-weight-semibold, 600);
@@ -179,9 +179,9 @@ export class AiDebugConsole extends LitElement {
     }
 
     .label-request { color: #60a5fa; }
-    .label-response { color: #4ade80; }
+    .label-response { color: var(--cg-color-status-success-text-default, #4ade80); }
     .label-error { color: #f87171; }
-    .label-info { color: #a1a1aa; }
+    .label-info { color: var(--cg-gray-400, #a1a1aa); }
 
     .entry-ts {
       color: var(--cg-color-text-tertiary, #71717a);

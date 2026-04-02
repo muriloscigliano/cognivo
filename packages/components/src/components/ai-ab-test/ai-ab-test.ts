@@ -30,12 +30,12 @@ export class AiAbTest extends LitElement {
     :host([hidden]) { display: none; }
 
     .container {
-      background: #18181b;
+      background: var(--cg-color-surface-container-background, #18181b);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid #27272a;
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 12px;
       padding: 20px;
-      color: #fafafa;
+      color: var(--cg-color-surface-base-text, #fafafa);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
@@ -49,22 +49,22 @@ export class AiAbTest extends LitElement {
     .title {
       font-size: 14px;
       font-weight: 600;
-      color: #fafafa;
+      color: var(--cg-color-surface-base-text, #fafafa);
     }
 
     .swap-btn {
       background: transparent;
-      border: 1px solid #27272a;
-      color: #a1a1aa;
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
+      color: var(--cg-gray-400, #a1a1aa);
       font-size: 11px;
       padding: 4px 10px;
       border-radius: 6px;
       cursor: pointer;
       transition: all 150ms ease;
     }
-    .swap-btn:hover { border-color: #dfff61; color: #dfff61; }
+    .swap-btn:hover { border-color: var(--cg-brand-ai-accent, #dfff61); color: var(--cg-brand-ai-accent, #dfff61); }
     .swap-btn:focus-visible {
-      outline: 2px solid #dfff61;
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
 
@@ -76,32 +76,32 @@ export class AiAbTest extends LitElement {
     }
 
     .variant {
-      background: #09090b;
-      border: 2px solid #27272a;
+      background: var(--cg-color-surface-base-background, #09090b);
+      border: 2px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 8px;
       padding: 16px;
       transition: border-color 200ms ease;
       min-height: 80px;
     }
-    .variant.winner-a { border-color: #dfff61; }
-    .variant.winner-b { border-color: #dfff61; }
+    .variant.winner-a { border-color: var(--cg-brand-ai-accent, #dfff61); }
+    .variant.winner-b { border-color: var(--cg-brand-ai-accent, #dfff61); }
 
     .variant-label {
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: #71717a;
+      color: var(--cg-gray-500, #71717a);
       margin-bottom: 8px;
     }
     .variant.winner-a .variant-label,
     .variant.winner-b .variant-label {
-      color: #dfff61;
+      color: var(--cg-brand-ai-accent, #dfff61);
     }
 
     .variant-content {
       font-size: 13px;
-      color: #d4d4d8;
+      color: var(--cg-gray-300, #d4d4d8);
       line-height: 1.5;
       white-space: pre-wrap;
       word-break: break-word;
@@ -115,8 +115,8 @@ export class AiAbTest extends LitElement {
 
     .vote-btn {
       background: transparent;
-      border: 1px solid #27272a;
-      color: #a1a1aa;
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
+      color: var(--cg-gray-400, #a1a1aa);
       font-size: 12px;
       font-weight: 600;
       padding: 8px 16px;
@@ -125,23 +125,23 @@ export class AiAbTest extends LitElement {
       transition: all 150ms ease;
     }
     .vote-btn:hover {
-      border-color: #dfff61;
-      color: #dfff61;
+      border-color: var(--cg-brand-ai-accent, #dfff61);
+      color: var(--cg-brand-ai-accent, #dfff61);
     }
     .vote-btn:focus-visible {
-      outline: 2px solid #dfff61;
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
     .vote-btn.selected {
-      background: #dfff61;
-      color: #18181b;
-      border-color: #dfff61;
+      background: var(--cg-brand-ai-accent, #dfff61);
+      color: var(--cg-color-surface-container-background, #18181b);
+      border-color: var(--cg-brand-ai-accent, #dfff61);
     }
 
     .compare-btn {
-      background: #dfff61;
+      background: var(--cg-brand-ai-accent, #dfff61);
       border: none;
-      color: #18181b;
+      color: var(--cg-color-surface-container-background, #18181b);
       font-size: 12px;
       font-weight: 700;
       padding: 8px 16px;
@@ -151,7 +151,7 @@ export class AiAbTest extends LitElement {
     }
     .compare-btn:hover { filter: brightness(0.9); }
     .compare-btn:focus-visible {
-      outline: 2px solid #dfff61;
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
 

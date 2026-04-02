@@ -68,7 +68,7 @@ export class AiChartSummary extends LitElement {
       justify-content: center;
       font-size: 9px;
       font-weight: 800;
-      color: #000;
+      color: var(--cg-gray-black, #000000);
       flex-shrink: 0;
     }
 
@@ -87,9 +87,9 @@ export class AiChartSummary extends LitElement {
       font-weight: 700;
       text-transform: uppercase;
     }
-    .type-badge.summary { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
-    .type-badge.anomaly { background: rgba(239, 68, 68, 0.12); color: #f87171; }
-    .type-badge.forecast { background: rgba(223, 255, 97, 0.12); color: #dfff61; }
+    .type-badge.summary { background: rgba(59, 130, 246, 0.12); color: var(--cg-color-status-info-text-default, #60a5fa); }
+    .type-badge.anomaly { background: rgba(239, 68, 68, 0.12); color: var(--cg-color-status-error-text-default, #f87171); }
+    .type-badge.forecast { background: rgba(223, 255, 97, 0.12); color: var(--cg-brand-ai-accent, #dfff61); }
     .type-badge.comparison { background: rgba(139, 92, 246, 0.12); color: #a78bfa; }
 
     .time-range {

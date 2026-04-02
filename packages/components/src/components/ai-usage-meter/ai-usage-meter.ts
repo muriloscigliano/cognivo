@@ -70,7 +70,7 @@ export class AiUsageMeter extends LitElement {
     }
     .ring-fill.normal  { stroke: var(--cg-brand-ai-accent, #dfff61); }
     .ring-fill.warning { stroke: #eab308; }
-    .ring-fill.danger  { stroke: #ef4444; }
+    .ring-fill.danger  { stroke: var(--cg-color-status-error-text-default, #ef4444); }
 
     .ring-text {
       position: absolute;
@@ -123,7 +123,7 @@ export class AiUsageMeter extends LitElement {
       border-radius: 8px;
       border: none;
       background: var(--cg-brand-ai-accent, #dfff61);
-      color: #18181b;
+      color: var(--cg-color-surface-container-background, #18181b);
       font-size: 13px;
       font-weight: 700;
       cursor: pointer;

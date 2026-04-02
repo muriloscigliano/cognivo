@@ -40,11 +40,11 @@ export class AiPermissionGate extends LitElement {
     :host([hidden]) { display: none; }
 
     .container {
-      background: #18181b;
-      border: 1px solid #27272a;
+      background: var(--cg-color-surface-container-background, #18181b);
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 12px;
       padding: 20px;
-      color: #fafafa;
+      color: var(--cg-color-surface-base-text, #fafafa);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
@@ -66,8 +66,8 @@ export class AiPermissionGate extends LitElement {
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      background: #27272a;
-      color: #a1a1aa;
+      background: var(--cg-color-surface-container-border, #27272a);
+      color: var(--cg-gray-400, #a1a1aa);
       padding: 4px 10px;
       border-radius: 6px;
     }
@@ -85,10 +85,10 @@ export class AiPermissionGate extends LitElement {
       padding: 10px 12px;
       border-radius: 8px;
       background: #09090b;
-      border: 1px solid #27272a;
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
       transition: border-color 120ms ease;
     }
-    .feature-row:hover { border-color: #3f3f46; }
+    .feature-row:hover { border-color: var(--cg-gray-700, #3f3f46); }
 
     .status-icon {
       width: 22px;
@@ -106,7 +106,7 @@ export class AiPermissionGate extends LitElement {
     }
     .status-icon.denied {
       background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
+      color: var(--cg-color-status-error-text-default, #ef4444);
     }
 
     .feature-info { flex: 1; min-width: 0; }
@@ -114,26 +114,26 @@ export class AiPermissionGate extends LitElement {
     .feature-name {
       font-size: 13px;
       font-weight: 600;
-      color: #fafafa;
+      color: var(--cg-color-surface-base-text, #fafafa);
     }
 
     .feature-role {
       font-size: 11px;
-      color: #52525b;
+      color: var(--cg-gray-600, #52525b);
       margin-top: 2px;
     }
 
     .feature-reason {
       font-size: 11px;
-      color: #71717a;
+      color: var(--cg-gray-500, #71717a);
       margin-top: 2px;
       font-style: italic;
     }
 
     .request-btn {
       background: transparent;
-      border: 1px solid #27272a;
-      color: #a1a1aa;
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
+      color: var(--cg-gray-400, #a1a1aa);
       font-size: 11px;
       font-weight: 600;
       padding: 6px 12px;
@@ -143,22 +143,22 @@ export class AiPermissionGate extends LitElement {
       transition: all 150ms ease;
     }
     .request-btn:hover {
-      border-color: #dfff61;
-      color: #dfff61;
+      border-color: var(--cg-brand-ai-accent, #dfff61);
+      color: var(--cg-brand-ai-accent, #dfff61);
     }
     .request-btn:focus-visible {
-      outline: 2px solid #dfff61;
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
 
     .summary {
       margin-top: 12px;
       padding-top: 12px;
-      border-top: 1px solid #27272a;
+      border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
       display: flex;
       gap: 16px;
       font-size: 11px;
-      color: #71717a;
+      color: var(--cg-gray-500, #71717a);
     }
 
     .summary-item {
@@ -168,11 +168,11 @@ export class AiPermissionGate extends LitElement {
     }
 
     .dot-green { color: #22c55e; }
-    .dot-red { color: #ef4444; }
+    .dot-red { color: var(--cg-color-status-error-text-default, #ef4444); }
 
     .empty-state {
       text-align: center;
-      color: #52525b;
+      color: var(--cg-gray-600, #52525b);
       font-size: 13px;
       padding: 32px 0;
     }

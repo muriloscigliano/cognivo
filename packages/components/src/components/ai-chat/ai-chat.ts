@@ -101,7 +101,7 @@ export class AiChat extends LitElement {
     }
     .msg.ai .avatar {
       background: linear-gradient(135deg, var(--cg-brand-ai-accent, #dfff61), var(--cg-brand-ai-highlight, #e2ff70));
-      color: #000;
+      color: var(--cg-gray-black, #000000);
     }
 
     /* ── Bubble ── */
@@ -289,7 +289,7 @@ export class AiChat extends LitElement {
     .send-btn {
       padding: 10px 20px;
       background: var(--cg-brand-ai-accent, #dfff61);
-      color: #000;
+      color: var(--cg-gray-black, #000000);
       border: none;
       border-radius: 10px;
       font-weight: 700;

@@ -51,8 +51,8 @@ export class AiAvatar extends LitElement {
       border: 2px solid var(--cg-color-border, #27272a);
     }
     :host([type="agent"]) .ring { border-color: var(--cg-color-accent, #dfff61); }
-    :host([type="user"]) .ring { border-color: #3b82f6; }
-    :host([type="system"]) .ring { border-color: #71717a; }
+    :host([type="user"]) .ring { border-color: var(--cg-color-status-info-text-default, #3b82f6); }
+    :host([type="system"]) .ring { border-color: var(--cg-gray-500, #71717a); }
 
     .inner {
       border-radius: 50%;
@@ -97,14 +97,14 @@ export class AiAvatar extends LitElement {
     :host(:not([size])) .status-dot { width: 10px; height: 10px; }
     :host([size="lg"]) .status-dot { width: 14px; height: 14px; }
 
-    .status-dot[data-status="online"] { background: #22c55e; }
+    .status-dot[data-status="online"] { background: var(--cg-color-status-success-text-default, #22c55e); }
     .status-dot[data-status="away"] { background: #eab308; }
-    .status-dot[data-status="busy"] { background: #ef4444; }
-    .status-dot[data-status="offline"] { background: #52525b; }
+    .status-dot[data-status="busy"] { background: var(--cg-color-status-error-text-default, #ef4444); }
+    .status-dot[data-status="offline"] { background: var(--cg-gray-600, #52525b); }
 
     /* Loading skeleton */
     .skeleton {
-      background: linear-gradient(90deg, #27272a 25%, #3f3f46 50%, #27272a 75%);
+      background: linear-gradient(90deg, var(--cg-color-surface-container-border, #27272a) 25%, var(--cg-gray-700, #3f3f46) 50%, var(--cg-color-surface-container-border, #27272a) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
     }

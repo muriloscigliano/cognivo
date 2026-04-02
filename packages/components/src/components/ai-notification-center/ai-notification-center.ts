@@ -40,11 +40,11 @@ export class AiNotificationCenter extends LitElement {
     :host([hidden]) { display: none; }
 
     .container {
-      background: #18181b;
-      border: 1px solid #27272a;
+      background: var(--cg-color-surface-container-background, #18181b);
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 12px;
       padding: 16px;
-      color: #fafafa;
+      color: var(--cg-color-surface-base-text, #fafafa);
       max-height: 480px;
       overflow-y: auto;
       box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
@@ -70,8 +70,8 @@ export class AiNotificationCenter extends LitElement {
     }
 
     .unread-badge {
-      background: #dfff61;
-      color: #18181b;
+      background: var(--cg-brand-ai-accent, #dfff61);
+      color: var(--cg-color-surface-container-background, #18181b);
       font-size: 10px;
       font-weight: 700;
       padding: 2px 7px;
@@ -83,16 +83,16 @@ export class AiNotificationCenter extends LitElement {
     .mark-all-btn {
       background: transparent;
       border: none;
-      color: #71717a;
+      color: var(--cg-gray-500, #71717a);
       font-size: 11px;
       cursor: pointer;
       padding: 4px 8px;
       border-radius: 4px;
       transition: color 150ms ease;
     }
-    .mark-all-btn:hover { color: #dfff61; }
+    .mark-all-btn:hover { color: var(--cg-brand-ai-accent, #dfff61); }
     .mark-all-btn:focus-visible {
-      outline: 2px solid #dfff61;
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
 
@@ -101,7 +101,7 @@ export class AiNotificationCenter extends LitElement {
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: #52525b;
+      color: var(--cg-gray-600, #52525b);
       padding: 8px 0 4px;
     }
 
@@ -118,7 +118,7 @@ export class AiNotificationCenter extends LitElement {
     }
     .notification:hover { background: rgba(223, 255, 97, 0.04); }
     .notification:focus-visible {
-      outline: 2px solid #dfff61;
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: -2px;
     }
 
@@ -128,7 +128,7 @@ export class AiNotificationCenter extends LitElement {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #dfff61;
+      background: var(--cg-brand-ai-accent, #dfff61);
       flex-shrink: 0;
       margin-top: 6px;
     }
@@ -138,14 +138,14 @@ export class AiNotificationCenter extends LitElement {
     .notif-title {
       font-size: 13px;
       font-weight: 600;
-      color: #fafafa;
+      color: var(--cg-color-surface-base-text, #fafafa);
       margin-bottom: 2px;
     }
-    .notification.unread .notif-title { color: #dfff61; }
+    .notification.unread .notif-title { color: var(--cg-brand-ai-accent, #dfff61); }
 
     .notif-message {
       font-size: 12px;
-      color: #a1a1aa;
+      color: var(--cg-gray-400, #a1a1aa);
       line-height: 1.4;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -154,14 +154,14 @@ export class AiNotificationCenter extends LitElement {
 
     .notif-time {
       font-size: 10px;
-      color: #52525b;
+      color: var(--cg-gray-600, #52525b);
       margin-top: 4px;
     }
 
     .dismiss-btn {
       background: transparent;
       border: none;
-      color: #52525b;
+      color: var(--cg-gray-600, #52525b);
       font-size: 14px;
       cursor: pointer;
       padding: 2px 4px;
@@ -170,15 +170,15 @@ export class AiNotificationCenter extends LitElement {
       line-height: 1;
       transition: color 150ms ease;
     }
-    .dismiss-btn:hover { color: #ef4444; }
+    .dismiss-btn:hover { color: var(--cg-color-status-error-text-default, #ef4444); }
     .dismiss-btn:focus-visible {
-      outline: 2px solid #dfff61;
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
 
     .empty-state {
       text-align: center;
-      color: #52525b;
+      color: var(--cg-gray-600, #52525b);
       font-size: 13px;
       padding: 32px 0;
     }

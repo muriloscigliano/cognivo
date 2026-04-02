@@ -115,12 +115,12 @@ export class AiEmptyState extends LitElement {
     :host([variant="default"]) .action-btn,
     :host(:not([variant])) .action-btn {
       background: var(--cg-brand-ai-accent, #dfff61);
-      color: #18181b;
+      color: var(--cg-color-surface-container-background, #18181b);
     }
 
     :host([variant="error"]) .action-btn {
-      background: #ef4444;
-      color: #fafafa;
+      background: var(--cg-color-status-error-text-default, #ef4444);
+      color: var(--cg-color-surface-base-text, #fafafa);
     }
 
     :host([variant="search"]) .action-btn {
@@ -131,7 +131,7 @@ export class AiEmptyState extends LitElement {
 
     :host([variant="ai"]) .action-btn {
       background: var(--cg-brand-ai-accent, #dfff61);
-      color: #18181b;
+      color: var(--cg-color-surface-container-background, #18181b);
     }
 
     .action-btn:hover { filter: brightness(1.1); }

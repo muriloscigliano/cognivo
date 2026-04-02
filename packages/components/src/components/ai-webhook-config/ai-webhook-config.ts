@@ -62,7 +62,7 @@ export class AiWebhookConfig extends LitElement {
 
     .add-btn {
       background: var(--cg-color-accent, #dfff61);
-      color: #18181b;
+      color: var(--cg-color-surface-container-background, #18181b);
       border: none;
       border-radius: var(--cg-radius-md, 8px);
       padding: 6px 12px;
@@ -174,7 +174,7 @@ export class AiWebhookConfig extends LitElement {
 
     .btn-sm.primary {
       background: var(--cg-color-accent, #dfff61);
-      color: #18181b;
+      color: var(--cg-color-surface-container-background, #18181b);
       border-color: var(--cg-color-accent, #dfff61);
       font-weight: var(--cg-font-weight-semibold, 600);
     }
@@ -243,7 +243,7 @@ export class AiWebhookConfig extends LitElement {
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: #71717a;
+      background: var(--cg-gray-500, #71717a);
       top: 2px;
       left: 2px;
       transition: transform 0.15s ease, background 0.15s ease;

@@ -121,14 +121,14 @@ export class AiFileUpload extends LitElement {
       font-size: 16px;
       line-height: 1;
     }
-    .remove-btn:hover { color: #ef4444; }
+    .remove-btn:hover { color: var(--cg-color-status-error-text-default, #ef4444); }
     .remove-btn:focus-visible {
       outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
 
     .error-msg {
-      color: #ef4444;
+      color: var(--cg-color-status-error-text-default, #ef4444);
       font-size: 12px;
       margin-top: 8px;
     }

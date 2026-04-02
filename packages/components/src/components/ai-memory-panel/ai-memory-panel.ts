@@ -109,7 +109,7 @@ export class AiMemoryPanel extends LitElement {
     .memory-type.fact { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
     .memory-type.preference { background: rgba(139, 92, 246, 0.12); color: #a78bfa; }
     .memory-type.instruction { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
-    .memory-type.context { background: rgba(34, 197, 94, 0.12); color: #4ade80; }
+    .memory-type.context { background: rgba(34, 197, 94, 0.12); color: var(--cg-color-status-success-text-default, #4ade80); }
 
     .memory-content {
       flex: 1; min-width: 0;

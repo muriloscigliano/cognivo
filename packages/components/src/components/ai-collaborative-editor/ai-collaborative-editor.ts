@@ -110,7 +110,7 @@ export class AiCollaborativeEditor extends LitElement {
       border-radius: var(--cg-radius-sm, 4px);
       white-space: nowrap;
       margin-top: 2px;
-      color: #18181b;
+      color: var(--cg-color-surface-container-background, #18181b);
     }
 
     .footer {

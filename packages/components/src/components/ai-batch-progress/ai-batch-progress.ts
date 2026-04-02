@@ -30,12 +30,12 @@ export class AiBatchProgress extends LitElement {
     :host([hidden]) { display: none; }
 
     .container {
-      background: #18181b;
+      background: var(--cg-color-surface-container-background, #18181b);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid #27272a;
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 12px;
       padding: 20px;
-      color: #fafafa;
+      color: var(--cg-color-surface-base-text, #fafafa);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
@@ -61,15 +61,15 @@ export class AiBatchProgress extends LitElement {
     }
     .status-badge.running {
       background: rgba(59, 130, 246, 0.15);
-      color: #3b82f6;
+      color: var(--cg-color-status-info-text-default, #3b82f6);
     }
     .status-badge.complete {
       background: rgba(34, 197, 94, 0.15);
-      color: #22c55e;
+      color: var(--cg-color-status-success-text-default, #22c55e);
     }
     .status-badge.failed {
       background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
+      color: var(--cg-color-status-error-text-default, #ef4444);
     }
     .status-badge.paused {
       background: rgba(234, 179, 8, 0.15);
@@ -91,16 +91,16 @@ export class AiBatchProgress extends LitElement {
 
     .stat-label {
       font-size: 11px;
-      color: #71717a;
+      color: var(--cg-gray-500, #71717a);
     }
 
     .stat-value {
       font-size: 16px;
       font-weight: 700;
     }
-    .stat-value.success { color: #22c55e; }
-    .stat-value.fail { color: #ef4444; }
-    .stat-value.pending { color: #a1a1aa; }
+    .stat-value.success { color: var(--cg-color-status-success-text-default, #22c55e); }
+    .stat-value.fail { color: var(--cg-color-status-error-text-default, #ef4444); }
+    .stat-value.pending { color: var(--cg-gray-400, #a1a1aa); }
 
     /* ── Progress bar ── */
     .progress-section {
@@ -111,18 +111,18 @@ export class AiBatchProgress extends LitElement {
       display: flex;
       justify-content: space-between;
       font-size: 11px;
-      color: #71717a;
+      color: var(--cg-gray-500, #71717a);
       margin-bottom: 6px;
     }
 
     .progress-percent {
       font-weight: 700;
-      color: #dfff61;
+      color: var(--cg-brand-ai-accent, #dfff61);
     }
 
     .progress-track {
       height: 10px;
-      background: #27272a;
+      background: var(--cg-color-surface-container-border, #27272a);
       border-radius: 5px;
       overflow: hidden;
       display: flex;
@@ -130,13 +130,13 @@ export class AiBatchProgress extends LitElement {
 
     .progress-success {
       height: 100%;
-      background: #22c55e;
+      background: var(--cg-color-status-success-text-default, #22c55e);
       transition: width 300ms ease;
     }
 
     .progress-fail {
       height: 100%;
-      background: #ef4444;
+      background: var(--cg-color-status-error-text-default, #ef4444);
       transition: width 300ms ease;
     }
 
@@ -146,14 +146,14 @@ export class AiBatchProgress extends LitElement {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #3b82f6;
+      background: var(--cg-color-status-info-text-default, #3b82f6);
       margin-right: 6px;
       animation: pulse 1.5s infinite;
     }
 
     .eta {
       font-size: 11px;
-      color: #52525b;
+      color: var(--cg-gray-600, #52525b);
       margin-top: 6px;
     }
 
@@ -163,13 +163,13 @@ export class AiBatchProgress extends LitElement {
       gap: 8px;
       margin-top: 16px;
       padding-top: 14px;
-      border-top: 1px solid #27272a;
+      border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
     }
 
     .action-btn {
       background: transparent;
-      border: 1px solid #27272a;
-      color: #a1a1aa;
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
+      color: var(--cg-gray-400, #a1a1aa);
       font-size: 12px;
       font-weight: 600;
       padding: 7px 14px;
@@ -178,20 +178,20 @@ export class AiBatchProgress extends LitElement {
       transition: all 150ms ease;
     }
     .action-btn:hover {
-      border-color: #3f3f46;
-      color: #fafafa;
+      border-color: var(--cg-gray-700, #3f3f46);
+      color: var(--cg-color-surface-base-text, #fafafa);
     }
     .action-btn:focus-visible {
-      outline: 2px solid #dfff61;
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
 
     .action-btn.pause:hover { border-color: #eab308; color: #eab308; }
-    .action-btn.cancel:hover { border-color: #ef4444; color: #ef4444; }
+    .action-btn.cancel:hover { border-color: var(--cg-color-status-error-text-default, #ef4444); color: var(--cg-color-status-error-text-default, #ef4444); }
     .action-btn.retry {
-      background: #dfff61;
-      color: #18181b;
-      border-color: #dfff61;
+      background: var(--cg-brand-ai-accent, #dfff61);
+      color: var(--cg-color-surface-container-background, #18181b);
+      border-color: var(--cg-brand-ai-accent, #dfff61);
     }
     .action-btn.retry:hover { filter: brightness(0.9); }
       .pulse-dot { animation: none; }
@@ -321,7 +321,7 @@ export class AiBatchProgress extends LitElement {
             >Retry Failed</button>
           ` : nothing}
           ${this.status === 'complete' ? html`
-            <span style="font-size:12px;color:#22c55e;">All items processed</span>
+            <span style="font-size:12px;color:var(--cg-color-status-success-text-default, #22c55e);">All items processed</span>
           ` : nothing}
         </div>
       </div>

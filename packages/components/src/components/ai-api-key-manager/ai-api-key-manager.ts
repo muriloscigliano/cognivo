@@ -67,7 +67,7 @@ export class AiApiKeyManager extends LitElement {
       align-items: center;
       gap: 4px;
       background: var(--cg-color-accent, #dfff61);
-      color: #18181b;
+      color: var(--cg-color-surface-container-background, #18181b);
       border: none;
       border-radius: var(--cg-radius-md, 8px);
       padding: 6px 12px;
@@ -142,12 +142,12 @@ export class AiApiKeyManager extends LitElement {
 
     .status-active {
       background: rgba(34, 197, 94, 0.15);
-      color: #4ade80;
+      color: var(--cg-color-status-success-text-default, #4ade80);
     }
 
     .status-revoked {
       background: rgba(239, 68, 68, 0.15);
-      color: #f87171;
+      color: var(--cg-color-status-error-text-default, #f87171);
     }
 
     .actions {
@@ -184,8 +184,8 @@ export class AiApiKeyManager extends LitElement {
 
     .action-btn.danger:hover {
       background: rgba(239, 68, 68, 0.15);
-      color: #f87171;
-      border-color: #f87171;
+      color: var(--cg-color-status-error-text-default, #f87171);
+      border-color: var(--cg-color-status-error-text-default, #f87171);
     }
 
     .copied-toast {

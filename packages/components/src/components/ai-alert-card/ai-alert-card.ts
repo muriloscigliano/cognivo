@@ -136,7 +136,7 @@ export class AiAlertCard extends LitElement {
     .action-btn.urgent:hover { background: rgba(249, 115, 22, 0.2); }
     .action-btn.critical {
       background: var(--cg-red-400, #f87171);
-      color: #fff;
+      color: var(--cg-gray-white, #ffffff);
     }
     .action-btn.critical:hover { filter: brightness(0.9); }
 

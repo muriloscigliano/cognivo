@@ -139,7 +139,7 @@ export class AiVersionSelector extends LitElement {
 
     .status-active {
       background: rgba(34, 197, 94, 0.15);
-      color: #4ade80;
+      color: var(--cg-color-status-success-text-default, #4ade80);
     }
 
     .status-canary {

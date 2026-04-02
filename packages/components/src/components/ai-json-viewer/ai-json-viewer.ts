@@ -57,10 +57,10 @@ export class AiJsonViewer extends LitElement {
       text-decoration: underline;
     }
 
-    .string { color: #4ade80; }
+    .string { color: var(--cg-color-status-success-text-default, #4ade80); }
     .number { color: var(--cg-color-accent, #dfff61); }
     .boolean { color: #fb923c; }
-    .null { color: #71717a; font-style: italic; }
+    .null { color: var(--cg-gray-500, #71717a); font-style: italic; }
 
     .toggle {
       display: inline-flex;

@@ -108,10 +108,10 @@ export class AiDataCard extends LitElement {
       flex-shrink: 0;
       text-transform: uppercase;
     }
-    .header-badge.success { background: rgba(34, 197, 94, 0.12); color: #4ade80; }
-    .header-badge.warning { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
-    .header-badge.error { background: rgba(239, 68, 68, 0.12); color: #f87171; }
-    .header-badge.info { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
+    .header-badge.success { background: rgba(34, 197, 94, 0.12); color: var(--cg-color-status-success-text-default, #4ade80); }
+    .header-badge.warning { background: rgba(245, 158, 11, 0.12); color: var(--cg-color-status-warning-text-default, #fbbf24); }
+    .header-badge.error { background: rgba(239, 68, 68, 0.12); color: var(--cg-color-status-error-text-default, #f87171); }
+    .header-badge.info { background: rgba(59, 130, 246, 0.12); color: var(--cg-color-status-info-text-default, #60a5fa); }
     .header-badge.neutral { background: var(--cg-gray-800, #27272a); color: var(--cg-gray-400, #a1a1aa); }
 
     /* ── Rows ── */
@@ -193,10 +193,10 @@ export class AiDataCard extends LitElement {
       border-radius: 50%;
       flex-shrink: 0;
     }
-    .status-dot.success { background: #4ade80; }
-    .status-dot.warning { background: #fbbf24; }
-    .status-dot.error { background: #f87171; }
-    .status-dot.info { background: #60a5fa; }
+    .status-dot.success { background: var(--cg-color-status-success-text-default, #4ade80); }
+    .status-dot.warning { background: var(--cg-color-status-warning-text-default, #fbbf24); }
+    .status-dot.error { background: var(--cg-color-status-error-text-default, #f87171); }
+    .status-dot.info { background: var(--cg-color-status-info-text-default, #60a5fa); }
     .status-dot.neutral { background: var(--cg-gray-500, #71717a); }
 
     /* Badge value */
@@ -206,10 +206,10 @@ export class AiDataCard extends LitElement {
       padding: 2px 8px;
       border-radius: 4px;
     }
-    .val-badge.success { background: rgba(34, 197, 94, 0.12); color: #4ade80; }
-    .val-badge.warning { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
-    .val-badge.error { background: rgba(239, 68, 68, 0.12); color: #f87171; }
-    .val-badge.info { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
+    .val-badge.success { background: rgba(34, 197, 94, 0.12); color: var(--cg-color-status-success-text-default, #4ade80); }
+    .val-badge.warning { background: rgba(245, 158, 11, 0.12); color: var(--cg-color-status-warning-text-default, #fbbf24); }
+    .val-badge.error { background: rgba(239, 68, 68, 0.12); color: var(--cg-color-status-error-text-default, #f87171); }
+    .val-badge.info { background: rgba(59, 130, 246, 0.12); color: var(--cg-color-status-info-text-default, #60a5fa); }
     .val-badge.neutral { background: var(--cg-gray-800, #27272a); color: var(--cg-gray-400, #a1a1aa); }
 
     /* Copy button */
@@ -224,7 +224,7 @@ export class AiDataCard extends LitElement {
       flex-shrink: 0;
     }
     .copy-btn:hover { color: var(--cg-brand-ai-accent, #dfff61); }
-    .copy-btn.copied { color: #4ade80; }
+    .copy-btn.copied { color: var(--cg-color-status-success-text-default, #4ade80); }
 
     /* ── Footer ── */
     .footer {
@@ -264,13 +264,13 @@ export class AiDataCard extends LitElement {
     }
     .action-btn.primary {
       background: var(--cg-brand-ai-accent, #dfff61);
-      color: #000;
+      color: var(--cg-gray-black, #000000);
       border-color: transparent;
     }
     .action-btn.primary:hover { filter: brightness(1.1); }
     .action-btn.danger {
       border-color: rgba(239, 68, 68, 0.3);
-      color: #f87171;
+      color: var(--cg-color-status-error-text-default, #f87171);
     }
     .action-btn.danger:hover { background: rgba(239, 68, 68, 0.08); }
     .action-btn .btn-icon { font-size: 13px; }

@@ -59,7 +59,7 @@ export class AiEvalScorecard extends LitElement {
     .grade {
       font-size: 18px; font-weight: 800; padding: 2px 12px; border-radius: 6px;
     }
-    .grade.A { background: rgba(34, 197, 94, 0.12); color: #4ade80; }
+    .grade.A { background: rgba(34, 197, 94, 0.12); color: var(--cg-color-status-success-text-default, #4ade80); }
     .grade.B { background: rgba(34, 197, 94, 0.08); color: #86efac; }
     .grade.C { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
     .grade.D { background: rgba(249, 115, 22, 0.12); color: #fb923c; }

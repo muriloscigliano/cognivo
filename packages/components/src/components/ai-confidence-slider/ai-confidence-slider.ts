@@ -58,7 +58,7 @@ export class AiConfidenceSlider extends LitElement {
       width: 100%;
       height: 6px;
       border-radius: 3px;
-      background: linear-gradient(90deg, #f87171 0%, #fbbf24 50%, #4ade80 100%);
+      background: linear-gradient(90deg, var(--cg-color-status-error-text-default, #f87171) 0%, #fbbf24 50%, var(--cg-color-status-success-text-default, #4ade80) 100%);
       outline: none;
     }
     input[type="range"]::-webkit-slider-thumb {
@@ -84,7 +84,7 @@ export class AiConfidenceSlider extends LitElement {
     }
     input[type="range"]::-moz-range-track {
       height: 6px; border-radius: 3px;
-      background: linear-gradient(90deg, #f87171 0%, #fbbf24 50%, #4ade80 100%);
+      background: linear-gradient(90deg, var(--cg-color-status-error-text-default, #f87171) 0%, #fbbf24 50%, var(--cg-color-status-success-text-default, #4ade80) 100%);
     }
 
     .value-badge {

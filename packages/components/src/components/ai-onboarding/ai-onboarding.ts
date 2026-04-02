@@ -155,7 +155,7 @@ export class AiOnboarding extends LitElement {
 
     .next-btn {
       background: var(--cg-brand-ai-accent, #dfff61);
-      color: #18181b;
+      color: var(--cg-color-surface-container-background, #18181b);
     }
     .next-btn:hover:not(:disabled) { filter: brightness(1.1); }
 

@@ -186,7 +186,7 @@ export class AiFeatureFlag extends LitElement {
       width: 14px;
       height: 14px;
       border-radius: 50%;
-      background: #71717a;
+      background: var(--cg-gray-500, #71717a);
       top: 2px;
       left: 2px;
       transition: transform 0.15s ease, background 0.15s ease;

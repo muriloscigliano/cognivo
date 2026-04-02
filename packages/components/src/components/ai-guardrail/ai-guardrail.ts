@@ -60,7 +60,7 @@ export class AiGuardrail extends LitElement {
       font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
       text-transform: uppercase;
     }
-    .severity.low { background: rgba(34, 197, 94, 0.12); color: #4ade80; }
+    .severity.low { background: rgba(34, 197, 94, 0.12); color: var(--cg-color-status-success-text-default, #4ade80); }
     .severity.medium { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
     .severity.high { background: rgba(249, 115, 22, 0.12); color: #fb923c; }
     .severity.critical { background: rgba(239, 68, 68, 0.12); color: #f87171; }

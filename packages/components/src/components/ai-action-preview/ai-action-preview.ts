@@ -161,12 +161,12 @@ export class AiActionPreview extends LitElement {
     .btn-cancel:hover { background: var(--cg-gray-700, #3f3f46); }
     .btn-confirm {
       background: var(--cg-brand-ai-accent, #dfff61);
-      color: #09090b;
+      color: var(--cg-color-surface-base-background, #09090b);
     }
     .btn-confirm:hover { filter: brightness(0.9); }
     .btn-confirm.critical {
       background: var(--cg-red-400, #f87171);
-      color: #fff;
+      color: var(--cg-gray-white, #ffffff);
     }
 
     @keyframes pulse-border {

@@ -64,7 +64,7 @@ export class AiTestRunner extends LitElement {
       align-items: center;
       gap: 4px;
       background: var(--cg-color-accent, #dfff61);
-      color: #18181b;
+      color: var(--cg-color-surface-container-background, #18181b);
       border: none;
       border-radius: var(--cg-radius-md, 8px);
       padding: 6px 14px;
@@ -101,7 +101,7 @@ export class AiTestRunner extends LitElement {
     .dot-pass { background: #4ade80; }
     .dot-fail { background: #f87171; }
     .dot-running { background: #facc15; }
-    .dot-pending { background: #71717a; }
+    .dot-pending { background: var(--cg-gray-500, #71717a); }
 
     .progress-bar {
       height: 4px;
@@ -168,7 +168,7 @@ export class AiTestRunner extends LitElement {
     .icon-pass { color: #4ade80; }
     .icon-fail { color: #f87171; }
     .icon-running { color: #facc15; }
-    .icon-pending { color: #71717a; }
+    .icon-pending { color: var(--cg-gray-500, #71717a); }
 
     .test-name {
       flex: 1;

@@ -84,11 +84,11 @@ export class AiDataPreview extends LitElement {
       word-break: break-word;
     }
 
-    .json-key { color: #93c5fd; }
-    .json-string { color: #86efac; }
-    .json-number { color: #fde68a; }
-    .json-bool { color: #c4b5fd; }
-    .json-null { color: #71717a; }
+    .json-key { color: var(--cg-json-key, #93c5fd); }
+    .json-string { color: var(--cg-json-string, #86efac); }
+    .json-number { color: var(--cg-json-number, #fde68a); }
+    .json-bool { color: var(--cg-json-bool, #c4b5fd); }
+    .json-null { color: var(--cg-gray-500, #71717a); }
 
     table {
       width: 100%;
@@ -159,7 +159,7 @@ export class AiDataPreview extends LitElement {
 
     .btn-confirm {
       background: var(--cg-color-accent, #dfff61);
-      color: #18181b;
+      color: var(--cg-color-surface-container-background, #18181b);
     }
     }
   `];

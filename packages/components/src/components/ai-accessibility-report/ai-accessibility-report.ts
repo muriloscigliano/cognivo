@@ -114,9 +114,9 @@ export class AiAccessibilityReport extends LitElement {
       border-radius: 50%;
     }
 
-    .sev-error { background: #f87171; }
+    .sev-error { background: var(--cg-color-status-error-text-default, #f87171); }
     .sev-warning { background: #facc15; }
-    .sev-info { background: #60a5fa; }
+    .sev-info { background: var(--cg-color-status-info-text-default, #60a5fa); }
 
     .issue-list {
       display: flex;
@@ -159,9 +159,9 @@ export class AiAccessibilityReport extends LitElement {
       font-size: 14px;
     }
 
-    .sev-icon-error { color: #f87171; }
+    .sev-icon-error { color: var(--cg-color-status-error-text-default, #f87171); }
     .sev-icon-warning { color: #facc15; }
-    .sev-icon-info { color: #60a5fa; }
+    .sev-icon-info { color: var(--cg-color-status-info-text-default, #60a5fa); }
 
     .issue-rule {
       flex: 1;
@@ -182,7 +182,7 @@ export class AiAccessibilityReport extends LitElement {
 
     .level-A {
       background: rgba(96, 165, 250, 0.15);
-      color: #60a5fa;
+      color: var(--cg-color-status-info-text-default, #60a5fa);
     }
 
     .level-AA {

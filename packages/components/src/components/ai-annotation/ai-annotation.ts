@@ -291,7 +291,7 @@ export class AiAnnotation extends LitElement {
           aria-label="${f.annotation.label}: ${f.text}"
           style="background: ${color}22; border-bottom: 2px solid ${color}; opacity: ${0.5 + opacity * 0.5}"
           @click=${() => this._handleAnnotationClick(f.annotation)}>
-          <span class="annotation-label" style="background: ${color}; color: #000;">${f.annotation.label}</span>
+          <span class="annotation-label" style="background: ${color}; color: var(--cg-gray-black, #000000);">${f.annotation.label}</span>
           ${f.text}
           ${f.annotation.confidence !== undefined ? html`
             <span class="confidence-bar" style="background: ${color}; width: ${f.annotation.confidence * 100}%;"></span>

@@ -47,7 +47,7 @@ export class AiAudioPlayer extends LitElement {
       border-radius: 50%;
       border: none;
       background: var(--cg-brand-ai-accent, #dfff61);
-      color: #18181b;
+      color: var(--cg-color-surface-container-background, #18181b);
       font-size: 16px;
       cursor: pointer;
       display: flex;

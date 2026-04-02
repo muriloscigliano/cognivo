@@ -162,7 +162,7 @@ export class AiSourceGraph extends LitElement {
 
           <!-- Center node -->
           ${svg`
-            <circle cx="${cx}" cy="${cy}" r="20" fill="rgba(223, 255, 97, 0.12)" stroke="#dfff61" stroke-width="1.5" />
+            <circle cx="${cx}" cy="${cy}" r="20" fill="rgba(223, 255, 97, 0.12)" stroke="var(--cg-brand-ai-accent, #dfff61)" stroke-width="1.5" />
             <text class="center-label" x="${cx}" y="${cy + 4}">AI</text>
           `}
 

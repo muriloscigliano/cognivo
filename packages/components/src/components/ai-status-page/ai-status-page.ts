@@ -78,12 +78,12 @@ export class AiStatusPage extends LitElement {
 
     .status-operational  { background: rgba(34,197,94,0.15); color: #22c55e; }
     .status-degraded     { background: rgba(234,179,8,0.15);  color: #eab308; }
-    .status-down         { background: rgba(239,68,68,0.15);  color: #ef4444; }
+    .status-down         { background: rgba(239,68,68,0.15);  color: var(--cg-color-status-error-text-default, #ef4444); }
     .status-maintenance  { background: rgba(59,130,246,0.15); color: #3b82f6; }
 
     .dot-operational  { background: #22c55e; }
     .dot-degraded     { background: #eab308; }
-    .dot-down         { background: #ef4444; }
+    .dot-down         { background: var(--cg-color-status-error-text-default, #ef4444); }
     .dot-maintenance  { background: #3b82f6; }
 
     .service-list {
@@ -161,7 +161,7 @@ export class AiStatusPage extends LitElement {
     }
     .latency-bar-fill.fast { background: #22c55e; }
     .latency-bar-fill.mid  { background: #eab308; }
-    .latency-bar-fill.slow { background: #ef4444; }
+    .latency-bar-fill.slow { background: var(--cg-color-status-error-text-default, #ef4444); }
 
     .uptime {
       color: var(--cg-color-text-secondary, #a1a1aa);

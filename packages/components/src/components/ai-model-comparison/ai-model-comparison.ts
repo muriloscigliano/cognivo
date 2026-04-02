@@ -115,9 +115,9 @@ export class AiModelComparison extends LitElement {
       border-radius: 3px;
       transition: width 300ms ease;
     }
-    .score-bar-fill.low    { background: #ef4444; }
+    .score-bar-fill.low    { background: var(--cg-color-status-error-text-default, #ef4444); }
     .score-bar-fill.mid    { background: #eab308; }
-    .score-bar-fill.high   { background: #22c55e; }
+    .score-bar-fill.high   { background: var(--cg-color-status-success-text-default, #22c55e); }
     .score-bar-fill.best   { background: var(--cg-brand-ai-accent, #dfff61); }
 
     .score-value {
@@ -162,7 +162,7 @@ export class AiModelComparison extends LitElement {
     }
     .select-btn:hover {
       background: var(--cg-brand-ai-accent, #dfff61);
-      color: #18181b;
+      color: var(--cg-color-surface-container-background, #18181b);
       border-color: var(--cg-brand-ai-accent, #dfff61);
     }
     .select-btn:focus-visible {

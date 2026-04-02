@@ -41,12 +41,12 @@ export class AiChangelog extends LitElement {
     :host([hidden]) { display: none; }
 
     .container {
-      background: #18181b;
+      background: var(--cg-color-surface-container-background, #18181b);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid #27272a;
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 12px;
       padding: 20px;
-      color: #fafafa;
+      color: var(--cg-color-surface-base-text, #fafafa);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
@@ -68,7 +68,7 @@ export class AiChangelog extends LitElement {
       top: 4px;
       bottom: 4px;
       width: 2px;
-      background: #27272a;
+      background: var(--cg-color-surface-container-border, #27272a);
     }
 
     .entry {
@@ -83,22 +83,22 @@ export class AiChangelog extends LitElement {
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: #3f3f46;
-      border: 2px solid #18181b;
+      background: var(--cg-gray-700, #3f3f46);
+      border: 2px solid var(--cg-color-surface-container-background, #18181b);
       z-index: 1;
     }
 
     .entry-card {
-      background: #09090b;
-      border: 1px solid #27272a;
+      background: var(--cg-color-surface-base-background, #09090b);
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 8px;
       padding: 12px 14px;
       cursor: pointer;
       transition: border-color 120ms ease;
     }
-    .entry-card:hover { border-color: #3f3f46; }
+    .entry-card:hover { border-color: var(--cg-gray-700, #3f3f46); }
     .entry-card:focus-visible {
-      outline: 2px solid #dfff61;
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: -2px;
     }
 
@@ -112,7 +112,7 @@ export class AiChangelog extends LitElement {
     .version {
       font-size: 13px;
       font-weight: 700;
-      color: #fafafa;
+      color: var(--cg-color-surface-base-text, #fafafa);
     }
 
     .type-badge {
@@ -128,13 +128,13 @@ export class AiChangelog extends LitElement {
       display: flex;
       gap: 10px;
       font-size: 11px;
-      color: #52525b;
+      color: var(--cg-gray-600, #52525b);
       margin-top: 4px;
     }
 
     .changes-preview {
       font-size: 12px;
-      color: #a1a1aa;
+      color: var(--cg-gray-400, #a1a1aa);
       margin-top: 6px;
       line-height: 1.5;
       overflow: hidden;
@@ -148,16 +148,16 @@ export class AiChangelog extends LitElement {
     .expand-toggle {
       background: transparent;
       border: none;
-      color: #71717a;
+      color: var(--cg-gray-500, #71717a);
       font-size: 11px;
       cursor: pointer;
       padding: 4px 0;
       margin-top: 4px;
       transition: color 120ms ease;
     }
-    .expand-toggle:hover { color: #dfff61; }
+    .expand-toggle:hover { color: var(--cg-brand-ai-accent, #dfff61); }
     .expand-toggle:focus-visible {
-      outline: 2px solid #dfff61;
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
 
@@ -169,8 +169,8 @@ export class AiChangelog extends LitElement {
 
     .rollback-btn {
       background: transparent;
-      border: 1px solid #27272a;
-      color: #a1a1aa;
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
+      color: var(--cg-gray-400, #a1a1aa);
       font-size: 11px;
       font-weight: 600;
       padding: 4px 10px;
@@ -183,13 +183,13 @@ export class AiChangelog extends LitElement {
       color: #eab308;
     }
     .rollback-btn:focus-visible {
-      outline: 2px solid #dfff61;
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
 
     .empty-state {
       text-align: center;
-      color: #52525b;
+      color: var(--cg-gray-600, #52525b);
       font-size: 13px;
       padding: 32px 0;
     }

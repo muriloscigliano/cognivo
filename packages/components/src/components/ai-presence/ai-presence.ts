@@ -105,7 +105,7 @@ export class AiPresence extends LitElement {
     }
     .status-dot[data-status="online"]  { background: #22c55e; }
     .status-dot[data-status="away"]    { background: #eab308; }
-    .status-dot[data-status="offline"] { background: #71717a; }
+    .status-dot[data-status="offline"] { background: var(--cg-gray-500, #71717a); }
 
     .overflow-badge {
       display: flex;
