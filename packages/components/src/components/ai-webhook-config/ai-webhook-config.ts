@@ -51,6 +51,8 @@ export class AiWebhookConfig extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding-bottom: var(--cg-spacing-12, 12px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
       margin-bottom: var(--cg-spacing-12, 12px);
     }
 
@@ -65,7 +67,7 @@ export class AiWebhookConfig extends LitElement {
       color: var(--cg-color-surface-container-background, #18181b);
       border: none;
       border-radius: var(--cg-radius-md, 8px);
-      padding: 6px 12px;
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
       font-size: var(--cg-font-size-xs, 12px);
       font-weight: var(--cg-font-weight-semibold, 600);
       cursor: pointer;
@@ -85,7 +87,7 @@ export class AiWebhookConfig extends LitElement {
     .form {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
       padding: var(--cg-spacing-12, 12px);
       background: var(--cg-color-surface-overlay, #27272a);
       border-radius: var(--cg-radius-md, 8px);
@@ -94,7 +96,7 @@ export class AiWebhookConfig extends LitElement {
 
     .form-row {
       display: flex;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
     }
 
     input[type="url"] {
@@ -102,7 +104,7 @@ export class AiWebhookConfig extends LitElement {
       background: var(--cg-color-surface-base, #18181b);
       border: 1px solid var(--cg-color-border-default, #3f3f46);
       border-radius: var(--cg-radius-sm, 4px);
-      padding: 6px 10px;
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
       color: var(--cg-color-surface-base-text, #fafafa);
       font-size: var(--cg-font-size-sm, 14px);
       font-family: var(--cg-font-family-mono, 'JetBrains Mono', monospace);
@@ -116,14 +118,14 @@ export class AiWebhookConfig extends LitElement {
     .events-select {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
+      gap: var(--cg-spacing-4, 4px);
     }
 
     .event-chip {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      padding: 3px 8px;
+      gap: var(--cg-spacing-4, 4px);
+      padding: 3px var(--cg-spacing-8, 8px);
       background: transparent;
       border: 1px solid var(--cg-color-border-default, #3f3f46);
       border-radius: var(--cg-radius-full, 9999px);
@@ -146,7 +148,7 @@ export class AiWebhookConfig extends LitElement {
 
     .form-actions {
       display: flex;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
       justify-content: flex-end;
     }
 
@@ -154,7 +156,7 @@ export class AiWebhookConfig extends LitElement {
       background: transparent;
       border: 1px solid var(--cg-color-border-default, #3f3f46);
       border-radius: var(--cg-radius-sm, 4px);
-      padding: 4px 10px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
       font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-color-text-secondary, #a1a1aa);
       cursor: pointer;
@@ -185,7 +187,7 @@ export class AiWebhookConfig extends LitElement {
     .webhook-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
     }
 
     .webhook-item {
@@ -198,8 +200,8 @@ export class AiWebhookConfig extends LitElement {
     .webhook-top {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-bottom: var(--cg-spacing-6, 6px);
     }
 
     .webhook-url {
@@ -267,12 +269,12 @@ export class AiWebhookConfig extends LitElement {
     .webhook-events {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
-      margin-bottom: 6px;
+      gap: var(--cg-spacing-4, 4px);
+      margin-bottom: var(--cg-spacing-6, 6px);
     }
 
     .event-tag {
-      padding: 2px 6px;
+      padding: 2px var(--cg-spacing-6, 6px);
       background: rgba(223, 255, 97, 0.1);
       border-radius: var(--cg-radius-sm, 4px);
       font-size: 10px;
@@ -292,12 +294,12 @@ export class AiWebhookConfig extends LitElement {
 
     .webhook-actions {
       display: flex;
-      gap: 4px;
+      gap: var(--cg-spacing-4, 4px);
     }
 
     .empty {
       text-align: center;
-      padding: 24px;
+      padding: var(--cg-spacing-24, 24px);
       color: var(--cg-color-text-tertiary, #71717a);
       font-size: var(--cg-font-size-sm, 14px);
     }

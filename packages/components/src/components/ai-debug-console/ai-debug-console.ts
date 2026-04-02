@@ -45,8 +45,8 @@ export class AiDebugConsole extends LitElement {
     .toggle-bar {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
+      gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
       cursor: pointer;
       background: transparent;
       border: none;
@@ -69,7 +69,7 @@ export class AiDebugConsole extends LitElement {
 
     .chevron {
       transition: transform 0.15s ease;
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-color-text-tertiary, #71717a);
     }
 
@@ -99,7 +99,7 @@ export class AiDebugConsole extends LitElement {
       background: transparent;
       border: 1px solid var(--cg-color-border-default, #3f3f46);
       border-radius: var(--cg-radius-sm, 4px);
-      padding: 2px 8px;
+      padding: 2px var(--cg-spacing-8, 8px);
       font-size: 10px;
       color: var(--cg-color-text-secondary, #a1a1aa);
       cursor: pointer;
@@ -138,8 +138,8 @@ export class AiDebugConsole extends LitElement {
     .entry-header {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
+      gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
       cursor: pointer;
       background: transparent;
       border: none;
@@ -203,9 +203,9 @@ export class AiDebugConsole extends LitElement {
     }
 
     .entry-content {
-      padding: 8px 16px 12px 32px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px) var(--cg-spacing-12, 12px) var(--cg-spacing-24, 24px);
       font-family: var(--cg-font-family-mono, 'JetBrains Mono', monospace);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       line-height: 1.5;
       white-space: pre-wrap;
       word-break: break-word;
@@ -217,7 +217,7 @@ export class AiDebugConsole extends LitElement {
 
     .empty {
       text-align: center;
-      padding: 24px;
+      padding: var(--cg-spacing-24, 24px);
       color: var(--cg-color-text-tertiary, #71717a);
       font-size: var(--cg-font-size-xs, 12px);
     }

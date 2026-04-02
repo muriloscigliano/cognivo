@@ -34,18 +34,18 @@ export class AiToolIndicator extends LitElement {
     .tools {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: var(--cg-spacing-6, 6px);
     }
 
     .tool {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
-      border-radius: 8px;
+      gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
+      border-radius: var(--cg-border-radius-100, 8px);
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 500;
       color: var(--cg-gray-400, #a1a1aa);
       animation: slideIn 200ms ease;
@@ -108,11 +108,11 @@ export class AiToolIndicator extends LitElement {
 
     /* Expanded result */
     .result {
-      margin-top: 6px;
-      padding: 8px 10px;
+      margin-top: var(--cg-spacing-6, 6px);
+      padding: var(--cg-spacing-8, 8px);
       background: var(--cg-color-surface-base-background, #09090b);
-      border-radius: 6px;
-      font-size: 11px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       color: var(--cg-gray-400, #a1a1aa);
       line-height: 1.4;
@@ -123,7 +123,7 @@ export class AiToolIndicator extends LitElement {
 
     /* Compact mode */
     :host([compact]) .tools { flex-direction: row; flex-wrap: wrap; }
-    :host([compact]) .tool { padding: 3px 10px; font-size: 11px; }
+    :host([compact]) .tool { padding: 3px var(--cg-spacing-8, 8px); font-size: var(--cg-font-size-xs, 12px); }
     :host([compact]) .result { display: none; }
 
     :focus-visible {

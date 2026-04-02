@@ -51,8 +51,8 @@ export class AiKeyboardShortcuts extends LitElement {
     .modal {
       background: var(--cg-color-bg-primary, #18181b);
       border: 1px solid var(--cg-color-border-primary, #27272a);
-      border-radius: 16px;
-      padding: 24px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-24, 24px);
       max-width: 520px;
       width: 90vw;
       max-height: 70vh;
@@ -66,12 +66,12 @@ export class AiKeyboardShortcuts extends LitElement {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: var(--cg-spacing-16, 16px);
     }
 
     .modal-title {
       color: var(--cg-color-text-primary, #fafafa);
-      font-size: 18px;
+      font-size: var(--cg-font-size-lg, 18px);
       font-weight: 700;
     }
 
@@ -79,10 +79,10 @@ export class AiKeyboardShortcuts extends LitElement {
       background: none;
       border: none;
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 20px;
+      font-size: var(--cg-font-size-xl, 20px);
       cursor: pointer;
       padding: 4px;
-      border-radius: 4px;
+      border-radius: var(--cg-border-radius-50, 4px);
       line-height: 1;
     }
     .close-btn:hover { color: var(--cg-color-text-primary, #fafafa); }
@@ -93,14 +93,14 @@ export class AiKeyboardShortcuts extends LitElement {
 
     .search-input {
       width: 100%;
-      padding: 8px 12px;
-      border-radius: 8px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
+      border-radius: var(--cg-border-radius-100, 8px);
       border: 1px solid var(--cg-color-border-primary, #3f3f46);
       background: var(--cg-color-bg-secondary, #27272a);
       color: var(--cg-color-text-primary, #fafafa);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-family: inherit;
-      margin-bottom: 16px;
+      margin-bottom: var(--cg-spacing-16, 16px);
       box-sizing: border-box;
     }
     .search-input::placeholder {
@@ -118,13 +118,13 @@ export class AiKeyboardShortcuts extends LitElement {
 
     .category-label {
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      padding: 8px 0 6px;
+      padding: var(--cg-spacing-8, 8px) 0 var(--cg-spacing-6, 6px);
       border-bottom: 1px solid var(--cg-color-border-primary, #27272a);
-      margin-bottom: 4px;
+      margin-bottom: var(--cg-spacing-4, 4px);
     }
 
     .shortcut-row {
@@ -136,13 +136,13 @@ export class AiKeyboardShortcuts extends LitElement {
 
     .shortcut-desc {
       color: var(--cg-color-text-primary, #fafafa);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
 
     .key-group {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: var(--cg-spacing-4, 4px);
       flex-shrink: 0;
     }
 
@@ -156,9 +156,9 @@ export class AiKeyboardShortcuts extends LitElement {
       background: var(--cg-color-bg-secondary, #27272a);
       border: 1px solid var(--cg-color-border-primary, #3f3f46);
       border-bottom-width: 3px;
-      border-radius: 5px;
+      border-radius: var(--cg-border-radius-50, 4px);
       color: var(--cg-color-text-primary, #fafafa);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       white-space: nowrap;
@@ -166,14 +166,14 @@ export class AiKeyboardShortcuts extends LitElement {
 
     .key-plus {
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
     }
 
     .no-results {
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       text-align: center;
-      padding: 20px;
+      padding: var(--cg-spacing-16, 16px);
     }
     }
   `];

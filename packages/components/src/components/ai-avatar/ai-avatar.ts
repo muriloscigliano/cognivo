@@ -73,9 +73,9 @@ export class AiAvatar extends LitElement {
     :host([size="md"]) .ring,
     :host(:not([size])) .ring { width: 40px; height: 40px; }
     :host([size="md"]) .inner,
-    :host(:not([size])) .inner { width: 34px; height: 34px; font-size: 13px; }
+    :host(:not([size])) .inner { width: 34px; height: 34px; font-size: var(--cg-font-size-sm, 14px); }
     :host([size="lg"]) .ring { width: 56px; height: 56px; }
-    :host([size="lg"]) .inner { width: 48px; height: 48px; font-size: 18px; }
+    :host([size="lg"]) .inner { width: 48px; height: 48px; font-size: var(--cg-font-size-lg, 18px); }
 
     .inner img {
       width: 100%;

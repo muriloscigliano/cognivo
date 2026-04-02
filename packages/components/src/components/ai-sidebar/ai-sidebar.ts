@@ -73,9 +73,9 @@ export class AiSidebar extends LitElement {
       border: none;
       border-bottom: 1px solid var(--cg-color-border, #27272a);
       color: var(--cg-color-text-secondary, #a1a1aa);
-      padding: 12px;
+      padding: var(--cg-spacing-12, 12px);
       cursor: pointer;
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       transition: color 150ms ease;
     }
     .collapse-btn:hover {
@@ -89,12 +89,12 @@ export class AiSidebar extends LitElement {
     .sections {
       flex: 1;
       overflow-y: auto;
-      padding: 8px 0;
+      padding: var(--cg-spacing-8, 8px) 0;
     }
 
     .section-title {
-      padding: 8px 16px 4px;
-      font-size: 11px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px) var(--cg-spacing-4, 4px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -111,13 +111,13 @@ export class AiSidebar extends LitElement {
     .item {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: var(--cg-spacing-8, 8px);
       width: 100%;
-      padding: 8px 16px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
       background: none;
       border: none;
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-family: inherit;
       cursor: pointer;
       white-space: nowrap;
@@ -127,7 +127,7 @@ export class AiSidebar extends LitElement {
     }
     :host([collapsed]) .item {
       justify-content: center;
-      padding: 10px 0;
+      padding: var(--cg-spacing-8, 8px) 0;
     }
     .item:hover {
       background: rgba(255, 255, 255, 0.05);
@@ -146,7 +146,7 @@ export class AiSidebar extends LitElement {
       flex-shrink: 0;
       width: 18px;
       text-align: center;
-      font-size: 15px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
 
     .item-label {
@@ -163,7 +163,7 @@ export class AiSidebar extends LitElement {
       padding: 1px 6px;
       font-size: 10px;
       font-weight: 600;
-      border-radius: 8px;
+      border-radius: var(--cg-border-radius-100, 8px);
       background: rgba(223, 255, 97, 0.15);
       color: var(--cg-color-accent, #dfff61);
     }

@@ -30,8 +30,8 @@ export class AiErrorBoundary extends LitElement {
     .error-card {
       background: var(--cg-color-bg-primary, #18181b);
       border: 1px solid #7f1d1d;
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-16, 16px);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
@@ -39,12 +39,12 @@ export class AiErrorBoundary extends LitElement {
     .header {
       display: flex;
       align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: var(--cg-spacing-12, 12px);
+      margin-bottom: var(--cg-spacing-12, 12px);
     }
 
     .icon {
-      font-size: 24px;
+      font-size: var(--cg-font-size-2xl, 24px);
       flex-shrink: 0;
       line-height: 1;
     }
@@ -57,23 +57,23 @@ export class AiErrorBoundary extends LitElement {
     .title-row {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
       flex-wrap: wrap;
     }
 
     .title {
       color: #fca5a5;
-      font-size: 15px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 700;
     }
 
     .code-badge {
       display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
+      padding: 2px var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-50, 4px);
       background: rgba(239, 68, 68, 0.15);
       color: #fca5a5;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       letter-spacing: 0.5px;
@@ -81,19 +81,19 @@ export class AiErrorBoundary extends LitElement {
 
     .message {
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       line-height: 1.5;
-      margin-top: 6px;
+      margin-top: var(--cg-spacing-6, 6px);
     }
 
     .details-toggle {
       background: none;
       border: none;
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       cursor: pointer;
-      padding: 4px 0;
-      margin-top: 8px;
+      padding: var(--cg-spacing-4, 4px) 0;
+      margin-top: var(--cg-spacing-8, 8px);
       font-family: inherit;
       text-decoration: underline;
       text-underline-offset: 2px;
@@ -105,12 +105,12 @@ export class AiErrorBoundary extends LitElement {
     }
 
     .details {
-      margin-top: 10px;
-      padding: 12px;
+      margin-top: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-12, 12px);
       background: var(--cg-color-bg-secondary, #27272a);
-      border-radius: 8px;
+      border-radius: var(--cg-border-radius-100, 8px);
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       line-height: 1.6;
       white-space: pre-wrap;
@@ -118,15 +118,17 @@ export class AiErrorBoundary extends LitElement {
     }
 
     .actions {
+      padding-top: var(--cg-spacing-12, 12px);
+      border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
       display: flex;
-      gap: 10px;
-      margin-top: 16px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-top: var(--cg-spacing-16, 16px);
     }
 
     .btn {
-      padding: 8px 20px;
-      border-radius: 8px;
-      font-size: 13px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
+      border-radius: var(--cg-border-radius-100, 8px);
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       cursor: pointer;
       border: none;

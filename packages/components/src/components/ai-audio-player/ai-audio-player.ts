@@ -32,12 +32,12 @@ export class AiAudioPlayer extends LitElement {
     .player {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
+      gap: var(--cg-spacing-12, 12px);
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       background: var(--cg-color-bg-secondary, #27272a);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-border-primary, #3f3f46);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
@@ -48,7 +48,7 @@ export class AiAudioPlayer extends LitElement {
       border: none;
       background: var(--cg-brand-ai-accent, #dfff61);
       color: var(--cg-color-surface-container-background, #18181b);
-      font-size: 16px;
+      font-size: var(--cg-font-size-base, 16px);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -69,7 +69,7 @@ export class AiAudioPlayer extends LitElement {
       min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: var(--cg-spacing-6, 6px);
     }
 
     .title-row {
@@ -80,7 +80,7 @@ export class AiAudioPlayer extends LitElement {
 
     .title {
       color: var(--cg-color-text-primary, #fafafa);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -89,7 +89,7 @@ export class AiAudioPlayer extends LitElement {
 
     .time {
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-variant-numeric: tabular-nums;
       flex-shrink: 0;
     }
@@ -134,10 +134,10 @@ export class AiAudioPlayer extends LitElement {
       background: none;
       border: 1px solid var(--cg-color-border-primary, #3f3f46);
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 6px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-100, 8px);
       cursor: pointer;
       flex-shrink: 0;
       font-family: inherit;

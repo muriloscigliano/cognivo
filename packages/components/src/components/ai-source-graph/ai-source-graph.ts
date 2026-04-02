@@ -39,8 +39,8 @@ export class AiSourceGraph extends LitElement {
     .container {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
-      padding: 16px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-16, 16px);
       position: relative;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
@@ -48,7 +48,7 @@ export class AiSourceGraph extends LitElement {
 
     .title {
       font-size: 12px; font-weight: 700; color: var(--cg-gray-400, #a1a1aa);
-      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;
+      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--cg-spacing-12, 12px);
     }
 
     svg { display: block; margin: 0 auto; }
@@ -63,26 +63,26 @@ export class AiSourceGraph extends LitElement {
       pointer-events: none;
     }
     .center-label {
-      font-size: 11px; font-weight: 700;
+      font-size: var(--cg-font-size-xs, 12px); font-weight: 700;
       fill: var(--cg-brand-ai-accent, #dfff61);
       text-anchor: middle;
     }
     .node-icon {
-      font-size: 12px; text-anchor: middle; dominant-baseline: central;
+      font-size: var(--cg-font-size-xs, 12px); text-anchor: middle; dominant-baseline: central;
       pointer-events: none;
     }
 
     /* Detail panel */
     .detail {
-      margin-top: 12px;
-      padding: 12px;
+      margin-top: var(--cg-spacing-12, 12px);
+      padding: var(--cg-spacing-12, 12px);
       background: var(--cg-color-surface-base-background, #09090b);
-      border-radius: 8px;
+      border-radius: var(--cg-border-radius-100, 8px);
       animation: fadeIn 200ms ease;
     }
-    .detail-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .detail-header { display: flex; align-items: center; gap: var(--cg-spacing-8, 8px); margin-bottom: var(--cg-spacing-6, 6px); }
     .detail-type {
-      font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px;
+      font-size: 9px; font-weight: 700; padding: 2px var(--cg-spacing-6, 6px); border-radius: 3px;
       text-transform: uppercase;
     }
     .detail-type.doc { background: rgba(139, 92, 246, 0.12); color: #a78bfa; }
@@ -91,7 +91,7 @@ export class AiSourceGraph extends LitElement {
     .detail-type.api { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
     .detail-title { font-size: 13px; font-weight: 600; color: var(--cg-color-surface-base-text, #fafafa); }
     .detail-weight {
-      font-size: 11px; font-weight: 700; margin-left: auto;
+      font-size: var(--cg-font-size-xs, 12px); font-weight: 700; margin-left: auto;
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       color: var(--cg-brand-ai-accent, #dfff61);
     }

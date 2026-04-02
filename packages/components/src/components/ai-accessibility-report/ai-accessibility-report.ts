@@ -47,6 +47,8 @@ export class AiAccessibilityReport extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--cg-spacing-16, 16px);
+      padding-bottom: var(--cg-spacing-12, 12px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
       margin-bottom: var(--cg-spacing-16, 16px);
     }
 
@@ -105,7 +107,7 @@ export class AiAccessibilityReport extends LitElement {
     .breakdown-item {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: var(--cg-spacing-4, 4px);
     }
 
     .sev-dot {
@@ -121,7 +123,7 @@ export class AiAccessibilityReport extends LitElement {
     .issue-list {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: var(--cg-spacing-4, 4px);
     }
 
     .issue-item {
@@ -133,8 +135,8 @@ export class AiAccessibilityReport extends LitElement {
     .issue-header {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
+      gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
       cursor: pointer;
       background: transparent;
       border: none;
@@ -156,7 +158,7 @@ export class AiAccessibilityReport extends LitElement {
 
     .sev-icon {
       flex-shrink: 0;
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
 
     .sev-icon-error { color: var(--cg-color-status-error-text-default, #f87171); }
@@ -173,7 +175,7 @@ export class AiAccessibilityReport extends LitElement {
 
     .level-badge {
       display: inline-flex;
-      padding: 2px 6px;
+      padding: 2px var(--cg-spacing-6, 6px);
       border-radius: var(--cg-radius-sm, 4px);
       font-size: 10px;
       font-weight: var(--cg-font-weight-bold, 700);
@@ -204,23 +206,23 @@ export class AiAccessibilityReport extends LitElement {
     .issue-desc {
       color: var(--cg-color-text-secondary, #a1a1aa);
       line-height: 1.5;
-      margin-bottom: 6px;
+      margin-bottom: var(--cg-spacing-6, 6px);
     }
 
     .issue-element {
       display: inline-block;
-      padding: 2px 8px;
+      padding: 2px var(--cg-spacing-8, 8px);
       background: var(--cg-color-surface-overlay, #27272a);
       border-radius: var(--cg-radius-sm, 4px);
       font-family: var(--cg-font-family-mono, 'JetBrains Mono', monospace);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-color-accent, #dfff61);
       word-break: break-all;
     }
 
     .empty {
       text-align: center;
-      padding: 24px;
+      padding: var(--cg-spacing-24, 24px);
       color: var(--cg-color-text-tertiary, #71717a);
       font-size: var(--cg-font-size-sm, 14px);
     }

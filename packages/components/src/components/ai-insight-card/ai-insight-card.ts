@@ -44,7 +44,7 @@ export class AiInsightCard extends LitElement {
       padding: var(--cg-spacing-14, 14px) var(--cg-spacing-16, 16px);
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
       cursor: pointer;
       transition: all 200ms ease;
       position: relative;
@@ -80,7 +80,7 @@ export class AiInsightCard extends LitElement {
     .icon-area {
       width: 40px;
       height: 40px;
-      border-radius: 10px;
+      border-radius: var(--cg-border-radius-100, 8px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -101,11 +101,11 @@ export class AiInsightCard extends LitElement {
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--cg-brand-ai-accent, #dfff61);
-      margin-bottom: 3px;
+      margin-bottom: var(--cg-spacing-4, 4px);
     }
 
     .insight-text {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-surface-base-text, #fafafa);
       line-height: 1.5;
       display: -webkit-box;
@@ -130,24 +130,24 @@ export class AiInsightCard extends LitElement {
     .timestamp { color: var(--cg-gray-500, #71717a); }
 
     .detail {
-      margin-top: 12px;
+      margin-top: var(--cg-spacing-12, 12px);
       padding-top: 12px;
       border-top: 1px solid var(--cg-gray-800, #27272a);
     }
     .sources-label {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       color: var(--cg-gray-400, #a1a1aa);
-      margin-bottom: 6px;
+      margin-bottom: var(--cg-spacing-6, 6px);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     .source {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 4px 0;
-      font-size: 12px;
+      gap: var(--cg-spacing-6, 6px);
+      padding: var(--cg-spacing-4, 4px) 0;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-400, #a1a1aa);
     }
     .source a { color: var(--cg-brand-ai-accent, #dfff61); text-decoration: none; }
@@ -159,7 +159,7 @@ export class AiInsightCard extends LitElement {
 
     .actions {
       display: flex;
-      gap: 4px;
+      gap: var(--cg-spacing-4, 4px);
       position: absolute;
       top: 8px;
       right: 8px;
@@ -170,7 +170,7 @@ export class AiInsightCard extends LitElement {
     .action-btn {
       width: 24px;
       height: 24px;
-      border-radius: 6px;
+      border-radius: var(--cg-border-radius-100, 8px);
       background: var(--cg-gray-800, #27272a);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       color: var(--cg-gray-400, #a1a1aa);
@@ -178,7 +178,7 @@ export class AiInsightCard extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       transition: all 150ms;
       padding: 0;
     }
@@ -189,24 +189,24 @@ export class AiInsightCard extends LitElement {
 
     .skeleton {
       display: flex;
-      gap: 14px;
-      padding: 14px 16px;
+      gap: var(--cg-spacing-12, 12px);
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
     }
     .skel-icon {
       width: 40px;
       height: 40px;
-      border-radius: 10px;
+      border-radius: var(--cg-border-radius-100, 8px);
       background: linear-gradient(90deg, var(--cg-gray-800, #27272a) 25%, var(--cg-gray-700, #3f3f46) 50%, var(--cg-gray-800, #27272a) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s linear infinite;
     }
-    .skel-lines { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .skel-lines { flex: 1; display: flex; flex-direction: column; gap: var(--cg-spacing-8, 8px); }
     .skel-line {
       height: 10px;
-      border-radius: 5px;
+      border-radius: var(--cg-border-radius-50, 4px);
       background: linear-gradient(90deg, var(--cg-gray-800, #27272a) 25%, var(--cg-gray-700, #3f3f46) 50%, var(--cg-gray-800, #27272a) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s linear infinite;

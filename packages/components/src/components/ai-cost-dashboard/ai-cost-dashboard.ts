@@ -37,8 +37,8 @@ export class AiCostDashboard extends LitElement {
       background: var(--cg-color-surface-container-background, #18181b);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-16, 16px);
       color: var(--cg-color-surface-base-text, #fafafa);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
@@ -47,16 +47,16 @@ export class AiCostDashboard extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 16px;
+      margin-bottom: var(--cg-spacing-16, 16px);
     }
 
     .title {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
     }
 
     .period {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
     }
 
@@ -64,25 +64,25 @@ export class AiCostDashboard extends LitElement {
     .summary {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-bottom: var(--cg-spacing-16, 16px);
     }
 
     .stat-card {
       background: var(--cg-color-surface-base-background, #09090b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 8px;
-      padding: 12px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-12, 12px);
     }
 
     .stat-label {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
-      margin-bottom: 4px;
+      margin-bottom: var(--cg-spacing-4, 4px);
     }
 
     .stat-value {
-      font-size: 18px;
+      font-size: var(--cg-font-size-lg, 18px);
       font-weight: 700;
       color: var(--cg-brand-ai-accent, #dfff61);
     }
@@ -92,27 +92,27 @@ export class AiCostDashboard extends LitElement {
 
     /* ── Budget bar ── */
     .budget-section {
-      margin-bottom: 16px;
+      margin-bottom: var(--cg-spacing-16, 16px);
     }
 
     .budget-header {
       display: flex;
       justify-content: space-between;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
-      margin-bottom: 6px;
+      margin-bottom: var(--cg-spacing-6, 6px);
     }
 
     .budget-track {
       height: 8px;
       background: var(--cg-color-surface-container-border, #27272a);
-      border-radius: 4px;
+      border-radius: var(--cg-border-radius-50, 4px);
       overflow: hidden;
     }
 
     .budget-fill {
       height: 100%;
-      border-radius: 4px;
+      border-radius: var(--cg-border-radius-50, 4px);
       background: var(--cg-brand-ai-accent, #dfff61);
       transition: width 300ms ease;
     }
@@ -121,19 +121,19 @@ export class AiCostDashboard extends LitElement {
 
     /* ── Model breakdown ── */
     .breakdown-title {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       color: var(--cg-gray-400, #a1a1aa);
-      margin-bottom: 8px;
+      margin-bottom: var(--cg-spacing-8, 8px);
     }
 
     .model-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 6px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-bottom: var(--cg-spacing-6, 6px);
       cursor: pointer;
-      padding: 4px 0;
+      padding: var(--cg-spacing-4, 4px) 0;
       transition: opacity 120ms ease;
     }
     .model-row:hover { opacity: 0.85; }
@@ -143,7 +143,7 @@ export class AiCostDashboard extends LitElement {
     }
 
     .model-name {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-300, #d4d4d8);
       width: 100px;
       flex-shrink: 0;
@@ -168,7 +168,7 @@ export class AiCostDashboard extends LitElement {
     }
 
     .model-cost {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
       width: 60px;
       text-align: right;
@@ -177,14 +177,14 @@ export class AiCostDashboard extends LitElement {
 
     /* ── Mini trend chart ── */
     .trend-section {
-      margin-top: 16px;
+      margin-top: var(--cg-spacing-16, 16px);
     }
 
     .trend-title {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       color: var(--cg-gray-400, #a1a1aa);
-      margin-bottom: 8px;
+      margin-bottom: var(--cg-spacing-8, 8px);
     }
 
     .trend-chart {
@@ -209,8 +209,8 @@ export class AiCostDashboard extends LitElement {
     .empty-state {
       text-align: center;
       color: var(--cg-gray-600, #52525b);
-      font-size: 13px;
-      padding: 32px 0;
+      font-size: var(--cg-font-size-sm, 14px);
+      padding: var(--cg-spacing-24, 24px) 0;
     }
     }
   `];

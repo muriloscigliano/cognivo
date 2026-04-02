@@ -42,12 +42,12 @@ export class AiWorkflowBuilder extends LitElement {
     .container {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px; padding: 20px; overflow: auto;
+      border-radius: var(--cg-border-radius-150, 12px); padding: var(--cg-spacing-16, 16px); overflow: auto;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--cg-spacing-16, 16px); }
     .title { font-size: 14px; font-weight: 700; color: var(--cg-color-surface-base-text, #fafafa); }
     .step-count { font-size: 11px; color: var(--cg-gray-500, #71717a); }
 
@@ -59,8 +59,8 @@ export class AiWorkflowBuilder extends LitElement {
     .connector.active { background: var(--cg-brand-ai-accent, #dfff61); }
 
     .step {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 16px; border-radius: 10px;
+      display: flex; align-items: center; gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px); border-radius: var(--cg-border-radius-100, 8px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       background: var(--cg-color-surface-base-background, #09090b);
       min-width: 200px; cursor: pointer; transition: all 150ms;
@@ -73,9 +73,9 @@ export class AiWorkflowBuilder extends LitElement {
     .step.skipped { opacity: 0.5; }
 
     .step-icon {
-      width: 28px; height: 28px; border-radius: 8px;
+      width: 28px; height: 28px; border-radius: var(--cg-border-radius-100, 8px);
       display: flex; align-items: center; justify-content: center;
-      font-size: 12px; flex-shrink: 0;
+      font-size: var(--cg-font-size-xs, 12px); flex-shrink: 0;
     }
     .step-icon.start { background: rgba(34, 197, 94, 0.12); color: #4ade80; }
     .step-icon.agent { background: rgba(223, 255, 97, 0.12); color: #dfff61; }
@@ -88,9 +88,9 @@ export class AiWorkflowBuilder extends LitElement {
     .step-desc { font-size: 11px; color: var(--cg-gray-500, #71717a); margin-top: 2px; }
     .step-type { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--cg-gray-500, #71717a); }
 
-    .step-status { font-size: 12px; flex-shrink: 0; }
+    .step-status { font-size: var(--cg-font-size-xs, 12px); flex-shrink: 0; }
 
-    .branch { display: flex; gap: 16px; align-items: flex-start; }
+    .branch { display: flex; gap: var(--cg-spacing-16, 16px); align-items: flex-start; }
     .branch-line { width: 1px; height: 100%; background: var(--cg-gray-700, #3f3f46); }
 
     .empty { text-align: center; padding: 32px; color: var(--cg-gray-500, #71717a); font-size: 13px; }

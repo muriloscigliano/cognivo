@@ -36,7 +36,7 @@ export class AiActionPreview extends LitElement {
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-cards-border, #27272a);
       border-radius: var(--cg-border-radius-200, 12px);
-      padding: 20px;
+      padding: var(--cg-spacing-16, 16px);
       position: relative;
       overflow: hidden;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
@@ -50,11 +50,11 @@ export class AiActionPreview extends LitElement {
     .header {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-bottom: var(--cg-spacing-16, 16px);
     }
     .title {
-      font-size: 16px;
+      font-size: var(--cg-font-size-base, 16px);
       font-weight: 700;
       color: var(--cg-color-surface-base-text, #fafafa);
       flex: 1;
@@ -64,10 +64,10 @@ export class AiActionPreview extends LitElement {
     .severity {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      padding: 3px 10px;
+      gap: var(--cg-spacing-4, 4px);
+      padding: 3px var(--cg-spacing-8, 8px);
       border-radius: 99px;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.04em;
@@ -91,27 +91,27 @@ export class AiActionPreview extends LitElement {
 
     /* ── Description ── */
     .description {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-gray-400, #a1a1aa);
       line-height: 1.5;
-      margin-bottom: 16px;
+      margin-bottom: var(--cg-spacing-16, 16px);
     }
 
     /* ── Details key-value list ── */
     .details {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-bottom: 20px;
-      padding: 12px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-bottom: var(--cg-spacing-16, 16px);
+      padding: var(--cg-spacing-12, 12px);
       background: var(--cg-gray-900, #09090b);
-      border-radius: 8px;
+      border-radius: var(--cg-border-radius-100, 8px);
     }
     .detail-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
     .detail-key {
       color: var(--cg-gray-400, #a1a1aa);
@@ -125,9 +125,9 @@ export class AiActionPreview extends LitElement {
     /* ── Countdown ── */
     .countdown {
       text-align: center;
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-400, #a1a1aa);
-      margin-bottom: 12px;
+      margin-bottom: var(--cg-spacing-12, 12px);
     }
     .countdown-num {
       font-weight: 700;
@@ -136,14 +136,16 @@ export class AiActionPreview extends LitElement {
 
     /* ── Actions ── */
     .actions {
+      padding-top: var(--cg-spacing-12, 12px);
+      border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
       display: flex;
-      gap: 10px;
+      gap: var(--cg-spacing-8, 8px);
     }
     button {
       flex: 1;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 14px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
+      border-radius: var(--cg-border-radius-100, 8px);
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       cursor: pointer;
       transition: all 150ms ease;

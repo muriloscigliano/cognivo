@@ -44,7 +44,7 @@ export class AiResultPanel extends LitElement {
     .panel {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid rgba(223, 255, 97, 0.12);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
       overflow: hidden;
       box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
@@ -55,30 +55,30 @@ export class AiResultPanel extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 14px 18px;
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       cursor: pointer;
     }
     .header-left { display: flex; align-items: center; gap: var(--cg-spacing-10, 10px); }
     .title {
-      font-size: 16px;
+      font-size: var(--cg-font-size-base, 16px);
       font-weight: 600;
       color: var(--cg-color-surface-base-text, #fafafa);
     }
     .collapse-icon {
       color: var(--cg-gray-500, #71717a);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       transition: transform 200ms;
     }
     .panel.collapsed .collapse-icon { transform: rotate(-90deg); }
 
-    .header-actions { display: flex; gap: 4px; }
+    .header-actions { display: flex; gap: var(--cg-spacing-4, 4px); }
     .header-btn {
       background: none;
       border: 1px solid var(--cg-gray-700, #3f3f46);
       color: var(--cg-gray-400, #a1a1aa);
-      border-radius: 6px;
-      padding: 3px 10px;
-      font-size: 11px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      padding: 3px var(--cg-spacing-8, 8px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       cursor: pointer;
       transition: all 150ms;
@@ -99,12 +99,12 @@ export class AiResultPanel extends LitElement {
     .tabs {
       display: flex;
       gap: 0;
-      margin-bottom: 14px;
+      margin-bottom: var(--cg-spacing-12, 12px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .tab {
-      padding: 8px 16px;
-      font-size: 12px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       color: var(--cg-gray-500, #71717a);
       background: none;
@@ -139,7 +139,7 @@ export class AiResultPanel extends LitElement {
       border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: var(--cg-spacing-6, 6px);
     }
     .bullet {
       display: flex;
@@ -161,7 +161,7 @@ export class AiResultPanel extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: var(--cg-spacing-8, 8px);
     }
     .drivers-label {
       font-size: var(--cg-font-size-xs, 12px);
@@ -174,7 +174,7 @@ export class AiResultPanel extends LitElement {
       background: none;
       border: none;
       color: var(--cg-gray-500, #71717a);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       cursor: pointer;
       font-family: inherit;
     }
@@ -194,11 +194,11 @@ export class AiResultPanel extends LitElement {
     .driver-top {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 6px;
+      margin-bottom: var(--cg-spacing-6, 6px);
     }
     .driver-name { font-size: 12px; color: var(--cg-gray-400, #a1a1aa); }
     .driver-value {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
     }
     .driver-value.positive { color: var(--cg-green-400, #4ade80); }
@@ -220,21 +220,21 @@ export class AiResultPanel extends LitElement {
 
     /* ── Sources tab ── */
     .source-item {
-      padding: 10px 0;
+      padding: var(--cg-spacing-8, 8px) 0;
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .source-item:last-child { border-bottom: none; }
     .source-title {
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       color: var(--cg-brand-ai-accent, #dfff61);
       text-decoration: none;
     }
     .source-title:hover { text-decoration: underline; }
     .source-excerpt {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
-      margin-top: 4px;
+      margin-top: var(--cg-spacing-4, 4px);
       line-height: 1.4;
     }
 
@@ -242,31 +242,31 @@ export class AiResultPanel extends LitElement {
     .data-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
     }
     .data-table th {
       text-align: left;
-      padding: 6px 10px;
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
       color: var(--cg-gray-400, #a1a1aa);
       font-weight: 600;
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .data-table td {
-      padding: 6px 10px;
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
       color: var(--cg-color-surface-base-text, #fafafa);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
 
     /* ── Streaming ── */
     .streaming-indicator {
-      padding: 12px 0;
+      padding: var(--cg-spacing-12, 12px) 0;
     }
 
     .empty {
       text-align: center;
-      padding: 32px;
+      padding: var(--cg-spacing-24, 24px);
       color: var(--cg-gray-500, #71717a);
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
 
     :focus-visible {

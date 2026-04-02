@@ -44,8 +44,8 @@ export class AiEmbeddingViz extends LitElement {
     .container {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-16, 16px);
       color: var(--cg-color-surface-base-text, #fafafa);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
@@ -55,16 +55,16 @@ export class AiEmbeddingViz extends LitElement {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      margin-bottom: var(--cg-spacing-12, 12px);
     }
 
     .title {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
     }
 
     .point-count {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
     }
 
@@ -72,7 +72,7 @@ export class AiEmbeddingViz extends LitElement {
       position: relative;
       background: var(--cg-color-surface-base-background, #09090b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 8px;
+      border-radius: var(--cg-border-radius-100, 8px);
       overflow: hidden;
     }
 
@@ -103,9 +103,9 @@ export class AiEmbeddingViz extends LitElement {
       background: #09090b;
       border: 1px solid var(--cg-gray-700, #3f3f46);
       color: #e4e4e7;
-      font-size: 11px;
-      padding: 6px 10px;
-      border-radius: 6px;
+      font-size: var(--cg-font-size-xs, 12px);
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-100, 8px);
       white-space: nowrap;
       pointer-events: none;
       z-index: 10;
@@ -117,15 +117,15 @@ export class AiEmbeddingViz extends LitElement {
     .legend {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-top: var(--cg-spacing-8, 8px);
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      gap: 4px;
-      font-size: 11px;
+      gap: var(--cg-spacing-4, 4px);
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-400, #a1a1aa);
     }
 
@@ -138,8 +138,8 @@ export class AiEmbeddingViz extends LitElement {
     .empty-state {
       text-align: center;
       color: var(--cg-gray-600, #52525b);
-      font-size: 13px;
-      padding: 32px 0;
+      font-size: var(--cg-font-size-sm, 14px);
+      padding: var(--cg-spacing-24, 24px) 0;
     }
 
     .axis-label {

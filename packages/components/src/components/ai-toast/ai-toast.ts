@@ -84,11 +84,11 @@ export class AiToast extends LitElement {
     .icon {
       width: 20px;
       height: 20px;
-      border-radius: 6px;
+      border-radius: var(--cg-border-radius-100, 8px);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 800;
       flex-shrink: 0;
     }
@@ -111,7 +111,7 @@ export class AiToast extends LitElement {
       color: var(--cg-gray-500, #71717a);
       cursor: pointer;
       padding: 0;
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       line-height: 1;
       flex-shrink: 0;
       transition: color 150ms;

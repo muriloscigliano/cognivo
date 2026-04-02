@@ -36,12 +36,12 @@ export class AiTokenTracker extends LitElement {
     .compact {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 4px 12px;
-      border-radius: 6px;
+      gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
+      border-radius: var(--cg-border-radius-100, 8px);
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       color: var(--cg-gray-400, #a1a1aa);
       cursor: pointer;
@@ -57,10 +57,10 @@ export class AiTokenTracker extends LitElement {
 
     /* Detailed mode */
     .detailed {
-      padding: 14px 16px;
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 10px;
+      border-radius: var(--cg-border-radius-100, 8px);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
@@ -69,10 +69,10 @@ export class AiTokenTracker extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: var(--cg-spacing-12, 12px);
     }
     .detail-title {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       color: var(--cg-gray-400, #a1a1aa);
       text-transform: uppercase;
@@ -80,8 +80,8 @@ export class AiTokenTracker extends LitElement {
     }
     .model-badge {
       font-size: 10px;
-      padding: 2px 8px;
-      border-radius: 4px;
+      padding: 2px var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-50, 4px);
       background: rgba(223, 255, 97, 0.1);
       color: var(--cg-brand-ai-accent, #dfff61);
       font-weight: 700;
@@ -90,8 +90,8 @@ export class AiTokenTracker extends LitElement {
     .metrics {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: var(--cg-spacing-12, 12px);
+      margin-bottom: var(--cg-spacing-12, 12px);
     }
     .metric {
       display: flex;
@@ -105,7 +105,7 @@ export class AiTokenTracker extends LitElement {
       text-transform: uppercase;
     }
     .metric-value {
-      font-size: 16px;
+      font-size: var(--cg-font-size-base, 16px);
       font-weight: 700;
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       color: var(--cg-color-surface-base-text, #fafafa);
@@ -119,7 +119,7 @@ export class AiTokenTracker extends LitElement {
       border-radius: 2px;
       background: var(--cg-gray-800, #27272a);
       overflow: hidden;
-      margin-top: 4px;
+      margin-top: var(--cg-spacing-4, 4px);
     }
     .latency-fill {
       height: 100%;
@@ -132,15 +132,15 @@ export class AiTokenTracker extends LitElement {
 
     /* Budget */
     .budget {
-      margin-top: 10px;
+      margin-top: var(--cg-spacing-8, 8px);
       padding-top: 10px;
       border-top: 1px solid var(--cg-gray-800, #27272a);
     }
     .budget-header {
       display: flex;
       justify-content: space-between;
-      font-size: 11px;
-      margin-bottom: 6px;
+      font-size: var(--cg-font-size-xs, 12px);
+      margin-bottom: var(--cg-spacing-6, 6px);
     }
     .budget-label { color: var(--cg-gray-500, #71717a); }
     .budget-value { color: var(--cg-color-surface-base-text, #fafafa); font-weight: 600; }

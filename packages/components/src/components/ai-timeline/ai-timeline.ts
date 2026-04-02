@@ -78,7 +78,7 @@ export class AiTimeline extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       z-index: 1;
       transition: all 200ms;
@@ -117,7 +117,7 @@ export class AiTimeline extends LitElement {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
     }
     .step-label {
       font-size: var(--cg-font-size-sm, 14px);
@@ -137,7 +137,7 @@ export class AiTimeline extends LitElement {
       height: 3px;
       border-radius: 2px;
       background: var(--cg-gray-800, #27272a);
-      margin-top: 6px;
+      margin-top: var(--cg-spacing-6, 6px);
       overflow: hidden;
     }
     .duration-fill {
@@ -158,14 +158,14 @@ export class AiTimeline extends LitElement {
     /* Tools */
     .tools {
       display: flex;
-      gap: 4px;
-      margin-top: 6px;
+      gap: var(--cg-spacing-4, 4px);
+      margin-top: var(--cg-spacing-6, 6px);
       flex-wrap: wrap;
     }
     .tool-tag {
       font-size: 10px;
-      padding: 2px 8px;
-      border-radius: 4px;
+      padding: 2px var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-50, 4px);
       background: var(--cg-gray-800, #27272a);
       color: var(--cg-gray-400, #a1a1aa);
       border: 1px solid var(--cg-gray-700, #3f3f46);
@@ -176,8 +176,8 @@ export class AiTimeline extends LitElement {
       margin-top: var(--cg-spacing-8, 8px);
       padding: var(--cg-spacing-10, 10px) var(--cg-spacing-12, 12px);
       background: var(--cg-color-surface-base-background, #09090b);
-      border-radius: 8px;
-      font-size: 12px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       color: var(--cg-gray-400, #a1a1aa);
       line-height: 1.5;
@@ -188,9 +188,9 @@ export class AiTimeline extends LitElement {
     }
 
     /* Compact */
-    :host([compact]) .step { padding: 6px 0; }
+    :host([compact]) .step { padding: var(--cg-spacing-6, 6px) 0; }
     :host([compact]) .dot { width: 18px; height: 18px; font-size: 9px; }
-    :host([compact]) .step-label { font-size: 12px; }
+    :host([compact]) .step-label { font-size: var(--cg-font-size-xs, 12px); }
     :host([compact]) .detail, :host([compact]) .tools, :host([compact]) .duration-bar { display: none; }
 
     :focus-visible {

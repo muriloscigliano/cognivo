@@ -63,7 +63,7 @@ export class AiNotificationCenter extends LitElement {
     .header-left {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
     }
 
     .title {
@@ -77,7 +77,7 @@ export class AiNotificationCenter extends LitElement {
       font-size: 10px;
       font-weight: 700;
       padding: 2px 7px;
-      border-radius: 10px;
+      border-radius: var(--cg-border-radius-100, 8px);
       min-width: 16px;
       text-align: center;
     }
@@ -86,10 +86,10 @@ export class AiNotificationCenter extends LitElement {
       background: transparent;
       border: none;
       color: var(--cg-gray-500, #71717a);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 4px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-50, 4px);
       transition: color 150ms ease;
     }
     .mark-all-btn:hover { color: var(--cg-brand-ai-accent, #dfff61); }
@@ -104,7 +104,7 @@ export class AiNotificationCenter extends LitElement {
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--cg-gray-600, #52525b);
-      padding: 8px 0 4px;
+      padding: var(--cg-spacing-8, 8px) 0 var(--cg-spacing-4, 4px);
     }
 
     .notification {
@@ -133,7 +133,7 @@ export class AiNotificationCenter extends LitElement {
       border-radius: 50%;
       background: var(--cg-brand-ai-accent, #dfff61);
       flex-shrink: 0;
-      margin-top: 6px;
+      margin-top: var(--cg-spacing-6, 6px);
     }
 
     .notif-body { flex: 1; min-width: 0; }
@@ -147,7 +147,7 @@ export class AiNotificationCenter extends LitElement {
     .notification.unread .notif-title { color: var(--cg-brand-ai-accent, #dfff61); }
 
     .notif-message {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-400, #a1a1aa);
       line-height: 1.4;
       overflow: hidden;
@@ -158,17 +158,17 @@ export class AiNotificationCenter extends LitElement {
     .notif-time {
       font-size: 10px;
       color: var(--cg-gray-600, #52525b);
-      margin-top: 4px;
+      margin-top: var(--cg-spacing-4, 4px);
     }
 
     .dismiss-btn {
       background: transparent;
       border: none;
       color: var(--cg-gray-600, #52525b);
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       cursor: pointer;
       padding: 2px 4px;
-      border-radius: 4px;
+      border-radius: var(--cg-border-radius-50, 4px);
       flex-shrink: 0;
       line-height: 1;
       transition: color 150ms ease;
@@ -182,8 +182,8 @@ export class AiNotificationCenter extends LitElement {
     .empty-state {
       text-align: center;
       color: var(--cg-gray-600, #52525b);
-      font-size: 13px;
-      padding: 32px 0;
+      font-size: var(--cg-font-size-sm, 14px);
+      padding: var(--cg-spacing-24, 24px) 0;
     }
 
     /* ── Rounded variants ── */

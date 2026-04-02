@@ -50,7 +50,7 @@ export class AiSearch extends LitElement {
       align-items: center;
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 10px;
+      border-radius: var(--cg-border-radius-100, 8px);
       padding: 0 12px;
       transition: border-color 200ms;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
@@ -60,27 +60,27 @@ export class AiSearch extends LitElement {
 
     .search-icon {
       color: var(--cg-gray-500, #71717a);
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       flex-shrink: 0;
       margin-right: 8px;
     }
 
     input {
       flex: 1;
-      padding: 10px 0;
+      padding: var(--cg-spacing-8, 8px) 0;
       border: none;
       background: none;
       color: var(--cg-color-surface-base-text, #fafafa);
       font: inherit;
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       outline: none;
     }
     input::placeholder { color: var(--cg-gray-600, #52525b); }
 
     .shortcut {
       font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 4px;
+      padding: 2px var(--cg-spacing-6, 6px);
+      border-radius: var(--cg-border-radius-50, 4px);
       background: var(--cg-gray-800, #27272a);
       color: var(--cg-gray-500, #71717a);
       font-weight: 600;
@@ -93,7 +93,7 @@ export class AiSearch extends LitElement {
       color: var(--cg-gray-500, #71717a);
       cursor: pointer;
       padding: 4px;
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       display: flex;
       transition: color 150ms;
     }
@@ -107,7 +107,7 @@ export class AiSearch extends LitElement {
       right: 0;
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 10px;
+      border-radius: var(--cg-border-radius-100, 8px);
       box-shadow: var(--cg-elevation-3, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 10px 15px -3px rgba(0, 0, 0, 0.4));
       z-index: 100;
       max-height: 360px;
@@ -161,7 +161,7 @@ export class AiSearch extends LitElement {
       transition: background 100ms;
     }
     .result-item:hover, .result-item.highlighted { background: rgba(255, 255, 255, 0.04); }
-    .result-icon { font-size: 16px; flex-shrink: 0; }
+    .result-icon { font-size: var(--cg-font-size-base, 16px); flex-shrink: 0; }
     .result-info { flex: 1; min-width: 0; }
     .result-title {
       font-size: var(--cg-font-size-sm, 14px);
@@ -183,8 +183,8 @@ export class AiSearch extends LitElement {
     .recent-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
+      gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
       cursor: pointer;
       transition: background 100ms;
     }
@@ -196,7 +196,7 @@ export class AiSearch extends LitElement {
       border: none;
       color: var(--cg-gray-600, #52525b);
       cursor: pointer;
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       opacity: 0;
       transition: opacity 150ms;
     }

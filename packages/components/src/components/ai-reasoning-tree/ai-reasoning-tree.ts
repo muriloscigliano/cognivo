@@ -40,7 +40,7 @@ export class AiReasoningTree extends LitElement {
     .tree {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
       overflow: hidden;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
@@ -48,8 +48,8 @@ export class AiReasoningTree extends LitElement {
 
     /* Toolbar */
     .toolbar {
-      display: flex; align-items: center; gap: 8px;
-      padding: 10px 16px;
+      display: flex; align-items: center; gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .toolbar-title {
@@ -64,12 +64,12 @@ export class AiReasoningTree extends LitElement {
     .toolbar-btn:hover { color: var(--cg-color-surface-base-text, #fafafa); border-color: var(--cg-gray-600, #52525b); }
 
     /* Nodes */
-    .nodes { padding: 12px 16px; }
+    .nodes { padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px); }
 
     .node {
       position: relative;
       padding-left: 24px;
-      margin-bottom: 4px;
+      margin-bottom: var(--cg-spacing-4, 4px);
     }
 
     /* Vertical connector line */
@@ -85,9 +85,9 @@ export class AiReasoningTree extends LitElement {
     .node:last-child::before { display: none; }
 
     .node-header {
-      display: flex; align-items: center; gap: 8px;
-      padding: 6px 10px;
-      border-radius: 8px;
+      display: flex; align-items: center; gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-100, 8px);
       cursor: pointer;
       transition: background 100ms;
     }
@@ -96,7 +96,7 @@ export class AiReasoningTree extends LitElement {
 
     /* Type icon */
     .node-icon {
-      width: 20px; height: 20px; border-radius: 6px;
+      width: 20px; height: 20px; border-radius: var(--cg-border-radius-100, 8px);
       display: flex; align-items: center; justify-content: center;
       font-size: 10px; font-weight: 800; flex-shrink: 0;
       z-index: 1;
@@ -116,7 +116,7 @@ export class AiReasoningTree extends LitElement {
     }
 
     .node-confidence {
-      font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px;
+      font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: var(--cg-border-radius-50, 4px);
       flex-shrink: 0;
     }
     .conf-high { background: rgba(34, 197, 94, 0.12); color: #4ade80; }

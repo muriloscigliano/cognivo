@@ -48,6 +48,8 @@ export class AiApiKeyManager extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding-bottom: var(--cg-spacing-12, 12px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
       margin-bottom: var(--cg-spacing-12, 12px);
     }
 
@@ -65,12 +67,12 @@ export class AiApiKeyManager extends LitElement {
     .create-btn {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: var(--cg-spacing-4, 4px);
       background: var(--cg-color-accent, #dfff61);
       color: var(--cg-color-surface-container-background, #18181b);
       border: none;
       border-radius: var(--cg-radius-md, 8px);
-      padding: 6px 12px;
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
       font-size: var(--cg-font-size-xs, 12px);
       font-weight: var(--cg-font-weight-semibold, 600);
       cursor: pointer;
@@ -90,7 +92,7 @@ export class AiApiKeyManager extends LitElement {
     .key-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
     }
 
     .key-item {
@@ -123,15 +125,15 @@ export class AiApiKeyManager extends LitElement {
     .key-meta {
       font-size: 10px;
       color: var(--cg-color-text-tertiary, #71717a);
-      margin-top: 4px;
+      margin-top: var(--cg-spacing-4, 4px);
       display: flex;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
     }
 
     .status-badge {
       display: inline-flex;
       align-items: center;
-      padding: 2px 8px;
+      padding: 2px var(--cg-spacing-8, 8px);
       border-radius: var(--cg-radius-full, 9999px);
       font-size: 10px;
       font-weight: var(--cg-font-weight-semibold, 600);
@@ -152,7 +154,7 @@ export class AiApiKeyManager extends LitElement {
 
     .actions {
       display: flex;
-      gap: 4px;
+      gap: var(--cg-spacing-4, 4px);
       flex-shrink: 0;
     }
 
@@ -196,7 +198,7 @@ export class AiApiKeyManager extends LitElement {
 
     .empty {
       text-align: center;
-      padding: 24px;
+      padding: var(--cg-spacing-24, 24px);
       color: var(--cg-color-text-tertiary, #71717a);
       font-size: var(--cg-font-size-sm, 14px);
     }

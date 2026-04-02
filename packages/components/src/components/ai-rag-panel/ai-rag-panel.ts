@@ -40,7 +40,7 @@ export class AiRagPanel extends LitElement {
     .panel {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
       overflow: hidden;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
@@ -49,12 +49,12 @@ export class AiRagPanel extends LitElement {
     /* Header */
     .header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px;
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
-    .header-left { display: flex; align-items: center; gap: 8px; }
+    .header-left { display: flex; align-items: center; gap: var(--cg-spacing-8, 8px); }
     .header-icon {
-      width: 20px; height: 20px; border-radius: 6px;
+      width: 20px; height: 20px; border-radius: var(--cg-border-radius-100, 8px);
       background: rgba(59, 130, 246, 0.12); color: #60a5fa;
       display: flex; align-items: center; justify-content: center;
       font-size: 10px; font-weight: 800;
@@ -69,11 +69,11 @@ export class AiRagPanel extends LitElement {
 
     /* Sort/Filter */
     .controls {
-      display: flex; gap: 4px; padding: 8px 16px;
+      display: flex; gap: var(--cg-spacing-4, 4px); padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .control-btn {
-      padding: 3px 10px; border-radius: 5px;
+      padding: 3px var(--cg-spacing-8, 8px); border-radius: var(--cg-border-radius-50, 4px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       background: none; color: var(--cg-gray-400, #a1a1aa);
       font: inherit; font-size: 10px; font-weight: 600;
@@ -86,7 +86,7 @@ export class AiRagPanel extends LitElement {
     .documents { max-height: 400px; overflow-y: auto; }
 
     .doc {
-      padding: 12px 16px;
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
       cursor: pointer;
       transition: background 100ms;
@@ -94,9 +94,9 @@ export class AiRagPanel extends LitElement {
     .doc:hover { background: rgba(255, 255, 255, 0.02); }
     .doc:last-child { border-bottom: none; }
 
-    .doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .doc-header { display: flex; align-items: center; gap: var(--cg-spacing-8, 8px); margin-bottom: var(--cg-spacing-6, 6px); }
     .doc-type {
-      font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px;
+      font-size: 9px; font-weight: 700; padding: 2px var(--cg-spacing-6, 6px); border-radius: 3px;
       text-transform: uppercase;
     }
     .doc-type.doc { background: rgba(139, 92, 246, 0.12); color: #a78bfa; }
@@ -111,7 +111,7 @@ export class AiRagPanel extends LitElement {
     }
 
     .doc-relevance {
-      font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
+      font-size: 10px; font-weight: 700; padding: 2px var(--cg-spacing-8, 8px); border-radius: var(--cg-border-radius-50, 4px);
       flex-shrink: 0;
     }
     .rel-high { background: rgba(34, 197, 94, 0.12); color: #4ade80; }
@@ -135,7 +135,7 @@ export class AiRagPanel extends LitElement {
     .relevance-bar {
       height: 2px; border-radius: 1px;
       background: var(--cg-gray-800, #27272a);
-      margin-top: 8px; overflow: hidden;
+      margin-top: var(--cg-spacing-8, 8px); overflow: hidden;
     }
     .relevance-fill {
       height: 100%; border-radius: 1px;

@@ -44,7 +44,7 @@ export class AiMemoryPanel extends LitElement {
     .panel {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
       overflow: hidden;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
@@ -52,7 +52,7 @@ export class AiMemoryPanel extends LitElement {
 
     .header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px;
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .header-title {
@@ -65,7 +65,7 @@ export class AiMemoryPanel extends LitElement {
       display: flex; border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .tab {
-      flex: 1; padding: 8px 16px; text-align: center;
+      flex: 1; padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px); text-align: center;
       font-size: 12px; font-weight: 600; color: var(--cg-gray-500, #71717a);
       background: none; border: none; border-bottom: 2px solid transparent;
       cursor: pointer; font-family: inherit; transition: all 150ms;
@@ -73,18 +73,18 @@ export class AiMemoryPanel extends LitElement {
     .tab:hover { color: var(--cg-gray-300, #d4d4d8); }
     .tab.active { color: var(--cg-brand-ai-accent, #dfff61); border-bottom-color: var(--cg-brand-ai-accent, #dfff61); }
     .tab-count {
-      font-size: 10px; padding: 0 5px; border-radius: 8px;
+      font-size: 10px; padding: 0 5px; border-radius: var(--cg-border-radius-100, 8px);
       background: var(--cg-gray-800, #27272a); margin-left: 4px;
     }
 
     /* Search */
     .search-row { padding: 8px 16px; border-bottom: 1px solid var(--cg-gray-800, #27272a); }
     .search-input {
-      width: 100%; padding: 6px 10px; border-radius: 6px;
+      width: 100%; padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px); border-radius: var(--cg-border-radius-100, 8px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       background: var(--cg-color-surface-base-background, #09090b);
       color: var(--cg-color-surface-base-text, #fafafa);
-      font: inherit; font-size: 12px; outline: none;
+      font: inherit; font-size: var(--cg-font-size-xs, 12px); outline: none;
     }
     .search-input:focus { border-color: var(--cg-brand-ai-accent, #dfff61); }
     .search-input::placeholder { color: var(--cg-gray-600, #52525b); }
@@ -93,8 +93,8 @@ export class AiMemoryPanel extends LitElement {
     .memories { max-height: 350px; overflow-y: auto; }
 
     .memory {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 10px 16px;
+      display: flex; align-items: flex-start; gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
       transition: background 100ms;
     }
@@ -103,7 +103,7 @@ export class AiMemoryPanel extends LitElement {
     .memory.pinned { background: rgba(223, 255, 97, 0.03); }
 
     .memory-type {
-      font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px;
+      font-size: 9px; font-weight: 700; padding: 2px var(--cg-spacing-6, 6px); border-radius: 3px;
       text-transform: uppercase; flex-shrink: 0; margin-top: 2px;
     }
     .memory-type.fact { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
@@ -125,7 +125,7 @@ export class AiMemoryPanel extends LitElement {
     }
     .memory:hover .memory-actions { opacity: 1; }
     .mem-btn {
-      width: 22px; height: 22px; border-radius: 5px;
+      width: 22px; height: 22px; border-radius: var(--cg-border-radius-50, 4px);
       background: none; border: 1px solid var(--cg-gray-700, #3f3f46);
       color: var(--cg-gray-500, #71717a); cursor: pointer;
       display: flex; align-items: center; justify-content: center;

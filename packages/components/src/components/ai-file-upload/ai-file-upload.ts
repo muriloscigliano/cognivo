@@ -38,8 +38,8 @@ export class AiFileUpload extends LitElement {
 
     .dropzone {
       border: 2px dashed var(--cg-color-border-primary, #27272a);
-      border-radius: 12px;
-      padding: 32px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-24, 24px);
       text-align: center;
       cursor: pointer;
       transition: border-color 200ms ease, background 200ms ease;
@@ -57,40 +57,40 @@ export class AiFileUpload extends LitElement {
       outline-offset: 2px;
     }
 
-    .drop-icon { font-size: 32px; margin-bottom: 8px; }
+    .drop-icon { font-size: 32px; margin-bottom: var(--cg-spacing-8, 8px); }
 
     .drop-label {
       color: var(--cg-color-text-primary, #fafafa);
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: var(--cg-spacing-4, 4px);
     }
 
     .drop-hint {
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
     }
 
     input[type="file"] { display: none; }
 
     .file-list {
-      margin-top: 12px;
+      margin-top: var(--cg-spacing-12, 12px);
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: var(--cg-spacing-6, 6px);
     }
 
     .file-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 12px;
+      gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
       background: var(--cg-color-bg-secondary, #27272a);
-      border-radius: 8px;
+      border-radius: var(--cg-border-radius-100, 8px);
       border: 1px solid var(--cg-color-border-primary, #3f3f46);
     }
 
-    .file-icon { font-size: 16px; flex-shrink: 0; }
+    .file-icon { font-size: var(--cg-font-size-base, 16px); flex-shrink: 0; }
 
     .file-info {
       flex: 1;
@@ -99,7 +99,7 @@ export class AiFileUpload extends LitElement {
 
     .file-name {
       color: var(--cg-color-text-primary, #fafafa);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 500;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -108,7 +108,7 @@ export class AiFileUpload extends LitElement {
 
     .file-meta {
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
     }
 
     .remove-btn {
@@ -117,8 +117,8 @@ export class AiFileUpload extends LitElement {
       color: var(--cg-color-text-secondary, #a1a1aa);
       cursor: pointer;
       padding: 4px;
-      border-radius: 4px;
-      font-size: 16px;
+      border-radius: var(--cg-border-radius-50, 4px);
+      font-size: var(--cg-font-size-base, 16px);
       line-height: 1;
     }
     .remove-btn:hover { color: var(--cg-color-status-error-text-default, #ef4444); }
@@ -129,8 +129,8 @@ export class AiFileUpload extends LitElement {
 
     .error-msg {
       color: var(--cg-color-status-error-text-default, #ef4444);
-      font-size: 12px;
-      margin-top: 8px;
+      font-size: var(--cg-font-size-xs, 12px);
+      margin-top: var(--cg-spacing-8, 8px);
     }
     }
   `];

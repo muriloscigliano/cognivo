@@ -34,7 +34,7 @@ export class AiEmptyState extends LitElement {
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 48px 24px;
+      padding: var(--cg-spacing-24, 24px);
       width: 100%;
       max-width: 400px;
       margin: 0 auto;
@@ -49,8 +49,8 @@ export class AiEmptyState extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
-      font-size: 32px;
+      margin-bottom: var(--cg-spacing-16, 16px);
+      font-size: var(--cg-font-size-2xl, 24px);
       transition: transform 200ms ease;
     }
 
@@ -87,24 +87,24 @@ export class AiEmptyState extends LitElement {
 
     .title {
       color: var(--cg-color-text-primary, #fafafa);
-      font-size: 18px;
+      font-size: var(--cg-font-size-lg, 18px);
       font-weight: 700;
       margin: 0 0 8px;
     }
 
     .description {
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       line-height: 1.6;
       margin: 0 0 24px;
       max-width: 320px;
     }
 
     .action-btn {
-      padding: 10px 24px;
-      border-radius: 8px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-24, 24px);
+      border-radius: var(--cg-border-radius-100, 8px);
       border: none;
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       cursor: pointer;
       font-family: inherit;
@@ -143,7 +143,7 @@ export class AiEmptyState extends LitElement {
 
     /* ── Slot for custom content ── */
     .extra {
-      margin-top: 16px;
+      margin-top: var(--cg-spacing-16, 16px);
     }
       .action-btn { transition: none; }
     }

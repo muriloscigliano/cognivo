@@ -49,9 +49,9 @@ export class AiBadge extends LitElement {
 
     /* ── Size: sm ── */
     :host([size="sm"]) .badge {
-      padding: 1px 8px;
-      border-radius: 4px;
-      font-size: 11px;
+      padding: 1px var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-50, 4px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       gap: 3px;
     }
@@ -59,20 +59,20 @@ export class AiBadge extends LitElement {
 
     /* ── Size: md (default) ── */
     .badge {
-      padding: 4px 12px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
       border-radius: var(--cg-border-radius-full, 99999px);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
     }
 
     /* ── Size: lg (card with bar) ── */
     :host([size="lg"]) .badge {
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-size: 14px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
+      border-radius: var(--cg-border-radius-100, 8px);
+      font-size: var(--cg-font-size-sm, 14px);
       flex-direction: column;
       align-items: stretch;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
       min-width: 140px;
     }
     :host([size="lg"]) .top-row {
@@ -114,9 +114,9 @@ export class AiBadge extends LitElement {
     }
     .badge.low .bar-fill { background: var(--cg-red-400, #f87171); }
 
-    .icon { font-size: 11px; line-height: 1; }
+    .icon { font-size: var(--cg-font-size-xs, 12px); line-height: 1; }
     .score { letter-spacing: 0.02em; }
-    .level-label { font-size: 11px; font-weight: 600; opacity: 0.8; text-transform: capitalize; }
+    .level-label { font-size: var(--cg-font-size-xs, 12px); font-weight: 600; opacity: 0.8; text-transform: capitalize; }
 
     /* ── Sparkline ── */
     .sparkline {
@@ -143,9 +143,9 @@ export class AiBadge extends LitElement {
       background: var(--cg-gray-800, #27272a);
       color: var(--cg-color-surface-base-text, #fafafa);
       border: 1px solid var(--cg-gray-700, #3f3f46);
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 12px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
+      font-size: var(--cg-font-size-xs, 12px);
       line-height: 1.4;
       white-space: nowrap;
       pointer-events: none;
@@ -171,8 +171,8 @@ export class AiBadge extends LitElement {
     .tooltip-score { opacity: 0.7; margin-left: 4px; }
     .tooltip-explanation {
       display: block;
-      margin-top: 4px;
-      font-size: 11px;
+      margin-top: var(--cg-spacing-4, 4px);
+      font-size: var(--cg-font-size-xs, 12px);
       opacity: 0.7;
       white-space: normal;
       max-width: 220px;

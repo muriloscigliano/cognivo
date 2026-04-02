@@ -40,6 +40,8 @@ export class AiDataPreview extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding-bottom: var(--cg-spacing-12, 12px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
       margin-bottom: var(--cg-spacing-12, 12px);
     }
 
@@ -57,7 +59,7 @@ export class AiDataPreview extends LitElement {
     }
 
     .format-badge {
-      padding: 2px 8px;
+      padding: 2px var(--cg-spacing-8, 8px);
       background: rgba(223, 255, 97, 0.1);
       border-radius: var(--cg-radius-sm, 4px);
       font-size: 10px;
@@ -98,7 +100,7 @@ export class AiDataPreview extends LitElement {
 
     th {
       text-align: left;
-      padding: 6px 8px;
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
       border-bottom: 1px solid var(--cg-color-border-default, #3f3f46);
       color: var(--cg-color-text-secondary, #a1a1aa);
       font-weight: var(--cg-font-weight-semibold, 600);
@@ -108,7 +110,7 @@ export class AiDataPreview extends LitElement {
     }
 
     td {
-      padding: 4px 8px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
       border-bottom: 1px solid var(--cg-color-border-default, #27272a);
       color: var(--cg-color-surface-base-text, #fafafa);
       font-family: var(--cg-font-family-mono, 'JetBrains Mono', monospace);
@@ -122,20 +124,20 @@ export class AiDataPreview extends LitElement {
       font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-color-text-tertiary, #71717a);
       text-align: center;
-      padding: 8px;
+      padding: var(--cg-spacing-8, 8px);
       font-style: italic;
     }
 
     .actions {
       display: flex;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
       justify-content: flex-end;
     }
 
     .btn {
       border: none;
       border-radius: var(--cg-radius-md, 8px);
-      padding: 8px 16px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
       font-size: var(--cg-font-size-sm, 14px);
       font-weight: var(--cg-font-weight-semibold, 600);
       cursor: pointer;

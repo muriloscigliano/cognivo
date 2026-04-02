@@ -34,11 +34,11 @@ export class AiUsageMeter extends LitElement {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
-      padding: 20px;
+      gap: var(--cg-spacing-12, 12px);
+      padding: var(--cg-spacing-16, 16px);
       background: var(--cg-color-bg-primary, #18181b);
       border: 1px solid var(--cg-color-border-primary, #27272a);
-      border-radius: 16px;
+      border-radius: var(--cg-border-radius-150, 12px);
       min-width: 180px;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
@@ -82,7 +82,7 @@ export class AiUsageMeter extends LitElement {
     }
 
     .pct {
-      font-size: 22px;
+      font-size: var(--cg-font-size-xl, 20px);
       font-weight: 800;
       color: var(--cg-color-text-primary, #fafafa);
       font-variant-numeric: tabular-nums;
@@ -101,30 +101,30 @@ export class AiUsageMeter extends LitElement {
 
     .label {
       color: var(--cg-color-text-primary, #fafafa);
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: var(--cg-spacing-4, 4px);
     }
 
     .detail {
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-variant-numeric: tabular-nums;
     }
 
     .reset {
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       margin-top: 2px;
     }
 
     .upgrade-btn {
-      padding: 8px 20px;
-      border-radius: 8px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
+      border-radius: var(--cg-border-radius-100, 8px);
       border: none;
       background: var(--cg-brand-ai-accent, #dfff61);
       color: var(--cg-color-surface-container-background, #18181b);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 700;
       cursor: pointer;
       font-family: inherit;

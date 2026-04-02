@@ -44,7 +44,7 @@ export class AiFeedback extends LitElement {
       border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
     }
     .rating-label {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-400, #a1a1aa);
       margin-right: 4px;
     }
@@ -53,11 +53,11 @@ export class AiFeedback extends LitElement {
     .thumb-btn {
       width: 32px;
       height: 32px;
-      border-radius: 8px;
+      border-radius: var(--cg-border-radius-100, 8px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       background: none;
       color: var(--cg-gray-400, #a1a1aa);
-      font-size: 16px;
+      font-size: var(--cg-font-size-base, 16px);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -74,7 +74,7 @@ export class AiFeedback extends LitElement {
       background: none;
       border: none;
       color: var(--cg-gray-700, #3f3f46);
-      font-size: 20px;
+      font-size: var(--cg-font-size-xl, 20px);
       cursor: pointer;
       padding: 2px;
       transition: color 150ms;
@@ -87,10 +87,10 @@ export class AiFeedback extends LitElement {
     .emoji-btn {
       width: 36px;
       height: 36px;
-      border-radius: 8px;
+      border-radius: var(--cg-border-radius-100, 8px);
       border: 1px solid transparent;
       background: none;
-      font-size: 20px;
+      font-size: var(--cg-font-size-xl, 20px);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -127,13 +127,13 @@ export class AiFeedback extends LitElement {
     textarea {
       width: 100%;
       min-height: 60px;
-      padding: 8px 12px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
-      border-radius: 8px;
+      border-radius: var(--cg-border-radius-100, 8px);
       background: var(--cg-color-surface-base-background, #09090b);
       color: var(--cg-color-surface-base-text, #fafafa);
       font: inherit;
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       resize: vertical;
       outline: none;
       transition: border-color 200ms;
@@ -144,13 +144,13 @@ export class AiFeedback extends LitElement {
     /* Submit */
     .submit-btn {
       align-self: flex-start;
-      padding: 6px 16px;
-      border-radius: 8px;
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-16, 16px);
+      border-radius: var(--cg-border-radius-100, 8px);
       border: none;
       background: var(--cg-brand-ai-accent, #dfff61);
       color: #000;
       font: inherit;
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       cursor: pointer;
       transition: all 150ms;
@@ -162,12 +162,12 @@ export class AiFeedback extends LitElement {
     .submitted {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 13px;
+      gap: var(--cg-spacing-8, 8px);
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-green-400, #4ade80);
       font-weight: 500;
     }
-    .submitted-icon { font-size: 16px; }
+    .submitted-icon { font-size: var(--cg-font-size-base, 16px); }
     }
 
     /* ── Rounded variants ── */

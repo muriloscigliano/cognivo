@@ -36,7 +36,7 @@ export class AiDiffPanel extends LitElement {
     .panel {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
       overflow: hidden;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
@@ -52,11 +52,11 @@ export class AiDiffPanel extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 16px;
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .title {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       color: var(--cg-color-surface-base-text, #fafafa);
     }
@@ -64,14 +64,14 @@ export class AiDiffPanel extends LitElement {
       display: flex;
       gap: 2px;
       background: var(--cg-color-surface-base-background, #09090b);
-      border-radius: 6px;
+      border-radius: var(--cg-border-radius-100, 8px);
       padding: 2px;
     }
     .mode-btn {
-      padding: 4px 12px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
       border: none;
-      border-radius: 4px;
-      font-size: 11px;
+      border-radius: var(--cg-border-radius-50, 4px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       cursor: pointer;
       background: none;
@@ -87,10 +87,10 @@ export class AiDiffPanel extends LitElement {
     /* Stats bar */
     .stats {
       display: flex;
-      gap: 16px;
-      padding: 8px 16px;
+      gap: var(--cg-spacing-16, 16px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
     }
     .stat-add { color: var(--cg-green-400, #4ade80); }
@@ -105,8 +105,8 @@ export class AiDiffPanel extends LitElement {
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .label-item {
-      padding: 6px 16px;
-      font-size: 11px;
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-16, 16px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       color: var(--cg-gray-400, #a1a1aa);
       text-transform: uppercase;
@@ -123,7 +123,7 @@ export class AiDiffPanel extends LitElement {
     }
     .side {
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       line-height: 1.6;
     }
     .side:first-child { border-right: 1px solid var(--cg-gray-800, #27272a); }
@@ -158,7 +158,7 @@ export class AiDiffPanel extends LitElement {
     /* Inline mode */
     .inline-diff {
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       line-height: 1.6;
       max-height: 400px;
       overflow-y: auto;
@@ -174,10 +174,10 @@ export class AiDiffPanel extends LitElement {
 
     /* Empty */
     .empty {
-      padding: 32px;
+      padding: var(--cg-spacing-24, 24px);
       text-align: center;
       color: var(--cg-gray-500, #71717a);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
     }
   

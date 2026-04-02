@@ -62,7 +62,7 @@ export class AiAlertCard extends LitElement {
 
     /* ── Icon ── */
     .icon {
-      font-size: 20px;
+      font-size: var(--cg-font-size-xl, 20px);
       flex-shrink: 0;
       margin-top: 2px;
     }
@@ -77,8 +77,8 @@ export class AiAlertCard extends LitElement {
     .header {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-bottom: var(--cg-spacing-6, 6px);
     }
     .title {
       font-size: var(--cg-font-size-base, 15px);
@@ -88,8 +88,8 @@ export class AiAlertCard extends LitElement {
     .deadline {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      padding: 2px 8px;
+      gap: var(--cg-spacing-4, 4px);
+      padding: 2px var(--cg-spacing-8, 8px);
       border-radius: 99px;
       font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
@@ -109,9 +109,9 @@ export class AiAlertCard extends LitElement {
 
     /* ── Action button ── */
     .action-btn {
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 13px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
+      border-radius: var(--cg-border-radius-100, 8px);
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       border: none;
       cursor: pointer;
@@ -152,12 +152,12 @@ export class AiAlertCard extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 6px;
+      border-radius: var(--cg-border-radius-100, 8px);
       background: none;
       border: none;
       color: var(--cg-gray-500, #71717a);
       cursor: pointer;
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       transition: all 150ms ease;
     }
     .dismiss:hover {

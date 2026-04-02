@@ -51,7 +51,7 @@ export class AiModelSelector extends LitElement {
     }
     .filter-chip {
       padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
-      border-radius: 6px;
+      border-radius: var(--cg-border-radius-100, 8px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       background: none;
       color: var(--cg-gray-400, #a1a1aa);
@@ -74,7 +74,7 @@ export class AiModelSelector extends LitElement {
       padding: var(--cg-spacing-14, 14px) var(--cg-spacing-16, 16px);
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 10px;
+      border-radius: var(--cg-border-radius-100, 8px);
       cursor: pointer;
       transition: all 150ms;
       position: relative;
@@ -109,7 +109,7 @@ export class AiModelSelector extends LitElement {
       padding-bottom: var(--cg-spacing-8, 8px); margin-bottom: var(--cg-spacing-8, 8px);
       border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
     }
-    .model-icon { font-size: 20px; }
+    .model-icon { font-size: var(--cg-font-size-xl, 20px); }
     .model-info { flex: 1; }
     .model-name { font-size: var(--cg-font-size-sm, 14px); font-weight: 600; color: var(--cg-color-surface-base-text, #fafafa); }
     .model-provider { font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-500, #71717a); }
@@ -117,7 +117,7 @@ export class AiModelSelector extends LitElement {
     .model-desc { font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-400, #a1a1aa); line-height: 1.4; margin-bottom: var(--cg-spacing-8, 8px); }
 
     .model-footer { display: flex; justify-content: space-between; align-items: center; }
-    .caps { display: flex; gap: 4px; flex-wrap: wrap; }
+    .caps { display: flex; gap: var(--cg-spacing-4, 4px); flex-wrap: wrap; }
     .cap {
       font-size: 9px;
       padding: 1px 6px;
@@ -130,8 +130,8 @@ export class AiModelSelector extends LitElement {
     .cost {
       font-size: 10px;
       font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 4px;
+      padding: 2px var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-50, 4px);
     }
     .cost.free { background: rgba(34, 197, 94, 0.1); color: var(--cg-green-400, #4ade80); }
     .cost.low { background: rgba(34, 197, 94, 0.1); color: var(--cg-green-400, #4ade80); }

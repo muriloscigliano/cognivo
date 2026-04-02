@@ -117,7 +117,7 @@ export class AiCollaborativeEditor extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 6px 12px;
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
       border-top: 1px solid var(--cg-color-border-default, #27272a);
       font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-color-text-tertiary, #71717a);
@@ -130,7 +130,7 @@ export class AiCollaborativeEditor extends LitElement {
 
     .presence {
       display: flex;
-      gap: 4px;
+      gap: var(--cg-spacing-4, 4px);
       align-items: center;
     }
 

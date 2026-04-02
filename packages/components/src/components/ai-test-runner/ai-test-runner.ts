@@ -50,6 +50,8 @@ export class AiTestRunner extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding-bottom: var(--cg-spacing-12, 12px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
       margin-bottom: var(--cg-spacing-12, 12px);
     }
 

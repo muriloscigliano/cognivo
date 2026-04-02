@@ -52,7 +52,7 @@ export class AiChat extends LitElement {
       max-height: 800px;
       background: var(--cg-color-surface-container-background, #18181b);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border-radius: 16px;
+      border-radius: var(--cg-border-radius-150, 12px);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       overflow: hidden;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
@@ -93,7 +93,7 @@ export class AiChat extends LitElement {
       justify-content: center;
       flex-shrink: 0;
       font-weight: 700;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
     }
     .msg.user .avatar {
       background: rgba(34, 197, 94, 0.15);
@@ -106,10 +106,10 @@ export class AiChat extends LitElement {
 
     /* ── Bubble ── */
     .bubble {
-      padding: 10px 14px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
       border-radius: 14px;
       line-height: 1.5;
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.06);
@@ -136,17 +136,17 @@ export class AiChat extends LitElement {
     .bubble code {
       background: rgba(255, 255, 255, 0.06);
       padding: 1px 5px;
-      border-radius: 4px;
+      border-radius: var(--cg-border-radius-50, 4px);
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
     }
     .bubble pre {
       background: rgba(0, 0, 0, 0.3);
-      padding: 10px 12px;
-      border-radius: 8px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
+      border-radius: var(--cg-border-radius-100, 8px);
       overflow-x: auto;
       margin: 8px 0;
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       line-height: 1.5;
     }
     .bubble pre code { background: none; padding: 0; }
@@ -174,8 +174,8 @@ export class AiChat extends LitElement {
     /* ── Message actions ── */
     .actions {
       display: flex;
-      gap: 4px;
-      margin-top: 6px;
+      gap: var(--cg-spacing-4, 4px);
+      margin-top: var(--cg-spacing-6, 6px);
       opacity: 0;
       transition: opacity 150ms;
     }
@@ -184,9 +184,9 @@ export class AiChat extends LitElement {
       background: none;
       border: 1px solid var(--cg-gray-700, #3f3f46);
       color: var(--cg-gray-400, #a1a1aa);
-      border-radius: 6px;
-      padding: 2px 8px;
-      font-size: 11px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      padding: 2px var(--cg-spacing-8, 8px);
+      font-size: var(--cg-font-size-xs, 12px);
       cursor: pointer;
       transition: all 150ms;
       font-family: inherit;
@@ -202,9 +202,9 @@ export class AiChat extends LitElement {
     .version-nav {
       display: flex;
       align-items: center;
-      gap: 6px;
-      margin-top: 4px;
-      font-size: 11px;
+      gap: var(--cg-spacing-6, 6px);
+      margin-top: var(--cg-spacing-4, 4px);
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
     }
     .version-btn {
@@ -213,7 +213,7 @@ export class AiChat extends LitElement {
       color: var(--cg-gray-400, #a1a1aa);
       cursor: pointer;
       padding: 0 4px;
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
     .version-btn:hover { color: var(--cg-brand-ai-accent, #dfff61); }
     .version-btn:disabled { opacity: 0.3; cursor: default; }
@@ -230,12 +230,12 @@ export class AiChat extends LitElement {
       align-items: center;
       gap: 5px;
       margin: 0 auto 8px;
-      padding: 5px 14px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
       background: rgba(239, 68, 68, 0.1);
       border: 1px solid rgba(239, 68, 68, 0.2);
       color: var(--cg-red-400, #f87171);
-      border-radius: 8px;
-      font-size: 12px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       cursor: pointer;
       transition: all 150ms;
@@ -258,7 +258,7 @@ export class AiChat extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       transition: all 150ms;
       z-index: 10;
     }
@@ -274,10 +274,10 @@ export class AiChat extends LitElement {
     }
     input {
       flex: 1;
-      padding: 10px 14px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
-      border-radius: 10px;
-      font-size: 14px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      font-size: var(--cg-font-size-sm, 14px);
       font-family: inherit;
       background: var(--cg-color-surface-base-background, #09090b);
       color: var(--cg-color-surface-base-text, #fafafa);
@@ -288,13 +288,13 @@ export class AiChat extends LitElement {
     input:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .send-btn {
-      padding: 10px 20px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
       background: var(--cg-brand-ai-accent, #dfff61);
       color: var(--cg-gray-black, #000000);
       border: none;
-      border-radius: 10px;
+      border-radius: var(--cg-border-radius-100, 8px);
       font-weight: 700;
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       cursor: pointer;
       transition: all 150ms;
       font-family: inherit;
@@ -310,12 +310,12 @@ export class AiChat extends LitElement {
       flex-wrap: wrap;
     }
     .follow-up-chip {
-      padding: 5px 12px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
-      border-radius: 8px;
+      border-radius: var(--cg-border-radius-100, 8px);
       background: none;
       color: var(--cg-gray-400, #a1a1aa);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       cursor: pointer;
       transition: all 150ms;
       font-family: inherit;
@@ -337,8 +337,8 @@ export class AiChat extends LitElement {
       gap: var(--cg-spacing-10, 10px);
       text-align: center;
     }
-    .empty-icon { font-size: 36px; }
-    .empty-text { font-size: 16px; font-weight: 500; }
+    .empty-icon { font-size: var(--cg-font-size-2xl, 24px); }
+    .empty-text { font-size: var(--cg-font-size-base, 16px); font-weight: 500; }
 
     .wrapper { position: relative; display: flex; flex-direction: column; height: 100%; }
     }

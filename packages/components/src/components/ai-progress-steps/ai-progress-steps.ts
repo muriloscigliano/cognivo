@@ -61,7 +61,7 @@ export class AiProgressSteps extends LitElement {
     .step:focus-visible {
       outline: 2px solid var(--cg-color-accent, #dfff61);
       outline-offset: 2px;
-      border-radius: 4px;
+      border-radius: var(--cg-border-radius-50, 4px);
     }
 
     .step-row {
@@ -89,7 +89,7 @@ export class AiProgressSteps extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       border: 2px solid var(--cg-color-border, #27272a);
       background: var(--cg-color-surface, #18181b);
@@ -119,12 +119,12 @@ export class AiProgressSteps extends LitElement {
     }
 
     .info {
-      margin-top: 6px;
+      margin-top: var(--cg-spacing-6, 6px);
       text-align: center;
     }
 
     .label {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 500;
       color: var(--cg-color-text-secondary, #a1a1aa);
       white-space: nowrap;
@@ -146,7 +146,7 @@ export class AiProgressSteps extends LitElement {
     }
 
     /* Compact mode */
-    :host([compact]) .dot { width: 22px; height: 22px; font-size: 11px; }
+    :host([compact]) .dot { width: 22px; height: 22px; font-size: var(--cg-font-size-xs, 12px); }
     :host([compact]) .info { display: none; }
 
   `];

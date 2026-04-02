@@ -45,7 +45,7 @@ export class AiPromptEditor extends LitElement {
       grid-template-columns: 220px 1fr;
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
       overflow: hidden;
       min-height: 300px;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
@@ -59,8 +59,8 @@ export class AiPromptEditor extends LitElement {
       flex-direction: column;
     }
     .sidebar-header {
-      padding: 12px 14px;
-      font-size: 11px;
+      padding: var(--cg-spacing-12, 12px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       color: var(--cg-gray-400, #a1a1aa);
       text-transform: uppercase;
@@ -72,7 +72,7 @@ export class AiPromptEditor extends LitElement {
       overflow-y: auto;
     }
     .version-item {
-      padding: 10px 14px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
       cursor: pointer;
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
       transition: background 150ms;
@@ -86,7 +86,7 @@ export class AiPromptEditor extends LitElement {
     .active-badge {
       font-size: 9px;
       padding: 1px 6px;
-      border-radius: 4px;
+      border-radius: var(--cg-border-radius-50, 4px);
       background: rgba(34, 197, 94, 0.12);
       color: var(--cg-green-400, #4ade80);
       font-weight: 700;
@@ -106,20 +106,20 @@ export class AiPromptEditor extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 16px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .main-title { font-size: 13px; font-weight: 600; color: var(--cg-color-surface-base-text, #fafafa); }
 
-    .action-btns { display: flex; gap: 6px; }
+    .action-btns { display: flex; gap: var(--cg-spacing-6, 6px); }
     .action-btn {
-      padding: 4px 12px;
-      border-radius: 6px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
+      border-radius: var(--cg-border-radius-100, 8px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       background: none;
       color: var(--cg-gray-400, #a1a1aa);
       font: inherit;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       cursor: pointer;
       transition: all 150ms;
@@ -138,9 +138,9 @@ export class AiPromptEditor extends LitElement {
       overflow: auto;
     }
     .prompt-display {
-      padding: 16px;
+      padding: var(--cg-spacing-16, 16px);
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       line-height: 1.6;
       color: var(--cg-color-surface-base-text, #fafafa);
       white-space: pre-wrap;
@@ -151,22 +151,22 @@ export class AiPromptEditor extends LitElement {
       width: 100%;
       height: 100%;
       min-height: 200px;
-      padding: 16px;
+      padding: var(--cg-spacing-16, 16px);
       background: var(--cg-color-surface-base-background, #09090b);
       color: var(--cg-color-surface-base-text, #fafafa);
       border: none;
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       line-height: 1.6;
       resize: none;
       outline: none;
     }
 
     .empty {
-      padding: 32px;
+      padding: var(--cg-spacing-24, 24px);
       text-align: center;
       color: var(--cg-gray-500, #71717a);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
 
     /* ── Rounded variants ── */

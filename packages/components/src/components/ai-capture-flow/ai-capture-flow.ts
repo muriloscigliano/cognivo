@@ -37,16 +37,16 @@ export class AiCaptureFlow extends LitElement {
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-cards-border, #27272a);
       border-radius: var(--cg-border-radius-200, 12px);
-      padding: 20px;
+      padding: var(--cg-spacing-16, 16px);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
     /* ── Title ── */
     .title {
-      font-size: 16px;
+      font-size: var(--cg-font-size-base, 16px);
       font-weight: 700;
       color: var(--cg-color-surface-base-text, #fafafa);
-      margin-bottom: 16px;
+      margin-bottom: var(--cg-spacing-16, 16px);
     }
 
     /* ── Step indicator ── */
@@ -54,7 +54,7 @@ export class AiCaptureFlow extends LitElement {
       display: flex;
       align-items: center;
       gap: 0;
-      margin-bottom: 20px;
+      margin-bottom: var(--cg-spacing-16, 16px);
     }
     .step-dot {
       width: 24px;
@@ -63,7 +63,7 @@ export class AiCaptureFlow extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       flex-shrink: 0;
       transition: all 200ms ease;
@@ -92,8 +92,8 @@ export class AiCaptureFlow extends LitElement {
     /* ── Upload zone ── */
     .upload-zone {
       border: 2px dashed var(--cg-gray-700, #3f3f46);
-      border-radius: 10px;
-      padding: 40px 20px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-24, 24px) var(--cg-spacing-16, 16px);
       text-align: center;
       cursor: pointer;
       transition: all 150ms ease;
@@ -106,16 +106,16 @@ export class AiCaptureFlow extends LitElement {
       outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: 2px;
     }
-    .upload-icon { font-size: 32px; margin-bottom: 8px; }
+    .upload-icon { font-size: 32px; margin-bottom: var(--cg-spacing-8, 8px); }
     .upload-text {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-gray-400, #a1a1aa);
       line-height: 1.5;
     }
     .upload-hint {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
-      margin-top: 6px;
+      margin-top: var(--cg-spacing-6, 6px);
     }
     input[type="file"] { display: none; }
 
@@ -124,18 +124,18 @@ export class AiCaptureFlow extends LitElement {
     .preview-img {
       max-width: 100%;
       max-height: 240px;
-      border-radius: 8px;
+      border-radius: var(--cg-border-radius-100, 8px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
-      margin-bottom: 16px;
+      margin-bottom: var(--cg-spacing-16, 16px);
       object-fit: contain;
     }
 
     /* ── Progress ── */
     .processing { text-align: center; }
     .progress-label {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-gray-400, #a1a1aa);
-      margin-bottom: 12px;
+      margin-bottom: var(--cg-spacing-12, 12px);
     }
     .progress-bar {
       width: 100%;
@@ -143,7 +143,7 @@ export class AiCaptureFlow extends LitElement {
       background: var(--cg-gray-800, #27272a);
       border-radius: 3px;
       overflow: hidden;
-      margin-bottom: 8px;
+      margin-bottom: var(--cg-spacing-8, 8px);
     }
     .progress-fill {
       height: 100%;
@@ -152,7 +152,7 @@ export class AiCaptureFlow extends LitElement {
       transition: width 300ms ease;
     }
     .progress-pct {
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       color: var(--cg-brand-ai-accent, #dfff61);
     }
@@ -160,15 +160,15 @@ export class AiCaptureFlow extends LitElement {
     /* ── Result ── */
     .result { text-align: center; }
     .result-icon {
-      font-size: 36px;
-      margin-bottom: 8px;
+      font-size: var(--cg-font-size-2xl, 24px);
+      margin-bottom: var(--cg-spacing-8, 8px);
       color: var(--cg-green-400, #4ade80);
     }
     .result-text {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-surface-base-text, #fafafa);
       line-height: 1.5;
-      margin-bottom: 16px;
+      margin-bottom: var(--cg-spacing-16, 16px);
       white-space: pre-wrap;
     }
 
@@ -179,14 +179,14 @@ export class AiCaptureFlow extends LitElement {
     /* ── Buttons ── */
     .btn-row {
       display: flex;
-      gap: 10px;
+      gap: var(--cg-spacing-8, 8px);
       justify-content: center;
-      margin-top: 16px;
+      margin-top: var(--cg-spacing-16, 16px);
     }
     button {
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 14px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
+      border-radius: var(--cg-border-radius-100, 8px);
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       cursor: pointer;
       border: none;

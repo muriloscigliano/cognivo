@@ -53,20 +53,20 @@ export class AiFormGenerator extends LitElement {
     .form {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
       overflow: hidden;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     .form-header {
-      padding: 14px 18px;
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .form-title { font-size: 16px; font-weight: 700; color: var(--cg-color-surface-base-text, #fafafa); }
     .form-desc { font-size: 12px; color: var(--cg-gray-500, #71717a); margin-top: 4px; }
 
-    .form-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 14px; }
+    .form-body { padding: var(--cg-spacing-16, 16px); display: flex; flex-direction: column; gap: var(--cg-spacing-12, 12px); }
 
     /* Section */
     .section-label {
@@ -76,18 +76,18 @@ export class AiFormGenerator extends LitElement {
     }
 
     /* Field */
-    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field { display: flex; flex-direction: column; gap: var(--cg-spacing-4, 4px); }
     .field-label {
       font-size: 12px; font-weight: 600; color: var(--cg-gray-300, #d4d4d8);
     }
     .field-label .required { color: var(--cg-red-400, #f87171); margin-left: 2px; }
 
     input, select, textarea {
-      padding: 8px 12px; border-radius: 8px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); border-radius: var(--cg-border-radius-100, 8px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       background: var(--cg-color-surface-base-background, #09090b);
       color: var(--cg-color-surface-base-text, #fafafa);
-      font: inherit; font-size: 13px; outline: none;
+      font: inherit; font-size: var(--cg-font-size-sm, 14px); outline: none;
       transition: border-color 150ms;
     }
     input:focus, select:focus, textarea:focus { border-color: var(--cg-brand-ai-accent, #dfff61); }
@@ -98,7 +98,7 @@ export class AiFormGenerator extends LitElement {
 
     /* Checkbox */
     .checkbox-row {
-      display: flex; align-items: center; gap: 8px;
+      display: flex; align-items: center; gap: var(--cg-spacing-8, 8px);
       cursor: pointer;
     }
     .checkbox-row input[type="checkbox"] {
@@ -111,14 +111,14 @@ export class AiFormGenerator extends LitElement {
 
     /* Footer */
     .form-footer {
-      padding: 12px 18px;
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       border-top: 1px solid var(--cg-gray-800, #27272a);
-      display: flex; justify-content: flex-end; gap: 8px;
+      display: flex; justify-content: flex-end; gap: var(--cg-spacing-8, 8px);
     }
     .submit-btn {
-      padding: 8px 20px; border-radius: 8px; border: none;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px); border-radius: var(--cg-border-radius-100, 8px); border: none;
       background: var(--cg-brand-ai-accent, #dfff61);
-      color: #000; font: inherit; font-size: 13px; font-weight: 700;
+      color: #000; font: inherit; font-size: var(--cg-font-size-sm, 14px); font-weight: 700;
       cursor: pointer; transition: all 150ms;
     }
     .submit-btn:hover { filter: brightness(1.1); }
@@ -131,8 +131,8 @@ export class AiFormGenerator extends LitElement {
     }
 
     .ai-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
+      display: inline-flex; align-items: center; gap: var(--cg-spacing-4, 4px);
+      font-size: 10px; font-weight: 700; padding: 2px var(--cg-spacing-8, 8px); border-radius: var(--cg-border-radius-50, 4px);
       background: rgba(223, 255, 97, 0.08); color: var(--cg-brand-ai-accent, #dfff61);
       margin-left: 8px;
     }

@@ -53,9 +53,9 @@ export class AiAgentCard extends LitElement {
     }
 
     .avatar {
-      width: 36px; height: 36px; border-radius: 10px;
+      width: 36px; height: 36px; border-radius: var(--cg-border-radius-100, 8px);
       display: flex; align-items: center; justify-content: center;
-      font-size: 16px; flex-shrink: 0;
+      font-size: var(--cg-font-size-base, 16px); flex-shrink: 0;
       background: var(--cg-gray-800, #27272a);
     }
 
@@ -100,25 +100,25 @@ export class AiAgentCard extends LitElement {
     .handoff-arrow { color: var(--cg-gray-700, #3f3f46); }
 
     /* Capabilities */
-    .caps { display: flex; gap: 4px; flex-wrap: wrap; }
+    .caps { display: flex; gap: var(--cg-spacing-4, 4px); flex-wrap: wrap; }
     .cap {
-      font-size: 10px; padding: 2px 8px; border-radius: 4px;
+      font-size: 10px; padding: 2px var(--cg-spacing-8, 8px); border-radius: var(--cg-border-radius-50, 4px);
       background: var(--cg-gray-800, #27272a); color: var(--cg-gray-400, #a1a1aa);
       font-weight: 600;
     }
 
     /* Actions */
     .actions {
-      display: flex; gap: 4px; position: absolute; top: 12px; right: 12px;
+      display: flex; gap: var(--cg-spacing-4, 4px); position: absolute; top: 12px; right: 12px;
       opacity: 0; transition: opacity 150ms;
     }
     .card:hover .actions { opacity: 1; }
     .action-btn {
-      width: 24px; height: 24px; border-radius: 6px;
+      width: 24px; height: 24px; border-radius: var(--cg-border-radius-100, 8px);
       background: var(--cg-gray-800, #27272a); border: 1px solid var(--cg-gray-700, #3f3f46);
       color: var(--cg-gray-400, #a1a1aa); cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      font-size: 11px; padding: 0; transition: all 150ms;
+      font-size: var(--cg-font-size-xs, 12px); padding: 0; transition: all 150ms;
     }
     .action-btn:hover { color: var(--cg-color-surface-base-text, #fafafa); background: var(--cg-gray-700, #3f3f46); }
     .action-btn:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }

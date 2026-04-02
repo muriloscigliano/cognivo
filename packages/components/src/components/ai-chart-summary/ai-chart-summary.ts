@@ -40,8 +40,8 @@ export class AiChartSummary extends LitElement {
       background: var(--cg-color-surface-container-background, #18181b);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
-      padding: 14px 16px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       animation: slideUp 300ms ease;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
@@ -54,8 +54,8 @@ export class AiChartSummary extends LitElement {
     .header {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-bottom: var(--cg-spacing-8, 8px);
     }
 
     .ai-dot {
@@ -73,7 +73,7 @@ export class AiChartSummary extends LitElement {
     }
 
     .label {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       color: var(--cg-brand-ai-accent, #dfff61);
       text-transform: uppercase;
@@ -82,8 +82,8 @@ export class AiChartSummary extends LitElement {
 
     .type-badge {
       font-size: 10px;
-      padding: 1px 8px;
-      border-radius: 4px;
+      padding: 1px var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-50, 4px);
       font-weight: 700;
       text-transform: uppercase;
     }
@@ -98,46 +98,46 @@ export class AiChartSummary extends LitElement {
       margin-left: auto;
     }
 
-    .header-actions { display: flex; gap: 4px; margin-left: auto; }
+    .header-actions { display: flex; gap: var(--cg-spacing-4, 4px); margin-left: auto; }
     .icon-btn {
       background: none;
       border: 1px solid var(--cg-gray-700, #3f3f46);
       color: var(--cg-gray-500, #71717a);
-      border-radius: 6px;
+      border-radius: var(--cg-border-radius-100, 8px);
       width: 24px;
       height: 24px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       transition: all 150ms;
       padding: 0;
     }
     .icon-btn:hover { color: var(--cg-brand-ai-accent, #dfff61); border-color: rgba(223, 255, 97, 0.3); }
 
     .text {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-surface-base-text, #fafafa);
       line-height: 1.5;
-      margin-bottom: 10px;
+      margin-bottom: var(--cg-spacing-8, 8px);
     }
 
     .trends {
       display: flex;
-      gap: 12px;
+      gap: var(--cg-spacing-12, 12px);
       flex-wrap: wrap;
     }
 
     .trend {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      font-size: 12px;
+      gap: var(--cg-spacing-4, 4px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       cursor: pointer;
-      padding: 3px 10px;
-      border-radius: 6px;
+      padding: 3px var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-100, 8px);
       transition: all 150ms;
       border: 1px solid transparent;
     }
@@ -149,7 +149,7 @@ export class AiChartSummary extends LitElement {
     .trend.down { color: var(--cg-red-400, #f87171); }
     .trend.neutral { color: var(--cg-gray-500, #71717a); }
 
-    .trend-icon { font-size: 14px; }
+    .trend-icon { font-size: var(--cg-font-size-sm, 14px); }
 
     .collapsed .text, .collapsed .trends { display: none; }
 
@@ -158,25 +158,25 @@ export class AiChartSummary extends LitElement {
       border: none;
       color: var(--cg-gray-500, #71717a);
       cursor: pointer;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       padding: 0;
       font-family: inherit;
     }
     .toggle:hover { color: var(--cg-brand-ai-accent, #dfff61); }
 
     /* Compact mode */
-    :host([compact]) .summary { padding: 8px 14px; }
+    :host([compact]) .summary { padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); }
     :host([compact]) .text { display: none; }
-    :host([compact]) .trends { gap: 8px; }
+    :host([compact]) .trends { gap: var(--cg-spacing-8, 8px); }
 
     /* Loading */
     .loading-bar {
       height: 8px;
-      border-radius: 4px;
+      border-radius: var(--cg-border-radius-50, 4px);
       background: linear-gradient(90deg, var(--cg-gray-800, #27272a) 25%, var(--cg-gray-700, #3f3f46) 50%, var(--cg-gray-800, #27272a) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s linear infinite;
-      margin-bottom: 8px;
+      margin-bottom: var(--cg-spacing-8, 8px);
     }
     .loading-bar:nth-child(1) { width: 80%; }
     .loading-bar:nth-child(2) { width: 50%; }

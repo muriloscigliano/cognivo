@@ -49,7 +49,7 @@ export class AiRichMessage extends LitElement {
 
     .message {
       display: flex;
-      gap: 12px;
+      gap: var(--cg-spacing-12, 12px);
       max-width: 100%;
     }
     .message.user { flex-direction: row-reverse; }
@@ -62,7 +62,7 @@ export class AiRichMessage extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 700;
       flex-shrink: 0;
       overflow: hidden;
@@ -94,9 +94,9 @@ export class AiRichMessage extends LitElement {
     .message.user .bubble { max-width: 70%; }
 
     .bubble-body {
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 14px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
+      font-size: var(--cg-font-size-sm, 14px);
       line-height: 1.6;
       color: var(--cg-color-surface-base-text, #fafafa);
       box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
@@ -114,7 +114,7 @@ export class AiRichMessage extends LitElement {
     .message.system .bubble-body {
       background: var(--cg-gray-900, #09090b);
       border: 1px dashed var(--cg-gray-700, #3f3f46);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-gray-400, #a1a1aa);
       font-style: italic;
     }
@@ -129,9 +129,9 @@ export class AiRichMessage extends LitElement {
     .text code {
       background: rgba(255, 255, 255, 0.08);
       padding: 1px 5px;
-      border-radius: 4px;
+      border-radius: var(--cg-border-radius-50, 4px);
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
     .message.user .text code {
       background: rgba(0, 0, 0, 0.1);
@@ -141,21 +141,23 @@ export class AiRichMessage extends LitElement {
     .cards {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-top: 10px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-top: var(--cg-spacing-8, 8px);
     }
 
     /* ── Action buttons ── */
     .actions {
+      padding-top: var(--cg-spacing-12, 12px);
+      border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 10px;
+      gap: var(--cg-spacing-6, 6px);
+      margin-top: var(--cg-spacing-8, 8px);
     }
     .action-btn {
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 12px;
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
+      border-radius: var(--cg-border-radius-100, 8px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       background: var(--cg-gray-800, #27272a);
       color: var(--cg-color-surface-base-text, #fafafa);
@@ -174,9 +176,9 @@ export class AiRichMessage extends LitElement {
 
     /* ── Timestamp ── */
     .timestamp {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
-      margin-top: 6px;
+      margin-top: var(--cg-spacing-6, 6px);
     }
     .message.user .timestamp { text-align: right; }
 

@@ -28,12 +28,12 @@ export class AiCopyButton extends LitElement {
     .copy-btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: var(--cg-spacing-6, 6px);
       font-family: inherit;
       font-weight: 500;
       cursor: pointer;
       border: none;
-      border-radius: 6px;
+      border-radius: var(--cg-border-radius-100, 8px);
       transition: background 150ms ease, color 150ms ease, transform 100ms ease;
       white-space: nowrap;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
@@ -50,8 +50,8 @@ export class AiCopyButton extends LitElement {
     /* Default variant */
     :host([variant="default"]) .copy-btn,
     :host(:not([variant])) .copy-btn {
-      padding: 6px 14px;
-      font-size: 13px;
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
+      font-size: var(--cg-font-size-sm, 14px);
       background: rgba(255, 255, 255, 0.06);
       color: var(--cg-color-text-secondary, #a1a1aa);
       border: 1px solid var(--cg-color-border, #27272a);
@@ -64,8 +64,8 @@ export class AiCopyButton extends LitElement {
 
     /* Minimal variant */
     :host([variant="minimal"]) .copy-btn {
-      padding: 4px 10px;
-      font-size: 12px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
+      font-size: var(--cg-font-size-xs, 12px);
       background: none;
       color: var(--cg-color-text-tertiary, #71717a);
     }
@@ -76,7 +76,7 @@ export class AiCopyButton extends LitElement {
     /* Icon-only variant */
     :host([variant="icon-only"]) .copy-btn {
       padding: 4px;
-      font-size: 15px;
+      font-size: var(--cg-font-size-sm, 14px);
       background: none;
       color: var(--cg-color-text-tertiary, #71717a);
       line-height: 1;

@@ -38,7 +38,7 @@ export class AiGuardrail extends LitElement {
     .panel {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
       overflow: hidden;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
@@ -46,18 +46,18 @@ export class AiGuardrail extends LitElement {
 
     /* Status bar */
     .status-bar {
-      display: flex; align-items: center; gap: 10px;
-      padding: 12px 16px;
-      font-size: 13px; font-weight: 600;
+      display: flex; align-items: center; gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
+      font-size: var(--cg-font-size-sm, 14px); font-weight: 600;
     }
     .status-bar.safe { background: rgba(34, 197, 94, 0.08); color: var(--cg-green-400, #4ade80); border-bottom: 1px solid rgba(34, 197, 94, 0.15); }
     .status-bar.flagged { background: rgba(245, 158, 11, 0.08); color: var(--cg-yellow-400, #fbbf24); border-bottom: 1px solid rgba(245, 158, 11, 0.15); }
     .status-bar.blocked { background: rgba(239, 68, 68, 0.08); color: var(--cg-red-400, #f87171); border-bottom: 1px solid rgba(239, 68, 68, 0.15); }
 
-    .status-icon { font-size: 16px; }
+    .status-icon { font-size: var(--cg-font-size-base, 16px); }
     .status-text { flex: 1; }
     .severity {
-      font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
+      font-size: 10px; font-weight: 700; padding: 2px var(--cg-spacing-8, 8px); border-radius: var(--cg-border-radius-50, 4px);
       text-transform: uppercase;
     }
     .severity.low { background: rgba(34, 197, 94, 0.12); color: var(--cg-color-status-success-text-default, #4ade80); }
@@ -66,20 +66,20 @@ export class AiGuardrail extends LitElement {
     .severity.critical { background: rgba(239, 68, 68, 0.12); color: #f87171; }
 
     /* Policy checks */
-    .checks { padding: 12px 16px; }
+    .checks { padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px); }
     .checks-label {
       font-size: 11px; font-weight: 700; color: var(--cg-gray-400, #a1a1aa);
-      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;
+      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--cg-spacing-8, 8px);
     }
 
     .check {
-      display: flex; align-items: flex-start; gap: 8px;
-      padding: 6px 0;
+      display: flex; align-items: flex-start; gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-6, 6px) 0;
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .check:last-child { border-bottom: none; }
 
-    .check-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+    .check-icon { font-size: var(--cg-font-size-sm, 14px); flex-shrink: 0; margin-top: 1px; }
     .check-icon.pass { color: var(--cg-green-400, #4ade80); }
     .check-icon.fail { color: var(--cg-red-400, #f87171); }
 
@@ -89,15 +89,15 @@ export class AiGuardrail extends LitElement {
 
     /* Blocked content */
     .blocked-section {
-      padding: 12px 16px;
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       border-top: 1px solid var(--cg-gray-800, #27272a);
     }
     .blocked-label {
       font-size: 11px; font-weight: 700; color: var(--cg-red-400, #f87171);
-      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;
+      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--cg-spacing-8, 8px);
     }
     .blocked-content {
-      padding: 10px 12px; border-radius: 8px;
+      padding: 10px 12px; border-radius: var(--cg-border-radius-100, 8px);
       background: rgba(239, 68, 68, 0.06);
       border: 1px solid rgba(239, 68, 68, 0.15);
       font-size: 12px; color: var(--cg-gray-400, #a1a1aa);
@@ -110,21 +110,21 @@ export class AiGuardrail extends LitElement {
     .blocked-content.revealed { filter: none; }
     .blocked-hint {
       font-size: 11px; color: var(--cg-gray-500, #71717a);
-      margin-top: 6px; text-align: center;
+      margin-top: var(--cg-spacing-6, 6px); text-align: center;
     }
 
     /* Override */
     .override-section {
-      padding: 12px 16px;
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       border-top: 1px solid var(--cg-gray-800, #27272a);
-      display: flex; align-items: center; gap: 8px;
+      display: flex; align-items: center; gap: var(--cg-spacing-8, 8px);
     }
     .override-btn {
-      padding: 5px 14px; border-radius: 6px;
+      padding: 5px 14px; border-radius: var(--cg-border-radius-100, 8px);
       border: 1px solid rgba(239, 68, 68, 0.3);
       background: rgba(239, 68, 68, 0.08);
       color: var(--cg-red-400, #f87171);
-      font: inherit; font-size: 11px; font-weight: 700;
+      font: inherit; font-size: var(--cg-font-size-xs, 12px); font-weight: 700;
       cursor: pointer; transition: all 150ms;
     }
     .override-btn:hover { background: rgba(239, 68, 68, 0.15); }
@@ -132,10 +132,10 @@ export class AiGuardrail extends LitElement {
       font-size: 11px; color: var(--cg-gray-500, #71717a); flex: 1;
     }
     .report-btn {
-      padding: 5px 14px; border-radius: 6px;
+      padding: 5px 14px; border-radius: var(--cg-border-radius-100, 8px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       background: none; color: var(--cg-gray-400, #a1a1aa);
-      font: inherit; font-size: 11px; font-weight: 600;
+      font: inherit; font-size: var(--cg-font-size-xs, 12px); font-weight: 600;
       cursor: pointer; transition: all 150ms;
     }
     .report-btn:hover { border-color: var(--cg-gray-600, #52525b); color: var(--cg-color-surface-base-text, #fafafa); }

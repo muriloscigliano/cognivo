@@ -54,6 +54,8 @@ export class AiAnalyticsChart extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
+      padding-bottom: var(--cg-spacing-12, 12px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
       margin-bottom: var(--cg-spacing-12, 12px);
     }
 
@@ -73,7 +75,7 @@ export class AiAnalyticsChart extends LitElement {
     .legend-item {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: var(--cg-spacing-4, 4px);
       font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-color-text-secondary, #a1a1aa);
     }
@@ -125,7 +127,7 @@ export class AiAnalyticsChart extends LitElement {
       background: var(--cg-color-surface-overlay, #27272a);
       border: 1px solid var(--cg-color-border-default, #3f3f46);
       border-radius: var(--cg-radius-md, 8px);
-      padding: 6px 10px;
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
       font-size: var(--cg-font-size-xs, 12px);
       pointer-events: none;
       z-index: 10;

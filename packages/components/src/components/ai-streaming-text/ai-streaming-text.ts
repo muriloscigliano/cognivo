@@ -33,7 +33,7 @@ export class AiStreamingText extends LitElement {
     }
 
     .container {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-surface-base-text, #fafafa);
       line-height: 1.6;
       word-wrap: break-word;
@@ -47,17 +47,17 @@ export class AiStreamingText extends LitElement {
     .container code {
       background: rgba(255, 255, 255, 0.06);
       padding: 1px 5px;
-      border-radius: 4px;
+      border-radius: var(--cg-border-radius-50, 4px);
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
     }
     .container pre {
       background: rgba(0, 0, 0, 0.3);
-      padding: 10px 12px;
-      border-radius: 8px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
+      border-radius: var(--cg-border-radius-100, 8px);
       overflow-x: auto;
       margin: 8px 0;
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       line-height: 1.5;
       position: relative;
     }
@@ -72,9 +72,9 @@ export class AiStreamingText extends LitElement {
       margin: 12px 0 6px;
       color: var(--cg-color-surface-base-text, #fafafa);
     }
-    .container h1 { font-size: 20px; }
-    .container h2 { font-size: 17px; }
-    .container h3 { font-size: 15px; }
+    .container h1 { font-size: var(--cg-font-size-xl, 20px); }
+    .container h2 { font-size: var(--cg-font-size-base, 16px); }
+    .container h3 { font-size: var(--cg-font-size-sm, 14px); }
 
     /* Cursor */
     .cursor {

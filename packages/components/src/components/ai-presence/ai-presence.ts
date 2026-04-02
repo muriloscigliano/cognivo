@@ -74,7 +74,7 @@ export class AiPresence extends LitElement {
       border: 2px solid var(--cg-color-bg-primary, #18181b);
       background: var(--cg-color-bg-secondary, #27272a);
       color: var(--cg-color-text-primary, #fafafa);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       cursor: pointer;
       padding: 0;
@@ -117,7 +117,7 @@ export class AiPresence extends LitElement {
       border: 2px solid var(--cg-color-bg-primary, #18181b);
       background: var(--cg-color-border-primary, #27272a);
       color: var(--cg-color-text-primary, #fafafa);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       margin-left: -8px;
       cursor: default;
@@ -130,9 +130,9 @@ export class AiPresence extends LitElement {
       transform: translateX(-50%);
       background: var(--cg-color-bg-secondary, #27272a);
       color: var(--cg-color-text-primary, #fafafa);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 12px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-100, 8px);
+      font-size: var(--cg-font-size-xs, 12px);
       white-space: nowrap;
       pointer-events: none;
       opacity: 0;

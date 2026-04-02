@@ -44,14 +44,14 @@ export class AiToolCardResolver extends LitElement {
 
     /* ── Loading skeleton ── */
     .skeleton {
-      padding: 16px;
+      padding: var(--cg-spacing-16, 16px);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: var(--cg-spacing-8, 8px);
     }
     .skeleton-line {
       height: 14px;
-      border-radius: 6px;
+      border-radius: var(--cg-border-radius-100, 8px);
       background: linear-gradient(
         90deg,
         var(--cg-gray-800, #27272a) 25%,
@@ -67,31 +67,31 @@ export class AiToolCardResolver extends LitElement {
 
     /* ── Fallback (raw JSON) ── */
     .fallback {
-      padding: 16px;
+      padding: var(--cg-spacing-16, 16px);
     }
     .fallback-header {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-bottom: var(--cg-spacing-12, 12px);
     }
     .fallback-icon {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-brand-ai-accent, #dfff61);
     }
     .fallback-title {
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       color: var(--cg-color-surface-base-text, #fafafa);
     }
     .fallback-json {
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       line-height: 1.5;
       color: var(--cg-gray-400, #a1a1aa);
       background: var(--cg-gray-900, #09090b);
-      border-radius: 8px;
-      padding: 12px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-12, 12px);
       overflow-x: auto;
       white-space: pre-wrap;
       word-break: break-all;
@@ -101,18 +101,18 @@ export class AiToolCardResolver extends LitElement {
 
     /* ── Error state ── */
     .error {
-      padding: 16px;
+      padding: var(--cg-spacing-16, 16px);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: var(--cg-spacing-8, 8px);
     }
     .error-icon {
       color: var(--cg-red-400, #f87171);
-      font-size: 16px;
+      font-size: var(--cg-font-size-base, 16px);
       flex-shrink: 0;
     }
     .error-text {
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-red-400, #f87171);
     }
 

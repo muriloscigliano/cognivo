@@ -39,7 +39,7 @@ export class AiCitation extends LitElement {
       justify-content: center;
       width: 16px;
       height: 16px;
-      border-radius: 4px;
+      border-radius: var(--cg-border-radius-50, 4px);
       background: rgba(223, 255, 97, 0.12);
       color: var(--cg-brand-ai-accent, #dfff61);
       font-size: 10px;
@@ -64,8 +64,8 @@ export class AiCitation extends LitElement {
       background: var(--cg-color-surface-container-background, #18181b);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-gray-700, #3f3f46);
-      border-radius: 10px;
-      padding: 12px 14px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-12, 12px);
       margin: 8px 0;
       animation: fadeIn 200ms ease;
       max-width: 400px;
@@ -75,16 +75,16 @@ export class AiCitation extends LitElement {
     .source-header {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-bottom: var(--cg-spacing-6, 6px);
     }
     .source-number {
       width: 20px;
       height: 20px;
-      border-radius: 5px;
+      border-radius: var(--cg-border-radius-50, 4px);
       background: rgba(223, 255, 97, 0.12);
       color: var(--cg-brand-ai-accent, #dfff61);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 800;
       display: flex;
       align-items: center;
@@ -92,7 +92,7 @@ export class AiCitation extends LitElement {
       flex-shrink: 0;
     }
     .source-title {
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       color: var(--cg-brand-ai-accent, #dfff61);
       text-decoration: none;
@@ -115,19 +115,19 @@ export class AiCitation extends LitElement {
     .relevance-dot.low { background: var(--cg-gray-500, #71717a); }
 
     .source-excerpt {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-400, #a1a1aa);
       line-height: 1.4;
-      margin-top: 6px;
+      margin-top: var(--cg-spacing-6, 6px);
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
     .source-url {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
-      margin-top: 4px;
+      margin-top: var(--cg-spacing-4, 4px);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -142,15 +142,15 @@ export class AiCitation extends LitElement {
     .list-item {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      padding: 10px 0;
+      gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-8, 8px) 0;
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .list-item:last-child { border-bottom: none; }
 
     .list-content { flex: 1; min-width: 0; }
     .list-title {
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       color: var(--cg-color-surface-base-text, #fafafa);
     }
@@ -160,19 +160,19 @@ export class AiCitation extends LitElement {
     }
     .list-title a:hover { text-decoration: underline; }
     .list-excerpt {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-400, #a1a1aa);
       line-height: 1.4;
-      margin-top: 4px;
+      margin-top: var(--cg-spacing-4, 4px);
     }
 
     .sources-label {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       color: var(--cg-gray-400, #a1a1aa);
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 8px;
+      margin-bottom: var(--cg-spacing-8, 8px);
     }
     }
   `];

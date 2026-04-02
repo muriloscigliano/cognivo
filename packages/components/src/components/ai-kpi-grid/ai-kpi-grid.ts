@@ -85,15 +85,15 @@ export class AiKpiGrid extends LitElement {
     .kpi-top {
       display: flex;
       align-items: center;
-      gap: 6px;
-      margin-bottom: 8px;
+      gap: var(--cg-spacing-6, 6px);
+      margin-bottom: var(--cg-spacing-8, 8px);
     }
     .kpi-icon {
-      font-size: 16px;
+      font-size: var(--cg-font-size-base, 16px);
       flex-shrink: 0;
     }
     .kpi-label {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 500;
       color: var(--cg-gray-400, #a1a1aa);
       overflow: hidden;
@@ -102,34 +102,34 @@ export class AiKpiGrid extends LitElement {
     }
 
     .kpi-value {
-      font-size: 24px;
+      font-size: var(--cg-font-size-2xl, 24px);
       font-weight: 700;
       color: var(--cg-color-surface-base-text, #fafafa);
       line-height: 1.2;
-      margin-bottom: 4px;
+      margin-bottom: var(--cg-spacing-4, 4px);
     }
 
     .kpi-delta {
       display: inline-flex;
       align-items: center;
       gap: 3px;
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
     }
     .kpi-delta.up { color: var(--cg-green-400, #4ade80); }
     .kpi-delta.down { color: var(--cg-red-400, #f87171); }
     .kpi-delta.neutral { color: var(--cg-gray-400, #a1a1aa); }
 
-    .arrow { font-size: 11px; }
+    .arrow { font-size: var(--cg-font-size-xs, 12px); }
 
     /* ── Loading skeleton ── */
     .skeleton-cell {
-      padding: 14px;
+      padding: var(--cg-spacing-12, 12px);
       background: var(--cg-gray-900, #09090b);
-      border-radius: 10px;
+      border-radius: var(--cg-border-radius-100, 8px);
     }
     .skel-line {
-      border-radius: 4px;
+      border-radius: var(--cg-border-radius-50, 4px);
       background: linear-gradient(
         90deg,
         var(--cg-gray-800, #27272a) 25%,
@@ -139,8 +139,8 @@ export class AiKpiGrid extends LitElement {
       background-size: 200% 100%;
       animation: shimmer 1.5s linear infinite;
     }
-    .skel-label { width: 60%; height: 10px; margin-bottom: 10px; }
-    .skel-value { width: 50%; height: 22px; margin-bottom: 6px; }
+    .skel-label { width: 60%; height: 10px; margin-bottom: var(--cg-spacing-8, 8px); }
+    .skel-value { width: 50%; height: 22px; margin-bottom: var(--cg-spacing-6, 6px); }
     .skel-delta { width: 40%; height: 10px; }
       .skel-line { animation: none; background: var(--cg-gray-800, #27272a); }
     }

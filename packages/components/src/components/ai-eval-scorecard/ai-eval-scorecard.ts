@@ -40,7 +40,7 @@ export class AiEvalScorecard extends LitElement {
     .card {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
       overflow: hidden;
       box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
@@ -57,7 +57,7 @@ export class AiEvalScorecard extends LitElement {
     }
 
     .grade {
-      font-size: 18px; font-weight: 800; padding: 2px 12px; border-radius: 6px;
+      font-size: var(--cg-font-size-lg, 18px); font-weight: 800; padding: 2px 12px; border-radius: var(--cg-border-radius-100, 8px);
     }
     .grade.A { background: rgba(34, 197, 94, 0.12); color: var(--cg-color-status-success-text-default, #4ade80); }
     .grade.B { background: rgba(34, 197, 94, 0.08); color: #86efac; }

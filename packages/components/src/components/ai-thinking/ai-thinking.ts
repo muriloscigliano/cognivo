@@ -49,7 +49,7 @@ export class AiThinking extends LitElement {
     .container {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
       width: 100%;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
@@ -57,7 +57,7 @@ export class AiThinking extends LitElement {
     :host([size="lg"]) .container {
       flex-direction: column;
       align-items: stretch;
-      gap: 12px;
+      gap: var(--cg-spacing-12, 12px);
     }
 
     /* ── Spinner icon ── */
@@ -91,8 +91,8 @@ export class AiThinking extends LitElement {
       color: var(--cg-color-surface-base-text, #fafafa);
       white-space: nowrap;
     }
-    :host([size="sm"]) .text { font-size: 12px; }
-    :host([size="lg"]) .text { font-size: 16px; }
+    :host([size="sm"]) .text { font-size: var(--cg-font-size-xs, 12px); }
+    :host([size="lg"]) .text { font-size: var(--cg-font-size-base, 16px); }
 
     /* ── Dots variant ── */
     .dots {
@@ -127,12 +127,12 @@ export class AiThinking extends LitElement {
     .skeleton {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
       width: 100%;
     }
     .skeleton-line {
       height: 12px;
-      border-radius: 6px;
+      border-radius: var(--cg-border-radius-100, 8px);
       background: linear-gradient(90deg, var(--cg-gray-800, #27272a) 25%, var(--cg-gray-700, #3f3f46) 50%, var(--cg-gray-800, #27272a) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s linear infinite;
@@ -141,7 +141,7 @@ export class AiThinking extends LitElement {
     .skeleton-line:nth-child(2) { width: 70%; }
     .skeleton-line:nth-child(3) { width: 55%; }
     :host([size="sm"]) .skeleton-line { height: 8px; }
-    :host([size="lg"]) .skeleton-line { height: 16px; border-radius: 8px; }
+    :host([size="lg"]) .skeleton-line { height: 16px; border-radius: var(--cg-border-radius-100, 8px); }
 
     /* ── Progress bar ── */
     .progress-bar {
@@ -162,16 +162,16 @@ export class AiThinking extends LitElement {
     .tools {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: var(--cg-spacing-6, 6px);
     }
     .tool {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 3px 10px;
-      font-size: 11px;
+      padding: 3px var(--cg-spacing-8, 8px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
-      border-radius: 6px;
+      border-radius: var(--cg-border-radius-100, 8px);
       background: var(--cg-gray-800, #27272a);
       color: var(--cg-gray-400, #a1a1aa);
       border: 1px solid var(--cg-gray-700, #3f3f46);
@@ -195,9 +195,9 @@ export class AiThinking extends LitElement {
       background: none;
       border: 1px solid var(--cg-gray-700, #3f3f46);
       color: var(--cg-gray-400, #a1a1aa);
-      border-radius: 6px;
+      border-radius: var(--cg-border-radius-100, 8px);
       padding: 2px 10px;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       cursor: pointer;
       transition: all 150ms ease;

@@ -40,21 +40,21 @@ export class AiContextWindow extends LitElement {
       background: var(--cg-color-surface-container-background, #18181b);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 10px;
-      padding: 14px 16px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
     .header {
       display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: var(--cg-spacing-8, 8px);
     }
     .title {
       font-size: 11px; font-weight: 700; color: var(--cg-gray-400, #a1a1aa);
       text-transform: uppercase; letter-spacing: 0.05em;
     }
     .total {
-      font-size: 12px; font-weight: 600;
+      font-size: var(--cg-font-size-xs, 12px); font-weight: 600;
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
     }
     .total.ok { color: var(--cg-gray-400, #a1a1aa); }
@@ -64,11 +64,11 @@ export class AiContextWindow extends LitElement {
     /* Segmented bar */
     .bar {
       height: 12px;
-      border-radius: 6px;
+      border-radius: var(--cg-border-radius-100, 8px);
       background: var(--cg-gray-800, #27272a);
       display: flex;
       overflow: hidden;
-      margin-bottom: 10px;
+      margin-bottom: var(--cg-spacing-8, 8px);
     }
     .segment {
       height: 100%;
@@ -88,8 +88,8 @@ export class AiContextWindow extends LitElement {
       background: var(--cg-gray-800, #27272a);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       color: var(--cg-color-surface-base-text, #fafafa);
-      padding: 3px 8px;
-      border-radius: 5px;
+      padding: 3px var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-50, 4px);
       font-size: 10px;
       white-space: nowrap;
       z-index: 10;
@@ -98,7 +98,7 @@ export class AiContextWindow extends LitElement {
 
     /* Legend */
     .legend {
-      display: flex; gap: 14px; flex-wrap: wrap;
+      display: flex; gap: var(--cg-spacing-12, 12px); flex-wrap: wrap;
     }
     .legend-item {
       display: flex; align-items: center; gap: 5px;
@@ -115,8 +115,8 @@ export class AiContextWindow extends LitElement {
 
     /* Cache indicator */
     .cache-row {
-      display: flex; align-items: center; gap: 6px;
-      margin-top: 8px; padding-top: 8px;
+      display: flex; align-items: center; gap: var(--cg-spacing-6, 6px);
+      margin-top: var(--cg-spacing-8, 8px); padding-top: 8px;
       border-top: 1px solid var(--cg-gray-800, #27272a);
       font-size: 11px; color: var(--cg-gray-500, #71717a);
     }

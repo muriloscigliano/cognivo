@@ -30,14 +30,14 @@ export class AiConfidenceSlider extends LitElement {
       background: var(--cg-color-surface-container-background, #18181b);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 10px;
-      padding: 14px 16px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
     .header {
       display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: var(--cg-spacing-8, 8px);
     }
     .label {
       font-size: 11px; font-weight: 700; color: var(--cg-gray-400, #a1a1aa);
@@ -51,7 +51,7 @@ export class AiConfidenceSlider extends LitElement {
     }
 
     /* Slider */
-    .slider-row { position: relative; margin-bottom: 10px; }
+    .slider-row { position: relative; margin-bottom: var(--cg-spacing-8, 8px); }
 
     input[type="range"] {
       -webkit-appearance: none;
@@ -92,8 +92,8 @@ export class AiConfidenceSlider extends LitElement {
       top: -24px;
       left: var(--thumb-pos, 50%);
       transform: translateX(-50%);
-      font-size: 11px; font-weight: 700;
-      padding: 2px 8px; border-radius: 4px;
+      font-size: var(--cg-font-size-xs, 12px); font-weight: 700;
+      padding: 2px var(--cg-spacing-8, 8px); border-radius: var(--cg-border-radius-50, 4px);
       background: var(--cg-gray-800, #27272a);
       color: var(--cg-color-surface-base-text, #fafafa);
       pointer-events: none;
@@ -101,13 +101,13 @@ export class AiConfidenceSlider extends LitElement {
 
     /* Presets */
     .presets {
-      display: flex; gap: 6px; margin-bottom: 10px;
+      display: flex; gap: var(--cg-spacing-6, 6px); margin-bottom: 10px;
     }
     .preset-btn {
-      flex: 1; padding: 5px 0; border-radius: 6px;
+      flex: 1; padding: 5px 0; border-radius: var(--cg-border-radius-100, 8px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       background: none; color: var(--cg-gray-400, #a1a1aa);
-      font: inherit; font-size: 11px; font-weight: 600;
+      font: inherit; font-size: var(--cg-font-size-xs, 12px); font-weight: 600;
       cursor: pointer; transition: all 150ms; text-align: center;
     }
     .preset-btn:hover { border-color: var(--cg-gray-600, #52525b); color: var(--cg-color-surface-base-text, #fafafa); }

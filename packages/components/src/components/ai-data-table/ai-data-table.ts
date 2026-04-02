@@ -44,7 +44,7 @@ export class AiDataTable extends LitElement {
     .container {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
       overflow: hidden;
       color: var(--cg-color-surface-base-text, #fafafa);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
@@ -58,14 +58,14 @@ export class AiDataTable extends LitElement {
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
 
     thead th {
       background: #09090b;
-      padding: 10px 14px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
       text-align: left;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -97,7 +97,7 @@ export class AiDataTable extends LitElement {
     tbody tr:hover { background: rgba(223, 255, 97, 0.04); }
 
     tbody td {
-      padding: 10px 14px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
       border-bottom: 1px solid #1e1e21;
       color: #d4d4d8;
       cursor: default;
@@ -124,7 +124,7 @@ export class AiDataTable extends LitElement {
     .anomaly-icon {
       display: inline-block;
       margin-left: 6px;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       cursor: help;
     }
 
@@ -136,9 +136,9 @@ export class AiDataTable extends LitElement {
       background: #09090b;
       border: 1px solid var(--cg-gray-700, #3f3f46);
       color: #e4e4e7;
-      font-size: 11px;
-      padding: 6px 10px;
-      border-radius: 6px;
+      font-size: var(--cg-font-size-xs, 12px);
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-100, 8px);
       white-space: nowrap;
       pointer-events: none;
       z-index: 10;
@@ -146,10 +146,10 @@ export class AiDataTable extends LitElement {
     }
 
     .empty-state {
-      padding: 32px;
+      padding: var(--cg-spacing-24, 24px);
       text-align: center;
       color: var(--cg-gray-600, #52525b);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
     }
   `];

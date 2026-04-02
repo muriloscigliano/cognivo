@@ -33,8 +33,8 @@ export class AiBatchProgress extends LitElement {
       background: var(--cg-color-surface-container-background, #18181b);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-16, 16px);
       color: var(--cg-color-surface-base-text, #fafafa);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
@@ -43,21 +43,21 @@ export class AiBatchProgress extends LitElement {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 14px;
+      margin-bottom: var(--cg-spacing-12, 12px);
     }
 
     .title {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
     }
 
     .status-badge {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      padding: 3px 10px;
-      border-radius: 6px;
+      padding: 3px var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-100, 8px);
     }
     .status-badge.running {
       background: rgba(59, 130, 246, 0.15);
@@ -79,8 +79,8 @@ export class AiBatchProgress extends LitElement {
     /* ── Stats row ── */
     .stats {
       display: flex;
-      gap: 16px;
-      margin-bottom: 12px;
+      gap: var(--cg-spacing-16, 16px);
+      margin-bottom: var(--cg-spacing-12, 12px);
     }
 
     .stat {
@@ -90,12 +90,12 @@ export class AiBatchProgress extends LitElement {
     }
 
     .stat-label {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
     }
 
     .stat-value {
-      font-size: 16px;
+      font-size: var(--cg-font-size-base, 16px);
       font-weight: 700;
     }
     .stat-value.success { color: var(--cg-color-status-success-text-default, #22c55e); }
@@ -104,15 +104,15 @@ export class AiBatchProgress extends LitElement {
 
     /* ── Progress bar ── */
     .progress-section {
-      margin-bottom: 14px;
+      margin-bottom: var(--cg-spacing-12, 12px);
     }
 
     .progress-header {
       display: flex;
       justify-content: space-between;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
-      margin-bottom: 6px;
+      margin-bottom: var(--cg-spacing-6, 6px);
     }
 
     .progress-percent {
@@ -123,7 +123,7 @@ export class AiBatchProgress extends LitElement {
     .progress-track {
       height: 10px;
       background: var(--cg-color-surface-container-border, #27272a);
-      border-radius: 5px;
+      border-radius: var(--cg-border-radius-50, 4px);
       overflow: hidden;
       display: flex;
     }
@@ -152,16 +152,16 @@ export class AiBatchProgress extends LitElement {
     }
 
     .eta {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-600, #52525b);
-      margin-top: 6px;
+      margin-top: var(--cg-spacing-6, 6px);
     }
 
     /* ── Actions ── */
     .actions {
       display: flex;
-      gap: 8px;
-      margin-top: 16px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-top: var(--cg-spacing-16, 16px);
       padding-top: 14px;
       border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
     }
@@ -170,10 +170,10 @@ export class AiBatchProgress extends LitElement {
       background: transparent;
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       color: var(--cg-gray-400, #a1a1aa);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
-      padding: 7px 14px;
-      border-radius: 8px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
+      border-radius: var(--cg-border-radius-100, 8px);
       cursor: pointer;
       transition: all 150ms ease;
     }

@@ -33,8 +33,8 @@ export class AiAbTest extends LitElement {
       background: var(--cg-color-surface-container-background, #18181b);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-16, 16px);
       color: var(--cg-color-surface-base-text, #fafafa);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
@@ -43,11 +43,13 @@ export class AiAbTest extends LitElement {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: var(--cg-spacing-16, 16px);
+      padding-bottom: var(--cg-spacing-12, 12px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
     }
 
     .title {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       color: var(--cg-color-surface-base-text, #fafafa);
     }
@@ -56,9 +58,9 @@ export class AiAbTest extends LitElement {
       background: transparent;
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       color: var(--cg-gray-400, #a1a1aa);
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 6px;
+      font-size: var(--cg-font-size-xs, 12px);
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-100, 8px);
       cursor: pointer;
       transition: all 150ms ease;
     }
@@ -71,15 +73,15 @@ export class AiAbTest extends LitElement {
     .variants {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: var(--cg-spacing-12, 12px);
+      margin-bottom: var(--cg-spacing-16, 16px);
     }
 
     .variant {
       background: var(--cg-color-surface-base-background, #09090b);
       border: 2px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 8px;
-      padding: 16px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-16, 16px);
       transition: border-color 200ms ease;
       min-height: 80px;
     }
@@ -87,12 +89,12 @@ export class AiAbTest extends LitElement {
     .variant.winner-b { border-color: var(--cg-brand-ai-accent, #dfff61); }
 
     .variant-label {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--cg-gray-500, #71717a);
-      margin-bottom: 8px;
+      margin-bottom: var(--cg-spacing-8, 8px);
     }
     .variant.winner-a .variant-label,
     .variant.winner-b .variant-label {
@@ -100,7 +102,7 @@ export class AiAbTest extends LitElement {
     }
 
     .variant-content {
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-gray-300, #d4d4d8);
       line-height: 1.5;
       white-space: pre-wrap;
@@ -109,8 +111,10 @@ export class AiAbTest extends LitElement {
 
     .actions {
       display: flex;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
       justify-content: center;
+      padding-top: var(--cg-spacing-12, 12px);
+      border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
     }
 
     .vote-btn {
@@ -119,8 +123,8 @@ export class AiAbTest extends LitElement {
       color: var(--cg-gray-400, #a1a1aa);
       font-size: 12px;
       font-weight: 600;
-      padding: 8px 16px;
-      border-radius: 8px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
+      border-radius: var(--cg-border-radius-100, 8px);
       cursor: pointer;
       transition: all 150ms ease;
     }
@@ -144,8 +148,8 @@ export class AiAbTest extends LitElement {
       color: var(--cg-color-surface-container-background, #18181b);
       font-size: 12px;
       font-weight: 700;
-      padding: 8px 16px;
-      border-radius: 8px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
+      border-radius: var(--cg-border-radius-100, 8px);
       cursor: pointer;
       transition: all 150ms ease;
     }

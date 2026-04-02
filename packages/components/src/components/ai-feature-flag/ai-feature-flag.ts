@@ -47,6 +47,8 @@ export class AiFeatureFlag extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding-bottom: var(--cg-spacing-12, 12px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
       margin-bottom: var(--cg-spacing-12, 12px);
     }
 
@@ -57,7 +59,7 @@ export class AiFeatureFlag extends LitElement {
     }
 
     .env-badge {
-      padding: 2px 8px;
+      padding: 2px var(--cg-spacing-8, 8px);
       border-radius: var(--cg-radius-full, 9999px);
       font-size: 10px;
       font-weight: var(--cg-font-weight-semibold, 600);
@@ -76,7 +78,7 @@ export class AiFeatureFlag extends LitElement {
       background: var(--cg-color-surface-overlay, #27272a);
       border: 1px solid var(--cg-color-border-default, #3f3f46);
       border-radius: var(--cg-radius-md, 8px);
-      padding: 8px 12px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
       color: var(--cg-color-surface-base-text, #fafafa);
       font-size: var(--cg-font-size-sm, 14px);
       font-family: inherit;
@@ -104,14 +106,14 @@ export class AiFeatureFlag extends LitElement {
     .flag-list {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: var(--cg-spacing-4, 4px);
     }
 
     .flag-item {
       display: flex;
       align-items: center;
       gap: var(--cg-spacing-12, 12px);
-      padding: 10px 12px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
       background: var(--cg-color-surface-overlay, #27272a);
       border-radius: var(--cg-radius-md, 8px);
       border: 1px solid var(--cg-color-border-default, #27272a);
@@ -147,7 +149,7 @@ export class AiFeatureFlag extends LitElement {
     }
 
     .flag-env {
-      padding: 2px 6px;
+      padding: 2px var(--cg-spacing-6, 6px);
       border-radius: var(--cg-radius-sm, 4px);
       font-size: 10px;
       background: rgba(255, 255, 255, 0.06);
@@ -174,7 +176,7 @@ export class AiFeatureFlag extends LitElement {
       position: absolute;
       inset: 0;
       background: var(--cg-color-surface-base, #18181b);
-      border-radius: 10px;
+      border-radius: var(--cg-border-radius-100, 8px);
       border: 1px solid var(--cg-color-border-default, #3f3f46);
       cursor: pointer;
       transition: background 0.15s ease;
@@ -216,7 +218,7 @@ export class AiFeatureFlag extends LitElement {
 
     .empty {
       text-align: center;
-      padding: 24px;
+      padding: var(--cg-spacing-24, 24px);
       color: var(--cg-color-text-tertiary, #71717a);
       font-size: var(--cg-font-size-sm, 14px);
     }

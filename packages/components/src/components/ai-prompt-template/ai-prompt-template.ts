@@ -35,8 +35,8 @@ export class AiPromptTemplate extends LitElement {
     .container {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-16, 16px);
       color: var(--cg-color-surface-base-text, #fafafa);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
@@ -46,26 +46,26 @@ export class AiPromptTemplate extends LitElement {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      margin-bottom: var(--cg-spacing-12, 12px);
     }
 
     .title {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
     }
 
     .mode-toggle {
       display: flex;
-      gap: 4px;
+      gap: var(--cg-spacing-4, 4px);
     }
 
     .mode-btn {
       background: transparent;
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       color: var(--cg-gray-500, #71717a);
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 6px;
+      font-size: var(--cg-font-size-xs, 12px);
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-100, 8px);
       cursor: pointer;
       transition: all 150ms ease;
     }
@@ -85,10 +85,10 @@ export class AiPromptTemplate extends LitElement {
     .template-area {
       background: #09090b;
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 8px;
-      padding: 16px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-16, 16px);
       min-height: 80px;
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       line-height: 1.7;
       color: #d4d4d8;
       white-space: pre-wrap;
@@ -98,12 +98,12 @@ export class AiPromptTemplate extends LitElement {
     .template-textarea {
       background: #09090b;
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 8px;
-      padding: 16px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-16, 16px);
       min-height: 80px;
       width: 100%;
       box-sizing: border-box;
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       line-height: 1.7;
       color: #d4d4d8;
@@ -121,7 +121,7 @@ export class AiPromptTemplate extends LitElement {
       border-radius: 3px;
       font-weight: 600;
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
     }
 
     .var-value {
@@ -131,25 +131,25 @@ export class AiPromptTemplate extends LitElement {
 
     /* ── Variables panel ── */
     .variables-section {
-      margin-top: 14px;
+      margin-top: var(--cg-spacing-12, 12px);
     }
 
     .variables-title {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       color: var(--cg-gray-400, #a1a1aa);
-      margin-bottom: 8px;
+      margin-bottom: var(--cg-spacing-8, 8px);
     }
 
     .variable-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 6px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-bottom: var(--cg-spacing-6, 6px);
     }
 
     .var-name {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       color: var(--cg-brand-ai-accent, #dfff61);
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
@@ -161,9 +161,9 @@ export class AiPromptTemplate extends LitElement {
       background: #09090b;
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       color: var(--cg-color-surface-base-text, #fafafa);
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 6px;
+      font-size: var(--cg-font-size-xs, 12px);
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-100, 8px);
       font-family: inherit;
     }
     .var-input:focus-visible {
@@ -178,8 +178,8 @@ export class AiPromptTemplate extends LitElement {
     .empty-state {
       text-align: center;
       color: var(--cg-gray-600, #52525b);
-      font-size: 13px;
-      padding: 20px 0;
+      font-size: var(--cg-font-size-sm, 14px);
+      padding: var(--cg-spacing-16, 16px) 0;
     }
 
     /* ── Rounded variants ── */

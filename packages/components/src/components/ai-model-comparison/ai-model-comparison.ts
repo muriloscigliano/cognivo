@@ -39,7 +39,7 @@ export class AiModelComparison extends LitElement {
     .wrapper {
       overflow-x: auto;
       border: 1px solid var(--cg-color-border-primary, #27272a);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
       background: var(--cg-color-bg-primary, #18181b);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
@@ -48,18 +48,18 @@ export class AiModelComparison extends LitElement {
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
 
     th, td {
-      padding: 10px 14px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
       text-align: left;
       border-bottom: 1px solid var(--cg-color-border-primary, #27272a);
     }
 
     th {
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -76,12 +76,12 @@ export class AiModelComparison extends LitElement {
     .model-name {
       color: var(--cg-color-text-primary, #fafafa);
       font-weight: 700;
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
 
     .model-provider {
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
     }
 
     .metric-label {
@@ -99,7 +99,7 @@ export class AiModelComparison extends LitElement {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: var(--cg-spacing-4, 4px);
     }
 
     .score-bar-track {
@@ -121,7 +121,7 @@ export class AiModelComparison extends LitElement {
     .score-bar-fill.best   { background: var(--cg-brand-ai-accent, #dfff61); }
 
     .score-value {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       color: var(--cg-color-text-primary, #fafafa);
     }
@@ -132,14 +132,14 @@ export class AiModelComparison extends LitElement {
     .meta-cell {
       text-align: center;
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
     }
 
     .cost-badge {
       display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 11px;
+      padding: 2px var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-50, 4px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       background: var(--cg-color-bg-secondary, #27272a);
       border: 1px solid var(--cg-color-border-primary, #3f3f46);
@@ -149,12 +149,12 @@ export class AiModelComparison extends LitElement {
     .select-btn {
       display: block;
       margin: 4px auto 0;
-      padding: 6px 16px;
-      border-radius: 6px;
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-16, 16px);
+      border-radius: var(--cg-border-radius-100, 8px);
       border: 1px solid var(--cg-color-border-primary, #3f3f46);
       background: transparent;
       color: var(--cg-color-text-primary, #fafafa);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       cursor: pointer;
       font-family: inherit;

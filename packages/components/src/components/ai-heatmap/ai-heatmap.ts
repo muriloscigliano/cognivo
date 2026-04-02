@@ -30,18 +30,18 @@ export class AiHeatmap extends LitElement {
     .container {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
-      padding: 16px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-16, 16px);
       overflow: auto;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     .title {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       color: var(--cg-color-surface-base-text, #fafafa);
-      margin-bottom: 12px;
+      margin-bottom: var(--cg-spacing-12, 12px);
     }
 
     svg { display: block; }
@@ -59,7 +59,7 @@ export class AiHeatmap extends LitElement {
     }
 
     .axis-label {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       fill: var(--cg-gray-400, #a1a1aa);
     }
 
@@ -68,9 +68,9 @@ export class AiHeatmap extends LitElement {
       position: absolute;
       background: var(--cg-gray-800, #27272a);
       border: 1px solid var(--cg-gray-700, #3f3f46);
-      border-radius: 6px;
-      padding: 6px 10px;
-      font-size: 11px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-color-surface-base-text, #fafafa);
       pointer-events: none;
       z-index: 10;
@@ -84,22 +84,22 @@ export class AiHeatmap extends LitElement {
     .legend {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-top: 10px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-top: var(--cg-spacing-8, 8px);
       font-size: 10px;
       color: var(--cg-gray-500, #71717a);
     }
     .legend-bar {
       height: 8px;
       width: 80px;
-      border-radius: 4px;
+      border-radius: var(--cg-border-radius-50, 4px);
     }
 
     .empty {
       text-align: center;
-      padding: 32px;
+      padding: var(--cg-spacing-24, 24px);
       color: var(--cg-gray-500, #71717a);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
     }
   `];

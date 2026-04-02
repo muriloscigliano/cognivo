@@ -42,8 +42,8 @@ export class AiPermissionGate extends LitElement {
     .container {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-16, 16px);
       color: var(--cg-color-surface-base-text, #fafafa);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
@@ -53,37 +53,37 @@ export class AiPermissionGate extends LitElement {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: var(--cg-spacing-16, 16px);
     }
 
     .title {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
     }
 
     .role-badge {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       background: var(--cg-color-surface-container-border, #27272a);
       color: var(--cg-gray-400, #a1a1aa);
-      padding: 4px 10px;
-      border-radius: 6px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-100, 8px);
     }
 
     .feature-list {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: var(--cg-spacing-4, 4px);
     }
 
     .feature-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 8px;
+      gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
+      border-radius: var(--cg-border-radius-100, 8px);
       background: #09090b;
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       transition: border-color 120ms ease;
@@ -97,7 +97,7 @@ export class AiPermissionGate extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       flex-shrink: 0;
     }
     .status-icon.allowed {
@@ -112,19 +112,19 @@ export class AiPermissionGate extends LitElement {
     .feature-info { flex: 1; min-width: 0; }
 
     .feature-name {
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       color: var(--cg-color-surface-base-text, #fafafa);
     }
 
     .feature-role {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-600, #52525b);
       margin-top: 2px;
     }
 
     .feature-reason {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
       margin-top: 2px;
       font-style: italic;
@@ -134,10 +134,10 @@ export class AiPermissionGate extends LitElement {
       background: transparent;
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       color: var(--cg-gray-400, #a1a1aa);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
-      padding: 6px 12px;
-      border-radius: 6px;
+      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
+      border-radius: var(--cg-border-radius-100, 8px);
       cursor: pointer;
       flex-shrink: 0;
       transition: all 150ms ease;
@@ -152,19 +152,19 @@ export class AiPermissionGate extends LitElement {
     }
 
     .summary {
-      margin-top: 12px;
+      margin-top: var(--cg-spacing-12, 12px);
       padding-top: 12px;
       border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
       display: flex;
-      gap: 16px;
-      font-size: 11px;
+      gap: var(--cg-spacing-16, 16px);
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
     }
 
     .summary-item {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: var(--cg-spacing-4, 4px);
     }
 
     .dot-green { color: #22c55e; }
@@ -173,8 +173,8 @@ export class AiPermissionGate extends LitElement {
     .empty-state {
       text-align: center;
       color: var(--cg-gray-600, #52525b);
-      font-size: 13px;
-      padding: 32px 0;
+      font-size: var(--cg-font-size-sm, 14px);
+      padding: var(--cg-spacing-24, 24px) 0;
     }
 
   `];

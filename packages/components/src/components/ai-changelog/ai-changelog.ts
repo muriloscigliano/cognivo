@@ -44,16 +44,16 @@ export class AiChangelog extends LitElement {
       background: var(--cg-color-surface-container-background, #18181b);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-16, 16px);
       color: var(--cg-color-surface-base-text, #fafafa);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
     .header {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
-      margin-bottom: 16px;
+      margin-bottom: var(--cg-spacing-16, 16px);
     }
 
     .timeline {
@@ -73,7 +73,7 @@ export class AiChangelog extends LitElement {
 
     .entry {
       position: relative;
-      margin-bottom: 12px;
+      margin-bottom: var(--cg-spacing-12, 12px);
     }
 
     .entry-dot {
@@ -91,8 +91,8 @@ export class AiChangelog extends LitElement {
     .entry-card {
       background: var(--cg-color-surface-base-background, #09090b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 8px;
-      padding: 12px 14px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-12, 12px);
       cursor: pointer;
       transition: border-color 120ms ease;
     }
@@ -105,12 +105,12 @@ export class AiChangelog extends LitElement {
     .entry-top {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
       flex-wrap: wrap;
     }
 
     .version {
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 700;
       color: var(--cg-color-surface-base-text, #fafafa);
     }
@@ -120,22 +120,22 @@ export class AiChangelog extends LitElement {
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      padding: 2px 8px;
-      border-radius: 4px;
+      padding: 2px var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-50, 4px);
     }
 
     .entry-meta {
       display: flex;
-      gap: 10px;
-      font-size: 11px;
+      gap: var(--cg-spacing-8, 8px);
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-600, #52525b);
-      margin-top: 4px;
+      margin-top: var(--cg-spacing-4, 4px);
     }
 
     .changes-preview {
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-400, #a1a1aa);
-      margin-top: 6px;
+      margin-top: var(--cg-spacing-6, 6px);
       line-height: 1.5;
       overflow: hidden;
       max-height: 40px;
@@ -149,10 +149,10 @@ export class AiChangelog extends LitElement {
       background: transparent;
       border: none;
       color: var(--cg-gray-500, #71717a);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       cursor: pointer;
-      padding: 4px 0;
-      margin-top: 4px;
+      padding: var(--cg-spacing-4, 4px) 0;
+      margin-top: var(--cg-spacing-4, 4px);
       transition: color 120ms ease;
     }
     .expand-toggle:hover { color: var(--cg-brand-ai-accent, #dfff61); }
@@ -164,17 +164,17 @@ export class AiChangelog extends LitElement {
     .entry-actions {
       display: flex;
       justify-content: flex-end;
-      margin-top: 8px;
+      margin-top: var(--cg-spacing-8, 8px);
     }
 
     .rollback-btn {
       background: transparent;
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       color: var(--cg-gray-400, #a1a1aa);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 6px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-100, 8px);
       cursor: pointer;
       transition: all 150ms ease;
     }
@@ -190,8 +190,8 @@ export class AiChangelog extends LitElement {
     .empty-state {
       text-align: center;
       color: var(--cg-gray-600, #52525b);
-      font-size: 13px;
-      padding: 32px 0;
+      font-size: var(--cg-font-size-sm, 14px);
+      padding: var(--cg-spacing-24, 24px) 0;
     }
     }
   `];

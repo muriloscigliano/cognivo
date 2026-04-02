@@ -54,13 +54,13 @@ export class AiVersionSelector extends LitElement {
     .version-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
     }
 
     .version-item {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
       padding: var(--cg-spacing-12, 12px);
       background: var(--cg-color-surface-overlay, #27272a);
       border-radius: var(--cg-radius-md, 8px);
@@ -85,7 +85,7 @@ export class AiVersionSelector extends LitElement {
     .version-top {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
     }
 
     .radio-dot {
@@ -128,7 +128,7 @@ export class AiVersionSelector extends LitElement {
 
     .status-badge {
       display: inline-flex;
-      padding: 2px 8px;
+      padding: 2px var(--cg-spacing-8, 8px);
       border-radius: var(--cg-radius-full, 9999px);
       font-size: 10px;
       font-weight: var(--cg-font-weight-semibold, 600);
@@ -155,10 +155,10 @@ export class AiVersionSelector extends LitElement {
     .deprecation-warning {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: var(--cg-spacing-6, 6px);
       font-size: var(--cg-font-size-xs, 12px);
       color: #f87171;
-      padding: 4px 8px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
       background: rgba(239, 68, 68, 0.08);
       border-radius: var(--cg-radius-sm, 4px);
     }
@@ -166,7 +166,7 @@ export class AiVersionSelector extends LitElement {
     .rollout-row {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
     }
 
     .rollout-label {
@@ -213,7 +213,7 @@ export class AiVersionSelector extends LitElement {
       border: 1px solid var(--cg-color-accent, #dfff61);
       color: var(--cg-color-accent, #dfff61);
       border-radius: var(--cg-radius-sm, 4px);
-      padding: 3px 8px;
+      padding: 3px var(--cg-spacing-8, 8px);
       font-size: 10px;
       font-weight: var(--cg-font-weight-semibold, 600);
       cursor: pointer;

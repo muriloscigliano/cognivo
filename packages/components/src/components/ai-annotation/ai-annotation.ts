@@ -45,7 +45,7 @@ export class AiAnnotation extends LitElement {
       background: var(--cg-color-surface-container-background, #18181b);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
       overflow: hidden;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
@@ -54,13 +54,13 @@ export class AiAnnotation extends LitElement {
     .toolbar {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 10px 14px;
+      gap: var(--cg-spacing-6, 6px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
       flex-wrap: wrap;
     }
     .toolbar-label {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       color: var(--cg-gray-400, #a1a1aa);
       margin-right: 4px;
@@ -68,13 +68,13 @@ export class AiAnnotation extends LitElement {
     .label-btn {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      padding: 3px 10px;
-      border-radius: 5px;
+      gap: var(--cg-spacing-4, 4px);
+      padding: 3px var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-50, 4px);
       border: 1px solid transparent;
       background: none;
       font: inherit;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       cursor: pointer;
       transition: all 150ms;
@@ -89,14 +89,14 @@ export class AiAnnotation extends LitElement {
 
     .stats {
       margin-left: auto;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
     }
 
     /* Content */
     .content {
-      padding: 16px;
-      font-size: 14px;
+      padding: var(--cg-spacing-16, 16px);
+      font-size: var(--cg-font-size-sm, 14px);
       line-height: 1.8;
       color: var(--cg-color-surface-base-text, #fafafa);
       user-select: text;
@@ -145,10 +145,10 @@ export class AiAnnotation extends LitElement {
 
     /* Empty */
     .empty {
-      padding: 32px;
+      padding: var(--cg-spacing-24, 24px);
       text-align: center;
       color: var(--cg-gray-500, #71717a);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
     }
   `];

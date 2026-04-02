@@ -38,8 +38,8 @@ export class AiStatusPage extends LitElement {
     .page {
       background: var(--cg-color-bg-primary, #18181b);
       border: 1px solid var(--cg-color-border-primary, #27272a);
-      border-radius: 16px;
-      padding: 24px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-24, 24px);
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
@@ -47,8 +47,8 @@ export class AiStatusPage extends LitElement {
     .overall {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: var(--cg-spacing-12, 12px);
+      margin-bottom: var(--cg-spacing-16, 16px);
       padding-bottom: 16px;
       border-bottom: 1px solid var(--cg-color-border-primary, #27272a);
     }
@@ -62,15 +62,15 @@ export class AiStatusPage extends LitElement {
 
     .overall-text {
       color: var(--cg-color-text-primary, #fafafa);
-      font-size: 16px;
+      font-size: var(--cg-font-size-base, 16px);
       font-weight: 700;
     }
 
     .overall-badge {
       margin-left: auto;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
+      border-radius: var(--cg-border-radius-150, 12px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.3px;
@@ -95,9 +95,9 @@ export class AiStatusPage extends LitElement {
     .service-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: 8px;
+      gap: var(--cg-spacing-12, 12px);
+      padding: var(--cg-spacing-12, 12px);
+      border-radius: var(--cg-border-radius-100, 8px);
       cursor: pointer;
       border: none;
       background: transparent;
@@ -113,7 +113,7 @@ export class AiStatusPage extends LitElement {
     .service-item:focus-visible {
       outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
       outline-offset: -2px;
-      border-radius: 8px;
+      border-radius: var(--cg-border-radius-100, 8px);
     }
 
     .service-dot {
@@ -126,23 +126,23 @@ export class AiStatusPage extends LitElement {
     .service-name {
       flex: 1;
       color: var(--cg-color-text-primary, #fafafa);
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 500;
     }
 
     .service-meta {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: var(--cg-spacing-16, 16px);
       flex-shrink: 0;
     }
 
     .latency {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: var(--cg-spacing-6, 6px);
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-variant-numeric: tabular-nums;
     }
 
@@ -165,14 +165,14 @@ export class AiStatusPage extends LitElement {
 
     .uptime {
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 12px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-variant-numeric: tabular-nums;
       min-width: 52px;
       text-align: right;
     }
 
     .service-status-label {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       min-width: 90px;
       text-align: right;

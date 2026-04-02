@@ -55,7 +55,7 @@ export class AiCommandPalette extends LitElement {
       background: var(--cg-color-surface, #18181b);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-border, #27272a);
-      border-radius: 12px;
+      border-radius: var(--cg-border-radius-150, 12px);
       box-shadow: var(--cg-elevation-4, 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       overflow: hidden;
       animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
@@ -71,7 +71,7 @@ export class AiCommandPalette extends LitElement {
     }
     .search-icon {
       color: var(--cg-color-text-tertiary, #71717a);
-      font-size: 16px;
+      font-size: var(--cg-font-size-base, 16px);
       flex-shrink: 0;
     }
     .search-input {
@@ -80,7 +80,7 @@ export class AiCommandPalette extends LitElement {
       border: none;
       outline: none;
       color: var(--cg-color-text-primary, #fafafa);
-      font-size: 15px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-family: inherit;
     }
     .search-input::placeholder {
@@ -111,7 +111,7 @@ export class AiCommandPalette extends LitElement {
       background: none;
       border: none;
       color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-family: inherit;
       cursor: pointer;
       text-align: left;
@@ -139,17 +139,17 @@ export class AiCommandPalette extends LitElement {
       flex-shrink: 0;
       font-size: var(--cg-font-size-xs, 12px);
       font-family: var(--cg-font-family-mono, 'JetBrains Mono', monospace);
-      padding: 2px 6px;
-      border-radius: 4px;
+      padding: 2px var(--cg-spacing-6, 6px);
+      border-radius: var(--cg-border-radius-50, 4px);
       background: rgba(255, 255, 255, 0.06);
       color: var(--cg-color-text-tertiary, #71717a);
     }
 
     .empty {
-      padding: 24px 16px;
+      padding: var(--cg-spacing-24, 24px) var(--cg-spacing-16, 16px);
       text-align: center;
       color: var(--cg-color-text-tertiary, #71717a);
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
     }
     }
 
