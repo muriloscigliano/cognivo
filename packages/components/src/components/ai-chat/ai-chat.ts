@@ -347,7 +347,15 @@ export class AiChat extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .chat { border-radius: 0; }
+    :host([rounded="sm"]) .chat { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .chat { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .chat { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .chat { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Object }) aiClient: AiClient | null = null;
   @property({ type: Array }) chatDataset: unknown[] = [];
   @property({ type: Boolean }) showActions: boolean = true;

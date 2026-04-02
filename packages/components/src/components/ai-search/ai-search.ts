@@ -208,8 +208,16 @@ export class AiSearch extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .input-row, :host([rounded="none"]) .dropdown { border-radius: 0; }
+    :host([rounded="sm"]) .input-row, :host([rounded="sm"]) .dropdown { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .input-row, :host([rounded="md"]) .dropdown { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .input-row, :host([rounded="lg"]) .dropdown { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .input-row, :host([rounded="full"]) .dropdown { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: String }) placeholder: string = 'Search...';
   @property({ type: Array }) suggestions: string[] = [];
   @property({ type: Array }) filters: string[] = [];

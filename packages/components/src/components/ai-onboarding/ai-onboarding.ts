@@ -159,8 +159,15 @@ export class AiOnboarding extends LitElement {
     }
     .next-btn:hover:not(:disabled) { filter: brightness(1.1); }
 
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .card { border-radius: 0; }
+    :host([rounded="sm"]) .card { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .card { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .card { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .card { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) steps: OnboardingStep[] = [];
   @property({ type: Number }) active = 0;
   @property({ type: Boolean }) dismissible = true;

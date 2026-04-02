@@ -47,7 +47,7 @@ export class AiNotificationCenter extends LitElement {
       color: #fafafa;
       max-height: 480px;
       overflow-y: auto;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
@@ -183,8 +183,15 @@ export class AiNotificationCenter extends LitElement {
       padding: 32px 0;
     }
 
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .container { border-radius: 0; }
+    :host([rounded="sm"]) .container { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .container { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .container { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .container { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) notifications: Notification[] = [];
   @property({ type: Number }) maxVisible = 50;
 

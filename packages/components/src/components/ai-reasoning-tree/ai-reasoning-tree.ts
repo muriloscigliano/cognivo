@@ -150,8 +150,15 @@ export class AiReasoningTree extends LitElement {
 
     .empty { padding: 32px; text-align: center; color: var(--cg-gray-500, #71717a); font-size: 13px; }
 
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .tree { border-radius: 0; }
+    :host([rounded="sm"]) .tree { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .tree { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .tree { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .tree { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) nodes: ReasoningNode[] = [];
   @property({ type: Array }) highlightPath: string[] = [];
 

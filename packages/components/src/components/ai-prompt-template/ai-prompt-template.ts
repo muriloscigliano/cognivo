@@ -182,8 +182,15 @@ export class AiPromptTemplate extends LitElement {
       padding: 20px 0;
     }
 
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .container { border-radius: 0; }
+    :host([rounded="sm"]) .container { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .container { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .container { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .container { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: String }) template = '';
   @property({ type: Object }) variables: Record<string, string> = {};
   @property({ type: Boolean }) editable = true;

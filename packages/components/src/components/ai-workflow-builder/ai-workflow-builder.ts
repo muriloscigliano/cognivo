@@ -95,8 +95,15 @@ export class AiWorkflowBuilder extends LitElement {
 
     .empty { text-align: center; padding: 32px; color: var(--cg-gray-500, #71717a); font-size: 13px; }
 
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .container { border-radius: 0; }
+    :host([rounded="sm"]) .container { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .container { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .container { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .container { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) steps: WorkflowStep[] = [];
   @property({ type: String }) override title: string = 'Workflow';
 

@@ -103,7 +103,15 @@ export class AiJsonViewer extends LitElement {
       color: var(--cg-color-text-secondary, #a1a1aa);
     }
     }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .root { border-radius: 0; }
+    :host([rounded="sm"]) .root { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .root { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .root { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .root { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ attribute: false }) data: unknown = null;
   @property({ type: Boolean }) expanded = true;
   @property({ type: Number, attribute: 'max-depth' }) maxDepth = 5;

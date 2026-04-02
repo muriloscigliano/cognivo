@@ -37,7 +37,7 @@ export class AiFeatureFlag extends LitElement {
       border: 1px solid var(--cg-color-border-default, #27272a);
       border-radius: var(--cg-radius-lg, 12px);
       padding: var(--cg-spacing-16, 16px);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
     }
@@ -221,7 +221,15 @@ export class AiFeatureFlag extends LitElement {
       font-size: var(--cg-font-size-sm, 14px);
     }
     }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) { border-radius: 0; }
+    :host([rounded="sm"]) { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) flags: FeatureFlag[] = [];
   @property({ type: String }) environment = 'production';
 

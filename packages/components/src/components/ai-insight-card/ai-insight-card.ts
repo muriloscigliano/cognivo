@@ -49,7 +49,7 @@ export class AiInsightCard extends LitElement {
       transition: all 200ms ease;
       position: relative;
       animation: fadeIn 300ms ease;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
     .card:hover {
@@ -213,7 +213,15 @@ export class AiInsightCard extends LitElement {
     .skel-line:nth-child(2) { width: 90%; }
     .skel-line:nth-child(3) { width: 60%; }
     }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .card { border-radius: 0; }
+    :host([rounded="sm"]) .card { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .card { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .card { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .card { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: String }) type: 'explanation' | 'forecast' | 'anomaly' | 'optimization' | 'classification' = 'explanation';
   @property({ type: String }) text: string = '';
   @property({ type: Number }) confidence: number = 0;

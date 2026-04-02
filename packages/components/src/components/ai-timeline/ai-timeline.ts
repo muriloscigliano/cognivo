@@ -197,8 +197,16 @@ export class AiTimeline extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .timeline { border-radius: 0; }
+    :host([rounded="sm"]) .timeline { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .timeline { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .timeline { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .timeline { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   /** Timeline steps */
   @property({ type: Array }) steps: TimelineStep[] = [];
 

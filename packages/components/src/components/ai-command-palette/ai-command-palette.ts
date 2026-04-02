@@ -151,7 +151,15 @@ export class AiCommandPalette extends LitElement {
       font-size: 13px;
     }
     }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .palette { border-radius: 0; }
+    :host([rounded="sm"]) .palette { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .palette { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .palette { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .palette { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) commands: PaletteCommand[] = [];
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String }) placeholder = 'Type a command\u2026';

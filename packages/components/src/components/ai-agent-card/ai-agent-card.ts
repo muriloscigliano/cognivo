@@ -39,7 +39,7 @@ export class AiAgentCard extends LitElement {
       transition: all 150ms;
       cursor: pointer;
       position: relative;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
     .card:hover { border-color: var(--cg-gray-600, #52525b); box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2)); transform: translateY(var(--cg-interaction-hover-lift, -1px)); }
     .card:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }
@@ -119,7 +119,15 @@ export class AiAgentCard extends LitElement {
     .action-btn:hover { color: var(--cg-color-surface-base-text, #fafafa); background: var(--cg-gray-700, #3f3f46); }
     .action-btn:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }
     }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .card { border-radius: 0; }
+    :host([rounded="sm"]) .card { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .card { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .card { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .card { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: String }) name: string = 'Agent';
   @property({ type: String }) override role: string = '';
   @property({ type: String }) status: 'idle' | 'thinking' | 'acting' | 'done' | 'error' = 'idle';

@@ -69,7 +69,7 @@ export class AiCitation extends LitElement {
       margin: 8px 0;
       animation: fadeIn 200ms ease;
       max-width: 400px;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
     .source-header {

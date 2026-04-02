@@ -31,7 +31,7 @@ export class AiFeedback extends LitElement {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
@@ -167,7 +167,15 @@ export class AiFeedback extends LitElement {
     }
     .submitted-icon { font-size: 16px; }
     }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .container { border-radius: 0; }
+    :host([rounded="sm"]) .container { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .container { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .container { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .container { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   /** Feedback mode */
   @property({ type: String }) mode: 'thumbs' | 'stars' | 'emoji' = 'thumbs';
 

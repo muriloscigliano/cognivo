@@ -169,8 +169,15 @@ export class AiPromptEditor extends LitElement {
       font-size: 13px;
     }
 
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .editor { border-radius: 0; }
+    :host([rounded="sm"]) .editor { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .editor { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .editor { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .editor { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) versions: PromptVersion[] = [];
   @property({ type: Boolean }) editable: boolean = false;
 

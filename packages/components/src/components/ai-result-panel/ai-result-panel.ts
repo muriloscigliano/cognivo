@@ -46,7 +46,7 @@ export class AiResultPanel extends LitElement {
       border: 1px solid rgba(223, 255, 97, 0.12);
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
@@ -268,8 +268,16 @@ export class AiResultPanel extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .panel { border-radius: 0; }
+    :host([rounded="sm"]) .panel { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .panel { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .panel { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .panel { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: String }) override title: string = 'AI Analysis';
   @property({ type: String }) explanation: string = '';
   @property({ type: Array }) bullets: string[] = [];

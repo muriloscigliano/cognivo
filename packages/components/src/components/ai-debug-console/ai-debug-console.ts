@@ -222,7 +222,15 @@ export class AiDebugConsole extends LitElement {
       font-size: var(--cg-font-size-xs, 12px);
     }
     }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) { border-radius: 0; }
+    :host([rounded="sm"]) { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) entries: DebugEntry[] = [];
   @property({ type: Boolean }) open = false;
   @property({ type: Number }) maxEntries = 100;

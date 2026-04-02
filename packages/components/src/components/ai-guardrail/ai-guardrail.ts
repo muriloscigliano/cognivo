@@ -146,7 +146,15 @@ export class AiGuardrail extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .panel { border-radius: 0; }
+    :host([rounded="sm"]) .panel { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .panel { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .panel { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .panel { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: String }) status: 'safe' | 'flagged' | 'blocked' = 'safe';
   @property({ type: Array }) checks: PolicyCheck[] = [];
   @property({ type: String }) blockedContent: string = '';

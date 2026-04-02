@@ -142,8 +142,16 @@ export class AiToast extends LitElement {
       outline: none;
       box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
     }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .toast { border-radius: 0; }
+    :host([rounded="sm"]) .toast { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .toast { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .toast { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .toast { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   /** Position on screen */
   @property({ type: String, reflect: true }) position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' = 'top-right';
 

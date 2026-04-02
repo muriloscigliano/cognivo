@@ -56,7 +56,7 @@ export class AiDataCard extends LitElement {
       border-radius: 12px;
       overflow: hidden;
       transition: border-color 150ms, box-shadow 150ms, transform 150ms;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
     .card:hover {
       border-color: var(--cg-gray-600, #52525b);
@@ -317,7 +317,15 @@ export class AiDataCard extends LitElement {
     }
       .skeleton .skel { animation: none; background: var(--cg-gray-800, #27272a); }
     }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .card { border-radius: 0; }
+    :host([rounded="sm"]) .card { border-radius: var(--cg-border-radius-50, 4px); }
+    :host([rounded="md"]) .card { border-radius: var(--cg-border-radius-100, 8px); }
+    :host([rounded="lg"]) .card { border-radius: var(--cg-border-radius-150, 12px); }
+    :host([rounded="full"]) .card { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   /** Card title */
   @property({ type: String }) override title: string = '';
 
