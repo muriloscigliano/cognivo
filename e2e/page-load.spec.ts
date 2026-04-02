@@ -126,7 +126,7 @@ test.describe('Showcase — Component Pages', () => {
     await page.waitForSelector('.copy-btn', { timeout: 5000 });
     const copyBtn = page.locator('.copy-btn').first();
     await copyBtn.click();
-    await expect(copyBtn).toHaveText('✓ Copied');
+    await expect(copyBtn).toHaveText('Copied');
   });
 });
 
