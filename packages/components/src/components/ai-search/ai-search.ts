@@ -51,7 +51,7 @@ export class AiSearch extends LitElement {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: var(--cg-border-radius-100, 8px);
-      padding: 0 12px;
+      padding: 0 var(--cg-spacing-12, 12px);
       transition: border-color 200ms;
       box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
@@ -62,7 +62,7 @@ export class AiSearch extends LitElement {
       color: var(--cg-gray-500, #71717a);
       font-size: var(--cg-font-size-sm, 14px);
       flex-shrink: 0;
-      margin-right: 8px;
+      margin-right: var(--cg-spacing-8, 8px);
     }
 
     input {
@@ -78,8 +78,8 @@ export class AiSearch extends LitElement {
     input::placeholder { color: var(--cg-gray-600, #52525b); }
 
     .shortcut {
-      font-size: 10px;
-      padding: 2px var(--cg-spacing-6, 6px);
+      font-size: var(--cg-font-size-xs, 12px);
+      padding: var(--cg-spacing-2, 2px) var(--cg-spacing-6, 6px);
       border-radius: var(--cg-border-radius-50, 4px);
       background: var(--cg-gray-800, #27272a);
       color: var(--cg-gray-500, #71717a);
@@ -92,7 +92,7 @@ export class AiSearch extends LitElement {
       border: none;
       color: var(--cg-gray-500, #71717a);
       cursor: pointer;
-      padding: 4px;
+      padding: var(--cg-spacing-4, 4px);
       font-size: var(--cg-font-size-sm, 14px);
       display: flex;
       transition: color 150ms;
@@ -102,7 +102,7 @@ export class AiSearch extends LitElement {
     /* Dropdown */
     .dropdown {
       position: absolute;
-      top: calc(100% + 6px);
+      top: calc(100% + var(--cg-spacing-6, 6px));
       left: 0;
       right: 0;
       background: var(--cg-color-surface-container-background, #18181b);
@@ -121,24 +121,24 @@ export class AiSearch extends LitElement {
     }
 
     .section-label {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-14, 14px) var(--cg-spacing-4, 4px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px) var(--cg-spacing-4, 4px);
       font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       color: var(--cg-gray-500, #71717a);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: var(--cg-letter-spacing-wide, 0.05em);
     }
 
     /* Filters */
     .filters {
       display: flex;
       gap: var(--cg-spacing-6, 6px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-14, 14px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
       flex-wrap: wrap;
     }
     .filter-tag {
-      padding: var(--cg-spacing-4, 3px) var(--cg-spacing-10, 10px);
-      border-radius: var(--cg-border-radius-50, 5px);
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-50, 4px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       background: none;
       color: var(--cg-gray-400, #a1a1aa);
@@ -148,15 +148,16 @@ export class AiSearch extends LitElement {
       cursor: pointer;
       transition: all 150ms;
     }
-    .filter-tag:hover { border-color: var(--cg-gray-600, #52525b); }
+    .filter-tag:hover { border-color: var(--cg-gray-600, #52525b); color: var(--cg-gray-300, #d4d4d8); }
+    .filter-tag:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }
     .filter-tag.active { border-color: var(--cg-brand-ai-accent, #dfff61); color: var(--cg-brand-ai-accent, #dfff61); background: rgba(223, 255, 97, 0.06); }
 
     /* Result items */
     .result-item {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-10, 10px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-14, 14px);
+      gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
       cursor: pointer;
       transition: background 100ms;
     }
@@ -189,8 +190,8 @@ export class AiSearch extends LitElement {
       transition: background 100ms;
     }
     .recent-item:hover { background: rgba(255, 255, 255, 0.04); }
-    .recent-icon { color: var(--cg-gray-600, #52525b); font-size: 12px; }
-    .recent-text { font-size: 12px; color: var(--cg-gray-400, #a1a1aa); flex: 1; }
+    .recent-icon { color: var(--cg-gray-600, #52525b); font-size: var(--cg-font-size-xs, 12px); }
+    .recent-text { font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-400, #a1a1aa); flex: 1; }
     .recent-delete {
       background: none;
       border: none;
@@ -202,7 +203,7 @@ export class AiSearch extends LitElement {
     }
     .recent-item:hover .recent-delete { opacity: 1; }
 
-    .divider { height: 1px; background: var(--cg-gray-800, #27272a); margin: 4px 0; }
+    .divider { height: 1px; background: var(--cg-gray-800, #27272a); margin: var(--cg-spacing-4, 4px) 0; }
 
     :focus-visible {
       outline: none;

@@ -47,13 +47,13 @@ export class AiAgentCard extends LitElement {
 
     /* Header */
     .header {
-      display: flex; align-items: center; gap: var(--cg-spacing-10, 10px);
+      display: flex; align-items: center; gap: var(--cg-spacing-12, 12px);
       padding-bottom: var(--cg-spacing-12, 12px); margin-bottom: var(--cg-spacing-12, 12px);
       border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
     }
 
     .avatar {
-      width: 36px; height: 36px; border-radius: var(--cg-border-radius-100, 8px);
+      width: var(--cg-spacing-40, 40px); height: var(--cg-spacing-40, 40px); border-radius: var(--cg-border-radius-100, 8px);
       display: flex; align-items: center; justify-content: center;
       font-size: var(--cg-font-size-base, 16px); flex-shrink: 0;
       background: var(--cg-gray-800, #27272a);
@@ -63,13 +63,14 @@ export class AiAgentCard extends LitElement {
     .name { font-size: var(--cg-font-size-sm, 14px); font-weight: 700; color: var(--cg-color-surface-base-text, #fafafa); }
     .role {
       font-size: var(--cg-font-size-xs, 12px); font-weight: 600; color: var(--cg-gray-500, #71717a);
-      text-transform: uppercase; letter-spacing: 0.05em;
+      text-transform: uppercase; letter-spacing: var(--cg-letter-spacing-wide, 0.05em);
+      margin-top: var(--cg-spacing-2, 2px);
     }
 
     /* Status */
     .status-row { display: flex; align-items: center; gap: var(--cg-spacing-6, 6px); margin-bottom: var(--cg-spacing-8, 8px); }
     .status-dot {
-      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+      width: var(--cg-spacing-8, 8px); height: var(--cg-spacing-8, 8px); border-radius: var(--cg-border-radius-full, 99999px); flex-shrink: 0;
     }
     .status-dot.idle { background: var(--cg-gray-600, #52525b); }
     .status-dot.thinking { background: var(--cg-brand-ai-accent, #dfff61); animation: pulse 1.5s ease-in-out infinite; }
@@ -77,7 +78,7 @@ export class AiAgentCard extends LitElement {
     .status-dot.done { background: var(--cg-green-400, #4ade80); }
     .status-dot.error { background: var(--cg-red-400, #f87171); }
 
-    .status-label { font-size: 12px; font-weight: 600; color: var(--cg-gray-400, #a1a1aa); text-transform: capitalize; }
+    .status-label { font-size: var(--cg-font-size-xs, 12px); font-weight: 600; color: var(--cg-gray-400, #a1a1aa); text-transform: capitalize; }
     .status-label.thinking { color: var(--cg-brand-ai-accent, #dfff61); }
     .status-label.acting { color: var(--cg-color-status-info-text-default, #60a5fa); }
     .status-label.done { color: var(--cg-green-400, #4ade80); }
@@ -86,43 +87,49 @@ export class AiAgentCard extends LitElement {
     /* Task */
     .task {
       font-size: var(--cg-font-size-sm, 14px); color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: 1.4; margin-bottom: var(--cg-spacing-10, 10px);
+      line-height: var(--cg-line-height-normal, 1.5); margin-bottom: var(--cg-spacing-12, 12px);
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     }
 
     /* Handoff chain */
     .handoff {
-      display: flex; align-items: center; gap: var(--cg-spacing-4, 4px); margin-bottom: var(--cg-spacing-10, 10px);
+      display: flex; align-items: center; gap: var(--cg-spacing-4, 4px); margin-bottom: var(--cg-spacing-12, 12px);
+      padding-bottom: var(--cg-spacing-12, 12px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
       font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-500, #71717a);
     }
-    .handoff-step { padding: 2px 8px; border-radius: 4px; background: var(--cg-gray-800, #27272a); }
+    .handoff-step { padding: var(--cg-spacing-2, 2px) var(--cg-spacing-8, 8px); border-radius: var(--cg-border-radius-50, 4px); background: var(--cg-gray-800, #27272a); }
     .handoff-step.current { background: rgba(223, 255, 97, 0.1); color: var(--cg-brand-ai-accent, #dfff61); font-weight: 700; }
     .handoff-arrow { color: var(--cg-gray-700, #3f3f46); }
 
     /* Capabilities */
     .caps { display: flex; gap: var(--cg-spacing-4, 4px); flex-wrap: wrap; }
     .cap {
-      font-size: 10px; padding: 2px var(--cg-spacing-8, 8px); border-radius: var(--cg-border-radius-50, 4px);
+      font-size: var(--cg-font-size-xs, 12px); padding: var(--cg-spacing-2, 2px) var(--cg-spacing-8, 8px); border-radius: var(--cg-border-radius-50, 4px);
       background: var(--cg-gray-800, #27272a); color: var(--cg-gray-400, #a1a1aa);
       font-weight: 600;
+      transition: background var(--cg-motion-duration-fast, 150ms), color var(--cg-motion-duration-fast, 150ms);
+    }
+    .cap:hover {
+      background: var(--cg-gray-700, #3f3f46);
+      color: var(--cg-gray-300, #d4d4d8);
     }
 
     /* Actions */
     .actions {
-      display: flex; gap: var(--cg-spacing-4, 4px); position: absolute; top: 12px; right: 12px;
-      opacity: 0; transition: opacity 150ms;
+      display: flex; gap: var(--cg-spacing-4, 4px); position: absolute; top: var(--cg-spacing-12, 12px); right: var(--cg-spacing-12, 12px);
+      opacity: 0; transition: opacity var(--cg-motion-duration-fast, 150ms);
     }
     .card:hover .actions { opacity: 1; }
     .action-btn {
-      width: 24px; height: 24px; border-radius: var(--cg-border-radius-100, 8px);
+      width: var(--cg-spacing-24, 24px); height: var(--cg-spacing-24, 24px); border-radius: var(--cg-border-radius-50, 4px);
       background: var(--cg-gray-800, #27272a); border: 1px solid var(--cg-gray-700, #3f3f46);
       color: var(--cg-gray-400, #a1a1aa); cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      font-size: var(--cg-font-size-xs, 12px); padding: 0; transition: all 150ms;
+      font-size: var(--cg-font-size-xs, 12px); padding: 0; transition: color var(--cg-motion-duration-fast, 150ms), background var(--cg-motion-duration-fast, 150ms);
     }
     .action-btn:hover { color: var(--cg-color-surface-base-text, #fafafa); background: var(--cg-gray-700, #3f3f46); }
     .action-btn:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }
-    }
 
     /* ── Rounded variants ── */
     :host([rounded="none"]) .card { border-radius: 0; }

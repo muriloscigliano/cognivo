@@ -40,15 +40,15 @@ export class AiInsightCard extends LitElement {
 
     .card {
       display: flex;
-      gap: var(--cg-spacing-14, 14px);
-      padding: var(--cg-spacing-14, 14px) var(--cg-spacing-16, 16px);
+      gap: var(--cg-spacing-12, 12px);
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: var(--cg-border-radius-150, 12px);
       cursor: pointer;
-      transition: all 200ms ease;
+      transition: border-color var(--cg-motion-duration-fast, 200ms) ease, box-shadow var(--cg-motion-duration-fast, 200ms) ease, transform var(--cg-motion-duration-fast, 200ms) ease;
       position: relative;
-      animation: fadeIn 300ms ease;
+      animation: fadeIn var(--cg-motion-duration-normal, 300ms) ease;
       box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
@@ -68,25 +68,25 @@ export class AiInsightCard extends LitElement {
 
     .status-dot {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
+      top: var(--cg-spacing-12, 12px);
+      right: var(--cg-spacing-12, 12px);
+      width: var(--cg-spacing-6, 6px);
+      height: var(--cg-spacing-6, 6px);
+      border-radius: var(--cg-border-radius-full, 99999px);
     }
     .status-dot.new { background: var(--cg-brand-ai-accent, #dfff61); }
     .status-dot.read { background: var(--cg-gray-600, #52525b); }
 
     .icon-area {
-      width: 40px;
-      height: 40px;
+      width: var(--cg-spacing-40, 40px);
+      height: var(--cg-spacing-40, 40px);
       border-radius: var(--cg-border-radius-100, 8px);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
-    .icon-area svg { width: 20px; height: 20px; }
+    .icon-area svg { width: var(--cg-spacing-20, 20px); height: var(--cg-spacing-20, 20px); }
     .icon-area.explanation { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
     .icon-area.forecast { background: rgba(223, 255, 97, 0.12); color: var(--cg-brand-ai-accent, #dfff61); }
     .icon-area.anomaly { background: rgba(239, 68, 68, 0.12); color: #f87171; }
@@ -99,7 +99,7 @@ export class AiInsightCard extends LitElement {
       font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: var(--cg-letter-spacing-wide, 0.05em);
       color: var(--cg-brand-ai-accent, #dfff61);
       margin-bottom: var(--cg-spacing-4, 4px);
     }
@@ -107,7 +107,7 @@ export class AiInsightCard extends LitElement {
     .insight-text {
       font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: 1.5;
+      line-height: var(--cg-line-height-normal, 1.5);
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -131,7 +131,7 @@ export class AiInsightCard extends LitElement {
 
     .detail {
       margin-top: var(--cg-spacing-12, 12px);
-      padding-top: 12px;
+      padding-top: var(--cg-spacing-12, 12px);
       border-top: 1px solid var(--cg-gray-800, #27272a);
     }
     .sources-label {
@@ -140,7 +140,7 @@ export class AiInsightCard extends LitElement {
       color: var(--cg-gray-400, #a1a1aa);
       margin-bottom: var(--cg-spacing-6, 6px);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: var(--cg-letter-spacing-wide, 0.05em);
     }
     .source {
       display: flex;
@@ -152,7 +152,7 @@ export class AiInsightCard extends LitElement {
     }
     .source a { color: var(--cg-brand-ai-accent, #dfff61); text-decoration: none; }
     .source a:hover { text-decoration: underline; }
-    .source-dot { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; }
+    .source-dot { width: var(--cg-spacing-4, 4px); height: var(--cg-spacing-4, 4px); border-radius: var(--cg-border-radius-full, 99999px); flex-shrink: 0; }
     .source-dot.high { background: var(--cg-green-400, #4ade80); }
     .source-dot.medium { background: var(--cg-yellow-400, #fbbf24); }
     .source-dot.low { background: var(--cg-gray-500, #71717a); }
@@ -161,16 +161,16 @@ export class AiInsightCard extends LitElement {
       display: flex;
       gap: var(--cg-spacing-4, 4px);
       position: absolute;
-      top: 8px;
-      right: 8px;
+      top: var(--cg-spacing-8, 8px);
+      right: var(--cg-spacing-8, 8px);
       opacity: 0;
-      transition: opacity 150ms;
+      transition: opacity var(--cg-motion-duration-fast, 150ms);
     }
     .card:hover .actions { opacity: 1; }
     .action-btn {
-      width: 24px;
-      height: 24px;
-      border-radius: var(--cg-border-radius-100, 8px);
+      width: var(--cg-spacing-24, 24px);
+      height: var(--cg-spacing-24, 24px);
+      border-radius: var(--cg-border-radius-50, 4px);
       background: var(--cg-gray-800, #27272a);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       color: var(--cg-gray-400, #a1a1aa);
@@ -179,12 +179,16 @@ export class AiInsightCard extends LitElement {
       align-items: center;
       justify-content: center;
       font-size: var(--cg-font-size-xs, 12px);
-      transition: all 150ms;
+      transition: color var(--cg-motion-duration-fast, 150ms), background var(--cg-motion-duration-fast, 150ms);
       padding: 0;
     }
     .action-btn:hover {
       color: var(--cg-color-surface-base-text, #fafafa);
       background: var(--cg-gray-700, #3f3f46);
+    }
+    .action-btn:focus-visible {
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
+      outline-offset: 2px;
     }
 
     .skeleton {
@@ -196,8 +200,8 @@ export class AiInsightCard extends LitElement {
       border-radius: var(--cg-border-radius-150, 12px);
     }
     .skel-icon {
-      width: 40px;
-      height: 40px;
+      width: var(--cg-spacing-40, 40px);
+      height: var(--cg-spacing-40, 40px);
       border-radius: var(--cg-border-radius-100, 8px);
       background: linear-gradient(90deg, var(--cg-gray-800, #27272a) 25%, var(--cg-gray-700, #3f3f46) 50%, var(--cg-gray-800, #27272a) 75%);
       background-size: 200% 100%;
@@ -205,7 +209,7 @@ export class AiInsightCard extends LitElement {
     }
     .skel-lines { flex: 1; display: flex; flex-direction: column; gap: var(--cg-spacing-8, 8px); }
     .skel-line {
-      height: 10px;
+      height: var(--cg-spacing-8, 8px);
       border-radius: var(--cg-border-radius-50, 4px);
       background: linear-gradient(90deg, var(--cg-gray-800, #27272a) 25%, var(--cg-gray-700, #3f3f46) 50%, var(--cg-gray-800, #27272a) 75%);
       background-size: 200% 100%;

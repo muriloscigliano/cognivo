@@ -107,7 +107,7 @@ export class AiChat extends LitElement {
     /* ── Bubble ── */
     .bubble {
       padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      border-radius: 14px;
+      border-radius: var(--cg-border-radius-150, 12px);
       line-height: 1.5;
       font-size: var(--cg-font-size-sm, 14px);
       backdrop-filter: blur(8px);
@@ -135,7 +135,7 @@ export class AiChat extends LitElement {
     .bubble em { font-style: italic; }
     .bubble code {
       background: rgba(255, 255, 255, 0.06);
-      padding: 1px 5px;
+      padding: 2px var(--cg-spacing-6, 6px);
       border-radius: var(--cg-border-radius-50, 4px);
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
       font-size: var(--cg-font-size-xs, 12px);
@@ -145,15 +145,15 @@ export class AiChat extends LitElement {
       padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
       border-radius: var(--cg-border-radius-100, 8px);
       overflow-x: auto;
-      margin: 8px 0;
+      margin: var(--cg-spacing-8, 8px) 0;
       font-size: var(--cg-font-size-xs, 12px);
       line-height: 1.5;
     }
     .bubble pre code { background: none; padding: 0; }
-    .bubble ul, .bubble ol { padding-left: 18px; margin: 6px 0; }
+    .bubble ul, .bubble ol { padding-left: var(--cg-spacing-20, 20px); margin: var(--cg-spacing-6, 6px) 0; }
     .bubble a { color: var(--cg-brand-ai-accent, #dfff61); text-decoration: none; }
     .bubble a:hover { text-decoration: underline; }
-    .bubble p { margin: 0 0 8px 0; }
+    .bubble p { margin: 0 0 var(--cg-spacing-8, 8px) 0; }
     .bubble p:last-child { margin-bottom: 0; }
 
     /* ── Streaming cursor ── */
@@ -212,7 +212,7 @@ export class AiChat extends LitElement {
       border: none;
       color: var(--cg-gray-400, #a1a1aa);
       cursor: pointer;
-      padding: 0 4px;
+      padding: 0 var(--cg-spacing-4, 4px);
       font-size: var(--cg-font-size-sm, 14px);
     }
     .version-btn:hover { color: var(--cg-brand-ai-accent, #dfff61); }
@@ -221,14 +221,14 @@ export class AiChat extends LitElement {
     /* ── Thinking ── */
     .thinking-area {
       align-self: flex-start;
-      padding: 0 20px 4px;
+      padding: 0 var(--cg-spacing-20, 20px) var(--cg-spacing-4, 4px);
     }
 
     /* ── Stop button ── */
     .stop-btn {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: var(--cg-spacing-6, 6px);
       margin: 0 auto 8px;
       padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
       background: rgba(239, 68, 68, 0.1);
@@ -270,7 +270,7 @@ export class AiChat extends LitElement {
       border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-image: linear-gradient(to right, transparent, var(--cg-color-surface-container-border, #27272a) 20%, var(--cg-color-surface-container-border, #27272a) 80%, transparent) 1;
       display: flex;
-      gap: var(--cg-spacing-10, 10px);
+      gap: var(--cg-spacing-8, 8px);
     }
     input {
       flex: 1;

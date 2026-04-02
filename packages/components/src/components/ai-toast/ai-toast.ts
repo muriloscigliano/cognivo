@@ -41,10 +41,10 @@ export class AiToast extends LitElement {
       z-index: 9999;
       pointer-events: none;
     }
-    :host([position="top-right"]), :host(:not([position])) { top: 16px; right: 16px; }
-    :host([position="top-left"]) { top: 16px; left: 16px; }
-    :host([position="bottom-right"]) { bottom: 16px; right: 16px; }
-    :host([position="bottom-left"]) { bottom: 16px; left: 16px; }
+    :host([position="top-right"]), :host(:not([position])) { top: var(--cg-spacing-16, 16px); right: var(--cg-spacing-16, 16px); }
+    :host([position="top-left"]) { top: var(--cg-spacing-16, 16px); left: var(--cg-spacing-16, 16px); }
+    :host([position="bottom-right"]) { bottom: var(--cg-spacing-16, 16px); right: var(--cg-spacing-16, 16px); }
+    :host([position="bottom-left"]) { bottom: var(--cg-spacing-16, 16px); left: var(--cg-spacing-16, 16px); }
 
     .stack {
       display: flex;
@@ -57,9 +57,9 @@ export class AiToast extends LitElement {
     .toast {
       display: flex;
       align-items: flex-start;
-      gap: var(--cg-spacing-10, 10px);
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-14, 14px);
-      border-radius: var(--cg-border-radius-100, 10px);
+      gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
+      border-radius: var(--cg-border-radius-100, 8px);
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
@@ -82,8 +82,8 @@ export class AiToast extends LitElement {
 
     /* Type icon */
     .icon {
-      width: 20px;
-      height: 20px;
+      width: var(--cg-spacing-20, 20px);
+      height: var(--cg-spacing-20, 20px);
       border-radius: var(--cg-border-radius-100, 8px);
       display: flex;
       align-items: center;
@@ -92,17 +92,17 @@ export class AiToast extends LitElement {
       font-weight: 800;
       flex-shrink: 0;
     }
-    .toast.info .icon { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
-    .toast.success .icon { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
-    .toast.warning .icon { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
-    .toast.error .icon { background: rgba(239, 68, 68, 0.15); color: #f87171; }
-    .toast.ai .icon { background: rgba(223, 255, 97, 0.15); color: #dfff61; }
+    .toast.info .icon { background: rgba(59, 130, 246, 0.15); color: var(--cg-blue-400, #60a5fa); }
+    .toast.success .icon { background: rgba(34, 197, 94, 0.15); color: var(--cg-green-400, #4ade80); }
+    .toast.warning .icon { background: rgba(245, 158, 11, 0.15); color: var(--cg-yellow-400, #fbbf24); }
+    .toast.error .icon { background: rgba(239, 68, 68, 0.15); color: var(--cg-red-400, #f87171); }
+    .toast.ai .icon { background: rgba(223, 255, 97, 0.15); color: var(--cg-brand-ai-accent, #dfff61); }
 
     .content { flex: 1; min-width: 0; }
     .message {
       font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: 1.4;
+      line-height: var(--cg-line-height-normal, 1.5);
     }
 
     .dismiss {
@@ -110,28 +110,30 @@ export class AiToast extends LitElement {
       border: none;
       color: var(--cg-gray-500, #71717a);
       cursor: pointer;
-      padding: 0;
+      padding: var(--cg-spacing-4, 4px);
       font-size: var(--cg-font-size-sm, 14px);
       line-height: 1;
       flex-shrink: 0;
-      transition: color 150ms;
+      transition: color var(--cg-motion-duration-fast, 150ms);
+      border-radius: var(--cg-border-radius-50, 4px);
     }
-    .dismiss:hover { color: var(--cg-color-surface-base-text, #fafafa); }
+    .dismiss:hover { color: var(--cg-color-surface-base-text, #fafafa); background: rgba(255, 255, 255, 0.06); }
+    .dismiss:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }
 
     /* Progress bar */
     .progress {
       position: absolute;
       bottom: 0;
       left: 0;
-      height: 2px;
-      border-radius: 0 0 10px 10px;
+      height: var(--cg-spacing-2, 2px);
+      border-radius: 0 0 var(--cg-border-radius-100, 8px) var(--cg-border-radius-100, 8px);
       animation: shrink linear forwards;
     }
-    .toast.info .progress { background: #60a5fa; }
-    .toast.success .progress { background: #4ade80; }
-    .toast.warning .progress { background: #fbbf24; }
-    .toast.error .progress { background: #f87171; }
-    .toast.ai .progress { background: #dfff61; }
+    .toast.info .progress { background: var(--cg-blue-400, #60a5fa); }
+    .toast.success .progress { background: var(--cg-green-400, #4ade80); }
+    .toast.warning .progress { background: var(--cg-yellow-400, #fbbf24); }
+    .toast.error .progress { background: var(--cg-red-400, #f87171); }
+    .toast.ai .progress { background: var(--cg-brand-ai-accent, #dfff61); }
 
     @keyframes shrink {
       from { width: 100%; }

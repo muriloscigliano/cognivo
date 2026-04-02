@@ -73,8 +73,8 @@ export class AiDataCard extends LitElement {
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .header-icon {
-      width: 32px;
-      height: 32px;
+      width: var(--cg-spacing-32, 32px);
+      height: var(--cg-spacing-32, 32px);
       border-radius: var(--cg-border-radius-100, 8px);
       display: flex;
       align-items: center;
@@ -98,12 +98,12 @@ export class AiDataCard extends LitElement {
     .header-subtitle {
       font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
-      margin-top: 1px;
+      margin-top: var(--cg-spacing-2, 2px);
     }
     .header-badge {
-      font-size: 10px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
-      padding: 2px var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-2, 2px) var(--cg-spacing-8, 8px);
       border-radius: var(--cg-border-radius-50, 4px);
       flex-shrink: 0;
       text-transform: uppercase;
@@ -124,8 +124,8 @@ export class AiDataCard extends LitElement {
       align-items: center;
       padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
-      transition: background 100ms;
-      min-height: 36px;
+      transition: background var(--cg-motion-duration-fast, 100ms);
+      min-height: var(--cg-spacing-40, 40px);
     }
     .row:last-child {
       border-bottom: none;
@@ -146,7 +146,7 @@ export class AiDataCard extends LitElement {
       color: var(--cg-gray-400, #a1a1aa);
       font-weight: 500;
       flex-shrink: 0;
-      min-width: 80px;
+      min-width: var(--cg-spacing-80, 80px);
     }
     .row-value {
       font-size: var(--cg-font-size-sm, 14px);
@@ -188,9 +188,9 @@ export class AiDataCard extends LitElement {
 
     /* Status dot */
     .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
+      width: var(--cg-spacing-6, 6px);
+      height: var(--cg-spacing-6, 6px);
+      border-radius: var(--cg-border-radius-full, 99999px);
       flex-shrink: 0;
     }
     .status-dot.success { background: var(--cg-color-status-success-text-default, #4ade80); }
@@ -201,9 +201,9 @@ export class AiDataCard extends LitElement {
 
     /* Badge value */
     .val-badge {
-      font-size: 10px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
-      padding: 2px var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-2, 2px) var(--cg-spacing-8, 8px);
       border-radius: var(--cg-border-radius-50, 4px);
     }
     .val-badge.success { background: rgba(34, 197, 94, 0.12); color: var(--cg-color-status-success-text-default, #4ade80); }
@@ -218,9 +218,9 @@ export class AiDataCard extends LitElement {
       border: none;
       color: var(--cg-gray-600, #52525b);
       cursor: pointer;
-      padding: 2px;
+      padding: var(--cg-spacing-2, 2px);
       font-size: var(--cg-font-size-xs, 12px);
-      transition: color 150ms;
+      transition: color var(--cg-motion-duration-fast, 150ms);
       flex-shrink: 0;
     }
     .copy-btn:hover { color: var(--cg-brand-ai-accent, #dfff61); }
@@ -230,7 +230,7 @@ export class AiDataCard extends LitElement {
     .footer {
       display: flex;
       gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-10, 10px) var(--cg-spacing-16, 16px);
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       border-top: 1px solid var(--cg-gray-800, #27272a);
     }
     .action-btn {
@@ -244,11 +244,11 @@ export class AiDataCard extends LitElement {
       font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       cursor: pointer;
-      transition: all 150ms;
+      transition: border-color var(--cg-motion-duration-fast, 150ms), background var(--cg-motion-duration-fast, 150ms), filter var(--cg-motion-duration-fast, 150ms);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
+      gap: var(--cg-spacing-6, 6px);
     }
     .action-btn:hover {
       border-color: var(--cg-gray-600, #52525b);
@@ -277,13 +277,13 @@ export class AiDataCard extends LitElement {
 
     /* ── Compact mode ── */
     :host([compact]) .header { padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); }
-    :host([compact]) .header-icon { width: 24px; height: 24px; font-size: var(--cg-font-size-xs, 12px); border-radius: var(--cg-border-radius-100, 8px); }
+    :host([compact]) .header-icon { width: var(--cg-spacing-24, 24px); height: var(--cg-spacing-24, 24px); font-size: var(--cg-font-size-xs, 12px); border-radius: var(--cg-border-radius-100, 8px); }
     :host([compact]) .header-title { font-size: var(--cg-font-size-xs, 12px); }
-    :host([compact]) .row { padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px); min-height: 28px; }
-    :host([compact]) .row-label { font-size: var(--cg-font-size-xs, 12px); min-width: 60px; }
+    :host([compact]) .row { padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px); min-height: var(--cg-spacing-32, 32px); }
+    :host([compact]) .row-label { font-size: var(--cg-font-size-xs, 12px); min-width: var(--cg-spacing-64, 64px); }
     :host([compact]) .row-value { font-size: var(--cg-font-size-xs, 12px); }
     :host([compact]) .footer { padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); }
-    :host([compact]) .action-btn { padding: 5px 10px; font-size: var(--cg-font-size-xs, 12px); }
+    :host([compact]) .action-btn { padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px); font-size: var(--cg-font-size-xs, 12px); }
 
     /* ── Highlighted / selected ── */
     .card.highlighted {
@@ -299,14 +299,14 @@ export class AiDataCard extends LitElement {
       animation: shimmer 1.5s linear infinite;
     }
     .skel-header { display: flex; gap: var(--cg-spacing-10, 10px); padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px); border-bottom: 1px solid var(--cg-gray-800, #27272a); }
-    .skel-icon { width: 32px; height: 32px; border-radius: var(--cg-border-radius-100, 8px); }
+    .skel-icon { width: var(--cg-spacing-32, 32px); height: var(--cg-spacing-32, 32px); border-radius: var(--cg-border-radius-100, 8px); }
     .skel-lines { flex: 1; display: flex; flex-direction: column; gap: var(--cg-spacing-6, 6px); justify-content: center; }
-    .skel-line-lg { height: 12px; width: 60%; }
-    .skel-line-sm { height: 8px; width: 35%; }
-    .skel-row { display: flex; justify-content: space-between; padding: var(--cg-spacing-10, 10px) var(--cg-spacing-16, 16px); border-bottom: 1px solid var(--cg-gray-800, #27272a); }
+    .skel-line-lg { height: var(--cg-spacing-12, 12px); width: 60%; }
+    .skel-line-sm { height: var(--cg-spacing-8, 8px); width: 35%; }
+    .skel-row { display: flex; justify-content: space-between; padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px); border-bottom: 1px solid var(--cg-gray-800, #27272a); }
     .skel-row:last-child { border-bottom: none; }
-    .skel-label { height: 10px; width: 30%; }
-    .skel-value { height: 10px; width: 40%; }
+    .skel-label { height: var(--cg-spacing-8, 8px); width: 30%; }
+    .skel-value { height: var(--cg-spacing-8, 8px); width: 40%; }
 
     /* ── Empty state ── */
     .empty {
@@ -314,8 +314,6 @@ export class AiDataCard extends LitElement {
       text-align: center;
       color: var(--cg-gray-500, #71717a);
       font-size: var(--cg-font-size-xs, 12px);
-    }
-      .skeleton .skel { animation: none; background: var(--cg-gray-800, #27272a); }
     }
 
     /* ── Rounded variants ── */
@@ -418,7 +416,7 @@ export class AiDataCard extends LitElement {
         return html`<span class="val-number">${val}</span>`;
       case 'percent': {
         const num = Number(field.value);
-        const pColor = isNaN(num) ? 'var(--cg-gray-400, #a1a1aa)' : num >= 0 ? '#4ade80' : '#f87171';
+        const pColor = isNaN(num) ? 'var(--cg-gray-400, #a1a1aa)' : num >= 0 ? 'var(--cg-green-400, #4ade80)' : 'var(--cg-red-400, #f87171)';
         return html`<span class="val-percent" style="color: ${pColor};">${val}</span>`;
       }
       case 'date':

@@ -58,7 +58,7 @@ export class AiResultPanel extends LitElement {
       padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       cursor: pointer;
     }
-    .header-left { display: flex; align-items: center; gap: var(--cg-spacing-10, 10px); }
+    .header-left { display: flex; align-items: center; gap: var(--cg-spacing-8, 8px); }
     .title {
       font-size: var(--cg-font-size-base, 16px);
       font-weight: 600;
@@ -76,22 +76,27 @@ export class AiResultPanel extends LitElement {
       background: none;
       border: 1px solid var(--cg-gray-700, #3f3f46);
       color: var(--cg-gray-400, #a1a1aa);
-      border-radius: var(--cg-border-radius-100, 8px);
-      padding: 3px var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-50, 4px);
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
       font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       cursor: pointer;
-      transition: all 150ms;
+      transition: color var(--cg-motion-duration-fast, 150ms), border-color var(--cg-motion-duration-fast, 150ms), background var(--cg-motion-duration-fast, 150ms);
       font-family: inherit;
     }
     .header-btn:hover {
       color: var(--cg-color-surface-base-text, #fafafa);
       border-color: var(--cg-gray-600, #52525b);
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .header-btn:focus-visible {
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
+      outline-offset: 2px;
     }
 
     /* ── Body ── */
     .body {
-      padding: 0 18px 18px;
+      padding: 0 var(--cg-spacing-16, 16px) var(--cg-spacing-16, 16px);
     }
     .panel.collapsed .body { display: none; }
 
@@ -111,10 +116,14 @@ export class AiResultPanel extends LitElement {
       border: none;
       border-bottom: 2px solid transparent;
       cursor: pointer;
-      transition: all 150ms;
+      transition: color var(--cg-motion-duration-fast, 150ms), border-color var(--cg-motion-duration-fast, 150ms);
       font-family: inherit;
     }
     .tab:hover { color: var(--cg-gray-300, #d4d4d8); }
+    .tab:focus-visible {
+      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
+      outline-offset: -2px;
+    }
     .tab.active {
       color: var(--cg-brand-ai-accent, #dfff61);
       border-bottom-color: var(--cg-brand-ai-accent, #dfff61);
@@ -124,9 +133,9 @@ export class AiResultPanel extends LitElement {
     .explanation {
       font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: 1.6;
-      padding-bottom: var(--cg-spacing-14, 14px);
-      margin-bottom: var(--cg-spacing-14, 14px);
+      line-height: var(--cg-line-height-relaxed, 1.6);
+      padding-bottom: var(--cg-spacing-12, 12px);
+      margin-bottom: var(--cg-spacing-12, 12px);
       border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
     }
 
@@ -134,8 +143,8 @@ export class AiResultPanel extends LitElement {
       list-style: none;
       padding: 0;
       margin: 0;
-      padding-bottom: var(--cg-spacing-14, 14px);
-      margin-bottom: var(--cg-spacing-14, 14px);
+      padding-bottom: var(--cg-spacing-12, 12px);
+      margin-bottom: var(--cg-spacing-12, 12px);
       border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
       display: flex;
       flex-direction: column;
@@ -147,7 +156,7 @@ export class AiResultPanel extends LitElement {
       gap: var(--cg-spacing-8, 8px);
       font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: 1.5;
+      line-height: var(--cg-line-height-normal, 1.5);
     }
     .bullet::before {
       content: '\u2192';
@@ -168,7 +177,7 @@ export class AiResultPanel extends LitElement {
       font-weight: 700;
       color: var(--cg-gray-400, #a1a1aa);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: var(--cg-letter-spacing-wide, 0.05em);
     }
     .sort-btn {
       background: none;
@@ -183,20 +192,24 @@ export class AiResultPanel extends LitElement {
     .drivers {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-10, 10px);
+      gap: var(--cg-spacing-8, 8px);
     }
     .driver {
       background: var(--cg-color-surface-base-background, #09090b);
       border: 1px solid var(--cg-gray-800, #27272a);
       border-radius: var(--cg-border-radius-100, 8px);
-      padding: var(--cg-spacing-10, 10px) var(--cg-spacing-12, 12px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
+      transition: background var(--cg-motion-duration-fast, 150ms);
+    }
+    .driver:hover {
+      background: rgba(255, 255, 255, 0.02);
     }
     .driver-top {
       display: flex;
       justify-content: space-between;
       margin-bottom: var(--cg-spacing-6, 6px);
     }
-    .driver-name { font-size: 12px; color: var(--cg-gray-400, #a1a1aa); }
+    .driver-name { font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-400, #a1a1aa); }
     .driver-value {
       font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
@@ -205,14 +218,14 @@ export class AiResultPanel extends LitElement {
     .driver-value.negative { color: var(--cg-red-400, #f87171); }
 
     .driver-bar {
-      height: 4px;
-      border-radius: 2px;
+      height: var(--cg-spacing-4, 4px);
+      border-radius: var(--cg-border-radius-50, 4px);
       background: var(--cg-gray-800, #27272a);
       overflow: hidden;
     }
     .driver-fill {
       height: 100%;
-      border-radius: 2px;
+      border-radius: var(--cg-border-radius-50, 4px);
       transition: width var(--cg-motion-duration-slow, 600ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
     }
     .driver-fill.positive { background: var(--cg-green-400, #4ade80); }
@@ -235,7 +248,7 @@ export class AiResultPanel extends LitElement {
       font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
       margin-top: var(--cg-spacing-4, 4px);
-      line-height: 1.4;
+      line-height: var(--cg-line-height-normal, 1.5);
     }
 
     /* ── Data tab ── */

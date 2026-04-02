@@ -97,8 +97,8 @@ export class AiThinking extends LitElement {
     /* ── Dots variant ── */
     .dots {
       display: inline-flex;
-      gap: 3px;
-      margin-left: 2px;
+      gap: var(--cg-spacing-2, 2px);
+      margin-left: var(--cg-spacing-2, 2px);
     }
     .dot {
       width: 4px;

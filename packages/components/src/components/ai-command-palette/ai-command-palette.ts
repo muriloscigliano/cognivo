@@ -88,8 +88,9 @@ export class AiCommandPalette extends LitElement {
     }
 
     .results {
-      max-height: 320px;
+      max-height: 360px;
       overflow-y: auto;
+      overflow-x: hidden;
       padding: var(--cg-spacing-8, 8px) 0;
     }
 
@@ -105,7 +106,7 @@ export class AiCommandPalette extends LitElement {
     .cmd {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-10, 10px);
+      gap: var(--cg-spacing-8, 8px);
       width: 100%;
       padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
       background: none;
@@ -115,7 +116,8 @@ export class AiCommandPalette extends LitElement {
       font-family: inherit;
       cursor: pointer;
       text-align: left;
-      transition: background 100ms ease, color 100ms ease;
+      transition: background var(--cg-motion-duration-fast, 100ms) ease, color var(--cg-motion-duration-fast, 100ms) ease;
+      min-height: var(--cg-spacing-40, 40px);
     }
     .cmd:hover, .cmd[data-active="true"] {
       background: rgba(255, 255, 255, 0.06);
@@ -126,20 +128,20 @@ export class AiCommandPalette extends LitElement {
       outline-offset: -2px;
     }
 
-    .cmd-icon { flex-shrink: 0; width: 20px; text-align: center; }
+    .cmd-icon { flex-shrink: 0; width: var(--cg-spacing-20, 20px); text-align: center; }
     .cmd-label { flex: 1; }
     .cmd-label mark {
       background: rgba(223, 255, 97, 0.25);
       color: var(--cg-color-accent, #dfff61);
-      border-radius: 2px;
-      padding: 0 1px;
+      border-radius: var(--cg-border-radius-50, 4px);
+      padding: 0 var(--cg-spacing-2, 2px);
     }
 
     .cmd-shortcut {
       flex-shrink: 0;
       font-size: var(--cg-font-size-xs, 12px);
       font-family: var(--cg-font-family-mono, 'JetBrains Mono', monospace);
-      padding: 2px var(--cg-spacing-6, 6px);
+      padding: var(--cg-spacing-2, 2px) var(--cg-spacing-6, 6px);
       border-radius: var(--cg-border-radius-50, 4px);
       background: rgba(255, 255, 255, 0.06);
       color: var(--cg-color-text-tertiary, #71717a);
@@ -150,7 +152,6 @@ export class AiCommandPalette extends LitElement {
       text-align: center;
       color: var(--cg-color-text-tertiary, #71717a);
       font-size: var(--cg-font-size-sm, 14px);
-    }
     }
 
     /* ── Rounded variants ── */

@@ -40,7 +40,7 @@ export class AiAlertCard extends LitElement {
       padding: var(--cg-spacing-16, 16px) var(--cg-spacing-16, 16px) var(--cg-spacing-16, 16px) var(--cg-spacing-20, 20px);
       display: flex;
       align-items: flex-start;
-      gap: var(--cg-spacing-14, 14px);
+      gap: var(--cg-spacing-12, 12px);
       position: relative;
       border-left: 4px solid transparent;
       transition: box-shadow 150ms ease, transform 150ms ease;
@@ -64,7 +64,7 @@ export class AiAlertCard extends LitElement {
     .icon {
       font-size: var(--cg-font-size-xl, 20px);
       flex-shrink: 0;
-      margin-top: 2px;
+      margin-top: var(--cg-spacing-2, 2px);
     }
     .icon.info    { color: var(--cg-blue-400, #60a5fa); }
     .icon.warning { color: var(--cg-yellow-400, #fbbf24); }
@@ -81,7 +81,7 @@ export class AiAlertCard extends LitElement {
       margin-bottom: var(--cg-spacing-6, 6px);
     }
     .title {
-      font-size: var(--cg-font-size-base, 15px);
+      font-size: var(--cg-font-size-base, 16px);
       font-weight: 700;
       color: var(--cg-color-surface-base-text, #fafafa);
     }
@@ -89,8 +89,8 @@ export class AiAlertCard extends LitElement {
       display: inline-flex;
       align-items: center;
       gap: var(--cg-spacing-4, 4px);
-      padding: 2px var(--cg-spacing-8, 8px);
-      border-radius: 99px;
+      padding: var(--cg-spacing-2, 2px) var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-full, 99999px);
       font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       background: rgba(255, 255, 255, 0.06);
@@ -101,7 +101,7 @@ export class AiAlertCard extends LitElement {
     .message {
       font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-gray-400, #a1a1aa);
-      line-height: 1.5;
+      line-height: var(--cg-line-height-normal, 1.5);
       padding-bottom: var(--cg-spacing-12, 12px);
       margin-bottom: var(--cg-spacing-12, 12px);
       border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
@@ -145,10 +145,10 @@ export class AiAlertCard extends LitElement {
     /* ── Dismiss ── */
     .dismiss {
       position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 24px;
-      height: 24px;
+      top: var(--cg-spacing-12, 12px);
+      right: var(--cg-spacing-12, 12px);
+      width: var(--cg-spacing-24, 24px);
+      height: var(--cg-spacing-24, 24px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -171,9 +171,7 @@ export class AiAlertCard extends LitElement {
 
     @keyframes pulse-glow {
       0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.2); }
-      50% { box-shadow: 0 0 0 6px rgba(248, 113, 113, 0); }
-    }
-      .action-btn, .dismiss { transition: none; }
+      50% { box-shadow: 0 0 0 var(--cg-spacing-6, 6px) rgba(248, 113, 113, 0); }
     }
 
     /* ── Rounded variants ── */
