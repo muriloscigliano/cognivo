@@ -34,8 +34,8 @@ export class AiAgentCard extends LitElement {
       background: var(--cg-color-surface-container-background, #18181b);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
-      padding: 16px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-16, 16px);
       transition: all 150ms;
       cursor: pointer;
       position: relative;
@@ -46,7 +46,11 @@ export class AiAgentCard extends LitElement {
     .card.active { border-color: var(--cg-brand-ai-accent, #dfff61); }
 
     /* Header */
-    .header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .header {
+      display: flex; align-items: center; gap: var(--cg-spacing-10, 10px);
+      padding-bottom: var(--cg-spacing-12, 12px); margin-bottom: var(--cg-spacing-12, 12px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
+    }
 
     .avatar {
       width: 36px; height: 36px; border-radius: 10px;
@@ -56,14 +60,14 @@ export class AiAgentCard extends LitElement {
     }
 
     .info { flex: 1; min-width: 0; }
-    .name { font-size: 14px; font-weight: 700; color: var(--cg-color-surface-base-text, #fafafa); }
+    .name { font-size: var(--cg-font-size-sm, 14px); font-weight: 700; color: var(--cg-color-surface-base-text, #fafafa); }
     .role {
-      font-size: 11px; font-weight: 600; color: var(--cg-gray-500, #71717a);
+      font-size: var(--cg-font-size-xs, 12px); font-weight: 600; color: var(--cg-gray-500, #71717a);
       text-transform: uppercase; letter-spacing: 0.05em;
     }
 
     /* Status */
-    .status-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+    .status-row { display: flex; align-items: center; gap: var(--cg-spacing-6, 6px); margin-bottom: var(--cg-spacing-8, 8px); }
     .status-dot {
       width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
     }
@@ -81,15 +85,15 @@ export class AiAgentCard extends LitElement {
 
     /* Task */
     .task {
-      font-size: 13px; color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: 1.4; margin-bottom: 10px;
+      font-size: var(--cg-font-size-sm, 14px); color: var(--cg-color-surface-base-text, #fafafa);
+      line-height: 1.4; margin-bottom: var(--cg-spacing-10, 10px);
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     }
 
     /* Handoff chain */
     .handoff {
-      display: flex; align-items: center; gap: 4px; margin-bottom: 10px;
-      font-size: 11px; color: var(--cg-gray-500, #71717a);
+      display: flex; align-items: center; gap: var(--cg-spacing-4, 4px); margin-bottom: var(--cg-spacing-10, 10px);
+      font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-500, #71717a);
     }
     .handoff-step { padding: 2px 8px; border-radius: 4px; background: var(--cg-gray-800, #27272a); }
     .handoff-step.current { background: rgba(223, 255, 97, 0.1); color: var(--cg-brand-ai-accent, #dfff61); font-weight: 700; }

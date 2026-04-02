@@ -64,9 +64,10 @@ export class AiCommandPalette extends LitElement {
     .search-wrap {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 12px 16px;
+      gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       border-bottom: 1px solid var(--cg-color-border, #27272a);
+      border-image: linear-gradient(to right, transparent, var(--cg-color-border, #27272a) 20%, var(--cg-color-border, #27272a) 80%, transparent) 1;
     }
     .search-icon {
       color: var(--cg-color-text-tertiary, #71717a);
@@ -89,12 +90,12 @@ export class AiCommandPalette extends LitElement {
     .results {
       max-height: 320px;
       overflow-y: auto;
-      padding: 8px 0;
+      padding: var(--cg-spacing-8, 8px) 0;
     }
 
     .category-label {
-      padding: 8px 16px 4px;
-      font-size: 11px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px) var(--cg-spacing-4, 4px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -104,9 +105,9 @@ export class AiCommandPalette extends LitElement {
     .cmd {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: var(--cg-spacing-10, 10px);
       width: 100%;
-      padding: 8px 16px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
       background: none;
       border: none;
       color: var(--cg-color-text-secondary, #a1a1aa);
@@ -136,7 +137,7 @@ export class AiCommandPalette extends LitElement {
 
     .cmd-shortcut {
       flex-shrink: 0;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-family: var(--cg-font-family-mono, 'JetBrains Mono', monospace);
       padding: 2px 6px;
       border-radius: 4px;

@@ -42,8 +42,8 @@ export class AiNotificationCenter extends LitElement {
     .container {
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 12px;
-      padding: 16px;
+      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-16, 16px);
       color: var(--cg-color-surface-base-text, #fafafa);
       max-height: 480px;
       overflow-y: auto;
@@ -55,7 +55,9 @@ export class AiNotificationCenter extends LitElement {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      padding-bottom: var(--cg-spacing-12, 12px);
+      margin-bottom: var(--cg-spacing-12, 12px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
     }
 
     .header-left {
@@ -65,7 +67,7 @@ export class AiNotificationCenter extends LitElement {
     }
 
     .title {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
     }
 
@@ -97,7 +99,7 @@ export class AiNotificationCenter extends LitElement {
     }
 
     .group-label {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -108,10 +110,11 @@ export class AiNotificationCenter extends LitElement {
     .notification {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      margin-bottom: 4px;
+      gap: var(--cg-spacing-10, 10px);
+      padding: var(--cg-spacing-10, 10px) var(--cg-spacing-12, 12px);
+      border-radius: var(--cg-border-radius-100, 8px);
+      margin-bottom: var(--cg-spacing-2, 2px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
       cursor: pointer;
       transition: background 120ms ease;
       position: relative;
@@ -136,7 +139,7 @@ export class AiNotificationCenter extends LitElement {
     .notif-body { flex: 1; min-width: 0; }
 
     .notif-title {
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       color: var(--cg-color-surface-base-text, #fafafa);
       margin-bottom: 2px;

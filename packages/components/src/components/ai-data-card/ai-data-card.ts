@@ -68,8 +68,8 @@ export class AiDataCard extends LitElement {
     .header {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px 16px;
+      gap: var(--cg-spacing-10, 10px);
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .header-icon {
@@ -96,7 +96,7 @@ export class AiDataCard extends LitElement {
       white-space: nowrap;
     }
     .header-subtitle {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
       margin-top: 1px;
     }
@@ -122,7 +122,7 @@ export class AiDataCard extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 16px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
       transition: background 100ms;
       min-height: 36px;
@@ -149,7 +149,7 @@ export class AiDataCard extends LitElement {
       min-width: 80px;
     }
     .row-value {
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       color: var(--cg-color-surface-base-text, #fafafa);
       text-align: right;
@@ -229,8 +229,8 @@ export class AiDataCard extends LitElement {
     /* ── Footer ── */
     .footer {
       display: flex;
-      gap: 8px;
-      padding: 10px 16px;
+      gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-10, 10px) var(--cg-spacing-16, 16px);
       border-top: 1px solid var(--cg-gray-800, #27272a);
     }
     .action-btn {
@@ -298,12 +298,12 @@ export class AiDataCard extends LitElement {
       background-size: 200% 100%;
       animation: shimmer 1.5s linear infinite;
     }
-    .skel-header { display: flex; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--cg-gray-800, #27272a); }
+    .skel-header { display: flex; gap: var(--cg-spacing-10, 10px); padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px); border-bottom: 1px solid var(--cg-gray-800, #27272a); }
     .skel-icon { width: 32px; height: 32px; border-radius: 8px; }
     .skel-lines { flex: 1; display: flex; flex-direction: column; gap: 6px; justify-content: center; }
     .skel-line-lg { height: 12px; width: 60%; }
     .skel-line-sm { height: 8px; width: 35%; }
-    .skel-row { display: flex; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--cg-gray-800, #27272a); }
+    .skel-row { display: flex; justify-content: space-between; padding: var(--cg-spacing-10, 10px) var(--cg-spacing-16, 16px); border-bottom: 1px solid var(--cg-gray-800, #27272a); }
     .skel-row:last-child { border-bottom: none; }
     .skel-label { height: 10px; width: 30%; }
     .skel-value { height: 10px; width: 40%; }

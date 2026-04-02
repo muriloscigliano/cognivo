@@ -43,33 +43,35 @@ export class AiKpiGrid extends LitElement {
       background: var(--cg-color-surface-cards-background, #18181b);
       border: 1px solid var(--cg-color-surface-cards-border, #27272a);
       border-radius: var(--cg-border-radius-200, 12px);
-      padding: 20px;
+      padding: var(--cg-spacing-20, 20px);
       box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     .card-title {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       color: var(--cg-gray-400, #a1a1aa);
-      margin-bottom: 16px;
+      padding-bottom: var(--cg-spacing-16, 16px);
+      margin-bottom: var(--cg-spacing-16, 16px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
 
     .grid {
       display: grid;
-      gap: 16px;
+      gap: var(--cg-spacing-16, 16px);
     }
 
     /* ── KPI cell ── */
     .kpi {
-      padding: 14px;
+      padding: var(--cg-spacing-14, 14px);
       background: var(--cg-gray-900, #09090b);
-      border-radius: 10px;
+      border-radius: var(--cg-border-radius-100, 10px);
       cursor: pointer;
       transition: all 150ms ease;
-      border: 1px solid transparent;
+      border: 1px solid var(--cg-color-surface-container-border, #27272a);
     }
     .kpi:hover {
       border-color: var(--cg-gray-700, #3f3f46);

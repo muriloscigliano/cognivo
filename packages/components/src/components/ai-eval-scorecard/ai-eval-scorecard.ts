@@ -48,11 +48,11 @@ export class AiEvalScorecard extends LitElement {
 
     .header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px;
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
     }
     .header-title {
-      font-size: 12px; font-weight: 700; color: var(--cg-gray-400, #a1a1aa);
+      font-size: var(--cg-font-size-xs, 12px); font-weight: 700; color: var(--cg-gray-400, #a1a1aa);
       text-transform: uppercase; letter-spacing: 0.05em;
     }
 
@@ -65,11 +65,11 @@ export class AiEvalScorecard extends LitElement {
     .grade.D { background: rgba(249, 115, 22, 0.12); color: #fb923c; }
     .grade.F { background: rgba(239, 68, 68, 0.12); color: #f87171; }
 
-    .scores { padding: 12px 16px; }
+    .scores { padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px); }
 
     .score-row {
-      display: flex; align-items: center; gap: 12px;
-      padding: 8px 0;
+      display: flex; align-items: center; gap: var(--cg-spacing-12, 12px);
+      padding: var(--cg-spacing-8, 8px) 0;
       border-bottom: 1px solid var(--cg-gray-800, #27272a);
       cursor: pointer;
       transition: background 100ms;
@@ -93,7 +93,7 @@ export class AiEvalScorecard extends LitElement {
 
     .score-value {
       width: 40px; text-align: right; flex-shrink: 0;
-      font-size: 13px; font-weight: 700;
+      font-size: var(--cg-font-size-sm, 14px); font-weight: 700;
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
     }
 
@@ -105,8 +105,8 @@ export class AiEvalScorecard extends LitElement {
     .delta-down { color: var(--cg-red-400, #f87171); }
 
     .explanation {
-      padding: 6px 0 6px 112px;
-      font-size: 11px; color: var(--cg-gray-500, #71717a);
+      padding: var(--cg-spacing-6, 6px) 0 var(--cg-spacing-6, 6px) 112px;
+      font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-500, #71717a);
       line-height: 1.4;
       animation: fadeIn 150ms ease;
     }

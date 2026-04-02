@@ -37,10 +37,10 @@ export class AiAlertCard extends LitElement {
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       border: 1px solid var(--cg-color-surface-cards-border, #27272a);
       border-radius: var(--cg-border-radius-200, 12px);
-      padding: 16px 16px 16px 20px;
+      padding: var(--cg-spacing-16, 16px) var(--cg-spacing-16, 16px) var(--cg-spacing-16, 16px) var(--cg-spacing-20, 20px);
       display: flex;
       align-items: flex-start;
-      gap: 14px;
+      gap: var(--cg-spacing-14, 14px);
       position: relative;
       border-left: 4px solid transparent;
       transition: box-shadow 150ms ease, transform 150ms ease;
@@ -81,7 +81,7 @@ export class AiAlertCard extends LitElement {
       margin-bottom: 6px;
     }
     .title {
-      font-size: 15px;
+      font-size: var(--cg-font-size-base, 15px);
       font-weight: 700;
       color: var(--cg-color-surface-base-text, #fafafa);
     }
@@ -91,7 +91,7 @@ export class AiAlertCard extends LitElement {
       gap: 4px;
       padding: 2px 8px;
       border-radius: 99px;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       background: rgba(255, 255, 255, 0.06);
       color: var(--cg-gray-300, #d4d4d8);
@@ -99,10 +99,12 @@ export class AiAlertCard extends LitElement {
     }
 
     .message {
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-gray-400, #a1a1aa);
       line-height: 1.5;
-      margin-bottom: 12px;
+      padding-bottom: var(--cg-spacing-12, 12px);
+      margin-bottom: var(--cg-spacing-12, 12px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
     }
 
     /* ── Action button ── */

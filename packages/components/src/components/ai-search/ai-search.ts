@@ -121,8 +121,8 @@ export class AiSearch extends LitElement {
     }
 
     .section-label {
-      padding: 8px 14px 4px;
-      font-size: 10px;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-14, 14px) var(--cg-spacing-4, 4px);
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       color: var(--cg-gray-500, #71717a);
       text-transform: uppercase;
@@ -132,18 +132,18 @@ export class AiSearch extends LitElement {
     /* Filters */
     .filters {
       display: flex;
-      gap: 6px;
-      padding: 8px 14px;
+      gap: var(--cg-spacing-6, 6px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-14, 14px);
       flex-wrap: wrap;
     }
     .filter-tag {
-      padding: 3px 10px;
-      border-radius: 5px;
+      padding: var(--cg-spacing-4, 3px) var(--cg-spacing-10, 10px);
+      border-radius: var(--cg-border-radius-50, 5px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       background: none;
       color: var(--cg-gray-400, #a1a1aa);
       font: inherit;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       cursor: pointer;
       transition: all 150ms;
@@ -155,8 +155,8 @@ export class AiSearch extends LitElement {
     .result-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 14px;
+      gap: var(--cg-spacing-10, 10px);
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-14, 14px);
       cursor: pointer;
       transition: background 100ms;
     }
@@ -164,7 +164,7 @@ export class AiSearch extends LitElement {
     .result-icon { font-size: 16px; flex-shrink: 0; }
     .result-info { flex: 1; min-width: 0; }
     .result-title {
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-surface-base-text, #fafafa);
       font-weight: 500;
       overflow: hidden;
@@ -172,7 +172,7 @@ export class AiSearch extends LitElement {
       white-space: nowrap;
     }
     .result-desc {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
       overflow: hidden;
       text-overflow: ellipsis;

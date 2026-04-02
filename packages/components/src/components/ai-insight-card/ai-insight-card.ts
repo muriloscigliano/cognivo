@@ -40,8 +40,8 @@ export class AiInsightCard extends LitElement {
 
     .card {
       display: flex;
-      gap: 14px;
-      padding: 14px 16px;
+      gap: var(--cg-spacing-14, 14px);
+      padding: var(--cg-spacing-14, 14px) var(--cg-spacing-16, 16px);
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 12px;
@@ -96,7 +96,7 @@ export class AiInsightCard extends LitElement {
     .content { flex: 1; min-width: 0; }
 
     .type-label {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -121,9 +121,11 @@ export class AiInsightCard extends LitElement {
     .meta {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-top: 6px;
-      font-size: 11px;
+      gap: var(--cg-spacing-8, 8px);
+      margin-top: var(--cg-spacing-8, 8px);
+      padding-top: var(--cg-spacing-8, 8px);
+      border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
+      font-size: var(--cg-font-size-xs, 12px);
     }
     .timestamp { color: var(--cg-gray-500, #71717a); }
 

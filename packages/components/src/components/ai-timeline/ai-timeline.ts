@@ -45,8 +45,8 @@ export class AiTimeline extends LitElement {
 
     .step {
       display: flex;
-      gap: 12px;
-      padding: 10px 0;
+      gap: var(--cg-spacing-12, 12px);
+      padding: var(--cg-spacing-10, 10px) 0;
       position: relative;
       animation: fadeIn 250ms ease;
       cursor: pointer;
@@ -65,7 +65,7 @@ export class AiTimeline extends LitElement {
       top: 32px;
       bottom: -2px;
       width: 2px;
-      background: var(--cg-gray-800, #27272a);
+      background: linear-gradient(to bottom, var(--cg-gray-700, #3f3f46), var(--cg-gray-800, #27272a));
     }
     .step:last-child::before { display: none; }
 
@@ -120,14 +120,14 @@ export class AiTimeline extends LitElement {
       gap: 8px;
     }
     .step-label {
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       font-weight: 600;
       color: var(--cg-color-surface-base-text, #fafafa);
     }
     .step.pending .step-label { color: var(--cg-gray-500, #71717a); }
 
     .step-duration {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       color: var(--cg-gray-500, #71717a);
       font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
     }
@@ -173,8 +173,8 @@ export class AiTimeline extends LitElement {
 
     /* Detail (expandable) */
     .detail {
-      margin-top: 8px;
-      padding: 10px 12px;
+      margin-top: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-10, 10px) var(--cg-spacing-12, 12px);
       background: var(--cg-color-surface-base-background, #09090b);
       border-radius: 8px;
       font-size: 12px;

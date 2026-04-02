@@ -43,18 +43,20 @@ export class AiModelSelector extends LitElement {
 
     .filter-row {
       display: flex;
-      gap: 6px;
-      margin-bottom: 12px;
+      gap: var(--cg-spacing-6, 6px);
+      margin-bottom: var(--cg-spacing-12, 12px);
+      padding-bottom: var(--cg-spacing-12, 12px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
       flex-wrap: wrap;
     }
     .filter-chip {
-      padding: 4px 12px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
       border-radius: 6px;
       border: 1px solid var(--cg-gray-700, #3f3f46);
       background: none;
       color: var(--cg-gray-400, #a1a1aa);
       font: inherit;
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       cursor: pointer;
       transition: all 150ms;
@@ -65,11 +67,11 @@ export class AiModelSelector extends LitElement {
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 10px;
+      gap: var(--cg-spacing-12, 12px);
     }
 
     .model-card {
-      padding: 14px 16px;
+      padding: var(--cg-spacing-14, 14px) var(--cg-spacing-16, 16px);
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 10px;
@@ -102,13 +104,17 @@ export class AiModelSelector extends LitElement {
       justify-content: center;
     }
 
-    .model-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .model-header {
+      display: flex; align-items: center; gap: var(--cg-spacing-8, 8px);
+      padding-bottom: var(--cg-spacing-8, 8px); margin-bottom: var(--cg-spacing-8, 8px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
+    }
     .model-icon { font-size: 20px; }
     .model-info { flex: 1; }
-    .model-name { font-size: 14px; font-weight: 600; color: var(--cg-color-surface-base-text, #fafafa); }
-    .model-provider { font-size: 11px; color: var(--cg-gray-500, #71717a); }
+    .model-name { font-size: var(--cg-font-size-sm, 14px); font-weight: 600; color: var(--cg-color-surface-base-text, #fafafa); }
+    .model-provider { font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-500, #71717a); }
 
-    .model-desc { font-size: 12px; color: var(--cg-gray-400, #a1a1aa); line-height: 1.4; margin-bottom: 8px; }
+    .model-desc { font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-400, #a1a1aa); line-height: 1.4; margin-bottom: var(--cg-spacing-8, 8px); }
 
     .model-footer { display: flex; justify-content: space-between; align-items: center; }
     .caps { display: flex; gap: 4px; flex-wrap: wrap; }

@@ -49,7 +49,7 @@ export class AiToast extends LitElement {
     .stack {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: var(--cg-spacing-8, 8px);
       max-width: 380px;
       min-width: 280px;
     }
@@ -57,9 +57,9 @@ export class AiToast extends LitElement {
     .toast {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      padding: 12px 14px;
-      border-radius: 10px;
+      gap: var(--cg-spacing-10, 10px);
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-14, 14px);
+      border-radius: var(--cg-border-radius-100, 10px);
       background: var(--cg-color-surface-container-background, #18181b);
       border: 1px solid var(--cg-color-surface-container-border, #27272a);
       box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
@@ -100,7 +100,7 @@ export class AiToast extends LitElement {
 
     .content { flex: 1; min-width: 0; }
     .message {
-      font-size: 13px;
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-surface-base-text, #fafafa);
       line-height: 1.4;
     }

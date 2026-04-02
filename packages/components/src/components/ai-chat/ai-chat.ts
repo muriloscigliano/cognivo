@@ -62,16 +62,16 @@ export class AiChat extends LitElement {
     .messages {
       flex: 1;
       overflow-y: auto;
-      padding: 20px;
+      padding: var(--cg-spacing-20, 20px);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: var(--cg-spacing-16, 16px);
       scroll-behavior: smooth;
     }
 
     .msg {
       display: flex;
-      gap: 10px;
+      gap: var(--cg-spacing-10, 10px);
       max-width: 85%;
       animation: slideIn 250ms ease-out;
     }
@@ -266,10 +266,11 @@ export class AiChat extends LitElement {
 
     /* ── Input area ── */
     .input-area {
-      padding: 12px 16px;
+      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
       border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
+      border-image: linear-gradient(to right, transparent, var(--cg-color-surface-container-border, #27272a) 20%, var(--cg-color-surface-container-border, #27272a) 80%, transparent) 1;
       display: flex;
-      gap: 10px;
+      gap: var(--cg-spacing-10, 10px);
     }
     input {
       flex: 1;
@@ -303,9 +304,9 @@ export class AiChat extends LitElement {
 
     /* ── Follow-ups ── */
     .follow-ups {
-      padding: 0 20px 12px;
+      padding: 0 var(--cg-spacing-20, 20px) var(--cg-spacing-12, 12px);
       display: flex;
-      gap: 6px;
+      gap: var(--cg-spacing-6, 6px);
       flex-wrap: wrap;
     }
     .follow-up-chip {
@@ -333,7 +334,7 @@ export class AiChat extends LitElement {
       align-items: center;
       justify-content: center;
       color: var(--cg-gray-500, #71717a);
-      gap: 10px;
+      gap: var(--cg-spacing-10, 10px);
       text-align: center;
     }
     .empty-icon { font-size: 36px; }

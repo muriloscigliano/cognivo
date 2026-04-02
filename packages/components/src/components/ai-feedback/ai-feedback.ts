@@ -30,7 +30,7 @@ export class AiFeedback extends LitElement {
     .container {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: var(--cg-spacing-10, 10px);
       box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
       background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
@@ -39,7 +39,9 @@ export class AiFeedback extends LitElement {
     .rating-row {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: var(--cg-spacing-6, 6px);
+      padding-bottom: var(--cg-spacing-10, 10px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
     }
     .rating-label {
       font-size: 12px;
@@ -104,15 +106,15 @@ export class AiFeedback extends LitElement {
     .tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: var(--cg-spacing-6, 6px);
     }
     .tag {
-      padding: 4px 12px;
-      border-radius: 6px;
+      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
+      border-radius: var(--cg-border-radius-75, 6px);
       border: 1px solid var(--cg-gray-700, #3f3f46);
       background: none;
       color: var(--cg-gray-400, #a1a1aa);
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
       cursor: pointer;
       transition: all 150ms;

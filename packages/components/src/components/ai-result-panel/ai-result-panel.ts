@@ -58,7 +58,7 @@ export class AiResultPanel extends LitElement {
       padding: 14px 18px;
       cursor: pointer;
     }
-    .header-left { display: flex; align-items: center; gap: 10px; }
+    .header-left { display: flex; align-items: center; gap: var(--cg-spacing-10, 10px); }
     .title {
       font-size: 16px;
       font-weight: 600;
@@ -122,16 +122,21 @@ export class AiResultPanel extends LitElement {
 
     /* ── Summary tab ── */
     .explanation {
-      font-size: 14px;
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-surface-base-text, #fafafa);
       line-height: 1.6;
-      margin-bottom: 14px;
+      padding-bottom: var(--cg-spacing-14, 14px);
+      margin-bottom: var(--cg-spacing-14, 14px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
     }
 
     .bullets {
       list-style: none;
       padding: 0;
-      margin: 0 0 14px;
+      margin: 0;
+      padding-bottom: var(--cg-spacing-14, 14px);
+      margin-bottom: var(--cg-spacing-14, 14px);
+      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -139,13 +144,13 @@ export class AiResultPanel extends LitElement {
     .bullet {
       display: flex;
       align-items: flex-start;
-      gap: 8px;
-      font-size: 13px;
+      gap: var(--cg-spacing-8, 8px);
+      font-size: var(--cg-font-size-sm, 14px);
       color: var(--cg-color-surface-base-text, #fafafa);
       line-height: 1.5;
     }
     .bullet::before {
-      content: '--';
+      content: '\u2192';
       color: var(--cg-brand-ai-accent, #dfff61);
       font-weight: 700;
       flex-shrink: 0;
@@ -159,7 +164,7 @@ export class AiResultPanel extends LitElement {
       margin-bottom: 8px;
     }
     .drivers-label {
-      font-size: 11px;
+      font-size: var(--cg-font-size-xs, 12px);
       font-weight: 700;
       color: var(--cg-gray-400, #a1a1aa);
       text-transform: uppercase;
@@ -178,13 +183,13 @@ export class AiResultPanel extends LitElement {
     .drivers {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: var(--cg-spacing-10, 10px);
     }
     .driver {
       background: var(--cg-color-surface-base-background, #09090b);
       border: 1px solid var(--cg-gray-800, #27272a);
-      border-radius: 8px;
-      padding: 10px 12px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-10, 10px) var(--cg-spacing-12, 12px);
     }
     .driver-top {
       display: flex;
