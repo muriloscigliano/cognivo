@@ -33,82 +33,80 @@ export interface ShortcutEntry {
 export class AiKeyboardShortcuts extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.6);
+      background: var(--cg-overlay-dark-strong);
+      backdrop-filter: blur(2px);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 9999;
-      backdrop-filter: blur(4px);
     }
 
     .modal {
-      background: var(--cg-color-bg-primary, #18181b);
-      border: 1px solid var(--cg-color-border-primary, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      padding: var(--cg-spacing-24, 24px);
+      background: var(--cg-color-surface-base-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-24);
       max-width: 520px;
       width: 90vw;
       max-height: 70vh;
       display: flex;
       flex-direction: column;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     .modal-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: var(--cg-spacing-16, 16px);
+      margin-bottom: var(--cg-spacing-16);
     }
 
     .modal-title {
-      color: var(--cg-color-text-primary, #fafafa);
-      font-size: var(--cg-font-size-lg, 18px);
-      font-weight: 700;
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-lg);
+      font-weight: var(--cg-font-weight-bold);
     }
 
     .close-btn {
       background: none;
       border: none;
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xl, 20px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xl);
       cursor: pointer;
-      padding: 4px;
-      border-radius: var(--cg-border-radius-50, 4px);
+      padding: var(--cg-spacing-4);
+      border-radius: var(--cg-border-radius-50);
       line-height: 1;
     }
-    .close-btn:hover { color: var(--cg-color-text-primary, #fafafa); }
+    .close-btn:hover { color: var(--cg-color-surface-base-text); }
     .close-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .search-input {
       width: 100%;
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      border: 1px solid var(--cg-color-border-primary, #3f3f46);
-      background: var(--cg-color-bg-secondary, #27272a);
-      color: var(--cg-color-text-primary, #fafafa);
-      font-size: var(--cg-font-size-sm, 14px);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-sm);
       font-family: inherit;
-      margin-bottom: var(--cg-spacing-16, 16px);
+      margin-bottom: var(--cg-spacing-16);
       box-sizing: border-box;
     }
     .search-input::placeholder {
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      color: var(--cg-color-input-text-placeholder);
     }
-    .search-input:focus {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: -1px;
+    .search-input:focus-visible {
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .shortcuts-list {
@@ -117,32 +115,32 @@ export class AiKeyboardShortcuts extends LitElement {
     }
 
     .category-label {
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      padding: var(--cg-spacing-8, 8px) 0 var(--cg-spacing-6, 6px);
-      border-bottom: 1px solid var(--cg-color-border-primary, #27272a);
-      margin-bottom: var(--cg-spacing-4, 4px);
+      padding: var(--cg-spacing-8) 0 var(--cg-spacing-6);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      margin-bottom: var(--cg-spacing-4);
     }
 
     .shortcut-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 4px;
+      padding: var(--cg-spacing-8) var(--cg-spacing-4);
     }
 
     .shortcut-desc {
-      color: var(--cg-color-text-primary, #fafafa);
-      font-size: var(--cg-font-size-sm, 14px);
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-sm);
     }
 
     .key-group {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-4);
       flex-shrink: 0;
     }
 
@@ -150,31 +148,30 @@ export class AiKeyboardShortcuts extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 24px;
-      height: 24px;
-      padding: 0 6px;
-      background: var(--cg-color-bg-secondary, #27272a);
-      border: 1px solid var(--cg-color-border-primary, #3f3f46);
+      min-width: var(--cg-spacing-24);
+      height: var(--cg-spacing-24);
+      padding: 0 var(--cg-spacing-6);
+      background: var(--cg-color-surface-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-bottom-width: 3px;
-      border-radius: var(--cg-border-radius-50, 4px);
-      color: var(--cg-color-text-primary, #fafafa);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
+      border-radius: var(--cg-border-radius-50);
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
+      font-family: var(--cg-font-family-mono);
       white-space: nowrap;
     }
 
     .key-plus {
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
     }
 
     .no-results {
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-sm, 14px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
       text-align: center;
-      padding: var(--cg-spacing-16, 16px);
-    }
+      padding: var(--cg-spacing-16);
     }
   `];
   @property({ type: Array }) shortcuts: ShortcutEntry[] = [];

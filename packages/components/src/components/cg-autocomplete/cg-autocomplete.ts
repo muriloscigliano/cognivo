@@ -11,12 +11,17 @@ export interface AutocompleteOption {
 /**
  * <cg-autocomplete> — Combobox input with filtered dropdown suggestions.
  *
- * Features:
- * - Type to filter, arrow key navigation, Enter to select, Escape to close
- * - Clear button, highlight matching text
- * - Scale+fade dropdown animation
- * - Empty state message, proper ARIA combobox pattern
- * - Dual focus ring, keyboard accessible
+ * @example
+ * ```html
+ * <cg-autocomplete label="Country" placeholder="Search..." .options=${countries}></cg-autocomplete>
+ * ```
+ *
+ * @fires {CustomEvent<{query: string}>} cg-autocomplete-input - On input change
+ * @fires {CustomEvent<{value: string, label: string}>} cg-autocomplete-select - On option select
+ *
+ * @cssprop --cg-component-input-radius - Input border radius
+ * @cssprop --cg-component-input-height-md - Input height
+ * @cssprop --cg-color-input-border-default - Default border color
  */
 @customElement('cg-autocomplete')
 export class CgAutocomplete extends LitElement {
@@ -27,32 +32,47 @@ export class CgAutocomplete extends LitElement {
 
     .label {
       display: block;
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-color-input-text-placeholder, #71717a);
-      margin-bottom: var(--cg-spacing-4, 4px);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-container-text);
+      margin-bottom: var(--cg-spacing-6);
     }
 
     .input-wrap {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      padding: 0 var(--cg-spacing-12, 12px);
-      border: 1px solid var(--cg-color-input-border-default, #3f3f46);
-      border-radius: var(--cg-border-radius-150, 12px);
-      background: var(--cg-color-input-background-default, #18181b);
-      min-height: 40px;
-      transition: border-color 200ms ease-out, box-shadow 200ms ease-out;
+      gap: var(--cg-spacing-8);
+      padding: 0 var(--cg-spacing-12);
+      border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
+      border-radius: var(--cg-component-input-radius);
+      background: var(--cg-color-input-background-default);
+      min-height: var(--cg-component-input-height-md);
+      transition:
+        border-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
     .input-wrap:hover:not(.disabled) {
-      border-color: var(--cg-color-input-border-hover, #dfff61);
+      border-color: var(--cg-color-input-border-hover);
     }
     .input-wrap.focused {
-      border-color: var(--cg-brand-ai-accent, #dfff61);
-      box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      border-color: var(--cg-color-input-border-focus);
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
-    .input-wrap.disabled { opacity: 0.5; cursor: not-allowed; }
+    .input-wrap.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: var(--cg-color-input-background-disabled);
+      border-color: var(--cg-color-input-border-disabled);
+    }
+
+    /* ── Error state ── */
+    :host([error]) .input-wrap {
+      border-color: var(--cg-color-input-border-error);
+    }
+    :host([error]) .input-wrap.focused {
+      border-color: var(--cg-color-status-error-text-default);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+    }
 
     input {
       flex: 1;
@@ -60,102 +80,102 @@ export class CgAutocomplete extends LitElement {
       outline: none;
       background: transparent;
       font: inherit;
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-color-input-text-default, #f4f4f5);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-input-text-default);
       min-width: 0;
-      padding: var(--cg-spacing-8, 8px) 0;
+      padding: var(--cg-spacing-8) 0;
     }
-    input::placeholder { color: var(--cg-color-input-text-placeholder, #71717a); }
+    input::placeholder { color: var(--cg-color-input-text-placeholder); }
     input:disabled { cursor: not-allowed; }
 
     .clear {
-      display: flex; align-items: center; justify-content: center;
-      width: 18px; height: 18px; border: none; padding: 0;
-      background: var(--cg-gray-200, #e4e4e7); color: var(--cg-gray-500, #71717a);
-      border-radius: var(--cg-border-radius-full, 99999px); cursor: pointer; flex-shrink: 0;
-      transition: background 100ms ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--cg-spacing-20);
+      height: var(--cg-spacing-20);
+      border: none;
+      padding: 0;
+      background: var(--cg-color-action-tertiary-background-hover);
+      color: var(--cg-color-surface-container-outlined);
+      border-radius: var(--cg-border-radius-full);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
-    .clear:hover { background: var(--cg-gray-300, #d4d4d8); color: var(--cg-gray-700, #3f3f46); }
-    .clear svg { width: 10px; height: 10px; }
+    .clear:hover {
+      background: var(--cg-color-action-secondary-background-hover);
+      color: var(--cg-color-surface-container-text);
+    }
 
     .chevron {
-      flex-shrink: 0; color: var(--cg-color-input-text-placeholder, #71717a);
-      transition: transform 200ms ease;
+      flex-shrink: 0;
+      color: var(--cg-color-input-icon-default);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
     .chevron.open { transform: rotate(180deg); }
-    .chevron svg { width: 16px; height: 16px; display: block; }
 
     .dropdown {
       position: absolute;
       top: 100%;
       left: 0;
       right: 0;
-      margin-top: var(--cg-spacing-4, 4px);
-      background: var(--cg-color-surface-container-background, #1c1c1f);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      max-height: 240px;
+      margin-top: var(--cg-spacing-4);
+      background: var(--cg-color-modal-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
+      border-radius: var(--cg-border-radius-100);
+      box-shadow:
+        0 var(--cg-shadow-md-y) var(--cg-shadow-md-blur) var(--cg-shadow-md-spread) rgba(0, 0, 0, 0.12),
+        0 var(--cg-shadow-sm-y) var(--cg-shadow-sm-blur) var(--cg-shadow-sm-spread) rgba(0, 0, 0, 0.06);
+      max-height: 280px;
       overflow-y: auto;
-      z-index: 50;
-      padding: var(--cg-spacing-4, 4px);
-      box-shadow: var(--cg-elevation-3, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 10px 15px -3px rgba(0, 0, 0, 0.4));
-      animation: dropIn 150ms cubic-bezier(0.2, 0, 0, 1);
+      z-index: 1000;
+      padding: var(--cg-spacing-6);
+      animation: dropIn var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
 
     @keyframes dropIn {
-      from { opacity: 0; transform: scale(0.95) translateY(-4px); }
+      from { opacity: 0; transform: scale(0.96) translateY(calc(var(--cg-spacing-4) * -1)); }
       to { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     .option {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-50);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-container-text);
       cursor: pointer;
-      transition: background 100ms ease, opacity 150ms ease, transform 150ms ease;
-      animation: optionIn 200ms cubic-bezier(0.2, 0, 0, 1) both;
-    }
-    .option:nth-child(1) { animation-delay: 0ms; }
-    .option:nth-child(2) { animation-delay: 30ms; }
-    .option:nth-child(3) { animation-delay: 60ms; }
-    .option:nth-child(4) { animation-delay: 90ms; }
-    .option:nth-child(5) { animation-delay: 120ms; }
-    .option:nth-child(6) { animation-delay: 150ms; }
-    .option:nth-child(7) { animation-delay: 180ms; }
-    .option:nth-child(8) { animation-delay: 210ms; }
-
-    @keyframes optionIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
     .option:hover, .option.active {
-      background: var(--cg-color-action-secondary-background-hover, #3f3f46);
+      background: var(--cg-color-action-tertiary-background-hover);
     }
-    .option .match { color: var(--cg-brand-ai-accent, #dfff61); font-weight: var(--cg-font-weight-semibold, 600); }
+    .option .match {
+      color: var(--cg-color-action-primary-background-default);
+      font-weight: var(--cg-font-weight-semibold);
+    }
 
     .empty {
-      padding: var(--cg-spacing-16, 16px);
+      padding: var(--cg-spacing-16);
       text-align: center;
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-color-input-text-placeholder, #71717a);
-    }
-  
-
-    :focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-container-outlined);
     }
 
     /* Rounded variants */
     :host([rounded="none"]) .input-wrap { border-radius: 0; }
-    :host([rounded="sm"]) .input-wrap { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .input-wrap { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .input-wrap { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .input-wrap { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .input-wrap { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .input-wrap { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .input-wrap { border-radius: var(--cg-component-input-radius); }
+    :host([rounded="full"]) .input-wrap { border-radius: var(--cg-border-radius-full); }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .dropdown { animation: none; }
+    }
   `];
 
   @property({ type: Array }) options: AutocompleteOption[] = [];
@@ -164,6 +184,7 @@ export class CgAutocomplete extends LitElement {
   @property() placeholder = '';
   @property() label = '';
   @property({ type: Boolean }) disabled = false;
+  @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean }) clearable = false;
 
   @state() private _query = '';
@@ -243,15 +264,15 @@ export class CgAutocomplete extends LitElement {
           @input=${this._onInput}
           @keydown=${this._onKeyDown}
           @focus=${() => { this._focused = true; this._open = true; }}
-          @blur=${() => { this._focused = false; setTimeout(() => { this._open = false; }, 150); }}
+          @blur=${() => { this._focused = false; this._open = false; }}
         />
         ${this.clearable && this._query ? html`
           <button class="clear" @mousedown=${(e: Event) => e.preventDefault()} @click=${this._clear} aria-label="Clear">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            <cg-icon name="x" size="xs"></cg-icon>
           </button>
         ` : nothing}
         <span class="chevron ${this._open ? 'open' : ''}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+          <cg-icon name="chevron-down" size="sm"></cg-icon>
         </span>
       </div>
       ${this._open ? html`
@@ -263,7 +284,7 @@ export class CgAutocomplete extends LitElement {
                 aria-selected=${i === this._activeIndex}
                 @mousedown=${(e: Event) => e.preventDefault()}
                 @click=${() => this._select(opt)}>
-                ${opt.icon ? html`<span>${opt.icon}</span>` : nothing}
+                ${opt.icon ? html`<cg-icon name="${opt.icon}" size="sm"></cg-icon>` : nothing}
                 <span>${this._highlightMatch(opt.label)}</span>
               </div>
             `)}

@@ -1,31 +1,16 @@
 /**
  * @element ai-memory-panel
- * Tabbed panel for viewing and managing agent memory. Displays short-term
- * (conversation) and long-term (persisted) memories with type badges,
- * search, pin, and delete actions.
+ * Agent memory viewer. Three variants: default (full panel), compact (sidebar), inline (no container).
  *
- * @example
- * ```html
- * <ai-memory-panel
- *   .shortTerm=${[{ id: '1', content: 'User prefers dark mode', type: 'preference', timestamp: Date.now() }]}
- *   .longTerm=${[]}
- *   searchable
- * ></ai-memory-panel>
- * ```
- *
- * @prop {Memory[]} shortTerm - Short-term conversation memories
- * @prop {Memory[]} longTerm - Long-term persisted memories
- * @prop {boolean} searchable - Enable search input (default true)
- *
- * @fires {CustomEvent<{id: string, type: string}>} ai-memory-delete - When a memory is deleted
- * @fires {CustomEvent<{id: string, pinned: boolean}>} ai-memory-pin - When a memory is pinned/unpinned
- * @fires {CustomEvent<{query: string}>} ai-memory-search - When search query changes (debounced)
+ * @fires {CustomEvent<{id: string, type: string}>} ai-memory-delete
+ * @fires {CustomEvent<{id: string, pinned: boolean}>} ai-memory-pin
+ * @fires {CustomEvent<{query: string}>} ai-memory-search
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
-interface Memory {
+export interface Memory {
   id: string;
   content: string;
   type: 'fact' | 'preference' | 'instruction' | 'context';
@@ -36,120 +21,146 @@ interface Memory {
 
 @customElement('ai-memory-panel')
 export class AiMemoryPanel extends LitElement {
-  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
-    :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-    }
+  static override styles = [hostBlock, reducedMotion, css`
 
+    /* ── Default variant — bordered panel ── */
     .panel {
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-100);
       overflow: hidden;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
-    .header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
-    }
-    .header-title {
-      font-size: 12px; font-weight: 700; color: var(--cg-gray-400, #a1a1aa);
-      text-transform: uppercase; letter-spacing: 0.05em;
+    /* ── Rounded ── */
+    :host([rounded="none"]) .panel { border-radius: 0; }
+    :host([rounded="sm"]) .panel { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .panel { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .panel { border-radius: var(--cg-border-radius-150); }
+
+    /* ── Inline variant — no container ── */
+    :host([variant="inline"]) .panel {
+      background: transparent;
+      border: none;
+      border-radius: 0;
     }
 
-    /* Tabs */
+    /* ── Tabs ── */
     .tabs {
-      display: flex; border-bottom: 1px solid var(--cg-gray-800, #27272a);
+      display: flex;
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
     }
     .tab {
-      flex: 1; padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px); text-align: center;
-      font-size: 12px; font-weight: 600; color: var(--cg-gray-500, #71717a);
-      background: none; border: none; border-bottom: 2px solid transparent;
-      cursor: pointer; font-family: inherit; transition: all 150ms;
+      flex: 1; padding: var(--cg-spacing-16) var(--cg-spacing-20); text-align: center;
+      font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-container-outlined);
+      background: none; border: none;
+      border-bottom: var(--cg-border-width-100) solid transparent;
+      cursor: pointer; font-family: inherit;
+      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
-    .tab:hover { color: var(--cg-gray-300, #d4d4d8); }
-    .tab.active { color: var(--cg-brand-ai-accent, #dfff61); border-bottom-color: var(--cg-brand-ai-accent, #dfff61); }
+    .tab:hover { color: var(--cg-color-surface-base-text); }
+    .tab.active {
+      color: var(--cg-color-action-primary-background-default);
+      border-bottom-color: var(--cg-color-action-primary-background-default);
+      font-weight: var(--cg-font-weight-semibold);
+    }
     .tab-count {
-      font-size: 10px; padding: 0 5px; border-radius: var(--cg-border-radius-100, 8px);
-      background: var(--cg-gray-800, #27272a); margin-left: 4px;
+      font-size: var(--cg-font-size-xs);
+      margin-left: var(--cg-spacing-4);
+      opacity: 0.5;
     }
 
-    /* Search */
-    .search-row { padding: 8px 16px; border-bottom: 1px solid var(--cg-gray-800, #27272a); }
+    /* ── Search ── */
+    .search-row { padding: var(--cg-spacing-16) var(--cg-spacing-20); }
     .search-input {
-      width: 100%; padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px); border-radius: var(--cg-border-radius-100, 8px);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      background: var(--cg-color-surface-base-background, #09090b);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      font: inherit; font-size: var(--cg-font-size-xs, 12px); outline: none;
+      width: 100%; box-sizing: border-box;
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
+      background: transparent; color: var(--cg-color-surface-base-text);
+      font: inherit; font-size: var(--cg-font-size-xs); outline: none;
     }
-    .search-input:focus { border-color: var(--cg-brand-ai-accent, #dfff61); }
-    .search-input::placeholder { color: var(--cg-gray-600, #52525b); }
+    .search-input:focus { border-color: var(--cg-color-input-border-focus); }
+    .search-input::placeholder { color: var(--cg-color-surface-container-outlined); }
 
-    /* Memory list */
-    .memories { max-height: 350px; overflow-y: auto; }
+    /* ── Memory list ── */
+    .memories { max-height: 320px; overflow-y: auto; padding: var(--cg-spacing-12) 0; }
 
     .memory {
-      display: flex; align-items: flex-start; gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
-      transition: background 100ms;
+      display: flex; flex-direction: column; gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-16) var(--cg-spacing-20);
+      border-radius: var(--cg-border-radius-50);
+      margin: 0 var(--cg-spacing-8);
+      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      position: relative;
     }
-    .memory:hover { background: rgba(255, 255, 255, 0.02); }
-    .memory:last-child { border-bottom: none; }
-    .memory.pinned { background: rgba(223, 255, 97, 0.03); }
+    .memory:hover { background: var(--cg-overlay-dark-subtle); }
+    .memory.pinned { background: var(--cg-overlay-accent-subtle); }
+
+    .memory-row {
+      display: flex; align-items: center; gap: var(--cg-spacing-12);
+    }
 
     .memory-type {
-      font-size: 9px; font-weight: 700; padding: 2px var(--cg-spacing-6, 6px); border-radius: 3px;
-      text-transform: uppercase; flex-shrink: 0; margin-top: 2px;
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-action-primary-background-default);
+      font-weight: var(--cg-font-weight-medium);
+      flex-shrink: 0;
     }
-    .memory-type.fact { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
-    .memory-type.preference { background: rgba(139, 92, 246, 0.12); color: #a78bfa; }
-    .memory-type.instruction { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
-    .memory-type.context { background: rgba(34, 197, 94, 0.12); color: var(--cg-color-status-success-text-default, #4ade80); }
+
+    .memory-meta {
+      font-size: var(--cg-font-size-xs); color: var(--cg-color-surface-container-outlined);
+      margin-left: auto; flex-shrink: 0;
+    }
 
     .memory-content {
-      flex: 1; min-width: 0;
-      font-size: 13px; color: var(--cg-color-surface-base-text, #fafafa); line-height: 1.4;
-    }
-    .memory-meta {
-      font-size: 10px; color: var(--cg-gray-500, #71717a); margin-top: 3px;
+      font-size: var(--cg-font-size-sm); color: var(--cg-color-surface-base-text);
+      line-height: var(--cg-line-height-snug);
     }
 
+    /* ── Actions — show on hover ── */
     .memory-actions {
-      display: flex; gap: 2px; flex-shrink: 0;
-      opacity: 0; transition: opacity 150ms;
+      position: absolute; top: var(--cg-spacing-8); right: var(--cg-spacing-16);
+      display: flex; gap: var(--cg-spacing-2);
+      opacity: 0; transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
     .memory:hover .memory-actions { opacity: 1; }
+
     .mem-btn {
-      width: 22px; height: 22px; border-radius: var(--cg-border-radius-50, 4px);
-      background: none; border: 1px solid var(--cg-gray-700, #3f3f46);
-      color: var(--cg-gray-500, #71717a); cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 10px; padding: 0; transition: all 150ms;
+      width: var(--cg-spacing-20); height: var(--cg-spacing-20);
+      background: transparent; border: none;
+      color: var(--cg-color-surface-container-outlined); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; padding: 0;
+      border-radius: var(--cg-border-radius-50);
+      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
-    .mem-btn:hover { color: var(--cg-color-surface-base-text, #fafafa); background: var(--cg-gray-800, #27272a); }
-    .mem-btn.pinned-btn { color: var(--cg-brand-ai-accent, #dfff61); }
+    .mem-btn svg { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
+    .mem-btn:hover { color: var(--cg-color-surface-base-text); }
+    .mem-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); opacity: 1; }
+    .mem-btn.pinned-btn { color: var(--cg-color-action-primary-background-default); opacity: 1; }
 
-    .empty { padding: 32px; text-align: center; color: var(--cg-gray-500, #71717a); font-size: 13px; }
+    .empty {
+      padding: var(--cg-spacing-24) var(--cg-spacing-20);
+      text-align: center; color: var(--cg-color-surface-container-outlined);
+      font-size: var(--cg-font-size-xs);
     }
-  
 
-    :focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
-    }
+    /* ── Compact variant ── */
+    :host([variant="compact"]) .search-row { display: none; }
+    :host([variant="compact"]) .memory { padding: var(--cg-spacing-6) var(--cg-spacing-12); }
+    :host([variant="compact"]) .memory-content { font-size: var(--cg-font-size-xs); }
+    :host([variant="compact"]) .memory-type { display: none; }
   `];
+
+  @property({ reflect: true }) variant: 'default' | 'compact' | 'inline' = 'default';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'md';
   @property({ type: Array }) shortTerm: Memory[] = [];
   @property({ type: Array }) longTerm: Memory[] = [];
-  @property({ type: Boolean }) searchable: boolean = true;
+  @property({ type: Boolean }) searchable = true;
 
   @state() private _activeTab: 'short' | 'long' = 'short';
+  @state() private _search = '';
   private _searchTimer?: ReturnType<typeof setTimeout>;
-  @state() private _search: string = '';
 
   private get _activeMemories(): Memory[] {
     const list = this._activeTab === 'short' ? this.shortTerm : this.longTerm;
@@ -159,27 +170,11 @@ export class AiMemoryPanel extends LitElement {
   }
 
   private _formatTime(ts: number): string {
-    const d = new Date(ts);
-    const now = Date.now();
-    const diff = now - ts;
+    const diff = Date.now() - ts;
     if (diff < 60000) return 'just now';
     if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
     if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  }
-
-  private _handleDelete(memory: Memory) {
-    this.dispatchEvent(new CustomEvent('ai-memory-delete', {
-      bubbles: true, composed: true,
-      detail: { id: memory.id, type: this._activeTab },
-    }));
-  }
-
-  private _handlePin(memory: Memory) {
-    this.dispatchEvent(new CustomEvent('ai-memory-pin', {
-      bubbles: true, composed: true,
-      detail: { id: memory.id, pinned: !memory.pinned },
-    }));
+    return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
   override render() {
@@ -187,28 +182,21 @@ export class AiMemoryPanel extends LitElement {
 
     return html`
       <div class="panel" role="region" aria-label="Agent memory">
-        <div class="header">
-          <span class="header-title">Agent Memory</span>
-        </div>
-
         <div class="tabs">
-          <button class="tab ${this._activeTab === 'short' ? 'active' : ''}"
-            @click=${() => { this._activeTab = 'short'; }}>
+          <button class="tab ${this._activeTab === 'short' ? 'active' : ''}" @click=${() => { this._activeTab = 'short'; }}>
             Short-term<span class="tab-count">${this.shortTerm.length}</span>
           </button>
-          <button class="tab ${this._activeTab === 'long' ? 'active' : ''}"
-            @click=${() => { this._activeTab = 'long'; }}>
+          <button class="tab ${this._activeTab === 'long' ? 'active' : ''}" @click=${() => { this._activeTab = 'long'; }}>
             Long-term<span class="tab-count">${this.longTerm.length}</span>
           </button>
         </div>
 
-        ${this.searchable ? html`
+        ${this.searchable && this.variant !== 'compact' ? html`
           <div class="search-row">
-            <input class="search-input" type="text" placeholder="Search memories..."
+            <input class="search-input" type="text" placeholder="Search..."
               .value=${this._search}
               @input=${(e: Event) => {
                 this._search = (e.target as HTMLInputElement).value;
-                // Debounce event dispatch
                 if (this._searchTimer) clearTimeout(this._searchTimer);
                 this._searchTimer = setTimeout(() => {
                   this.dispatchEvent(new CustomEvent('ai-memory-search', { bubbles: true, composed: true, detail: { query: this._search } }));
@@ -219,18 +207,25 @@ export class AiMemoryPanel extends LitElement {
 
         <div class="memories">
           ${memories.length === 0 ? html`
-            <div class="empty">${this._search ? 'No matching memories' : 'No memories stored'}</div>
+            <div class="empty">${this._search ? 'No matches' : 'No memories yet'}</div>
           ` : memories.map(m => html`
             <div class="memory ${m.pinned ? 'pinned' : ''}">
-              <span class="memory-type ${m.type}">${m.type}</span>
-              <div class="memory-content">
-                ${m.content}
-                <div class="memory-meta">${this._formatTime(m.timestamp)}${m.relevance ? ` · ${Math.round(m.relevance * 100)}% relevant` : ''}</div>
+              <div class="memory-row">
+                <span class="memory-type">${m.type}</span>
+                <span class="memory-meta">${this._formatTime(m.timestamp)}</span>
               </div>
+              <div class="memory-content">${m.content}</div>
               <div class="memory-actions">
-                <button class="mem-btn ${m.pinned ? 'pinned-btn' : ''}" @click=${() => this._handlePin(m)}
-                  title="${m.pinned ? 'Unpin' : 'Pin'}" aria-label="${m.pinned ? 'Unpin' : 'Pin'} memory"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 17v5m-4-9.26a2 2 0 01.88-1.66L12 9l3.12 2.08a2 2 0 01.88 1.66V15H8v-2.26zM9 9V4a1 1 0 011-1h4a1 1 0 011 1v5"/></svg></button>
-                <button class="mem-btn" @click=${() => this._handleDelete(m)} title="Delete" aria-label="Delete memory"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+                <button class="mem-btn ${m.pinned ? 'pinned-btn' : ''}"
+                  @click=${() => this.dispatchEvent(new CustomEvent('ai-memory-pin', { bubbles: true, composed: true, detail: { id: m.id, pinned: !m.pinned } }))}
+                  aria-label="${m.pinned ? 'Unpin' : 'Pin'}">
+                  <svg viewBox="0 0 24 24" fill="${m.pinned ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 17v5m-4-9.26a2 2 0 01.88-1.66L12 9l3.12 2.08a2 2 0 01.88 1.66V15H8v-2.26zM9 9V4a1 1 0 011-1h4a1 1 0 011 1v5"/></svg>
+                </button>
+                <button class="mem-btn"
+                  @click=${() => this.dispatchEvent(new CustomEvent('ai-memory-delete', { bubbles: true, composed: true, detail: { id: m.id, type: this._activeTab } }))}
+                  aria-label="Delete">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
               </div>
             </div>
           `)}

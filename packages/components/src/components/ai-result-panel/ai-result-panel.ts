@@ -1,53 +1,27 @@
 /**
  * @element ai-result-panel
- * Collapsible AI analysis dashboard with tabbed views (Summary, Data, Sources).
- * Shows explanation text, bullet points, sortable impact driver bars, confidence
- * badge, copy/export actions, and optional streaming indicator.
+ * Collapsible AI analysis panel with tabbed views (Summary, Data, Sources).
  *
- * @example
- * ```html
- * <ai-result-panel
- *   title="Market Analysis"
- *   explanation="Revenue grew 12% driven by enterprise adoption."
- *   .bullets=${['Enterprise ARR up 18%', 'Churn reduced to 3.2%']}
- *   .drivers=${[{ factor: 'Enterprise', impact: 42 }, { factor: 'Churn', impact: -8 }]}
- *   confidence="87"
- *   collapsible
- * ></ai-result-panel>
- * ```
- *
- * @prop {string} title - Panel header title
- * @prop {string} explanation - Summary paragraph text
- * @prop {string[]} bullets - Key takeaway bullet points
- * @prop {Driver[]} drivers - Impact driver bars with factor and impact percentage
- * @prop {number} confidence - Confidence score (0-100)
- * @prop {boolean} collapsible - Allow collapsing the panel
- * @prop {boolean} streaming - Show streaming/loading indicator
- *
- * @fires {CustomEvent<{format: string}>} ai-result-export - When export is clicked
- * @fires {CustomEvent<{content: string}>} ai-result-copy - When copy is clicked
+ * @fires {CustomEvent<{format: string}>} ai-result-export
+ * @fires {CustomEvent<{content: string}>} ai-result-copy
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface Driver { factor: string; impact: number; }
 interface Source { title: string; url?: string; excerpt?: string; }
 
 @customElement('ai-result-panel')
 export class AiResultPanel extends LitElement {
-  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
-    :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    :host { display: block; }
 
     .panel {
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid rgba(223, 255, 97, 0.12);
-      border-radius: var(--cg-border-radius-150, 12px);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
       overflow: hidden;
-      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     /* ── Header ── */
@@ -55,114 +29,111 @@ export class AiResultPanel extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
+      padding: var(--cg-spacing-16) var(--cg-spacing-20);
       cursor: pointer;
     }
-    .header-left { display: flex; align-items: center; gap: var(--cg-spacing-8, 8px); }
+    .header-left { display: flex; align-items: center; gap: var(--cg-spacing-8); }
     .title {
-      font-size: var(--cg-font-size-base, 16px);
-      font-weight: 600;
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
+    }
+    .confidence {
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      font-weight: var(--cg-font-weight-medium);
     }
     .collapse-icon {
-      color: var(--cg-gray-500, #71717a);
-      font-size: var(--cg-font-size-xs, 12px);
-      transition: transform 200ms;
+      color: var(--cg-color-input-text-placeholder);
+      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
+    .collapse-icon svg { width: 12px; height: 12px; display: block; }
     .panel.collapsed .collapse-icon { transform: rotate(-90deg); }
 
-    .header-actions { display: flex; gap: var(--cg-spacing-4, 4px); }
+    .header-actions { display: flex; gap: var(--cg-spacing-4); }
     .header-btn {
       background: none;
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      color: var(--cg-gray-400, #a1a1aa);
-      border-radius: var(--cg-border-radius-50, 4px);
-      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      color: var(--cg-color-input-text-placeholder);
+      border-radius: var(--cg-border-radius-50);
+      padding: var(--cg-spacing-4) var(--cg-spacing-8);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
-      transition: color var(--cg-motion-duration-fast, 150ms), border-color var(--cg-motion-duration-fast, 150ms), background var(--cg-motion-duration-fast, 150ms);
       font-family: inherit;
+      transition:
+        color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
+        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
-    .header-btn:hover {
-      color: var(--cg-color-surface-base-text, #fafafa);
-      border-color: var(--cg-gray-600, #52525b);
-      background: rgba(255, 255, 255, 0.03);
-    }
-    .header-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
-    }
+    .header-btn:hover { color: var(--cg-color-surface-base-text); border-color: var(--cg-color-input-border-hover); }
+    .header-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
+    .header-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
 
     /* ── Body ── */
-    .body {
-      padding: 0 var(--cg-spacing-16, 16px) var(--cg-spacing-16, 16px);
-    }
+    .body { padding: 0 var(--cg-spacing-20) var(--cg-spacing-20); }
     .panel.collapsed .body { display: none; }
 
     /* ── Tabs ── */
     .tabs {
       display: flex;
-      gap: 0;
-      margin-bottom: var(--cg-spacing-12, 12px);
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+      margin-bottom: var(--cg-spacing-16);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
     .tab {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
-      color: var(--cg-gray-500, #71717a);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-input-text-placeholder);
       background: none;
       border: none;
-      border-bottom: 2px solid transparent;
+      border-bottom: var(--cg-border-width-100) solid transparent;
       cursor: pointer;
-      transition: color var(--cg-motion-duration-fast, 150ms), border-color var(--cg-motion-duration-fast, 150ms);
       font-family: inherit;
+      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
-    .tab:hover { color: var(--cg-gray-300, #d4d4d8); }
-    .tab:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: -2px;
-    }
+    .tab:hover { color: var(--cg-color-surface-base-text); }
     .tab.active {
-      color: var(--cg-brand-ai-accent, #dfff61);
-      border-bottom-color: var(--cg-brand-ai-accent, #dfff61);
+      color: var(--cg-color-surface-base-text);
+      border-bottom-color: var(--cg-brand-ai-accent);
     }
+    .tab:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
 
-    /* ── Summary tab ── */
+    /* ── Explanation ── */
     .explanation {
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: var(--cg-line-height-relaxed, 1.6);
-      padding-bottom: var(--cg-spacing-12, 12px);
-      margin-bottom: var(--cg-spacing-12, 12px);
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-base-text);
+      line-height: var(--cg-line-height-normal);
+      margin-bottom: var(--cg-spacing-16);
+      padding-bottom: var(--cg-spacing-16);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
 
+    /* ── Bullets ── */
     .bullets {
       list-style: none;
       padding: 0;
-      margin: 0;
-      padding-bottom: var(--cg-spacing-12, 12px);
-      margin-bottom: var(--cg-spacing-12, 12px);
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
+      margin: 0 0 var(--cg-spacing-16);
+      padding-bottom: var(--cg-spacing-16);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-6, 6px);
+      gap: var(--cg-spacing-8);
     }
     .bullet {
       display: flex;
       align-items: flex-start;
-      gap: var(--cg-spacing-8, 8px);
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: var(--cg-line-height-normal, 1.5);
+      gap: var(--cg-spacing-8);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-base-text);
+      line-height: var(--cg-line-height-normal);
     }
-    .bullet::before {
-      content: '\u2192';
-      color: var(--cg-brand-ai-accent, #dfff61);
-      font-weight: 700;
+    .bullet-dot {
+      width: var(--cg-spacing-4);
+      height: var(--cg-spacing-4);
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-brand-ai-accent);
       flex-shrink: 0;
+      margin-top: var(--cg-spacing-8);
     }
 
     /* ── Drivers ── */
@@ -170,167 +141,147 @@ export class AiResultPanel extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: var(--cg-spacing-8, 8px);
+      margin-bottom: var(--cg-spacing-12);
     }
     .drivers-label {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      color: var(--cg-gray-400, #a1a1aa);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-input-text-placeholder);
       text-transform: uppercase;
-      letter-spacing: var(--cg-letter-spacing-wide, 0.05em);
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
     .sort-btn {
       background: none;
       border: none;
-      color: var(--cg-gray-500, #71717a);
-      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
       cursor: pointer;
       font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-4);
     }
-    .sort-btn:hover { color: var(--cg-brand-ai-accent, #dfff61); }
+    .sort-btn:hover { color: var(--cg-color-surface-base-text); }
+    .sort-btn svg { width: 10px; height: 10px; }
 
     .drivers {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
     }
     .driver {
-      background: var(--cg-color-surface-base-background, #09090b);
-      border: 1px solid var(--cg-gray-800, #27272a);
-      border-radius: var(--cg-border-radius-100, 8px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      transition: background var(--cg-motion-duration-fast, 150ms);
-    }
-    .driver:hover {
-      background: rgba(255, 255, 255, 0.02);
+      padding: var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-50);
+      background: var(--cg-overlay-dark-subtle);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
     .driver-top {
       display: flex;
       justify-content: space-between;
-      margin-bottom: var(--cg-spacing-6, 6px);
+      margin-bottom: var(--cg-spacing-8);
     }
-    .driver-name { font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-400, #a1a1aa); }
+    .driver-name {
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      font-weight: var(--cg-font-weight-medium);
+    }
     .driver-value {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
     }
-    .driver-value.positive { color: var(--cg-green-400, #4ade80); }
-    .driver-value.negative { color: var(--cg-red-400, #f87171); }
+    .driver-value.positive { color: var(--cg-color-status-success-text-default); }
+    .driver-value.negative { color: var(--cg-color-status-error-text-default); }
 
     .driver-bar {
-      height: var(--cg-spacing-4, 4px);
-      border-radius: var(--cg-border-radius-50, 4px);
-      background: var(--cg-gray-800, #27272a);
+      height: var(--cg-spacing-4);
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-surface-container-background);
       overflow: hidden;
     }
     .driver-fill {
       height: 100%;
-      border-radius: var(--cg-border-radius-50, 4px);
-      transition: width var(--cg-motion-duration-slow, 600ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+      border-radius: var(--cg-border-radius-full);
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
-    .driver-fill.positive { background: var(--cg-green-400, #4ade80); }
-    .driver-fill.negative { background: var(--cg-red-400, #f87171); }
+    .driver-fill.positive { background: var(--cg-color-status-success-text-default); }
+    .driver-fill.negative { background: var(--cg-color-status-error-text-default); }
 
-    /* ── Sources tab ── */
+    /* ── Sources ── */
     .source-item {
-      padding: var(--cg-spacing-8, 8px) 0;
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+      padding: var(--cg-spacing-12) 0;
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
     .source-item:last-child { border-bottom: none; }
     .source-title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      color: var(--cg-brand-ai-accent, #dfff61);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-base-text);
       text-decoration: none;
     }
     .source-title:hover { text-decoration: underline; }
     .source-excerpt {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
-      margin-top: var(--cg-spacing-4, 4px);
-      line-height: var(--cg-line-height-normal, 1.5);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-top: var(--cg-spacing-4);
+      line-height: var(--cg-line-height-normal);
     }
 
-    /* ── Data tab ── */
+    /* ── Data table ── */
     .data-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: var(--cg-font-size-xs, 12px);
+      font-size: var(--cg-font-size-xs);
     }
     .data-table th {
       text-align: left;
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
-      color: var(--cg-gray-400, #a1a1aa);
-      font-weight: 600;
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+      padding: var(--cg-spacing-8);
+      color: var(--cg-color-input-text-placeholder);
+      font-weight: var(--cg-font-weight-medium);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
     .data-table td {
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+      padding: var(--cg-spacing-8);
+      color: var(--cg-color-surface-base-text);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
 
     /* ── Streaming ── */
-    .streaming-indicator {
-      padding: var(--cg-spacing-12, 12px) 0;
-    }
+    .streaming-indicator { padding: var(--cg-spacing-12) 0; }
 
     .empty {
       text-align: center;
-      padding: var(--cg-spacing-24, 24px);
-      color: var(--cg-gray-500, #71717a);
-      font-size: var(--cg-font-size-sm, 14px);
+      padding: var(--cg-spacing-24);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
     }
-
-    :focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
-    }
-
-    /* ── Rounded variants ── */
-    :host([rounded="none"]) .panel { border-radius: 0; }
-    :host([rounded="sm"]) .panel { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .panel { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .panel { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .panel { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
 
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
-  @property({ type: String }) override title: string = 'AI Analysis';
-  @property({ type: String }) explanation: string = '';
+  @property() override title = 'AI Analysis';
+  @property() explanation = '';
   @property({ type: Array }) bullets: string[] = [];
   @property({ type: Array }) drivers: Driver[] = [];
-  @property({ type: Number }) confidence: number = 0;
-  @property({ type: Boolean }) collapsible: boolean = false;
+  @property({ type: Number }) confidence = 0;
+  @property({ type: Boolean }) collapsible = false;
   @property({ type: Array }) sources: Source[] = [];
   @property({ type: Array }) data: Record<string, unknown>[] = [];
-  @property({ type: Boolean }) streaming: boolean = false;
+  @property({ type: Boolean }) streaming = false;
 
-  @state() private _collapsed: boolean = false;
+  @state() private _collapsed = false;
   @state() private _activeTab: 'summary' | 'data' | 'sources' = 'summary';
-  @state() private _sortAsc: boolean = false;
+  @state() private _sortAsc = false;
 
   private get _sortedDrivers(): Driver[] {
-    const sorted = [...this.drivers].sort((a, b) =>
-      this._sortAsc ? a.impact - b.impact : b.impact - a.impact
-    );
-    return sorted;
+    return [...this.drivers].sort((a, b) => this._sortAsc ? a.impact - b.impact : b.impact - a.impact);
   }
 
-  private _toggleCollapse() {
-    if (!this.collapsible) return;
-    this._collapsed = !this._collapsed;
-  }
+  private _toggleCollapse() { if (this.collapsible) this._collapsed = !this._collapsed; }
 
   private _handleExport(format: string) {
-    this.dispatchEvent(new CustomEvent('ai-result-export', {
-      bubbles: true, composed: true,
-      detail: { format, title: this.title, explanation: this.explanation, bullets: this.bullets, drivers: this.drivers },
-    }));
+    this.dispatchEvent(new CustomEvent('ai-result-export', { bubbles: true, composed: true, detail: { format, title: this.title, explanation: this.explanation, bullets: this.bullets, drivers: this.drivers } }));
   }
 
   private _handleCopy() {
-    const text = `${this.title}\n\n${this.explanation}\n\n${this.bullets.map(b => `→ ${b}`).join('\n')}`;
+    const text = `${this.title}\n\n${this.explanation}\n\n${this.bullets.map(b => `• ${b}`).join('\n')}`;
     navigator.clipboard?.writeText(text);
     this.dispatchEvent(new CustomEvent('ai-result-copy', { bubbles: true, composed: true, detail: { content: text } }));
   }
@@ -341,7 +292,7 @@ export class AiResultPanel extends LitElement {
 
       ${this.bullets.length > 0 ? html`
         <ul class="bullets" role="list">
-          ${this.bullets.map(b => html`<li class="bullet">${b}</li>`)}
+          ${this.bullets.map(b => html`<li class="bullet"><span class="bullet-dot"></span>${b}</li>`)}
         </ul>
       ` : nothing}
 
@@ -349,7 +300,10 @@ export class AiResultPanel extends LitElement {
         <div class="drivers-header">
           <span class="drivers-label">Impact Drivers</span>
           <button class="sort-btn" @click=${() => { this._sortAsc = !this._sortAsc; }}>
-            Sort ${this._sortAsc ? html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5m-7 7l7-7 7 7"/></svg>` : html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m7-7l-7 7-7-7"/></svg>`}
+            Sort
+            ${this._sortAsc
+              ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 19V5m-7 7l7-7 7 7"/></svg>`
+              : html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14m7-7l-7 7-7-7"/></svg>`}
           </button>
         </div>
         <div class="drivers">
@@ -357,13 +311,10 @@ export class AiResultPanel extends LitElement {
             <div class="driver">
               <div class="driver-top">
                 <span class="driver-name">${d.factor}</span>
-                <span class="driver-value ${d.impact >= 0 ? 'positive' : 'negative'}">
-                  ${d.impact >= 0 ? '+' : ''}${d.impact}%
-                </span>
+                <span class="driver-value ${d.impact >= 0 ? 'positive' : 'negative'}">${d.impact >= 0 ? '+' : ''}${d.impact}%</span>
               </div>
               <div class="driver-bar">
-                <div class="driver-fill ${d.impact >= 0 ? 'positive' : 'negative'}"
-                  style="width: ${Math.min(Math.abs(d.impact), 100)}%"></div>
+                <div class="driver-fill ${d.impact >= 0 ? 'positive' : 'negative'}" style="width:${Math.min(Math.abs(d.impact), 100)}%"></div>
               </div>
             </div>
           `)}
@@ -373,35 +324,29 @@ export class AiResultPanel extends LitElement {
   }
 
   private _renderData() {
-    if (this.data.length === 0 || !this.data[0]) return html`<div class="empty">No data available</div>`;
+    if (!this.data.length || !this.data[0]) return html`<div class="empty">No data available</div>`;
     const keys = Object.keys(this.data[0]);
     return html`
       <table class="data-table">
         <thead><tr>${keys.map(k => html`<th>${k}</th>`)}</tr></thead>
-        <tbody>${this.data.map(row => html`
-          <tr>${keys.map(k => html`<td>${String(row[k] ?? '')}</td>`)}</tr>
-        `)}</tbody>
+        <tbody>${this.data.map(row => html`<tr>${keys.map(k => html`<td>${String(row[k] ?? '')}</td>`)}</tr>`)}</tbody>
       </table>
     `;
   }
 
   private _renderSources() {
-    if (this.sources.length === 0) return html`<div class="empty">No sources available</div>`;
-    return html`
-      ${this.sources.map(s => html`
-        <div class="source-item">
-          ${s.url
-            ? html`<a class="source-title" href="${s.url}" target="_blank" rel="noopener">${s.title}</a>`
-            : html`<span class="source-title">${s.title}</span>`}
-          ${s.excerpt ? html`<div class="source-excerpt">${s.excerpt}</div>` : nothing}
-        </div>
-      `)}
-    `;
+    if (!this.sources.length) return html`<div class="empty">No sources available</div>`;
+    return html`${this.sources.map(s => html`
+      <div class="source-item">
+        ${s.url ? html`<a class="source-title" href="${s.url}" target="_blank" rel="noopener">${s.title}</a>` : html`<span class="source-title">${s.title}</span>`}
+        ${s.excerpt ? html`<div class="source-excerpt">${s.excerpt}</div>` : nothing}
+      </div>
+    `)}`;
   }
 
   override render() {
     if (!this.explanation && !this.streaming) {
-      return html`<div class="panel"><div class="empty">No results yet. Run an AI analysis to see results here.</div></div>`;
+      return html`<div class="panel"><div class="empty">No results yet.</div></div>`;
     }
 
     const hasTabs = this.data.length > 0 || this.sources.length > 0;
@@ -410,9 +355,9 @@ export class AiResultPanel extends LitElement {
       <div class="panel ${this._collapsed ? 'collapsed' : ''}" role="region" aria-label="${this.title}">
         <div class="header" @click=${this._toggleCollapse}>
           <div class="header-left">
-            ${this.collapsible ? html`<span class="collapse-icon" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>` : nothing}
+            ${this.collapsible ? html`<span class="collapse-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></span>` : nothing}
             <span class="title">${this.title}</span>
-            ${this.confidence > 0 ? html`<ai-badge score="${this.confidence}" size="sm"></ai-badge>` : nothing}
+            ${this.confidence > 0 ? html`<span class="confidence">${this.confidence}%</span>` : nothing}
           </div>
           <div class="header-actions" @click=${(e: Event) => e.stopPropagation()}>
             <button class="header-btn" @click=${this._handleCopy}>Copy</button>
@@ -421,11 +366,7 @@ export class AiResultPanel extends LitElement {
         </div>
 
         <div class="body">
-          ${this.streaming ? html`
-            <div class="streaming-indicator">
-              <ai-thinking text="Analyzing" shimmer delay="0"></ai-thinking>
-            </div>
-          ` : nothing}
+          ${this.streaming ? html`<div class="streaming-indicator"><ai-thinking text="Analyzing" shimmer delay="0"></ai-thinking></div>` : nothing}
 
           ${hasTabs ? html`
             <div class="tabs">

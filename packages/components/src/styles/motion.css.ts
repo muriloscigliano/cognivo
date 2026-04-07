@@ -2,10 +2,10 @@ import { css } from 'lit';
 
 /**
  * Standard color/opacity transition for :host elements.
- * Maps to --cg-motion-duration-fast (80ms) + --cg-motion-easing-color.
+ * Maps to --cg-motion-duration-fast (150ms) + --cg-motion-easing-color.
  */
 export const hostTransition = css`
-  transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+  transition: color var(--cg-motion-duration-fast, 150ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
 `;
 
 /**
@@ -14,10 +14,10 @@ export const hostTransition = css`
  */
 export const interactiveTransition = css`
   transition:
-    transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
-    background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-    border-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-    box-shadow var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+    transform var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
+    background-color var(--cg-motion-duration-fast, 150ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+    border-color var(--cg-motion-duration-fast, 150ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
+    box-shadow var(--cg-motion-duration-fast, 150ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
 `;
 
 /**
@@ -27,12 +27,13 @@ export const pressScale = css`
   transform: scale(var(--cg-interaction-press-scale, 0.97));
 `;
 
-/** Reduced motion media query — zeroes out transitions and animations. */
+/** Reduced motion media query — disables transitions and animations for a11y. */
 export const reducedMotion = css`
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
-      transition-duration: 0s !important;
-      animation-duration: 0s !important;
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
     }
   }
 `;

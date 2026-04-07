@@ -19,19 +19,19 @@ import { customElement, property, state } from 'lit/decorators.js';
  * @slot - Default slot for the trigger element
  * @slot content - Rich HTML tooltip content (alternative to `content` property)
  *
- * @cssprop [--cg-color-surface-overlay-background=#27272a] - Tooltip background
- * @cssprop [--cg-font-size-xs=12px] - Tooltip font size
- * @cssprop [--cg-border-radius-100=8px] - Tooltip border radius
- * @cssprop [--cg-motion-duration-slow=150ms] - Fade+scale animation duration
+ * @cssprop --cg-color-tooltip-background - Tooltip background
+ * @cssprop --cg-font-size-xs - Tooltip font size (12px)
+ * @cssprop --cg-component-tooltip-radius - Tooltip border radius
+ * @cssprop --cg-motion-duration-slow - Fade+scale animation duration (250ms)
  */
 @customElement('cg-tooltip')
 export class CgTooltip extends LitElement {
   static override styles = css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      transition: color var(--cg-transition-duration-fast) var(--cg-motion-easing-color);
       display: inline-block;
       position: relative;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+      font-family: var(--cg-font-family-primary);
     }
 
     .trigger-wrap {
@@ -41,27 +41,24 @@ export class CgTooltip extends LitElement {
     .tooltip {
       position: absolute;
       z-index: 10000;
-      padding: 6px 10px;
-      background: var(--cg-color-surface-overlay-background, #27272a);
-      color: var(--cg-color-text-primary, #fafafa);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: var(--cg-font-weight-medium, 500);
-      line-height: var(--cg-line-height-snug, 1.375);
-      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-6) var(--cg-spacing-12);
+      background: var(--cg-color-tooltip-background);
+      color: var(--cg-color-tooltip-text);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      line-height: var(--cg-line-height-snug);
+      border-radius: var(--cg-component-tooltip-radius);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-tooltip-border);
       white-space: nowrap;
       max-width: 280px;
       pointer-events: none;
-      box-shadow:
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
-        0 4px 6px -1px rgba(0, 0, 0, 0.3),
-        0 2px 4px -2px rgba(0, 0, 0, 0.2);
 
-      /* Animation — fade+scale */
+      /* Animation — fade+scale with pop */
       opacity: 0;
       transform: scale(0.92);
       transition:
-        opacity var(--cg-motion-duration-slow, 150ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
-        transform var(--cg-motion-duration-slow, 150ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+        opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        transform var(--cg-motion-duration-slow) cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     /* Rich content slot may contain block elements */
@@ -80,12 +77,12 @@ export class CgTooltip extends LitElement {
       to { opacity: 0; transform: scale(0.92); }
     }
     .tooltip.closing {
-      animation: tooltip-exit 100ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+      animation: tooltip-exit var(--cg-transition-duration-fast) var(--cg-motion-easing-exit) forwards;
     }
 
     @media (prefers-reduced-motion: reduce) {
       .tooltip {
-        transition: opacity 80ms ease;
+        transition: opacity var(--cg-transition-duration-fast) ease;
         transform: scale(1) !important;
       }
     }
@@ -93,9 +90,9 @@ export class CgTooltip extends LitElement {
     /* ── Arrow ── */
     .arrow {
       position: absolute;
-      width: 8px;
-      height: 8px;
-      background: var(--cg-color-surface-overlay-background, #27272a);
+      width: var(--cg-spacing-8);
+      height: var(--cg-spacing-8);
+      background: var(--cg-color-tooltip-arrow);
       transform: rotate(45deg);
     }
 
@@ -104,7 +101,7 @@ export class CgTooltip extends LitElement {
       bottom: 100%;
       left: 50%;
       transform-origin: bottom center;
-      margin-bottom: 8px;
+      margin-bottom: var(--cg-spacing-8);
     }
     :host([_effective-position="top"][_visible]) .tooltip {
       transform: scale(1) translateX(-50%);
@@ -113,9 +110,9 @@ export class CgTooltip extends LitElement {
       transform: scale(0.92) translateX(-50%);
     }
     :host([_effective-position="top"]) .arrow {
-      bottom: -4px;
+      bottom: calc(var(--cg-spacing-4) * -1);
       left: 50%;
-      margin-left: -4px;
+      margin-left: calc(var(--cg-spacing-4) * -1);
     }
 
     /* ── Bottom position ── */
@@ -123,7 +120,7 @@ export class CgTooltip extends LitElement {
       top: 100%;
       left: 50%;
       transform-origin: top center;
-      margin-top: 8px;
+      margin-top: var(--cg-spacing-8);
     }
     :host([_effective-position="bottom"][_visible]) .tooltip {
       transform: scale(1) translateX(-50%);
@@ -132,9 +129,9 @@ export class CgTooltip extends LitElement {
       transform: scale(0.92) translateX(-50%);
     }
     :host([_effective-position="bottom"]) .arrow {
-      top: -4px;
+      top: calc(var(--cg-spacing-4) * -1);
       left: 50%;
-      margin-left: -4px;
+      margin-left: calc(var(--cg-spacing-4) * -1);
     }
 
     /* ── Left position ── */
@@ -142,7 +139,7 @@ export class CgTooltip extends LitElement {
       right: 100%;
       top: 50%;
       transform-origin: right center;
-      margin-right: 8px;
+      margin-right: var(--cg-spacing-8);
     }
     :host([_effective-position="left"][_visible]) .tooltip {
       transform: scale(1) translateY(-50%);
@@ -151,9 +148,9 @@ export class CgTooltip extends LitElement {
       transform: scale(0.92) translateY(-50%);
     }
     :host([_effective-position="left"]) .arrow {
-      right: -4px;
+      right: calc(var(--cg-spacing-4) * -1);
       top: 50%;
-      margin-top: -4px;
+      margin-top: calc(var(--cg-spacing-4) * -1);
     }
 
     /* ── Right position ── */
@@ -161,7 +158,7 @@ export class CgTooltip extends LitElement {
       left: 100%;
       top: 50%;
       transform-origin: left center;
-      margin-left: 8px;
+      margin-left: var(--cg-spacing-8);
     }
     :host([_effective-position="right"][_visible]) .tooltip {
       transform: scale(1) translateY(-50%);
@@ -170,21 +167,42 @@ export class CgTooltip extends LitElement {
       transform: scale(0.92) translateY(-50%);
     }
     :host([_effective-position="right"]) .arrow {
-      left: -4px;
+      left: calc(var(--cg-spacing-4) * -1);
       top: 50%;
-      margin-top: -4px;
+      margin-top: calc(var(--cg-spacing-4) * -1);
+    }
+
+    /* ── Variant: error ── */
+    :host([variant="error"]) .tooltip {
+      background: var(--cg-color-status-error-background-default);
+      border: var(--cg-border-width-50) solid var(--cg-color-status-error-border-default);
+      color: var(--cg-color-status-error-text-default);
+    }
+    :host([variant="error"]) .arrow {
+      background: var(--cg-color-status-error-background-default);
+    }
+
+    /* ── Variant: success ── */
+    :host([variant="success"]) .tooltip {
+      background: var(--cg-color-status-success-background-default);
+      border: var(--cg-border-width-50) solid var(--cg-color-status-success-border-default);
+      color: var(--cg-color-status-success-text-default);
+    }
+    :host([variant="success"]) .arrow {
+      background: var(--cg-color-status-success-background-default);
     }
 
     /* Rounded variants */
     :host([rounded="none"]) .tooltip { border-radius: 0; }
-    :host([rounded="sm"]) .tooltip { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .tooltip { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .tooltip { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .tooltip { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .tooltip { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .tooltip { border-radius: var(--cg-component-tooltip-radius); }
+    :host([rounded="lg"]) .tooltip { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) .tooltip { border-radius: var(--cg-border-radius-full); }
   `;
 
   @property({ type: String }) content = '';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
+  @property({ type: String, reflect: true }) variant: 'default' | 'error' | 'success' = 'default';
   @property({ type: String, reflect: true }) position: 'top' | 'bottom' | 'left' | 'right' = 'top';
   @property({ type: Number }) delay = 300;
   @property({ type: Boolean }) disabled = false;
@@ -201,6 +219,7 @@ export class CgTooltip extends LitElement {
   private _showTimeout: ReturnType<typeof setTimeout> | null = null;
   private _hideTimeout: ReturnType<typeof setTimeout> | null = null;
   private _tooltipId = `tooltip-${Math.random().toString(36).slice(2, 9)}`;
+  private _escapeHandler = this._handleEscape.bind(this);
 
   /** Check if the tooltip has rich slot content (named "content" slot). */
   private get _hasContent(): boolean {
@@ -246,11 +265,18 @@ export class CgTooltip extends LitElement {
     this._effectivePosition = this.position;
     this._showTimeout = setTimeout(() => {
       this._visible = true;
+      document.addEventListener('keydown', this._escapeHandler);
       // Adjust position after layout is calculated
       requestAnimationFrame(() => {
         this._adjustPosition();
       });
     }, this.delay);
+  }
+
+  private _handleEscape(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      this._hide();
+    }
   }
 
   private _hide() {
@@ -259,6 +285,7 @@ export class CgTooltip extends LitElement {
       this._showTimeout = null;
     }
     if (!this._visible) return;
+    document.removeEventListener('keydown', this._escapeHandler);
     this._closing = true;
     this._hideTimeout = setTimeout(() => {
       this._closing = false;
@@ -270,6 +297,7 @@ export class CgTooltip extends LitElement {
 
   override disconnectedCallback() {
     super.disconnectedCallback();
+    document.removeEventListener('keydown', this._escapeHandler);
     if (this._showTimeout) {
       clearTimeout(this._showTimeout);
     }

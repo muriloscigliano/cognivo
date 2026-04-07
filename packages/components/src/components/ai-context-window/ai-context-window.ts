@@ -1,29 +1,14 @@
 /**
  * @element ai-context-window
- * Segmented token budget bar showing context window usage with color-coded segments and cache indicator.
+ * Token budget bar showing context window usage with color segments and cache indicator.
  *
- * @example
- * ```html
- * <ai-context-window
- *   total="128000"
- *   .segments=${[
- *     {label:'System prompt', tokens:2400},
- *     {label:'Conversation', tokens:45000, color:'#60a5fa'},
- *     {label:'Tools', tokens:8000}
- *   ]}
- *   cached="12000"
- * ></ai-context-window>
- * ```
- *
- * @fires {CustomEvent<{label: string, tokens: number}>} ai-context-segment-click - Segment clicked
- *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Cache indicator icon color
+ * @fires {CustomEvent<{label: string, tokens: number}>} ai-context-segment-click
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
-interface ContextSegment {
+export interface ContextSegment {
   label: string;
   tokens: number;
   color?: string;
@@ -31,109 +16,118 @@ interface ContextSegment {
 
 @customElement('ai-context-window')
 export class AiContextWindow extends LitElement {
-  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
-    :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-    }
-
+  static override styles = [hostBlock, reducedMotion, css`
     .container {
-      background: var(--cg-color-surface-container-background, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-100, 8px);
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-24);
     }
 
     .header {
       display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: var(--cg-spacing-8, 8px);
+      margin-bottom: var(--cg-spacing-12);
     }
     .title {
-      font-size: 11px; font-weight: 700; color: var(--cg-gray-400, #a1a1aa);
-      text-transform: uppercase; letter-spacing: 0.05em;
+      font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-container-outlined);
+      text-transform: uppercase; letter-spacing: var(--cg-letter-spacing-wide);
     }
     .total {
-      font-size: var(--cg-font-size-xs, 12px); font-weight: 600;
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
+      font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-semibold);
+      font-family: var(--cg-font-family-mono);
+      color: var(--cg-color-surface-container-outlined);
     }
-    .total.ok { color: var(--cg-gray-400, #a1a1aa); }
-    .total.warning { color: var(--cg-yellow-400, #fbbf24); }
-    .total.danger { color: var(--cg-red-400, #f87171); }
+    .total.warning { color: var(--cg-color-status-warning-text-default); }
+    .total.danger { color: var(--cg-color-status-error-text-default); }
 
-    /* Segmented bar */
+    /* ── Segmented bar ── */
     .bar {
-      height: 12px;
-      border-radius: var(--cg-border-radius-100, 8px);
-      background: var(--cg-gray-800, #27272a);
+      height: var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-surface-cards-border);
       display: flex;
       overflow: hidden;
-      margin-bottom: var(--cg-spacing-8, 8px);
+      margin-bottom: var(--cg-spacing-16);
     }
     .segment {
       height: 100%;
-      transition: width 300ms ease;
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      cursor: pointer;
       position: relative;
     }
-    .segment:first-child { border-radius: 6px 0 0 6px; }
-    .segment:last-child { border-radius: 0 6px 6px 0; }
+    .segment:first-child { border-radius: var(--cg-border-radius-full) 0 0 var(--cg-border-radius-full); }
+    .segment:last-child { border-radius: 0 var(--cg-border-radius-full) var(--cg-border-radius-full) 0; }
+    .segment:hover { opacity: 0.8; }
 
-    /* Tooltip on hover */
+    /* Tooltip */
     .segment:hover::after {
       content: attr(data-tooltip);
       position: absolute;
-      bottom: calc(100% + 6px);
+      bottom: calc(100% + var(--cg-spacing-6));
       left: 50%;
       transform: translateX(-50%);
-      background: var(--cg-gray-800, #27272a);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      padding: 3px var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-50, 4px);
-      font-size: 10px;
+      background: var(--cg-color-tooltip-background);
+      color: var(--cg-color-tooltip-text);
+      padding: var(--cg-spacing-4) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-100);
+      font-size: var(--cg-font-size-xs);
       white-space: nowrap;
       z-index: 10;
       pointer-events: none;
     }
 
-    /* Legend */
+    /* ── Legend ── */
     .legend {
-      display: flex; gap: var(--cg-spacing-12, 12px); flex-wrap: wrap;
+      display: flex; gap: var(--cg-spacing-20); flex-wrap: wrap;
     }
     .legend-item {
-      display: flex; align-items: center; gap: 5px;
-      font-size: 11px; color: var(--cg-gray-400, #a1a1aa);
-      cursor: pointer;
+      display: flex; align-items: center; gap: var(--cg-spacing-4);
+      font-size: var(--cg-font-size-xs); color: var(--cg-color-surface-container-outlined);
     }
     .legend-dot {
-      width: 8px; height: 8px; border-radius: 3px; flex-shrink: 0;
+      width: var(--cg-spacing-8); height: var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-full); flex-shrink: 0;
     }
     .legend-tokens {
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-weight: 600; color: var(--cg-color-surface-base-text, #fafafa);
+      font-family: var(--cg-font-family-mono);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
     }
 
-    /* Cache indicator */
+    /* ── Cache ── */
     .cache-row {
-      display: flex; align-items: center; gap: var(--cg-spacing-6, 6px);
-      margin-top: var(--cg-spacing-8, 8px); padding-top: 8px;
-      border-top: 1px solid var(--cg-gray-800, #27272a);
-      font-size: 11px; color: var(--cg-gray-500, #71717a);
+      display: flex; align-items: center; gap: var(--cg-spacing-8);
+      margin-top: var(--cg-spacing-12); padding-top: var(--cg-spacing-12);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
+      font-size: var(--cg-font-size-xs); color: var(--cg-color-surface-container-outlined);
     }
-    .cache-icon { color: var(--cg-brand-ai-accent, #dfff61); }
+    .cache-icon {
+      color: var(--cg-color-action-primary-background-default);
+      width: var(--cg-spacing-12); height: var(--cg-spacing-12);
+      display: flex;
     }
-  
+    .cache-icon svg { width: 100%; height: 100%; }
 
-    :focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
-    }
+    /* ── Rounded ── */
+    :host([rounded="none"]) .container { border-radius: 0; }
+    :host([rounded="sm"]) .container { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .container { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .container { border-radius: var(--cg-border-radius-150); }
   `];
-  @property({ type: Number }) total: number = 128000;
-  @property({ type: Array }) segments: ContextSegment[] = [];
-  @property({ type: Number }) cached: number = 0;
 
-  private _defaultColors = ['#a78bfa', '#60a5fa', '#14b8a6', '#fbbf24', '#f87171'];
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
+  @property({ type: Number }) total = 128000;
+  @property({ type: Array }) segments: ContextSegment[] = [];
+  @property({ type: Number }) cached = 0;
+
+  private _defaultColors = [
+    'var(--cg-color-action-primary-background-default)',
+    'var(--cg-color-status-info-text-default)',
+    'var(--cg-color-status-warning-text-default)',
+    'var(--cg-color-status-success-text-default)',
+    'var(--cg-color-status-error-text-default)',
+  ];
 
   private get _usedTokens(): number {
     return this.segments.reduce((sum, s) => sum + s.tokens, 0);
@@ -146,27 +140,24 @@ export class AiContextWindow extends LitElement {
   private get _statusClass(): string {
     if (this._usagePercent >= 95) return 'danger';
     if (this._usagePercent >= 80) return 'warning';
-    return 'ok';
+    return '';
   }
 
-  private _handleSegmentClick(segment: ContextSegment) {
-    this.dispatchEvent(new CustomEvent('ai-context-segment-click', {
-      bubbles: true, composed: true,
-      detail: { label: segment.label, tokens: segment.tokens },
-    }));
+  private _formatTokens(n: number): string {
+    if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+    return String(n);
   }
 
   override render() {
     if (this.total <= 0) return nothing;
-
     const remaining = Math.max(0, this.total - this._usedTokens);
 
     return html`
-      <div class="container" role="figure" aria-label="Context window: ${this._usedTokens.toLocaleString()} of ${this.total.toLocaleString()} tokens used">
+      <div class="container" role="figure" aria-label="Context window: ${this._formatTokens(this._usedTokens)} of ${this._formatTokens(this.total)} tokens">
         <div class="header">
           <span class="title">Context Window</span>
           <span class="total ${this._statusClass}">
-            ${this._usedTokens.toLocaleString()} / ${this.total.toLocaleString()}
+            ${this._formatTokens(this._usedTokens)} / ${this._formatTokens(this.total)}
             (${Math.round(this._usagePercent)}%)
           </span>
         </div>
@@ -178,8 +169,8 @@ export class AiContextWindow extends LitElement {
             return html`
               <div class="segment"
                 style="width: ${pct}%; background: ${color};"
-                data-tooltip="${seg.label}: ${seg.tokens.toLocaleString()} tokens"
-                @click=${() => this._handleSegmentClick(seg)}></div>
+                data-tooltip="${seg.label}: ${this._formatTokens(seg.tokens)}"
+                @click=${() => this.dispatchEvent(new CustomEvent('ai-context-segment-click', { bubbles: true, composed: true, detail: { label: seg.label, tokens: seg.tokens } }))}></div>
             `;
           })}
         </div>
@@ -191,21 +182,21 @@ export class AiContextWindow extends LitElement {
               <div class="legend-item">
                 <div class="legend-dot" style="background: ${color};"></div>
                 <span>${seg.label}</span>
-                <span class="legend-tokens">${seg.tokens.toLocaleString()}</span>
+                <span class="legend-tokens">${this._formatTokens(seg.tokens)}</span>
               </div>
             `;
           })}
           <div class="legend-item">
-            <div class="legend-dot" style="background: var(--cg-gray-700, #3f3f46);"></div>
-            <span>Remaining</span>
-            <span class="legend-tokens">${remaining.toLocaleString()}</span>
+            <div class="legend-dot" style="background: var(--cg-color-surface-cards-border);"></div>
+            <span>Free</span>
+            <span class="legend-tokens">${this._formatTokens(remaining)}</span>
           </div>
         </div>
 
         ${this.cached > 0 ? html`
           <div class="cache-row">
-            <span class="cache-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
-            <span>${this.cached.toLocaleString()} tokens cached (prompt caching)</span>
+            <span class="cache-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
+            <span>${this._formatTokens(this.cached)} cached</span>
           </div>
         ` : nothing}
       </div>

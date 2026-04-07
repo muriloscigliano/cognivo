@@ -20,8 +20,8 @@ export class CgImageGallery extends LitElement {
   static override styles = [hostBlock, reducedMotion, shimmerKeyframes, css`
     .grid {
       display: grid;
-      gap: var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-200, 24px);
+      gap: var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-200);
       overflow: hidden;
     }
 
@@ -36,19 +36,23 @@ export class CgImageGallery extends LitElement {
     .img-wrapper {
       position: relative;
       overflow: hidden;
-      border-radius: 4px;
-      background: var(--cg-color-surface-container-background, #18181b);
+      border-radius: var(--cg-border-radius-50);
+      background: var(--cg-color-surface-container-background);
       cursor: pointer;
     }
     .img-wrapper::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0);
-      transition: background var(--cg-motion-duration-normal, 150ms) ease;
+      background: transparent;
+      transition: background var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+    }
+    .img-wrapper:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--cg-color-focus-ring-offset), inset 0 0 0 4px var(--cg-color-focus-ring);
     }
     .img-wrapper:hover::after {
-      background: var(--cg-overlay-dark-subtle, rgba(0, 0, 0, 0.12));
+      background: var(--cg-overlay-dark-subtle);
     }
 
     img {
@@ -56,9 +60,10 @@ export class CgImageGallery extends LitElement {
       aspect-ratio: 1;
       object-fit: cover;
       display: block;
-      transition: transform var(--cg-motion-duration-slow, 250ms) ease;
+      transition: transform var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
     .img-wrapper:hover img { transform: scale(1.03); }
+    .img-wrapper:active img { transform: scale(0.98); }
 
     .grid.count-1 img { aspect-ratio: 16 / 9; }
     .grid.count-3 .img-wrapper:first-child img { aspect-ratio: auto; height: 100%; }
@@ -73,10 +78,10 @@ export class CgImageGallery extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--cg-overlay-dark-strong, rgba(0, 0, 0, 0.6));
-      color: var(--cg-gray-white, #ffffff);
-      font-size: 1.25rem;
-      font-weight: var(--cg-font-weight-bold, 700);
+      background: var(--cg-overlay-dark-strong);
+      color: var(--cg-gray-white);
+      font-size: var(--cg-font-size-lg);
+      font-weight: var(--cg-font-weight-bold);
       z-index: 1;
       pointer-events: none;
     }
@@ -84,17 +89,17 @@ export class CgImageGallery extends LitElement {
     /* Skeleton */
     .skeleton {
       position: absolute; inset: 0;
-      background: linear-gradient(90deg, var(--cg-gray-100, #f4f4f5) 25%, var(--cg-gray-200, #e4e4e7) 50%, var(--cg-gray-100, #f4f4f5) 75%);
+      background: linear-gradient(90deg, var(--cg-color-surface-container-border) 25%, var(--cg-color-surface-container-background) 50%, var(--cg-color-surface-container-border) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
     }
 
     /* Rounded variants */
     :host([rounded="none"]) .grid { border-radius: 0; }
-    :host([rounded="sm"]) .grid { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .grid { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .grid { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .grid { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .grid { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .grid { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .grid { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) .grid { border-radius: var(--cg-border-radius-full); }
   `];
 
   @property({ type: Array }) images: GalleryImage[] = [];
@@ -105,6 +110,13 @@ export class CgImageGallery extends LitElement {
 
   private _handleImageLoad(idx: number) {
     this._loadedSet = new Set([...this._loadedSet, idx]);
+  }
+
+  private _handleImageKeydown(e: KeyboardEvent, idx: number) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      this._handleClick(idx);
+    }
   }
 
   private _handleClick(idx: number) {
@@ -127,7 +139,14 @@ export class CgImageGallery extends LitElement {
           const isLast = i === visible.length - 1 && overflow > 0;
           const loaded = this._loadedSet.has(i);
           return html`
-            <div class="img-wrapper ${isLast ? 'overflow-wrapper' : ''}" @click=${() => this._handleClick(i)}>
+            <div
+              class="img-wrapper ${isLast ? 'overflow-wrapper' : ''}"
+              tabindex="0"
+              role="button"
+              aria-label="View image ${i + 1}${img.alt ? ': ' + img.alt : ''}"
+              @click=${() => this._handleClick(i)}
+              @keydown=${(e: KeyboardEvent) => this._handleImageKeydown(e, i)}
+            >
               ${!loaded ? html`<div class="skeleton"></div>` : nothing}
               ${isLast && overflow > 0 ? html`<div class="overflow-badge">+${overflow}</div>` : nothing}
               <img

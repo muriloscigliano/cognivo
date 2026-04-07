@@ -44,40 +44,40 @@ interface ActionRef {
 export class AiRichMessage extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     .message {
       display: flex;
-      gap: var(--cg-spacing-12, 12px);
+      gap: var(--cg-spacing-12);
       max-width: 100%;
     }
     .message.user { flex-direction: row-reverse; }
 
     /* ── Avatar ── */
     .avatar {
-      width: 32px;
-      height: 32px;
+      width: var(--cg-spacing-32);
+      height: var(--cg-spacing-32);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 700;
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-bold);
       flex-shrink: 0;
       overflow: hidden;
     }
     .avatar.assistant {
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: #09090b;
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-base-background);
     }
     .avatar.user {
-      background: var(--cg-gray-700, #3f3f46);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      background: var(--cg-color-surface-cards-border);
+      color: var(--cg-color-surface-base-text);
     }
     .avatar.system {
-      background: var(--cg-gray-800, #27272a);
-      color: var(--cg-gray-400, #a1a1aa);
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-input-text-placeholder);
     }
     .avatar img {
       width: 100%;
@@ -94,28 +94,26 @@ export class AiRichMessage extends LitElement {
     .message.user .bubble { max-width: 70%; }
 
     .bubble-body {
-      border-radius: var(--cg-border-radius-150, 12px);
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      font-size: var(--cg-font-size-sm, 14px);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      font-size: var(--cg-font-size-sm);
       line-height: 1.6;
-      color: var(--cg-color-surface-base-text, #fafafa);
-      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      color: var(--cg-color-surface-base-text);
     }
     .message.assistant .bubble-body {
-      background: var(--cg-color-surface-cards-background, #18181b);
-      border: 1px solid var(--cg-color-surface-cards-border, #27272a);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
     .message.user .bubble-body {
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: #09090b;
-      border-radius: 12px 12px 4px 12px;
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-base-background);
+      border-radius: var(--cg-border-radius-150) var(--cg-border-radius-150) var(--cg-border-radius-50) var(--cg-border-radius-150);
     }
     .message.system .bubble-body {
-      background: var(--cg-gray-900, #09090b);
-      border: 1px dashed var(--cg-gray-700, #3f3f46);
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-gray-400, #a1a1aa);
+      background: var(--cg-color-surface-base-background);
+      border: 1px dashed var(--cg-color-surface-cards-border);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-input-text-placeholder);
       font-style: italic;
     }
 
@@ -124,61 +122,61 @@ export class AiRichMessage extends LitElement {
       white-space: pre-wrap;
       word-break: break-word;
     }
-    .text p { margin: 0 0 8px; }
+    .text p { margin: 0 0 var(--cg-spacing-8); }
     .text p:last-child { margin-bottom: 0; }
     .text code {
-      background: rgba(255, 255, 255, 0.08);
-      padding: 1px 5px;
-      border-radius: var(--cg-border-radius-50, 4px);
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-size: var(--cg-font-size-sm, 14px);
+      background: var(--cg-overlay-dark-medium);
+      padding: var(--cg-spacing-1) var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-50);
+      font-family: var(--cg-font-family-mono);
+      font-size: var(--cg-font-size-sm);
     }
     .message.user .text code {
-      background: rgba(0, 0, 0, 0.1);
+      background: var(--cg-overlay-dark-subtle);
     }
 
     /* ── Cards section ── */
     .cards {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-8, 8px);
-      margin-top: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
+      margin-top: var(--cg-spacing-8);
     }
 
     /* ── Action buttons ── */
     .actions {
-      padding-top: var(--cg-spacing-12, 12px);
-      border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
+      padding-top: var(--cg-spacing-12);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
       display: flex;
       flex-wrap: wrap;
-      gap: var(--cg-spacing-6, 6px);
-      margin-top: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-6);
+      margin-top: var(--cg-spacing-8);
     }
     .action-btn {
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
-      background: var(--cg-gray-800, #27272a);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
+      padding: var(--cg-spacing-6) var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-100);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-surface-base-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       cursor: pointer;
-      transition: all 150ms ease;
+      transition: background-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color), color var(--cg-motion-duration-normal) var(--cg-motion-easing-color), border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
     }
     .action-btn:hover {
-      background: var(--cg-gray-700, #3f3f46);
-      border-color: var(--cg-brand-ai-accent, #dfff61);
+      background: var(--cg-color-surface-cards-border);
+      border-color: var(--cg-color-surface-base-text);
     }
     .action-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     /* ── Timestamp ── */
     .timestamp {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
-      margin-top: var(--cg-spacing-6, 6px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-top: var(--cg-spacing-6);
     }
     .message.user .timestamp { text-align: right; }
 
@@ -233,6 +231,21 @@ export class AiRichMessage extends LitElement {
     this._cardAbort?.abort();
   }
 
+  /** Allowlist of known component tag names that can be created as cards. */
+  private static _allowedCardTypes = new Set([
+    'ai-tool-card', 'ai-chart-card', 'ai-code-card', 'ai-data-card',
+    'ai-file-card', 'ai-image-card', 'ai-link-card', 'ai-map-card',
+    'ai-search-card', 'ai-weather-card', 'ai-progress-card',
+    'ai-summary-card', 'ai-table-card', 'ai-metric-card',
+  ]);
+
+  private _isValidCardType(type: string): boolean {
+    // Must be a valid custom element name (contains hyphen) and be in the allowlist
+    return typeof type === 'string'
+      && type.includes('-')
+      && AiRichMessage._allowedCardTypes.has(type);
+  }
+
   private _renderCards() {
     if (this.cards.length === 0) return nothing;
     // Clean up previous card listeners
@@ -244,6 +257,10 @@ export class AiRichMessage extends LitElement {
       <div class="cards">
         ${this.cards.map((card, idx) => {
           try {
+            if (!this._isValidCardType(card.type)) {
+              console.warn(`[ai-rich-message] Blocked unknown card type: "${card.type}"`);
+              return html`<div style="padding:8px;font-size:12px;color:var(--cg-color-input-text-placeholder,#71717a);">Card unavailable</div>`;
+            }
             const el = document.createElement(card.type);
             (el as unknown as Record<string, unknown>)['data'] = card.data;
             (el as unknown as Record<string, unknown>)['toolData'] = card.data;
@@ -254,7 +271,7 @@ export class AiRichMessage extends LitElement {
             }) as EventListener, { signal });
             return el;
           } catch {
-            return html`<div style="padding:8px;font-size:12px;color:var(--cg-gray-500,#71717a);">Card unavailable</div>`;
+            return html`<div style="padding:8px;font-size:12px;color:var(--cg-color-input-text-placeholder,#71717a);">Card unavailable</div>`;
           }
         })}
       </div>

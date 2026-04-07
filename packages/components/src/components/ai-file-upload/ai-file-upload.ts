@@ -32,65 +32,86 @@ interface UploadedFile {
 export class AiFileUpload extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
     .dropzone {
-      border: 2px dashed var(--cg-color-border-primary, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      padding: var(--cg-spacing-24, 24px);
+      border: 2px dashed var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-24);
       text-align: center;
       cursor: pointer;
-      transition: border-color 200ms ease, background 200ms ease;
+      transition: border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color), background var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
       background: transparent;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
     .dropzone:hover,
     .dropzone.dragover {
-      border-color: var(--cg-brand-ai-accent, #dfff61);
-      background: rgba(223, 255, 97, 0.05);
+      border-color: var(--cg-color-surface-base-text);
+      background: var(--cg-overlay-accent-subtle);
     }
+    .dropzone:active { transform: scale(var(--cg-interaction-press-scale)); transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color); }
     .dropzone:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
-    .drop-icon { font-size: 32px; margin-bottom: var(--cg-spacing-8, 8px); }
+    /* ── Disabled state ── */
+    :host([disabled]) .dropzone {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* ── Upload progress ── */
+    .progress-bar {
+      height: var(--cg-spacing-4);
+      background: var(--cg-color-surface-cards-divider);
+      border-radius: var(--cg-border-radius-50);
+      margin-top: var(--cg-spacing-12);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--cg-color-action-primary-background-default);
+      border-radius: var(--cg-border-radius-50);
+      transition: width var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+    }
+
+    .drop-icon { font-size: var(--cg-spacing-32); margin-bottom: var(--cg-spacing-8); }
 
     .drop-label {
-      color: var(--cg-color-text-primary, #fafafa);
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      margin-bottom: var(--cg-spacing-4, 4px);
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      margin-bottom: var(--cg-spacing-4);
     }
 
     .drop-hint {
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
     }
 
     input[type="file"] { display: none; }
 
     .file-list {
-      margin-top: var(--cg-spacing-12, 12px);
+      margin-top: var(--cg-spacing-12);
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-6, 6px);
+      gap: var(--cg-spacing-6);
     }
 
     .file-item {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      background: var(--cg-color-bg-secondary, #27272a);
-      border-radius: var(--cg-border-radius-100, 8px);
-      border: 1px solid var(--cg-color-border-primary, #3f3f46);
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      background: var(--cg-color-surface-cards-background);
+      border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
 
-    .file-icon { font-size: var(--cg-font-size-base, 16px); flex-shrink: 0; }
+    .file-icon { font-size: var(--cg-font-size-base); flex-shrink: 0; }
 
     .file-info {
       flex: 1;
@@ -98,46 +119,48 @@ export class AiFileUpload extends LitElement {
     }
 
     .file-name {
-      color: var(--cg-color-text-primary, #fafafa);
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 500;
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
     .file-meta {
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
     }
 
     .remove-btn {
       background: none;
       border: none;
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      color: var(--cg-color-input-text-placeholder);
       cursor: pointer;
-      padding: 4px;
-      border-radius: var(--cg-border-radius-50, 4px);
-      font-size: var(--cg-font-size-base, 16px);
+      padding: var(--cg-spacing-4);
+      border-radius: var(--cg-border-radius-50);
+      font-size: var(--cg-font-size-sm);
       line-height: 1;
+      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
-    .remove-btn:hover { color: var(--cg-color-status-error-text-default, #ef4444); }
+    .remove-btn:hover { color: var(--cg-color-status-error-text-default); }
     .remove-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
 
     .error-msg {
-      color: var(--cg-color-status-error-text-default, #ef4444);
-      font-size: var(--cg-font-size-xs, 12px);
-      margin-top: var(--cg-spacing-8, 8px);
-    }
+      color: var(--cg-color-status-error-text-default);
+      font-size: var(--cg-font-size-xs);
+      margin-top: var(--cg-spacing-8);
     }
   `];
   @property({ type: String }) accept = '';
   @property({ type: Number, attribute: 'max-size' }) maxSize = 10485760; // 10MB
   @property({ type: Boolean }) multiple = false;
   @property({ type: String }) label = 'Drop files here or click to browse';
+  @property({ type: Boolean, reflect: true }) disabled = false;
+  @property({ type: Number }) progress = -1;
 
   @state() private _files: UploadedFile[] = [];
   @state() private _dragover = false;
@@ -167,6 +190,7 @@ export class AiFileUpload extends LitElement {
   }
 
   private _handleClick() {
+    if (this.disabled) return;
     this.shadowRoot?.querySelector<HTMLInputElement>('input[type="file"]')?.click();
   }
 
@@ -235,6 +259,11 @@ export class AiFileUpload extends LitElement {
         ?multiple=${this.multiple}
         @change=${this._handleInputChange}
       />
+      ${this.progress >= 0 ? html`
+        <div class="progress-bar" role="progressbar" aria-valuenow=${this.progress} aria-valuemin="0" aria-valuemax="100" aria-label="Upload progress">
+          <div class="progress-fill" style="width: ${Math.min(100, Math.max(0, this.progress))}%"></div>
+        </div>
+      ` : nothing}
       ${this._error ? html`<div class="error-msg" role="alert">${this._error}</div>` : nothing}
       ${this._files.length ? html`
         <div class="file-list" role="list" aria-label="Selected files">

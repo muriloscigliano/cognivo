@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
@@ -32,54 +32,81 @@ export interface SelectOption {
 
 @customElement('cg-select')
 export class CgSelect extends LitElement {
+  static formAssociated = true;
+  private _internals: ElementInternals | undefined;
+
+  constructor() {
+    super();
+    if (typeof this.attachInternals === 'function') {
+      this._internals = this.attachInternals();
+    }
+  }
+
   static override styles = [hostBlock, reducedMotion, css`
-    :host { position: relative; }
+    :host { position: relative; display: block; }
 
     .trigger {
       display: flex; align-items: center; justify-content: space-between;
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); gap: var(--cg-spacing-8, 8px);
-      border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-field-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      background: var(--cg-color-input-background-default, #18181b);
-      font: inherit; font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      cursor: pointer; min-height: 40px;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), 0 0 0 0px transparent;
-      transition: border-color var(--cg-motion-duration-normal, 150ms), box-shadow 150ms ease;
+      width: 100%; box-sizing: border-box;
+      padding: 0 var(--cg-spacing-12); gap: var(--cg-spacing-8);
+      border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
+      border-radius: var(--cg-component-select-radius);
+      background: var(--cg-color-input-background-default);
+      font: inherit; font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-input-text-default);
+      cursor: pointer; height: var(--cg-component-select-height-md);
+      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
       outline: none;
     }
-    .trigger:hover:not(.disabled) { border-color: var(--cg-focus-ring-color, #c8e650); }
-    .trigger:focus-visible { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
-    .trigger.open { border-color: var(--cg-focus-ring-color, #c8e650); box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25)); }
-    .trigger.disabled { opacity: 0.5; cursor: not-allowed; background: var(--cg-color-surface-field-disable-background, #18181b); }
-    :host([error]) .trigger { border-color: var(--cg-text-danger, #ef4444); }
+    .trigger:hover:not(.disabled) { border-color: var(--cg-color-input-border-hover); }
+    .trigger:active:not(.disabled) {
+      transform: scale(var(--cg-interaction-press-scale));
+    }
+    .trigger:focus-visible { outline: none; border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+
+    /* Loading */
+    :host([loading]) .trigger { pointer-events: none; opacity: 0.7; }
+    .loading-spinner {
+      width: var(--cg-spacing-16);
+      height: var(--cg-spacing-16);
+      border: var(--cg-border-width-100) solid var(--cg-color-loading-spinner-secondary);
+      border-top-color: var(--cg-color-loading-spinner-primary);
+      border-radius: var(--cg-border-radius-full);
+      animation: cg-select-spin var(--cg-motion-duration-slow) linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes cg-select-spin {
+      to { transform: rotate(360deg); }
+    }
+    .trigger.open { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .trigger.disabled { opacity: 0.5; pointer-events: none; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
+    :host([error]) .trigger { border-color: var(--cg-color-input-border-error); }
     :host([error]) .trigger:focus-visible,
     :host([error]) .trigger.open {
-      border-color: var(--cg-color-status-error-text-default, #ef4444);
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-color-status-error-background-default, rgba(239, 68, 68, 0.6));
+      border-color: var(--cg-color-status-error-text-default);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
     }
-    :host([success]) .trigger { border-color: var(--cg-color-input-icon-success, #4ade80); }
+    :host([success]) .trigger { border-color: var(--cg-color-status-success-border-default); }
     :host([success]) .trigger:focus-visible,
     :host([success]) .trigger.open {
-      border-color: var(--cg-color-status-success-text-default, #4ade80);
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-color-status-success-background-default, rgba(74, 222, 128, 0.5));
+      border-color: var(--cg-color-status-success-text-default);
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
     }
 
     .trigger-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .placeholder { color: var(--cg-gray-500, #71717a); }
-    .chevron { width: 16px; height: 16px; flex-shrink: 0; transition: transform var(--cg-motion-duration-normal, 150ms); color: var(--cg-gray-500, #71717a); }
+    .placeholder { color: var(--cg-color-input-text-placeholder); }
+    .chevron { width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); flex-shrink: 0; transition: transform var(--cg-motion-duration-normal) var(--cg-motion-easing-default); color: var(--cg-color-surface-container-outlined); }
     .trigger.open .chevron { transform: rotate(180deg); }
 
     .dropdown {
       position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
-      margin-top: var(--cg-spacing-4, 4px); padding: var(--cg-spacing-4, 4px);
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), var(--cg-shadow-md-x, 0px) var(--cg-shadow-md-y, 4px) var(--cg-shadow-md-blur, 12px) var(--cg-shadow-md-spread, 0px) var(--cg-shadow-md-Color, #000000);
+      margin-top: var(--cg-spacing-4); padding: var(--cg-spacing-6);
+      background: var(--cg-color-modal-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
       max-height: 240px; overflow-y: auto;
-      opacity: 0; transform: translateY(-4px) scale(0.98); pointer-events: none;
-      transition: opacity 150ms, transform 150ms;
+      opacity: 0; transform: translateY(calc(-1 * var(--cg-spacing-4))) scale(0.98); pointer-events: none;
+      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
     .dropdown.open {
       opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
@@ -87,64 +114,102 @@ export class CgSelect extends LitElement {
     .dropdown[hidden] { display: none; }
 
     .option {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); border-radius: var(--cg-border-radius-50, 4px); cursor: pointer;
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      transition: background var(--cg-motion-duration-fast, 80ms), transform 150ms ease;
-      display: flex; align-items: center; gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12); border-radius: var(--cg-border-radius-150); cursor: pointer;
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-base-text);
+      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      display: flex; align-items: center; gap: var(--cg-spacing-8);
     }
-    .option:hover { background: var(--cg-color-action-tertiary-background-hover, #27272a); transform: scale(1.01); }
-    .option.selected { background: var(--cg-color-action-tertiary-background-hover, #27272a); color: var(--cg-text-accent, #e5ff6b); font-weight: 500; }
-    .option.highlighted { background: var(--cg-color-action-tertiary-background-hover, #27272a); }
-    .option.disabled { opacity: 0.4; cursor: not-allowed; }
-    .option .check { width: 14px; height: 14px; flex-shrink: 0; }
+    .option:hover { background: var(--cg-overlay-dark-subtle); }
+    .option.highlighted { background: var(--cg-overlay-dark-subtle); }
+    .option.selected { color: var(--cg-color-action-primary-background-default); font-weight: var(--cg-font-weight-medium); }
+    .option.disabled { opacity: 0.5; pointer-events: none; }
+    .option .check {
+      width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); flex-shrink: 0;
+      margin-left: auto; opacity: 0;
+      color: var(--cg-color-action-primary-background-default);
+      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+    }
+    .option.selected .check { opacity: 1; }
 
-    .search { padding: 6px var(--cg-spacing-8, 8px); margin-bottom: var(--cg-spacing-4, 4px); }
+    .search { padding: 0; margin-bottom: var(--cg-spacing-4); }
     .search input {
-      width: 100%; padding: 6px var(--cg-spacing-8, 8px); border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-50, 4px); font: inherit; font-size: var(--cg-font-size-sm, 14px); outline: none;
+      width: 100%; box-sizing: border-box;
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
+      border-radius: var(--cg-border-radius-100);
+      font: inherit; font-size: var(--cg-font-size-sm); outline: none;
+      background: transparent; color: var(--cg-color-input-text-default);
     }
-    .search input:focus { border-color: var(--cg-focus-ring-color, #c8e650); }
+    .search input::placeholder { color: var(--cg-color-input-text-placeholder); }
+    .search input:focus { border-color: var(--cg-color-input-border-focus); }
 
-    .empty-msg { padding: var(--cg-spacing-12, 12px); text-align: center; color: var(--cg-gray-500, #71717a); font-size: var(--cg-font-size-sm, 14px); }
+    .empty-msg { padding: var(--cg-spacing-12); text-align: center; color: var(--cg-color-input-text-placeholder); font-size: var(--cg-font-size-sm); }
+
+    .label { display: block; font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-medium); color: var(--cg-color-surface-container-outlined); margin-bottom: var(--cg-spacing-4); }
 
     /* Size variants */
-    :host([size="sm"]) .trigger { min-height: 32px; font-size: 12px; padding: 0 8px; }
-    :host([size="sm"]) .option { font-size: 12px; }
+    :host([size="sm"]) .trigger { height: var(--cg-component-input-height-sm); font-size: var(--cg-font-size-xs); padding: 0 var(--cg-spacing-8); border-radius: var(--cg-border-radius-100); }
+    :host([size="sm"]) .option { font-size: var(--cg-font-size-xs); }
 
-    :host([size="lg"]) .trigger { min-height: 48px; font-size: 16px; padding: 0 16px; }
-    :host([size="lg"]) .option { font-size: 16px; }
+    :host([size="lg"]) .trigger { height: var(--cg-component-input-height-lg); font-size: var(--cg-font-size-base); padding: 0 var(--cg-spacing-16); border-radius: var(--cg-border-radius-150); }
+    :host([size="lg"]) .option { font-size: var(--cg-font-size-base); }
 
     /* ── Rounded overrides ── */
     :host([rounded="none"]) .trigger { border-radius: 0; }
     :host([rounded="none"]) .dropdown { border-radius: 0; }
-    :host([rounded="sm"]) .trigger { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="sm"]) .dropdown { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .trigger { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="md"]) .dropdown { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .trigger { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="lg"]) .dropdown { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .trigger { border-radius: var(--cg-border-radius-full, 99999px); }
-    :host([rounded="full"]) .dropdown { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .trigger { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"]) .dropdown { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .trigger { border-radius: var(--cg-component-select-radius); }
+    :host([rounded="md"]) .dropdown { border-radius: var(--cg-component-select-radius); }
+    :host([rounded="lg"]) .trigger { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="lg"]) .dropdown { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) .trigger { border-radius: var(--cg-border-radius-full); }
+    :host([rounded="full"]) .dropdown { border-radius: var(--cg-border-radius-full); }
   `];
 
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) options: SelectOption[] = [];
   @property() value = '';
+  @property() label = '';
   @property() placeholder = 'Select...';
   @property() name = '';
   @property({ type: Boolean }) disabled = false;
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;
+  @property({ type: Boolean, reflect: true }) loading = false;
   @property({ type: Boolean }) searchable = false;
+  @property({ type: Boolean }) required = false;
+
+  override updated(changed: PropertyValues) {
+    super.updated(changed);
+    if (changed.has('value')) {
+      this._internals?.setFormValue(this.value);
+    }
+    if (changed.has('required') || changed.has('value')) {
+      if (this.required && !this.value) {
+        this._internals?.setValidity({ valueMissing: true }, 'This field is required');
+      } else {
+        this._internals?.setValidity({});
+      }
+    }
+  }
+
+  formResetCallback() {
+    this.value = this.getAttribute('value') ?? '';
+  }
+
+  formStateRestoreCallback(state: string) {
+    this.value = state;
+  }
 
   @state() private _open = false;
   @state() private _search = '';
   @state() private _highlighted = -1;
 
   private _toggle() {
-    if (this.disabled) return;
+    if (this.disabled || this.loading) return;
     this._open = !this._open;
     this._search = '';
     this._highlighted = -1;
@@ -188,7 +253,7 @@ export class CgSelect extends LitElement {
   }
 
   private _handleClickOutside = (e: Event) => {
-    if (!this.shadowRoot?.contains(e.target as Node)) this._close();
+    if (!e.composedPath().includes(this)) this._close();
   };
 
   override connectedCallback() { super.connectedCallback(); document.addEventListener('click', this._handleClickOutside); }
@@ -199,21 +264,25 @@ export class CgSelect extends LitElement {
     const filtered = this._filteredOptions();
 
     return html`
+      ${this.label ? html`<span class="label">${this.label}</span>` : nothing}
       <div
         class="trigger ${this._open ? 'open' : ''} ${this.disabled ? 'disabled' : ''}"
         tabindex=${this.disabled ? '-1' : '0'}
         role="combobox"
         aria-expanded=${this._open}
         aria-haspopup="listbox"
+        aria-required=${this.required ? 'true' : 'false'}
+        aria-busy=${this.loading ? 'true' : 'false'}
         @click=${this._toggle}
         @keydown=${this._handleKeydown}
       >
         <span class="trigger-text ${!selected ? 'placeholder' : ''}">
           ${selected ? selected.label : this.placeholder}
         </span>
-        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        ${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : html`
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 9l6 6 6-6"></path>
-        </svg>
+        </svg>`}
       </div>
 
       <div class="dropdown ${this._open ? 'open' : ''}" ?hidden=${!this._open} role="listbox">
@@ -236,9 +305,7 @@ export class CgSelect extends LitElement {
             @click=${(e: Event) => { e.stopPropagation(); this._select(opt); }}
           >
             <span>${opt.label}</span>
-            ${opt.value === this.value ? html`
-              <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"></path></svg>
-            ` : nothing}
+            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
           </div>
         `)}
       </div>

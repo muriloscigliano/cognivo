@@ -8,16 +8,13 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
  *
  * @example
  * ```html
- * <cg-pagination total="20" current="5" siblings="1"></cg-pagination>
- * <cg-pagination total="100" current="1" size="sm"></cg-pagination>
+ * <cg-pagination total="20" current="5"></cg-pagination>
  * ```
  *
  * @fires {CustomEvent<{page: number}>} cg-page-change - When a page button is clicked
  *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Active page background and focus ring
- * @cssprop [--cg-color-surface-base-border=#27272a] - Page button border
- * @cssprop [--cg-interaction-press-scale=0.97] - Press scale feedback
- * @cssprop [--cg-font-size-sm=14px] - Page button font size (md)
+ * @cssprop --cg-component-pagination-button-size - Button size (36px)
+ * @cssprop --cg-color-action-primary-background-default - Active page background
  */
 @customElement('cg-pagination')
 export class CgPagination extends LitElement {
@@ -29,7 +26,7 @@ export class CgPagination extends LitElement {
     .pagination {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-4);
       list-style: none;
       margin: 0;
       padding: 0;
@@ -39,57 +36,54 @@ export class CgPagination extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 36px;
-      height: 36px;
-      padding: 0 var(--cg-spacing-8, 8px);
-      border: 1px solid var(--cg-color-surface-base-border, #27272a);
-      border-radius: var(--cg-border-radius-100, 8px);
+      min-width: var(--cg-component-pagination-button-size);
+      height: var(--cg-component-pagination-button-size);
+      padding: 0 var(--cg-spacing-8);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-base-border);
+      border-radius: var(--cg-border-radius-100);
       background: transparent;
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      color: var(--cg-color-surface-container-text);
       font-family: inherit;
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-medium, 500);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
       font-variant-numeric: tabular-nums;
       cursor: pointer;
       line-height: 1;
       white-space: nowrap;
       transition:
-        transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
-        background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        border-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        border-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
       -webkit-font-smoothing: antialiased;
     }
 
     .page-btn:hover:not(:disabled):not(.active) {
-      background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.06));
-      color: var(--cg-color-text-primary, #fafafa);
-      border-color: var(--cg-color-surface-base-border, #3f3f46);
-      transform: scale(1.02);
+      background: var(--cg-overlay-accent-subtle);
+      color: var(--cg-color-surface-container-text);
+      border-color: var(--cg-color-surface-base-border);
     }
 
     .page-btn:active:not(:disabled) {
-      transform: scale(var(--cg-interaction-press-scale, 0.97));
+      transform: scale(var(--cg-interaction-press-scale));
     }
 
     .page-btn:focus-visible {
-      box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
       outline: none;
     }
 
     .page-btn:disabled {
-      opacity: 0.35;
+      opacity: 0.5;
       cursor: not-allowed;
     }
 
     /* ── Active page ── */
     .page-btn.active {
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: var(--cg-gray-black, #000000);
-      border-color: var(--cg-brand-ai-accent, #dfff61);
-      font-weight: var(--cg-font-weight-semibold, 600);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-action-primary-text-default);
+      border-color: var(--cg-color-action-primary-border-default);
+      font-weight: var(--cg-font-weight-semibold);
     }
 
     /* ── Ellipsis ── */
@@ -97,49 +91,56 @@ export class CgPagination extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 36px;
-      height: 36px;
-      color: var(--cg-color-text-disabled, #52525b);
-      font-size: var(--cg-font-size-sm, 14px);
+      min-width: var(--cg-component-pagination-button-size);
+      height: var(--cg-component-pagination-button-size);
+      color: var(--cg-color-surface-container-outlined);
+      font-size: var(--cg-font-size-sm);
       user-select: none;
-      letter-spacing: 2px;
-    }
-
-    /* ── Arrow icons ── */
-    .arrow-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 16px;
-      height: 16px;
+      letter-spacing: var(--cg-letter-spacing-widest);
     }
 
     /* Size variants */
-    :host([size="sm"]) .page-btn { min-width: 28px; height: 28px; font-size: 12px; }
-    :host([size="sm"]) .ellipsis { min-width: 28px; height: 28px; font-size: 12px; }
+    :host([size="sm"]) .page-btn {
+      min-width: var(--cg-spacing-32);
+      height: var(--cg-spacing-32);
+      font-size: var(--cg-font-size-xs);
+    }
+    :host([size="sm"]) .ellipsis {
+      min-width: var(--cg-spacing-32);
+      height: var(--cg-spacing-32);
+      font-size: var(--cg-font-size-xs);
+    }
 
-    :host([size="lg"]) .page-btn { min-width: 44px; height: 44px; font-size: 16px; }
-    :host([size="lg"]) .ellipsis { min-width: 44px; height: 44px; font-size: 16px; }
+    :host([size="lg"]) .page-btn {
+      min-width: var(--cg-spacing-48);
+      height: var(--cg-spacing-48);
+      font-size: var(--cg-font-size-base);
+    }
+    :host([size="lg"]) .ellipsis {
+      min-width: var(--cg-spacing-48);
+      height: var(--cg-spacing-48);
+      font-size: var(--cg-font-size-base);
+    }
 
     @media (max-width: 480px) {
       .page-btn {
-        min-width: 32px;
-        height: 32px;
-        font-size: var(--cg-font-size-xs, 12px);
-        padding: 0 var(--cg-spacing-4, 4px);
+        min-width: var(--cg-spacing-32);
+        height: var(--cg-spacing-32);
+        font-size: var(--cg-font-size-xs);
+        padding: 0 var(--cg-spacing-4);
       }
       .ellipsis {
-        min-width: 24px;
-        height: 32px;
+        min-width: var(--cg-spacing-24);
+        height: var(--cg-spacing-32);
       }
     }
 
     /* Rounded variants */
     :host([rounded="none"]) .page-btn { border-radius: 0; }
-    :host([rounded="sm"]) .page-btn { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .page-btn { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .page-btn { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .page-btn { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .page-btn { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .page-btn { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .page-btn { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) .page-btn { border-radius: var(--cg-border-radius-full); }
   `];
 
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
@@ -159,10 +160,6 @@ export class CgPagination extends LitElement {
     }));
   }
 
-  /**
-   * Compute visible page numbers with ellipsis gaps.
-   * Returns array of numbers and 'ellipsis' strings.
-   */
   private _getPages(): (number | 'ellipsis')[] {
     const total = this.total;
     const current = this.current;
@@ -174,7 +171,6 @@ export class CgPagination extends LitElement {
 
     const pages: (number | 'ellipsis')[] = [];
 
-    // Always show first
     if (this.showFirst) {
       pages.push(1);
     }
@@ -182,24 +178,18 @@ export class CgPagination extends LitElement {
     const rangeStart = Math.max(2, current - siblings);
     const rangeEnd = Math.min(total - 1, current + siblings);
 
-    // Left ellipsis
     if (rangeStart > 2) {
       pages.push('ellipsis');
-    } else if (rangeStart === 2 && this.showFirst) {
-      // No gap needed
     }
 
-    // Middle range
     for (let i = rangeStart; i <= rangeEnd; i++) {
       pages.push(i);
     }
 
-    // Right ellipsis
     if (rangeEnd < total - 1) {
       pages.push('ellipsis');
     }
 
-    // Always show last
     if (this.showLast) {
       pages.push(total);
     }
@@ -215,7 +205,6 @@ export class CgPagination extends LitElement {
     return html`
       <nav aria-label="Pagination">
         <ul class="pagination">
-          <!-- Prev button -->
           <li>
             <button
               class="page-btn"
@@ -223,11 +212,7 @@ export class CgPagination extends LitElement {
               aria-label="Previous page"
               @click="${() => this._goToPage(this.current - 1)}"
             >
-              <span class="arrow-icon">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
+              <cg-icon name="chevron-left" size="sm"></cg-icon>
             </button>
           </li>
 
@@ -250,7 +235,6 @@ export class CgPagination extends LitElement {
             `;
           })}
 
-          <!-- Next button -->
           <li>
             <button
               class="page-btn"
@@ -258,11 +242,7 @@ export class CgPagination extends LitElement {
               aria-label="Next page"
               @click="${() => this._goToPage(this.current + 1)}"
             >
-              <span class="arrow-icon">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
+              <cg-icon name="chevron-right" size="sm"></cg-icon>
             </button>
           </li>
         </ul>

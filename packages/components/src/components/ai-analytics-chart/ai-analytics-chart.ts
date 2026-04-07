@@ -39,14 +39,12 @@ interface HoverPoint {
 export class AiAnalyticsChart extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      background: var(--cg-color-surface-base, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      border: 1px solid var(--cg-color-border-default, #27272a);
-      border-radius: var(--cg-radius-lg, 12px);
-      padding: var(--cg-spacing-16, 16px);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      background: var(--cg-color-surface-base);
+      color: var(--cg-color-surface-base-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-16);
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
@@ -54,35 +52,35 @@ export class AiAnalyticsChart extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      padding-bottom: var(--cg-spacing-12, 12px);
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
-      margin-bottom: var(--cg-spacing-12, 12px);
+      padding-bottom: var(--cg-spacing-12);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
+      margin-bottom: var(--cg-spacing-12);
     }
 
     .title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
       margin: 0;
     }
 
     .legend {
       display: flex;
-      gap: var(--cg-spacing-12, 12px);
+      gap: var(--cg-spacing-12);
       flex-wrap: wrap;
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      gap: var(--cg-spacing-4);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     .legend-dot {
-      width: 8px;
-      height: 8px;
+      width: var(--cg-spacing-8);
+      height: var(--cg-spacing-8);
       border-radius: 50%;
       flex-shrink: 0;
     }
@@ -99,12 +97,12 @@ export class AiAnalyticsChart extends LitElement {
     }
 
     .axis-label {
-      font-size: 10px;
-      fill: var(--cg-color-text-tertiary, #71717a);
+      font-size: var(--cg-font-size-xs);
+      fill: var(--cg-color-input-text-placeholder);
     }
 
     .grid-line {
-      stroke: var(--cg-color-border-default, #27272a);
+      stroke: var(--cg-color-surface-cards-divider);
       stroke-width: 0.5;
     }
 
@@ -124,37 +122,35 @@ export class AiAnalyticsChart extends LitElement {
 
     .tooltip {
       position: absolute;
-      background: var(--cg-color-surface-overlay, #27272a);
-      border: 1px solid var(--cg-color-border-default, #3f3f46);
-      border-radius: var(--cg-radius-md, 8px);
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
-      font-size: var(--cg-font-size-xs, 12px);
+      background: var(--cg-color-surface-overlay);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-6) var(--cg-spacing-8);
+      font-size: var(--cg-font-size-xs);
       pointer-events: none;
       z-index: 10;
       white-space: nowrap;
       transform: translate(-50%, -100%);
-      margin-top: -8px;
+      margin-top: calc(-1 * var(--cg-spacing-8);
     }
 
     .tooltip-label {
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      margin-bottom: 2px;
+      color: var(--cg-color-input-text-placeholder);
+      margin-bottom: var(--cg-spacing-2);
     }
 
     .tooltip-value {
-      font-weight: var(--cg-font-weight-semibold, 600);
+      font-weight: var(--cg-font-weight-semibold);
     }
 
     .y-label {
-      font-size: 10px;
-      fill: var(--cg-color-text-tertiary, #71717a);
+      font-size: var(--cg-font-size-xs);
+      fill: var(--cg-color-input-text-placeholder);
     }
-    }
-  
 
     :focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
   `];
   @property({ type: Array }) series: AnalyticsSeries[] = [];

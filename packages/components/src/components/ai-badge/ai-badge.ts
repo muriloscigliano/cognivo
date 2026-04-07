@@ -5,74 +5,72 @@
  * @example
  * ```html
  * <ai-badge score="0.92" size="sm"></ai-badge>
- * <ai-badge score="0.45" size="lg" explanation="Low training data coverage"
+ * <ai-badge score="0.45" size="lg" explanation="Low data coverage"
  *   .history=${[0.3, 0.4, 0.42, 0.45]}></ai-badge>
  * ```
  *
  * @fires {CustomEvent<{score: number, level: string}>} ai-badge-click - Badge clicked
  *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Focus ring color
- * @cssprop [--cg-green-400=#4ade80] - High confidence color
- * @cssprop [--cg-yellow-400=#fbbf24] - Medium confidence color
- * @cssprop [--cg-red-400=#f87171] - Low confidence color
+ * @cssprop --cg-color-status-success-text-default - High confidence color
+ * @cssprop --cg-color-status-warning-text-default - Medium confidence color
+ * @cssprop --cg-color-status-error-text-default - Low confidence color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBase, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
+import { hostBase, reducedMotion } from '../../styles/index.js';
 
 @customElement('ai-badge')
 export class AiBadge extends LitElement {
-  static override styles = [hostBase, reducedMotion, fadeSlideInKeyframes, css`
+  static override styles = [hostBase, reducedMotion, css`
     :host {
       align-items: center;
       position: relative;
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
     }
 
     /* ── Base badge ── */
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: var(--cg-spacing-4);
       cursor: pointer;
-      transition: all 200ms ease;
-      border: 1px solid transparent;
+      border: var(--cg-border-width-50) solid transparent;
       position: relative;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      transition:
+        filter var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
     .badge:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
-    .badge:hover { filter: brightness(1.15); }
+    .badge:hover { filter: brightness(1.1); }
+    .badge:active { transform: scale(var(--cg-interaction-press-scale)); }
 
     /* ── Size: sm ── */
     :host([size="sm"]) .badge {
-      padding: 1px var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-50, 4px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      gap: 3px;
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
+      border-radius: var(--cg-component-ai-badge-radius-sm);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
+      gap: var(--cg-spacing-2);
     }
-    :host([size="sm"]) .icon { font-size: 9px; }
 
     /* ── Size: md (default) ── */
     .badge {
-      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-full, 99999px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
+      padding: var(--cg-spacing-4) var(--cg-spacing-12);
+      border-radius: var(--cg-component-ai-badge-radius-md);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
     }
 
     /* ── Size: lg (card with bar) ── */
     :host([size="lg"]) .badge {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      font-size: var(--cg-font-size-sm, 14px);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      border-radius: var(--cg-component-ai-badge-radius-lg);
+      font-size: var(--cg-font-size-sm);
       flex-direction: column;
       align-items: stretch;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
       min-width: 140px;
     }
     :host([size="lg"]) .top-row {
@@ -81,55 +79,59 @@ export class AiBadge extends LitElement {
       justify-content: space-between;
     }
     :host([size="lg"]) .bar-track {
-      height: 4px;
-      border-radius: 2px;
-      background: rgba(255, 255, 255, 0.08);
+      height: var(--cg-spacing-4);
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-overlay-dark-subtle);
       overflow: hidden;
     }
     :host([size="lg"]) .bar-fill {
       height: 100%;
-      border-radius: 2px;
-      transition: width var(--cg-motion-duration-slow, 500ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+      border-radius: var(--cg-border-radius-full);
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
 
     /* ── Colors ── */
     .badge.high {
-      background: rgba(34, 197, 94, 0.12);
-      color: var(--cg-green-400, #4ade80);
-      border-color: rgba(34, 197, 94, 0.2);
+      background: var(--cg-color-status-success-background-default);
+      color: var(--cg-color-status-success-text-default);
+      border-color: var(--cg-color-status-success-border-default);
     }
-    .badge.high .bar-fill { background: var(--cg-green-400, #4ade80); }
+    .badge.high .bar-fill { background: var(--cg-color-status-success-text-default); }
 
     .badge.medium {
-      background: rgba(245, 158, 11, 0.12);
-      color: var(--cg-yellow-400, #fbbf24);
-      border-color: rgba(245, 158, 11, 0.2);
+      background: var(--cg-color-status-warning-background-default);
+      color: var(--cg-color-status-warning-text-default);
+      border-color: var(--cg-color-status-warning-border-default);
     }
-    .badge.medium .bar-fill { background: var(--cg-yellow-400, #fbbf24); }
+    .badge.medium .bar-fill { background: var(--cg-color-status-warning-text-default); }
 
     .badge.low {
-      background: rgba(239, 68, 68, 0.12);
-      color: var(--cg-red-400, #f87171);
-      border-color: rgba(239, 68, 68, 0.2);
+      background: var(--cg-color-status-error-background-default);
+      color: var(--cg-color-status-error-text-default);
+      border-color: var(--cg-color-status-error-border-default);
     }
-    .badge.low .bar-fill { background: var(--cg-red-400, #f87171); }
+    .badge.low .bar-fill { background: var(--cg-color-status-error-text-default); }
 
-    .icon { font-size: var(--cg-font-size-xs, 12px); line-height: 1; }
     .score { letter-spacing: 0.02em; }
-    .level-label { font-size: var(--cg-font-size-xs, 12px); font-weight: 600; opacity: 0.8; text-transform: capitalize; }
+    .level-label {
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      opacity: 0.8;
+      text-transform: capitalize;
+    }
 
     /* ── Sparkline ── */
     .sparkline {
       display: flex;
       align-items: flex-end;
-      gap: 1px;
-      height: 16px;
-      margin-left: 6px;
+      gap: var(--cg-spacing-1);
+      height: var(--cg-spacing-16);
+      margin-left: var(--cg-spacing-6);
     }
     .spark-bar {
-      width: 2px;
-      border-radius: 1px;
-      transition: height 300ms ease;
+      width: var(--cg-spacing-2);
+      border-radius: var(--cg-border-radius-full);
+      transition: height var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
       opacity: 0.5;
     }
     .spark-bar:last-child { opacity: 1; }
@@ -137,22 +139,23 @@ export class AiBadge extends LitElement {
     /* ── Tooltip ── */
     .tooltip {
       position: absolute;
-      bottom: calc(100% + 8px);
+      bottom: calc(100% + var(--cg-spacing-8));
       left: 50%;
       transform: translateX(-50%);
-      background: var(--cg-gray-800, #27272a);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      border-radius: var(--cg-border-radius-100, 8px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      font-size: var(--cg-font-size-xs, 12px);
-      line-height: 1.4;
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-surface-base-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      font-size: var(--cg-font-size-xs);
+      line-height: var(--cg-line-height-snug);
       white-space: nowrap;
       pointer-events: none;
       opacity: 0;
-      transition: opacity 150ms ease;
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
       z-index: 100;
-      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
+      box-shadow:
+        0 var(--cg-shadow-sm-y) var(--cg-shadow-sm-blur) var(--cg-shadow-sm-spread) rgba(0, 0, 0, 0.08);
     }
     .tooltip::after {
       content: '';
@@ -160,43 +163,43 @@ export class AiBadge extends LitElement {
       top: 100%;
       left: 50%;
       transform: translateX(-50%);
-      border: 5px solid transparent;
-      border-top-color: var(--cg-gray-800, #27272a);
+      border: var(--cg-spacing-4) solid transparent;
+      border-top-color: var(--cg-color-surface-container-background);
     }
     .badge:hover .tooltip,
     .badge:focus .tooltip {
       opacity: 1;
     }
-    .tooltip-level { font-weight: 700; }
-    .tooltip-score { opacity: 0.7; margin-left: 4px; }
+    .tooltip-level { font-weight: var(--cg-font-weight-bold); }
+    .tooltip-score { opacity: 0.7; margin-left: var(--cg-spacing-4); }
     .tooltip-explanation {
       display: block;
-      margin-top: var(--cg-spacing-4, 4px);
-      font-size: var(--cg-font-size-xs, 12px);
+      margin-top: var(--cg-spacing-4);
+      font-size: var(--cg-font-size-xs);
       opacity: 0.7;
       white-space: normal;
       max-width: 220px;
     }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .bar-fill { transition: none; }
+      .spark-bar { transition: none; }
     }
   `];
+
   /** Confidence score 0-1 */
   @property({ type: Number }) score: number = 0.85;
-
   /** Show percentage or level name */
   @property({ type: Boolean }) showPercentage: boolean = true;
-
-  /** Size: sm, md, lg */
+  /** Size variant */
   @property({ type: String, reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
-
   /** Explanation text for tooltip */
   @property({ type: String }) explanation: string = '';
-
   /** History array of scores for sparkline */
   @property({ type: Array }) history: number[] = [];
-
   /** High confidence threshold */
   @property({ type: Number }) highThreshold: number = 0.8;
-
   /** Low confidence threshold */
   @property({ type: Number }) lowThreshold: number = 0.5;
 
@@ -208,11 +211,11 @@ export class AiBadge extends LitElement {
     return 'low';
   }
 
-  private _getIcon(): unknown {
+  private _getIconName(): string {
     const level = this._getLevel();
-    if (level === 'high') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
-    if (level === 'medium') return html`<svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>`;
-    return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>`;
+    if (level === 'high') return 'check';
+    if (level === 'medium') return 'info';
+    return 'warning';
   }
 
   private _handleClick() {
@@ -230,9 +233,9 @@ export class AiBadge extends LitElement {
   }
 
   private _getSparkColor(value: number): string {
-    if (value >= this.highThreshold) return 'var(--cg-green-400, #4ade80)';
-    if (value >= this.lowThreshold) return 'var(--cg-yellow-400, #fbbf24)';
-    return 'var(--cg-red-400, #f87171)';
+    if (value >= this.highThreshold) return 'var(--cg-color-status-success-text-default)';
+    if (value >= this.lowThreshold) return 'var(--cg-color-status-warning-text-default)';
+    return 'var(--cg-color-status-error-text-default)';
   }
 
   private _renderSparkline() {
@@ -276,8 +279,8 @@ export class AiBadge extends LitElement {
         >
           ${this._renderTooltip()}
           <div class="top-row">
-            <span>
-              <span class="icon" aria-hidden="true">${this._getIcon()}</span>
+            <span style="display:flex;align-items:center;gap:var(--cg-spacing-4);">
+              <cg-icon name="${this._getIconName()}" size="xs"></cg-icon>
               <span class="score">${pct}%</span>
             </span>
             <span class="level-label">${level}</span>
@@ -300,7 +303,7 @@ export class AiBadge extends LitElement {
         @keydown=${this._handleKeyDown}
       >
         ${this._renderTooltip()}
-        <span class="icon" aria-hidden="true">${this._getIcon()}</span>
+        <cg-icon name="${this._getIconName()}" size="xs"></cg-icon>
         <span class="score">${label}</span>
         ${this._renderSparkline()}
       </div>

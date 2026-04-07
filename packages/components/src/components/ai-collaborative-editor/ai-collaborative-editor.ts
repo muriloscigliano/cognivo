@@ -31,46 +31,44 @@ export interface EditorCursor {
 export class AiCollaborativeEditor extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      background: var(--cg-color-surface-base, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      border: 1px solid var(--cg-color-border-default, #27272a);
-      border-radius: var(--cg-radius-lg, 12px);
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-surface-base-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
       overflow: hidden;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
     .editor-wrap {
       position: relative;
-      min-height: 120px;
+      min-height: var(200px);
     }
 
     textarea {
       display: block;
       width: 100%;
-      min-height: 120px;
+      min-height: var(200px);
       background: transparent;
-      color: var(--cg-color-surface-base-text, #fafafa);
+      color: var(--cg-color-surface-base-text);
       border: none;
       outline: none;
       resize: vertical;
-      padding: var(--cg-spacing-12, 12px);
-      font-family: var(--cg-font-family-mono, 'JetBrains Mono', 'Fira Code', monospace);
-      font-size: var(--cg-font-size-sm, 14px);
+      padding: var(--cg-spacing-12);
+      font-family: var(--cg-font-family-mono);
+      font-size: var(--cg-font-size-sm);
       line-height: 1.6;
       box-sizing: border-box;
-      caret-color: var(--cg-color-accent, #dfff61);
+      caret-color: var(--cg-color-surface-base-text);
     }
 
     textarea::placeholder {
-      color: var(--cg-color-text-tertiary, #71717a);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     textarea:focus-visible {
-      box-shadow: inset 0 0 0 2px var(--cg-color-accent, #dfff61);
-      border-radius: var(--cg-radius-lg, 12px);
+      border-radius: var(--cg-border-radius-150);
+      box-shadow: inset 0 0 0 2px var(--cg-overlay-accent-strong);
     }
 
     textarea:disabled {
@@ -98,47 +96,47 @@ export class AiCollaborativeEditor extends LitElement {
     }
 
     .cursor-line {
-      width: 2px;
-      height: 18px;
+      width: var(--cg-spacing-2);
+      height: var(--cg-spacing-20);
       border-radius: 1px;
     }
 
     .cursor-label {
-      font-size: 10px;
-      font-weight: var(--cg-font-weight-semibold, 600);
-      padding: 1px 4px;
-      border-radius: var(--cg-radius-sm, 4px);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      padding: var(--cg-spacing-1) var(--cg-spacing-4);
+      border-radius: var(--cg-border-radius-50);
       white-space: nowrap;
-      margin-top: 2px;
-      color: var(--cg-color-surface-container-background, #18181b);
+      margin-top: var(--cg-spacing-2);
+      color: var(--cg-color-surface-container-background);
     }
 
     .footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
-      border-top: 1px solid var(--cg-color-border-default, #27272a);
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-color-text-tertiary, #71717a);
+      padding: var(--cg-spacing-6) var(--cg-spacing-12);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     .stats {
       display: flex;
-      gap: var(--cg-spacing-12, 12px);
+      gap: var(--cg-spacing-12);
     }
 
     .presence {
       display: flex;
-      gap: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-4);
       align-items: center;
     }
 
     .presence-dot {
-      width: 6px;
-      height: 6px;
+      width: var(--cg-spacing-6);
+      height: var(--cg-spacing-6);
       border-radius: 50%;
-      transition: transform 150ms ease;
+      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     .presence-dot:hover {
       transform: scale(1.3);
@@ -146,8 +144,7 @@ export class AiCollaborativeEditor extends LitElement {
 
     /* Basic hover transitions on interactive elements */
     textarea:hover {
-      border-color: var(--cg-color-border-default, #3f3f46);
-    }
+      border-color: var(--cg-color-surface-cards-border);
     }
   `];
   @property({ type: String }) content = '';

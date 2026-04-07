@@ -45,7 +45,7 @@ export interface SidebarSection {
 export class AiSidebar extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     :host([hidden]) { display: none; }
 
@@ -53,16 +53,14 @@ export class AiSidebar extends LitElement {
       display: flex;
       flex-direction: column;
       height: 100%;
-      background: var(--cg-color-surface, #18181b);
-      border-right: 1px solid var(--cg-color-border, #27272a);
-      width: 240px;
+      background: var(--cg-color-surface-sidebar-background);
+      border-right: var(--cg-border-width-50) solid var(--cg-color-surface-sidebar-border);
+      width: var(--ai-sidebar-width, 240px);
       overflow: hidden;
-      transition: width 200ms ease;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      transition: width var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
     }
     :host([collapsed]) .sidebar {
-      width: 56px;
+      width: var(--ai-sidebar-collapsed-width, 56px);
     }
 
     .collapse-btn {
@@ -71,34 +69,34 @@ export class AiSidebar extends LitElement {
       justify-content: center;
       background: none;
       border: none;
-      border-bottom: 1px solid var(--cg-color-border, #27272a);
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      padding: var(--cg-spacing-12, 12px);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-sidebar-border);
+      color: var(--cg-color-surface-sidebar-text);
+      padding: var(--cg-spacing-12);
       cursor: pointer;
-      font-size: var(--cg-font-size-sm, 14px);
-      transition: color 150ms ease;
+      font-size: var(--cg-font-size-sm);
+      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     .collapse-btn:hover {
-      color: var(--cg-color-text-primary, #fafafa);
+      color: var(--cg-color-surface-base-text);
     }
     .collapse-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
+      outline: 2px solid var(--cg-color-accent-border);
       outline-offset: -2px;
     }
 
     .sections {
       flex: 1;
       overflow-y: auto;
-      padding: var(--cg-spacing-8, 8px) 0;
+      padding: var(--cg-spacing-8) 0;
     }
 
     .section-title {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px) var(--cg-spacing-4, 4px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
+      padding: var(--cg-spacing-8) var(--cg-spacing-16) var(--cg-spacing-4);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--cg-color-text-tertiary, #71717a);
+      letter-spacing: var(--cg-letter-spacing-wide);
+      color: var(--cg-color-surface-sidebar-text);
       white-space: nowrap;
       overflow: hidden;
     }
@@ -111,42 +109,44 @@ export class AiSidebar extends LitElement {
     .item {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
       width: 100%;
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
       background: none;
       border: none;
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-sm, 14px);
+      color: var(--cg-color-surface-sidebar-text);
+      font-size: var(--cg-font-size-sm);
       font-family: inherit;
       cursor: pointer;
       white-space: nowrap;
       overflow: hidden;
       text-align: left;
-      transition: background 150ms ease, color 150ms ease;
+      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-color), color var(--cg-motion-duration-fast) var(--cg-motion-easing-color), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     :host([collapsed]) .item {
       justify-content: center;
-      padding: var(--cg-spacing-8, 8px) 0;
+      padding: var(--cg-spacing-8) 0;
     }
     .item:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--cg-color-text-primary, #fafafa);
+      background: var(--cg-color-surface-sidebar-hover-background);
+      color: var(--cg-color-surface-base-text);
     }
+    .item:active { transform: scale(var(--cg-interaction-press-scale)); }
     .item:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
+      outline: 2px solid var(--cg-color-accent-border);
       outline-offset: -2px;
     }
     .item[aria-current="true"] {
-      background: rgba(223, 255, 97, 0.08);
-      color: var(--cg-color-accent, #dfff61);
+      background: var(--cg-color-surface-sidebar-active-background);
+      color: var(--cg-color-surface-base-text);
     }
 
     .item-icon {
       flex-shrink: 0;
-      width: 18px;
+      width: var(--cg-spacing-16);
       text-align: center;
-      font-size: var(--cg-font-size-sm, 14px);
+      font-size: var(--cg-font-size-sm);
+      color: inherit;
     }
 
     .item-label {
@@ -160,12 +160,12 @@ export class AiSidebar extends LitElement {
 
     .item-badge {
       flex-shrink: 0;
-      padding: 1px 6px;
-      font-size: 10px;
-      font-weight: 600;
-      border-radius: var(--cg-border-radius-100, 8px);
-      background: rgba(223, 255, 97, 0.15);
-      color: var(--cg-color-accent, #dfff61);
+      padding: var(--cg-spacing-1) var(--cg-spacing-6);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      border-radius: var(--cg-border-radius-100);
+      background: var(--cg-overlay-accent-strong);
+      color: var(--cg-color-surface-base-text);
     }
     :host([collapsed]) .item-badge {
       display: none;

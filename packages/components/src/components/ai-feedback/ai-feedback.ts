@@ -14,7 +14,7 @@
  *
  * @fires {CustomEvent<{rating, tags, comment, messageId}>} ai-feedback-submit - Feedback submitted
  *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Selected rating and submit button accent
+ * @cssprop --cg-color-action-primary-background-default - Selected rating and submit button accent
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
@@ -24,158 +24,329 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class AiFeedback extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
     }
 
     .container {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-10, 10px);
-      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      gap: var(--cg-spacing-8);
+    }
+
+    /* ── Keyframes ── */
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.28); }
+      70% { transform: scale(0.92); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes jelly {
+      0% { transform: scale(1, 1); }
+      25% { transform: scale(0.9, 1.1); }
+      50% { transform: scale(1.1, 0.9); }
+      75% { transform: scale(0.95, 1.05); }
+      100% { transform: scale(1, 1); }
+    }
+
+    @keyframes starCascade {
+      0% { transform: scale(0.5) rotate(-15deg); opacity: 0; }
+      60% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+
+    @keyframes chipIn {
+      0% { transform: scale(0.8) translateY(4px); opacity: 0; }
+      60% { transform: scale(1.04) translateY(-1px); }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    @keyframes checkDraw {
+      from { stroke-dashoffset: 24; }
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes successReveal {
+      from { opacity: 0; transform: translateX(-8px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes sectionReveal {
+      from { opacity: 0; transform: translateY(6px); max-height: 0; }
+      to { opacity: 1; transform: translateY(0); max-height: 200px; }
+    }
+
+    @keyframes rippleOut {
+      from { transform: scale(0); opacity: 0.4; }
+      to { transform: scale(2.5); opacity: 0; }
     }
 
     /* Rating row */
     .rating-row {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-6, 6px);
-      padding-bottom: var(--cg-spacing-10, 10px);
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
+      gap: var(--cg-spacing-6);
+      padding-bottom: var(--cg-spacing-8);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
     }
     .rating-label {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-400, #a1a1aa);
-      margin-right: 4px;
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-right: var(--cg-spacing-4);
     }
 
-    /* Thumbs */
+    /* ── Thumbs ── */
     .thumb-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: var(--cg-border-radius-100, 8px);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
+      width: var(--cg-spacing-32);
+      height: var(--cg-spacing-32);
+      border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       background: none;
-      color: var(--cg-gray-400, #a1a1aa);
-      font-size: var(--cg-font-size-base, 16px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-base);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 150ms;
+      transition:
+        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
+        background var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
+        color var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
+        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
-    .thumb-btn:hover { border-color: var(--cg-gray-600, #52525b); background: rgba(255, 255, 255, 0.04); }
-    .thumb-btn.selected-up { border-color: var(--cg-green-400, #4ade80); background: rgba(34, 197, 94, 0.1); color: var(--cg-green-400, #4ade80); }
-    .thumb-btn.selected-down { border-color: var(--cg-red-400, #f87171); background: rgba(239, 68, 68, 0.1); color: var(--cg-red-400, #f87171); }
-    .thumb-btn:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }
+    .thumb-btn:hover {
+      border-color: var(--cg-color-input-border-hover);
+      background: var(--cg-overlay-dark-subtle);
+      transform: translateY(-1px);
+    }
+    .thumb-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
+    .thumb-btn.selected-up {
+      border-color: var(--cg-color-status-success-text-default);
+      background: var(--cg-color-status-success-background-default);
+      color: var(--cg-color-status-success-text-default);
+      animation: pop 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 0 12px var(--cg-color-status-success-background-default);
+    }
+    .thumb-btn.selected-down {
+      border-color: var(--cg-color-status-error-text-default);
+      background: var(--cg-color-status-error-background-default);
+      color: var(--cg-color-status-error-text-default);
+      animation: pop 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 0 12px var(--cg-color-status-error-background-default);
+    }
+    .thumb-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); outline-offset: var(--cg-outline-offset-default); }
 
-    /* Stars */
+    /* ── Stars ── */
     .star-btn {
       background: none;
       border: none;
-      color: var(--cg-gray-700, #3f3f46);
-      font-size: var(--cg-font-size-xl, 20px);
+      color: var(--cg-color-surface-cards-border);
+      font-size: var(--cg-font-size-xl);
       cursor: pointer;
-      padding: 2px;
-      transition: color 150ms;
+      padding: var(--cg-spacing-2);
+      transition:
+        color var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
+        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
-    .star-btn.active { color: var(--cg-yellow-400, #fbbf24); }
-    .star-btn:hover { color: var(--cg-yellow-300, #fcd34d); }
-    .star-btn:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }
+    .star-btn:hover { transform: scale(1.15); }
+    .star-btn.active {
+      color: var(--cg-color-status-warning-text-default);
+      animation: starCascade 350ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      animation-delay: calc(var(--star-index, 0) * 50ms);
+    }
+    .star-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
+    .star-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); outline-offset: var(--cg-outline-offset-default); }
 
-    /* Emoji */
+    /* Star SVG fill transition */
+    .star-btn svg { transition: fill var(--cg-motion-duration-fast) var(--cg-motion-easing-default); }
+    .star-btn.active svg { fill: var(--cg-color-status-warning-text-default); }
+
+    /* ── Emoji ── */
     .emoji-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: var(--cg-border-radius-100, 8px);
-      border: 1px solid transparent;
+      width: var(--cg-spacing-32);
+      height: var(--cg-spacing-32);
+      border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid transparent;
       background: none;
-      font-size: var(--cg-font-size-xl, 20px);
+      font-size: var(--cg-font-size-xl);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 150ms;
+      transition:
+        opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
+        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
+        background var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
+        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
       opacity: 0.5;
     }
-    .emoji-btn:hover { opacity: 0.8; background: rgba(255, 255, 255, 0.04); }
-    .emoji-btn.selected { opacity: 1; border-color: var(--cg-brand-ai-accent, #dfff61); background: rgba(223, 255, 97, 0.06); }
-    .emoji-btn:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }
+    .emoji-btn:hover { opacity: 0.85; background: var(--cg-overlay-dark-subtle); transform: scale(1.1); }
+    .emoji-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
+    .emoji-btn.selected {
+      opacity: 1;
+      border-color: var(--cg-color-surface-base-text);
+      background: var(--cg-overlay-accent-subtle);
+      animation: jelly 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .emoji-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); outline-offset: var(--cg-outline-offset-default); }
 
-    /* Tags */
+    /* Dim unselected when one is chosen */
+    .emoji-btn.dimmed { opacity: 0.3; }
+    .emoji-btn.dimmed:hover { opacity: 0.6; }
+
+    /* ── Tags ── */
     .tags {
       display: flex;
       flex-wrap: wrap;
-      gap: var(--cg-spacing-6, 6px);
+      gap: var(--cg-spacing-6);
+      animation: sectionReveal var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
     }
     .tag {
-      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-75, 6px);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
+      padding: var(--cg-spacing-4) var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       background: none;
-      color: var(--cg-gray-400, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
-      transition: all 150ms;
+      transition:
+        border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
+        color var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
+        background var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
+        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
+        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
       font-family: inherit;
+      animation: chipIn 350ms var(--cg-motion-easing-enter) both;
+      animation-delay: calc(var(--chip-index, 0) * 60ms);
     }
-    .tag:hover { border-color: var(--cg-gray-600, #52525b); color: var(--cg-color-surface-base-text, #fafafa); }
-    .tag.selected { border-color: var(--cg-brand-ai-accent, #dfff61); color: var(--cg-brand-ai-accent, #dfff61); background: rgba(223, 255, 97, 0.06); }
+    .tag:hover {
+      border-color: var(--cg-color-input-border-hover);
+      color: var(--cg-color-surface-base-text);
+      transform: translateY(-1px);
+    }
+    .tag:active { transform: scale(var(--cg-interaction-press-scale)); }
+    .tag.selected {
+      border-color: var(--cg-color-surface-base-text);
+      color: var(--cg-color-surface-base-text);
+      background: var(--cg-overlay-accent-subtle);
+      box-shadow: 0 0 8px var(--cg-overlay-accent-medium);
+      animation: pop 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .tag:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); outline-offset: var(--cg-outline-offset-default); }
 
-    /* Comment */
+    /* ── Comment ── */
+    .comment-area {
+      animation: sectionReveal var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      overflow: hidden;
+    }
     textarea {
       width: 100%;
-      min-height: 60px;
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      border-radius: var(--cg-border-radius-100, 8px);
-      background: var(--cg-color-surface-base-background, #09090b);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      min-height: var(--cg-spacing-64);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
+      border-radius: var(--cg-border-radius-100);
+      background: var(--cg-color-input-background-default);
+      color: var(--cg-color-surface-base-text);
       font: inherit;
-      font-size: var(--cg-font-size-xs, 12px);
+      font-size: var(--cg-font-size-xs);
       resize: vertical;
       outline: none;
-      transition: border-color 200ms;
+      transition: border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
     }
-    textarea:focus { border-color: var(--cg-brand-ai-accent, #dfff61); }
-    textarea::placeholder { color: var(--cg-gray-600, #52525b); }
+    textarea:focus {
+      border-color: var(--cg-color-input-border-focus);
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+    }
+    textarea::placeholder { color: var(--cg-color-input-text-placeholder); }
 
-    /* Submit */
-    .submit-btn {
+    /* ── Submit ── */
+    .submit-wrap {
       align-self: flex-start;
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-16, 16px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      border: none;
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: #000;
-      font: inherit;
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 150ms;
+      animation: chipIn 300ms var(--cg-motion-easing-enter) both;
     }
-    .submit-btn:hover { filter: brightness(1.1); }
+    .submit-btn {
+      position: relative;
+      overflow: hidden;
+      padding: var(--cg-spacing-6) var(--cg-spacing-16);
+      border-radius: var(--cg-border-radius-100);
+      border: none;
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-action-primary-text-default);
+      font: inherit;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
+      cursor: pointer;
+      transition:
+        background-color var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
+        opacity var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
+        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+    }
+    .submit-btn:hover { background: var(--cg-color-action-primary-background-hover); }
+    .submit-btn:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
     .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .submit-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); outline-offset: var(--cg-outline-offset-default); }
 
-    /* Submitted state */
+    /* Ripple pseudo-element */
+    .submit-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.25) 0%, transparent 70%);
+      opacity: 0;
+      transform: scale(0);
+      pointer-events: none;
+    }
+    .submit-btn:active:not(:disabled)::after {
+      animation: rippleOut 500ms ease-out;
+    }
+
+    /* ── Submitted state ── */
     .submitted {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-green-400, #4ade80);
-      font-weight: 500;
+      gap: var(--cg-spacing-8);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-status-success-text-default);
+      font-weight: var(--cg-font-weight-medium);
     }
-    .submitted-icon { font-size: var(--cg-font-size-base, 16px); }
+    .submitted-icon {
+      font-size: var(--cg-font-size-base);
+      animation: pop 500ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    .submitted-icon svg {
+      stroke-dasharray: 24;
+      stroke-dashoffset: 24;
+      animation: checkDraw 400ms ease-out 200ms forwards;
+    }
+    .submitted-text {
+      animation: successReveal 400ms var(--cg-motion-easing-enter) 350ms both;
     }
 
     /* ── Rounded variants ── */
     :host([rounded="none"]) .container { border-radius: 0; }
-    :host([rounded="sm"]) .container { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .container { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .container { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .container { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .container { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .container { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .container { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) .container { border-radius: var(--cg-border-radius-full); }
+
+    /* ── Reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      .thumb-btn.selected-up,
+      .thumb-btn.selected-down,
+      .star-btn.active,
+      .emoji-btn.selected,
+      .tag.selected,
+      .tag,
+      .submitted-icon,
+      .submitted-text,
+      .tags,
+      .comment-area,
+      .submit-wrap { animation: none; }
+      .submitted-icon svg { stroke-dashoffset: 0; animation: none; }
+    }
   `];
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   /** Feedback mode */
@@ -253,23 +424,26 @@ export class AiFeedback extends LitElement {
       return html`
         <div class="submitted" aria-live="polite" role="status">
           <span class="submitted-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-          <span>Thank you for your feedback!</span>
+          <span class="submitted-text">Thank you for your feedback!</span>
         </div>
       `;
     }
+
+    const hasRating = this._rating !== null;
 
     return html`
       <div class="container" role="group" aria-label="Rate this response">
         <div class="rating-row">
           <span class="rating-label">Rate:</span>
           ${this.mode === 'thumbs' ? html`
-            <button class="thumb-btn ${this._rating === 1 ? 'selected-up' : ''}" @click=${() => this._handleThumb(1)} aria-label="Good" title="Good"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg></button>
-            <button class="thumb-btn ${this._rating === 0 ? 'selected-down' : ''}" @click=${() => this._handleThumb(0)} aria-label="Bad" title="Bad"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15V19a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg></button>
+            <button class="thumb-btn ${this._rating === 1 ? 'selected-up' : ''}" @click=${() => this._handleThumb(1)} aria-label="Good" aria-pressed=${this._rating === 1 ? 'true' : 'false'} title="Good"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg></button>
+            <button class="thumb-btn ${this._rating === 0 ? 'selected-down' : ''}" @click=${() => this._handleThumb(0)} aria-label="Bad" aria-pressed=${this._rating === 0 ? 'true' : 'false'} title="Bad"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15V19a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg></button>
           ` : nothing}
 
           ${this.mode === 'stars' ? html`
             ${[1, 2, 3, 4, 5].map(n => html`
               <button class="star-btn ${(this._rating ?? 0) >= n || this._hoverStar >= n ? 'active' : ''}"
+                style="--star-index: ${n - 1}"
                 @click=${() => this._handleStar(n)}
                 @mouseenter=${() => { this._hoverStar = n; }}
                 @mouseleave=${() => { this._hoverStar = 0; }}
@@ -279,30 +453,36 @@ export class AiFeedback extends LitElement {
 
           ${this.mode === 'emoji' ? html`
             ${this._emojiLabels.map((label, i) => html`
-              <button class="emoji-btn ${this._rating === i ? 'selected' : ''}"
+              <button class="emoji-btn ${this._rating === i ? 'selected' : ''} ${hasRating && this._rating !== i ? 'dimmed' : ''}"
                 @click=${() => this._handleEmoji(i)}
-                aria-label="Rating ${i + 1} of 5: ${label}">${this._renderEmoji(i)}</button>
+                aria-label="Rating ${i + 1} of 5: ${label}" aria-pressed=${this._rating === i ? 'true' : 'false'}>${this._renderEmoji(i)}</button>
             `)}
           ` : nothing}
         </div>
 
         ${this._isNegative() && this.tags.length > 0 ? html`
           <div class="tags" role="group" aria-label="Select issues">
-            ${this.tags.map(tag => html`
+            ${this.tags.map((tag, i) => html`
               <button class="tag ${this._selectedTags.has(tag) ? 'selected' : ''}"
-                @click=${() => this._toggleTag(tag)}>${tag}</button>
+                style="--chip-index: ${i}"
+                @click=${() => this._toggleTag(tag)}
+                aria-pressed=${this._selectedTags.has(tag) ? 'true' : 'false'}>${tag}</button>
             `)}
           </div>
         ` : nothing}
 
         ${(this.showComment || this._isNegative()) ? html`
-          <textarea placeholder="What could be improved?" aria-label="Additional feedback"
-            .value=${this._comment}
-            @input=${(e: Event) => { this._comment = (e.target as HTMLTextAreaElement).value; }}></textarea>
+          <div class="comment-area">
+            <textarea placeholder="What could be improved?" aria-label="Additional feedback"
+              .value=${this._comment}
+              @input=${(e: Event) => { this._comment = (e.target as HTMLTextAreaElement).value; }}></textarea>
+          </div>
         ` : nothing}
 
         ${this._rating !== null ? html`
-          <button class="submit-btn" @click=${this._handleSubmit}>Submit feedback</button>
+          <div class="submit-wrap">
+            <button class="submit-btn" @click=${this._handleSubmit}>Submit feedback</button>
+          </div>
         ` : nothing}
       </div>
     `;

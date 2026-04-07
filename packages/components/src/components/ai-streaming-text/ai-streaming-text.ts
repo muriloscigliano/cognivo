@@ -24,80 +24,62 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
+import { sanitizeHTML } from '../../utils/sanitize.js';
 
 @customElement('ai-streaming-text')
 export class AiStreamingText extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     .container {
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: 1.6;
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-base-text);
+      line-height: var(--cg-line-height-relaxed);
       word-wrap: break-word;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     /* Markdown */
-    .container strong { font-weight: 700; }
+    .container strong { font-weight: var(--cg-font-weight-bold); }
     .container em { font-style: italic; }
     .container code {
-      background: rgba(255, 255, 255, 0.06);
-      padding: 1px 5px;
-      border-radius: var(--cg-border-radius-50, 4px);
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-size: var(--cg-font-size-xs, 12px);
+      background: var(--cg-overlay-dark-subtle);
+      padding: var(--cg-spacing-1) var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-100);
+      font-family: var(--cg-font-family-mono);
+      font-size: var(--cg-font-size-xs);
     }
     .container pre {
-      background: rgba(0, 0, 0, 0.3);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-100, 8px);
+      background: var(--cg-overlay-dark-subtle);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-100);
       overflow-x: auto;
-      margin: 8px 0;
-      font-size: var(--cg-font-size-xs, 12px);
-      line-height: 1.5;
+      margin: var(--cg-spacing-8) 0;
+      font-size: var(--cg-font-size-xs);
+      line-height: var(--cg-line-height-normal);
       position: relative;
     }
     .container pre code { background: none; padding: 0; }
-    .container ul, .container ol { padding-left: 18px; margin: 6px 0; }
-    .container a { color: var(--cg-brand-ai-accent, #dfff61); text-decoration: none; }
+    .container ul, .container ol { padding-left: var(--cg-spacing-20); margin: var(--cg-spacing-6) 0; }
+    .container a { color: var(--cg-color-surface-base-text); text-decoration: none; }
     .container a:hover { text-decoration: underline; }
-    .container p { margin: 0 0 8px; }
+    .container p { margin: 0 0 var(--cg-spacing-8); }
     .container p:last-child { margin: 0; }
     .container h1, .container h2, .container h3 {
-      font-weight: 700;
-      margin: 12px 0 6px;
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-weight: var(--cg-font-weight-bold);
+      margin: var(--cg-spacing-12) 0 var(--cg-spacing-6);
+      color: var(--cg-color-surface-base-text);
     }
-    .container h1 { font-size: var(--cg-font-size-xl, 20px); }
-    .container h2 { font-size: var(--cg-font-size-base, 16px); }
-    .container h3 { font-size: var(--cg-font-size-sm, 14px); }
-
-    /* Cursor */
-    .cursor {
-      display: inline-block;
-      width: 2px;
-      height: 1em;
-      background: var(--cg-brand-ai-accent, #dfff61);
-      margin-left: 1px;
-      vertical-align: text-bottom;
-      animation: blink 1s step-end infinite;
-    }
-
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
-    }
+    .container h1 { font-size: var(--cg-font-size-xl); }
+    .container h2 { font-size: var(--cg-font-size-base); }
+    .container h3 { font-size: var(--cg-font-size-sm); }
 
     /* Empty */
     .empty {
-      color: var(--cg-gray-500, #71717a);
+      color: var(--cg-color-input-text-placeholder);
       font-style: italic;
     }
-
   `];
 
   /** Content to display */
@@ -105,9 +87,6 @@ export class AiStreamingText extends LitElement {
 
   /** Is currently streaming */
   @property({ type: Boolean }) streaming: boolean = false;
-
-  /** Show cursor */
-  @property({ type: Boolean }) showCursor: boolean = true;
 
   /** Render as markdown */
   @property({ type: Boolean }) markdown: boolean = true;
@@ -168,11 +147,11 @@ export class AiStreamingText extends LitElement {
       return html`<div class="empty">Waiting for content...</div>`;
     }
 
-    const rendered = this.markdown ? this._renderMarkdown(this.content) : this.content;
+    const rendered = sanitizeHTML(this.markdown ? this._renderMarkdown(this.content) : this.content);
 
     return html`
       <div class="container" role="status" aria-live="polite">
-        <span .innerHTML=${rendered}></span>${this.streaming && this.showCursor ? html`<span class="cursor" aria-hidden="true"></span>` : nothing}
+        <span .innerHTML=${rendered}></span>
       </div>
     `;
   }

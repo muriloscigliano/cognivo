@@ -15,19 +15,19 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
 export class CgLabel extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
     :host {
-      margin-bottom: var(--cg-spacing-4, 4px);
+      margin-bottom: var(--cg-spacing-4);
     }
 
     .label-row {
       display: flex;
       align-items: baseline;
-      gap: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-4);
     }
 
     label {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-medium, 500);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-base-text);
       cursor: pointer;
     }
 
@@ -37,22 +37,24 @@ export class CgLabel extends LitElement {
     }
 
     .required {
-      color: var(--cg-text-danger, #ef4444);
-      font-weight: var(--cg-font-weight-bold, 700);
+      color: var(--cg-color-status-error-text-default);
+      font-weight: var(--cg-font-weight-bold);
     }
 
     .hint {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
-      margin-top: 2px;
-      line-height: 1.4;
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-top: var(--cg-spacing-2);
+      line-height: var(--cg-line-height-snug);
+      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     .error-text {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-text-danger, #ef4444);
-      margin-top: 2px;
-      line-height: 1.4;
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-status-error-text-default);
+      margin-top: var(--cg-spacing-2);
+      line-height: var(--cg-line-height-snug);
+      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
   `];
 

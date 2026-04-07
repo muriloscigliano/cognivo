@@ -1,46 +1,47 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
- * <cg-skeleton> — Loading placeholder with shimmer.
+ * <cg-skeleton> — Loading placeholder with pulse animation.
  *
- * Features:
- * - Shimmer gradient animation (200% background-size, linear infinite)
- * - Variant shapes (text, circular, rectangular)
- * - Configurable dimensions
- * - Multiple text lines with varying widths
- * - prefers-reduced-motion: pulse instead of shimmer
+ * @example
+ * ```html
+ * <cg-skeleton variant="rectangular" width="100%" height="80px"></cg-skeleton>
+ * <cg-skeleton variant="circular" width="40px" height="40px"></cg-skeleton>
+ * <cg-skeleton variant="text" lines="3"></cg-skeleton>
+ * ```
+ *
+ * @cssprop --cg-color-loading-spinner-secondary - Skeleton background color
+ * @cssprop --cg-border-radius-100 - Default border radius (12px)
  */
 @customElement('cg-skeleton')
 export class CgSkeleton extends LitElement {
-  static override styles = [hostBlock, reducedMotion, shimmerKeyframes, css`
+  static override styles = [hostBlock, reducedMotion, css`
     .skeleton {
-      background: linear-gradient(
-        90deg,
-        var(--cg-color-surface-base-border, #27272a) 25%,
-        rgba(255, 255, 255, 0.06) 50%,
-        var(--cg-color-surface-base-border, #27272a) 75%
-      );
-      background-size: 200% 100%;
-      animation: shimmer 1.8s ease-in-out infinite;
+      background: var(--cg-color-action-secondary-background-hover);
+      animation: skeletonPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes skeletonPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
 
     :host([animated="false"]) .skeleton {
       animation: none;
-      background: var(--cg-color-surface-base-border, #27272a);
     }
 
     /* ── Rounded variants ── */
     :host([rounded="none"]) .skeleton { border-radius: 0; }
-    :host([rounded="sm"]) .skeleton { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .skeleton { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .skeleton { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .skeleton { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .skeleton { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .skeleton { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .skeleton { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) .skeleton { border-radius: var(--cg-border-radius-full); }
 
     /* ── Variants ── */
     .rectangular {
-      border-radius: var(--cg-border-radius-100, 8px);
+      border-radius: var(--cg-border-radius-100);
     }
 
     .circular {
@@ -48,12 +49,12 @@ export class CgSkeleton extends LitElement {
     }
 
     .text-line {
-      border-radius: var(--cg-border-radius-050, 4px);
-      height: 14px;
+      border-radius: var(--cg-border-radius-50);
+      height: var(--cg-spacing-12);
     }
 
     .text-line + .text-line {
-      margin-top: var(--cg-spacing-8, 8px);
+      margin-top: var(--cg-spacing-8);
     }
 
     /* Text lines get varying widths for realism */
@@ -67,6 +68,13 @@ export class CgSkeleton extends LitElement {
     .lines-container {
       display: flex;
       flex-direction: column;
+    }
+
+    /* Reduced motion: no animation, static placeholder */
+    @media (prefers-reduced-motion: reduce) {
+      .skeleton {
+        animation: none !important;
+      }
     }
   `];
 
@@ -82,7 +90,7 @@ export class CgSkeleton extends LitElement {
     switch (this.variant) {
       case 'circular': return '40px';
       case 'rectangular': return '80px';
-      case 'text': return '14px';
+      case 'text': return '12px';
       default: return '80px';
     }
   }
@@ -91,8 +99,8 @@ export class CgSkeleton extends LitElement {
     if (this.variant === 'text') {
       const lineCount = Math.max(1, Math.min(20, this.lines));
       return html`
-        <div class="lines-container" role="status" aria-label="Loading content">
-          ${Array.from({ length: lineCount }, (_, i) => html`
+        <div class="lines-container" role="status" aria-label="Loading content" aria-busy="true">
+          ${Array.from({ length: lineCount }, () => html`
             <div
               class="skeleton text-line"
               style="width: ${this.width}; height: ${this._getDefaultHeight()}"
@@ -109,6 +117,7 @@ export class CgSkeleton extends LitElement {
         class="skeleton ${shapeClass}"
         role="status"
         aria-label="Loading content"
+        aria-busy="true"
         style="width: ${this.width}; height: ${this._getDefaultHeight()}"
       ></div>
     `;

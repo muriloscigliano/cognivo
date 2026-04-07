@@ -3,17 +3,20 @@ import { customElement, property } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
- * <cg-progress-bar> — Linear progress bar with label.
+ * <cg-progress-bar> — Linear progress bar with label, buffer, and custom formatting.
  *
- * Features:
- * - Smooth width transition on value change
- * - Indeterminate animation (sliding gradient)
- * - Color variants (default, success, warning, danger)
- * - Size variants (sm, md, lg)
- * - Optional label + percentage display
- * - Striped pattern + animated stripes
- * - ARIA progressbar role
- * - prefers-reduced-motion support
+ * @example
+ * ```html
+ * <cg-progress-bar value="68" label="Upload" showValue></cg-progress-bar>
+ * <cg-progress-bar value="45" label="Storage" formatValue="45 MB / 100 MB"></cg-progress-bar>
+ * <cg-progress-bar value="80" buffer="95" label="Video" showValue></cg-progress-bar>
+ * <cg-progress-bar indeterminate label="Processing..."></cg-progress-bar>
+ * ```
+ *
+ * @cssprop --cg-component-progress-radius - Track border radius
+ * @cssprop --cg-component-progress-height-sm - Track height sm (4px)
+ * @cssprop --cg-component-progress-height-md - Track height md (8px)
+ * @cssprop --cg-component-progress-height-lg - Track height lg (12px)
  */
 @customElement('cg-progress-bar')
 export class CgProgressBar extends LitElement {
@@ -24,72 +27,85 @@ export class CgProgressBar extends LitElement {
 
     .header {
       display: flex;
-      align-items: center;
+      align-items: baseline;
       justify-content: space-between;
-      margin-bottom: var(--cg-spacing-4, 4px);
+      margin-bottom: var(--cg-spacing-6);
+    }
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: var(--cg-spacing-2);
     }
 
     .label {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: var(--cg-font-weight-medium, 500);
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      line-height: 1.4;
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-container-text);
+      line-height: var(--cg-line-height-snug);
+    }
+
+    .description {
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-container-outlined);
+      line-height: var(--cg-line-height-snug);
     }
 
     .value-text {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-color-text-primary, #fafafa);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-container-text);
       font-variant-numeric: tabular-nums;
+      white-space: nowrap;
     }
 
     /* ── Track ── */
     .track {
       width: 100%;
-      background: var(--cg-color-surface-base-border, #27272a);
-      border-radius: 999px;
+      background: var(--cg-color-loading-spinner-secondary);
+      border-radius: var(--cg-component-progress-radius);
       overflow: hidden;
       position: relative;
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
     }
 
     /* Sizes */
-    :host([size="sm"]) .track { height: 4px; }
-    :host([size="md"]) .track { height: 8px; }
-    :host([size="lg"]) .track { height: 12px; }
+    :host([size="sm"]) .track { height: var(--cg-component-progress-height-sm); }
+    :host([size="md"]) .track { height: var(--cg-component-progress-height-md); }
+    :host([size="lg"]) .track { height: var(--cg-component-progress-height-lg); }
+
+    /* ── Buffer bar (behind fill) ── */
+    .buffer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      border-radius: var(--cg-component-progress-radius);
+      background: var(--cg-color-loading-spinner-primary);
+      opacity: 0.25;
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+    }
 
     /* ── Fill bar ── */
     .fill {
       height: 100%;
-      border-radius: 999px;
-      transition: width var(--cg-motion-duration-slow, 500ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+      border-radius: var(--cg-component-progress-radius);
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
       position: relative;
       overflow: hidden;
-    }
-    .fill::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      animation: fillShimmer 2s ease-in-out infinite;
-    }
-    @keyframes fillShimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
     }
 
     /* ── Variant colors ── */
     :host([variant="default"]) .fill {
-      background: linear-gradient(90deg, var(--cg-brand-ai-accent, #dfff61), var(--cg-brand-ai-highlight, #e2ff70));
+      background: var(--cg-color-loading-spinner-primary);
     }
     :host([variant="success"]) .fill {
-      background: var(--cg-color-status-success-text-default, #22c55e);
+      background: var(--cg-color-status-success-text-default);
     }
     :host([variant="warning"]) .fill {
-      background: var(--cg-color-status-warning-text-default, #f59e0b);
+      background: var(--cg-color-status-warning-text-default);
     }
     :host([variant="danger"]) .fill {
-      background: var(--cg-color-status-error-text-default, #ef4444);
+      background: var(--cg-color-status-error-text-default);
     }
 
     /* ── Striped pattern ── */
@@ -114,7 +130,6 @@ export class CgProgressBar extends LitElement {
     :host([animated]) .fill::after {
       animation: stripe-move 1s linear infinite;
     }
-    }
 
     @keyframes stripe-move {
       from { background-position: 0 0; }
@@ -125,7 +140,6 @@ export class CgProgressBar extends LitElement {
     :host([indeterminate]) .fill {
       width: 40% !important;
       animation: indeterminate-slide 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
     }
 
     @keyframes indeterminate-slide {
@@ -138,11 +152,59 @@ export class CgProgressBar extends LitElement {
       0%, 100% { opacity: 0.4; }
       50% { opacity: 1; }
     }
+
+    /* ── Min/Max labels ── */
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: var(--cg-spacing-4);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-container-outlined);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .fill::before {
+        animation: none !important;
+        background: none !important;
+      }
+      :host([animated]) .fill::after {
+        animation: none !important;
+      }
+      :host([indeterminate]) .fill {
+        animation: indeterminate-pulse 2s ease-in-out infinite !important;
+        animation-duration: 2s !important;
+        transform: none !important;
+        width: 100% !important;
+      }
+    }
   `];
 
+  /** Progress value 0–100 */
   @property({ type: Number }) value = 0;
+
+  /** Label text above the bar */
   @property({ type: String }) label = '';
+
+  /** Description text below the label */
+  @property({ type: String }) description = '';
+
+  /** Show percentage value */
   @property({ type: Boolean }) showValue = false;
+
+  /** Custom formatted value text (e.g. "45 MB / 100 MB") — overrides percentage */
+  @property({ type: String }) formatValue = '';
+
+  /** Buffer value 0–100 (secondary fill, e.g. video buffering) */
+  @property({ type: Number }) buffer = 0;
+
+  /** Min label shown under the track */
+  @property({ type: String }) minLabel = '';
+
+  /** Max label shown under the track */
+  @property({ type: String }) maxLabel = '';
+
   @property({ type: String, reflect: true }) variant: 'default' | 'success' | 'warning' | 'danger' = 'default';
   @property({ type: Boolean, reflect: true }) indeterminate = false;
   @property({ type: String, reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
@@ -153,15 +215,29 @@ export class CgProgressBar extends LitElement {
     return Math.max(0, Math.min(100, this.value));
   }
 
+  private get _clampedBuffer(): number {
+    return Math.max(0, Math.min(100, this.buffer));
+  }
+
+  private get _displayValue(): string {
+    if (this.formatValue) return this.formatValue;
+    return `${this._clampedValue}%`;
+  }
+
   override render() {
-    const showHeader = this.label || (this.showValue && !this.indeterminate);
+    const showHeader = this.label || this.description || ((this.showValue || this.formatValue) && !this.indeterminate);
+    const showRangeLabels = this.minLabel || this.maxLabel;
+    const hasBuffer = this.buffer > 0 && !this.indeterminate;
 
     return html`
       ${showHeader ? html`
         <div class="header">
-          ${this.label ? html`<span class="label">${this.label}</span>` : nothing}
-          ${this.showValue && !this.indeterminate ? html`
-            <span class="value-text">${this._clampedValue}%</span>
+          <div class="header-left">
+            ${this.label ? html`<span class="label">${this.label}</span>` : nothing}
+            ${this.description ? html`<span class="description">${this.description}</span>` : nothing}
+          </div>
+          ${(this.showValue || this.formatValue) && !this.indeterminate ? html`
+            <span class="value-text">${this._displayValue}</span>
           ` : nothing}
         </div>
       ` : nothing}
@@ -174,11 +250,20 @@ export class CgProgressBar extends LitElement {
         aria-label="${this.label || 'Progress'}"
         aria-busy="${this.indeterminate}"
       >
+        ${hasBuffer ? html`
+          <div class="buffer" style="width: ${this._clampedBuffer}%"></div>
+        ` : nothing}
         <div
           class="fill"
           style="${this.indeterminate ? '' : `width: ${this._clampedValue}%`}"
         ></div>
       </div>
+      ${showRangeLabels ? html`
+        <div class="range-labels">
+          <span>${this.minLabel}</span>
+          <span>${this.maxLabel}</span>
+        </div>
+      ` : nothing}
     `;
   }
 }

@@ -67,17 +67,17 @@
         "text": {
           "default": {
             "$type": "color",
-            "$value": "{gray.black}"
+            "$value": "{gray.900}"
           },
           "disable": {
             "$type": "color",
-            "$value": "{gray.700}"
+            "$value": "{gray.400}"
           }
         },
         "border": {
           "default": {
             "$type": "color",
-            "$value": "{gray.400}"
+            "$value": "{gray.200}"
           },
           "focus": {
             "$type": "color",
@@ -85,7 +85,7 @@
           },
           "disable": {
             "$type": "color",
-            "$value": "{gray.700}"
+            "$value": "{gray.200}"
           }
         }
       },
@@ -93,7 +93,7 @@
         "background": {
           "default": {
             "$type": "color",
-            "$value": "{gray.black}"
+            "$value": "transparent"
           },
           "hover": {
             "$type": "color",
@@ -101,17 +101,17 @@
           },
           "active": {
             "$type": "color",
-            "$value": "{gray.800}"
+            "$value": "{gray.200}"
           },
           "disable": {
             "$type": "color",
-            "$value": "{gray.300}"
+            "$value": "transparent"
           }
         },
         "text": {
           "default": {
             "$type": "color",
-            "$value": "{gray.white}"
+            "$value": "{gray.900}"
           },
           "disable": {
             "$type": "color",
@@ -121,7 +121,7 @@
         "border": {
           "default": {
             "$type": "color",
-            "$value": "{gray.black}"
+            "$value": "transparent"
           },
           "focus": {
             "$type": "color",
@@ -129,7 +129,7 @@
           },
           "disable": {
             "$type": "color",
-            "$value": "{gray.400}"
+            "$value": "transparent"
           }
         }
       }
@@ -328,7 +328,7 @@
         },
         "outlined": {
           "$type": "color",
-          "$value": "{gray.500}"
+          "$value": "{gray.300}"
         },
         "subtle": {
           "$type": "color",
@@ -534,11 +534,11 @@
         },
         "divider": {
           "$type": "color",
-          "$value": "{gray.300}"
+          "$value": "{gray.200}"
         },
         "border": {
           "$type": "color",
-          "$value": "{gray.300}"
+          "$value": "{gray.200}"
         },
         "header": {
           "background": {

@@ -35,49 +35,47 @@ interface Notification {
 export class AiNotificationCenter extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     :host([hidden]) { display: none; }
 
     .container {
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      padding: var(--cg-spacing-16, 16px);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-16);
+      color: var(--cg-color-surface-base-text);
       max-height: 480px;
       overflow-y: auto;
-      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-bottom: var(--cg-spacing-12, 12px);
-      margin-bottom: var(--cg-spacing-12, 12px);
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
+      padding-bottom: var(--cg-spacing-12);
+      margin-bottom: var(--cg-spacing-12);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
     }
 
     .title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
     }
 
     .unread-badge {
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: var(--cg-color-surface-container-background, #18181b);
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: var(--cg-border-radius-100, 8px);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-container-background);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-100);
       min-width: 16px;
       text-align: center;
     }
@@ -85,70 +83,70 @@ export class AiNotificationCenter extends LitElement {
     .mark-all-btn {
       background: transparent;
       border: none;
-      color: var(--cg-gray-500, #71717a);
-      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
       cursor: pointer;
-      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-50, 4px);
-      transition: color 150ms ease;
+      padding: var(--cg-spacing-4) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-50);
+      transition: color var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
     }
-    .mark-all-btn:hover { color: var(--cg-brand-ai-accent, #dfff61); }
+    .mark-all-btn:hover { color: var(--cg-color-surface-base-text); }
     .mark-all-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .group-label {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--cg-gray-600, #52525b);
-      padding: var(--cg-spacing-8, 8px) 0 var(--cg-spacing-4, 4px);
+      color: var(--cg-color-input-text-placeholder);
+      padding: var(--cg-spacing-8) 0 var(--cg-spacing-4);
     }
 
     .notification {
       display: flex;
       align-items: flex-start;
-      gap: var(--cg-spacing-10, 10px);
-      padding: var(--cg-spacing-10, 10px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      margin-bottom: var(--cg-spacing-2, 2px);
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-100);
+      margin-bottom: var(--cg-spacing-2);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
       cursor: pointer;
-      transition: background 120ms ease;
+      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
       position: relative;
     }
-    .notification:hover { background: rgba(223, 255, 97, 0.04); }
+    .notification:hover { background: var(--cg-overlay-accent-subtle); }
     .notification:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
+      outline: 2px solid var(--cg-color-accent-border);
       outline-offset: -2px;
     }
 
-    .notification.unread { background: rgba(223, 255, 97, 0.06); }
+    .notification.unread { background: var(--cg-overlay-accent-subtle); }
 
     .unread-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: var(--cg-brand-ai-accent, #dfff61);
+      background: var(--cg-color-action-primary-background-default);
       flex-shrink: 0;
-      margin-top: var(--cg-spacing-6, 6px);
+      margin-top: var(--cg-spacing-6);
     }
 
     .notif-body { flex: 1; min-width: 0; }
 
     .notif-title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      color: var(--cg-color-surface-base-text, #fafafa);
-      margin-bottom: 2px;
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
+      margin-bottom: var(--cg-spacing-2);
     }
-    .notification.unread .notif-title { color: var(--cg-brand-ai-accent, #dfff61); }
+    .notification.unread .notif-title { color: var(--cg-color-surface-base-text); }
 
     .notif-message {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-400, #a1a1aa);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
       line-height: 1.4;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -156,42 +154,42 @@ export class AiNotificationCenter extends LitElement {
     }
 
     .notif-time {
-      font-size: 10px;
-      color: var(--cg-gray-600, #52525b);
-      margin-top: var(--cg-spacing-4, 4px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-top: var(--cg-spacing-4);
     }
 
     .dismiss-btn {
       background: transparent;
       border: none;
-      color: var(--cg-gray-600, #52525b);
-      font-size: var(--cg-font-size-sm, 14px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
       cursor: pointer;
-      padding: 2px 4px;
-      border-radius: var(--cg-border-radius-50, 4px);
+      padding: var(--cg-spacing-2) var(--cg-spacing-4);
+      border-radius: var(--cg-border-radius-50);
       flex-shrink: 0;
       line-height: 1;
-      transition: color 150ms ease;
+      transition: color var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
     }
-    .dismiss-btn:hover { color: var(--cg-color-status-error-text-default, #ef4444); }
+    .dismiss-btn:hover { color: var(--cg-color-status-error-text-default); }
     .dismiss-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .empty-state {
       text-align: center;
-      color: var(--cg-gray-600, #52525b);
-      font-size: var(--cg-font-size-sm, 14px);
-      padding: var(--cg-spacing-24, 24px) 0;
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
+      padding: var(--cg-spacing-24) 0;
     }
 
     /* ── Rounded variants ── */
     :host([rounded="none"]) .container { border-radius: 0; }
-    :host([rounded="sm"]) .container { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .container { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .container { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .container { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .container { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .container { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .container { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) .container { border-radius: var(--cg-border-radius-full); }
   `];
 
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
@@ -242,6 +240,9 @@ export class AiNotificationCenter extends LitElement {
 
     return html`
       <div class="container" role="region" aria-label="Notification center">
+        <div class="sr-live" role="status" aria-live="polite" aria-atomic="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">
+          ${this._unreadCount > 0 ? `${this._unreadCount} unread notifications` : 'No unread notifications'}
+        </div>
         <div class="header">
           <div class="header-left">
             <span class="title">Notifications</span>

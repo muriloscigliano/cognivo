@@ -48,71 +48,84 @@ export class AiSearch extends LitElement {
     .input-row {
       display: flex;
       align-items: center;
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-100, 8px);
-      padding: 0 var(--cg-spacing-12, 12px);
-      transition: border-color 200ms;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      background: var(--cg-color-input-background-default);
+      border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
+      border-radius: var(--cg-component-input-radius);
+      padding: 0 var(--cg-spacing-12);
+      height: var(--cg-component-input-height-md);
+      transition:
+        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
+        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
-    .input-row:focus-within { border-color: var(--cg-brand-ai-accent, #dfff61); }
+    .input-row:hover { border-color: var(--cg-color-input-border-hover); }
+    .input-row:focus-within { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+
+    /* Rounded */
+    :host([rounded="full"]) .input-row { border-radius: var(--cg-border-radius-full); }
+
+    /* Size */
+    :host([size="lg"]) .input-row { height: var(--cg-component-input-height-lg); padding: 0 var(--cg-spacing-16); }
+    :host([size="lg"]) input { font-size: var(--cg-font-size-base); }
 
     .search-icon {
-      color: var(--cg-gray-500, #71717a);
-      font-size: var(--cg-font-size-sm, 14px);
+      color: var(--cg-color-input-icon-default);
       flex-shrink: 0;
-      margin-right: var(--cg-spacing-8, 8px);
+      margin-right: var(--cg-spacing-8);
+      display: flex;
     }
+    .search-icon svg { width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); }
 
     input {
       flex: 1;
-      padding: var(--cg-spacing-8, 8px) 0;
+      padding: var(--cg-spacing-8) 0;
       border: none;
       background: none;
-      color: var(--cg-color-surface-base-text, #fafafa);
+      color: var(--cg-color-input-text-default);
       font: inherit;
-      font-size: var(--cg-font-size-sm, 14px);
+      font-size: var(--cg-font-size-sm);
       outline: none;
     }
-    input::placeholder { color: var(--cg-gray-600, #52525b); }
+    input::placeholder { color: var(--cg-color-input-text-placeholder); }
 
     .shortcut {
-      font-size: var(--cg-font-size-xs, 12px);
-      padding: var(--cg-spacing-2, 2px) var(--cg-spacing-6, 6px);
-      border-radius: var(--cg-border-radius-50, 4px);
-      background: var(--cg-gray-800, #27272a);
-      color: var(--cg-gray-500, #71717a);
-      font-weight: 600;
+      font-size: var(--cg-font-size-xs);
+      padding: var(--cg-spacing-2) var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-50);
+      background: var(--cg-color-surface-cards-background);
+      color: var(--cg-color-input-text-placeholder);
+      font-weight: var(--cg-font-weight-semibold);
       flex-shrink: 0;
     }
 
     .clear-btn {
       background: none;
       border: none;
-      color: var(--cg-gray-500, #71717a);
+      color: var(--cg-color-input-text-placeholder);
       cursor: pointer;
-      padding: var(--cg-spacing-4, 4px);
-      font-size: var(--cg-font-size-sm, 14px);
+      padding: var(--cg-spacing-4);
+      font-size: var(--cg-font-size-sm);
+      font-family: inherit;
       display: flex;
-      transition: color 150ms;
+      transition: color var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
     }
-    .clear-btn:hover { color: var(--cg-color-surface-base-text, #fafafa); }
+    .clear-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+    }
+    .clear-btn:hover { color: var(--cg-color-surface-base-text); }
 
     /* Dropdown */
     .dropdown {
       position: absolute;
-      top: calc(100% + var(--cg-spacing-6, 6px));
+      top: calc(100% + var(--cg-spacing-6));
       left: 0;
       right: 0;
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-100, 8px);
-      box-shadow: var(--cg-elevation-3, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 10px 15px -3px rgba(0, 0, 0, 0.4));
-      z-index: 100;
+      background: var(--cg-color-modal-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
+      border-radius: var(--cg-border-radius-100);
+      z-index: 50;
       max-height: 360px;
       overflow-y: auto;
-      animation: fadeIn 150ms ease;
     }
 
     @keyframes fadeIn {
@@ -121,60 +134,64 @@ export class AiSearch extends LitElement {
     }
 
     .section-label {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px) var(--cg-spacing-4, 4px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      color: var(--cg-gray-500, #71717a);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12) var(--cg-spacing-4);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
+      color: var(--cg-color-input-text-placeholder);
       text-transform: uppercase;
-      letter-spacing: var(--cg-letter-spacing-wide, 0.05em);
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
 
     /* Filters */
     .filters {
       display: flex;
-      gap: var(--cg-spacing-6, 6px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
+      gap: var(--cg-spacing-6);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
       flex-wrap: wrap;
     }
     .filter-tag {
-      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-50, 4px);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
+      padding: var(--cg-spacing-4) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-50);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       background: none;
-      color: var(--cg-gray-400, #a1a1aa);
+      color: var(--cg-color-input-text-placeholder);
       font: inherit;
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
-      transition: all 150ms;
+      transition:
+        border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color),
+        color var(--cg-motion-duration-normal) var(--cg-motion-easing-color),
+        background-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
     }
-    .filter-tag:hover { border-color: var(--cg-gray-600, #52525b); color: var(--cg-gray-300, #d4d4d8); }
-    .filter-tag:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }
-    .filter-tag.active { border-color: var(--cg-brand-ai-accent, #dfff61); color: var(--cg-brand-ai-accent, #dfff61); background: rgba(223, 255, 97, 0.06); }
+    .filter-tag:hover { border-color: var(--cg-color-input-border-hover); color: var(--cg-color-surface-base-text); }
+    .filter-tag:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .filter-tag.active { border-color: var(--cg-color-surface-base-text); color: var(--cg-color-surface-base-text); background: var(--cg-overlay-accent-subtle); }
 
     /* Result items */
     .result-item {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
       cursor: pointer;
-      transition: background 100ms;
+      transition: background var(--cg-motion-duration-fast);
     }
-    .result-item:hover, .result-item.highlighted { background: rgba(255, 255, 255, 0.04); }
-    .result-icon { font-size: var(--cg-font-size-base, 16px); flex-shrink: 0; }
+    .result-item:hover, .result-item.highlighted { background: var(--cg-overlay-dark-subtle); }
+    .result-item:active { transform: scale(var(--cg-interaction-press-scale)); }
+    .result-icon { font-size: var(--cg-font-size-base); flex-shrink: 0; }
     .result-info { flex: 1; min-width: 0; }
     .result-title {
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      font-weight: 500;
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-base-text);
+      font-weight: var(--cg-font-weight-medium);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
     .result-desc {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -184,41 +201,35 @@ export class AiSearch extends LitElement {
     .recent-item {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-6) var(--cg-spacing-12);
       cursor: pointer;
-      transition: background 100ms;
+      transition: background var(--cg-motion-duration-fast);
     }
-    .recent-item:hover { background: rgba(255, 255, 255, 0.04); }
-    .recent-icon { color: var(--cg-gray-600, #52525b); font-size: var(--cg-font-size-xs, 12px); }
-    .recent-text { font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-400, #a1a1aa); flex: 1; }
+    .recent-item:hover { background: var(--cg-overlay-dark-subtle); }
+    .recent-icon { color: var(--cg-color-input-border-hover); font-size: var(--cg-font-size-xs); }
+    .recent-text { font-size: var(--cg-font-size-xs); color: var(--cg-color-input-text-placeholder); flex: 1; }
     .recent-delete {
       background: none;
       border: none;
-      color: var(--cg-gray-600, #52525b);
+      color: var(--cg-color-input-border-hover);
       cursor: pointer;
-      font-size: var(--cg-font-size-xs, 12px);
+      font-size: var(--cg-font-size-xs);
       opacity: 0;
-      transition: opacity 150ms;
+      transition: opacity var(--cg-motion-duration-normal);
     }
     .recent-item:hover .recent-delete { opacity: 1; }
-
-    .divider { height: 1px; background: var(--cg-gray-800, #27272a); margin: var(--cg-spacing-4, 4px) 0; }
-
-    :focus-visible {
+    .recent-delete:focus-visible {
+      opacity: 1;
       outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
 
-    /* ── Rounded variants ── */
-    :host([rounded="none"]) .input-row, :host([rounded="none"]) .dropdown { border-radius: 0; }
-    :host([rounded="sm"]) .input-row, :host([rounded="sm"]) .dropdown { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .input-row, :host([rounded="md"]) .dropdown { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .input-row, :host([rounded="lg"]) .dropdown { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .input-row, :host([rounded="full"]) .dropdown { border-radius: var(--cg-border-radius-full, 99999px); }
-  `];
+    .divider { height: var(--cg-border-width-50); background: var(--cg-color-surface-cards-border); margin: var(--cg-spacing-4) 0; }
 
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
+  `];
+  @property({ reflect: true }) size: 'md' | 'lg' = 'md';
+  @property({ reflect: true }) rounded: 'default' | 'full' = 'default';
   @property({ type: String }) placeholder: string = 'Search...';
   @property({ type: Array }) suggestions: string[] = [];
   @property({ type: Array }) filters: string[] = [];
@@ -345,7 +356,7 @@ export class AiSearch extends LitElement {
               ${this.suggestions.map((s, i) => html`
                 <div class="result-item ${(i + this.results.length) === this._highlightIndex ? 'highlighted' : ''}"
                   role="option" @mousedown=${(e: Event) => { e.preventDefault(); this._query = s; }}>
-                  <span class="result-icon" style="color: var(--cg-brand-ai-accent, #dfff61);"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg></span>
+                  <span class="result-icon" style="color: var(--cg-color-surface-base-text);"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg></span>
                   <div class="result-info"><div class="result-title">${s}</div></div>
                 </div>
               `)}

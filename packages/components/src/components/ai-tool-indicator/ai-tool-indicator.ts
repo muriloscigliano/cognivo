@@ -1,25 +1,13 @@
 /**
  * @element ai-tool-indicator
  * Displays LLM tool/function call progress with humanized names,
- * spinner/check/error status icons, and expandable result panels.
- * Supports compact inline mode for embedding in chat messages.
- *
- * @example
- * ```html
- * <ai-tool-indicator .tools=${[
- *   { name: 'web_search', status: 'complete', result: 'Found 3 relevant pages' },
- *   { name: 'code_execution', status: 'loading' }
- * ]}></ai-tool-indicator>
- * ```
- *
- * @prop {ToolCall[]} tools - Array of tool calls with name, status, and optional result
- * @prop {boolean} compact - Inline compact display mode
+ * spinner/check/error icons, and expandable result panels.
  *
  * @fires {CustomEvent<{index: number, tool: ToolCall}>} ai-tool-click - When a tool row is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, spinKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface ToolCall {
   name: string;
@@ -29,44 +17,43 @@ interface ToolCall {
 
 @customElement('ai-tool-indicator')
 export class AiToolIndicator extends LitElement {
-  static override styles = [hostBlock, reducedMotion, spinKeyframes, css`
-
+  static override styles = [hostBlock, reducedMotion, css`
     .tools {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-6, 6px);
+      gap: var(--cg-spacing-8);
     }
 
     .tool {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 500;
-      color: var(--cg-gray-400, #a1a1aa);
-      animation: slideIn 200ms ease;
+      gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-16) var(--cg-spacing-20);
+      border-radius: var(--cg-border-radius-100);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-container-outlined);
       cursor: pointer;
-      transition: all 150ms;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      animation: slideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      animation-delay: calc(var(--tool-index, 0) * 60ms);
     }
     .tool:hover {
-      border-color: var(--cg-gray-600, #52525b);
+      border-color: var(--cg-color-surface-cards-hover-border);
+      background: var(--cg-color-surface-cards-hover-background);
     }
 
     @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-8px); }
+      from { opacity: 0; transform: translateX(calc(-1 * var(--cg-spacing-8))); }
       to { opacity: 1; transform: translateX(0); }
     }
 
     /* Status icon */
     .status-icon {
-      width: 16px;
-      height: 16px;
+      width: var(--cg-spacing-16);
+      height: var(--cg-spacing-16);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -75,70 +62,78 @@ export class AiToolIndicator extends LitElement {
 
     /* Spinner */
     .spinner {
-      width: 12px;
-      height: 12px;
-      border: 1.5px solid rgba(223, 255, 97, 0.2);
-      border-top-color: var(--cg-brand-ai-accent, #dfff61);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
+      width: var(--cg-spacing-12);
+      height: var(--cg-spacing-12);
+      border: var(--cg-border-width-100) solid var(--cg-color-loading-spinner-secondary);
+      border-top-color: var(--cg-color-loading-spinner-primary);
+      border-radius: var(--cg-border-radius-full);
+      animation: spin 0.8s linear infinite;
     }
-    .check { color: var(--cg-green-400, #4ade80); font-size: 14px; }
-    .error-icon { color: var(--cg-red-400, #f87171); font-size: 14px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Tool icon */
-    .tool-icon {
-      width: 14px;
-      height: 14px;
-      color: var(--cg-gray-500, #71717a);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .check svg, .error-icon svg {
+      width: var(--cg-spacing-12);
+      height: var(--cg-spacing-12);
     }
+    .check { color: var(--cg-color-status-success-text-default); display: flex; }
+    .error-icon { color: var(--cg-color-status-error-text-default); display: flex; }
 
-    .tool-name {
-      flex: 1;
+    /* Tool name */
+    .tool-name { flex: 1; }
+    .tool.complete .tool-name { color: var(--cg-color-surface-base-text); }
+    .tool.error .tool-name { color: var(--cg-color-status-error-text-default); }
+
+    /* Loading shimmer on tool name */
+    .tool.loading .tool-name {
+      background: linear-gradient(110deg, var(--cg-color-surface-container-outlined) 35%, var(--cg-color-surface-base-text) 50%, var(--cg-color-surface-container-outlined) 65%);
+      background-size: 300% 100%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: textSweep 1.8s var(--cg-motion-easing-default) infinite;
     }
-    .tool.complete .tool-name { color: var(--cg-color-surface-base-text, #fafafa); }
-    .tool.error .tool-name { color: var(--cg-red-400, #f87171); }
-
-    .duration {
-      font-size: 10px;
-      color: var(--cg-gray-600, #52525b);
+    @keyframes textSweep {
+      0% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     /* Expanded result */
     .result {
-      margin-top: var(--cg-spacing-6, 6px);
-      padding: var(--cg-spacing-8, 8px);
-      background: var(--cg-color-surface-base-background, #09090b);
-      border-radius: var(--cg-border-radius-100, 8px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      color: var(--cg-gray-400, #a1a1aa);
-      line-height: 1.4;
+      margin-top: var(--cg-spacing-4);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      background: var(--cg-color-surface-base-background);
+      border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      font-size: var(--cg-font-size-xs);
+      font-family: var(--cg-font-family-mono);
+      color: var(--cg-color-surface-container-outlined);
+      line-height: var(--cg-line-height-relaxed);
       white-space: pre-wrap;
-      max-height: 120px;
+      max-height: 200px;
       overflow-y: auto;
     }
 
     /* Compact mode */
     :host([compact]) .tools { flex-direction: row; flex-wrap: wrap; }
-    :host([compact]) .tool { padding: 3px var(--cg-spacing-8, 8px); font-size: var(--cg-font-size-xs, 12px); }
+    :host([compact]) .tool { padding: var(--cg-spacing-6) var(--cg-spacing-12); }
     :host([compact]) .result { display: none; }
 
-    :focus-visible {
+    .tool:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .spinner { animation: none; }
+      .tool { animation: none; }
+      .tool.loading .tool-name { animation: none; -webkit-text-fill-color: currentColor; }
     }
   `];
 
-  /** Tool calls array */
   @property({ type: Array }) tools: ToolCall[] = [];
+  @property({ type: Boolean, reflect: true }) compact = false;
 
-  /** Compact inline mode */
-  @property({ type: Boolean, reflect: true }) compact: boolean = false;
-
-  private _expandedIndex: number = -1;
+  private _expandedIndex = -1;
 
   private _humanize(name: string): string {
     const map: Record<string, string> = {
@@ -156,8 +151,7 @@ export class AiToolIndicator extends LitElement {
       retrieval: 'Retrieving data',
       api_call: 'Calling API',
     };
-    if (map[name]) return map[name];
-    return name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    return map[name] || name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   }
 
   private _handleClick(index: number) {
@@ -170,32 +164,23 @@ export class AiToolIndicator extends LitElement {
   }
 
   private _renderStatusIcon(status: string) {
-    if (status === 'complete') return html`<span class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>`;
-    if (status === 'error') return html`<span class="error-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>`;
+    if (status === 'complete') return html`<span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>`;
+    if (status === 'error') return html`<span class="error-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>`;
     return html`<div class="spinner"></div>`;
-  }
-
-  private _renderToolIcon() {
-    return html`
-      <div class="tool-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
-        </svg>
-      </div>
-    `;
   }
 
   override render() {
     if (this.tools.length === 0) return nothing;
 
     return html`
-      <div class="tools" role="status" aria-label="Tool calls in progress">
+      <div class="tools" role="status" aria-label="Tool calls">
         ${this.tools.map((t, i) => html`
-          <div class="tool ${t.status}" @click=${() => this._handleClick(i)}
+          <div class="tool ${t.status}" style="--tool-index: ${i}"
             role="button" tabindex="0"
+            aria-label="${this._humanize(t.name)} — ${t.status}"
+            @click=${() => this._handleClick(i)}
             @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleClick(i); } }}>
-            <div class="status-icon">${this._renderStatusIcon(t.status)}</div>
-            ${this._renderToolIcon()}
+            <span class="status-icon">${this._renderStatusIcon(t.status)}</span>
             <span class="tool-name">${this._humanize(t.name)}</span>
           </div>
           ${!this.compact && this._expandedIndex === i && t.result ? html`

@@ -6,7 +6,7 @@
  * ```html
  * <ai-batch-progress
  *   total="500" completed="312" failed="8"
- *   title="Embedding Generation"
+ *   heading="Embedding Generation"
  *   status="running"
  * ></ai-batch-progress>
  * ```
@@ -25,182 +25,191 @@ import { hostBlock, reducedMotion, pulseKeyframes, fadeSlideInKeyframes } from '
 export class AiBatchProgress extends LitElement {
   static override styles = [hostBlock, reducedMotion, pulseKeyframes, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
     .container {
-      background: var(--cg-color-surface-container-background, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      padding: var(--cg-spacing-16, 16px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background: var(--cg-color-surface-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-16);
+      color: var(--cg-color-surface-base-text);
     }
 
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: var(--cg-spacing-12, 12px);
+      margin-bottom: var(--cg-spacing-12);
     }
 
     .title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
     }
 
     .status-badge {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      padding: 3px var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-3) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-100);
     }
     .status-badge.running {
-      background: rgba(59, 130, 246, 0.15);
-      color: var(--cg-color-status-info-text-default, #3b82f6);
+      background: var(--cg-color-status-info-background-default);
+      color: var(--cg-color-status-info-text-default);
     }
     .status-badge.complete {
-      background: rgba(34, 197, 94, 0.15);
-      color: var(--cg-color-status-success-text-default, #22c55e);
+      background: var(--cg-color-status-success-background-default);
+      color: var(--cg-color-status-success-text-default);
     }
     .status-badge.failed {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--cg-color-status-error-text-default, #ef4444);
+      background: var(--cg-color-status-error-background-default);
+      color: var(--cg-color-status-error-text-default);
     }
     .status-badge.paused {
-      background: rgba(234, 179, 8, 0.15);
-      color: #eab308;
+      background: var(--cg-color-status-warning-background-default);
+      color: var(--cg-color-status-warning-text);
     }
 
     /* ── Stats row ── */
     .stats {
       display: flex;
-      gap: var(--cg-spacing-16, 16px);
-      margin-bottom: var(--cg-spacing-12, 12px);
+      gap: var(--cg-spacing-16);
+      margin-bottom: var(--cg-spacing-12);
     }
 
     .stat {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: var(--cg-spacing-2);
     }
 
     .stat-label {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     .stat-value {
-      font-size: var(--cg-font-size-base, 16px);
-      font-weight: 700;
+      font-size: var(--cg-font-size-base);
+      font-weight: var(--cg-font-weight-bold);
     }
-    .stat-value.success { color: var(--cg-color-status-success-text-default, #22c55e); }
-    .stat-value.fail { color: var(--cg-color-status-error-text-default, #ef4444); }
-    .stat-value.pending { color: var(--cg-gray-400, #a1a1aa); }
+    .stat-value.success { color: var(--cg-color-status-success-text-default); }
+    .stat-value.fail { color: var(--cg-color-status-error-text-default); }
+    .stat-value.pending { color: var(--cg-color-input-text-placeholder); }
 
     /* ── Progress bar ── */
     .progress-section {
-      margin-bottom: var(--cg-spacing-12, 12px);
+      margin-bottom: var(--cg-spacing-12);
     }
 
     .progress-header {
       display: flex;
       justify-content: space-between;
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
-      margin-bottom: var(--cg-spacing-6, 6px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-bottom: var(--cg-spacing-6);
     }
 
     .progress-percent {
-      font-weight: 700;
-      color: var(--cg-brand-ai-accent, #dfff61);
+      font-weight: var(--cg-font-weight-bold);
+      color: var(--cg-color-surface-base-text);
     }
 
     .progress-track {
       height: 10px;
-      background: var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-50, 4px);
+      background: var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-50);
       overflow: hidden;
       display: flex;
     }
 
     .progress-success {
       height: 100%;
-      background: var(--cg-color-status-success-text-default, #22c55e);
-      transition: width 300ms ease;
+      background: var(--cg-color-status-success-text-default);
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
 
     .progress-fail {
       height: 100%;
-      background: var(--cg-color-status-error-text-default, #ef4444);
-      transition: width 300ms ease;
+      background: var(--cg-color-status-error-text-default);
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
 
     /* ── Pulse animation for running ── */
     .pulse-dot {
       display: inline-block;
-      width: 8px;
-      height: 8px;
+      width: var(--cg-spacing-8);
+      height: var(--cg-spacing-8);
       border-radius: 50%;
-      background: var(--cg-color-status-info-text-default, #3b82f6);
-      margin-right: 6px;
+      background: var(--cg-color-status-info-text-default);
+      margin-right: var(--cg-spacing-6);
       animation: pulse 1.5s infinite;
     }
 
     .eta {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-600, #52525b);
-      margin-top: var(--cg-spacing-6, 6px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-border-hover);
+      margin-top: var(--cg-spacing-6);
     }
 
     /* ── Actions ── */
     .actions {
       display: flex;
-      gap: var(--cg-spacing-8, 8px);
-      margin-top: var(--cg-spacing-16, 16px);
-      padding-top: 14px;
-      border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
+      gap: var(--cg-spacing-8);
+      margin-top: var(--cg-spacing-16);
+      padding-top: var(--cg-spacing-12);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
 
     .action-btn {
       background: transparent;
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      color: var(--cg-gray-400, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-100, 8px);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-100);
       cursor: pointer;
-      transition: all 150ms ease;
+      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color), color var(--cg-motion-duration-fast) var(--cg-motion-easing-color), background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     .action-btn:hover {
-      border-color: var(--cg-gray-700, #3f3f46);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      border-color: var(--cg-color-surface-cards-border);
+      color: var(--cg-color-surface-base-text);
     }
     .action-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
-    .action-btn.pause:hover { border-color: #eab308; color: #eab308; }
-    .action-btn.cancel:hover { border-color: var(--cg-color-status-error-text-default, #ef4444); color: var(--cg-color-status-error-text-default, #ef4444); }
+    .action-btn.pause:hover { border-color: var(--cg-color-status-warning-text); color: var(--cg-color-status-warning-text); }
+    .action-btn.cancel:hover { border-color: var(--cg-color-status-error-text-default); color: var(--cg-color-status-error-text-default); }
     .action-btn.retry {
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: var(--cg-color-surface-container-background, #18181b);
-      border-color: var(--cg-brand-ai-accent, #dfff61);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-container-background);
+      border-color: var(--cg-color-surface-base-text);
     }
     .action-btn.retry:hover { filter: brightness(0.9); }
-      .pulse-dot { animation: none; }
+
+    .complete-text {
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-status-success-text-default);
+    }
+
+    /* Reduced motion: stop pulse animation, show static dot */
+    @media (prefers-reduced-motion: reduce) {
+      .pulse-dot {
+        animation: none !important;
+        opacity: 1;
+      }
     }
   `];
   @property({ type: Number }) total = 0;
   @property({ type: Number }) completed = 0;
   @property({ type: Number }) failed = 0;
-  @property({ type: String }) override title = 'Batch Job';
+  @property({ type: String }) heading = 'Batch Job';
   @property({ type: String }) status: 'running' | 'complete' | 'failed' | 'paused' = 'running';
 
   private get _pending(): number {
@@ -232,11 +241,11 @@ export class AiBatchProgress extends LitElement {
 
   override render() {
     return html`
-      <div class="container" role="region" aria-label="${this.title} progress">
+      <div class="container" role="region" aria-label="${this.heading} progress">
         <div class="header">
           <span class="title">
             ${this.status === 'running' ? html`<span class="pulse-dot" aria-hidden="true"></span>` : nothing}
-            ${this.title}
+            ${this.heading}
           </span>
           <span class="status-badge ${this.status}">${this.status}</span>
         </div>
@@ -321,7 +330,7 @@ export class AiBatchProgress extends LitElement {
             >Retry Failed</button>
           ` : nothing}
           ${this.status === 'complete' ? html`
-            <span style="font-size:12px;color:var(--cg-color-status-success-text-default, #22c55e);">All items processed</span>
+            <span class="complete-text">All items processed</span>
           ` : nothing}
         </div>
       </div>

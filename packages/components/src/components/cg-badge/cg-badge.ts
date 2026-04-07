@@ -17,89 +17,89 @@ import { hostBase, reducedMotion, entranceStagger, dotPulseKeyframes } from '../
  *
  * @fires {CustomEvent<{label: string}>} cg-badge-remove - When the remove button is clicked
  *
- * @cssprop [--cg-color-badge-background-default] - Neutral badge background
- * @cssprop [--cg-color-badge-text-default] - Neutral badge text color
- * @cssprop [--cg-border-radius-100=8px] - Badge border radius (sm/md)
- * @cssprop [--cg-font-size-xs=12px] - Badge font size (md)
+ * @cssprop --cg-color-badge-background-default - Neutral badge background
+ * @cssprop --cg-color-badge-text-default - Neutral badge text color
+ * @cssprop --cg-component-badge-radius-md - Badge border radius (md)
+ * @cssprop --cg-font-size-xs - Badge font size (12px)
  */
 @customElement('cg-badge')
 export class CgBadge extends LitElement {
   static override styles = [hostBase, reducedMotion, entranceStagger, dotPulseKeyframes, css`
     :host {
-      animation: staggerFadeIn 200ms ease-out both;
+      animation: staggerFadeIn var(--cg-transition-duration-fast) ease-out both;
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
-      font-weight: var(--cg-font-weight-semibold, 600);
+      gap: var(--cg-spacing-4);
+      font-weight: var(--cg-font-weight-medium);
       white-space: nowrap;
-      border: 1px solid transparent;
-      transition: all var(--cg-transition-duration-fast, 100ms) ease;
+      border: var(--cg-border-width-50) solid transparent;
+      transition: background-color var(--cg-transition-duration-fast) ease, border-color var(--cg-transition-duration-fast) ease, opacity var(--cg-transition-duration-fast) ease;
     }
 
     /* Sizes */
     :host([size="sm"]) .badge {
-      padding: 1px 6px;
-      font-size: 0.65rem;
-      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-4) var(--cg-spacing-8);
+      font-size: var(--cg-font-size-xs);
+      border-radius: var(--cg-component-badge-radius-sm);
     }
     :host([size="md"]) .badge {
-      padding: 2px 8px;
-      font-size: var(--cg-font-size-xs, 12px);
-      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-6) var(--cg-spacing-12);
+      font-size: var(--cg-font-size-sm);
+      border-radius: var(--cg-component-badge-radius-md);
     }
     :host([size="lg"]) .badge {
-      padding: 4px 12px;
-      font-size: var(--cg-font-size-sm, 14px);
-      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
+      font-size: var(--cg-font-size-base);
+      border-radius: var(--cg-component-badge-radius-lg);
     }
 
-    /* Variants — using badge semantic tokens */
+    /* Variants */
     :host([variant="neutral"]) .badge {
-      background: var(--cg-color-badge-background-default, rgba(59, 130, 246, 0.12));
-      color: var(--cg-color-badge-text-default, #60a5fa);
-      border-color: var(--cg-color-surface-base-border, #27272a);
+      background: var(--cg-color-badge-background-default);
+      color: var(--cg-color-badge-text-default);
+      border-color: transparent;
     }
     :host([variant="info"]) .badge {
-      background: var(--cg-color-status-info-background-default, rgba(59, 130, 246, 0.12));
-      color: var(--cg-color-status-info-text-default, #60a5fa);
-      border-color: var(--cg-color-status-info-border-default, rgba(59, 130, 246, 0.25));
+      background: var(--cg-color-badge-background-default);
+      color: var(--cg-color-badge-text-default);
+      border-color: var(--cg-color-status-info-border-default);
     }
     :host([variant="success"]) .badge {
-      background: var(--cg-color-badge-background-success, rgba(34, 197, 94, 0.12));
-      color: var(--cg-color-badge-text-success, #4ade80);
-      border-color: var(--cg-color-status-success-border-default, rgba(34, 197, 94, 0.25));
+      background: var(--cg-color-badge-background-success);
+      color: var(--cg-color-badge-text-success);
+      border-color: var(--cg-color-status-success-border-default);
     }
     :host([variant="warning"]) .badge {
-      background: var(--cg-color-badge-background-warning, rgba(245, 158, 11, 0.12));
-      color: var(--cg-color-badge-text-warning, #fbbf24);
-      border-color: var(--cg-color-status-warning-border-default, rgba(245, 158, 11, 0.25));
+      background: var(--cg-color-badge-background-warning);
+      color: var(--cg-color-badge-text-warning);
+      border-color: var(--cg-color-status-warning-border-default);
     }
     :host([variant="danger"]) .badge {
-      background: var(--cg-color-badge-background-error, rgba(239, 68, 68, 0.12));
-      color: var(--cg-color-badge-text-error, #f87171);
-      border-color: var(--cg-color-status-error-border-default, rgba(239, 68, 68, 0.25));
+      background: var(--cg-color-badge-background-error);
+      color: var(--cg-color-badge-text-error);
+      border-color: var(--cg-color-status-error-border-default);
     }
     :host([variant="accent"]) .badge {
-      background: var(--cg-color-status-info-background-default, rgba(59, 130, 246, 0.12));
-      color: var(--cg-text-accent, #e5ff6b);
-      border-color: var(--cg-color-status-info-border-default, rgba(59, 130, 246, 0.25));
+      background: var(--cg-color-badge-background-default);
+      color: var(--cg-color-badge-text-default);
+      border-color: var(--cg-color-accent-border);
     }
 
     /* Rounded variants */
     :host([rounded="none"]) .badge { border-radius: 0; }
-    :host([rounded="sm"]) .badge { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .badge { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .badge { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .badge { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .badge { border-radius: var(--cg-component-badge-radius-sm); }
+    :host([rounded="md"]) .badge { border-radius: var(--cg-component-badge-radius-md); }
+    :host([rounded="lg"]) .badge { border-radius: var(--cg-component-badge-radius-lg); }
+    :host([rounded="full"]) .badge { border-radius: var(--cg-border-radius-full); }
 
     /* Dot indicator */
     .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: var(--cg-border-radius-full, 99999px);
+      width: var(--cg-spacing-6);
+      height: var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-full);
       background: currentColor;
       flex-shrink: 0;
       animation: dotPulse 2s ease-in-out infinite;
@@ -110,32 +110,32 @@ export class CgBadge extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 14px;
-      height: 14px;
+      width: var(--cg-icon-size-100);
+      height: var(--cg-icon-size-100);
       border: none;
       background: none;
       color: currentColor;
       opacity: 0.6;
       cursor: pointer;
       padding: 0;
-      border-radius: var(--cg-border-radius-full, 99999px);
-      transition: opacity var(--cg-transition-duration-fast, 100ms);
+      border-radius: var(--cg-border-radius-full);
+      transition: opacity var(--cg-transition-duration-fast) ease;
       flex-shrink: 0;
     }
     .remove:hover { opacity: 1; }
     .remove:focus-visible {
-      outline: 2px solid currentColor;
-      outline-offset: 1px;
+      box-shadow: 0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset), 0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
+      outline: none;
     }
     .remove svg {
-      width: 10px;
-      height: 10px;
+      width: var(--cg-spacing-12);
+      height: var(--cg-spacing-12);
     }
   `];
 
   @property({ reflect: true }) variant: 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'accent' = 'neutral';
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
   @property() label = '';
   @property({ type: Boolean }) dot = false;
   @property({ type: Boolean }) removable = false;
@@ -150,7 +150,7 @@ export class CgBadge extends LitElement {
 
   override render() {
     return html`
-      <span class="badge" role="status">
+      <span class="badge" role=${this.dot ? 'status' : 'presentation'}>
         ${this.dot ? html`<span class="dot"></span>` : nothing}
         <span class="text">${this.label}<slot></slot></span>
         ${this.removable ? html`

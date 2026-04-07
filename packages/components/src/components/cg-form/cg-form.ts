@@ -1,5 +1,5 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
@@ -17,7 +17,7 @@ export class CgForm extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
     :host {
       display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+      font-family: var(--cg-font-family-primary);
     }
 
     form {
@@ -25,9 +25,14 @@ export class CgForm extends LitElement {
       flex-direction: column;
     }
 
-    :host([gap="sm"]) form { gap: var(--cg-spacing-8, 8px); }
-    :host([gap="md"]) form { gap: var(--cg-spacing-16, 16px); }
-    :host([gap="lg"]) form { gap: var(--cg-spacing-24, 24px); }
+    /* All slotted children stretch to full width */
+    ::slotted(*) {
+      width: 100%;
+    }
+
+    :host([gap="sm"]) form { gap: var(--cg-spacing-8); }
+    :host([gap="md"]) form { gap: var(--cg-spacing-16); }
+    :host([gap="lg"]) form { gap: var(--cg-spacing-24); }
 
     :host([loading]) form {
       opacity: 0.6;
@@ -35,21 +40,21 @@ export class CgForm extends LitElement {
     }
 
     .error-summary {
-      padding: var(--cg-spacing-12, 12px);
-      background: var(--cg-color-status-error-background-default, rgba(239, 68, 68, 0.12));
-      border: 1px solid var(--cg-color-status-error-border-default, rgba(239, 68, 68, 0.25));
-      border-radius: var(--cg-border-radius-150, 12px);
-      color: var(--cg-text-danger, #ef4444);
-      font-size: var(--cg-font-size-sm, 14px);
-      line-height: 1.4;
+      padding: var(--cg-spacing-12);
+      background: var(--cg-color-status-error-background-default);
+      border: var(--cg-border-width-50) solid var(--cg-color-status-error-border-default);
+      border-radius: var(--cg-border-radius-100);
+      color: var(--cg-color-status-error-text-default);
+      font-size: var(--cg-font-size-sm);
+      line-height: var(--cg-line-height-normal);
     }
 
     .error-summary ul {
-      margin: var(--cg-spacing-4, 4px) 0 0;
-      padding-left: var(--cg-spacing-16, 16px);
+      margin: var(--cg-spacing-4) 0 0;
+      padding-left: var(--cg-spacing-16);
     }
     .error-summary li {
-      margin: 2px 0;
+      margin: var(--cg-spacing-2) 0;
     }
   `];
 
@@ -75,26 +80,42 @@ export class CgForm extends LitElement {
     }));
   }
 
-  /** Programmatic reset — clears inputs via native form reset. */
+  /** Programmatic reset — clears inputs via native form reset and slotted custom elements. */
   reset() {
     const form = this.shadowRoot?.querySelector('form');
     form?.reset();
+
+    // Reset slotted form-associated custom elements via formResetCallback
+    const slot = this.shadowRoot?.querySelector('slot');
+    const slotted = slot?.assignedElements({ flatten: true }) ?? [];
+    for (const el of slotted) {
+      if (typeof (el as any).formResetCallback === 'function') {
+        (el as any).formResetCallback();
+      }
+      // Also check nested children (e.g., wrapper divs containing custom elements)
+      el.querySelectorAll('*').forEach((child: Element) => {
+        if (typeof (child as any).formResetCallback === 'function') {
+          (child as any).formResetCallback();
+        }
+      });
+    }
+
     this.dispatchEvent(new CustomEvent('cg-reset', { bubbles: true, composed: true }));
   }
 
   override render() {
     return html`
-      ${this.errors.length > 0 ? html`
-        <div class="error-summary" role="alert">
-          <strong>Please fix the following:</strong>
-          <ul>${this.errors.map(e => html`<li>${e}</li>`)}</ul>
-        </div>
-      ` : nothing}
       <form
         @submit=${this._handleSubmit}
         novalidate
         aria-busy=${this.loading ? 'true' : 'false'}
       >
+        ${this.errors.length > 0 ? html`
+          <div class="error-summary" role="alert">
+            <strong>Please fix the following:</strong>
+            <ul>${this.errors.map(e => html`<li>${e}</li>`)}</ul>
+          </div>
+        ` : nothing}
         <slot></slot>
       </form>
     `;

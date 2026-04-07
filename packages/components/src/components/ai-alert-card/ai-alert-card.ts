@@ -16,11 +16,11 @@
  * @fires {CustomEvent<{title: string, urgency: string}>} ai-alert-action - Action button clicked
  * @fires {CustomEvent<{title: string}>} ai-alert-dismiss - Dismiss button clicked
  *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Focus ring color
- * @cssprop [--cg-red-400=#f87171] - Critical urgency pulse and border
+ * @cssprop --cg-color-status-error-text-default - Critical urgency pulse and border
+ * @cssprop --cg-color-focus-ring - Focus ring color
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes, pulseKeyframes } from '../../styles/index.js';
 
 type Urgency = 'info' | 'warning' | 'urgent' | 'critical';
@@ -29,47 +29,63 @@ type Urgency = 'info' | 'warning' | 'urgent' | 'critical';
 export class AiAlertCard extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, pulseKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     .card {
-      background: var(--cg-color-surface-cards-background, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid var(--cg-color-surface-cards-border, #27272a);
-      border-radius: var(--cg-border-radius-200, 12px);
-      padding: var(--cg-spacing-16, 16px) var(--cg-spacing-16, 16px) var(--cg-spacing-16, 16px) var(--cg-spacing-20, 20px);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-200);
+      padding: var(--cg-spacing-16) var(--cg-spacing-16) var(--cg-spacing-16) var(--cg-spacing-20);
       display: flex;
       align-items: flex-start;
-      gap: var(--cg-spacing-12, 12px);
+      gap: var(--cg-spacing-12);
       position: relative;
-      border-left: 4px solid transparent;
-      transition: box-shadow 150ms ease, transform 150ms ease;
-      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      border-left: var(--cg-border-width-200) solid transparent;
+      transition:
+        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
+        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
     .card:hover {
-      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
-      transform: translateY(var(--cg-interaction-hover-lift, -1px));
+      transform: translateY(-1px);
+      box-shadow: var(--cg-elevation-2);
     }
 
     /* ── Urgency left border ── */
-    .card.info    { border-left-color: var(--cg-blue-400, #60a5fa); }
-    .card.warning { border-left-color: var(--cg-yellow-400, #fbbf24); }
-    .card.urgent  { border-left-color: var(--cg-orange-400, #fb923c); }
+    .card.info    { border-left-color: var(--cg-color-status-info-text-default); }
+    .card.warning { border-left-color: var(--cg-color-status-warning-text-default); }
+    .card.urgent  { border-left-color: var(--cg-color-status-error-border-default); }
+    .card:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 2px var(--cg-color-surface-base-background),
+        0 0 0 3px var(--cg-overlay-accent-strong);
+    }
     .card.critical {
-      border-left-color: var(--cg-red-400, #f87171);
-      animation: pulse-glow 2s ease-in-out infinite;
+      border-left-color: var(--cg-color-status-error-text-default);
+      animation: pulse-glow var(--cg-motion-duration-slower) var(--cg-motion-easing-default) infinite;
+    }
+
+    /* ── Dismiss exit ── */
+    @keyframes alertExit {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-8px) scale(0.97); }
+    }
+    .card.dismissing {
+      animation: alertExit var(--cg-motion-duration-normal) var(--cg-motion-easing-exit) forwards;
+      pointer-events: none;
     }
 
     /* ── Icon ── */
     .icon {
-      font-size: var(--cg-font-size-xl, 20px);
+      font-size: var(--cg-font-size-xl);
       flex-shrink: 0;
-      margin-top: var(--cg-spacing-2, 2px);
+      margin-top: var(--cg-spacing-2);
     }
-    .icon.info    { color: var(--cg-blue-400, #60a5fa); }
-    .icon.warning { color: var(--cg-yellow-400, #fbbf24); }
-    .icon.urgent  { color: var(--cg-orange-400, #fb923c); }
-    .icon.critical { color: var(--cg-red-400, #f87171); }
+    .icon.info    { color: var(--cg-color-status-info-text-default); }
+    .icon.warning { color: var(--cg-color-status-warning-text-default); }
+    .icon.urgent  { color: var(--cg-color-status-error-border-default); }
+    .icon.critical { color: var(--cg-color-status-error-text-default); }
 
     /* ── Body ── */
     .body { flex: 1; min-width: 0; }
@@ -77,110 +93,62 @@ export class AiAlertCard extends LitElement {
     .header {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      margin-bottom: var(--cg-spacing-6, 6px);
+      gap: var(--cg-spacing-8);
+      margin-bottom: var(--cg-spacing-6);
     }
     .title {
-      font-size: var(--cg-font-size-base, 16px);
-      font-weight: 700;
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-base);
+      font-weight: var(--cg-font-weight-bold);
+      color: var(--cg-color-surface-base-text);
     }
     .deadline {
       display: inline-flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
-      padding: var(--cg-spacing-2, 2px) var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-full, 99999px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--cg-gray-300, #d4d4d8);
+      gap: var(--cg-spacing-4);
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-full);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      background: var(--cg-overlay-dark-subtle);
+      color: var(--cg-color-surface-base-text);
       white-space: nowrap;
     }
 
     .message {
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-gray-400, #a1a1aa);
-      line-height: var(--cg-line-height-normal, 1.5);
-      padding-bottom: var(--cg-spacing-12, 12px);
-      margin-bottom: var(--cg-spacing-12, 12px);
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-input-text-placeholder);
+      line-height: var(--cg-line-height-normal);
+      padding-bottom: var(--cg-spacing-12);
+      margin-bottom: var(--cg-spacing-12);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
     }
 
-    /* ── Action button ── */
-    .action-btn {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: all 150ms ease;
-    }
-    .action-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
-    }
-    .action-btn.info {
-      background: rgba(96, 165, 250, 0.12);
-      color: var(--cg-blue-400, #60a5fa);
-    }
-    .action-btn.info:hover { background: rgba(96, 165, 250, 0.2); }
-    .action-btn.warning {
-      background: rgba(245, 158, 11, 0.12);
-      color: var(--cg-yellow-400, #fbbf24);
-    }
-    .action-btn.warning:hover { background: rgba(245, 158, 11, 0.2); }
-    .action-btn.urgent {
-      background: rgba(249, 115, 22, 0.12);
-      color: var(--cg-orange-400, #fb923c);
-    }
-    .action-btn.urgent:hover { background: rgba(249, 115, 22, 0.2); }
-    .action-btn.critical {
-      background: var(--cg-red-400, #f87171);
-      color: var(--cg-gray-white, #ffffff);
-    }
-    .action-btn.critical:hover { filter: brightness(0.9); }
-
-    /* ── Dismiss ── */
+    /* ── Dismiss (positioned cg-button) ── */
     .dismiss {
       position: absolute;
-      top: var(--cg-spacing-12, 12px);
-      right: var(--cg-spacing-12, 12px);
-      width: var(--cg-spacing-24, 24px);
-      height: var(--cg-spacing-24, 24px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--cg-border-radius-100, 8px);
-      background: none;
-      border: none;
-      color: var(--cg-gray-500, #71717a);
-      cursor: pointer;
-      font-size: var(--cg-font-size-sm, 14px);
-      transition: all 150ms ease;
+      top: var(--cg-spacing-8);
+      right: var(--cg-spacing-8);
     }
-    .dismiss:hover {
-      color: var(--cg-color-surface-base-text, #fafafa);
-      background: var(--cg-gray-800, #27272a);
-    }
-    .dismiss:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+
+    @media (prefers-reduced-motion: reduce) {
+      .card:hover { transform: none; }
+      .card.critical { animation: none; }
+      .card.dismissing { animation: none; opacity: 0; }
     }
 
     @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.2); }
-      50% { box-shadow: 0 0 0 var(--cg-spacing-6, 6px) rgba(248, 113, 113, 0); }
+      0%, 100% { border-left-color: var(--cg-color-status-error-text-default); }
+      50% { border-left-color: var(--cg-color-status-error-border-default); }
     }
 
     /* ── Rounded variants ── */
     :host([rounded="none"]) .card { border-radius: 0; }
-    :host([rounded="sm"]) .card { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .card { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .card { border-radius: var(--cg-border-radius-200, 12px); }
-    :host([rounded="full"]) .card { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .card { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .card { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .card { border-radius: var(--cg-border-radius-200); }
+    :host([rounded="full"]) .card { border-radius: var(--cg-border-radius-full); }
   `];
+
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: String }) override title = '';
   @property({ type: String }) message = '';
@@ -188,6 +156,8 @@ export class AiAlertCard extends LitElement {
   @property({ type: String }) deadline = '';
   @property({ type: String }) actionLabel = '';
   @property({ type: Boolean }) dismissible = true;
+
+  @state() private _dismissing = false;
 
   private _urgencyIcon(): unknown {
     if (this.urgency === 'info') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>`;
@@ -204,19 +174,29 @@ export class AiAlertCard extends LitElement {
   }
 
   private _handleDismiss() {
+    this._dismissing = true;
     this.dispatchEvent(new CustomEvent('ai-alert-dismiss', {
       bubbles: true, composed: true,
       detail: { title: this.title },
     }));
+    setTimeout(() => { this._dismissing = false; this.remove(); }, 250);
+  }
+
+  private _handleKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Escape' && this.dismissible) {
+      e.preventDefault();
+      this._handleDismiss();
+    }
   }
 
   override render() {
     return html`
       <div
-        class="card ${this.urgency}"
+        class="card ${this.urgency} ${this._dismissing ? 'dismissing' : ''}"
         role="alert"
         aria-label="${this.urgency} alert: ${this.title}"
         tabindex="0"
+        @keydown=${this._handleKeyDown}
       >
         <span class="icon ${this.urgency}" aria-hidden="true">${this._urgencyIcon()}</span>
 
@@ -234,20 +214,25 @@ export class AiAlertCard extends LitElement {
           ${this.message ? html`<div class="message">${this.message}</div>` : nothing}
 
           ${this.actionLabel ? html`
-            <button
-              class="action-btn ${this.urgency}"
+            <cg-button
+              variant=${this.urgency === 'critical' ? 'primary' : 'secondary'}
+              size="sm"
+              type=${this.urgency === 'urgent' || this.urgency === 'critical' ? 'danger' : 'normal'}
               @click=${this._handleAction}
-              aria-label="${this.actionLabel}"
-            >${this.actionLabel}</button>
+              label="${this.actionLabel}"
+            >${this.actionLabel}</cg-button>
           ` : nothing}
         </div>
 
         ${this.dismissible ? html`
-          <button
+          <cg-button
             class="dismiss"
+            variant="tertiary"
+            size="sm"
+            rounded="full"
+            label="Dismiss alert"
             @click=${this._handleDismiss}
-            aria-label="Dismiss alert"
-          ><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+          ><cg-icon name="close" size="xs"></cg-icon></cg-button>
         ` : nothing}
       </div>
     `;

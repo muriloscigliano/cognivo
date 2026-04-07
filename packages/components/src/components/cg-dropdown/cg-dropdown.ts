@@ -2,11 +2,12 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
 import { entranceStagger } from '../../styles/index.js';
 
-/** Menu item for cg-dropdown, with id, label, optional icon, disabled state, and divider flag. */
+/** Menu item for cg-dropdown, with id, label, optional icon, keyboard shortcut, disabled state, and divider flag. */
 export interface DropdownItem {
   id: string;
   label: string;
   icon?: string;
+  shortcut?: string;
   disabled?: boolean;
   divider?: boolean;
 }
@@ -21,7 +22,7 @@ export interface DropdownItem {
  *   position="bottom-start"
  *   .items=${[{id:'edit',label:'Edit'},{id:'delete',label:'Delete'}]}
  * >
- *   <cg-button slot="trigger">Actions</cg-button>
+ *   <cg-button slot="trigger">Actions <cg-icon slot="suffix" name="chevron-down" size="sm"></cg-icon></cg-button>
  * </cg-dropdown>
  * ```
  *
@@ -31,18 +32,18 @@ export interface DropdownItem {
  * @fires {CustomEvent} cg-dropdown-close - When the menu closes
  * @fires {CustomEvent<{id: string, label: string}>} cg-dropdown-select - When an item is selected
  *
- * @cssprop [--cg-color-surface-raised-background=#1e1e22] - Menu background
- * @cssprop [--cg-border-radius-150=12px] - Menu border radius
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Focus ring color
+ * @cssprop --cg-color-modal-container-background - Menu background
+ * @cssprop --cg-border-radius-100 - Menu border radius (12px)
+ * @cssprop --cg-color-focus-ring - Focus ring color
  */
 @customElement('cg-dropdown')
 export class CgDropdown extends LitElement {
   static override styles = [entranceStagger, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      transition: color var(--cg-transition-duration-fast) var(--cg-motion-easing-color);
       display: inline-block;
       position: relative;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+      font-family: var(--cg-font-family-primary);
     }
 
     .trigger {
@@ -54,57 +55,63 @@ export class CgDropdown extends LitElement {
     .menu {
       position: absolute;
       z-index: 1000;
-      min-width: 180px;
+      display: flex;
+      flex-direction: column;
+      min-width: 200px;
       max-width: 320px;
-      padding: var(--cg-spacing-4, 4px);
-      background: var(--cg-color-surface-raised-background, #1e1e22);
-      border: 1px solid var(--cg-color-surface-base-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
+      padding: var(--cg-spacing-6);
+      background: var(--cg-color-modal-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
+      border-radius: var(--cg-border-radius-100);
       box-shadow:
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
-        0 4px 6px -1px rgba(0, 0, 0, 0.3),
-        0 10px 15px -3px rgba(0, 0, 0, 0.4);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-
+        0 var(--cg-shadow-md-y) var(--cg-shadow-md-blur) var(--cg-shadow-md-spread) rgba(0, 0, 0, 0.12),
+        0 var(--cg-shadow-sm-y) var(--cg-shadow-sm-blur) var(--cg-shadow-sm-spread) rgba(0, 0, 0, 0.06);
       /* Animation — scale+fade entrance */
       opacity: 0;
-      transform: scale(0.95);
+      transform: scale(0.96);
       transform-origin: top left;
       pointer-events: none;
       transition:
-        opacity var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
-        transform var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+        opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        transform var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+    }
+
+    @keyframes dropdown-enter {
+      0% { transform: scale(0.96); }
+      60% { transform: scale(1.03); }
+      100% { transform: scale(1); }
     }
 
     :host([open]) .menu {
       opacity: 1;
       transform: scale(1);
       pointer-events: auto;
+      animation: dropdown-enter var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
 
     /* Position variants */
     :host([position="bottom-start"]) .menu {
       top: 100%;
       left: 0;
-      margin-top: var(--cg-spacing-4, 4px);
+      margin-top: var(--cg-spacing-4);
       transform-origin: top left;
     }
     :host([position="bottom-end"]) .menu {
       top: 100%;
       right: 0;
-      margin-top: var(--cg-spacing-4, 4px);
+      margin-top: var(--cg-spacing-4);
       transform-origin: top right;
     }
     :host([position="top-start"]) .menu {
       bottom: 100%;
       left: 0;
-      margin-bottom: var(--cg-spacing-4, 4px);
+      margin-bottom: var(--cg-spacing-4);
       transform-origin: bottom left;
     }
     :host([position="top-end"]) .menu {
       bottom: 100%;
       right: 0;
-      margin-bottom: var(--cg-spacing-4, 4px);
+      margin-bottom: var(--cg-spacing-4);
       transform-origin: bottom right;
     }
 
@@ -114,13 +121,13 @@ export class CgDropdown extends LitElement {
       to { opacity: 0; transform: scale(0.95); }
     }
     .menu.closing {
-      animation: dropdown-exit 100ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+      animation: dropdown-exit var(--cg-transition-duration-fast) var(--cg-motion-easing-exit) forwards;
     }
 
     /* Reduced motion */
     @media (prefers-reduced-motion: reduce) {
       .menu {
-        transition: opacity 100ms ease;
+        transition: opacity var(--cg-transition-duration-fast) ease;
         transform: scale(1) !important;
       }
     }
@@ -128,85 +135,121 @@ export class CgDropdown extends LitElement {
     .menu-item {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-color-text-primary, #fafafa);
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-50);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-container-text);
       background: transparent;
       border: none;
       width: 100%;
+      box-sizing: border-box;
       text-align: left;
       cursor: pointer;
       font-family: inherit;
-      line-height: 1.4;
+      line-height: var(--cg-line-height-snug);
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      transition:
-        background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        transform var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      transition: background-color var(--cg-transition-duration-fast) ease, color var(--cg-transition-duration-fast) ease;
       -webkit-font-smoothing: antialiased;
-      animation: staggerFadeIn 200ms ease-out both;
+      animation: staggerFadeIn var(--cg-transition-duration-fast) ease-out both;
       animation-delay: calc(var(--stagger-index, 0) * 40ms);
     }
 
     .menu-item:hover:not(.disabled) {
-      background: var(--cg-color-surface-hover-background, rgba(255, 255, 255, 0.06));
-      transform: scale(1.01);
+      background: var(--cg-color-action-tertiary-background-hover);
     }
 
     .menu-item:active:not(.disabled) {
-      transform: scale(var(--cg-interaction-press-scale, 0.97));
-      background: var(--cg-color-surface-hover-background, rgba(255, 255, 255, 0.08));
+      background: var(--cg-color-action-tertiary-background-active);
     }
 
     .menu-item:focus-visible {
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
       outline: none;
     }
 
     .menu-item.active {
-      background: var(--cg-color-surface-hover-background, rgba(255, 255, 255, 0.06));
+      background: var(--cg-color-action-tertiary-background-hover);
+      font-weight: var(--cg-font-weight-medium);
     }
 
     .menu-item.disabled {
-      color: var(--cg-color-text-disabled, #52525b);
+      color: var(--cg-color-surface-container-outlined);
       cursor: not-allowed;
       opacity: 0.5;
     }
 
     .menu-item-icon {
       flex-shrink: 0;
-      width: 16px;
-      height: 16px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
+      opacity: 0.7;
+    }
+    .menu-item:hover:not(.disabled) .menu-item-icon {
+      opacity: 1;
+    }
+
+    .menu-item-shortcut {
+      margin-left: auto;
+      padding-left: var(--cg-spacing-16);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-container-outlined);
+      font-family: inherit;
+      pointer-events: none;
     }
 
     .divider {
-      height: 1px;
-      margin: var(--cg-spacing-4, 4px) 0;
-      background: var(--cg-color-surface-base-border, #27272a);
+      height: var(--cg-border-width-50);
+      margin: var(--cg-spacing-4) 0;
+      background: var(--cg-color-modal-container-border);
+    }
+
+    /* ── Loading state ── */
+    .menu-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-16) var(--cg-spacing-12);
+      color: var(--cg-color-surface-container-outlined);
+      font-size: var(--cg-font-size-sm);
+    }
+    .menu-loading-spinner {
+      width: var(--cg-spacing-16);
+      height: var(--cg-spacing-16);
+      border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border);
+      border-top-color: var(--cg-color-surface-container-text);
+      border-radius: var(--cg-border-radius-full);
+      animation: spin var(--cg-motion-duration-slow) linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── Empty state ── */
+    .menu-empty {
+      padding: var(--cg-spacing-16) var(--cg-spacing-12);
+      text-align: center;
+      color: var(--cg-color-surface-container-outlined);
+      font-size: var(--cg-font-size-sm);
     }
 
     /* Rounded variants */
     :host([rounded="none"]) .menu { border-radius: 0; }
-    :host([rounded="sm"]) .menu { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .menu { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .menu { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .menu { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="none"]) .menu-item { border-radius: 0; }
+    :host([rounded="sm"]) .menu { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"]) .menu-item { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .menu { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"]) .menu-item { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="lg"]) .menu { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="lg"]) .menu-item { border-radius: var(--cg-border-radius-100); }
   `];
 
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String, reflect: true }) position: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' = 'bottom-start';
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property({ type: Array }) items: DropdownItem[] = [];
+  @property({ type: Boolean, reflect: true }) loading = false;
 
   @state() private _activeIndex = -1;
   @state() private _closing = false;
@@ -339,8 +382,15 @@ export class CgDropdown extends LitElement {
 
   private _focusTrigger() {
     this.updateComplete.then(() => {
-      const trigger = this.shadowRoot?.querySelector('.trigger') as HTMLElement;
-      trigger?.focus();
+      const slot = this.shadowRoot?.querySelector('slot[name="trigger"]') as HTMLSlotElement;
+      const assigned = slot?.assignedElements?.() ?? [];
+      const focusable = assigned.find(el => (el as HTMLElement).focus) as HTMLElement | undefined;
+      if (focusable) {
+        focusable.focus();
+      } else {
+        const trigger = this.shadowRoot?.querySelector('.trigger') as HTMLElement;
+        trigger?.focus();
+      }
     });
   }
 
@@ -348,8 +398,6 @@ export class CgDropdown extends LitElement {
     return html`
       <div
         class="trigger"
-        role="button"
-        tabindex="0"
         aria-haspopup="menu"
         aria-expanded="${this.open}"
         @click="${this._toggle}"
@@ -363,7 +411,15 @@ export class CgDropdown extends LitElement {
         aria-label="Dropdown menu"
         @keydown="${this._handleKeydown}"
       >
-        ${this.items.map((item, index) => {
+        ${this.loading ? html`
+          <div class="menu-loading" aria-busy="true">
+            <span class="menu-loading-spinner"></span>
+            <span>Loading...</span>
+          </div>
+        ` : this.items.length === 0 ? html`
+          <div class="menu-empty">No items</div>
+        ` : nothing}
+        ${!this.loading ? this.items.map((item, index) => {
           if (item.divider) {
             return html`<div class="divider" role="separator"></div>`;
           }
@@ -377,11 +433,12 @@ export class CgDropdown extends LitElement {
               style="--stagger-index: ${index}"
               @click="${() => this._selectItem(item)}"
             >
-              ${item.icon ? html`<span class="menu-item-icon">${item.icon}</span>` : nothing}
+              ${item.icon ? html`<cg-icon class="menu-item-icon" name="${item.icon}" size="sm"></cg-icon>` : nothing}
               ${item.label}
+              ${item.shortcut ? html`<span class="menu-item-shortcut">${item.shortcut}</span>` : nothing}
             </button>
           `;
-        })}
+        }) : nothing}
       </div>
     `;
   }

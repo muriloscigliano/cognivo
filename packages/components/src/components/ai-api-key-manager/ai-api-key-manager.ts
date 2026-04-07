@@ -33,14 +33,12 @@ export interface ApiKeyEntry {
 export class AiApiKeyManager extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      background: var(--cg-color-surface-base, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      border: 1px solid var(--cg-color-border-default, #27272a);
-      border-radius: var(--cg-radius-lg, 12px);
-      padding: var(--cg-spacing-16, 16px);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      background: var(--cg-color-surface-base);
+      color: var(--cg-color-surface-base-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-16);
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
@@ -48,42 +46,45 @@ export class AiApiKeyManager extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: var(--cg-spacing-12, 12px);
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
-      margin-bottom: var(--cg-spacing-12, 12px);
+      padding-bottom: var(--cg-spacing-12);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      margin-bottom: var(--cg-spacing-12);
     }
 
     .title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-semibold, 600);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
       margin: 0;
     }
 
     .count {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-color-text-tertiary, #71717a);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     .create-btn {
       display: inline-flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
-      background: var(--cg-color-accent, #dfff61);
-      color: var(--cg-color-surface-container-background, #18181b);
+      gap: var(--cg-spacing-4);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-container-background);
       border: none;
-      border-radius: var(--cg-radius-md, 8px);
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: var(--cg-font-weight-semibold, 600);
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-6) var(--cg-spacing-12);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       font-family: inherit;
     }
 
     .create-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
+    .create-btn:hover:not(:disabled) {
+      filter: brightness(1.1);
+    }
     .create-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
@@ -92,17 +93,17 @@ export class AiApiKeyManager extends LitElement {
     .key-list {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
     }
 
     .key-item {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-12, 12px);
-      padding: var(--cg-spacing-12, 12px);
-      background: var(--cg-color-surface-overlay, #27272a);
-      border-radius: var(--cg-radius-md, 8px);
-      border: 1px solid var(--cg-color-border-default, #27272a);
+      gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-12);
+      background: var(--cg-color-surface-overlay);
+      border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
 
     .key-info {
@@ -111,50 +112,50 @@ export class AiApiKeyManager extends LitElement {
     }
 
     .key-name {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-medium, 500);
-      margin-bottom: 2px;
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
+      margin-bottom: var(--cg-spacing-2);
     }
 
     .key-prefix {
-      font-family: var(--cg-font-family-mono, 'JetBrains Mono', monospace);
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      font-family: var(--cg-font-family-mono);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     .key-meta {
-      font-size: 10px;
-      color: var(--cg-color-text-tertiary, #71717a);
-      margin-top: var(--cg-spacing-4, 4px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-top: var(--cg-spacing-4);
       display: flex;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
     }
 
     .status-badge {
       display: inline-flex;
       align-items: center;
-      padding: 2px var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-radius-full, 9999px);
-      font-size: 10px;
-      font-weight: var(--cg-font-weight-semibold, 600);
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-full);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
       text-transform: uppercase;
       letter-spacing: 0.05em;
       flex-shrink: 0;
     }
 
     .status-active {
-      background: rgba(34, 197, 94, 0.15);
-      color: var(--cg-color-status-success-text-default, #4ade80);
+      background: var(--cg-color-status-success-background-default);
+      color: var(--cg-color-status-success-text-default);
     }
 
     .status-revoked {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--cg-color-status-error-text-default, #f87171);
+      background: var(--cg-color-status-error-background-default);
+      color: var(--cg-color-status-error-text-default);
     }
 
     .actions {
       display: flex;
-      gap: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-4);
       flex-shrink: 0;
     }
 
@@ -162,46 +163,45 @@ export class AiApiKeyManager extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 28px;
-      height: 28px;
+      width: var(--cg-spacing-24);
+      height: var(--cg-spacing-24);
       background: transparent;
-      border: 1px solid var(--cg-color-border-default, #3f3f46);
-      border-radius: var(--cg-radius-sm, 4px);
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-50);
+      color: var(--cg-color-input-text-placeholder);
       cursor: pointer;
-      font-size: var(--cg-font-size-xs, 12px);
+      font-size: var(--cg-font-size-xs);
       font-family: inherit;
       padding: 0;
     }
 
     .action-btn:hover {
-      background: var(--cg-color-surface-hover, #3f3f46);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      background: var(--cg-color-surface-cards-hover-background);
+      color: var(--cg-color-surface-base-text);
     }
 
     .action-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .action-btn.danger:hover {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--cg-color-status-error-text-default, #f87171);
-      border-color: var(--cg-color-status-error-text-default, #f87171);
+      background: var(--cg-color-status-error-background-default);
+      color: var(--cg-color-status-error-text-default);
+      border-color: var(--cg-color-status-error-text-default);
     }
 
     .copied-toast {
-      font-size: 10px;
-      color: var(--cg-color-accent, #dfff61);
-      margin-left: 4px;
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-base-text);
+      margin-left: var(--cg-spacing-4);
     }
 
     .empty {
       text-align: center;
-      padding: var(--cg-spacing-24, 24px);
-      color: var(--cg-color-text-tertiary, #71717a);
-      font-size: var(--cg-font-size-sm, 14px);
-    }
+      padding: var(--cg-spacing-24);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
     }
   `];
   @property({ type: Array }) keys: ApiKeyEntry[] = [];

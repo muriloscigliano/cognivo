@@ -24,6 +24,8 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes } from '../../styles/index.js';
+import '../cg-button/cg-button.js';
+import '../cg-badge/cg-badge.js';
 
 interface DataField {
   label: string;
@@ -46,284 +48,168 @@ interface CardAction {
 export class AiDataCard extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     .card {
-      background: var(--cg-color-surface-container-background, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
       overflow: hidden;
-      transition: border-color 150ms, box-shadow 150ms, transform 150ms;
-      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-    }
-    .card:hover {
-      border-color: var(--cg-gray-600, #52525b);
-      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
-      transform: translateY(var(--cg-interaction-hover-lift, -1px));
+      font-family: var(--cg-font-family-primary);
     }
 
     /* ── Header ── */
     .header {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-10, 10px);
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
-    }
-    .header-icon {
-      width: var(--cg-spacing-32, 32px);
-      height: var(--cg-spacing-32, 32px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: var(--cg-font-size-base, 16px);
-      flex-shrink: 0;
-      background: rgba(223, 255, 97, 0.08);
+      gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-20) var(--cg-spacing-20) var(--cg-spacing-16);
     }
     .header-info {
       flex: 1;
       min-width: 0;
     }
     .header-title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 700;
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
     .header-subtitle {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
-      margin-top: var(--cg-spacing-2, 2px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-top: var(--cg-spacing-2);
     }
-    .header-badge {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      padding: var(--cg-spacing-2, 2px) var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-50, 4px);
-      flex-shrink: 0;
-      text-transform: uppercase;
-    }
-    .header-badge.success { background: rgba(34, 197, 94, 0.12); color: var(--cg-color-status-success-text-default, #4ade80); }
-    .header-badge.warning { background: rgba(245, 158, 11, 0.12); color: var(--cg-color-status-warning-text-default, #fbbf24); }
-    .header-badge.error { background: rgba(239, 68, 68, 0.12); color: var(--cg-color-status-error-text-default, #f87171); }
-    .header-badge.info { background: rgba(59, 130, 246, 0.12); color: var(--cg-color-status-info-text-default, #60a5fa); }
-    .header-badge.neutral { background: var(--cg-gray-800, #27272a); color: var(--cg-gray-400, #a1a1aa); }
 
-    /* ── Rows ── */
+    /* ── Rows (table-style inset) ── */
     .rows {
-      padding: 0;
+      margin: 0 var(--cg-spacing-12);
+      background: var(--cg-overlay-dark-subtle);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-100);
+      overflow: hidden;
     }
     .row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
-      transition: background var(--cg-motion-duration-fast, 100ms);
-      min-height: var(--cg-spacing-40, 40px);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
     .row:last-child {
       border-bottom: none;
-    }
-    .row:hover {
-      background: rgba(255, 255, 255, 0.02);
     }
     .row.clickable {
       cursor: pointer;
     }
     .row.clickable:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: -2px;
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--cg-overlay-accent-strong);
     }
 
     .row-label {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-400, #a1a1aa);
-      font-weight: 500;
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-input-text-placeholder);
       flex-shrink: 0;
-      min-width: var(--cg-spacing-80, 80px);
+      min-width: 100px;
     }
     .row-value {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-base-text);
       text-align: right;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-6, 6px);
+      justify-content: flex-end;
+      gap: var(--cg-spacing-6);
     }
 
     /* ── Value types ── */
     .val-currency {
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-weight: 700;
-      color: var(--cg-brand-ai-accent, #dfff61);
+      color: var(--cg-color-surface-base-text);
+      font-weight: var(--cg-font-weight-semibold);
     }
     .val-number {
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      color: var(--cg-color-surface-base-text);
     }
     .val-percent {
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
+      font-weight: var(--cg-font-weight-semibold);
     }
     .val-date {
-      color: var(--cg-gray-300, #d4d4d8);
+      color: var(--cg-color-surface-base-text);
     }
     .val-link {
-      color: var(--cg-brand-ai-accent, #dfff61);
+      color: var(--cg-color-surface-base-text);
       text-decoration: none;
       cursor: pointer;
+      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     .val-link:hover {
       text-decoration: underline;
     }
 
-    /* Status dot */
-    .status-dot {
-      width: var(--cg-spacing-6, 6px);
-      height: var(--cg-spacing-6, 6px);
-      border-radius: var(--cg-border-radius-full, 99999px);
-      flex-shrink: 0;
-    }
-    .status-dot.success { background: var(--cg-color-status-success-text-default, #4ade80); }
-    .status-dot.warning { background: var(--cg-color-status-warning-text-default, #fbbf24); }
-    .status-dot.error { background: var(--cg-color-status-error-text-default, #f87171); }
-    .status-dot.info { background: var(--cg-color-status-info-text-default, #60a5fa); }
-    .status-dot.neutral { background: var(--cg-gray-500, #71717a); }
 
-    /* Badge value */
-    .val-badge {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      padding: var(--cg-spacing-2, 2px) var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-50, 4px);
-    }
-    .val-badge.success { background: rgba(34, 197, 94, 0.12); color: var(--cg-color-status-success-text-default, #4ade80); }
-    .val-badge.warning { background: rgba(245, 158, 11, 0.12); color: var(--cg-color-status-warning-text-default, #fbbf24); }
-    .val-badge.error { background: rgba(239, 68, 68, 0.12); color: var(--cg-color-status-error-text-default, #f87171); }
-    .val-badge.info { background: rgba(59, 130, 246, 0.12); color: var(--cg-color-status-info-text-default, #60a5fa); }
-    .val-badge.neutral { background: var(--cg-gray-800, #27272a); color: var(--cg-gray-400, #a1a1aa); }
-
-    /* Copy button */
-    .copy-btn {
-      background: none;
-      border: none;
-      color: var(--cg-gray-600, #52525b);
-      cursor: pointer;
-      padding: var(--cg-spacing-2, 2px);
-      font-size: var(--cg-font-size-xs, 12px);
-      transition: color var(--cg-motion-duration-fast, 150ms);
-      flex-shrink: 0;
-    }
-    .copy-btn:hover { color: var(--cg-brand-ai-accent, #dfff61); }
-    .copy-btn.copied { color: var(--cg-color-status-success-text-default, #4ade80); }
+    /* Copy button (positioned inline) */
+    .copy-wrap { flex-shrink: 0; }
 
     /* ── Footer ── */
     .footer {
       display: flex;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      border-top: 1px solid var(--cg-gray-800, #27272a);
+      flex-direction: column;
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-16) var(--cg-spacing-12);
     }
-    .action-btn {
-      flex: 1;
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      background: none;
-      color: var(--cg-gray-300, #d4d4d8);
-      font: inherit;
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
-      cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast, 150ms), background var(--cg-motion-duration-fast, 150ms), filter var(--cg-motion-duration-fast, 150ms);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--cg-spacing-6, 6px);
+
+    @media (prefers-reduced-motion: reduce) {
+      :host(:hover) .card { transform: none; }
     }
-    .action-btn:hover {
-      border-color: var(--cg-gray-600, #52525b);
-      background: rgba(255, 255, 255, 0.03);
-    }
-    .action-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
-    }
-    .action-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-    .action-btn.primary {
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: var(--cg-gray-black, #000000);
-      border-color: transparent;
-    }
-    .action-btn.primary:hover { filter: brightness(1.1); }
-    .action-btn.danger {
-      border-color: rgba(239, 68, 68, 0.3);
-      color: var(--cg-color-status-error-text-default, #f87171);
-    }
-    .action-btn.danger:hover { background: rgba(239, 68, 68, 0.08); }
-    .action-btn .btn-icon { font-size: var(--cg-font-size-sm, 14px); }
 
     /* ── Compact mode ── */
-    :host([compact]) .header { padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); }
-    :host([compact]) .header-icon { width: var(--cg-spacing-24, 24px); height: var(--cg-spacing-24, 24px); font-size: var(--cg-font-size-xs, 12px); border-radius: var(--cg-border-radius-100, 8px); }
-    :host([compact]) .header-title { font-size: var(--cg-font-size-xs, 12px); }
-    :host([compact]) .row { padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px); min-height: var(--cg-spacing-32, 32px); }
-    :host([compact]) .row-label { font-size: var(--cg-font-size-xs, 12px); min-width: var(--cg-spacing-64, 64px); }
-    :host([compact]) .row-value { font-size: var(--cg-font-size-xs, 12px); }
-    :host([compact]) .footer { padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); }
-    :host([compact]) .action-btn { padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px); font-size: var(--cg-font-size-xs, 12px); }
+    :host([compact]) .header { padding: var(--cg-spacing-8) var(--cg-spacing-12); }
+    :host([compact]) .header-icon { width: var(--cg-spacing-24); height: var(--cg-spacing-24); font-size: var(--cg-font-size-xs); }
+    :host([compact]) .header-title { font-size: var(--cg-font-size-xs); }
+    :host([compact]) .rows { margin: 0 var(--cg-spacing-4); }
+    :host([compact]) .row { padding: var(--cg-spacing-8) var(--cg-spacing-12); }
+    :host([compact]) .row-label { min-width: 80px; }
+    :host([compact]) .row-value { font-size: var(--cg-font-size-xs); }
+    :host([compact]) .footer { padding: var(--cg-spacing-8) var(--cg-spacing-12); }
 
     /* ── Highlighted / selected ── */
     .card.highlighted {
-      border-color: var(--cg-brand-ai-accent, #dfff61);
-      box-shadow: 0 0 0 1px rgba(223, 255, 97, 0.1);
+      border-color: var(--cg-color-surface-base-text);
     }
 
     /* ── Loading skeleton ── */
     .skeleton .skel {
-      border-radius: var(--cg-border-radius-100, 8px);
-      background: linear-gradient(90deg, var(--cg-gray-800, #27272a) 25%, var(--cg-gray-700, #3f3f46) 50%, var(--cg-gray-800, #27272a) 75%);
+      border-radius: var(--cg-border-radius-100);
+      background: linear-gradient(90deg, var(--cg-color-surface-container-background) 25%, var(--cg-color-surface-container-border) 50%, var(--cg-color-surface-container-background) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s linear infinite;
     }
-    .skel-header { display: flex; gap: var(--cg-spacing-10, 10px); padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px); border-bottom: 1px solid var(--cg-gray-800, #27272a); }
-    .skel-icon { width: var(--cg-spacing-32, 32px); height: var(--cg-spacing-32, 32px); border-radius: var(--cg-border-radius-100, 8px); }
-    .skel-lines { flex: 1; display: flex; flex-direction: column; gap: var(--cg-spacing-6, 6px); justify-content: center; }
-    .skel-line-lg { height: var(--cg-spacing-12, 12px); width: 60%; }
-    .skel-line-sm { height: var(--cg-spacing-8, 8px); width: 35%; }
-    .skel-row { display: flex; justify-content: space-between; padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px); border-bottom: 1px solid var(--cg-gray-800, #27272a); }
+    .skel-header { display: flex; gap: var(--cg-spacing-8); padding: var(--cg-spacing-12) var(--cg-spacing-16); border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-container-background); }
+    .skel-icon { width: var(--cg-spacing-32); height: var(--cg-spacing-32); border-radius: var(--cg-border-radius-100); }
+    .skel-lines { flex: 1; display: flex; flex-direction: column; gap: var(--cg-spacing-6); justify-content: center; }
+    .skel-line-lg { height: var(--cg-spacing-12); width: 60%; }
+    .skel-line-sm { height: var(--cg-spacing-8); width: 35%; }
+    .skel-row { display: flex; justify-content: space-between; padding: var(--cg-spacing-12) var(--cg-spacing-16); border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-container-background); }
     .skel-row:last-child { border-bottom: none; }
-    .skel-label { height: var(--cg-spacing-8, 8px); width: 30%; }
-    .skel-value { height: var(--cg-spacing-8, 8px); width: 40%; }
+    .skel-label { height: var(--cg-spacing-8); width: 30%; }
+    .skel-value { height: var(--cg-spacing-8); width: 40%; }
 
     /* ── Empty state ── */
     .empty {
-      padding: var(--cg-spacing-24, 24px);
+      padding: var(--cg-spacing-24);
       text-align: center;
-      color: var(--cg-gray-500, #71717a);
-      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
     }
 
-    /* ── Rounded variants ── */
-    :host([rounded="none"]) .card { border-radius: 0; }
-    :host([rounded="sm"]) .card { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .card { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .card { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .card { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   /** Card title */
   @property({ type: String }) override title: string = '';
 
@@ -416,15 +302,15 @@ export class AiDataCard extends LitElement {
         return html`<span class="val-number">${val}</span>`;
       case 'percent': {
         const num = Number(field.value);
-        const pColor = isNaN(num) ? 'var(--cg-gray-400, #a1a1aa)' : num >= 0 ? 'var(--cg-green-400, #4ade80)' : 'var(--cg-red-400, #f87171)';
+        const pColor = isNaN(num) ? 'var(--cg-color-input-text-placeholder)' : num >= 0 ? 'var(--cg-color-status-success-text-default)' : 'var(--cg-color-status-error-text-default)';
         return html`<span class="val-percent" style="color: ${pColor};">${val}</span>`;
       }
       case 'date':
         return html`<span class="val-date">${val}</span>`;
       case 'status':
-        return html`<span class="status-dot ${status}" aria-hidden="true"></span><span>${val}</span>`;
+        return html`<cg-badge variant="${status === 'error' ? 'danger' : status}" label="${val}" size="sm"></cg-badge>`;
       case 'badge':
-        return html`<span class="val-badge ${status}">${val}</span>`;
+        return html`<cg-badge variant="${status === 'error' ? 'danger' : status}" label="${val}" size="sm"></cg-badge>`;
       case 'link':
         return html`<a class="val-link" href="${this._sanitizeUrl(field.url || '#')}" target="_blank" rel="noopener noreferrer">${val}</a>`;
       default:
@@ -463,13 +349,12 @@ export class AiDataCard extends LitElement {
 
         ${this.title ? html`
           <div class="header">
-            ${this.icon ? html`<div class="header-icon" aria-hidden="true">${this.icon}</div>` : nothing}
             <div class="header-info">
               <div class="header-title">${this.title}</div>
               ${this.subtitle ? html`<div class="header-subtitle">${this.subtitle}</div>` : nothing}
             </div>
             ${this.headerStatus && this.headerStatusLabel ? html`
-              <span class="header-badge ${this.headerStatus}">${this.headerStatusLabel}</span>
+              <cg-badge variant="${this.headerStatus === 'error' ? 'danger' : this.headerStatus}" label="${this.headerStatusLabel}" size="sm"></cg-badge>
             ` : nothing}
           </div>
         ` : nothing}
@@ -487,12 +372,14 @@ export class AiDataCard extends LitElement {
                 <span class="row-value">
                   ${this._renderValue(field)}
                   ${field.copyable ? html`
-                    <button class="copy-btn ${this._copiedField === field.label ? 'copied' : ''}"
-                      @click=${(e: Event) => { e.stopPropagation(); this._handleCopy(field); }}
-                      aria-label="Copy ${field.label}"
-                      title="${this._copiedField === field.label ? 'Copied!' : 'Copy'}">
-                      ${this._copiedField === field.label ? html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>` : html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`}
-                    </button>
+                    <span class="copy-wrap">
+                      <cg-button variant="tertiary" size="sm"
+                        status=${this._copiedField === field.label ? 'success' : 'idle'}
+                        label="${this._copiedField === field.label ? 'Copied!' : `Copy ${field.label}`}"
+                        @click=${(e: Event) => { e.stopPropagation(); this._handleCopy(field); }}>
+                        <cg-icon name=${this._copiedField === field.label ? 'check' : 'copy'} size="xs"></cg-icon>
+                      </cg-button>
+                    </span>
                   ` : nothing}
                 </span>
               </div>
@@ -503,13 +390,15 @@ export class AiDataCard extends LitElement {
         ${this.actions.length > 0 ? html`
           <div class="footer">
             ${this.actions.map(action => html`
-              <button class="action-btn ${action.variant || 'secondary'}"
+              <cg-button
+                variant=${action.variant === 'danger' ? 'tertiary' : action.variant === 'primary' ? 'primary' : 'secondary'}
+                size="sm"
+                full
+                type=${action.variant === 'danger' ? 'danger' : 'normal'}
                 ?disabled=${action.disabled}
-                aria-label="${action.label}"
-                @click=${() => this._handleAction(action)}>
-                ${action.icon ? html`<span class="btn-icon" aria-hidden="true">${action.icon}</span>` : nothing}
+                @cg-click=${() => this._handleAction(action)}>
                 ${action.label}
-              </button>
+              </cg-button>
             `)}
           </div>
         ` : nothing}

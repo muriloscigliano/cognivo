@@ -32,12 +32,12 @@ export class CgRadioGroup extends LitElement {
     .group {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
     }
 
     :host([orientation="horizontal"]) .group {
       flex-direction: row;
-      gap: var(--cg-spacing-16, 16px);
+      gap: var(--cg-spacing-16);
       flex-wrap: wrap;
     }
   `];

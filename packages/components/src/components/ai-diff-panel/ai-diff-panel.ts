@@ -30,21 +30,20 @@ interface DiffLine {
 export class AiDiffPanel extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
     }
 
     .panel {
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
+      background: var(--cg-color-code-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-code-border);
+      border-radius: var(--cg-component-card-radius);
       overflow: hidden;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      transition: border-color 200ms ease, box-shadow 200ms ease;
+      transition:
+        border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color),
+        box-shadow var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
     }
     .panel:hover {
-      border-color: var(--cg-gray-600, #52525b);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05), var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
+      border-color: var(--cg-color-code-muted);
     }
 
     /* Header */
@@ -52,67 +51,79 @@ export class AiDiffPanel extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-code-border);
     }
     .title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
     }
     .mode-toggle {
       display: flex;
-      gap: 2px;
-      background: var(--cg-color-surface-base-background, #09090b);
-      border-radius: var(--cg-border-radius-100, 8px);
-      padding: 2px;
+      gap: var(--cg-spacing-2);
+      background: var(--cg-color-code-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-code-border);
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-2);
     }
     .mode-btn {
-      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
+      padding: var(--cg-spacing-4) var(--cg-spacing-12);
       border: none;
-      border-radius: var(--cg-border-radius-50, 4px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
+      border-radius: var(--cg-border-radius-50);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       background: none;
-      color: var(--cg-gray-500, #71717a);
+      color: var(--cg-color-input-text-placeholder);
       font-family: inherit;
-      transition: all 150ms;
+      transition: background var(--cg-motion-duration-fast), color var(--cg-motion-duration-fast);
     }
     .mode-btn.active {
-      background: var(--cg-gray-800, #27272a);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      background: var(--cg-color-code-border);
+      color: var(--cg-color-code-text);
     }
 
     /* Stats bar */
     .stats {
       display: flex;
-      gap: var(--cg-spacing-16, 16px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
+      gap: var(--cg-spacing-16);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-code-border);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
     }
-    .stat-add { color: var(--cg-green-400, #4ade80); }
-    .stat-remove { color: var(--cg-red-400, #f87171); }
-    .stat-unchanged { color: var(--cg-gray-500, #71717a); }
+    .stat-add { color: var(--cg-color-status-success-text-default); }
+    .stat-remove { color: var(--cg-color-status-error-text-default); }
+    .stat-unchanged { color: var(--cg-color-code-muted); }
+    .stats-bar {
+      display: flex;
+      height: var(--cg-spacing-4);
+      border-radius: var(--cg-border-radius-full);
+      overflow: hidden;
+      margin-left: auto;
+      width: 80px;
+    }
+    .stats-bar-add { background: var(--cg-color-status-success-text-default); }
+    .stats-bar-remove { background: var(--cg-color-status-error-text-default); }
+    .stats-bar-unchanged { background: var(--cg-color-code-border); }
 
     /* Labels */
     .labels {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0;
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-code-border);
     }
     .label-item {
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-16, 16px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      color: var(--cg-gray-400, #a1a1aa);
+      padding: var(--cg-spacing-6) var(--cg-spacing-16);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
+      color: var(--cg-color-input-text-placeholder);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
-    .label-item:first-child { border-right: 1px solid var(--cg-gray-800, #27272a); }
+    .label-item:first-child { border-right: var(--cg-border-width-50) solid var(--cg-color-code-border); }
 
     /* Side-by-side */
     .side-by-side {
@@ -122,79 +133,81 @@ export class AiDiffPanel extends LitElement {
       overflow-y: auto;
     }
     .side {
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-size: var(--cg-font-size-xs, 12px);
-      line-height: 1.6;
+      font-family: var(--cg-font-family-mono);
+      font-size: var(--cg-font-size-xs);
+      line-height: var(--cg-line-height-relaxed);
     }
-    .side:first-child { border-right: 1px solid var(--cg-gray-800, #27272a); }
+    .side:first-child { border-right: var(--cg-border-width-50) solid var(--cg-color-code-border); }
 
     .diff-line {
       display: flex;
-      padding: 1px 12px;
-      min-height: 20px;
+      padding: var(--cg-spacing-1) var(--cg-spacing-12);
+      min-height: var(--cg-spacing-20);
     }
     .line-num {
-      width: 32px;
+      width: var(--cg-spacing-32);
       flex-shrink: 0;
-      color: var(--cg-gray-600, #52525b);
+      color: var(--cg-color-code-muted);
       text-align: right;
-      padding-right: 8px;
+      padding-right: var(--cg-spacing-8);
+      user-select: none;
+    }
+    .line-sign {
+      width: var(--cg-spacing-16);
+      flex-shrink: 0;
+      text-align: center;
+      font-weight: var(--cg-font-weight-bold);
       user-select: none;
     }
     .line-content {
       flex: 1;
       white-space: pre-wrap;
       word-break: break-all;
-      color: var(--cg-color-surface-base-text, #fafafa);
+      color: var(--cg-color-code-text);
     }
 
-    .diff-line.add { background: rgba(34, 197, 94, 0.08); }
-    .diff-line.add .line-content { color: var(--cg-green-400, #4ade80); }
-    .diff-line.remove { background: rgba(239, 68, 68, 0.08); }
-    .diff-line.remove .line-content { color: var(--cg-red-400, #f87171); }
-    .diff-line.unchanged .line-content { color: var(--cg-gray-500, #71717a); }
-    .diff-line.empty { background: var(--cg-color-surface-base-background, #09090b); }
+    .diff-line.add { background: var(--cg-color-status-success-background-default); }
+    .diff-line.add .line-sign { color: var(--cg-color-status-success-text-default); }
+    .diff-line.add .line-content { color: var(--cg-color-status-success-text-default); }
+    .diff-line.remove { background: var(--cg-color-status-error-background-default); }
+    .diff-line.remove .line-sign { color: var(--cg-color-status-error-text-default); }
+    .diff-line.remove .line-content { color: var(--cg-color-status-error-text-default); }
+    .diff-line.unchanged .line-content { color: var(--cg-color-code-muted); }
+    .diff-line.empty { background: var(--cg-color-code-background); }
 
     /* Inline mode */
     .inline-diff {
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-size: var(--cg-font-size-xs, 12px);
-      line-height: 1.6;
+      font-family: var(--cg-font-family-mono);
+      font-size: var(--cg-font-size-xs);
+      line-height: var(--cg-line-height-relaxed);
       max-height: 400px;
       overflow-y: auto;
     }
+    .diff-line:hover {
+      opacity: 0.85;
+    }
     .inline-diff .diff-line .prefix {
-      width: 20px;
+      width: var(--cg-spacing-20);
       flex-shrink: 0;
       text-align: center;
-      font-weight: 700;
+      font-weight: var(--cg-font-weight-bold);
     }
-    .inline-diff .add .prefix { color: var(--cg-green-400, #4ade80); }
-    .inline-diff .remove .prefix { color: var(--cg-red-400, #f87171); }
+    .inline-diff .add .prefix { color: var(--cg-color-status-success-text-default); }
+    .inline-diff .remove .prefix { color: var(--cg-color-status-error-text-default); }
 
     /* Empty */
     .empty {
-      padding: var(--cg-spacing-24, 24px);
+      padding: var(--cg-spacing-24);
       text-align: center;
-      color: var(--cg-gray-500, #71717a);
-      font-size: var(--cg-font-size-sm, 14px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
     }
-    }
-  
 
     :focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
-
-    /* ── Rounded variants ── */
-    :host([rounded="none"]) .panel { border-radius: 0; }
-    :host([rounded="sm"]) .panel { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .panel { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .panel { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .panel { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   /** Text content before changes */
   @property({ type: String }) beforeCode: string = '';
 
@@ -210,7 +223,16 @@ export class AiDiffPanel extends LitElement {
   /** Column labels [before, after] */
   @property({ type: Array }) labels: [string, string] = ['Before', 'After'];
 
+  private _cachedDiff: DiffLine[] | null = null;
+  private _cachedBeforeCode: string = '';
+  private _cachedAfterCode: string = '';
+
   private _computeDiff(): DiffLine[] {
+    if (this._cachedDiff && this._cachedBeforeCode === this.beforeCode && this._cachedAfterCode === this.afterCode) {
+      return this._cachedDiff;
+    }
+    this._cachedBeforeCode = this.beforeCode;
+    this._cachedAfterCode = this.afterCode;
     const beforeLines = this.beforeCode.split('\n');
     const afterLines = this.afterCode.split('\n');
     const result: DiffLine[] = [];
@@ -246,6 +268,7 @@ export class AiDiffPanel extends LitElement {
         }
       }
     }
+    this._cachedDiff = result;
     return result;
   }
 
@@ -293,17 +316,19 @@ export class AiDiffPanel extends LitElement {
           ${left.map(l => l ? html`
             <div class="diff-line ${l.type}" @click=${() => this._handleLineClick(l)}>
               <span class="line-num">${l.lineNum.before ?? ''}</span>
+              <span class="line-sign">${l.type === 'remove' ? '-' : ' '}</span>
               <span class="line-content">${l.content}</span>
             </div>
-          ` : html`<div class="diff-line empty"><span class="line-num"></span><span class="line-content"></span></div>`)}
+          ` : html`<div class="diff-line empty"><span class="line-num"></span><span class="line-sign"></span><span class="line-content"></span></div>`)}
         </div>
         <div class="side">
           ${right.map(r => r ? html`
             <div class="diff-line ${r.type}" @click=${() => this._handleLineClick(r)}>
               <span class="line-num">${r.lineNum.after ?? ''}</span>
+              <span class="line-sign">${r.type === 'add' ? '+' : ' '}</span>
               <span class="line-content">${r.content}</span>
             </div>
-          ` : html`<div class="diff-line empty"><span class="line-num"></span><span class="line-content"></span></div>`)}
+          ` : html`<div class="diff-line empty"><span class="line-num"></span><span class="line-sign"></span><span class="line-content"></span></div>`)}
         </div>
       </div>
     `;
@@ -343,9 +368,14 @@ export class AiDiffPanel extends LitElement {
           </div>
         </div>
         <div class="stats">
-          <span class="stat-add">+${stats.additions} added</span>
-          <span class="stat-remove">-${stats.removals} removed</span>
+          <span class="stat-add">+${stats.additions}</span>
+          <span class="stat-remove">-${stats.removals}</span>
           <span class="stat-unchanged">${stats.unchanged} unchanged</span>
+          <div class="stats-bar">
+            <div class="stats-bar-add" style="flex:${stats.additions}"></div>
+            <div class="stats-bar-remove" style="flex:${stats.removals}"></div>
+            <div class="stats-bar-unchanged" style="flex:${stats.unchanged}"></div>
+          </div>
         </div>
         ${this.mode === 'side-by-side' ? this._renderSideBySide() : this._renderInline()}
       </div>

@@ -36,14 +36,12 @@ export interface WebhookEntry {
 export class AiWebhookConfig extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      background: var(--cg-color-surface-base, #18181b);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      border: 1px solid var(--cg-color-border-default, #27272a);
-      border-radius: var(--cg-radius-lg, 12px);
-      padding: var(--cg-spacing-16, 16px);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      background: var(--cg-color-surface-base);
+      color: var(--cg-color-surface-base-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-16);
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     :host([hidden]) { display: none; }
 
@@ -51,134 +49,134 @@ export class AiWebhookConfig extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: var(--cg-spacing-12, 12px);
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
-      margin-bottom: var(--cg-spacing-12, 12px);
+      padding-bottom: var(--cg-spacing-12);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      margin-bottom: var(--cg-spacing-12);
     }
 
     h3 {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-semibold, 600);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
       margin: 0;
     }
 
     .add-btn {
-      background: var(--cg-color-accent, #dfff61);
-      color: var(--cg-color-surface-container-background, #18181b);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-container-background);
       border: none;
-      border-radius: var(--cg-radius-md, 8px);
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: var(--cg-font-weight-semibold, 600);
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-6) var(--cg-spacing-12);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       font-family: inherit;
-      transition: filter 150ms ease, transform 150ms ease;
+      transition: filter var(--cg-motion-duration-fast) var(--cg-motion-easing-color), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     .add-btn:hover {
       filter: brightness(1.1);
-      transform: translateY(-1px);
+      transform: translateY(calc(-1 * var(--cg-spacing-1));
     }
 
     .add-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .form {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-12, 12px);
-      background: var(--cg-color-surface-overlay, #27272a);
-      border-radius: var(--cg-radius-md, 8px);
-      margin-bottom: var(--cg-spacing-12, 12px);
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-12);
+      background: var(--cg-color-surface-overlay);
+      border-radius: var(--cg-border-radius-100);
+      margin-bottom: var(--cg-spacing-12);
     }
 
     .form-row {
       display: flex;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
     }
 
     input[type="url"] {
       flex: 1;
-      background: var(--cg-color-surface-base, #18181b);
-      border: 1px solid var(--cg-color-border-default, #3f3f46);
-      border-radius: var(--cg-radius-sm, 4px);
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      font-size: var(--cg-font-size-sm, 14px);
-      font-family: var(--cg-font-family-mono, 'JetBrains Mono', monospace);
+      background: var(--cg-color-surface-base);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-50);
+      padding: var(--cg-spacing-6) var(--cg-spacing-8);
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-sm);
+      font-family: var(--cg-font-family-mono);
     }
 
     input[type="url"]:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
+      outline: 2px solid var(--cg-color-accent-border);
       outline-offset: -2px;
     }
 
     .events-select {
       display: flex;
       flex-wrap: wrap;
-      gap: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-4);
     }
 
     .event-chip {
       display: inline-flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
-      padding: 3px var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-4);
+      padding: var(--cg-spacing-3) var(--cg-spacing-8);
       background: transparent;
-      border: 1px solid var(--cg-color-border-default, #3f3f46);
-      border-radius: var(--cg-radius-full, 9999px);
-      font-size: 10px;
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-full);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
       cursor: pointer;
       font-family: inherit;
     }
 
     .event-chip:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .event-chip[aria-pressed="true"] {
-      background: rgba(223, 255, 97, 0.15);
-      border-color: var(--cg-color-accent, #dfff61);
-      color: var(--cg-color-accent, #dfff61);
+      background: var(--cg-overlay-accent-strong);
+      border-color: var(--cg-color-surface-base-text);
+      color: var(--cg-color-surface-base-text);
     }
 
     .form-actions {
       display: flex;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
       justify-content: flex-end;
     }
 
     .btn-sm {
       background: transparent;
-      border: 1px solid var(--cg-color-border-default, #3f3f46);
-      border-radius: var(--cg-radius-sm, 4px);
-      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-50);
+      padding: var(--cg-spacing-4) var(--cg-spacing-8);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
       cursor: pointer;
       font-family: inherit;
-      transition: all 150ms ease;
+      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     .btn-sm:hover {
-      border-color: var(--cg-color-accent, #dfff61);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      transform: translateY(-1px);
+      border-color: var(--cg-color-surface-base-text);
+      color: var(--cg-color-surface-base-text);
+      transform: translateY(calc(-1 * var(--cg-spacing-1));
     }
 
     .btn-sm:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .btn-sm.primary {
-      background: var(--cg-color-accent, #dfff61);
-      color: var(--cg-color-surface-container-background, #18181b);
-      border-color: var(--cg-color-accent, #dfff61);
-      font-weight: var(--cg-font-weight-semibold, 600);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-container-background);
+      border-color: var(--cg-color-surface-base-text);
+      font-weight: var(--cg-font-weight-semibold);
     }
     .btn-sm.primary:hover {
       filter: brightness(1.1);
@@ -187,28 +185,28 @@ export class AiWebhookConfig extends LitElement {
     .webhook-list {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
     }
 
     .webhook-item {
-      padding: var(--cg-spacing-12, 12px);
-      background: var(--cg-color-surface-overlay, #27272a);
-      border-radius: var(--cg-radius-md, 8px);
-      border: 1px solid var(--cg-color-border-default, #27272a);
+      padding: var(--cg-spacing-12);
+      background: var(--cg-color-surface-overlay);
+      border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
 
     .webhook-top {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      margin-bottom: var(--cg-spacing-6, 6px);
+      gap: var(--cg-spacing-8);
+      margin-bottom: var(--cg-spacing-6);
     }
 
     .webhook-url {
       flex: 1;
-      font-family: var(--cg-font-family-mono, 'JetBrains Mono', monospace);
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-family: var(--cg-font-family-mono);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-base-text);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -217,8 +215,8 @@ export class AiWebhookConfig extends LitElement {
     .toggle-switch {
       position: relative;
       display: inline-block;
-      width: 32px;
-      height: 18px;
+      width: var(--cg-spacing-32);
+      height: var(--cg-spacing-16);
       flex-shrink: 0;
     }
 
@@ -232,53 +230,53 @@ export class AiWebhookConfig extends LitElement {
     .toggle-track {
       position: absolute;
       inset: 0;
-      background: var(--cg-color-surface-base, #18181b);
-      border-radius: 9px;
-      border: 1px solid var(--cg-color-border-default, #3f3f46);
+      background: var(--cg-color-surface-base);
+      border-radius: var(--cg-border-radius-full);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       cursor: pointer;
-      transition: background 0.15s ease;
+      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     .toggle-track::after {
       content: '';
       position: absolute;
-      width: 12px;
-      height: 12px;
+      width: var(--cg-spacing-12);
+      height: var(--cg-spacing-12);
       border-radius: 50%;
-      background: var(--cg-gray-500, #71717a);
-      top: 2px;
-      left: 2px;
-      transition: transform 0.15s ease, background 0.15s ease;
+      background: var(--cg-color-input-text-placeholder);
+      top: var(--cg-spacing-2);
+      left: var(--cg-spacing-2);
+      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color), background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     .toggle-switch input:checked + .toggle-track {
-      background: rgba(223, 255, 97, 0.2);
-      border-color: var(--cg-color-accent, #dfff61);
+      background: var(--cg-overlay-accent-strong);
+      border-color: var(--cg-color-surface-base-text);
     }
 
     .toggle-switch input:checked + .toggle-track::after {
-      transform: translateX(14px);
-      background: var(--cg-color-accent, #dfff61);
+      transform: translateX(var(--cg-spacing-12);
+      background: var(--cg-color-action-primary-background-default);
     }
 
     .toggle-switch input:focus-visible + .toggle-track {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .webhook-events {
       display: flex;
       flex-wrap: wrap;
-      gap: var(--cg-spacing-4, 4px);
-      margin-bottom: var(--cg-spacing-6, 6px);
+      gap: var(--cg-spacing-4);
+      margin-bottom: var(--cg-spacing-6);
     }
 
     .event-tag {
-      padding: 2px var(--cg-spacing-6, 6px);
-      background: rgba(223, 255, 97, 0.1);
-      border-radius: var(--cg-radius-sm, 4px);
-      font-size: 10px;
-      color: var(--cg-color-accent, #dfff61);
+      padding: var(--cg-spacing-2) var(--cg-spacing-6);
+      background: var(--cg-overlay-accent-medium);
+      border-radius: var(--cg-border-radius-50);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-base-text);
     }
 
     .webhook-footer {
@@ -288,20 +286,28 @@ export class AiWebhookConfig extends LitElement {
     }
 
     .last-triggered {
-      font-size: 10px;
-      color: var(--cg-color-text-tertiary, #71717a);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     .webhook-actions {
       display: flex;
-      gap: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-4);
+    }
+
+    .btn-sm.danger {
+      color: var(--cg-color-status-error-text);
+      border-color: var(--cg-color-status-error-text);
+    }
+    .btn-sm.danger:hover {
+      background: var(--cg-color-status-error-background-default);
     }
 
     .empty {
       text-align: center;
-      padding: var(--cg-spacing-24, 24px);
-      color: var(--cg-color-text-tertiary, #71717a);
-      font-size: var(--cg-font-size-sm, 14px);
+      padding: var(--cg-spacing-24);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
     }
 
   `];
@@ -414,9 +420,8 @@ export class AiWebhookConfig extends LitElement {
                 <div class="webhook-actions">
                   <button class="btn-sm" @click=${() => this._onTest(wh)}
                           aria-label="Test webhook" tabindex="0">Test</button>
-                  <button class="btn-sm" @click=${() => this._onDelete(wh)}
-                          aria-label="Delete webhook" tabindex="0"
-                          style="color:#f87171;border-color:#f87171">Delete</button>
+                  <button class="btn-sm danger" @click=${() => this._onDelete(wh)}
+                          aria-label="Delete webhook" tabindex="0">Delete</button>
                 </div>
               </div>
             </div>

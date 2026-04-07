@@ -1,5 +1,5 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 
 export interface AvatarItem {
@@ -29,43 +29,52 @@ export class CgAvatarGroup extends LitElement {
 
     .avatar {
       position: relative;
-      border-radius: var(--cg-border-radius-full, 99999px);
-      border: 2px solid var(--cg-color-surface-base-background, #09090b);
-      background: var(--cg-color-action-secondary-background-default, #27272a);
+      border-radius: var(--cg-border-radius-full);
+      border: var(--cg-border-width-100) solid var(--cg-color-surface-base-background);
+      background: var(--cg-color-action-secondary-background-default);
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
       flex-shrink: 0;
       cursor: pointer;
-      transition: transform var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)), margin var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
-      animation: avatarIn 250ms cubic-bezier(0.2, 0, 0, 1) both;
+      transition: transform var(--cg-motion-duration-slow) var(--cg-motion-easing-bounce), margin var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      animation: avatarIn var(--cg-motion-duration-slow) var(--cg-motion-easing-enter) both;
+      animation-delay: calc(var(--avatar-index, 0) * 50ms);
     }
-    .avatar:nth-child(1) { animation-delay: 0ms; }
-    .avatar:nth-child(2) { animation-delay: 50ms; }
-    .avatar:nth-child(3) { animation-delay: 100ms; }
-    .avatar:nth-child(4) { animation-delay: 150ms; }
-    .avatar:nth-child(5) { animation-delay: 200ms; }
-    .avatar:nth-child(6) { animation-delay: 250ms; }
+
+    .avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: var(--cg-border-radius-full);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
     @keyframes avatarIn {
       from { opacity: 0; transform: scale(0.8); }
       to { opacity: 1; transform: scale(1); }
     }
 
-    .group:hover .avatar { margin-left: 0 !important; }
-    .group:hover .avatar:first-child { margin-left: 0 !important; }
+    :host([expanded]) .avatar,
+    :host([expanded]) .overflow { margin-left: var(--cg-spacing-4) !important; }
+    :host([expanded]) .avatar:first-child { margin-left: 0 !important; }
 
     .avatar:hover {
       z-index: 10;
-      transform: scale(1.1) translateY(-2px);
+      transform: scale(1.15) translateY(calc(-1 * var(--cg-spacing-2)));
+    }
+
+    .avatar:active {
+      transform: scale(var(--cg-interaction-press-scale));
     }
 
     .avatar:focus-visible {
       outline: none;
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+        0 0 0 2px var(--cg-color-focus-ring-offset),
+        0 0 0 4px var(--cg-color-focus-ring);
       z-index: 11;
     }
 
@@ -73,12 +82,11 @@ export class CgAvatarGroup extends LitElement {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: var(--cg-border-radius-full, 99999px);
     }
 
     .initials {
-      font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
       text-transform: uppercase;
       line-height: 1;
       pointer-events: none;
@@ -89,73 +97,77 @@ export class CgAvatarGroup extends LitElement {
       position: absolute;
       bottom: 0;
       right: 0;
-      border-radius: var(--cg-border-radius-full, 99999px);
-      border: 2px solid var(--cg-color-surface-base-background, #09090b);
+      border-radius: var(--cg-border-radius-full);
+      border: var(--cg-border-width-100) solid var(--cg-color-surface-base-background);
     }
-    .status.online { background: var(--cg-green-500, #22c55e); }
-    .status.offline { background: var(--cg-gray-500, #71717a); }
-    .status.busy { background: var(--cg-red-500, #ef4444); }
-    .status.away { background: var(--cg-yellow-500, #f59e0b); }
+    .status.online { background: var(--cg-color-status-success-text-default); }
+    .status.offline { background: var(--cg-color-surface-container-outlined); }
+    .status.busy { background: var(--cg-color-status-error-text-default); }
+    .status.away { background: var(--cg-color-status-warning-text-default); }
 
     /* Overflow badge */
     .overflow {
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: var(--cg-border-radius-full, 99999px);
-      border: 2px solid var(--cg-color-surface-base-background, #09090b);
-      background: var(--cg-color-action-secondary-background-default, #27272a);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      font-weight: var(--cg-font-weight-semibold, 600);
+      border-radius: var(--cg-border-radius-full);
+      border: var(--cg-border-width-100) solid var(--cg-color-surface-base-background);
+      background: var(--cg-color-action-secondary-background-default);
+      color: var(--cg-color-surface-base-text);
+      font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       flex-shrink: 0;
-      transition: transform var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)), background 100ms ease;
+      transition: transform var(--cg-motion-duration-slow) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
     .overflow:hover {
-      background: var(--cg-color-action-secondary-background-hover, #3f3f46);
+      background: var(--cg-color-action-secondary-background-hover);
       transform: scale(1.1);
     }
     .overflow:focus-visible {
       outline: none;
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+        0 0 0 2px var(--cg-color-focus-ring-offset),
+        0 0 0 4px var(--cg-color-focus-ring);
     }
 
     /* Sizes */
-    :host([size="sm"]) .avatar, :host([size="sm"]) .overflow { width: 28px; height: 28px; }
-    :host([size="sm"]) .avatar:not(:first-child) { margin-left: -8px; }
-    :host([size="sm"]) .overflow { margin-left: -8px; font-size: 0.6rem; }
-    :host([size="sm"]) .initials { font-size: 0.6rem; }
-    :host([size="sm"]) .status { width: 8px; height: 8px; }
+    :host([size="sm"]) .avatar, :host([size="sm"]) .overflow { width: var(--cg-spacing-32); height: var(--cg-spacing-32); }
+    :host([size="sm"]) .avatar:not(:first-child) { margin-left: calc(-1 * var(--cg-spacing-8)); }
+    :host([size="sm"]) .overflow { margin-left: calc(-1 * var(--cg-spacing-8)); font-size: var(--cg-font-size-xs); }
+    :host([size="sm"]) .initials { font-size: var(--cg-font-size-xs); }
+    :host([size="sm"]) .status { width: var(--cg-spacing-8); height: var(--cg-spacing-8); }
 
-    :host([size="md"]) .avatar, :host([size="md"]) .overflow { width: 38px; height: 38px; }
-    :host([size="md"]) .avatar:not(:first-child) { margin-left: -10px; }
-    :host([size="md"]) .overflow { margin-left: -10px; font-size: var(--cg-font-size-xs, 12px); }
-    :host([size="md"]) .initials { font-size: var(--cg-font-size-xs, 12px); }
-    :host([size="md"]) .status { width: 10px; height: 10px; }
+    :host([size="md"]) .avatar, :host([size="md"]) .overflow { width: var(--cg-spacing-40); height: var(--cg-spacing-40); }
+    :host([size="md"]) .avatar:not(:first-child) { margin-left: calc(-1 * var(--cg-spacing-12)); }
+    :host([size="md"]) .overflow { margin-left: calc(-1 * var(--cg-spacing-12)); font-size: var(--cg-font-size-xs); }
+    :host([size="md"]) .initials { font-size: var(--cg-font-size-xs); }
+    :host([size="md"]) .status { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
 
-    :host([size="lg"]) .avatar, :host([size="lg"]) .overflow { width: 48px; height: 48px; }
-    :host([size="lg"]) .avatar:not(:first-child) { margin-left: -12px; }
-    :host([size="lg"]) .overflow { margin-left: -12px; font-size: var(--cg-font-size-sm, 14px); }
-    :host([size="lg"]) .initials { font-size: var(--cg-font-size-sm, 14px); }
-    :host([size="lg"]) .status { width: 12px; height: 12px; }
+    :host([size="lg"]) .avatar, :host([size="lg"]) .overflow { width: var(--cg-spacing-48); height: var(--cg-spacing-48); }
+    :host([size="lg"]) .avatar:not(:first-child) { margin-left: calc(-1 * var(--cg-spacing-12)); }
+    :host([size="lg"]) .overflow { margin-left: calc(-1 * var(--cg-spacing-12)); font-size: var(--cg-font-size-sm); }
+    :host([size="lg"]) .initials { font-size: var(--cg-font-size-sm); }
+    :host([size="lg"]) .status { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
   `];
 
   @property({ type: Array }) avatars: AvatarItem[] = [];
   @property({ type: Number }) maxVisible = 4;
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
+  @property({ type: Boolean, reflect: true }) expanded = false;
+
+  /** Tracks which avatar indices have failed images */
+  @state() private _failedImages = new Set<number>();
 
   private _getInitials(name: string): string {
     return name.split(' ').map(p => p[0] || '').join('').slice(0, 2);
   }
 
-  private _onImgError(e: Event) {
-    (e.target as HTMLImageElement).style.display = 'none';
-    const parent = (e.target as HTMLElement).parentElement;
-    const fallback = parent?.querySelector('.initials') as HTMLElement | null;
-    if (fallback) fallback.style.display = 'flex';
+  private _onImgError(index: number) {
+    this._failedImages = new Set(this._failedImages).add(index);
   }
+
+  private _onGroupEnter() { this.expanded = true; }
+  private _onGroupLeave() { this.expanded = false; }
 
   private _onAvatarClick() {
     this.dispatchEvent(new CustomEvent('cg-avatar-group-click', { bubbles: true, composed: true }));
@@ -170,21 +182,24 @@ export class CgAvatarGroup extends LitElement {
     const overflow = this.avatars.length - this.maxVisible;
 
     return html`
-      <div class="group" role="group" aria-label="Avatar group">
+      <div class="group" role="group" aria-label="Avatar group"
+        @mouseenter=${this._onGroupEnter}
+        @mouseleave=${this._onGroupLeave}>
         ${visible.map((a, i) => html`
           <div class="avatar"
             role="button"
             tabindex="0"
             aria-label=${a.name}
-            style="z-index:${visible.length - i}"
+            style="z-index:${visible.length - i}; --avatar-index: ${i}"
             @click=${this._onAvatarClick}
             @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._onAvatarClick(); } }}>
-            ${a.src ? html`
-              <img src=${a.src} alt=${a.name} loading="lazy" @error=${this._onImgError} />
-              <span class="initials" style="display:none">${this._getInitials(a.name)}</span>
-            ` : html`
-              <span class="initials">${this._getInitials(a.name)}</span>
-            `}
+            <div class="avatar-inner">
+              ${a.src && !this._failedImages.has(i) ? html`
+                <img src=${a.src} alt=${a.name} loading="lazy" @error=${() => this._onImgError(i)} />
+              ` : html`
+                <span class="initials">${this._getInitials(a.name)}</span>
+              `}
+            </div>
             ${a.status ? html`<span class="status ${a.status}"></span>` : nothing}
           </div>
         `)}

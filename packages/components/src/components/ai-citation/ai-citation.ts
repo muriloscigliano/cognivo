@@ -1,22 +1,12 @@
 /**
  * @element ai-citation
- * Inline numbered citation badges or bibliography list with expandable source cards and relevance dots.
+ * Inline numbered citation badges or bibliography list with expandable source cards.
  *
- * @example
- * ```html
- * <ai-citation mode="inline" .sources=${[
- *   {title:'Attention Is All You Need', url:'https://arxiv.org/abs/1706.03762', relevance:0.95},
- *   {title:'BERT Paper', excerpt:'We introduce a new language representation model...'}
- * ]}></ai-citation>
- * ```
- *
- * @fires {CustomEvent<{index: number, source: CitationSource}>} ai-citation-click - Citation badge clicked
- *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Badge background tint and source title link color
+ * @fires {CustomEvent<{index: number, source: CitationSource}>} ai-citation-click
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, fadeInKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface CitationSource {
   title: string;
@@ -27,9 +17,7 @@ interface CitationSource {
 
 @customElement('ai-citation')
 export class AiCitation extends LitElement {
-  static override styles = [hostBlock, reducedMotion, fadeInKeyframes, css`
-
-
+  static override styles = [hostBlock, reducedMotion, css`
     /* ── Inline mode ── */
     .inline { display: inline; }
 
@@ -37,64 +25,63 @@ export class AiCitation extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 16px;
-      height: 16px;
-      border-radius: var(--cg-border-radius-50, 4px);
-      background: rgba(223, 255, 97, 0.12);
-      color: var(--cg-brand-ai-accent, #dfff61);
-      font-size: 10px;
-      font-weight: 800;
+      width: var(--cg-spacing-16);
+      height: var(--cg-spacing-16);
+      border-radius: var(--cg-border-radius-50);
+      background: var(--cg-overlay-accent-light);
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
       cursor: pointer;
       vertical-align: super;
-      margin: 0 1px;
-      transition: all 150ms;
-      border: 1px solid transparent;
+      margin: 0 var(--cg-spacing-1);
+      border: var(--cg-border-width-50) solid transparent;
+      transition:
+        background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
+        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     .cite-badge:hover {
-      background: rgba(223, 255, 97, 0.25);
-      border-color: rgba(223, 255, 97, 0.3);
+      background: var(--cg-overlay-accent-medium);
+      border-color: var(--cg-overlay-accent-strong);
     }
     .cite-badge:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 1px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
 
     /* ── Source card (expanded) ── */
     .source-card {
-      background: var(--cg-color-surface-container-background, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      border-radius: var(--cg-border-radius-100, 8px);
-      padding: var(--cg-spacing-12, 12px);
-      margin: 8px 0;
-      animation: fadeIn 200ms ease;
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-12);
+      margin: var(--cg-spacing-8) 0;
       max-width: 400px;
-      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
     .source-header {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      margin-bottom: var(--cg-spacing-6, 6px);
+      gap: var(--cg-spacing-8);
+      margin-bottom: var(--cg-spacing-6);
     }
     .source-number {
-      width: 20px;
-      height: 20px;
-      border-radius: var(--cg-border-radius-50, 4px);
-      background: rgba(223, 255, 97, 0.12);
-      color: var(--cg-brand-ai-accent, #dfff61);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 800;
+      width: var(--cg-spacing-20);
+      height: var(--cg-spacing-20);
+      border-radius: var(--cg-border-radius-50);
+      background: var(--cg-overlay-accent-light);
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
     .source-title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      color: var(--cg-brand-ai-accent, #dfff61);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-base-text);
       text-decoration: none;
       flex: 1;
       min-width: 0;
@@ -102,32 +89,32 @@ export class AiCitation extends LitElement {
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .source-title:hover { text-decoration: underline; }
+    a.source-title:hover { text-decoration: underline; }
 
     .relevance-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
+      width: var(--cg-spacing-6);
+      height: var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-full);
       flex-shrink: 0;
     }
-    .relevance-dot.high { background: var(--cg-green-400, #4ade80); }
-    .relevance-dot.medium { background: var(--cg-yellow-400, #fbbf24); }
-    .relevance-dot.low { background: var(--cg-gray-500, #71717a); }
+    .relevance-dot.high { background: var(--cg-color-status-success-text-default); }
+    .relevance-dot.medium { background: var(--cg-color-status-warning-text-default); }
+    .relevance-dot.low { background: var(--cg-color-input-text-placeholder); }
 
     .source-excerpt {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-400, #a1a1aa);
-      line-height: 1.4;
-      margin-top: var(--cg-spacing-6, 6px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      line-height: var(--cg-line-height-snug);
+      margin-top: var(--cg-spacing-6);
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
     .source-url {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
-      margin-top: var(--cg-spacing-4, 4px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-top: var(--cg-spacing-4);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -137,61 +124,67 @@ export class AiCitation extends LitElement {
     .list {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: var(--cg-spacing-2);
     }
     .list-item {
       display: flex;
       align-items: flex-start;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-8, 8px) 0;
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-8) 0;
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
     .list-item:last-child { border-bottom: none; }
 
     .list-content { flex: 1; min-width: 0; }
     .list-title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-base-text);
     }
     .list-title a {
-      color: var(--cg-brand-ai-accent, #dfff61);
+      color: var(--cg-color-surface-base-text);
       text-decoration: none;
     }
     .list-title a:hover { text-decoration: underline; }
     .list-excerpt {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-400, #a1a1aa);
-      line-height: 1.4;
-      margin-top: var(--cg-spacing-4, 4px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      line-height: var(--cg-line-height-snug);
+      margin-top: var(--cg-spacing-4);
     }
 
     .sources-label {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      color: var(--cg-gray-400, #a1a1aa);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-input-text-placeholder);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: var(--cg-spacing-8, 8px);
-    }
+      letter-spacing: var(--cg-letter-spacing-wide);
+      margin-bottom: var(--cg-spacing-8);
     }
   `];
-  /** Array of source objects */
+
   @property({ type: Array }) sources: CitationSource[] = [];
+  @property() mode: 'inline' | 'list' = 'inline';
+  @property({ type: Number }) maxVisible = 5;
 
-  /** Display mode: inline (badges) or list (bibliography) */
-  @property({ type: String }) mode: 'inline' | 'list' = 'inline';
+  @state() private _expandedIndex = -1;
 
-  /** Max visible in inline mode before "+N more" */
-  @property({ type: Number }) maxVisible: number = 5;
+  private _sanitizeUrl(url?: string): string | undefined {
+    if (!url) return undefined;
+    const trimmed = url.trim();
+    if (!trimmed) return undefined;
+    const lower = trimmed.toLowerCase().replace(/[\s\u0000-\u001f]/g, '');
+    if (lower.startsWith('javascript:') || lower.startsWith('data:') || lower.startsWith('vbscript:')) return undefined;
+    if (lower.startsWith('http:') || lower.startsWith('https:') || lower.startsWith('//')) return trimmed;
+    const colonIndex = trimmed.indexOf(':');
+    const slashIndex = trimmed.indexOf('/');
+    if (colonIndex === -1 || (slashIndex !== -1 && slashIndex < colonIndex)) return trimmed;
+    return undefined;
+  }
 
-  @state() private _expandedIndex: number = -1;
-
-  private _getRelevanceClass(r?: number): string {
+  private _relevanceClass(r?: number): string {
     if (!r) return 'low';
-    if (r >= 0.7) return 'high';
-    if (r >= 0.4) return 'medium';
-    return 'low';
+    return r >= 0.7 ? 'high' : r >= 0.4 ? 'medium' : 'low';
   }
 
   private _handleCiteClick(index: number) {
@@ -202,7 +195,49 @@ export class AiCitation extends LitElement {
     }));
   }
 
-  private _renderInline() {
+  private _renderCard(source: CitationSource, index: number) {
+    const safeUrl = this._sanitizeUrl(source.url);
+    return html`
+      <div class="source-card">
+        <div class="source-header">
+          <div class="source-number">${index + 1}</div>
+          ${safeUrl
+            ? html`<a class="source-title" href="${safeUrl}" target="_blank" rel="noopener">${source.title}</a>`
+            : html`<span class="source-title">${source.title}</span>`}
+          <div class="relevance-dot ${this._relevanceClass(source.relevance)}" title="Relevance: ${source.relevance ? Math.round(source.relevance * 100) + '%' : 'unknown'}"></div>
+        </div>
+        ${source.excerpt ? html`<div class="source-excerpt">${source.excerpt}</div>` : nothing}
+        ${safeUrl ? html`<div class="source-url">${safeUrl}</div>` : nothing}
+      </div>
+    `;
+  }
+
+  override render() {
+    if (!this.sources.length) return nothing;
+
+    if (this.mode === 'list') {
+      return html`
+        <div class="list">
+          <div class="sources-label">Sources (${this.sources.length})</div>
+          ${this.sources.map((s, i) => {
+            const safeUrl = this._sanitizeUrl(s.url);
+            return html`
+              <div class="list-item">
+                <div class="source-number">${i + 1}</div>
+                <div class="list-content">
+                  <div class="list-title">
+                    ${safeUrl ? html`<a href="${safeUrl}" target="_blank" rel="noopener">${s.title}</a>` : s.title}
+                  </div>
+                  ${s.excerpt ? html`<div class="list-excerpt">${s.excerpt}</div>` : nothing}
+                </div>
+                <div class="relevance-dot ${this._relevanceClass(s.relevance)}"></div>
+              </div>
+            `;
+          })}
+        </div>
+      `;
+    }
+
     const visible = this.sources.slice(0, this.maxVisible);
     const remaining = this.sources.length - this.maxVisible;
 
@@ -216,49 +251,8 @@ export class AiCitation extends LitElement {
           >${i + 1}</span>
           ${this._expandedIndex === i ? this._renderCard(s, i) : nothing}
         `)}
-        ${remaining > 0 ? html`<span class="cite-badge" style="width: auto; padding: 0 6px;">+${remaining}</span>` : nothing}
+        ${remaining > 0 ? html`<span class="cite-badge" style="width:auto; padding:0 var(--cg-spacing-4);">+${remaining}</span>` : nothing}
       </div>
     `;
-  }
-
-  private _renderCard(source: CitationSource, index: number) {
-    return html`
-      <div class="source-card">
-        <div class="source-header">
-          <div class="source-number">${index + 1}</div>
-          ${source.url
-            ? html`<a class="source-title" href="${source.url}" target="_blank" rel="noopener">${source.title}</a>`
-            : html`<span class="source-title">${source.title}</span>`}
-          <div class="relevance-dot ${this._getRelevanceClass(source.relevance)}" title="Relevance: ${source.relevance ? Math.round(source.relevance * 100) + '%' : 'unknown'}"></div>
-        </div>
-        ${source.excerpt ? html`<div class="source-excerpt">${source.excerpt}</div>` : nothing}
-        ${source.url ? html`<div class="source-url">${source.url}</div>` : nothing}
-      </div>
-    `;
-  }
-
-  private _renderList() {
-    return html`
-      <div class="list">
-        <div class="sources-label">Sources (${this.sources.length})</div>
-        ${this.sources.map((s, i) => html`
-          <div class="list-item">
-            <div class="source-number">${i + 1}</div>
-            <div class="list-content">
-              <div class="list-title">
-                ${s.url ? html`<a href="${s.url}" target="_blank" rel="noopener">${s.title}</a>` : s.title}
-              </div>
-              ${s.excerpt ? html`<div class="list-excerpt">${s.excerpt}</div>` : nothing}
-            </div>
-            <div class="relevance-dot ${this._getRelevanceClass(s.relevance)}"></div>
-          </div>
-        `)}
-      </div>
-    `;
-  }
-
-  override render() {
-    if (this.sources.length === 0) return nothing;
-    return this.mode === 'list' ? this._renderList() : this._renderInline();
   }
 }

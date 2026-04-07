@@ -15,36 +15,36 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
 export class CgText extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
     :host {
-      line-height: var(--cg-line-height-normal, 1.5);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      line-height: var(--cg-line-height-normal);
+      color: var(--cg-color-surface-base-text);
       margin: 0;
     }
 
     :host([inline]) { display: inline; }
 
     /* Sizes */
-    :host([size="xs"]) { font-size: var(--cg-font-size-xs, 12px); line-height: 1.4; }
-    :host([size="sm"]) { font-size: var(--cg-font-size-sm, 14px); line-height: 1.45; }
-    :host([size="md"]) { font-size: var(--cg-font-size-md, 18px); }
-    :host([size="lg"]) { font-size: var(--cg-font-size-lg, 20px); }
-    :host([size="xl"]) { font-size: var(--cg-font-size-xl, 24px); line-height: 1.4; }
-    :host([size="2xl"]) { font-size: var(--cg-font-size-2xl, 30px); line-height: 1.35; }
-    :host([size="3xl"]) { font-size: var(--cg-font-size-3xl, 36px); line-height: 1.3; }
-    :host([size="4xl"]) { font-size: var(--cg-font-size-4xl, 48px); line-height: var(--cg-line-height-tight, 1.2); letter-spacing: -0.02em; }
+    :host([size="xs"]) { font-size: var(--cg-font-size-xs); line-height: var(--cg-line-height-snug); }
+    :host([size="sm"]) { font-size: var(--cg-font-size-sm); line-height: var(--cg-line-height-snug); }
+    :host([size="md"]) { font-size: var(--cg-font-size-md); }
+    :host([size="lg"]) { font-size: var(--cg-font-size-lg); }
+    :host([size="xl"]) { font-size: var(--cg-font-size-xl); line-height: var(--cg-line-height-snug); }
+    :host([size="2xl"]) { font-size: var(--cg-font-size-2xl); line-height: var(--cg-line-height-tight); }
+    :host([size="3xl"]) { font-size: var(--cg-font-size-3xl); line-height: var(--cg-line-height-tight); }
+    :host([size="4xl"]) { font-size: var(--cg-font-size-4xl); line-height: var(--cg-line-height-tight); letter-spacing: var(--cg-letter-spacing-tight); }
 
     /* Weights */
-    :host([weight="normal"]) { font-weight: 400; }
-    :host([weight="medium"]) { font-weight: var(--cg-font-weight-medium, 500); }
-    :host([weight="semibold"]) { font-weight: var(--cg-font-weight-semibold, 600); }
-    :host([weight="bold"]) { font-weight: var(--cg-font-weight-bold, 700); }
+    :host([weight="normal"]) { font-weight: var(--cg-font-weight-normal); }
+    :host([weight="medium"]) { font-weight: var(--cg-font-weight-medium); }
+    :host([weight="semibold"]) { font-weight: var(--cg-font-weight-semibold); }
+    :host([weight="bold"]) { font-weight: var(--cg-font-weight-bold); }
 
     /* Colors */
-    :host([color="default"]) { color: var(--cg-color-surface-base-text, #fafafa); }
-    :host([color="muted"]) { color: var(--cg-gray-500, #71717a); }
-    :host([color="accent"]) { color: var(--cg-text-accent, #e5ff6b); }
-    :host([color="success"]) { color: var(--cg-color-status-success-text-default, #4ade80); }
-    :host([color="warning"]) { color: var(--cg-text-warning, #f59e0b); }
-    :host([color="danger"]) { color: var(--cg-text-danger, #ef4444); }
+    :host([color="default"]) { color: var(--cg-color-surface-base-text); }
+    :host([color="muted"]) { color: var(--cg-color-surface-cards-disable-text); }
+    :host([color="accent"]) { color: var(--cg-color-accent-text); }
+    :host([color="success"]) { color: var(--cg-color-status-success-text-default); }
+    :host([color="warning"]) { color: var(--cg-color-status-warning-text-default); }
+    :host([color="danger"]) { color: var(--cg-color-status-error-text-default); }
     :host([color="inherit"]) { color: inherit; }
 
     /* Alignment */
@@ -86,7 +86,7 @@ export class CgText extends LitElement {
         this.style.setProperty('-webkit-box-orient', 'vertical');
         this.style.overflow = 'hidden';
       } else {
-        this.style.display = '';
+        this.style.display = this.inline ? 'inline' : 'block';
         this.style.removeProperty('-webkit-line-clamp');
         this.style.removeProperty('-webkit-box-orient');
         this.style.overflow = '';

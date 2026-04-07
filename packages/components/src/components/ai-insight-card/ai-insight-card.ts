@@ -1,29 +1,16 @@
 /**
  * @element ai-insight-card
- * Actionable AI insight card with type-specific icons, expandable detail, source links, and status badge.
+ * Actionable AI insight card with type icons, expandable detail, sources, and status.
  *
- * @example
- * ```html
- * <ai-insight-card
- *   type="anomaly"
- *   text="Revenue dropped 18% on March 12, correlating with API outage."
- *   confidence="0.91"
- *   timestamp="2 hours ago"
- *   expandable
- *   .sources=${[{title:'Incident Report', url:'/incidents/42'}]}
- * ></ai-insight-card>
- * ```
- *
- * @fires {CustomEvent<{type, text}>} ai-insight-click - Card body clicked
- * @fires {CustomEvent<{type, text, expanded}>} ai-insight-expand - Expand toggled
- * @fires {CustomEvent<{type, text}>} ai-insight-dismiss - Dismiss action
- * @fires {CustomEvent<{type, text}>} ai-insight-bookmark - Bookmark action
- *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Focus ring and selected border
+ * @fires {CustomEvent<{type, text}>} ai-insight-click
+ * @fires {CustomEvent<{type, text, expanded}>} ai-insight-expand
+ * @fires {CustomEvent<{type, text}>} ai-insight-dismiss
+ * @fires {CustomEvent<{type, text}>} ai-insight-bookmark
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes, fadeInKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
+import { sanitizeHTML } from '../../utils/sanitize.js';
 
 interface Source {
   title: string;
@@ -33,81 +20,82 @@ interface Source {
 
 @customElement('ai-insight-card')
 export class AiInsightCard extends LitElement {
-  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes, fadeInKeyframes, css`
-    :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-    }
+  static override styles = [hostBlock, reducedMotion, shimmerKeyframes, css`
+    :host { display: block; }
 
     .card {
       display: flex;
-      gap: var(--cg-spacing-12, 12px);
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
+      gap: var(--cg-spacing-16);
+      padding: var(--cg-spacing-20);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast, 200ms) ease, box-shadow var(--cg-motion-duration-fast, 200ms) ease, transform var(--cg-motion-duration-fast, 200ms) ease;
       position: relative;
-      animation: fadeIn var(--cg-motion-duration-normal, 300ms) ease;
-      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      transition:
+        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
+        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
+        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     .card:hover {
-      border-color: var(--cg-gray-600, #52525b);
-      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
-      transform: translateY(var(--cg-interaction-hover-lift, -1px));
+      border-color: var(--cg-color-surface-cards-hover-border);
+      transform: translateY(-1px);
     }
+    .card:active { transform: scale(var(--cg-interaction-press-scale)); }
     .card:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
+    .card:focus-within .actions { opacity: 1; }
     .card.selected {
-      border-color: var(--cg-brand-ai-accent, #dfff61);
-      background: rgba(223, 255, 97, 0.04);
+      border-color: var(--cg-color-action-primary-background-default);
+      background: var(--cg-overlay-accent-subtle);
     }
 
+    /* ── Status dot ── */
     .status-dot {
       position: absolute;
-      top: var(--cg-spacing-12, 12px);
-      right: var(--cg-spacing-12, 12px);
-      width: var(--cg-spacing-6, 6px);
-      height: var(--cg-spacing-6, 6px);
-      border-radius: var(--cg-border-radius-full, 99999px);
+      top: var(--cg-spacing-12);
+      right: var(--cg-spacing-12);
+      width: var(--cg-spacing-6);
+      height: var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-full);
     }
-    .status-dot.new { background: var(--cg-brand-ai-accent, #dfff61); }
-    .status-dot.read { background: var(--cg-gray-600, #52525b); }
+    .status-dot.new { background: var(--cg-color-action-primary-background-default); }
+    .status-dot.read { background: var(--cg-color-input-text-placeholder); }
 
+    /* ── Icon ── */
     .icon-area {
-      width: var(--cg-spacing-40, 40px);
-      height: var(--cg-spacing-40, 40px);
-      border-radius: var(--cg-border-radius-100, 8px);
+      width: var(--cg-spacing-40);
+      height: var(--cg-spacing-40);
+      border-radius: var(--cg-border-radius-full);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
-    .icon-area svg { width: var(--cg-spacing-20, 20px); height: var(--cg-spacing-20, 20px); }
-    .icon-area.explanation { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
-    .icon-area.forecast { background: rgba(223, 255, 97, 0.12); color: var(--cg-brand-ai-accent, #dfff61); }
-    .icon-area.anomaly { background: rgba(239, 68, 68, 0.12); color: #f87171; }
-    .icon-area.optimization { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
-    .icon-area.classification { background: rgba(34, 197, 94, 0.12); color: var(--cg-color-status-success-text-default, #4ade80); }
+    .icon-area svg { width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); }
+    .icon-area.explanation { background: var(--cg-color-status-info-background-default); border: var(--cg-border-width-50) solid var(--cg-color-status-info-border-default); color: var(--cg-color-status-info-text-default); }
+    .icon-area.forecast { background: var(--cg-overlay-accent-light); border: var(--cg-border-width-50) solid var(--cg-overlay-accent-medium); color: var(--cg-color-surface-base-text); }
+    .icon-area.anomaly { background: var(--cg-color-status-error-background-default); border: var(--cg-border-width-50) solid var(--cg-color-status-error-border-default); color: var(--cg-color-status-error-text-default); }
+    .icon-area.optimization { background: var(--cg-color-status-warning-background-default); border: var(--cg-border-width-50) solid var(--cg-color-status-warning-border-default); color: var(--cg-color-status-warning-text-default); }
+    .icon-area.classification { background: var(--cg-color-status-success-background-default); border: var(--cg-border-width-50) solid var(--cg-color-status-success-border-default); color: var(--cg-color-status-success-text-default); }
 
     .content { flex: 1; min-width: 0; }
 
     .type-label {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
       text-transform: uppercase;
-      letter-spacing: var(--cg-letter-spacing-wide, 0.05em);
-      color: var(--cg-brand-ai-accent, #dfff61);
-      margin-bottom: var(--cg-spacing-4, 4px);
+      letter-spacing: var(--cg-letter-spacing-wide);
+      color: var(--cg-color-input-text-placeholder);
+      margin-bottom: var(--cg-spacing-4);
     }
 
     .insight-text {
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: var(--cg-line-height-normal, 1.5);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-base-text);
+      line-height: var(--cg-line-height-normal);
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -118,126 +106,124 @@ export class AiInsightCard extends LitElement {
       display: block;
     }
 
+    /* ── Meta row ── */
     .meta {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      margin-top: var(--cg-spacing-8, 8px);
-      padding-top: var(--cg-spacing-8, 8px);
-      border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
-      font-size: var(--cg-font-size-xs, 12px);
+      gap: var(--cg-spacing-8);
+      margin-top: var(--cg-spacing-12);
+      padding-top: var(--cg-spacing-8);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
-    .timestamp { color: var(--cg-gray-500, #71717a); }
+    .meta-dot {
+      width: var(--cg-spacing-2);
+      height: var(--cg-spacing-2);
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-input-text-placeholder);
+    }
+    .confidence { font-weight: var(--cg-font-weight-medium); }
 
+    /* ── Expanded detail ── */
     .detail {
-      margin-top: var(--cg-spacing-12, 12px);
-      padding-top: var(--cg-spacing-12, 12px);
-      border-top: 1px solid var(--cg-gray-800, #27272a);
+      margin-top: var(--cg-spacing-12);
+      padding-top: var(--cg-spacing-12);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      animation: detailReveal var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+    }
+    @keyframes detailReveal {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .sources-label {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      color: var(--cg-gray-400, #a1a1aa);
-      margin-bottom: var(--cg-spacing-6, 6px);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-input-text-placeholder);
+      margin-bottom: var(--cg-spacing-8);
       text-transform: uppercase;
-      letter-spacing: var(--cg-letter-spacing-wide, 0.05em);
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
     .source {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-6, 6px);
-      padding: var(--cg-spacing-4, 4px) 0;
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-400, #a1a1aa);
+      gap: var(--cg-spacing-6);
+      padding: var(--cg-spacing-4) 0;
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
-    .source a { color: var(--cg-brand-ai-accent, #dfff61); text-decoration: none; }
+    .source a {
+      color: var(--cg-color-surface-base-text);
+      text-decoration: none;
+      font-weight: var(--cg-font-weight-medium);
+    }
     .source a:hover { text-decoration: underline; }
-    .source-dot { width: var(--cg-spacing-4, 4px); height: var(--cg-spacing-4, 4px); border-radius: var(--cg-border-radius-full, 99999px); flex-shrink: 0; }
-    .source-dot.high { background: var(--cg-green-400, #4ade80); }
-    .source-dot.medium { background: var(--cg-yellow-400, #fbbf24); }
-    .source-dot.low { background: var(--cg-gray-500, #71717a); }
+    .source a:focus-visible {
+      outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      outline-offset: var(--cg-outline-offset-default);
+      border-radius: var(--cg-border-radius-50);
+    }
+    .source-dot { width: var(--cg-spacing-4); height: var(--cg-spacing-4); border-radius: var(--cg-border-radius-full); flex-shrink: 0; }
+    .source-dot.high { background: var(--cg-color-status-success-text-default); }
+    .source-dot.medium { background: var(--cg-color-status-warning-text-default); }
+    .source-dot.low { background: var(--cg-color-input-text-placeholder); }
 
+    /* ── Action buttons ── */
     .actions {
       display: flex;
-      gap: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-4);
       position: absolute;
-      top: var(--cg-spacing-8, 8px);
-      right: var(--cg-spacing-8, 8px);
+      top: var(--cg-spacing-8);
+      right: var(--cg-spacing-8);
       opacity: 0;
-      transition: opacity var(--cg-motion-duration-fast, 150ms);
+      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     .card:hover .actions { opacity: 1; }
-    .action-btn {
-      width: var(--cg-spacing-24, 24px);
-      height: var(--cg-spacing-24, 24px);
-      border-radius: var(--cg-border-radius-50, 4px);
-      background: var(--cg-gray-800, #27272a);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      color: var(--cg-gray-400, #a1a1aa);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: var(--cg-font-size-xs, 12px);
-      transition: color var(--cg-motion-duration-fast, 150ms), background var(--cg-motion-duration-fast, 150ms);
-      padding: 0;
-    }
-    .action-btn:hover {
-      color: var(--cg-color-surface-base-text, #fafafa);
-      background: var(--cg-gray-700, #3f3f46);
-    }
-    .action-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
-    }
 
+    /* ── Skeleton ── */
     .skeleton {
       display: flex;
-      gap: var(--cg-spacing-12, 12px);
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
+      gap: var(--cg-spacing-16);
+      padding: var(--cg-spacing-20);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
     }
     .skel-icon {
-      width: var(--cg-spacing-40, 40px);
-      height: var(--cg-spacing-40, 40px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      background: linear-gradient(90deg, var(--cg-gray-800, #27272a) 25%, var(--cg-gray-700, #3f3f46) 50%, var(--cg-gray-800, #27272a) 75%);
+      width: var(--cg-spacing-40); height: var(--cg-spacing-40);
+      border-radius: var(--cg-border-radius-50);
+      background: linear-gradient(90deg, var(--cg-color-surface-container-background) 25%, var(--cg-color-surface-container-border) 50%, var(--cg-color-surface-container-background) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s linear infinite;
     }
-    .skel-lines { flex: 1; display: flex; flex-direction: column; gap: var(--cg-spacing-8, 8px); }
+    .skel-lines { flex: 1; display: flex; flex-direction: column; gap: var(--cg-spacing-8); }
     .skel-line {
-      height: var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-50, 4px);
-      background: linear-gradient(90deg, var(--cg-gray-800, #27272a) 25%, var(--cg-gray-700, #3f3f46) 50%, var(--cg-gray-800, #27272a) 75%);
+      height: var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-50);
+      background: linear-gradient(90deg, var(--cg-color-surface-container-background) 25%, var(--cg-color-surface-container-border) 50%, var(--cg-color-surface-container-background) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s linear infinite;
     }
     .skel-line:nth-child(1) { width: 40%; }
     .skel-line:nth-child(2) { width: 90%; }
     .skel-line:nth-child(3) { width: 60%; }
-    }
 
-    /* ── Rounded variants ── */
-    :host([rounded="none"]) .card { border-radius: 0; }
-    :host([rounded="sm"]) .card { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .card { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .card { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .card { border-radius: var(--cg-border-radius-full, 99999px); }
+    @media (prefers-reduced-motion: reduce) {
+      .card:hover { transform: none; }
+      .detail { animation: none; }
+    }
   `];
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
-  @property({ type: String }) type: 'explanation' | 'forecast' | 'anomaly' | 'optimization' | 'classification' = 'explanation';
-  @property({ type: String }) text: string = '';
-  @property({ type: Number }) confidence: number = 0;
-  @property({ type: String }) timestamp: string = '';
-  @property({ type: Boolean }) expandable: boolean = false;
-  @property({ type: Boolean }) expanded: boolean = false;
+
+  @property() type: 'explanation' | 'forecast' | 'anomaly' | 'optimization' | 'classification' = 'explanation';
+  @property() text = '';
+  @property({ type: Number }) confidence = 0;
+  @property() timestamp = '';
+  @property({ type: Boolean }) expandable = false;
+  @property({ type: Boolean }) expanded = false;
   @property({ type: Array }) sources: Source[] = [];
-  @property({ type: String }) status: 'new' | 'read' | 'dismissed' | '' = '';
-  @property({ type: Boolean }) loading: boolean = false;
-  @property({ type: Boolean }) selected: boolean = false;
+  @property() status: 'new' | 'read' | 'dismissed' | '' = '';
+  @property({ type: Boolean }) loading = false;
+  @property({ type: Boolean }) selected = false;
 
   private _getIcon() {
     const icons: Record<string, string> = {
@@ -253,15 +239,9 @@ export class AiInsightCard extends LitElement {
   private _handleClick() {
     if (this.expandable) {
       this.expanded = !this.expanded;
-      this.dispatchEvent(new CustomEvent('ai-insight-expand', {
-        bubbles: true, composed: true,
-        detail: { expanded: this.expanded, type: this.type },
-      }));
+      this.dispatchEvent(new CustomEvent('ai-insight-expand', { bubbles: true, composed: true, detail: { expanded: this.expanded, type: this.type } }));
     }
-    this.dispatchEvent(new CustomEvent('ai-insight-click', {
-      bubbles: true, composed: true,
-      detail: { type: this.type, text: this.text, confidence: this.confidence },
-    }));
+    this.dispatchEvent(new CustomEvent('ai-insight-click', { bubbles: true, composed: true, detail: { type: this.type, text: this.text, confidence: this.confidence } }));
   }
 
   private _handleDismiss(e: Event) {
@@ -278,11 +258,9 @@ export class AiInsightCard extends LitElement {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleClick(); }
   }
 
-  private _getRelevanceClass(r?: number): string {
+  private _relevanceClass(r?: number): string {
     if (!r) return 'low';
-    if (r >= 0.7) return 'high';
-    if (r >= 0.4) return 'medium';
-    return 'low';
+    return r >= 0.7 ? 'high' : r >= 0.4 ? 'medium' : 'low';
   }
 
   override render() {
@@ -304,26 +282,34 @@ export class AiInsightCard extends LitElement {
         ${this.status && this.status !== 'dismissed' ? html`<div class="status-dot ${this.status}" aria-hidden="true"></div>` : nothing}
 
         <div class="actions">
-          <button class="action-btn" @click=${this._handleBookmark} title="Bookmark" aria-label="Bookmark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
-          <button class="action-btn" @click=${this._handleDismiss} title="Dismiss" aria-label="Dismiss"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+          <cg-button variant="tertiary" size="sm" rounded="full" label="Bookmark" @click=${this._handleBookmark}>
+            <cg-icon name="star" size="xs"></cg-icon>
+          </cg-button>
+          <cg-button variant="tertiary" size="sm" rounded="full" label="Dismiss" @click=${this._handleDismiss}>
+            <cg-icon name="close" size="xs"></cg-icon>
+          </cg-button>
         </div>
 
-        <div class="icon-area ${this.type}" aria-hidden="true" .innerHTML=${this._getIcon()}></div>
+        <div class="icon-area ${this.type}" aria-hidden="true" .innerHTML=${sanitizeHTML(this._getIcon() ?? '')}></div>
 
         <div class="content">
           <div class="type-label">${this.type}</div>
           <div class="insight-text">${this.text}</div>
+
           <div class="meta">
-            ${this.confidence > 0 ? html`<ai-badge score="${this.confidence}" size="sm"></ai-badge>` : nothing}
-            ${this.timestamp ? html`<span class="timestamp">${this.timestamp}</span>` : nothing}
-            ${this.sources.length > 0 ? html`<span class="timestamp">${this.sources.length} source${this.sources.length > 1 ? 's' : ''}</span>` : nothing}
+            ${this.confidence > 0 ? html`<span class="confidence">${Math.round(this.confidence * 100)}%</span>` : nothing}
+            ${this.confidence > 0 && this.timestamp ? html`<span class="meta-dot"></span>` : nothing}
+            ${this.timestamp ? html`<span>${this.timestamp}</span>` : nothing}
+            ${(this.confidence > 0 || this.timestamp) && this.sources.length > 0 ? html`<span class="meta-dot"></span>` : nothing}
+            ${this.sources.length > 0 ? html`<span>${this.sources.length} source${this.sources.length > 1 ? 's' : ''}</span>` : nothing}
           </div>
+
           ${this.expanded && this.sources.length > 0 ? html`
             <div class="detail">
               <div class="sources-label">Sources</div>
               ${this.sources.map(s => html`
                 <div class="source">
-                  <div class="source-dot ${this._getRelevanceClass(s.relevance)}"></div>
+                  <div class="source-dot ${this._relevanceClass(s.relevance)}"></div>
                   ${s.url ? html`<a href="${s.url}" target="_blank" rel="noopener">${s.title}</a>` : html`<span>${s.title}</span>`}
                 </div>
               `)}

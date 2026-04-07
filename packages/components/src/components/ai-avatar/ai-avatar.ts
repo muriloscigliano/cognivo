@@ -21,7 +21,7 @@ import { hostBase, reducedMotion, shimmerKeyframes, fadeSlideInKeyframes } from 
 export class AiAvatar extends LitElement {
   static override styles = [hostBase, reducedMotion, shimmerKeyframes, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
@@ -37,9 +37,11 @@ export class AiAvatar extends LitElement {
       border: none;
       padding: 0;
     }
+    .avatar:hover { transform: scale(1.05); }
+    .avatar:active { transform: scale(var(--cg-interaction-press-scale)); }
     .avatar:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
-      outline-offset: 3px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
       border-radius: 50%;
     }
 
@@ -48,11 +50,11 @@ export class AiAvatar extends LitElement {
       align-items: center;
       justify-content: center;
       border-radius: 50%;
-      border: 2px solid var(--cg-color-border, #27272a);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
-    :host([type="agent"]) .ring { border-color: var(--cg-color-accent, #dfff61); }
-    :host([type="user"]) .ring { border-color: var(--cg-color-status-info-text-default, #3b82f6); }
-    :host([type="system"]) .ring { border-color: var(--cg-gray-500, #71717a); }
+    :host([type="agent"]) .ring { border-color: var(--cg-color-surface-base-text); }
+    :host([type="user"]) .ring { border-color: var(--cg-color-status-info-text-default); }
+    :host([type="system"]) .ring { border-color: var(--cg-color-input-text-placeholder); }
 
     .inner {
       border-radius: 50%;
@@ -60,22 +62,20 @@ export class AiAvatar extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--cg-color-surface, #27272a);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      color: var(--cg-color-text-primary, #fafafa);
-      font-weight: 600;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-surface-base-text);
+      font-weight: var(--cg-font-weight-semibold);
     }
 
     /* Sizes */
     :host([size="sm"]) .ring { width: 28px; height: 28px; }
-    :host([size="sm"]) .inner { width: 22px; height: 22px; font-size: 10px; }
+    :host([size="sm"]) .inner { width: 22px; height: 22px; font-size: var(--cg-font-size-xs); }
     :host([size="md"]) .ring,
     :host(:not([size])) .ring { width: 40px; height: 40px; }
     :host([size="md"]) .inner,
-    :host(:not([size])) .inner { width: 34px; height: 34px; font-size: var(--cg-font-size-sm, 14px); }
+    :host(:not([size])) .inner { width: 34px; height: 34px; font-size: var(--cg-font-size-sm); }
     :host([size="lg"]) .ring { width: 56px; height: 56px; }
-    :host([size="lg"]) .inner { width: 48px; height: 48px; font-size: var(--cg-font-size-lg, 18px); }
+    :host([size="lg"]) .inner { width: 48px; height: 48px; font-size: var(--cg-font-size-lg); }
 
     .inner img {
       width: 100%;
@@ -90,24 +90,23 @@ export class AiAvatar extends LitElement {
       bottom: 0;
       right: 0;
       border-radius: 50%;
-      border: 2px solid var(--cg-color-surface, #18181b);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-container-background);
     }
-    :host([size="sm"]) .status-dot { width: 8px; height: 8px; }
+    :host([size="sm"]) .status-dot { width: var(--cg-spacing-8); height: var(--cg-spacing-8); }
     :host([size="md"]) .status-dot,
-    :host(:not([size])) .status-dot { width: 10px; height: 10px; }
-    :host([size="lg"]) .status-dot { width: 14px; height: 14px; }
+    :host(:not([size])) .status-dot { width: var(--cg-spacing-8); height: var(--cg-spacing-8); }
+    :host([size="lg"]) .status-dot { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
 
-    .status-dot[data-status="online"] { background: var(--cg-color-status-success-text-default, #22c55e); }
-    .status-dot[data-status="away"] { background: #eab308; }
-    .status-dot[data-status="busy"] { background: var(--cg-color-status-error-text-default, #ef4444); }
-    .status-dot[data-status="offline"] { background: var(--cg-gray-600, #52525b); }
+    .status-dot[data-status="online"] { background: var(--cg-color-status-success-text-default); }
+    .status-dot[data-status="away"] { background: var(--cg-color-status-warning-text); }
+    .status-dot[data-status="busy"] { background: var(--cg-color-status-error-text-default); }
+    .status-dot[data-status="offline"] { background: var(--cg-color-input-border-hover); }
 
     /* Loading skeleton */
     .skeleton {
-      background: linear-gradient(90deg, var(--cg-color-surface-container-border, #27272a) 25%, var(--cg-gray-700, #3f3f46) 50%, var(--cg-color-surface-container-border, #27272a) 75%);
+      background: linear-gradient(90deg, var(--cg-color-surface-cards-border) 25%, var(--cg-color-surface-cards-border) 50%, var(--cg-color-surface-cards-border) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
-    }
     }
   `];
   @property({ type: String }) src = '';

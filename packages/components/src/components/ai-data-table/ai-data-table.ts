@@ -37,18 +37,16 @@ interface Anomaly {
 export class AiDataTable extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
     .container {
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
+      background: var(--cg-color-surface-table-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-table-border);
+      border-radius: var(--cg-border-radius-150);
       overflow: hidden;
-      color: var(--cg-color-surface-base-text, #fafafa);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      color: var(--cg-color-surface-base-text);
     }
 
     .table-wrap {
@@ -58,73 +56,73 @@ export class AiDataTable extends LitElement {
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: var(--cg-font-size-sm, 14px);
+      font-size: var(--cg-font-size-sm);
     }
 
     thead th {
-      background: #09090b;
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
+      background: var(--cg-color-surface-table-header-background);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
       text-align: left;
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--cg-gray-500, #71717a);
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
+      letter-spacing: var(--cg-letter-spacing-wide);
+      color: var(--cg-color-surface-table-header-text);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-table-header-border);
       white-space: nowrap;
       user-select: none;
     }
 
     thead th.sortable {
       cursor: pointer;
-      transition: color 150ms ease;
+      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
-    thead th.sortable:hover { color: var(--cg-brand-ai-accent, #dfff61); }
+    thead th.sortable:hover { color: var(--cg-color-surface-base-text); }
     thead th.sortable:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
+      outline: 2px solid var(--cg-color-accent-border);
       outline-offset: -2px;
     }
 
     .sort-arrow {
-      font-size: 10px;
-      margin-left: 4px;
-      color: var(--cg-brand-ai-accent, #dfff61);
+      font-size: var(--cg-font-size-xs);
+      margin-left: var(--cg-spacing-4);
+      color: var(--cg-color-surface-base-text);
     }
 
     tbody tr {
-      transition: background 120ms ease;
+      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
-    tbody tr:hover { background: rgba(223, 255, 97, 0.04); }
+    tbody tr:hover { background: var(--cg-color-surface-table-row-hover-background); }
 
     tbody td {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      border-bottom: 1px solid #1e1e21;
-      color: #d4d4d8;
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-table-row-border);
+      color: var(--cg-color-surface-table-text);
       cursor: default;
     }
     tbody td.clickable { cursor: pointer; }
 
     /* Anomaly cells */
     .anomaly-high {
-      background: rgba(239, 68, 68, 0.15);
-      border-left: 3px solid var(--cg-color-status-error-text-default, #ef4444);
+      background: var(--cg-color-status-error-background-default);
+      border-left: 3px solid var(--cg-color-status-error-text-default);
       position: relative;
     }
     .anomaly-medium {
-      background: rgba(234, 179, 8, 0.12);
-      border-left: 3px solid #eab308;
+      background: var(--cg-color-status-warning-background-default);
+      border-left: 3px solid var(--cg-color-status-warning-text);
       position: relative;
     }
     .anomaly-low {
-      background: rgba(59, 130, 246, 0.10);
-      border-left: 3px solid #3b82f6;
+      background: var(--cg-color-status-info-background-default);
+      border-left: 3px solid var(--cg-color-status-info-text);
       position: relative;
     }
 
     .anomaly-icon {
       display: inline-block;
-      margin-left: 6px;
-      font-size: var(--cg-font-size-xs, 12px);
+      margin-left: var(--cg-spacing-6);
+      font-size: var(--cg-font-size-xs);
       cursor: help;
     }
 
@@ -133,24 +131,22 @@ export class AiDataTable extends LitElement {
       bottom: calc(100% + 6px);
       left: 50%;
       transform: translateX(-50%);
-      background: #09090b;
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      color: #e4e4e7;
-      font-size: var(--cg-font-size-xs, 12px);
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-100, 8px);
+      background: var(--cg-color-surface-base-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-xs);
+      padding: var(--cg-spacing-6) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-100);
       white-space: nowrap;
       pointer-events: none;
       z-index: 10;
-      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
     }
 
     .empty-state {
-      padding: var(--cg-spacing-24, 24px);
+      padding: var(--cg-spacing-24);
       text-align: center;
-      color: var(--cg-gray-600, #52525b);
-      font-size: var(--cg-font-size-sm, 14px);
-    }
+      color: var(--cg-color-input-border-hover);
+      font-size: var(--cg-font-size-sm);
     }
   `];
   @property({ type: Array }) columns: Column[] = [];

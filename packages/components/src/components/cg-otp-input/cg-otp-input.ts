@@ -5,91 +5,104 @@ import { hostBase, reducedMotion } from '../../styles/index.js';
 /**
  * <cg-otp-input> — One-time password input with individual digit boxes.
  *
- * Features:
- * - Auto-focus next on type, backspace goes to previous
- * - Paste fills all boxes
- * - Mask mode (dots instead of digits)
- * - Error state with red border
- * - Dual focus ring on active box
- * - Full ARIA and keyboard support
+ * @example
+ * ```html
+ * <cg-otp-input length="6"></cg-otp-input>
+ * <cg-otp-input length="4" mask></cg-otp-input>
+ * ```
+ *
+ * @fires {CustomEvent<{value: string}>} cg-otp-change - On each digit change
+ * @fires {CustomEvent<{value: string}>} cg-otp-complete - When all digits filled
+ *
+ * @cssprop --cg-component-otp-box-width - Box width (48px)
+ * @cssprop --cg-component-otp-box-height - Box height (56px)
+ * @cssprop --cg-color-input-border-default - Default border color
  */
 @customElement('cg-otp-input')
 export class CgOtpInput extends LitElement {
   static override styles = [hostBase, reducedMotion, css`
     .container {
       display: flex;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
     }
 
     .box {
-      width: 44px;
-      height: 52px;
-      border: 1px solid var(--cg-color-input-border-default, #3f3f46);
-      border-radius: var(--cg-border-radius-150, 12px);
-      background: var(--cg-color-input-background-default, #18181b);
-      color: var(--cg-color-input-text-default, #f4f4f5);
+      width: var(--cg-component-otp-box-width);
+      height: var(--cg-component-otp-box-height);
+      border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
+      border-radius: var(--cg-border-radius-100);
+      background: var(--cg-color-input-background-default);
+      color: var(--cg-color-input-text-default);
       font-family: inherit;
-      font-size: var(--cg-font-size-lg, 20px);
-      font-weight: var(--cg-font-weight-semibold, 600);
+      font-size: var(--cg-font-size-lg);
+      font-weight: var(--cg-font-weight-semibold);
       text-align: center;
-      caret-color: var(--cg-brand-ai-accent, #dfff61);
+      caret-color: var(--cg-color-action-primary-background-default);
       outline: none;
-      transition: border-color 200ms ease-out, box-shadow 200ms ease-out, transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
-      animation: otpCellIn 250ms cubic-bezier(0.2, 0, 0, 1) both;
+      transition:
+        border-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+      animation: otpCellIn var(--cg-motion-duration-slow) var(--cg-motion-easing-default) both;
     }
-    .box:nth-child(1) { animation-delay: 0ms; }
-    .box:nth-child(2) { animation-delay: 40ms; }
-    .box:nth-child(3) { animation-delay: 80ms; }
-    .box:nth-child(4) { animation-delay: 120ms; }
-    .box:nth-child(5) { animation-delay: 160ms; }
-    .box:nth-child(6) { animation-delay: 200ms; }
 
     @keyframes otpCellIn {
-      from { opacity: 0; transform: translateY(4px) scale(0.95); }
+      from { opacity: 0; transform: translateY(var(--cg-spacing-4)) scale(0.95); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .box:hover:not(:disabled) {
-      border-color: var(--cg-color-input-border-hover, #dfff61);
+      border-color: var(--cg-color-input-border-hover);
     }
 
     .box:focus {
-      border-color: var(--cg-brand-ai-accent, #dfff61);
-      box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      border-color: var(--cg-color-input-border-focus);
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
       transform: scale(1.05);
     }
 
     .box:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+      background: var(--cg-color-input-background-disabled);
+      border-color: var(--cg-color-input-border-disabled);
     }
 
     :host([error]) .box {
-      border-color: var(--cg-color-status-error-border-default, rgba(239, 68, 68, 0.25));
+      border-color: var(--cg-color-input-border-error);
     }
     :host([error]) .box:focus {
-      border-color: var(--cg-color-status-error-text-default, #f87171);
-      box-shadow: 0 0 0 3px var(--cg-color-status-error-background-default, rgba(239, 68, 68, 0.12));
+      border-color: var(--cg-color-status-error-text-default);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+    }
+
+    /* ── Success state ── */
+    :host([success]) .box {
+      border-color: var(--cg-color-status-success-text-default);
+    }
+    :host([success]) .box:focus {
+      border-color: var(--cg-color-status-success-text-default);
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
     }
 
     .box.filled {
-      border-color: var(--cg-color-surface-container-border, #3f3f46);
-    }
-  
-
-    :focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      border-color: var(--cg-color-surface-container-border);
     }
 
     /* Rounded variants */
     :host([rounded="none"]) .box { border-radius: 0; }
-    :host([rounded="sm"]) .box { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .box { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .box { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .box { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .box { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .box { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .box { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) .box { border-radius: var(--cg-border-radius-full); }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .box {
+        animation: none !important;
+        transform: none !important;
+      }
+    }
   `];
 
   @property({ type: Number }) length = 6;
@@ -97,6 +110,7 @@ export class CgOtpInput extends LitElement {
   @property() value = '';
   @property({ type: Boolean, reflect: true }) disabled = false;
   @property({ type: Boolean, reflect: true }) error = false;
+  @property({ type: Boolean, reflect: true }) success = false;
   @property({ type: Boolean }) mask = false;
 
   @state() private _digits: string[] = [];
@@ -187,6 +201,7 @@ export class CgOtpInput extends LitElement {
           return html`
             <input class="box ${digit ? 'filled' : ''}"
               type="text" inputmode="numeric" maxlength="1"
+              style="animation-delay: ${i * 40}ms"
               .value=${display}
               ?disabled=${this.disabled}
               autocomplete="one-time-code"

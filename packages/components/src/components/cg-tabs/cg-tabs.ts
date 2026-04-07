@@ -2,7 +2,7 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
-/** Tab definition for cg-tabs, with value, label, optional icon, disabled state, and badge count. */
+/** Tab definition for cg-tabs. */
 export interface TabItem {
   value: string;
   label: string;
@@ -15,25 +15,7 @@ export interface TabItem {
  * @element cg-tabs
  * Tabbed navigation with animated sliding indicator, count badges, and keyboard nav.
  *
- * @example
- * ```html
- * <cg-tabs
- *   .tabs=${[{value:'all',label:'All',count:12},{value:'active',label:'Active'}]}
- *   value="all"
- * >
- *   <div slot="all">All items</div>
- *   <div slot="active">Active items</div>
- * </cg-tabs>
- * ```
- *
- * @slot - Default fallback panel content
- * @slot [value] - Named slot per tab value for panel content
- *
  * @fires {CustomEvent<{value: string, label: string}>} cg-tab-change - When a tab is selected
- *
- * @cssprop [--cg-focus-ring-color=#c8e650] - Indicator bar and focus outline color
- * @cssprop [--cg-text-accent=#e5ff6b] - Active tab text color
- * @cssprop [--cg-color-surface-container-background=#18181b] - Pills variant background
  */
 @customElement('cg-tabs')
 export class CgTabs extends LitElement {
@@ -48,95 +30,126 @@ export class CgTabs extends LitElement {
 
     /* Underline variant (default) */
     :host(:not([variant="pills"])) .tab-list {
-      border-bottom: 2px solid var(--cg-color-surface-container-border, #27272a);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-tabbar-border);
     }
 
     :host(:not([variant="pills"])) .indicator {
       position: absolute;
-      bottom: -2px;
-      height: 2px;
-      background: var(--cg-focus-ring-color, #c8e650);
-      border-radius: 1px;
-      transition: left var(--cg-motion-duration-slow, 0.25s) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)), width var(--cg-motion-duration-slow, 0.25s) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+      bottom: calc(-1 * var(--cg-spacing-1));
+      height: var(--cg-border-width-100);
+      background: var(--cg-color-action-primary-background-default);
+      border-radius: var(--cg-border-radius-full);
+      transition: left var(--cg-motion-duration-normal) var(--cg-motion-easing-default), width var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
     }
 
     .tab {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 10px var(--cg-spacing-16, 16px);
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-medium, 500);
-      color: var(--cg-gray-500, #71717a);
+      gap: var(--cg-spacing-6);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-container-outlined);
       background: none;
       border: none;
       cursor: pointer;
       white-space: nowrap;
-      transition: color var(--cg-motion-duration-normal, 150ms) ease;
+      transition: color var(--cg-motion-duration-normal) var(--cg-motion-easing-default), background var(--cg-motion-duration-normal) var(--cg-motion-easing-default), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-bounce);
       font-family: inherit;
       position: relative;
     }
 
-    .tab:hover:not(.disabled) { color: var(--cg-color-surface-base-text, #fafafa); background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.06)); border-radius: var(--cg-border-radius-100, 8px); }
-    .tab.active { color: var(--cg-text-accent, #e5ff6b); font-weight: var(--cg-font-weight-semibold, 600); }
-    .tab.disabled { opacity: 0.4; cursor: not-allowed; }
+    .tab:hover:not(.disabled) {
+      color: var(--cg-color-surface-base-text);
+    }
+    .tab.active {
+      color: var(--cg-color-action-primary-background-default);
+      font-weight: var(--cg-font-weight-semibold);
+    }
+    .tab.disabled { opacity: 0.5; cursor: not-allowed; }
+    .tab:active:not(.disabled) { transform: scale(var(--cg-interaction-press-scale)); }
 
     .tab:focus-visible {
-      outline: 2px solid var(--cg-focus-ring-color, #c8e650);
-      outline-offset: -2px;
-      border-radius: 4px;
+      outline: none;
+      border-radius: var(--cg-border-radius-50);
+      box-shadow: 0 0 0 2px var(--cg-color-focus-ring-offset), 0 0 0 4px var(--cg-color-focus-ring);
     }
 
     /* Count badge */
     .tab-count {
-      font-size: 0.65rem;
-      font-weight: var(--cg-font-weight-bold, 700);
-      background: var(--cg-gray-200, #e4e4e7);
-      color: var(--cg-gray-600, #52525b);
-      padding: 1px 6px;
-      border-radius: var(--cg-border-radius-full, 99999px);
-      line-height: var(--cg-line-height-snug, 1.375);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
+      background: var(--cg-color-action-secondary-background-default);
+      color: var(--cg-color-surface-container-outlined);
+      padding: var(--cg-spacing-1) var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-full);
+      line-height: var(--cg-line-height-snug);
     }
     .tab.active .tab-count {
-      background: var(--cg-overlay-accent-medium, rgba(223, 255, 97, 0.18));
-      color: var(--cg-text-accent, #e5ff6b);
+      background: var(--cg-overlay-accent-light);
+      color: var(--cg-color-action-primary-background-default);
     }
 
     /* Pills variant */
     :host([variant="pills"]) .tab-list {
-      gap: var(--cg-spacing-4, 4px);
-      background: var(--cg-color-surface-container-background, #18181b);
-      padding: var(--cg-spacing-4, 4px);
-      border-radius: var(--cg-border-radius-150, 12px);
+      gap: var(--cg-spacing-4);
+      background: var(--cg-color-surface-tabbar-background);
+      padding: var(--cg-spacing-4);
+      border-radius: var(--cg-border-radius-150);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-tabbar-border);
     }
     :host([variant="pills"]) .tab {
-      border-radius: 6px;
-      padding: var(--cg-spacing-8, 8px) 14px;
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
+      border: var(--cg-border-width-50) solid transparent;
     }
     :host([variant="pills"]) .tab.active {
-      background: var(--cg-color-surface-raised-background, #27272a);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      box-shadow: var(--cg-shadow-sm-x, 0px) var(--cg-shadow-sm-y, 1px) var(--cg-shadow-sm-blur, 4px) var(--cg-shadow-sm-spread, 0px) var(--cg-shadow-sm-Color, #616161);
+      color: var(--cg-color-surface-base-text);
+      font-weight: var(--cg-font-weight-semibold);
     }
-    :host([variant="pills"]) .indicator { display: none; }
+    :host([variant="pills"]) .tab:hover:not(.active):not(.disabled) {
+      background: var(--cg-color-surface-tabbar-hover-background);
+    }
+
+    /* Sliding pill indicator */
+    :host([variant="pills"]) .indicator {
+      position: absolute;
+      top: var(--cg-spacing-4);
+      bottom: var(--cg-spacing-4);
+      border-radius: var(--cg-border-radius-100);
+      background: var(--cg-color-surface-tabbar-selected-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      transition: left var(--cg-motion-duration-normal) var(--cg-motion-easing-bounce), width var(--cg-motion-duration-normal) var(--cg-motion-easing-bounce);
+      z-index: 0;
+    }
+    :host([variant="pills"]) .tab { z-index: 1; }
+
+    /* Full rounded pills */
+    :host([variant="pills"][rounded="full"]) .tab-list {
+      border-radius: var(--cg-border-radius-full);
+    }
+    :host([variant="pills"][rounded="full"]) .tab {
+      border-radius: var(--cg-border-radius-full);
+    }
+    :host([variant="pills"][rounded="full"]) .indicator {
+      border-radius: var(--cg-border-radius-full);
+    }
 
     /* Panel */
     .panel {
-      padding: var(--cg-spacing-16, 16px) 0;
+      padding: var(--cg-spacing-16) 0;
     }
 
     /* Size variants */
-    :host([size="sm"]) .tab { font-size: 12px; padding: 6px 12px; }
-    :host([size="sm"]:not([variant="pills"])) .indicator { height: 2px; }
-
-    :host([size="lg"]) .tab { font-size: 16px; padding: 10px 20px; }
-    :host([size="lg"]:not([variant="pills"])) .indicator { height: 3px; }
+    :host([size="sm"]) .tab { font-size: var(--cg-font-size-xs); padding: var(--cg-spacing-6) var(--cg-spacing-12); }
+    :host([size="lg"]) .tab { font-size: var(--cg-font-size-base); padding: var(--cg-spacing-12) var(--cg-spacing-20); }
   `];
 
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ type: Array }) tabs: TabItem[] = [];
   @property() value = '';
   @property({ reflect: true }) variant: 'underline' | 'pills' = 'underline';
+  @property({ reflect: true }) rounded: 'default' | 'full' = 'default';
 
   @state() private _active = '';
   @state() private _indicatorLeft = 0;
@@ -155,7 +168,7 @@ export class CgTabs extends LitElement {
   }
 
   private _updateIndicator() {
-    if (this.variant === 'pills' || !this._tabList) return;
+    if (!this._tabList) return;
     const activeBtn = this._tabList.querySelector('.tab.active') as HTMLElement | null;
     if (activeBtn) {
       this._indicatorLeft = activeBtn.offsetLeft;
@@ -189,7 +202,6 @@ export class CgTabs extends LitElement {
     e.preventDefault();
     this._select(enabled[next]!);
 
-    // Focus the new active tab button
     requestAnimationFrame(() => {
       const btns = this._tabList.querySelectorAll('.tab:not(.disabled)');
       (btns[next] as HTMLElement)?.focus();
@@ -203,8 +215,10 @@ export class CgTabs extends LitElement {
           <button
             class="tab ${tab.value === this._active ? 'active' : ''} ${tab.disabled ? 'disabled' : ''}"
             role="tab"
+            id="tab-${tab.value}"
             tabindex=${tab.value === this._active ? '0' : '-1'}
             aria-selected=${tab.value === this._active}
+            aria-controls="panel-${tab.value}"
             ?disabled=${tab.disabled}
             @click=${() => this._select(tab)}
           >
@@ -212,11 +226,9 @@ export class CgTabs extends LitElement {
             ${tab.count !== undefined ? html`<span class="tab-count">${tab.count}</span>` : nothing}
           </button>
         `)}
-        ${this.variant === 'underline' ? html`
-          <div class="indicator" style="left: ${this._indicatorLeft}px; width: ${this._indicatorWidth}px;"></div>
-        ` : nothing}
+        <div class="indicator" style="left: ${this._indicatorLeft}px; width: ${this._indicatorWidth}px;"></div>
       </div>
-      <div class="panel" role="tabpanel">
+      <div class="panel" role="tabpanel" id="panel-${this._active}" aria-labelledby="tab-${this._active}">
         <slot name=${this._active}></slot>
         <slot></slot>
       </div>

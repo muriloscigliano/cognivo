@@ -146,13 +146,13 @@ export const exitFadeScaleKeyframes = css`
 
 /**
  * Dark glassmorphism card — frosted glass with layered shadows.
- * The saturate(1.2) adds vibrancy behind the blur.
+ * The saturate(1.1) adds vibrancy behind the blur.
  * Use sparingly: max 2-3 glass elements per viewport.
  */
 export const glassCard = css`
   background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px) saturate(1.2);
-  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  backdrop-filter: blur(12px) saturate(1.1);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.36),
@@ -170,7 +170,7 @@ export const noiseOverlay = css`
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    opacity: 0.035;
+    opacity: 0.02;
     pointer-events: none;
     z-index: 1;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -193,7 +193,7 @@ export const liquidFillHover = css`
     background: linear-gradient(
       180deg,
       var(--cg-brand-ai-accent, #dfff61) 0%,
-      rgba(129, 140, 248, 0.5) 100%
+      rgba(223, 255, 97, 0.03) 100%
     );
     opacity: 0.06;
     transform: translateY(102%);

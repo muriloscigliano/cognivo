@@ -33,15 +33,13 @@ export class AiRevealAnimation extends LitElement {
     .wrapper {
       opacity: 0;
       will-change: transform, opacity;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     /* ── Initial hidden states ── */
     .wrapper.fade { opacity: 0; }
     .wrapper.slide-up {
       opacity: 0;
-      transform: translateY(24px);
+      transform: translateY(var(--cg-spacing-24);
     }
     .wrapper.scale {
       opacity: 0;
@@ -79,7 +77,7 @@ export class AiRevealAnimation extends LitElement {
     }
 
     @keyframes reveal-slide-up {
-      from { opacity: 0; transform: translateY(24px); }
+      from { opacity: 0; transform: translateY(var(--cg-spacing-24); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
@@ -134,6 +132,11 @@ export class AiRevealAnimation extends LitElement {
 
   private _onAnimEnd = () => {
     this._done = true;
+    // Release will-change after animation completes
+    const wrapper = this.shadowRoot?.querySelector('.wrapper') as HTMLElement | null;
+    if (wrapper) {
+      wrapper.style.willChange = 'auto';
+    }
     this.dispatchEvent(new CustomEvent('ai-reveal-complete', {
       bubbles: true, composed: true,
     }));

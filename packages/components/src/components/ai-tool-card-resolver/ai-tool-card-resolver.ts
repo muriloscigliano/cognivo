@@ -30,33 +30,35 @@ import { hostBlock, reducedMotion, shimmerKeyframes, fadeSlideInKeyframes } from
 export class AiToolCardResolver extends LitElement {
   static override styles = [hostBlock, reducedMotion, shimmerKeyframes, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     .card {
-      background: var(--cg-color-surface-cards-background, #18181b);
-      border: 1px solid var(--cg-color-surface-cards-border, #27272a);
-      border-radius: var(--cg-border-radius-200, 12px);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-200);
       overflow: hidden;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+    }
+    .card:hover {
+      border-color: var(--cg-color-input-border-hover);
     }
 
     /* ── Loading skeleton ── */
     .skeleton {
-      padding: var(--cg-spacing-16, 16px);
+      padding: var(--cg-spacing-16);
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
     }
     .skeleton-line {
-      height: 14px;
-      border-radius: var(--cg-border-radius-100, 8px);
+      height: var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-100);
       background: linear-gradient(
         90deg,
-        var(--cg-gray-800, #27272a) 25%,
-        var(--cg-gray-700, #3f3f46) 50%,
-        var(--cg-gray-800, #27272a) 75%
+        var(--cg-color-surface-container-background) 25%,
+        var(--cg-color-surface-cards-border) 50%,
+        var(--cg-color-surface-container-background) 75%
       );
       background-size: 200% 100%;
       animation: shimmer 1.5s linear infinite;
@@ -67,53 +69,53 @@ export class AiToolCardResolver extends LitElement {
 
     /* ── Fallback (raw JSON) ── */
     .fallback {
-      padding: var(--cg-spacing-16, 16px);
+      padding: var(--cg-spacing-16);
     }
     .fallback-header {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      margin-bottom: var(--cg-spacing-12, 12px);
+      gap: var(--cg-spacing-8);
+      margin-bottom: var(--cg-spacing-12);
     }
     .fallback-icon {
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-brand-ai-accent, #dfff61);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-base-text);
     }
     .fallback-title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
     }
     .fallback-json {
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-size: var(--cg-font-size-xs, 12px);
+      font-family: var(--cg-font-family-mono);
+      font-size: var(--cg-font-size-xs);
       line-height: 1.5;
-      color: var(--cg-gray-400, #a1a1aa);
-      background: var(--cg-gray-900, #09090b);
-      border-radius: var(--cg-border-radius-100, 8px);
-      padding: var(--cg-spacing-12, 12px);
+      color: var(--cg-color-input-text-placeholder);
+      background: var(--cg-color-surface-base-background);
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-12);
       overflow-x: auto;
       white-space: pre-wrap;
       word-break: break-all;
-      max-height: 200px;
+      max-height: var(300px);
       overflow-y: auto;
     }
 
     /* ── Error state ── */
     .error {
-      padding: var(--cg-spacing-16, 16px);
+      padding: var(--cg-spacing-16);
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
     }
     .error-icon {
-      color: var(--cg-red-400, #f87171);
-      font-size: var(--cg-font-size-base, 16px);
+      color: var(--cg-color-status-error-text-default);
+      font-size: var(--cg-font-size-base);
       flex-shrink: 0;
     }
     .error-text {
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-red-400, #f87171);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-status-error-text-default);
     }
 
     /* ── Resolved component host ── */
@@ -121,9 +123,14 @@ export class AiToolCardResolver extends LitElement {
       padding: 0;
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      :host { animation: none; }
+      .skeleton-line { animation: none; }
+    }
+
     :focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
   `];
 
@@ -140,6 +147,10 @@ export class AiToolCardResolver extends LitElement {
   @property({ type: Boolean }) loading = false;
 
   @state() private _error = '';
+
+  /** Cached resolved element keyed by toolName + tag */
+  private _cachedEl: HTMLElement | null = null;
+  private _cachedKey = '';
 
   private _dispatch(name: string, detail: unknown) {
     this.dispatchEvent(new CustomEvent(name, {
@@ -158,6 +169,15 @@ export class AiToolCardResolver extends LitElement {
     const tag = this.registry[this.toolName];
     if (!tag) return null;
 
+    const cacheKey = `${this.toolName}::${tag}`;
+
+    // Return cached element if key matches, just update data
+    if (this._cachedEl && this._cachedKey === cacheKey) {
+      (this._cachedEl as unknown as Record<string, unknown>)['data'] = this.toolData;
+      (this._cachedEl as unknown as Record<string, unknown>)['toolData'] = this.toolData;
+      return this._cachedEl;
+    }
+
     // Clean up previous listeners
     this._abortController?.abort();
     this._abortController = new AbortController();
@@ -171,6 +191,11 @@ export class AiToolCardResolver extends LitElement {
           toolName: this.toolName, action: e.detail?.action, data: e.detail?.data,
         });
       }) as EventListener, { signal: this._abortController.signal });
+
+      // Cache the element
+      this._cachedEl = el;
+      this._cachedKey = cacheKey;
+
       return el;
     } catch (err) {
       this._error = err instanceof Error ? err.message : 'Component failed to render';

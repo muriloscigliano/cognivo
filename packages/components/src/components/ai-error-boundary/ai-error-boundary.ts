@@ -23,28 +23,26 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class AiErrorBoundary extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
     .error-card {
-      background: var(--cg-color-bg-primary, #18181b);
-      border: 1px solid #7f1d1d;
-      border-radius: var(--cg-border-radius-150, 12px);
-      padding: var(--cg-spacing-16, 16px);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      background: var(--cg-color-surface-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-status-error-border-default);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-16);
     }
 
     .header {
       display: flex;
       align-items: flex-start;
-      gap: var(--cg-spacing-12, 12px);
-      margin-bottom: var(--cg-spacing-12, 12px);
+      gap: var(--cg-spacing-12);
+      margin-bottom: var(--cg-spacing-12);
     }
 
     .icon {
-      font-size: var(--cg-font-size-2xl, 24px);
+      font-size: var(--cg-font-size-2xl);
       flex-shrink: 0;
       line-height: 1;
     }
@@ -57,87 +55,88 @@ export class AiErrorBoundary extends LitElement {
     .title-row {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
       flex-wrap: wrap;
     }
 
     .title {
-      color: #fca5a5;
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 700;
+      color: var(--cg-color-status-error-text-default);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-bold);
     }
 
     .code-badge {
       display: inline-block;
-      padding: 2px var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-50, 4px);
-      background: rgba(239, 68, 68, 0.15);
-      color: #fca5a5;
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      letter-spacing: 0.5px;
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-50);
+      background: var(--cg-color-status-error-background-default);
+      color: var(--cg-color-status-error-text-default);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
+      font-family: var(--cg-font-family-mono);
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
 
     .message {
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-sm, 14px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
       line-height: 1.5;
-      margin-top: var(--cg-spacing-6, 6px);
+      margin-top: var(--cg-spacing-6);
     }
 
     .details-toggle {
       background: none;
       border: none;
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
       cursor: pointer;
-      padding: var(--cg-spacing-4, 4px) 0;
-      margin-top: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-4) 0;
+      margin-top: var(--cg-spacing-8);
       font-family: inherit;
       text-decoration: underline;
       text-underline-offset: 2px;
     }
-    .details-toggle:hover { color: var(--cg-color-text-primary, #fafafa); }
+    .details-toggle:hover { color: var(--cg-color-surface-base-text); }
     .details-toggle:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .details {
-      margin-top: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-12, 12px);
-      background: var(--cg-color-bg-secondary, #27272a);
-      border-radius: var(--cg-border-radius-100, 8px);
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
+      margin-top: var(--cg-spacing-8);
+      padding: var(--cg-spacing-12);
+      background: var(--cg-color-surface-container-background);
+      border-radius: var(--cg-border-radius-100);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
+      font-family: var(--cg-font-family-mono);
       line-height: 1.6;
       white-space: pre-wrap;
       word-break: break-word;
     }
 
     .actions {
-      padding-top: var(--cg-spacing-12, 12px);
-      border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
+      padding-top: var(--cg-spacing-12);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       display: flex;
-      gap: var(--cg-spacing-8, 8px);
-      margin-top: var(--cg-spacing-16, 16px);
+      gap: var(--cg-spacing-8);
+      margin-top: var(--cg-spacing-16);
     }
 
     .btn {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
+      border-radius: var(--cg-border-radius-100);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       border: none;
       font-family: inherit;
-      transition: filter 150ms ease;
+      transition: filter var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
+    .btn:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
     .btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
     .btn:disabled {
       opacity: 0.4;
@@ -145,18 +144,17 @@ export class AiErrorBoundary extends LitElement {
     }
 
     .retry-btn {
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: var(--cg-color-surface-container-background, #18181b);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-container-background);
     }
     .retry-btn:hover:not(:disabled) { filter: brightness(1.1); }
 
     .dismiss-btn {
-      background: var(--cg-color-bg-secondary, #27272a);
-      color: var(--cg-color-text-primary, #fafafa);
-      border: 1px solid var(--cg-color-border-primary, #3f3f46);
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-surface-base-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
     .dismiss-btn:hover:not(:disabled) { filter: brightness(1.2); }
-    }
   `];
   @property({ type: String }) error = '';
   @property({ type: String }) code = '';

@@ -1,5 +1,5 @@
 /**
- * @cognivo/components — 125 Web Components built with Lit 3.x
+ * @cognivo/components — 143 Web Components built with Lit 3.x
  * All use Shadow DOM + --cg-* design tokens. Framework-agnostic.
  */
 
@@ -29,6 +29,8 @@ import { CgSwitch } from './components/cg-switch/cg-switch.js';
 import { CgSlider } from './components/cg-slider/cg-slider.js';
 import { CgForm } from './components/cg-form/cg-form.js';
 import { CgDatePicker } from './components/cg-date-picker/cg-date-picker.js';
+import { CgTimePicker } from './components/cg-time-picker/cg-time-picker.js';
+import { CgDateTimePicker } from './components/cg-date-time-picker/cg-date-time-picker.js';
 import { CgButtonGroup } from './components/cg-button-group/cg-button-group.js';
 
 // ── Wave 3: Navigation & Content (9) ────────────────────────────────────────
@@ -44,7 +46,7 @@ import { CgBadgeGroup } from './components/cg-badge-group/cg-badge-group.js';
 
 // ── Wave 4: Chat & Data Viz (4) ─────────────────────────────────────────────
 import { CgList } from './components/cg-list/cg-list.js';
-import { CgSection } from './components/cg-section/cg-section.js';
+import { CgListbox } from './components/cg-listbox/cg-listbox.js';
 import { CgFollowUp } from './components/cg-follow-up/cg-follow-up.js';
 import { CgChart } from './components/cg-chart/cg-chart.js';
 
@@ -70,6 +72,7 @@ import { CgAvatarGroup } from './components/cg-avatar-group/cg-avatar-group.js';
 
 // ── AI Components (19) ──────────────────────────────────────────────────────
 import { AiThinking } from './components/ai-thinking/ai-thinking.js';
+import { AiAgentSteps } from './components/ai-agent-steps/ai-agent-steps.js';
 import { AiBadge } from './components/ai-badge/ai-badge.js';
 import { AiChat } from './components/ai-chat/ai-chat.js';
 import { AiResultPanel } from './components/ai-result-panel/ai-result-panel.js';
@@ -149,6 +152,24 @@ import { AiAlertCard } from './components/ai-alert-card/ai-alert-card.js';
 import { AiRevealAnimation } from './components/ai-reveal-animation/ai-reveal-animation.js';
 import { AiRichMessage } from './components/ai-rich-message/ai-rich-message.js';
 import { AiDataCard } from './components/ai-data-card/ai-data-card.js';
+// Phase 3 Tier 1: AI Interaction Atlas
+import { AiScenarioPanel } from './components/ai-scenario-panel/ai-scenario-panel.js';
+import { AiTransformSlider } from './components/ai-transform-slider/ai-transform-slider.js';
+import { AiConsentManager } from './components/ai-consent-manager/ai-consent-manager.js';
+import { AiVoicePanel } from './components/ai-voice-panel/ai-voice-panel.js';
+import { AiDetectionCanvas } from './components/ai-detection-canvas/ai-detection-canvas.js';
+// Phase 3 Tier 2: AI Interaction Atlas
+import { AiTranslationPanel } from './components/ai-translation-panel/ai-translation-panel.js';
+import { AiPersonalizationDash } from './components/ai-personalization-dash/ai-personalization-dash.js';
+import { AiSegmentationViewer } from './components/ai-segmentation-viewer/ai-segmentation-viewer.js';
+import { AiSimilarityCard } from './components/ai-similarity-card/ai-similarity-card.js';
+import { AiLabelingBoard } from './components/ai-labeling-board/ai-labeling-board.js';
+// Phase 3 Tier 3: AI Interaction Atlas
+import { AiValidationChecklist } from './components/ai-validation-checklist/ai-validation-checklist.js';
+import { AiCacheIndicator } from './components/ai-cache-indicator/ai-cache-indicator.js';
+import { AiDataLineage } from './components/ai-data-lineage/ai-data-lineage.js';
+import { AiRewardSignal } from './components/ai-reward-signal/ai-reward-signal.js';
+import { AiAssistantWidget } from './components/ai-assistant-widget/ai-assistant-widget.js';
 
 export {
   // Wave 1: Foundation
@@ -156,19 +177,19 @@ export {
   CgSeparator, CgIcon, CgCallout, CgImage, CgLabel, CgMetricCard,
   // Wave 2: Data & Forms
   CgTable, CgSelect, CgTextarea, CgCheckbox, CgRadio, CgRadioGroup,
-  CgSwitch, CgSlider, CgForm, CgDatePicker, CgButtonGroup,
+  CgSwitch, CgSlider, CgForm, CgDatePicker, CgTimePicker, CgDateTimePicker, CgButtonGroup,
   // Wave 3: Navigation & Content
   CgTabs, CgAccordion, CgSteps, CgCarousel, CgCodeBlock,
   CgMarkdown, CgImageBlock, CgImageGallery, CgBadgeGroup,
   // Wave 4: Chat & Data Viz
-  CgList, CgSection, CgFollowUp, CgChart,
+  CgList, CgListbox, CgFollowUp, CgChart,
   // Wave 5: Foundation UI Primitives
   CgDropdown, CgModal, CgTooltip, CgProgressBar, CgSpinner,
   CgSkeleton, CgDrawer, CgBreadcrumbs, CgPagination, CgChip,
   // Wave 6: Final Foundation
   CgNumberInput, CgOtpInput, CgAutocomplete, CgColorPicker, CgLink, CgAvatarGroup,
   // AI Components
-  AiThinking, AiBadge, AiChat, AiResultPanel, AiChartSummary, AiInsightCard,
+  AiThinking, AiAgentSteps, AiBadge, AiChat, AiResultPanel, AiChartSummary, AiInsightCard,
   AiStreamingText, AiCitation, AiToolIndicator,
   // AI Wave 2: Workflow + Viz
   AiDiffPanel, AiTimeline, AiFeedback, AiToast,
@@ -196,6 +217,15 @@ export {
   AiToolCardResolver, AiActionPreview, AiCaptureFlow, AiKpiGrid,
   AiAlertCard, AiRevealAnimation, AiRichMessage,
   AiDataCard,
+  // Phase 3 Tier 1: AI Interaction Atlas
+  AiScenarioPanel, AiTransformSlider, AiConsentManager,
+  AiVoicePanel, AiDetectionCanvas,
+  // Phase 3 Tier 2: AI Interaction Atlas
+  AiTranslationPanel, AiPersonalizationDash, AiSegmentationViewer,
+  AiSimilarityCard, AiLabelingBoard,
+  // Phase 3 Tier 3: AI Interaction Atlas
+  AiValidationChecklist, AiCacheIndicator, AiDataLineage,
+  AiRewardSignal, AiAssistantWidget,
 };
 
 // Type exports
@@ -205,6 +235,20 @@ export type { TabItem } from './components/cg-tabs/cg-tabs.js';
 export type { AccordionItem } from './components/cg-accordion/cg-accordion.js';
 export type { StepItem } from './components/cg-steps/cg-steps.js';
 export type { ListItem } from './components/cg-list/cg-list.js';
+export type { ListboxOption } from './components/cg-listbox/cg-listbox.js';
+export type { AgentStep } from './components/ai-agent-steps/ai-agent-steps.js';
+export type { TimelineStep } from './components/ai-timeline/ai-timeline.js';
+export type { ReasoningNode } from './components/ai-reasoning-tree/ai-reasoning-tree.js';
+export type { RagDocument } from './components/ai-rag-panel/ai-rag-panel.js';
+export type { Memory } from './components/ai-memory-panel/ai-memory-panel.js';
+export type { ConsentItem } from './components/ai-consent-manager/ai-consent-manager.js';
+export type { Preference, Segment } from './components/ai-personalization-dash/ai-personalization-dash.js';
+export type { AIModel } from './components/ai-model-selector/ai-model-selector.js';
+export type { ContextSegment } from './components/ai-context-window/ai-context-window.js';
+export type { EvalScore } from './components/ai-eval-scorecard/ai-eval-scorecard.js';
+export type { Detection } from './components/ai-detection-canvas/ai-detection-canvas.js';
+export type { SegmentMask } from './components/ai-segmentation-viewer/ai-segmentation-viewer.js';
+export type { SimilarityItem, SimilarityFeature } from './components/ai-similarity-card/ai-similarity-card.js';
 export type { GalleryImage } from './components/cg-image-gallery/cg-image-gallery.js';
 export type { ChartSeries } from './components/cg-chart/cg-chart.js';
 export type { DropdownItem } from './components/cg-dropdown/cg-dropdown.js';

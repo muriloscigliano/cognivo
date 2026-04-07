@@ -3,26 +3,35 @@ import { customElement, property, state, query } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
- * <cg-carousel> — Scrollable content carousel.
+ * <cg-carousel> — Scrollable content carousel with snap, autoplay, and multi-column.
  *
- * Features:
- * - Prev/Next arrow buttons with auto-hide when at boundary
- * - Dot indicators with active state
- * - Keyboard navigation (Arrow keys)
- * - Touch/swipe support (native scroll snap)
- * - Scroll position tracking
- * - Responsive item sizing
+ * @example
+ * ```html
+ * <cg-carousel columns="1" autoplay loop>
+ *   <div>Slide 1</div>
+ *   <div>Slide 2</div>
+ *   <div>Slide 3</div>
+ * </cg-carousel>
+ * ```
+ *
+ * @slot - Carousel slides
+ *
+ * @fires {CustomEvent<{index: number}>} cg-slide-click - When a slide is clicked
+ *
+ * @cssprop --cg-spacing-16 - Gap between slides
+ * @cssprop --cg-color-action-primary-background-default - Active dot color
  */
 @customElement('cg-carousel')
 export class CgCarousel extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
     :host {
       position: relative;
+      display: block;
     }
 
     .track-wrapper {
       overflow: hidden;
-      border-radius: var(--cg-border-radius-150, 12px);
+      border-radius: var(--cg-border-radius-150);
     }
 
     .track {
@@ -30,7 +39,7 @@ export class CgCarousel extends LitElement {
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
-      gap: var(--cg-spacing-16, 16px);
+      gap: var(--cg-spacing-16);
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
     }
@@ -39,83 +48,117 @@ export class CgCarousel extends LitElement {
     ::slotted(*) {
       scroll-snap-align: start;
       flex-shrink: 0;
-      min-width: 80%;
     }
 
-    /* Navigation arrows */
+    /* ── Column sizing ── */
+    :host([columns="1"]) ::slotted(*) { width: 100%; }
+    :host([columns="2"]) ::slotted(*) { width: calc(50% - var(--cg-spacing-8)); }
+    :host([columns="3"]) ::slotted(*) { width: calc(33.333% - var(--cg-spacing-12)); }
+    :host([columns="4"]) ::slotted(*) { width: calc(25% - var(--cg-spacing-12)); }
+
+    /* Peek — show sliver of next slide */
+    :host([peek]) .track {
+      padding-right: var(--cg-spacing-48);
+    }
+
+    /* ── Navigation arrows ── */
     .nav-btn {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
       z-index: 2;
-      width: 40px;
-      height: 40px;
-      border-radius: var(--cg-border-radius-full, 99999px);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      background: var(--cg-color-surface-container-background, #18181b);
+      width: var(--cg-spacing-40);
+      height: var(--cg-spacing-40);
+      border-radius: var(--cg-border-radius-full);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
+      background: var(--cg-color-surface-container-background);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: var(--cg-shadow-md-x, 0px) var(--cg-shadow-md-y, 4px) var(--cg-shadow-md-blur, 12px) var(--cg-shadow-md-spread, 0px) var(--cg-shadow-md-Color, #000000);
-      transition: all var(--cg-motion-duration-normal, 150ms) ease;
       padding: 0;
       opacity: 0;
+      color: var(--cg-color-surface-container-outlined);
+      box-shadow:
+        0 var(--cg-shadow-sm-y) var(--cg-shadow-sm-blur) var(--cg-shadow-sm-spread) rgba(0, 0, 0, 0.08);
+      transition:
+        opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
-    :host(:hover) .nav-btn { opacity: 1; }
+    :host(:hover) .nav-btn:not(:disabled) { opacity: 1; }
+
     .nav-btn:hover {
-      box-shadow: var(--cg-shadow-lg-x, 0px) var(--cg-shadow-lg-y, 8px) var(--cg-shadow-lg-blur, 24px) var(--cg-shadow-lg-spread, 0px) var(--cg-shadow-lg-Color, #616161);
-      background: var(--cg-color-surface-container-background, #18181b);
-      transform: translateY(-50%) scale(1.08);
+      background: var(--cg-color-action-tertiary-background-hover);
+      color: var(--cg-color-surface-container-text);
+      transform: translateY(-50%) scale(1.05);
+    }
+    .nav-btn:active {
+      transform: translateY(-50%) scale(var(--cg-interaction-press-scale));
     }
     .nav-btn:focus-visible {
-      outline: 2px solid var(--cg-focus-ring-color, #c8e650);
-      outline-offset: 2px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
       opacity: 1;
     }
-    .nav-btn:active { transform: translateY(-50%) scale(var(--cg-interaction-press-scale, 0.97)); }
     .nav-btn:disabled { opacity: 0 !important; cursor: default; }
-    .nav-btn svg { width: 18px; height: 18px; color: var(--cg-gray-600, #52525b); }
 
-    .nav-prev { left: -12px; }
-    .nav-next { right: -12px; }
+    .nav-prev { left: calc(var(--cg-spacing-12) * -1); }
+    .nav-next { right: calc(var(--cg-spacing-12) * -1); }
 
-    /* Dot indicators */
+    /* ── Dot indicators ── */
     .dots {
       display: flex;
       justify-content: center;
-      gap: 6px;
-      margin-top: var(--cg-spacing-12, 12px);
+      gap: var(--cg-spacing-6);
+      margin-top: var(--cg-spacing-12);
     }
     .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: var(--cg-border-radius-full, 99999px);
-      background: var(--cg-gray-300, #d4d4d8);
+      width: var(--cg-spacing-8);
+      height: var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-surface-container-border);
       border: none;
       cursor: pointer;
       padding: 0;
-      transition: all var(--cg-motion-duration-slow, 250ms) ease;
+      transition:
+        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        width var(--cg-transition-duration-fast) cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .dot:hover { background: var(--cg-gray-400, #a1a1aa); }
+    .dot:hover { background: var(--cg-color-surface-container-outlined); }
     .dot.active {
-      background: var(--cg-focus-ring-color, #c8e650);
-      width: 24px;
-      border-radius: 4px;
+      background: var(--cg-color-action-primary-background-default);
+      width: var(--cg-spacing-24);
+      border-radius: var(--cg-border-radius-50);
     }
     .dot:focus-visible {
-      outline: 2px solid var(--cg-focus-ring-color, #c8e650);
-      outline-offset: 2px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .track { scroll-behavior: auto !important; }
+      .dot { transition: background-color var(--cg-transition-duration-fast) ease; }
     }
   `];
 
   @property({ type: Boolean }) showDots = true;
   @property({ type: Boolean }) showArrows = true;
+  @property({ type: Number, reflect: true }) columns = 1;
+  @property({ type: Boolean, reflect: true }) peek = false;
+  @property({ type: Boolean }) loop = false;
+  @property({ type: Boolean }) autoplay = false;
+  @property({ type: Number }) interval = 4000;
 
   @state() private _current = 0;
   @state() private _total = 0;
 
   @query('.track') private _track!: HTMLElement;
+
+  private _autoplayTimer: ReturnType<typeof setInterval> | null = null;
+  private _paused = false;
 
   override firstUpdated() {
     const slot = this.shadowRoot!.querySelector('slot');
@@ -125,13 +168,34 @@ export class CgCarousel extends LitElement {
       update();
     }
 
-    // Track scroll position to update current index
     this._track?.addEventListener('scroll', this._handleScroll, { passive: true });
+    this._startAutoplay();
   }
 
   override disconnectedCallback() {
     super.disconnectedCallback();
     this._track?.removeEventListener('scroll', this._handleScroll);
+    this._stopAutoplay();
+  }
+
+  private _startAutoplay() {
+    if (!this.autoplay) return;
+    this._stopAutoplay();
+    this._autoplayTimer = setInterval(() => {
+      if (this._paused) return;
+      if (this._current >= this._total - 1) {
+        if (this.loop) this._goTo(0);
+      } else {
+        this._next();
+      }
+    }, this.interval);
+  }
+
+  private _stopAutoplay() {
+    if (this._autoplayTimer) {
+      clearInterval(this._autoplayTimer);
+      this._autoplayTimer = null;
+    }
   }
 
   private _handleScroll = () => {
@@ -151,8 +215,36 @@ export class CgCarousel extends LitElement {
     this._current = index;
   }
 
-  private _prev() { this._goTo(Math.max(0, this._current - 1)); }
-  private _next() { this._goTo(Math.min(this._total - 1, this._current + 1)); }
+  private _prev() {
+    if (this._current <= 0 && this.loop) {
+      this._goTo(this._total - 1);
+    } else {
+      this._goTo(Math.max(0, this._current - 1));
+    }
+  }
+
+  private _next() {
+    if (this._current >= this._total - 1 && this.loop) {
+      this._goTo(0);
+    } else {
+      this._goTo(Math.min(this._total - 1, this._current + 1));
+    }
+  }
+
+  private _handleSlideClick(e: Event) {
+    const slot = this._track?.querySelector('slot');
+    const items = slot?.assignedElements() as HTMLElement[] | undefined;
+    if (!items) return;
+    const target = e.target as HTMLElement;
+    const index = items.findIndex(el => el === target || el.contains(target));
+    if (index >= 0) {
+      this.dispatchEvent(new CustomEvent('cg-slide-click', {
+        detail: { index },
+        bubbles: true,
+        composed: true,
+      }));
+    }
+  }
 
   private _handleKeydown(e: KeyboardEvent) {
     if (e.key === 'ArrowLeft') { e.preventDefault(); this._prev(); }
@@ -160,20 +252,30 @@ export class CgCarousel extends LitElement {
   }
 
   override render() {
-    const atStart = this._current === 0;
-    const atEnd = this._current >= this._total - 1;
+    const atStart = this._current === 0 && !this.loop;
+    const atEnd = this._current >= this._total - 1 && !this.loop;
 
     return html`
-      <div class="track-wrapper" tabindex="0" @keydown=${this._handleKeydown} role="region" aria-label="Carousel" aria-roledescription="carousel">
-        <div class="track"><slot></slot></div>
+      <div
+        class="track-wrapper"
+        tabindex="0"
+        @keydown=${this._handleKeydown}
+        @mouseenter=${() => { this._paused = true; }}
+        @mouseleave=${() => { this._paused = false; }}
+        role="region"
+        aria-label="Carousel"
+        aria-roledescription="carousel"
+        aria-live="polite"
+      >
+        <div class="track" @click=${this._handleSlideClick}><slot></slot></div>
       </div>
 
       ${this.showArrows && this._total > 1 ? html`
         <button class="nav-btn nav-prev" @click=${this._prev} ?disabled=${atStart} aria-label="Previous slide">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"></path></svg>
+          <cg-icon name="chevron-left" size="sm"></cg-icon>
         </button>
         <button class="nav-btn nav-next" @click=${this._next} ?disabled=${atEnd} aria-label="Next slide">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"></path></svg>
+          <cg-icon name="chevron-right" size="sm"></cg-icon>
         </button>
       ` : nothing}
 

@@ -1,29 +1,14 @@
 /**
  * @element ai-eval-scorecard
- * LLM evaluation scorecard with metric bars, overall letter grade, comparison deltas, and explanations.
+ * LLM evaluation scorecard with metric rows, grade badge, deltas, and expandable explanations.
  *
- * @example
- * ```html
- * <ai-eval-scorecard
- *   grade="B+"
- *   .scores=${[
- *     {metric:'Relevance', value:0.88, explanation:'Strong topical alignment'},
- *     {metric:'Safety', value:0.95},
- *     {metric:'Hallucination', value:0.12}
- *   ]}
- *   .comparison=${{Relevance: 0.05, Safety: -0.02}}
- * ></ai-eval-scorecard>
- * ```
- *
- * @fires {CustomEvent<{metric: string, value: number}>} ai-eval-metric-click - Metric row clicked
- *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Grade badge and focus ring accent
+ * @fires {CustomEvent<{metric: string}>} ai-eval-metric-click
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, fadeSlideInKeyframes, fadeInKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
-interface EvalScore {
+export interface EvalScore {
   metric: string;
   value: number;
   max?: number;
@@ -32,165 +17,171 @@ interface EvalScore {
 
 @customElement('ai-eval-scorecard')
 export class AiEvalScorecard extends LitElement {
-  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, fadeInKeyframes, css`
+  static override styles = [hostBlock, reducedMotion, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      min-width: 320px;
     }
 
     .card {
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
       overflow: hidden;
-      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
+    /* ── Header ── */
     .header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+      padding: var(--cg-spacing-20) var(--cg-spacing-24);
+    }
+    .header-left {
+      display: flex; flex-direction: column; gap: var(--cg-spacing-2);
     }
     .header-title {
-      font-size: var(--cg-font-size-xs, 12px); font-weight: 700; color: var(--cg-gray-400, #a1a1aa);
-      text-transform: uppercase; letter-spacing: 0.05em;
+      font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
+    }
+    .header-subtitle {
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-container-outlined);
     }
 
-    .grade {
-      font-size: var(--cg-font-size-lg, 18px); font-weight: 800; padding: 2px 12px; border-radius: var(--cg-border-radius-100, 8px);
+    /* Grade — small filled dot + letter */
+    .grade-badge {
+      display: inline-flex; align-items: center; gap: var(--cg-spacing-6);
+      font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-bold);
+      font-family: var(--cg-font-family-mono);
+      flex-shrink: 0;
     }
-    .grade.A { background: rgba(34, 197, 94, 0.12); color: var(--cg-color-status-success-text-default, #4ade80); }
-    .grade.B { background: rgba(34, 197, 94, 0.08); color: #86efac; }
-    .grade.C { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
-    .grade.D { background: rgba(249, 115, 22, 0.12); color: #fb923c; }
-    .grade.F { background: rgba(239, 68, 68, 0.12); color: #f87171; }
+    .grade-dot {
+      width: var(--cg-spacing-8); height: var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-full);
+    }
+    .grade-badge.A .grade-dot, .grade-badge.B .grade-dot { background: var(--cg-color-status-success-text-default); }
+    .grade-badge.C .grade-dot, .grade-badge.D .grade-dot { background: var(--cg-color-status-warning-text-default); }
+    .grade-badge.F .grade-dot { background: var(--cg-color-status-error-text-default); }
+    .grade-badge.A, .grade-badge.B { color: var(--cg-color-status-success-text-default); }
+    .grade-badge.C, .grade-badge.D { color: var(--cg-color-status-warning-text-default); }
+    .grade-badge.F { color: var(--cg-color-status-error-text-default); }
 
-    .scores { padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px); }
+    /* ── Metric list ── */
+    .scores {
+      padding: var(--cg-spacing-4) var(--cg-spacing-16) var(--cg-spacing-16);
+    }
 
-    .score-row {
-      display: flex; align-items: center; gap: var(--cg-spacing-12, 12px);
-      padding: var(--cg-spacing-8, 8px) 0;
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+    .metric {
+      padding: var(--cg-spacing-16) var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid transparent;
       cursor: pointer;
-      transition: background 100ms;
+      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default), border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
-    .score-row:last-child { border-bottom: none; }
-    .score-row:hover { background: rgba(255, 255, 255, 0.02); }
+    .metric:hover { background: var(--cg-overlay-dark-subtle); border-color: var(--cg-color-surface-cards-border); }
+    .metric:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
 
-    .score-label {
-      width: 100px; flex-shrink: 0;
-      font-size: 12px; font-weight: 600; color: var(--cg-gray-400, #a1a1aa);
+    /* Top row: label + value + delta */
+    .metric-top {
+      display: flex; align-items: center; gap: var(--cg-spacing-12);
+      margin-bottom: var(--cg-spacing-8);
     }
+    .metric-label {
+      flex: 1;
+      font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-base-text);
+    }
+    .metric-value {
+      font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-semibold);
+      font-family: var(--cg-font-family-mono);
+      color: var(--cg-color-surface-base-text);
+    }
+    .metric-delta {
+      font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-medium);
+      font-family: var(--cg-font-family-mono);
+    }
+    .delta-up { color: var(--cg-color-status-success-text-default); }
+    .delta-down { color: var(--cg-color-status-error-text-default); }
 
-    .score-bar-track {
-      flex: 1; height: 6px; border-radius: 3px;
-      background: var(--cg-gray-800, #27272a); overflow: hidden;
+    /* Bar underneath */
+    .metric-bar {
+      height: var(--cg-spacing-4); border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-surface-cards-border); overflow: hidden;
     }
-    .score-bar-fill {
-      height: 100%; border-radius: 3px;
-      transition: width var(--cg-motion-duration-slow, 500ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
-    }
-
-    .score-value {
-      width: 40px; text-align: right; flex-shrink: 0;
-      font-size: var(--cg-font-size-sm, 14px); font-weight: 700;
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-    }
-
-    .score-delta {
-      width: 40px; text-align: right; flex-shrink: 0;
-      font-size: 10px; font-weight: 700;
-    }
-    .delta-up { color: var(--cg-green-400, #4ade80); }
-    .delta-down { color: var(--cg-red-400, #f87171); }
-
-    .explanation {
-      padding: var(--cg-spacing-6, 6px) 0 var(--cg-spacing-6, 6px) 112px;
-      font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-500, #71717a);
-      line-height: 1.4;
-      animation: fadeIn 150ms ease;
-    }
-
-    .empty { padding: 32px; text-align: center; color: var(--cg-gray-500, #71717a); font-size: 13px; }
-      .explanation { animation: none; }
-    }
-  
-
-    :focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+    .metric-fill {
+      height: 100%; border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-action-primary-background-default);
+      opacity: 0.6;
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
 
-    /* ── Rounded variants ── */
+    /* Explanation */
+    .metric-explanation {
+      margin-top: var(--cg-spacing-8);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-container-outlined);
+      line-height: var(--cg-line-height-snug);
+    }
+
+    .empty {
+      padding: var(--cg-spacing-48) var(--cg-spacing-24);
+      text-align: center; color: var(--cg-color-surface-container-outlined);
+      font-size: var(--cg-font-size-sm);
+    }
+
+    /* ── Rounded ── */
     :host([rounded="none"]) .card { border-radius: 0; }
-    :host([rounded="sm"]) .card { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .card { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .card { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .card { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .card { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .card { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .card { border-radius: var(--cg-border-radius-150); }
   `];
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
+
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property({ type: Array }) scores: EvalScore[] = [];
-  @property({ type: String }) grade: string = '';
+  @property() grade = '';
+  @property() title = 'Evaluation';
   @property({ type: Object }) comparison: Record<string, number> | null = null;
 
-  @state() private _expandedMetric: string = '';
+  @state() private _expandedMetric = '';
 
-  private _getBarColor(value: number, max: number = 100): string {
-    const pct = value / max;
-    if (pct >= 0.8) return '#4ade80';
-    if (pct >= 0.6) return '#fbbf24';
-    if (pct >= 0.4) return '#fb923c';
-    return '#f87171';
-  }
-
-  private _getValueColor(value: number, max: number = 100): string {
-    return this._getBarColor(value, max);
-  }
-
-  private _handleMetricClick(metric: string) {
-    this._expandedMetric = this._expandedMetric === metric ? '' : metric;
-    this.dispatchEvent(new CustomEvent('ai-eval-metric-click', {
-      bubbles: true, composed: true,
-      detail: { metric },
-    }));
+  private _avgScore(): number {
+    if (!this.scores.length) return 0;
+    return Math.round(this.scores.reduce((s, sc) => s + (sc.value / (sc.max || 100)) * 100, 0) / this.scores.length);
   }
 
   override render() {
-    if (this.scores.length === 0) {
-      return html`<div class="card"><div class="empty">No evaluation data</div></div>`;
-    }
+    if (!this.scores.length) return html`<div class="card"><div class="empty">No evaluation data</div></div>`;
 
     return html`
-      <div class="card" role="figure" aria-label="Evaluation scorecard${this.grade ? ': Grade ' + this.grade : ''}">
+      <div class="card" role="figure" aria-label="${this.title}${this.grade ? ': ' + this.grade : ''}">
         <div class="header">
-          <span class="header-title">Evaluation</span>
-          ${this.grade ? html`<span class="grade ${this.grade}">${this.grade}</span>` : nothing}
+          <div class="header-left">
+            <span class="header-title">${this.title}</span>
+            <span class="header-subtitle">${this.scores.length} metrics · ${this._avgScore()}% avg</span>
+          </div>
+          ${this.grade ? html`<span class="grade-badge ${this.grade.charAt(0)}"><span class="grade-dot"></span>${this.grade}</span>` : nothing}
         </div>
 
         <div class="scores">
           ${this.scores.map(s => {
             const max = s.max || 100;
-            const pct = (s.value / max) * 100;
+            const pct = Math.min((s.value / max) * 100, 100);
             const delta = this.comparison?.[s.metric];
 
             return html`
-              <div>
-                <div class="score-row" @click=${() => this._handleMetricClick(s.metric)}
-                  tabindex="0" role="button"
-                  @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter') this._handleMetricClick(s.metric); }}>
-                  <span class="score-label">${s.metric}</span>
-                  <div class="score-bar-track">
-                    <div class="score-bar-fill" style="width: ${pct}%; background: ${this._getBarColor(s.value, max)};"></div>
-                  </div>
-                  <span class="score-value" style="color: ${this._getValueColor(s.value, max)};">${s.value}</span>
+              <div class="metric" tabindex="0" role="button"
+                @click=${() => { this._expandedMetric = this._expandedMetric === s.metric ? '' : s.metric; this.dispatchEvent(new CustomEvent('ai-eval-metric-click', { bubbles: true, composed: true, detail: { metric: s.metric } })); }}
+                @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._expandedMetric = this._expandedMetric === s.metric ? '' : s.metric; } }}>
+                <div class="metric-top">
+                  <span class="metric-label">${s.metric}</span>
+                  <span class="metric-value">${s.value}</span>
                   ${delta !== undefined ? html`
-                    <span class="score-delta ${delta >= 0 ? 'delta-up' : 'delta-down'}">
-                      ${delta >= 0 ? '+' : ''}${delta}
-                    </span>
+                    <span class="metric-delta ${delta >= 0 ? 'delta-up' : 'delta-down'}">${delta >= 0 ? '+' : ''}${delta}</span>
                   ` : nothing}
                 </div>
+                <div class="metric-bar">
+                  <div class="metric-fill" style="width: ${pct}%"></div>
+                </div>
                 ${this._expandedMetric === s.metric && s.explanation ? html`
-                  <div class="explanation">${s.explanation}</div>
+                  <div class="metric-explanation">${s.explanation}</div>
                 ` : nothing}
               </div>
             `;

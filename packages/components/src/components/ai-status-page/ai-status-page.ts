@@ -31,150 +31,149 @@ export interface StatusService {
 export class AiStatusPage extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     :host([hidden]) { display: none; }
 
     .page {
-      background: var(--cg-color-bg-primary, #18181b);
-      border: 1px solid var(--cg-color-border-primary, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      padding: var(--cg-spacing-24, 24px);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      background: var(--cg-color-surface-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-24);
     }
 
     .overall {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-12, 12px);
-      margin-bottom: var(--cg-spacing-16, 16px);
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--cg-color-border-primary, #27272a);
+      gap: var(--cg-spacing-12);
+      margin-bottom: var(--cg-spacing-16);
+      padding-bottom: var(--cg-spacing-16);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
 
     .overall-dot {
-      width: 12px;
-      height: 12px;
+      width: var(--cg-spacing-12);
+      height: var(--cg-spacing-12);
       border-radius: 50%;
       flex-shrink: 0;
     }
 
     .overall-text {
-      color: var(--cg-color-text-primary, #fafafa);
-      font-size: var(--cg-font-size-base, 16px);
-      font-weight: 700;
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-base);
+      font-weight: var(--cg-font-weight-bold);
     }
 
     .overall-badge {
       margin-left: auto;
-      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-150, 12px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
+      padding: var(--cg-spacing-4) var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-150);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
       text-transform: uppercase;
-      letter-spacing: 0.3px;
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
 
-    .status-operational  { background: rgba(34,197,94,0.15); color: #22c55e; }
-    .status-degraded     { background: rgba(234,179,8,0.15);  color: #eab308; }
-    .status-down         { background: rgba(239,68,68,0.15);  color: var(--cg-color-status-error-text-default, #ef4444); }
-    .status-maintenance  { background: rgba(59,130,246,0.15); color: #3b82f6; }
+    .status-operational  { background: var(--cg-color-status-success-background-default); color: var(--cg-color-status-success-text); }
+    .status-degraded     { background: var(--cg-color-status-warning-background-default);  color: var(--cg-color-status-warning-text); }
+    .status-down         { background: var(--cg-color-status-error-background-default);  color: var(--cg-color-status-error-text); }
+    .status-maintenance  { background: var(--cg-color-status-info-background-default); color: var(--cg-color-status-info-text); }
 
-    .dot-operational  { background: #22c55e; }
-    .dot-degraded     { background: #eab308; }
-    .dot-down         { background: var(--cg-color-status-error-text-default, #ef4444); }
-    .dot-maintenance  { background: #3b82f6; }
+    .dot-operational  { background: var(--cg-color-status-success-text); }
+    .dot-degraded     { background: var(--cg-color-status-warning-text); }
+    .dot-down         { background: var(--cg-color-status-error-text); }
+    .dot-maintenance  { background: var(--cg-color-status-info-text); }
 
     .service-list {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: var(--cg-spacing-2);
     }
 
     .service-item {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-12, 12px);
-      padding: var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-100, 8px);
+      gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-100);
       cursor: pointer;
       border: none;
       background: transparent;
       width: 100%;
       text-align: left;
       font-family: inherit;
-      transition: background 150ms ease;
+      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
       color: inherit;
     }
+    .service-item:active { transform: scale(var(--cg-interaction-press-scale)); }
     .service-item:hover {
-      background: var(--cg-color-bg-secondary, #27272a);
+      background: var(--cg-color-surface-cards-border);
     }
     .service-item:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: -2px;
-      border-radius: var(--cg-border-radius-100, 8px);
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      border-radius: var(--cg-border-radius-100);
     }
 
     .service-dot {
-      width: 8px;
-      height: 8px;
+      width: var(--cg-spacing-8);
+      height: var(--cg-spacing-8);
       border-radius: 50%;
       flex-shrink: 0;
     }
 
     .service-name {
       flex: 1;
-      color: var(--cg-color-text-primary, #fafafa);
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 500;
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
     }
 
     .service-meta {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-16, 16px);
+      gap: var(--cg-spacing-16);
       flex-shrink: 0;
     }
 
     .latency {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-6, 6px);
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
+      gap: var(--cg-spacing-6);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
       font-variant-numeric: tabular-nums;
     }
 
     .latency-bar-track {
-      width: 40px;
-      height: 4px;
-      background: var(--cg-color-border-primary, #3f3f46);
-      border-radius: 2px;
+      width: var(--cg-spacing-40);
+      height: var(--cg-spacing-4);
+      background: var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-25);
       overflow: hidden;
     }
 
     .latency-bar-fill {
       height: 100%;
-      border-radius: 2px;
-      transition: width 300ms ease;
+      border-radius: var(--cg-border-radius-25);
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
-    .latency-bar-fill.fast { background: #22c55e; }
-    .latency-bar-fill.mid  { background: #eab308; }
-    .latency-bar-fill.slow { background: var(--cg-color-status-error-text-default, #ef4444); }
+    .latency-bar-fill.fast { background: var(--cg-color-status-success-text); }
+    .latency-bar-fill.mid  { background: var(--cg-color-status-warning-text); }
+    .latency-bar-fill.slow { background: var(--cg-color-status-error-text); }
 
     .uptime {
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
       font-variant-numeric: tabular-nums;
-      min-width: 52px;
+      min-width: var(--cg-spacing-48);
       text-align: right;
     }
 
     .service-status-label {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
-      min-width: 90px;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      min-width: var(--cg-spacing-96);
       text-align: right;
     }
 

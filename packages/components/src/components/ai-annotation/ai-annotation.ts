@@ -38,118 +38,109 @@ interface LabelDef {
 export class AiAnnotation extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
     }
 
     .container {
-      background: var(--cg-color-surface-container-background, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
       overflow: hidden;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
 
-    /* Toolbar */
+    /* Toolbar — compact, no label text */
     .toolbar {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-6, 6px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-12) var(--cg-spacing-20);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       flex-wrap: wrap;
-    }
-    .toolbar-label {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      color: var(--cg-gray-400, #a1a1aa);
-      margin-right: 4px;
     }
     .label-btn {
       display: inline-flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
-      padding: 3px var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-50, 4px);
-      border: 1px solid transparent;
+      gap: var(--cg-spacing-4);
+      padding: var(--cg-spacing-4) var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-full);
+      border: var(--cg-border-width-50) solid transparent;
       background: none;
       font: inherit;
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
-      transition: all 150ms;
+      transition:
+        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
+        background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
-    .label-btn:hover { border-color: currentColor; }
-    .label-btn.selected { border-color: currentColor; }
+    .label-btn:hover { background: var(--cg-overlay-dark-subtle); }
+    .label-btn.selected { border-color: currentColor; background: var(--cg-overlay-dark-subtle); }
     .label-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
+      width: var(--cg-spacing-8);
+      height: var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-full);
     }
 
     .stats {
       margin-left: auto;
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      font-family: var(--cg-font-family-mono);
     }
 
     /* Content */
     .content {
-      padding: var(--cg-spacing-16, 16px);
-      font-size: var(--cg-font-size-sm, 14px);
-      line-height: 1.8;
-      color: var(--cg-color-surface-base-text, #fafafa);
+      padding: var(--cg-spacing-20) var(--cg-spacing-24);
+      font-size: var(--cg-font-size-sm);
+      line-height: var(--cg-line-height-relaxed);
+      color: var(--cg-color-surface-base-text);
       user-select: text;
       cursor: text;
     }
 
     .annotated-span {
-      position: relative;
-      padding: 1px 2px;
-      border-radius: 3px;
       cursor: pointer;
-      transition: opacity 150ms;
+      border-bottom: var(--cg-border-width-100) solid;
+      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
-    .annotated-span:hover { opacity: 0.85; }
+    .annotated-span:hover { opacity: 0.7; }
     .annotated-span:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 1px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
 
-    .annotation-label {
-      position: absolute;
-      top: -18px;
-      left: 0;
-      font-size: 9px;
-      font-weight: 700;
-      padding: 0 4px;
-      border-radius: 3px;
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 150ms;
-    }
-    .annotated-span:hover .annotation-label,
-    .annotated-span:focus .annotation-label,
-    .annotated-span:focus-within .annotation-label { opacity: 1; }
-
-    /* Confidence overlay */
-    .confidence-bar {
-      position: absolute;
-      bottom: -3px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      border-radius: 1px;
+    /* Inline tag — shows on click */
+    .annotation-tag {
+      display: inline;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      padding: var(--cg-spacing-1) var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-full);
+      margin-left: var(--cg-spacing-2);
+      vertical-align: middle;
+      line-height: 1;
     }
 
     /* Empty */
     .empty {
-      padding: var(--cg-spacing-24, 24px);
+      padding: var(--cg-spacing-24);
       text-align: center;
-      color: var(--cg-gray-500, #71717a);
-      font-size: var(--cg-font-size-sm, 14px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
     }
+
+    /* Reduced motion: disable entrance animation, show labels immediately */
+    @media (prefers-reduced-motion: reduce) {
+      :host {
+        animation: none !important;
+      }
+      .annotation-label {
+        opacity: 1;
+        transition: none !important;
+      }
+      .annotated-span {
+        transition: none !important;
+      }
     }
   `];
   /** Plain text content */
@@ -164,15 +155,17 @@ export class AiAnnotation extends LitElement {
     { name: 'Organization', color: '#4ade80' },
     { name: 'Location', color: '#fbbf24' },
     { name: 'Date', color: '#f87171' },
-    { name: 'Concept', color: '#a78bfa' },
+    { name: 'Concept', color: '#dfff61' },
   ];
 
   /** Allow creating new annotations */
   @property({ type: Boolean }) editable: boolean = false;
 
   @state() private _selectedLabel: string = '';
+  @state() private _activeAnnotation: Annotation | null = null;
 
   private _handleAnnotationClick(annotation: Annotation) {
+    this._activeAnnotation = this._activeAnnotation === annotation ? null : annotation;
     this.dispatchEvent(new CustomEvent('ai-annotation-select', {
       bubbles: true, composed: true,
       detail: { annotation },
@@ -286,18 +279,11 @@ export class AiAnnotation extends LitElement {
       if (typeof f === 'string') return f;
       const color = this._getLabelColor(f.annotation.label);
       const opacity = f.annotation.confidence ?? 1;
-      return html`
-        <span class="annotated-span" tabindex="0" role="note"
+      const isActive = this._activeAnnotation === f.annotation;
+      return html`<span class="annotated-span" tabindex="0" role="note"
           aria-label="${f.annotation.label}: ${f.text}"
-          style="background: ${color}22; border-bottom: 2px solid ${color}; opacity: ${0.5 + opacity * 0.5}"
-          @click=${() => this._handleAnnotationClick(f.annotation)}>
-          <span class="annotation-label" style="background: ${color}; color: var(--cg-gray-black, #000000);">${f.annotation.label}</span>
-          ${f.text}
-          ${f.annotation.confidence !== undefined ? html`
-            <span class="confidence-bar" style="background: ${color}; width: ${f.annotation.confidence * 100}%;"></span>
-          ` : nothing}
-        </span>
-      `;
+          style="border-color: ${color}"
+          @click=${() => this._handleAnnotationClick(f.annotation)}>${f.text}</span>${isActive ? html`<span class="annotation-tag" style="background: ${color}; color: #000;">${f.annotation.label}${f.annotation.confidence !== undefined ? html` · ${Math.round(f.annotation.confidence * 100)}%` : nothing}</span>` : nothing}`;
     });
   }
 
@@ -306,7 +292,6 @@ export class AiAnnotation extends LitElement {
       <div class="container" role="document" aria-label="Annotated text">
         ${this.editable || this.labels.length > 0 ? html`
           <div class="toolbar">
-            <span class="toolbar-label">Labels:</span>
             ${this.labels.map(l => html`
               <button class="label-btn ${this._selectedLabel === l.name ? 'selected' : ''}"
                 style="color: ${l.color}"

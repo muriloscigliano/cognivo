@@ -16,7 +16,7 @@ export class CgSeparator extends LitElement {
     :host {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-12, 12px);
+      gap: var(--cg-spacing-12);
     }
 
     :host([orientation="horizontal"]) {
@@ -32,40 +32,48 @@ export class CgSeparator extends LitElement {
 
     .line {
       flex: 1;
-      background: linear-gradient(to right, transparent, var(--cg-gray-700, #3f3f46) 20%, var(--cg-gray-700, #3f3f46) 80%, transparent);
+      background: var(--cg-color-surface-base-divider);
+    }
+
+    /* Gradient variant — fades at edges */
+    :host([variant="gradient"]) .line {
+      background: linear-gradient(to right, transparent, var(--cg-color-surface-base-divider) 20%, var(--cg-color-surface-base-divider) 80%, transparent);
     }
 
     :host([orientation="horizontal"]) .line {
-      height: 1px;
-      min-width: 16px;
+      height: var(--cg-border-width-50);
+      min-width: var(--cg-spacing-16);
     }
 
     :host([orientation="vertical"]) .line {
-      width: 1px;
-      min-height: 16px;
-      background: linear-gradient(to bottom, transparent, var(--cg-gray-700, #3f3f46) 20%, var(--cg-gray-700, #3f3f46) 80%, transparent);
+      width: var(--cg-border-width-50);
+      min-height: var(--cg-spacing-16);
+    }
+    :host([variant="gradient"][orientation="vertical"]) .line {
+      background: linear-gradient(to bottom, transparent, var(--cg-color-surface-base-divider) 20%, var(--cg-color-surface-base-divider) 80%, transparent);
     }
 
     /* Spacing variants */
     :host([spacing="none"]) { margin: 0; }
-    :host([spacing="sm"]) { margin: var(--cg-spacing-8, 8px) 0; }
-    :host([spacing="md"]) { margin: var(--cg-spacing-16, 16px) 0; }
-    :host([spacing="lg"]) { margin: var(--cg-spacing-24, 24px) 0; }
+    :host([spacing="sm"]) { margin: var(--cg-spacing-8) 0; }
+    :host([spacing="md"]) { margin: var(--cg-spacing-16) 0; }
+    :host([spacing="lg"]) { margin: var(--cg-spacing-24) 0; }
 
-    :host([orientation="vertical"][spacing="sm"]) { margin: 0 var(--cg-spacing-8, 8px); }
-    :host([orientation="vertical"][spacing="md"]) { margin: 0 var(--cg-spacing-16, 16px); }
-    :host([orientation="vertical"][spacing="lg"]) { margin: 0 var(--cg-spacing-24, 24px); }
+    :host([orientation="vertical"][spacing="sm"]) { margin: 0 var(--cg-spacing-8); }
+    :host([orientation="vertical"][spacing="md"]) { margin: 0 var(--cg-spacing-16); }
+    :host([orientation="vertical"][spacing="lg"]) { margin: 0 var(--cg-spacing-24); }
 
     .label {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: var(--cg-font-weight-medium, 500);
-      color: var(--cg-gray-500, #71717a);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-container-outlined);
       white-space: nowrap;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
   `];
 
+  @property({ reflect: true }) variant: 'solid' | 'gradient' = 'solid';
   @property({ reflect: true }) orientation: 'horizontal' | 'vertical' = 'horizontal';
   @property({ reflect: true }) spacing: 'none' | 'sm' | 'md' | 'lg' = 'none';
   @property() label = '';
@@ -73,12 +81,32 @@ export class CgSeparator extends LitElement {
   override render() {
     if (this.label) {
       return html`
-        <div class="line"></div>
+        <div class="line" role="presentation" aria-hidden="true"></div>
         <span class="label">${this.label}</span>
-        <div class="line"></div>
+        <div class="line" role="presentation" aria-hidden="true"></div>
       `;
     }
     return html`<div class="line" role="separator" aria-orientation="${this.orientation}"></div>`;
+  }
+
+  override connectedCallback() {
+    super.connectedCallback();
+    if (this.label) {
+      this.setAttribute('role', 'separator');
+      this.setAttribute('aria-orientation', this.orientation);
+    }
+  }
+
+  override updated(changed: Map<string, unknown>) {
+    if (changed.has('label') || changed.has('orientation')) {
+      if (this.label) {
+        this.setAttribute('role', 'separator');
+        this.setAttribute('aria-orientation', this.orientation);
+      } else {
+        this.removeAttribute('role');
+        this.removeAttribute('aria-orientation');
+      }
+    }
   }
 }
 

@@ -25,174 +25,194 @@ interface ChangelogEntry {
   type: 'model' | 'prompt' | 'config' | 'data';
 }
 
-const TYPE_COLORS: Record<string, { bg: string; fg: string }> = {
-  model:  { bg: 'rgba(59, 130, 246, 0.15)', fg: '#3b82f6' },
-  prompt: { bg: 'rgba(223, 255, 97, 0.15)',  fg: '#dfff61' },
-  config: { bg: 'rgba(168, 85, 247, 0.15)',  fg: '#a855f7' },
-  data:   { bg: 'rgba(34, 197, 94, 0.15)',   fg: '#22c55e' },
+const TYPE_CSS_CLASS: Record<string, string> = {
+  model: 'type-model',
+  prompt: 'type-prompt',
+  config: 'type-config',
+  data: 'type-data',
 };
 
 @customElement('ai-changelog')
 export class AiChangelog extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
     .container {
-      background: var(--cg-color-surface-container-background, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      padding: var(--cg-spacing-16, 16px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background: var(--cg-color-surface-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-16);
+      color: var(--cg-color-surface-base-text);
     }
 
     .header {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      margin-bottom: var(--cg-spacing-16, 16px);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      margin-bottom: var(--cg-spacing-16);
     }
 
     .timeline {
       position: relative;
-      padding-left: 20px;
+      padding-left: var(--cg-spacing-20);
     }
 
     .timeline::before {
       content: '';
       position: absolute;
-      left: 6px;
-      top: 4px;
-      bottom: 4px;
-      width: 2px;
-      background: var(--cg-color-surface-container-border, #27272a);
+      left: var(--cg-spacing-6);
+      top: var(--cg-spacing-4);
+      bottom: var(--cg-spacing-4);
+      width: var(--cg-spacing-2);
+      background: var(--cg-color-surface-cards-border);
     }
 
     .entry {
       position: relative;
-      margin-bottom: var(--cg-spacing-12, 12px);
+      margin-bottom: var(--cg-spacing-12);
     }
 
     .entry-dot {
       position: absolute;
-      left: -20px;
-      top: 6px;
-      width: 10px;
-      height: 10px;
+      left: calc(-1 * var(--cg-spacing-20);
+      top: var(--cg-spacing-6);
+      width: var(--cg-spacing-8);
+      height: var(--cg-spacing-8);
       border-radius: 50%;
-      background: var(--cg-gray-700, #3f3f46);
-      border: 2px solid var(--cg-color-surface-container-background, #18181b);
+      background: var(--cg-color-surface-cards-border);
+      border: var(--cg-border-width-100) solid var(--cg-color-surface-container-background);
       z-index: 1;
     }
 
     .entry-card {
-      background: var(--cg-color-surface-base-background, #09090b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-100, 8px);
-      padding: var(--cg-spacing-12, 12px);
+      background: var(--cg-color-surface-base-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-12);
       cursor: pointer;
-      transition: border-color 120ms ease;
+      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
-    .entry-card:hover { border-color: var(--cg-gray-700, #3f3f46); }
+    .entry-card:hover { border-color: var(--cg-color-surface-cards-border); }
+    .entry-card:active { transform: scale(var(--cg-interaction-press-scale)); }
     .entry-card:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: -2px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
 
     .entry-top {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
       flex-wrap: wrap;
     }
 
     .version {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 700;
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-bold);
+      color: var(--cg-color-surface-base-text);
     }
 
     .type-badge {
-      font-size: 10px;
-      font-weight: 700;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
       text-transform: uppercase;
-      letter-spacing: 0.04em;
-      padding: 2px var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-50, 4px);
+      letter-spacing: var(--cg-letter-spacing-wide);
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-50);
     }
+    .type-badge.type-model {
+      background: var(--cg-color-status-info-background-default);
+      color: var(--cg-color-status-info-text-default);
+    }
+    .type-badge.type-prompt {
+      background: var(--cg-overlay-accent-subtle);
+      color: var(--cg-color-surface-base-text);
+    }
+    .type-badge.type-config {
+      background: var(--cg-overlay-accent-light);
+      color: var(--cg-color-chart-7);
+    }
+    .type-badge.type-data {
+      background: var(--cg-color-status-success-background-default);
+      color: var(--cg-color-status-success-text-default);
+    }
+
+    .entry-dot.type-model { background: var(--cg-color-status-info-text-default); }
+    .entry-dot.type-prompt { background: var(--cg-color-action-primary-background-default); }
+    .entry-dot.type-config { background: var(--cg-color-chart-7); }
+    .entry-dot.type-data { background: var(--cg-color-status-success-text-default); }
 
     .entry-meta {
       display: flex;
-      gap: var(--cg-spacing-8, 8px);
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-600, #52525b);
-      margin-top: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-8);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-border-hover);
+      margin-top: var(--cg-spacing-4);
     }
 
     .changes-preview {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-400, #a1a1aa);
-      margin-top: var(--cg-spacing-6, 6px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-top: var(--cg-spacing-6);
       line-height: 1.5;
       overflow: hidden;
-      max-height: 40px;
-      transition: max-height 200ms ease;
+      max-height: var(--cg-spacing-40);
+      transition: max-height var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
     }
     .changes-preview.expanded {
-      max-height: 500px;
+      max-height: var(--_ai-changelog-expanded-max-height, 500px);
     }
 
     .expand-toggle {
       background: transparent;
       border: none;
-      color: var(--cg-gray-500, #71717a);
-      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
       cursor: pointer;
-      padding: var(--cg-spacing-4, 4px) 0;
-      margin-top: var(--cg-spacing-4, 4px);
-      transition: color 120ms ease;
+      padding: var(--cg-spacing-4) 0;
+      margin-top: var(--cg-spacing-4);
+      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
-    .expand-toggle:hover { color: var(--cg-brand-ai-accent, #dfff61); }
+    .expand-toggle:hover { color: var(--cg-color-surface-base-text); }
     .expand-toggle:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .entry-actions {
       display: flex;
       justify-content: flex-end;
-      margin-top: var(--cg-spacing-8, 8px);
+      margin-top: var(--cg-spacing-8);
     }
 
     .rollback-btn {
       background: transparent;
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      color: var(--cg-gray-400, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
-      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-100, 8px);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      padding: var(--cg-spacing-4) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-100);
       cursor: pointer;
-      transition: all 150ms ease;
+      transition: border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-default), color var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
     }
+    .rollback-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .rollback-btn:hover {
-      border-color: #eab308;
-      color: #eab308;
+      border-color: var(--cg-color-status-warning-text);
+      color: var(--cg-color-status-warning-text);
     }
     .rollback-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .empty-state {
       text-align: center;
-      color: var(--cg-gray-600, #52525b);
-      font-size: var(--cg-font-size-sm, 14px);
-      padding: var(--cg-spacing-24, 24px) 0;
-    }
+      color: var(--cg-color-input-border-hover);
+      font-size: var(--cg-font-size-sm);
+      padding: var(--cg-spacing-24) 0;
     }
   `];
   @property({ type: Array }) entries: ChangelogEntry[] = [];
@@ -238,11 +258,11 @@ export class AiChangelog extends LitElement {
           ${this.entries.map((entry, i) => {
             const id = `${entry.version}-${i}`;
             const expanded = this._expandedSet.has(id);
-            const colors = TYPE_COLORS[entry.type] || TYPE_COLORS.config;
+            const typeCls = TYPE_CSS_CLASS[entry.type] || TYPE_CSS_CLASS.config;
 
             return html`
               <div class="entry" role="listitem">
-                <div class="entry-dot" style="background:${colors.fg}" aria-hidden="true"></div>
+                <div class="entry-dot ${typeCls}" aria-hidden="true"></div>
                 <div
                   class="entry-card"
                   tabindex="0"
@@ -253,8 +273,7 @@ export class AiChangelog extends LitElement {
                   <div class="entry-top">
                     <span class="version">${entry.version}</span>
                     <span
-                      class="type-badge"
-                      style="background:${colors.bg};color:${colors.fg}"
+                      class="type-badge ${typeCls}"
                     >${entry.type}</span>
                   </div>
 

@@ -1,8 +1,8 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, entranceStagger } from '../../styles/index.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
-/** Item definition for cg-accordion, with trigger label, content, and optional icon. */
+/** Item definition for cg-accordion. */
 export interface AccordionItem {
   value: string;
   trigger: string;
@@ -15,109 +15,77 @@ export interface AccordionItem {
  * @element cg-accordion
  * Expandable content sections with smooth CSS grid height animation.
  *
- * @example
- * ```html
- * <cg-accordion
- *   variant="card"
- *   multiple
- *   .items=${[
- *     {value:'faq1', trigger:'What is Cognivo?', content:'An AI component library.'},
- *     {value:'faq2', trigger:'Is it free?', content:'Yes, MIT licensed.'},
- *   ]}
- *   .defaultOpen=${['faq1']}
- * ></cg-accordion>
- * ```
- *
  * @fires {CustomEvent<{open: string[], toggled: string}>} cg-accordion-change - When an item is toggled
- *
- * @cssprop [--cg-focus-ring-color=#c8e650] - Active indicator and focus ring color
- * @cssprop [--cg-text-accent=#e5ff6b] - Hover/active trigger text color
- * @cssprop [--cg-color-surface-container-border=#27272a] - Item borders
- * @cssprop [--cg-border-radius-150=12px] - Card/bordered variant radius
  */
 @customElement('cg-accordion')
 export class CgAccordion extends LitElement {
-  static override styles = [hostBlock, reducedMotion, entranceStagger, css`
+  static override styles = [hostBlock, reducedMotion, css`
+
+    /* ── Default variant — minimal dividers, transparent ── */
     .item {
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-base-divider);
     }
     .item:last-child { border-bottom: none; }
 
-    /* Card variant */
+    /* ── Card variant — separated elevated cards ── */
     :host([variant="card"]) .item {
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      margin-bottom: var(--cg-spacing-8, 8px);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
+      margin-bottom: var(--cg-spacing-8);
+      background: var(--cg-color-surface-cards-background);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       overflow: hidden;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
     :host([variant="card"]) .item:last-child { margin-bottom: 0; }
 
-    /* Bordered variant */
-    :host([variant="bordered"]) .item {
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-bottom: none;
+    /* ── Bordered variant — single grouped container ── */
+    :host([variant="bordered"]) {
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
+      background: var(--cg-color-surface-cards-background);
       overflow: hidden;
     }
-    :host([variant="bordered"]) .item:first-child {
-      border-radius: var(--cg-border-radius-150, 12px) var(--cg-border-radius-150, 12px) 0 0;
+    :host([variant="bordered"]) .item {
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
     }
     :host([variant="bordered"]) .item:last-child {
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: 0 0 var(--cg-border-radius-150, 12px) var(--cg-border-radius-150, 12px);
+      border-bottom: none;
     }
 
-    /* Trigger button */
+    /* ── Trigger ── */
     .trigger {
       width: 100%;
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-16, 16px);
-      background: none;
+      gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-16);
+      background: transparent;
       border: none;
       font: inherit;
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-medium, 500);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-base-text);
       cursor: pointer;
       text-align: left;
-      transition: color var(--cg-motion-duration-normal, 150ms) ease;
-    }
-
-    :host(:not([variant])) .trigger,
-    :host([variant="default"]) .trigger {
-      padding: var(--cg-spacing-16, 16px) 0;
+      transition: background var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
     }
 
     .trigger:hover:not(:disabled) {
-      color: var(--cg-text-accent, #e5ff6b);
+      background: var(--cg-overlay-dark-subtle);
+    }
+
+    .trigger:active:not(:disabled) .chevron {
+      transform: scale(0.85);
     }
 
     .trigger:focus-visible {
-      box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
       outline: none;
-      border-radius: var(--cg-border-radius-100, 8px);
+      box-shadow: inset 0 0 0 2px var(--cg-color-focus-ring-offset), inset 0 0 0 4px var(--cg-color-focus-ring);
     }
 
     .trigger:disabled {
-      opacity: 0.4;
+      opacity: 0.5;
       cursor: not-allowed;
-    }
-
-    /* Active left indicator */
-    .indicator {
-      width: 3px;
-      height: 16px;
-      border-radius: 2px;
-      background: transparent;
-      flex-shrink: 0;
-      transition: background var(--cg-motion-duration-normal, 150ms) ease;
-    }
-    .item.open .indicator {
-      background: var(--cg-focus-ring-color, #c8e650);
     }
 
     .trigger-text {
@@ -125,24 +93,24 @@ export class CgAccordion extends LitElement {
       min-width: 0;
     }
 
-    /* Chevron */
+    /* ── Chevron — only active signal ── */
     .chevron {
-      width: 16px;
-      height: 16px;
+      width: var(--cg-icon-size-100);
+      height: var(--cg-icon-size-100);
       flex-shrink: 0;
-      color: var(--cg-gray-400, #a1a1aa);
-      transition: transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+      color: var(--cg-color-surface-container-outlined);
+      transition: transform var(--cg-motion-duration-normal) var(--cg-motion-easing-bounce), color var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
     }
     .item.open .chevron {
       transform: rotate(180deg);
-      color: var(--cg-text-accent, #e5ff6b);
+      color: var(--cg-color-surface-base-text);
     }
 
-    /* Content — CSS grid trick for smooth height animation */
+    /* ── Content — CSS grid smooth height ── */
     .content-wrapper {
       display: grid;
       grid-template-rows: 0fr;
-      transition: grid-template-rows var(--cg-motion-duration-slow, 0.25s) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+      transition: grid-template-rows var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
     .item.open .content-wrapper {
       grid-template-rows: 1fr;
@@ -153,41 +121,27 @@ export class CgAccordion extends LitElement {
     }
 
     .content-inner {
-      padding: 0 var(--cg-spacing-16, 16px) var(--cg-spacing-16, 16px);
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-gray-600, #52525b);
-      line-height: 1.65;
+      padding: 0 var(--cg-spacing-16) var(--cg-spacing-16);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-container-outlined);
+      line-height: var(--cg-line-height-relaxed);
+      opacity: 0;
+      transition: opacity var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition-delay: 50ms;
     }
-
     .item.open .content-inner {
-      animation: staggerFadeIn 200ms ease-out both;
+      opacity: 1;
     }
 
-    :host(:not([variant])) .content-inner,
-    :host([variant="default"]) .content-inner {
-      padding: 0 0 var(--cg-spacing-16, 16px);
-    }
-  
-    .header { transition: background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)); }
-    .header:hover { background: rgba(255, 255, 255, 0.03); }
+    /* ── Size variants ── */
+    :host([size="sm"]) .trigger { font-size: var(--cg-font-size-xs); padding: var(--cg-spacing-12); }
+    :host([size="sm"]) .content-inner { font-size: var(--cg-font-size-xs); padding: 0 var(--cg-spacing-12) var(--cg-spacing-12); }
 
-    /* Size variants */
-    :host([size="sm"]) .trigger { font-size: 13px; padding: 8px 12px; }
-    :host([size="sm"]) .content-inner { font-size: 13px; }
-
-    :host([size="lg"]) .trigger { font-size: 16px; padding: 16px 20px; }
-    :host([size="lg"]) .content-inner { font-size: 16px; }
-
-    /* Rounded variants */
-    :host([rounded="none"]) .item { border-radius: 0; }
-    :host([rounded="sm"]) .item { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .item { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .item { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .item { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([size="lg"]) .trigger { font-size: var(--cg-font-size-base); padding: var(--cg-spacing-20); }
+    :host([size="lg"]) .content-inner { font-size: var(--cg-font-size-base); padding: 0 var(--cg-spacing-20) var(--cg-spacing-20); }
   `];
 
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) items: AccordionItem[] = [];
   @property({ type: Boolean }) multiple = false;
   @property({ reflect: true }) variant: 'default' | 'card' | 'bordered' = 'default';
@@ -199,6 +153,24 @@ export class CgAccordion extends LitElement {
     if (this.defaultOpen.length > 0) {
       this._openItems = new Set(this.multiple ? this.defaultOpen : [this.defaultOpen[0]!]);
     }
+  }
+
+  private _handleTriggerKeydown(e: KeyboardEvent) {
+    const triggers = this.shadowRoot!.querySelectorAll('.trigger:not(:disabled)') as NodeListOf<HTMLElement>;
+    const triggerArr = Array.from(triggers);
+    const currentIdx = triggerArr.indexOf(e.currentTarget as HTMLElement);
+    let nextIdx = currentIdx;
+
+    switch (e.key) {
+      case 'ArrowDown': nextIdx = (currentIdx + 1) % triggerArr.length; break;
+      case 'ArrowUp': nextIdx = (currentIdx - 1 + triggerArr.length) % triggerArr.length; break;
+      case 'Home': nextIdx = 0; break;
+      case 'End': nextIdx = triggerArr.length - 1; break;
+      default: return;
+    }
+
+    e.preventDefault();
+    triggerArr[nextIdx]?.focus();
   }
 
   private _toggle(value: string) {
@@ -224,19 +196,20 @@ export class CgAccordion extends LitElement {
         <div class="item ${isOpen ? 'open' : ''}">
           <button
             class="trigger"
+            id="trigger-${item.value}"
             aria-expanded=${isOpen}
             aria-controls="panel-${item.value}"
             ?disabled=${item.disabled}
             @click=${() => this._toggle(item.value)}
+            @keydown=${this._handleTriggerKeydown}
           >
-            <span class="indicator"></span>
             <span class="trigger-text">${item.trigger}</span>
-            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M6 9l6 6 6-6"></path>
             </svg>
           </button>
           <div class="content-wrapper">
-            <div class="content" id="panel-${item.value}" role="region">
+            <div class="content" id="panel-${item.value}" role="region" aria-labelledby="trigger-${item.value}">
               <div class="content-inner">${item.content}</div>
             </div>
           </div>

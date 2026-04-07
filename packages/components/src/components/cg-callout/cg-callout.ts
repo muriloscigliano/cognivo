@@ -15,80 +15,79 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class CgCallout extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     :host([hidden]) { display: none; }
 
     .callout {
-      transition: border-color var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-                  box-shadow var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      transition:
+        background-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color),
+        border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color),
+        color var(--cg-motion-duration-normal) var(--cg-motion-easing-color),
+        opacity var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
+        transform var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
       display: flex;
-      gap: var(--cg-spacing-12, 12px);
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      border-radius: var(--cg-border-radius-150, 12px);
-      border: 1px solid;
-      line-height: var(--cg-line-height-normal, 1.5);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      align-items: center;
+      gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      border-radius: var(--cg-border-radius-100);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
+      line-height: var(--cg-line-height-normal);
     }
 
-    /* Variants */
-    :host([variant="info"]) .callout {
-      background: var(--cg-color-message-background-info, rgba(59, 130, 246, 0.12));
-      border-color: var(--cg-color-message-border-info, rgba(59, 130, 246, 0.25));
-      color: var(--cg-color-message-text-info, #60a5fa);
-    }
-    :host([variant="success"]) .callout {
-      background: var(--cg-color-message-background-success, rgba(34, 197, 94, 0.12));
-      border-color: var(--cg-color-message-border-success, rgba(34, 197, 94, 0.25));
-      color: var(--cg-color-message-text-success, #4ade80);
-    }
-    :host([variant="warning"]) .callout {
-      background: var(--cg-color-message-background-warning, rgba(245, 158, 11, 0.12));
-      border-color: var(--cg-color-message-border-warning, rgba(245, 158, 11, 0.25));
-      color: var(--cg-color-message-text-warning, #fbbf24);
-    }
-    :host([variant="danger"]) .callout {
-      background: var(--cg-color-message-background-error, rgba(239, 68, 68, 0.12));
-      border-color: var(--cg-color-message-border-error, rgba(239, 68, 68, 0.25));
-      color: var(--cg-color-message-text-error, #f87171);
-    }
-    :host([variant="neutral"]) .callout {
-      background: var(--cg-color-surface-container-background, #18181b);
-      border-color: var(--cg-color-surface-base-border, #27272a);
-      color: var(--cg-color-surface-base-text, #fafafa);
-    }
+    /* Variants — colored border, icon + title colored (softened), description normal */
+    :host([variant="info"]) .callout { border-color: var(--cg-color-message-border-info); }
+    :host([variant="info"]) .icon { color: var(--cg-color-message-icon-info); }
+    :host([variant="info"]) .title { color: var(--cg-color-message-text-info); opacity: 0.85; }
+
+    :host([variant="success"]) .callout { border-color: var(--cg-color-message-border-success); }
+    :host([variant="success"]) .icon { color: var(--cg-color-message-icon-success); }
+    :host([variant="success"]) .title { color: var(--cg-color-message-text-success); opacity: 0.85; }
+
+    :host([variant="warning"]) .callout { border-color: var(--cg-color-message-border-warning); }
+    :host([variant="warning"]) .icon { color: var(--cg-color-message-icon-warning); }
+    :host([variant="warning"]) .title { color: var(--cg-color-message-text-warning); opacity: 0.85; }
+
+    :host([variant="danger"]) .callout { border-color: var(--cg-color-message-border-error); }
+    :host([variant="danger"]) .icon { color: var(--cg-color-message-icon-error); }
+    :host([variant="danger"]) .title { color: var(--cg-color-message-text-error); opacity: 0.85; }
+
+    :host([variant="neutral"]) .icon,
+    :host([variant="neutral"]) .title { color: var(--cg-color-surface-container-text); }
 
     .icon {
       flex-shrink: 0;
-      width: 20px;
-      height: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: 1px;
     }
     .icon svg {
-      width: 18px;
-      height: 18px;
+      width: var(--cg-icon-size-150);
+      height: var(--cg-icon-size-150);
     }
 
     .content { flex: 1; min-width: 0; }
 
     .title {
-      font-weight: var(--cg-font-weight-semibold, 600);
-      font-size: var(--cg-font-size-sm, 14px);
-      margin-bottom: 2px;
+      font-weight: var(--cg-font-weight-medium);
+      font-size: var(--cg-font-size-sm);
+      line-height: var(--cg-line-height-tight);
+      letter-spacing: var(--cg-letter-spacing-tight);
+    }
+
+    .title + .description {
+      margin-top: var(--cg-spacing-2);
     }
 
     .description {
-      font-size: var(--cg-font-size-sm, 14px);
-      opacity: 0.9;
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-base-text);
     }
 
-    .actions {
-      margin-top: var(--cg-spacing-8, 8px);
+    ::slotted([slot="action"]) {
+      margin-top: var(--cg-spacing-8);
     }
 
     .dismiss {
@@ -98,29 +97,32 @@ export class CgCallout extends LitElement {
       color: currentColor;
       opacity: 0.5;
       cursor: pointer;
-      padding: 2px;
-      border-radius: 4px;
+      padding: var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-50);
       display: flex;
-      transition: opacity var(--cg-transition-duration-fast, 100ms);
+      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     .dismiss:hover { opacity: 0.8; }
-    .dismiss:focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
-    .dismiss svg { width: 16px; height: 16px; }
+    .dismiss:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background), 0 0 0 4px var(--cg-focus-ring-color);
+    }
+    .dismiss svg { width: var(--cg-spacing-16); height: var(--cg-spacing-16); }
 
     @keyframes calloutExit {
       from { opacity: 1; transform: translateY(0); }
       to { opacity: 0; transform: translateY(-8px); }
     }
     .callout.dismissing {
-      animation: calloutExit 200ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+      animation: calloutExit var(--cg-motion-duration-slow) var(--cg-motion-easing-exit) forwards;
     }
 
     /* Rounded variants */
     :host([rounded="none"]) .callout { border-radius: 0; }
-    :host([rounded="sm"]) .callout { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .callout { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .callout { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .callout { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .callout { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .callout { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .callout { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) .callout { border-radius: var(--cg-border-radius-full); }
   `];
 
   @property({ reflect: true }) variant: 'info' | 'success' | 'warning' | 'danger' | 'neutral' = 'info';
@@ -147,6 +149,13 @@ export class CgCallout extends LitElement {
     clearTimeout(this._dismissTimer);
   }
 
+  private _handleKeydown(e: KeyboardEvent) {
+    if (this.dismissible && e.key === 'Escape') {
+      e.preventDefault();
+      this._dismiss();
+    }
+  }
+
   private _dismiss() {
     this._dismissing = true;
     this.dispatchEvent(new CustomEvent('cg-callout-dismiss', { bubbles: true, composed: true }));
@@ -154,7 +163,7 @@ export class CgCallout extends LitElement {
       this._dismissed = true;
       this._dismissing = false;
       this.setAttribute('hidden', '');
-    }, 200);
+    }, 250);
   }
 
   override render() {
@@ -163,7 +172,7 @@ export class CgCallout extends LitElement {
     const iconPath = this._iconPaths[this.variant] ?? this._iconPaths.info;
 
     return html`
-      <div class="callout ${this._dismissing ? 'dismissing' : ''}" role="alert">
+      <div class="callout ${this._dismissing ? 'dismissing' : ''}" role=${this.variant === 'danger' || this.variant === 'warning' ? 'alert' : 'note'} aria-live="polite" @keydown=${this._handleKeydown}>
         <div class="icon">
           <slot name="icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -175,7 +184,7 @@ export class CgCallout extends LitElement {
           ${this.title ? html`<div class="title">${this.title}</div>` : nothing}
           ${this.description ? html`<div class="description">${this.description}</div>` : nothing}
           <slot></slot>
-          <div class="actions"><slot name="action"></slot></div>
+          <slot name="action"></slot>
         </div>
         ${this.dismissible ? html`
           <button class="dismiss" @click=${this._dismiss} aria-label="Dismiss">

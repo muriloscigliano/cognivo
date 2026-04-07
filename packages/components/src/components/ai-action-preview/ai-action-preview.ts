@@ -5,7 +5,7 @@
  * @example
  * ```html
  * <ai-action-preview
- *   title="Delete training data"
+ *   heading="Delete training data"
  *   severity="critical"
  *   .details=${{Dataset: 'prod-v2', Rows: '14,200'}}
  *   countdown="10"
@@ -28,21 +28,19 @@ type Severity = 'low' | 'medium' | 'high' | 'critical';
 export class AiActionPreview extends LitElement {
   static override styles = [hostBlock, reducedMotion, pulseKeyframes, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
     }
 
     .card {
-      background: var(--cg-color-surface-cards-background, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid var(--cg-color-surface-cards-border, #27272a);
-      border-radius: var(--cg-border-radius-200, 12px);
-      padding: var(--cg-spacing-16, 16px);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-200);
+      padding: var(--cg-spacing-16);
       position: relative;
       overflow: hidden;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
     .card.critical {
-      border-color: var(--cg-red-400, #f87171);
+      border-color: var(--cg-color-status-error-text-default);
       animation: pulse-border 2s ease-in-out infinite;
     }
 
@@ -50,13 +48,13 @@ export class AiActionPreview extends LitElement {
     .header {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      margin-bottom: var(--cg-spacing-16, 16px);
+      gap: var(--cg-spacing-8);
+      margin-bottom: var(--cg-spacing-16);
     }
     .title {
-      font-size: var(--cg-font-size-base, 16px);
-      font-weight: 700;
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-base);
+      font-weight: var(--cg-font-weight-bold);
+      color: var(--cg-color-surface-base-text);
       flex: 1;
     }
 
@@ -64,121 +62,129 @@ export class AiActionPreview extends LitElement {
     .severity {
       display: inline-flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
-      padding: 3px var(--cg-spacing-8, 8px);
-      border-radius: 99px;
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
+      gap: var(--cg-spacing-4);
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-full);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
     .severity.low {
-      background: rgba(34, 197, 94, 0.12);
-      color: var(--cg-green-400, #4ade80);
+      background: var(--cg-color-status-success-background-default);
+      color: var(--cg-color-status-success-text-default);
     }
     .severity.medium {
-      background: rgba(245, 158, 11, 0.12);
-      color: var(--cg-yellow-400, #fbbf24);
+      background: var(--cg-color-status-warning-background-default);
+      color: var(--cg-color-status-warning-text-default);
     }
     .severity.high {
-      background: rgba(249, 115, 22, 0.12);
-      color: var(--cg-orange-400, #fb923c);
+      background: var(--cg-color-status-error-background-default);
+      color: var(--cg-color-chart-5);
     }
     .severity.critical {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--cg-red-400, #f87171);
+      background: var(--cg-color-status-error-background-default);
+      color: var(--cg-color-status-error-text-default);
     }
 
     /* ── Description ── */
     .description {
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-gray-400, #a1a1aa);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-input-text-placeholder);
       line-height: 1.5;
-      margin-bottom: var(--cg-spacing-16, 16px);
+      margin-bottom: var(--cg-spacing-16);
     }
 
     /* ── Details key-value list ── */
     .details {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-8, 8px);
-      margin-bottom: var(--cg-spacing-16, 16px);
-      padding: var(--cg-spacing-12, 12px);
-      background: var(--cg-gray-900, #09090b);
-      border-radius: var(--cg-border-radius-100, 8px);
+      gap: var(--cg-spacing-8);
+      margin-bottom: var(--cg-spacing-16);
+      padding: var(--cg-spacing-12);
+      background: var(--cg-color-surface-base-background);
+      border-radius: var(--cg-border-radius-100);
     }
     .detail-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: var(--cg-font-size-sm, 14px);
+      font-size: var(--cg-font-size-sm);
     }
     .detail-key {
-      color: var(--cg-gray-400, #a1a1aa);
-      font-weight: 500;
+      color: var(--cg-color-input-text-placeholder);
+      font-weight: var(--cg-font-weight-medium);
     }
     .detail-value {
-      color: var(--cg-color-surface-base-text, #fafafa);
-      font-weight: 600;
+      color: var(--cg-color-surface-base-text);
+      font-weight: var(--cg-font-weight-semibold);
     }
 
     /* ── Countdown ── */
     .countdown {
       text-align: center;
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-400, #a1a1aa);
-      margin-bottom: var(--cg-spacing-12, 12px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-bottom: var(--cg-spacing-12);
     }
     .countdown-num {
-      font-weight: 700;
-      color: var(--cg-brand-ai-accent, #dfff61);
+      font-weight: var(--cg-font-weight-bold);
+      color: var(--cg-color-surface-base-text);
     }
 
     /* ── Actions ── */
     .actions {
-      padding-top: var(--cg-spacing-12, 12px);
-      border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
+      padding-top: var(--cg-spacing-12);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       display: flex;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
     }
     button {
       flex: 1;
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
+      border-radius: var(--cg-border-radius-100);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
-      transition: all 150ms ease;
+      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
+                  color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
+                  filter var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
+                  transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
       border: none;
     }
     button:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+    }
+    button:active {
+      transform: scale(0.97);
     }
     .btn-cancel {
-      background: var(--cg-gray-800, #27272a);
-      color: var(--cg-gray-300, #d4d4d8);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-surface-base-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
-    .btn-cancel:hover { background: var(--cg-gray-700, #3f3f46); }
+    .btn-cancel:hover { background: var(--cg-color-surface-cards-border); }
     .btn-confirm {
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: var(--cg-color-surface-base-background, #09090b);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-base-background);
     }
     .btn-confirm:hover { filter: brightness(0.9); }
     .btn-confirm.critical {
-      background: var(--cg-red-400, #f87171);
-      color: var(--cg-gray-white, #ffffff);
+      background: var(--cg-color-status-error-text-default);
+      color: var(--cg-color-surface-base-text);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card.critical { animation: none; }
     }
 
     @keyframes pulse-border {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.3); }
-      50% { box-shadow: 0 0 0 6px rgba(248, 113, 113, 0); }
-    }
-      button { transition: none; }
+      0%, 100% { border-color: var(--cg-color-status-error-text-default); }
+      50% { border-color: var(--cg-color-status-error-border-default); }
     }
   `];
-  @property({ type: String }) override title = '';
+  @property({ type: String }) heading = '';
   @property({ type: String }) description = '';
   @property({ type: String }) action = '';
   @property({ type: String }) severity: Severity = 'low';
@@ -255,11 +261,11 @@ export class AiActionPreview extends LitElement {
       <div
         class="card ${this.severity === 'critical' ? 'critical' : ''}"
         role="alertdialog"
-        aria-label="Action preview: ${this.title}"
+        aria-label="Action preview: ${this.heading}"
         tabindex="0"
       >
         <div class="header">
-          <span class="title">${this.title}</span>
+          <span class="title">${this.heading}</span>
           <span class="severity ${this.severity}" aria-label="Severity: ${this.severity}">
             <span aria-hidden="true">${this._severityIcon()}</span>
             ${this.severity}

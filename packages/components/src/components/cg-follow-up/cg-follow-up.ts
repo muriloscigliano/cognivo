@@ -1,20 +1,14 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
 
 /**
  * <cg-follow-up> — Suggestion chips for chat conversations.
  *
- * Fixes from audit:
- * - Removed 5-item animation limit (dynamic CSS custom property)
- * - Added variant prop: chips (default), cards, buttons
- * - Added icon per item support
- * - Added maxVisible with "+N more" overflow
- * - Added aria-label on each button
- * - Loading shimmer count matches maxVisible
+ * @fires {CustomEvent<{text: string}>} cg-follow-up-click - When a suggestion is clicked
  */
 
-interface FollowUpItem {
+export interface FollowUpItem {
   text: string;
   icon?: string;
 }
@@ -24,24 +18,22 @@ export class CgFollowUp extends LitElement {
   static override styles = [hostBlock, reducedMotion, shimmerKeyframes, css`
     :host {
       display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, sans-serif);
+      font-family: var(--cg-font-family-primary);
     }
 
     .header {
       display: flex;
       align-items: center;
-      gap: 4px;
-      margin-bottom: 10px;
+      gap: var(--cg-spacing-4);
+      margin-bottom: var(--cg-spacing-8);
     }
     .header-icon {
-      width: 14px;
-      height: 14px;
-      color: var(--cg-brand-ai-accent, #dfff61);
+      color: var(--cg-color-action-primary-background-default);
     }
     .label {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--cg-brand-ai-accent, #dfff61);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
+      color: var(--cg-color-action-primary-background-default);
       text-transform: uppercase;
       letter-spacing: 0.06em;
     }
@@ -49,126 +41,126 @@ export class CgFollowUp extends LitElement {
     .chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: var(--cg-spacing-8);
     }
 
     /* ── Chip variant (default) ── */
     button {
-      padding: 8px 16px;
-      border-radius: 99999px;
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      background: var(--cg-color-surface-container-background, #18181b);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
+      border-radius: var(--cg-border-radius-full);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-surface-base-text);
       font: inherit;
-      font-size: 13px;
-      font-weight: 500;
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
-      transition: all 150ms ease;
+      transition:
+        border-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
       white-space: nowrap;
-      line-height: var(--cg-line-height-snug, 1.375);
+      line-height: var(--cg-line-height-snug);
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      animation: fadeIn 0.25s ease both;
-      /* Dynamic stagger delay via CSS custom property */
+      gap: var(--cg-spacing-6);
+      animation: fadeIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
       animation-delay: calc(var(--item-index, 0) * 60ms);
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
+      from { opacity: 0; transform: translateY(var(--cg-spacing-6)); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     button:hover:not(:disabled) {
-      border-color: var(--cg-brand-ai-accent, #dfff61);
-      color: var(--cg-brand-ai-accent, #dfff61);
-      background: rgba(223, 255, 97, 0.06);
+      border-color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-action-primary-background-default);
+      background: var(--cg-color-action-tertiary-background-hover);
     }
-    button:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale, 0.97)); }
+    button:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
     button:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
     button:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    .icon { font-size: 14px; line-height: 1; }
+    .icon {
+      color: var(--cg-color-surface-container-outlined);
+    }
+    button:hover:not(:disabled) .icon {
+      color: var(--cg-color-action-primary-background-default);
+    }
 
     /* ── Card variant ── */
     :host([variant="cards"]) button {
-      border-radius: 10px;
-      padding: 12px 16px;
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
       flex-direction: column;
       align-items: flex-start;
-      gap: 4px;
+      gap: var(--cg-spacing-4);
       white-space: normal;
       text-align: left;
       min-width: 140px;
     }
-    :host([variant="cards"]) .icon { font-size: 18px; }
+    :host([variant="cards"]) .icon {
+      color: var(--cg-color-action-primary-background-default);
+      opacity: 0.7;
+    }
 
     /* ── Button variant ── */
     :host([variant="buttons"]) button {
-      border-radius: 8px;
-      padding: 6px 14px;
-      font-size: 12px;
-      font-weight: 600;
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-6) var(--cg-spacing-16);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
     }
 
     /* ── Overflow "+N more" ── */
     .more-badge {
-      padding: 8px 14px;
-      border-radius: 99999px;
-      border: 1px dashed var(--cg-gray-700, #3f3f46);
-      background: none;
-      color: var(--cg-gray-500, #71717a);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
+      border-radius: var(--cg-border-radius-full);
+      border: var(--cg-border-width-50) dashed var(--cg-color-surface-container-border);
+      background: transparent;
+      color: var(--cg-color-surface-container-outlined);
       font: inherit;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
-      transition: all 150ms;
+      transition:
+        border-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
     .more-badge:hover {
-      border-color: var(--cg-brand-ai-accent, #dfff61);
-      color: var(--cg-brand-ai-accent, #dfff61);
+      border-color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-action-primary-background-default);
     }
 
     /* ── Loading shimmer ── */
     .shimmer {
-      height: 36px;
-      border-radius: 99999px;
+      height: var(--cg-spacing-40);
+      border-radius: var(--cg-border-radius-full);
       background: linear-gradient(
         90deg,
-        var(--cg-color-surface-container-background, #18181b) 25%,
-        var(--cg-color-surface-container-border, #27272a) 50%,
-        var(--cg-color-surface-container-background, #18181b) 75%
+        var(--cg-color-surface-container-background) 25%,
+        var(--cg-color-surface-container-border) 50%,
+        var(--cg-color-surface-container-background) 75%
       );
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
     }
   `];
 
-  /** Suggestion items — strings or {text, icon} objects */
   @property({ type: Array }) items: (string | FollowUpItem)[] = [];
-
-  /** Label displayed above chips */
   @property() label = 'Suggested';
-
-  /** Disable all chips (e.g. during streaming) */
   @property({ type: Boolean }) disabled = false;
-
-  /** Show loading shimmer instead of chips */
   @property({ type: Boolean }) loading = false;
-
-  /** Hide the header label */
   @property({ type: Boolean }) hideLabel = false;
-
-  /** Visual variant: chips (default), cards, buttons */
   @property({ type: String, reflect: true }) variant: 'chips' | 'cards' | 'buttons' = 'chips';
-
-  /** Max visible items before "+N more" (0 = show all) */
   @property({ type: Number }) maxVisible: number = 0;
 
-  private _showAll: boolean = false;
+  @state() private _showAll = false;
 
   private _getText(item: string | FollowUpItem): string {
     return typeof item === 'string' ? item : item.text;
@@ -189,7 +181,6 @@ export class CgFollowUp extends LitElement {
 
   private _handleShowAll() {
     this._showAll = true;
-    this.requestUpdate();
   }
 
   override render() {
@@ -200,15 +191,12 @@ export class CgFollowUp extends LitElement {
       ? this.items.length - this.maxVisible
       : 0;
 
-    // Generate shimmer widths based on item count
     const shimmerWidths = [150, 190, 130, 170, 120];
 
     return html`
       ${!this.hideLabel ? html`
         <div class="header">
-          <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"></path>
-          </svg>
+          <cg-icon class="header-icon" name="sparkle" size="sm"></cg-icon>
           <span class="label">${this.label}</span>
         </div>
       ` : nothing}
@@ -229,7 +217,7 @@ export class CgFollowUp extends LitElement {
                     aria-label="Suggestion: ${text}"
                     @click=${() => this._handleClick(item)}
                   >
-                    ${icon ? html`<span class="icon" aria-hidden="true">${icon}</span>` : nothing}
+                    ${icon ? html`<cg-icon class="icon" name="${icon}" size="sm" aria-hidden="true"></cg-icon>` : nothing}
                     ${text}
                   </button>
                 `;

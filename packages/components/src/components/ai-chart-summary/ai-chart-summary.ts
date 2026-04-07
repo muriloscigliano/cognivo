@@ -1,27 +1,14 @@
 /**
  * @element ai-chart-summary
- * AI-generated insight overlay for charts with trends, confidence badge, type tags, and refresh.
+ * AI-generated chart insight — clean card with summary, trends, and metadata.
  *
- * @example
- * ```html
- * <ai-chart-summary
- *   summary="Revenue grew 23% MoM driven by enterprise tier."
- *   confidence="0.87"
- *   type="forecast"
- *   .trends=${[{label:'Revenue', direction:'up', value:'+23%'}]}
- *   timeRange="Last 30 days"
- * ></ai-chart-summary>
- * ```
- *
- * @fires {CustomEvent<{collapsed: boolean}>} ai-summary-toggle - Collapsed/expanded
- * @fires {CustomEvent<{label, direction, value}>} ai-summary-trend-click - Trend chip clicked
- * @fires {CustomEvent} ai-summary-refresh - Refresh button clicked
- *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - AI dot, label, and hover accent
+ * @fires {CustomEvent<{collapsed: boolean}>} ai-summary-toggle
+ * @fires {CustomEvent<{label, direction, value}>} ai-summary-trend-click
+ * @fires {CustomEvent} ai-summary-refresh
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
 
 interface Trend {
   label: string;
@@ -31,173 +18,164 @@ interface Trend {
 
 @customElement('ai-chart-summary')
 export class AiChartSummary extends LitElement {
-  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes, css`
-    :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+  static override styles = [hostBlock, reducedMotion, shimmerKeyframes, css`
+    :host { display: block; }
+
+    .card {
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
+      padding: var(--cg-spacing-20) var(--cg-spacing-24);
     }
 
-    .summary {
-      background: var(--cg-color-surface-container-background, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      animation: slideUp 300ms ease;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
+    /* ── Header ── */
     .header {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      margin-bottom: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
+      margin-bottom: var(--cg-spacing-16);
     }
-
     .ai-dot {
-      width: 18px;
-      height: 18px;
-      background: linear-gradient(135deg, var(--cg-brand-ai-accent, #dfff61), var(--cg-brand-ai-highlight, #e2ff70));
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-      font-weight: 800;
-      color: var(--cg-gray-black, #000000);
+      width: var(--cg-spacing-6);
+      height: var(--cg-spacing-6);
+      background: var(--cg-brand-ai-accent);
+      border-radius: var(--cg-border-radius-full);
       flex-shrink: 0;
     }
-
-    .label {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      color: var(--cg-brand-ai-accent, #dfff61);
+    .header-label {
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-input-text-placeholder);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
-
-    .type-badge {
-      font-size: 10px;
-      padding: 1px var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-50, 4px);
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-    .type-badge.summary { background: rgba(59, 130, 246, 0.12); color: var(--cg-color-status-info-text-default, #60a5fa); }
-    .type-badge.anomaly { background: rgba(239, 68, 68, 0.12); color: var(--cg-color-status-error-text-default, #f87171); }
-    .type-badge.forecast { background: rgba(223, 255, 97, 0.12); color: var(--cg-brand-ai-accent, #dfff61); }
-    .type-badge.comparison { background: rgba(139, 92, 246, 0.12); color: #a78bfa; }
-
-    .time-range {
-      font-size: 10px;
-      color: var(--cg-gray-500, #71717a);
+    .header-right {
       margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-8);
     }
-
-    .header-actions { display: flex; gap: var(--cg-spacing-4, 4px); margin-left: auto; }
+    .time-range {
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+    }
     .icon-btn {
-      background: none;
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      color: var(--cg-gray-500, #71717a);
-      border-radius: var(--cg-border-radius-100, 8px);
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: var(--cg-font-size-xs, 12px);
-      transition: all 150ms;
+      width: var(--cg-spacing-24);
+      height: var(--cg-spacing-24);
+      border: none;
+      background: transparent;
+      color: var(--cg-color-input-text-placeholder);
+      border-radius: var(--cg-border-radius-50);
+      cursor: pointer;
       padding: 0;
+      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
-    .icon-btn:hover { color: var(--cg-brand-ai-accent, #dfff61); border-color: rgba(223, 255, 97, 0.3); }
+    .icon-btn:hover { color: var(--cg-color-surface-base-text); }
+    .icon-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
+    .icon-btn svg { width: 12px; height: 12px; }
 
-    .text {
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: 1.5;
-      margin-bottom: var(--cg-spacing-8, 8px);
+    /* ── Summary text ── */
+    .summary-text {
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-base-text);
+      line-height: var(--cg-line-height-normal);
+      margin-bottom: var(--cg-spacing-20);
     }
 
+    /* ── Trends ── */
     .trends {
       display: flex;
-      gap: var(--cg-spacing-12, 12px);
       flex-wrap: wrap;
+      margin-bottom: var(--cg-spacing-16);
     }
-
     .trend {
-      display: inline-flex;
+      display: flex;
+      flex-direction: column;
+      gap: var(--cg-spacing-2);
+      cursor: pointer;
+      padding: 0 var(--cg-spacing-20);
+      border-right: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+    }
+    .trend:first-child { padding-left: 0; }
+    .trend:last-child { border-right: none; padding-right: 0; }
+    .trend:hover { opacity: 0.8; }
+    .trend-header {
+      display: flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
-      cursor: pointer;
-      padding: 3px var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      transition: all 150ms;
-      border: 1px solid transparent;
+      gap: var(--cg-spacing-4);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      font-weight: var(--cg-font-weight-medium);
     }
-    .trend:hover {
-      background: rgba(255, 255, 255, 0.04);
-      border-color: var(--cg-gray-700, #3f3f46);
+    .trend-value {
+      font-size: var(--cg-font-size-lg);
+      font-weight: var(--cg-font-weight-semibold);
+      letter-spacing: var(--cg-letter-spacing-tight);
     }
-    .trend.up { color: var(--cg-green-400, #4ade80); }
-    .trend.down { color: var(--cg-red-400, #f87171); }
-    .trend.neutral { color: var(--cg-gray-500, #71717a); }
+    .trend.up .trend-value { color: var(--cg-color-status-success-text-default); }
+    .trend.down .trend-value { color: var(--cg-color-status-error-text-default); }
+    .trend.neutral .trend-value { color: var(--cg-color-surface-base-text); }
+    .trend-icon svg { width: 10px; height: 10px; display: block; }
 
-    .trend-icon { font-size: var(--cg-font-size-sm, 14px); }
-
-    .collapsed .text, .collapsed .trends { display: none; }
-
-    .toggle {
-      background: none;
-      border: none;
-      color: var(--cg-gray-500, #71717a);
-      cursor: pointer;
-      font-size: var(--cg-font-size-xs, 12px);
-      padding: 0;
-      font-family: inherit;
+    /* ── Footer metadata ── */
+    .footer {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-8);
+      padding-top: var(--cg-spacing-12);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
-    .toggle:hover { color: var(--cg-brand-ai-accent, #dfff61); }
+    .confidence {
+      font-weight: var(--cg-font-weight-medium);
+    }
+    .dot-sep {
+      width: var(--cg-spacing-2);
+      height: var(--cg-spacing-2);
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-input-text-placeholder);
+      flex-shrink: 0;
+    }
+    .type-tag {
+      text-transform: capitalize;
+    }
 
-    /* Compact mode */
-    :host([compact]) .summary { padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); }
-    :host([compact]) .text { display: none; }
-    :host([compact]) .trends { gap: var(--cg-spacing-8, 8px); }
+    /* ── Collapsed ── */
+    .collapsed .summary-text,
+    .collapsed .trends,
+    .collapsed .footer { display: none; }
 
-    /* Loading */
-    .loading-bar {
-      height: 8px;
-      border-radius: var(--cg-border-radius-50, 4px);
-      background: linear-gradient(90deg, var(--cg-gray-800, #27272a) 25%, var(--cg-gray-700, #3f3f46) 50%, var(--cg-gray-800, #27272a) 75%);
+    /* ── Compact ── */
+    :host([compact]) .card { padding: var(--cg-spacing-12); }
+    :host([compact]) .summary-text { display: none; }
+    :host([compact]) .header { margin-bottom: var(--cg-spacing-8); }
+
+    /* ── Loading ── */
+    .skel {
+      border-radius: var(--cg-border-radius-50);
+      background: linear-gradient(90deg, var(--cg-color-surface-container-background) 25%, var(--cg-color-surface-container-border) 50%, var(--cg-color-surface-container-background) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s linear infinite;
-      margin-bottom: var(--cg-spacing-8, 8px);
     }
-    .loading-bar:nth-child(1) { width: 80%; }
-    .loading-bar:nth-child(2) { width: 50%; }
-    }
-  
-
-    :focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
-    }
+    .skel-line { height: var(--cg-spacing-12); margin-bottom: var(--cg-spacing-8); }
+    .skel-line:nth-child(2) { width: 80%; }
+    .skel-line:nth-child(3) { width: 50%; }
   `];
-  @property({ type: String }) summary: string = '';
-  @property({ type: Array }) trends: Trend[] = [];
-  @property({ type: Boolean }) collapsible: boolean = false;
-  @property({ type: Number }) confidence: number = 0;
-  @property({ type: String }) type: 'summary' | 'anomaly' | 'forecast' | 'comparison' = 'summary';
-  @property({ type: Boolean, reflect: true }) compact: boolean = false;
-  @property({ type: Boolean }) loading: boolean = false;
-  @property({ type: String }) timeRange: string = '';
 
-  @state() private _collapsed: boolean = false;
+  @property() summary = '';
+  @property({ type: Array }) trends: Trend[] = [];
+  @property({ type: Boolean }) collapsible = false;
+  @property({ type: Number }) confidence = 0;
+  @property() type: 'summary' | 'anomaly' | 'forecast' | 'comparison' = 'summary';
+  @property({ type: Boolean, reflect: true }) compact = false;
+  @property({ type: Boolean }) loading = false;
+  @property() timeRange = '';
+
+  @state() private _collapsed = false;
 
   private _toggle() {
     this._collapsed = !this._collapsed;
@@ -205,10 +183,7 @@ export class AiChartSummary extends LitElement {
   }
 
   private _handleTrendClick(trend: Trend) {
-    this.dispatchEvent(new CustomEvent('ai-summary-trend-click', {
-      bubbles: true, composed: true,
-      detail: { label: trend.label, direction: trend.direction, value: trend.value },
-    }));
+    this.dispatchEvent(new CustomEvent('ai-summary-trend-click', { bubbles: true, composed: true, detail: trend }));
   }
 
   private _handleRefresh() {
@@ -218,52 +193,69 @@ export class AiChartSummary extends LitElement {
   override render() {
     if (this.loading) {
       return html`
-        <div class="summary">
+        <div class="card">
           <div class="header">
-            <div class="ai-dot" aria-hidden="true">AI</div>
-            <span class="label">AI Insight</span>
+            <span class="ai-dot"></span>
+            <span class="header-label">AI Insight</span>
           </div>
-          <div class="loading-bar"></div>
-          <div class="loading-bar"></div>
+          <div class="skel skel-line" style="width:100%"></div>
+          <div class="skel skel-line"></div>
+          <div class="skel skel-line"></div>
         </div>
       `;
     }
 
     if (!this.summary) return nothing;
 
-    return html`
-      <div class="summary ${this._collapsed ? 'collapsed' : ''}" role="complementary" aria-label="AI chart summary">
-        <div class="header">
-          <div class="ai-dot" aria-hidden="true">AI</div>
-          <span class="label">AI Insight</span>
-          ${this.type !== 'summary' ? html`<span class="type-badge ${this.type}">${this.type}</span>` : nothing}
-          ${this.confidence > 0 ? html`<ai-badge score="${this.confidence}" size="sm"></ai-badge>` : nothing}
-          ${this.timeRange ? html`<span class="time-range">${this.timeRange}</span>` : nothing}
+    const hasFooter = this.confidence > 0 || this.type !== 'summary';
 
-          <div class="header-actions">
-            <button class="icon-btn" @click=${this._handleRefresh} title="Refresh" aria-label="Refresh insight"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></button>
+    return html`
+      <div class="card ${this._collapsed ? 'collapsed' : ''}" role="complementary" aria-label="AI chart insight">
+        <div class="header">
+          <span class="ai-dot"></span>
+          <span class="header-label">AI Insight</span>
+          <div class="header-right">
+            ${this.timeRange ? html`<span class="time-range">${this.timeRange}</span>` : nothing}
+            <button class="icon-btn" @click=${this._handleRefresh} aria-label="Refresh">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+            </button>
             ${this.collapsible ? html`
-              <button class="icon-btn" @click=${this._toggle}
-                aria-expanded="${!this._collapsed}" aria-label="${this._collapsed ? 'Show' : 'Hide'} insight">
-                ${this._collapsed ? html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>` : html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>`}
+              <button class="icon-btn" @click=${this._toggle} aria-expanded="${!this._collapsed}" aria-label="${this._collapsed ? 'Expand' : 'Collapse'}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                  <path d="${this._collapsed ? 'M6 9l6 6 6-6' : 'M18 15l-6-6-6 6'}"/>
+                </svg>
               </button>
             ` : nothing}
           </div>
         </div>
 
-        <div class="text">${this.summary}</div>
+        <div class="summary-text">${this.summary}</div>
 
         ${this.trends.length > 0 ? html`
           <div class="trends">
             ${this.trends.map(t => html`
-              <span class="trend ${t.direction}" @click=${() => this._handleTrendClick(t)}
-                role="button" tabindex="0" aria-label="${t.label}: ${t.value} (${t.direction})">
-                <span class="trend-icon" aria-hidden="true">
-                  ${t.direction === 'up' ? html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5m-7 7l7-7 7 7"/></svg>` : t.direction === 'down' ? html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m7-7l-7 7-7-7"/></svg>` : html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>`}
+              <span class="trend ${t.direction}" @click=${() => this._handleTrendClick(t)} role="button" tabindex="0">
+                <span class="trend-header">
+                  <span class="trend-icon" aria-hidden="true">
+                    ${t.direction === 'up'
+                      ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 19V5m-7 7l7-7 7 7"/></svg>`
+                      : t.direction === 'down'
+                      ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14m7-7l-7 7-7-7"/></svg>`
+                      : html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg>`}
+                  </span>
+                  ${t.label}
                 </span>
-                ${t.label}: ${t.value}
+                <span class="trend-value">${t.value}</span>
               </span>
             `)}
+          </div>
+        ` : nothing}
+
+        ${hasFooter ? html`
+          <div class="footer">
+            ${this.confidence > 0 ? html`<span class="confidence">${Math.round(this.confidence * 100)}% confidence</span>` : nothing}
+            ${this.confidence > 0 && this.type !== 'summary' ? html`<span class="dot-sep"></span>` : nothing}
+            ${this.type !== 'summary' ? html`<span class="type-tag">${this.type}</span>` : nothing}
           </div>
         ` : nothing}
       </div>

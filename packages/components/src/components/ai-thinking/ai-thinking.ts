@@ -1,33 +1,14 @@
 /**
  * @element ai-thinking
- * Versatile AI loading indicator with three variants (dots, spinner, skeleton),
- * three sizes (sm, md, lg), stage cycling, tool call badges, optional cancel
- * button, determinate progress bar, and configurable display delay.
- *
- * @example
- * ```html
- * <ai-thinking text="Analyzing" variant="dots" size="md" shimmer cancelable></ai-thinking>
- * <ai-thinking variant="skeleton" size="lg"></ai-thinking>
- * <ai-thinking text="Processing" .stages=${['Connecting...', 'Analyzing...', 'Generating...']}
- *   .tools=${[{ name: 'web_search', status: 'complete' }]} progress="65"></ai-thinking>
- * ```
- *
- * @prop {string} text - Display text (default 'Thinking')
- * @prop {'dots'|'spinner'|'skeleton'} variant - Visual variant (default 'dots')
- * @prop {'sm'|'md'|'lg'} size - Component size (default 'md')
- * @prop {boolean} shimmer - Enable shimmer text effect
- * @prop {string[]} stages - Status messages to cycle through
- * @prop {boolean} cancelable - Show cancel button
- * @prop {ToolCall[]} tools - Tool call badges with status
- * @prop {number} progress - Determinate progress 0-100 (-1 for indeterminate)
- * @prop {number} delay - Delay in ms before showing (default 200)
+ * AI loading indicator with dots, spinner, or skeleton variants.
+ * Card materializes in with slide-up + fade. Animations loop continuously.
  *
  * @fires ai-thinking-cancel - When cancel button is clicked
  * @fires {CustomEvent<{stage: string, index: number}>} ai-thinking-stage-change - When stage cycles
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBase, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface ToolCall {
   name: string;
@@ -37,247 +18,235 @@ interface ToolCall {
 
 @customElement('ai-thinking')
 export class AiThinking extends LitElement {
-  static override styles = [hostBase, reducedMotion, css`
-    :host {
-    }
-    :host([size="md"]), :host([size="lg"]) {
-      display: flex;
-    }
+  static override styles = [hostBlock, reducedMotion, css`
     :host([hidden]) { display: none; }
 
-    /* ── Container ── */
+    /* ── Materialize entrance ── */
     .container {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-16);
       width: 100%;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
+      padding: var(--cg-spacing-16) var(--cg-spacing-20);
+      animation: materialize 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    :host([size="sm"]) .container {
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      gap: var(--cg-spacing-12);
     }
     :host([size="lg"]) .container {
       flex-direction: column;
       align-items: stretch;
-      gap: var(--cg-spacing-12, 12px);
+      gap: var(--cg-spacing-16);
+      padding: var(--cg-spacing-20) var(--cg-spacing-24);
     }
 
-    /* ── Spinner icon ── */
-    .icon {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--cg-brand-ai-accent, #dfff61), var(--cg-brand-ai-highlight, #e2ff70));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: spin 1.2s linear infinite;
-      flex-shrink: 0;
+    @keyframes materialize {
+      from { opacity: 0; transform: translateY(var(--cg-spacing-24)); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    :host([size="sm"]) .icon { width: 16px; height: 16px; }
-    :host([size="lg"]) .icon { width: 28px; height: 28px; }
-    .icon::after {
-      content: '';
-      width: 8px;
-      height: 8px;
-      background: var(--cg-color-surface-base-background, #09090b);
-      border-radius: 50%;
-    }
-    :host([size="sm"]) .icon::after { width: 6px; height: 6px; }
-    :host([size="lg"]) .icon::after { width: 12px; height: 12px; }
 
     /* ── Text ── */
     .text {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-medium, 500);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-container-outlined);
       white-space: nowrap;
     }
-    :host([size="sm"]) .text { font-size: var(--cg-font-size-xs, 12px); }
-    :host([size="lg"]) .text { font-size: var(--cg-font-size-base, 16px); }
+    :host([size="sm"]) .text { font-size: var(--cg-font-size-xs); }
+    :host([size="lg"]) .text { font-size: var(--cg-font-size-base); }
 
-    /* ── Dots variant ── */
+    /* ── Shimmer variant — standalone text, no container ── */
+    :host([variant="shimmer"]) .container {
+      background: transparent;
+      border: none;
+      padding: 0;
+      animation: none;
+    }
+
+    /* ── Shimmer text effect — continuous ── */
+    .shimmer .text,
+    :host([variant="shimmer"]) .text {
+      background: linear-gradient(
+        110deg,
+        var(--cg-color-surface-container-outlined) 35%,
+        var(--cg-color-surface-base-text) 50%,
+        var(--cg-color-surface-container-outlined) 65%
+      );
+      background-size: 300% 100%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: textSweep 1.8s ease-in-out infinite;
+    }
+
+    @keyframes textSweep {
+      0% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* ── Dots variant — 3 pulsing dots after text ── */
     .dots {
       display: inline-flex;
-      gap: var(--cg-spacing-2, 2px);
-      margin-left: var(--cg-spacing-2, 2px);
+      gap: var(--cg-spacing-4);
+      align-items: center;
     }
     .dot {
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--cg-brand-ai-accent, #dfff61);
-      animation: pulse 1.4s ease-in-out infinite;
+      width: var(--cg-spacing-4);
+      height: var(--cg-spacing-4);
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-action-primary-background-default);
+      animation: dotPulse 1.4s ease-in-out infinite;
     }
-    .dot:nth-child(2) { animation-delay: 0.2s; }
-    .dot:nth-child(3) { animation-delay: 0.4s; }
+    .dot:nth-child(2) { animation-delay: 0.16s; }
+    .dot:nth-child(3) { animation-delay: 0.32s; }
+
+    @keyframes dotPulse {
+      0%, 80%, 100% { opacity: 0.25; transform: scale(0.75); }
+      40% { opacity: 1; transform: scale(1); }
+    }
 
     /* ── Spinner variant (ring) ── */
     .ring {
-      width: 20px;
-      height: 20px;
-      border: 2px solid rgba(223, 255, 97, 0.2);
-      border-top-color: var(--cg-brand-ai-accent, #dfff61);
-      border-radius: 50%;
+      width: var(--cg-spacing-16);
+      height: var(--cg-spacing-16);
+      border: var(--cg-border-width-100) solid var(--cg-color-loading-spinner-secondary);
+      border-top-color: var(--cg-color-loading-spinner-primary);
+      border-radius: var(--cg-border-radius-full);
       animation: spin 0.8s linear infinite;
       flex-shrink: 0;
     }
-    :host([size="sm"]) .ring { width: 14px; height: 14px; border-width: 1.5px; }
-    :host([size="lg"]) .ring { width: 28px; height: 28px; border-width: 3px; }
+    :host([size="sm"]) .ring { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
+    :host([size="lg"]) .ring { width: var(--cg-spacing-20); height: var(--cg-spacing-20); }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── Skeleton variant ── */
     .skeleton {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-12);
       width: 100%;
     }
     .skeleton-line {
-      height: 12px;
-      border-radius: var(--cg-border-radius-100, 8px);
-      background: linear-gradient(90deg, var(--cg-gray-800, #27272a) 25%, var(--cg-gray-700, #3f3f46) 50%, var(--cg-gray-800, #27272a) 75%);
+      height: var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-50);
+      background: var(--cg-color-surface-cards-border);
+      position: relative;
+      overflow: hidden;
+    }
+    .skeleton-line::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 25%, var(--cg-overlay-dark-light) 50%, transparent 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s linear infinite;
     }
     .skeleton-line:nth-child(1) { width: 85%; }
     .skeleton-line:nth-child(2) { width: 70%; }
     .skeleton-line:nth-child(3) { width: 55%; }
-    :host([size="sm"]) .skeleton-line { height: 8px; }
-    :host([size="lg"]) .skeleton-line { height: 16px; border-radius: var(--cg-border-radius-100, 8px); }
+    :host([size="sm"]) .skeleton-line { height: var(--cg-spacing-8); }
+    :host([size="lg"]) .skeleton-line { height: var(--cg-spacing-16); }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
 
     /* ── Progress bar ── */
     .progress-bar {
       width: 100%;
-      height: 3px;
-      background: var(--cg-gray-800, #27272a);
-      border-radius: 2px;
+      height: var(--cg-spacing-4);
+      background: var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-full);
       overflow: hidden;
     }
     .progress-fill {
       height: 100%;
-      background: var(--cg-brand-ai-accent, #dfff61);
-      border-radius: 2px;
-      transition: width 300ms ease;
+      background: var(--cg-color-action-primary-background-default);
+      border-radius: var(--cg-border-radius-full);
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
 
     /* ── Tools ── */
     .tools {
       display: flex;
       flex-wrap: wrap;
-      gap: var(--cg-spacing-6, 6px);
+      gap: var(--cg-spacing-8);
     }
     .tool {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 3px var(--cg-spacing-8, 8px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
-      border-radius: var(--cg-border-radius-100, 8px);
-      background: var(--cg-gray-800, #27272a);
-      color: var(--cg-gray-400, #a1a1aa);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      animation: fadeIn 200ms ease;
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-4) var(--cg-spacing-8);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      border-radius: var(--cg-border-radius-100);
+      background: var(--cg-color-surface-cards-background);
+      color: var(--cg-color-surface-container-outlined);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      animation: materialize var(--cg-motion-duration-slow) var(--cg-motion-easing-enter) both;
     }
-    .tool .tool-icon {
-      width: 12px;
-      height: 12px;
+    .tool-icon {
+      width: var(--cg-spacing-12);
+      height: var(--cg-spacing-12);
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .tool.loading .tool-icon {
-      animation: spin 0.8s linear infinite;
-    }
-    .tool.complete { color: var(--cg-green-400, #4ade80); border-color: rgba(34, 197, 94, 0.2); }
-    .tool.error { color: var(--cg-red-400, #f87171); border-color: rgba(239, 68, 68, 0.2); }
+    .tool.loading .tool-icon { animation: spin 0.8s linear infinite; }
+    .tool.complete { color: var(--cg-color-status-success-text-default); border-color: var(--cg-color-status-success-border-default); }
+    .tool.error { color: var(--cg-color-status-error-text-default); border-color: var(--cg-color-status-error-border-default); }
 
     /* ── Cancel button ── */
     .cancel {
-      background: none;
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      color: var(--cg-gray-400, #a1a1aa);
-      border-radius: var(--cg-border-radius-100, 8px);
-      padding: 2px 10px;
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
+      background: transparent;
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      color: var(--cg-color-surface-container-outlined);
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-6) var(--cg-spacing-16);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
-      transition: all 150ms ease;
+      font-family: inherit;
+      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
       margin-left: auto;
       flex-shrink: 0;
     }
     .cancel:hover {
-      color: var(--cg-red-400, #f87171);
-      border-color: rgba(239, 68, 68, 0.3);
-      background: rgba(239, 68, 68, 0.08);
+      color: var(--cg-color-status-error-text-default);
+      border-color: var(--cg-color-status-error-text-default);
+      background: var(--cg-color-status-error-background-default);
     }
     .cancel:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
 
-    /* ── Shimmer text effect ── */
-    .shimmer .text {
-      background: linear-gradient(
-        90deg,
-        var(--cg-color-surface-base-text, #fafafa) 25%,
-        var(--cg-brand-ai-accent, #dfff61) 50%,
-        var(--cg-color-surface-base-text, #fafafa) 75%
-      );
-      background-size: 200% 100%;
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmer 2s linear infinite;
+    @media (prefers-reduced-motion: reduce) {
+      .container { animation: none; }
+      .dot, .ring, .skeleton-line::after, .tool.loading .tool-icon { animation: none; }
+      .shimmer .text { animation: none; -webkit-text-fill-color: currentColor; }
+      .dot { opacity: 0.6; }
     }
-
-    /* ── Keyframes ── */
-    @keyframes pulse {
-      0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
-      40% { opacity: 1; transform: scale(1.1); }
-    }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
   `];
 
-  /** Display text */
-  @property({ type: String }) text: string = 'Thinking';
-
-  /** Variant: dots (default), spinner, skeleton */
-  @property({ type: String, reflect: true }) variant: 'dots' | 'spinner' | 'skeleton' = 'dots';
-
-  /** Size: sm (inline), md (block), lg (full-width) */
+  @property({ type: String }) text = 'Thinking';
+  @property({ type: String, reflect: true }) variant: 'dots' | 'spinner' | 'skeleton' | 'shimmer' = 'dots';
   @property({ type: String, reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
-
-  /** Enable shimmer text effect */
-  @property({ type: Boolean }) shimmer: boolean = false;
-
-  /** Stages — cycle through these messages */
+  @property({ type: Boolean }) shimmer = false;
   @property({ type: Array }) stages: string[] = [];
-
-  /** Show cancel button */
-  @property({ type: Boolean }) cancelable: boolean = false;
-
-  /** Tool call indicators */
+  @property({ type: Boolean }) cancelable = false;
   @property({ type: Array }) tools: ToolCall[] = [];
+  @property({ type: Number }) progress = -1;
+  @property({ type: Number }) delay = 200;
 
-  /** Determinate progress (0-100). -1 = indeterminate */
-  @property({ type: Number }) progress: number = -1;
-
-  /** Delay in ms before showing (default 200) */
-  @property({ type: Number }) delay: number = 200;
-
-  @state() private _visible: boolean = false;
-  @state() private _stageIndex: number = 0;
+  @state() private _visible = false;
+  @state() private _stageIndex = 0;
   private _delayTimer?: ReturnType<typeof setTimeout>;
   private _stageTimer?: ReturnType<typeof setInterval>;
 
@@ -319,9 +288,7 @@ export class AiThinking extends LitElement {
   }
 
   private _handleCancel() {
-    this.dispatchEvent(new CustomEvent('ai-thinking-cancel', {
-      bubbles: true, composed: true,
-    }));
+    this.dispatchEvent(new CustomEvent('ai-thinking-cancel', { bubbles: true, composed: true }));
   }
 
   private get _displayText(): string {
@@ -342,48 +309,41 @@ export class AiThinking extends LitElement {
   }
 
   private _renderToolIcon(status: string) {
-    if (status === 'complete') return html`<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>`;
-    if (status === 'error') return html`<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>`;
-    return html`<span style="width:10px;height:10px;border:1.5px solid currentColor;border-top-color:transparent;border-radius:50%;display:block;"></span>`;
-  }
-
-  private _renderIndicator() {
-    if (this.variant === 'skeleton') {
-      return html`
-        <div class="skeleton">
-          <div class="skeleton-line"></div>
-          <div class="skeleton-line"></div>
-          <div class="skeleton-line"></div>
-        </div>
-      `;
-    }
-    if (this.variant === 'spinner') {
-      return html`<div class="ring" aria-hidden="true"></div>`;
-    }
-    // Default: dots
-    return html`<div class="icon" aria-hidden="true"></div>`;
+    if (status === 'complete') return html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
+    if (status === 'error') return html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`;
+    return html`<span style="width:100%;height:100%;border:1.5px solid currentColor;border-top-color:transparent;border-radius:50%;display:block;"></span>`;
   }
 
   override render() {
     if (!this._visible) return nothing;
 
-    const showText = this.variant !== 'skeleton';
-    const showDots = this.variant === 'dots';
-
     return html`
       <div class="container ${this.shimmer ? 'shimmer' : ''}" role="status" aria-live="polite" aria-label="${this._displayText}">
 
-        ${this._renderIndicator()}
+        ${this.variant === 'skeleton' ? html`
+          <div class="skeleton">
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+          </div>
+        ` : nothing}
 
-        ${showText ? html`
+        ${this.variant === 'spinner' ? html`
+          <div class="ring" aria-hidden="true"></div>
           <span class="text">${this._displayText}</span>
-          ${showDots ? html`
-            <span class="dots" aria-hidden="true">
-              <span class="dot"></span>
-              <span class="dot"></span>
-              <span class="dot"></span>
-            </span>
-          ` : nothing}
+        ` : nothing}
+
+        ${this.variant === 'shimmer' ? html`
+          <span class="text">${this._displayText}</span>
+        ` : nothing}
+
+        ${this.variant === 'dots' ? html`
+          <span class="text">${this._displayText}</span>
+          <span class="dots" aria-hidden="true">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </span>
         ` : nothing}
 
         ${this.cancelable ? html`

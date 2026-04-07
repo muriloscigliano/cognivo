@@ -2,18 +2,7 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
-/**
- * <cg-table> — Data table with sortable columns, sticky header, and responsive scroll.
- *
- * Better than OpenUI's Table:
- * - Sort by clicking column headers
- * - Sticky header on scroll
- * - Responsive horizontal scroll with shadow indicators
- * - Striped rows option
- * - Compact size variant
- */
-
-/** Column definition for cg-table, including key, label, alignment, and sortability. */
+/** Column definition for cg-table. */
 export interface TableColumn {
   key: string;
   label: string;
@@ -22,92 +11,256 @@ export interface TableColumn {
   width?: string;
 }
 
+/**
+ * <cg-table> — Data table with sorting, selection, loading, and pagination.
+ *
+ * @example
+ * ```html
+ * <cg-table
+ *   .columns=${[{key:'name',label:'Name',sortable:true},{key:'role',label:'Role'}]}
+ *   .rows=${[['Alice','Designer'],['Bob','Developer']]}
+ *   selectable striped
+ * ></cg-table>
+ * ```
+ *
+ * @slot footer - Footer area for pagination or summary
+ *
+ * @fires {CustomEvent<{key, direction}>} cg-sort - Column sorted
+ * @fires {CustomEvent<{indices: number[]}>} cg-select - Row selection changed
+ * @fires {CustomEvent<{index, row}>} cg-row-click - Row clicked
+ *
+ * @cssprop --cg-component-table-radius - Table border radius
+ * @cssprop --cg-color-surface-table-header-background - Header background
+ */
 @customElement('cg-table')
 export class CgTable extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
     .table-wrapper {
-      overflow-x: auto;
-      border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-table-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
+      overflow: hidden;
+      background: var(--cg-color-surface-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
+      border-radius: var(--cg-component-table-radius);
+      padding: var(--cg-spacing-4) 0;
     }
-    /* Rounded variants */
-    :host([rounded="none"]) .table-wrapper { border-radius: 0; }
-    :host([rounded="sm"]) .table-wrapper { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .table-wrapper { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .table-wrapper { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .table-wrapper { border-radius: var(--cg-border-radius-full, 99999px); }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: var(--cg-font-size-sm, 14px);
-    }
-    :host([compact]) table { font-size: var(--cg-font-size-xs, 12px); }
 
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    /* Body area — slightly darker inset with inner rounding + border */
+    tbody {
+      background: var(--cg-overlay-dark-subtle);
+    }
+    tbody tr:first-child td {
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
+    }
+    tbody tr:last-child td {
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
+    }
+    tbody td:first-child {
+      border-left: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
+    }
+    tbody td:last-child {
+      border-right: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
+    }
+    tbody tr:first-child td:first-child {
+      border-top-left-radius: var(--cg-border-radius-150);
+    }
+    tbody tr:first-child td:last-child {
+      border-top-right-radius: var(--cg-border-radius-150);
+    }
+    tbody tr:last-child td:first-child {
+      border-bottom-left-radius: var(--cg-border-radius-150);
+    }
+    tbody tr:last-child td:last-child {
+      border-bottom-right-radius: var(--cg-border-radius-150);
+    }
+
+    /* Rounded variants — outer wrapper + inner tbody corners */
+    :host([rounded="none"]) .table-wrapper { border-radius: 0; }
+    :host([rounded="none"]) tbody tr:first-child td:first-child,
+    :host([rounded="none"]) tbody tr:first-child td:last-child,
+    :host([rounded="none"]) tbody tr:last-child td:first-child,
+    :host([rounded="none"]) tbody tr:last-child td:last-child { border-radius: 0; }
+
+    :host([rounded="sm"]) .table-wrapper { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="sm"]) tbody tr:first-child td:first-child { border-top-left-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"]) tbody tr:first-child td:last-child { border-top-right-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"]) tbody tr:last-child td:first-child { border-bottom-left-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"]) tbody tr:last-child td:last-child { border-bottom-right-radius: var(--cg-border-radius-50); }
+
+    :host([rounded="md"]) .table-wrapper { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="md"]) tbody tr:first-child td:first-child { border-top-left-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"]) tbody tr:first-child td:last-child { border-top-right-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"]) tbody tr:last-child td:first-child { border-bottom-left-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"]) tbody tr:last-child td:last-child { border-bottom-right-radius: var(--cg-border-radius-100); }
+
+    :host([rounded="lg"]) .table-wrapper { border-radius: var(--cg-component-table-radius); }
+
+    table {
+      width: calc(100% - var(--cg-spacing-8) * 2);
+      margin: 0 var(--cg-spacing-8);
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--cg-font-size-sm);
+    }
+    :host([compact]) table { font-size: var(--cg-font-size-xs); }
+
+    /* ── Header ── */
     thead { position: sticky; top: 0; z-index: 1; }
+
     th {
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
       text-align: left;
-      font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-gray-600, #52525b);
-      background: var(--cg-color-surface-table-header-background, #52525b);
-      border-bottom: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-table-border, #27272a);
+      font-weight: var(--cg-font-weight-medium);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-container-outlined);
+      background: transparent;
+      border-bottom: none;
       white-space: nowrap;
       user-select: none;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     }
-    :host([compact]) th { padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); }
+    :host([compact]) th {
+      padding: var(--cg-spacing-6) var(--cg-spacing-12);
+    }
 
     th.sortable { cursor: pointer; }
-    th.sortable:hover { color: var(--cg-text-accent, #e5ff6b); }
-    th .sort-icon { display: inline-block; width: 14px; margin-left: 4px; opacity: 0.4; vertical-align: middle; }
-    th.sorted .sort-icon { opacity: 1; color: var(--cg-text-accent, #e5ff6b); }
+    th.sortable:hover { color: var(--cg-color-action-primary-background-default); }
+    th.sortable:active {
+      transform: scale(0.98);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+    }
+    th.sortable:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--cg-color-action-primary-background-default);
+    }
+
+    th .sort-icon {
+      display: inline-flex;
+      margin-left: var(--cg-spacing-4);
+      opacity: 0.4;
+      vertical-align: middle;
+    }
+    th.sorted .sort-icon {
+      opacity: 1;
+      color: var(--cg-color-action-primary-background-default);
+    }
 
     th[data-align="center"] { text-align: center; }
     th[data-align="right"] { text-align: right; }
 
+    /* ── Selection checkbox column ── */
+    th.select-col, td.select-col {
+      width: var(--cg-spacing-48);
+      padding: 0 var(--cg-spacing-12);
+    }
+    th.select-col cg-checkbox,
+    td.select-col cg-checkbox {
+      min-height: 0;
+      transform: scale(0.85);
+    }
+
+    /* ── Cells ── */
     td {
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      border-bottom: 1px solid var(--cg-color-surface-table-border, #27272a);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      color: var(--cg-color-surface-table-text);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
       vertical-align: middle;
     }
-    :host([compact]) td { padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); }
+    :host([compact]) td {
+      padding: var(--cg-spacing-6) var(--cg-spacing-12);
+    }
 
     td[data-align="center"] { text-align: center; }
     td[data-align="right"] { text-align: right; }
 
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--cg-color-surface-table-row-hover-background, #52525b); }
+    /* Row dividers — last row keeps its content border from the tbody border rules */
 
+    /* ── Row states ── */
+    tbody tr {
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+    }
+    tbody tr:hover td {
+      background: var(--cg-color-action-tertiary-background-hover);
+    }
+    tbody tr.selected td {
+      background: var(--cg-color-action-tertiary-background-hover);
+    }
+    :host([clickable]) tbody tr {
+      cursor: pointer;
+    }
+
+    /* ── Striped ── */
     :host([striped]) tbody tr:nth-child(even) td {
-      background: var(--cg-color-surface-table-background, #000000);
+      background: var(--cg-color-action-tertiary-background-hover);
+    }
+    :host([striped]) tbody tr:nth-child(even):hover td {
+      background: var(--cg-color-action-tertiary-background-hover);
     }
 
-    .empty {
+    /* ── Empty state ── */
+    .empty-state {
+      padding: var(--cg-spacing-32) var(--cg-spacing-24);
       text-align: center;
-      padding: var(--cg-spacing-32, 32px);
-      color: var(--cg-gray-500, #71717a);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-container-outlined);
     }
-  
 
-    :focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+    /* ── Loading ── */
+    .loading-row td {
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
     }
-  
-    tbody tr { transition: background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)); }
-    tbody tr:hover { background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.04)); }
+    .loading-bar {
+      height: var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-50);
+      background: var(--cg-color-action-secondary-background-hover);
+      animation: tablePulse 2s ease-in-out infinite;
+    }
+    .loading-bar.short { width: 60%; }
+    .loading-bar.med { width: 80%; }
+    .loading-bar.long { width: 95%; }
+
+    @keyframes tablePulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── Footer ── */
+    .table-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-container-outlined);
+    }
+    .table-footer ::slotted(*) {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-8);
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .loading-bar { animation: none; opacity: 0.6; }
+    }
   `];
 
   @property({ type: Array }) columns: TableColumn[] = [];
   @property({ type: Array }) rows: unknown[][] = [];
   @property({ type: Boolean, reflect: true }) striped = false;
   @property({ type: Boolean, reflect: true }) compact = false;
+  @property({ type: Boolean, reflect: true }) clickable = false;
+  @property({ type: Boolean, reflect: true }) selectable = false;
+  @property({ type: Boolean, reflect: true }) loading = false;
+  @property({ type: Number }) loadingRows = 5;
   @property() emptyText = 'No data';
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
 
   @state() private _sortKey = '';
   @state() private _sortDir: 'asc' | 'desc' = 'asc';
+  @state() private _selected = new Set<number>();
+  @state() private _hasFooter = false;
 
   private _handleSort(col: TableColumn) {
     if (!col.sortable) return;
@@ -121,6 +274,43 @@ export class CgTable extends LitElement {
       detail: { key: this._sortKey, direction: this._sortDir },
       bubbles: true, composed: true,
     }));
+  }
+
+  private _toggleRow(index: number) {
+    const next = new Set(this._selected);
+    if (next.has(index)) next.delete(index);
+    else next.add(index);
+    this._selected = next;
+    this.dispatchEvent(new CustomEvent('cg-select', {
+      detail: { indices: [...next] },
+      bubbles: true, composed: true,
+    }));
+  }
+
+  private _toggleAll() {
+    if (this._selected.size === this.rows.length) {
+      this._selected = new Set();
+    } else {
+      this._selected = new Set(this.rows.map((_, i) => i));
+    }
+    this.dispatchEvent(new CustomEvent('cg-select', {
+      detail: { indices: [...this._selected] },
+      bubbles: true, composed: true,
+    }));
+  }
+
+  private _handleRowClick(index: number, row: unknown[]) {
+    if (this.clickable) {
+      this.dispatchEvent(new CustomEvent('cg-row-click', {
+        detail: { index, row },
+        bubbles: true, composed: true,
+      }));
+    }
+  }
+
+  private _handleFooterSlotChange(e: Event) {
+    const slot = e.target as HTMLSlotElement;
+    this._hasFooter = slot.assignedNodes({ flatten: true }).length > 0;
   }
 
   private _getSortedRows(): unknown[][] {
@@ -138,30 +328,66 @@ export class CgTable extends LitElement {
 
   override render() {
     const sortedRows = this._getSortedRows();
+    const allSelected = this.rows.length > 0 && this._selected.size === this.rows.length;
+    const widths = ['short', 'long', 'med', 'short'];
+
     return html`
       <div class="table-wrapper">
+        <div class="table-scroll">
         <table role="table">
           <thead>
             <tr>
+              ${this.selectable ? html`
+                <th class="select-col">
+                  <cg-checkbox size="sm"
+                    ?checked=${allSelected}
+                    @cg-change=${this._toggleAll}
+                    label=""
+                    aria-label="Select all rows"></cg-checkbox>
+                </th>
+              ` : nothing}
               ${this.columns.map(col => html`
                 <th
                   class="${col.sortable ? 'sortable' : ''} ${this._sortKey === col.key ? 'sorted' : ''}"
                   data-align=${col.align ?? 'left'}
                   style=${col.width ? `width: ${col.width}` : ''}
+                  tabindex=${col.sortable ? '0' : nothing}
                   @click=${() => this._handleSort(col)}
-                  aria-sort=${this._sortKey === col.key ? this._sortDir === 'asc' ? 'ascending' : 'descending' : nothing}
+                  @keydown=${(e: KeyboardEvent) => { if (col.sortable && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); this._handleSort(col); } }}
+                  aria-sort=${this._sortKey === col.key ? (this._sortDir === 'asc' ? 'ascending' : 'descending') : nothing}
                 >
                   ${col.label}
-                  ${col.sortable ? html`<span class="sort-icon">${this._sortKey === col.key ? (this._sortDir === 'asc' ? html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5m-7 7l7-7 7 7"/></svg>` : html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m7-7l-7 7-7-7"/></svg>`) : html`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14m-5-4l5 5 5-5m-10-6l5-5 5 5"/></svg>`}</span>` : nothing}
+                  ${col.sortable ? html`<span class="sort-icon"><cg-icon name="${this._sortKey === col.key ? (this._sortDir === 'asc' ? 'arrow-up' : 'arrow-down') : 'sort'}" size="xs"></cg-icon></span>` : nothing}
                 </th>
               `)}
             </tr>
           </thead>
           <tbody>
-            ${sortedRows.length === 0 ? html`
-              <tr><td colspan=${this.columns.length} class="empty">${this.emptyText}</td></tr>
-            ` : sortedRows.map(row => html`
+            ${this.loading ? Array.from({ length: this.loadingRows }, (_, ri) => html`
+              <tr class="loading-row">
+                ${this.selectable ? html`<td class="select-col"><div class="loading-bar short" style="width:16px;height:16px;border-radius:4px;margin:0 auto;"></div></td>` : nothing}
+                ${this.columns.map((_, ci) => html`
+                  <td><div class="loading-bar ${widths[ci % widths.length]}"></div></td>
+                `)}
+              </tr>
+            `) : sortedRows.length === 0 ? html`
               <tr>
+                <td colspan=${this.columns.length + (this.selectable ? 1 : 0)}>
+                  <div class="empty-state">${this.emptyText}</div>
+                </td>
+              </tr>
+            ` : sortedRows.map((row, rowIdx) => html`
+              <tr class="${this._selected.has(rowIdx) ? 'selected' : ''}"
+                @click=${() => this._handleRowClick(rowIdx, row as unknown[])}>
+                ${this.selectable ? html`
+                  <td class="select-col" @click=${(e: Event) => e.stopPropagation()}>
+                    <cg-checkbox size="sm"
+                      ?checked=${this._selected.has(rowIdx)}
+                      @cg-change=${() => this._toggleRow(rowIdx)}
+                      label=""
+                      aria-label=${`Select row ${rowIdx + 1}`}></cg-checkbox>
+                  </td>
+                ` : nothing}
                 ${this.columns.map((col, i) => html`
                   <td data-align=${col.align ?? 'left'}>${(row as unknown[])[i] ?? ''}</td>
                 `)}
@@ -169,6 +395,10 @@ export class CgTable extends LitElement {
             `)}
           </tbody>
         </table>
+        </div>
+        <div class="table-footer" ?hidden=${!this._hasFooter}>
+          <slot name="footer" @slotchange=${this._handleFooterSlotChange}></slot>
+        </div>
       </div>
     `;
   }

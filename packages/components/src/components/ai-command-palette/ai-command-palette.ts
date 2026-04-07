@@ -42,7 +42,9 @@ export class AiCommandPalette extends LitElement {
       position: fixed;
       inset: 0;
       z-index: 9998;
-      background: rgba(0, 0, 0, 0.6);
+      background: var(--cg-overlay-dark-strong);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       display: flex;
       align-items: flex-start;
       justify-content: center;
@@ -52,114 +54,128 @@ export class AiCommandPalette extends LitElement {
     .palette {
       width: 100%;
       max-width: 520px;
-      background: var(--cg-color-surface, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid var(--cg-color-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      box-shadow: var(--cg-elevation-4, 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background: var(--cg-color-modal-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
+      border-radius: var(--cg-border-radius-150);
       overflow: hidden;
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
     }
 
     .search-wrap {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      border-bottom: 1px solid var(--cg-color-border, #27272a);
-      border-image: linear-gradient(to right, transparent, var(--cg-color-border, #27272a) 20%, var(--cg-color-border, #27272a) 80%, transparent) 1;
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
     .search-icon {
-      color: var(--cg-color-text-tertiary, #71717a);
-      font-size: var(--cg-font-size-base, 16px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-base);
       flex-shrink: 0;
     }
     .search-input {
       flex: 1;
-      background: none;
+      background: transparent;
       border: none;
       outline: none;
-      color: var(--cg-color-text-primary, #fafafa);
-      font-size: var(--cg-font-size-sm, 14px);
+      color: var(--cg-color-surface-popover-text);
+      font-size: var(--cg-font-size-sm);
       font-family: inherit;
+      border-radius: 0;
+      padding: var(--cg-spacing-6) var(--cg-spacing-8);
+    }
+    .search-input:focus-visible {
+      outline: none;
+      box-shadow: none;
     }
     .search-input::placeholder {
-      color: var(--cg-color-text-tertiary, #71717a);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     .results {
       max-height: 360px;
       overflow-y: auto;
       overflow-x: hidden;
-      padding: var(--cg-spacing-8, 8px) 0;
+      padding: var(--cg-spacing-8) 0;
     }
 
     .category-label {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px) var(--cg-spacing-4, 4px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
+      padding: var(--cg-spacing-8) var(--cg-spacing-16) var(--cg-spacing-4);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--cg-color-text-tertiary, #71717a);
+      color: var(--cg-color-input-text-placeholder);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      margin-top: var(--cg-spacing-4);
+    }
+    .category-label:first-child {
+      border-top: none;
+      margin-top: 0;
     }
 
     .cmd {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
       width: 100%;
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
       background: none;
       border: none;
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-sm, 14px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
       font-family: inherit;
       cursor: pointer;
       text-align: left;
-      transition: background var(--cg-motion-duration-fast, 100ms) ease, color var(--cg-motion-duration-fast, 100ms) ease;
-      min-height: var(--cg-spacing-40, 40px);
+      transition: background-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color), color var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      min-height: var(--cg-spacing-40);
+      border-radius: var(--cg-border-radius-100);
+      margin: 0 var(--cg-spacing-4);
     }
     .cmd:hover, .cmd[data-active="true"] {
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--cg-color-text-primary, #fafafa);
+      background: var(--cg-color-surface-cards-border);
+      color: var(--cg-color-surface-base-text);
     }
+    .cmd:active { transform: scale(var(--cg-interaction-press-scale)); transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color); }
     .cmd:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
-      outline-offset: -2px;
+      outline: none;
+      box-shadow:
+        0 0 0 2px var(--cg-color-surface-base-background),
+        0 0 0 3px var(--cg-overlay-accent-strong);
     }
 
-    .cmd-icon { flex-shrink: 0; width: var(--cg-spacing-20, 20px); text-align: center; }
+    .cmd-icon { flex-shrink: 0; width: var(--cg-spacing-20); text-align: center; }
     .cmd-label { flex: 1; }
     .cmd-label mark {
-      background: rgba(223, 255, 97, 0.25);
-      color: var(--cg-color-accent, #dfff61);
-      border-radius: var(--cg-border-radius-50, 4px);
-      padding: 0 var(--cg-spacing-2, 2px);
+      background: var(--cg-overlay-accent-strong);
+      color: var(--cg-color-surface-base-text);
+      border-radius: var(--cg-border-radius-50);
+      padding: 0 var(--cg-spacing-2);
     }
 
     .cmd-shortcut {
       flex-shrink: 0;
-      font-size: var(--cg-font-size-xs, 12px);
-      font-family: var(--cg-font-family-mono, 'JetBrains Mono', monospace);
-      padding: var(--cg-spacing-2, 2px) var(--cg-spacing-6, 6px);
-      border-radius: var(--cg-border-radius-50, 4px);
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--cg-color-text-tertiary, #71717a);
+      font-size: var(--cg-font-size-xs);
+      font-family: var(--cg-font-family-mono);
+      padding: var(--cg-spacing-2) var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-50);
+      background: var(--cg-overlay-dark-subtle);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     .empty {
-      padding: var(--cg-spacing-24, 24px) var(--cg-spacing-16, 16px);
+      padding: var(--cg-spacing-24) var(--cg-spacing-16);
       text-align: center;
-      color: var(--cg-color-text-tertiary, #71717a);
-      font-size: var(--cg-font-size-sm, 14px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
     }
 
     /* ── Rounded variants ── */
     :host([rounded="none"]) .palette { border-radius: 0; }
-    :host([rounded="sm"]) .palette { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .palette { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .palette { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .palette { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .palette { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .palette { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .palette { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) .palette { border-radius: var(--cg-border-radius-full); }
   `];
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) commands: PaletteCommand[] = [];
@@ -170,6 +186,9 @@ export class AiCommandPalette extends LitElement {
   @state() private _activeIndex = 0;
 
   @query('.search-input') private _input!: HTMLInputElement;
+
+  private _previousFocus: HTMLElement | null = null;
+  private _previousOverflow = '';
 
   private get _filtered(): PaletteCommand[] {
     const q = this._query.toLowerCase().trim();
@@ -188,10 +207,26 @@ export class AiCommandPalette extends LitElement {
   }
 
   override updated(changed: Map<string, unknown>): void {
-    if (changed.has('open') && this.open) {
-      this._query = '';
-      this._activeIndex = 0;
-      requestAnimationFrame(() => this._input?.focus());
+    if (changed.has('open')) {
+      if (this.open) {
+        this._previousFocus = document.activeElement as HTMLElement;
+        this._previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        this._query = '';
+        this._activeIndex = 0;
+        requestAnimationFrame(() => this._input?.focus());
+      } else if (changed.get('open') === true) {
+        document.body.style.overflow = this._previousOverflow;
+        this._previousFocus?.focus();
+        this._previousFocus = null;
+      }
+    }
+  }
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this.open) {
+      document.body.style.overflow = this._previousOverflow || '';
     }
   }
 
@@ -219,10 +254,10 @@ export class AiCommandPalette extends LitElement {
     const list = this._filtered;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      this._activeIndex = Math.min(this._activeIndex + 1, list.length - 1);
+      this._activeIndex = this._activeIndex >= list.length - 1 ? 0 : this._activeIndex + 1;
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      this._activeIndex = Math.max(this._activeIndex - 1, 0);
+      this._activeIndex = this._activeIndex <= 0 ? list.length - 1 : this._activeIndex - 1;
     } else if (e.key === 'Enter' && list[this._activeIndex]) {
       e.preventDefault();
       this._select(list[this._activeIndex]);

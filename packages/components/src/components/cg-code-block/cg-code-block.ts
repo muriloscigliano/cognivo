@@ -5,13 +5,14 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
 /**
  * <cg-code-block> — Code display with syntax highlighting, copy button, and line numbers.
  *
- * Features:
- * - Basic keyword highlighting (JS/TS, Python, HTML, CSS, JSON, SQL)
- * - Copy to clipboard with confirmation
- * - Line numbers (optional)
- * - Filename/title display
- * - Collapsible (for long code blocks)
- * - Wrap toggle for long lines
+ * @example
+ * ```html
+ * <cg-code-block code="const x = 1;" language="javascript" line-numbers></cg-code-block>
+ * ```
+ *
+ * @cssprop --cg-color-code-background - Block background
+ * @cssprop --cg-color-code-text - Text color
+ * @cssprop --cg-color-code-keyword - Keyword highlight color
  */
 
 const KEYWORD_PATTERNS: Record<string, RegExp> = {
@@ -26,29 +27,20 @@ const KEYWORD_PATTERNS: Record<string, RegExp> = {
 };
 
 function highlight(code: string): string {
-  // Escape HTML first
   let escaped = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-  // Apply highlighting in order (comments → strings → keywords → rest)
-  // Use placeholder tokens to avoid double-matching
   const tokens: string[] = [];
   const placeholder = (cls: string, text: string) => {
     tokens.push(`<span class="hl-${cls}">${text}</span>`);
     return `\x00${tokens.length - 1}\x00`;
   };
 
-  // Comments first (highest priority)
   escaped = escaped.replace(KEYWORD_PATTERNS.comment!, m => placeholder('comment', m));
-  // Strings
   escaped = escaped.replace(KEYWORD_PATTERNS.string!, m => placeholder('string', m));
-  // Keywords
   escaped = escaped.replace(KEYWORD_PATTERNS.keyword!, m => placeholder('keyword', m));
-  // Functions
   escaped = escaped.replace(KEYWORD_PATTERNS.function!, (_, name) => placeholder('function', name));
-  // Numbers
   escaped = escaped.replace(KEYWORD_PATTERNS.number!, m => placeholder('number', m));
 
-  // Restore tokens
   escaped = escaped.replace(/\x00(\d+)\x00/g, (_, idx) => tokens[Number(idx)]!);
 
   return escaped;
@@ -58,90 +50,106 @@ function highlight(code: string): string {
 export class CgCodeBlock extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
     .wrapper {
-      background: var(--cg-color-code-background, #09090b);
-      border-radius: var(--cg-border-radius-200, 24px);
+      background: var(--cg-color-code-background);
+      border-radius: var(--cg-border-radius-200);
       overflow: hidden;
-      border: 1px solid var(--cg-color-code-border, #27272a);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      border: var(--cg-border-width-50) solid var(--cg-color-code-border);
     }
 
-    /* Header */
+    /* ── Header ── */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
-      background: var(--cg-color-code-surface, #18181b);
-      border-bottom: 1px solid var(--cg-color-code-border, #27272a);
-      gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-12) var(--cg-spacing-20);
+      gap: var(--cg-spacing-12);
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-12);
       min-width: 0;
     }
 
     .dots {
       display: flex;
-      gap: 6px;
+      gap: var(--cg-spacing-6);
       flex-shrink: 0;
     }
-    .dot { width: 10px; height: 10px; border-radius: 50%; }
-    .dot-red { background: var(--cg-color-chart-4, #fbbf24); }
-    .dot-yellow { background: var(--cg-color-chart-3, #4ade80); }
-    .dot-green { background: var(--cg-color-chart-2, #2dd4bf); }
+    .dot {
+      width: var(--cg-spacing-8);
+      height: var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-full);
+      opacity: 0.6;
+    }
+    .dot-red { background: var(--cg-color-chart-4); }
+    .dot-yellow { background: var(--cg-color-chart-3); }
+    .dot-green { background: var(--cg-color-chart-2); }
 
     .filename {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-color-code-muted, #52525b);
-      font-weight: 500;
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-code-muted);
+      font-family: var(--cg-font-family-mono);
+      font-weight: var(--cg-font-weight-medium);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
     .language {
-      font-size: 0.65rem;
-      color: var(--cg-color-code-comment, #52525b);
-      font-weight: var(--cg-font-weight-semibold, 600);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-code-muted);
+      font-weight: var(--cg-font-weight-medium);
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      background: var(--cg-color-code-border, #27272a);
-      padding: 2px var(--cg-spacing-8, 8px);
-      border-radius: 4px;
       flex-shrink: 0;
     }
 
     .actions {
       display: flex;
-      gap: 4px;
+      align-items: center;
+      gap: var(--cg-spacing-8);
       flex-shrink: 0;
     }
 
-    .action-btn {
+    .copy-btn {
       display: flex;
       align-items: center;
-      gap: 4px;
-      padding: 4px 10px;
-      border-radius: 4px;
-      background: none;
-      border: 1px solid var(--cg-color-code-muted, #52525b);
-      color: var(--cg-color-code-text, #e4e4e7);
-      font-size: 0.7rem;
-      font-weight: 500;
+      gap: var(--cg-spacing-4);
+      padding: var(--cg-spacing-4) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-50);
+      background: transparent;
+      border: none;
+      color: var(--cg-color-code-muted);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
       font-family: inherit;
-      transition: all var(--cg-motion-duration-normal, 150ms) ease;
+      transition:
+        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
-    .action-btn:hover { background: var(--cg-color-code-border, #27272a); color: var(--cg-color-code-text, #e4e4e7); }
-    .action-btn.copied { color: var(--cg-color-chart-2, #2dd4bf); border-color: var(--cg-color-chart-2, #2dd4bf); }
-    .action-btn:focus-visible { outline: 2px solid var(--cg-focus-ring-color, #c8e650); outline-offset: 1px; }
-    .action-btn svg { width: 13px; height: 13px; }
+    .copy-btn:hover {
+      background: var(--cg-overlay-dark-subtle);
+      color: var(--cg-color-code-text);
+    }
+    .copy-btn.copied {
+      color: var(--cg-color-status-success-text-default);
+    }
+    .copy-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+    }
 
-    /* Code area */
+    /* ── Divider between header and code ── */
+    .divider {
+      height: var(--cg-border-width-50);
+      background: var(--cg-color-code-border);
+      margin: 0 var(--cg-spacing-20);
+    }
+
+    /* ── Code area ── */
     .code-area {
       overflow-x: auto;
       overflow-y: auto;
@@ -150,18 +158,18 @@ export class CgCodeBlock extends LitElement {
 
     pre {
       margin: 0;
-      padding: var(--cg-spacing-16, 16px);
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      font-size: 0.82rem;
-      line-height: 1.7;
-      color: var(--cg-color-code-text, #e4e4e7);
+      padding: var(--cg-spacing-20) var(--cg-spacing-24);
+      font-family: var(--cg-font-family-mono);
+      font-size: var(--cg-font-size-sm);
+      line-height: var(--cg-line-height-relaxed);
+      color: var(--cg-color-code-text);
       tab-size: 2;
       counter-reset: line;
     }
 
     :host([wrap]) pre { white-space: pre-wrap; word-break: break-all; }
 
-    /* Line numbers */
+    /* ── Line numbers ── */
     .line {
       display: block;
     }
@@ -169,46 +177,55 @@ export class CgCodeBlock extends LitElement {
       counter-increment: line;
       content: counter(line);
       display: inline-block;
-      width: 3.5ch;
-      margin-right: var(--cg-spacing-16, 16px);
-      color: var(--cg-color-code-muted, #52525b);
+      width: 3ch;
+      margin-right: var(--cg-spacing-20);
+      color: var(--cg-color-code-muted);
       text-align: right;
       user-select: none;
-      border-right: 1px solid var(--cg-color-code-border, #27272a);
-      padding-right: var(--cg-spacing-12, 12px);
+      opacity: 0.5;
     }
 
-    /* Syntax highlighting colors */
-    .hl-keyword { color: var(--cg-color-code-keyword, #8aad35); font-weight: 500; }
-    .hl-string { color: var(--cg-color-code-string, #86efac); }
-    .hl-comment { color: var(--cg-color-code-comment, #52525b); font-style: italic; }
-    .hl-number { color: var(--cg-color-code-number, #fbbf24); }
-    .hl-function { color: var(--cg-color-code-function, #93c5fd); }
-    .hl-tag { color: var(--cg-color-code-keyword, #8aad35); }
-    .hl-attr { color: var(--cg-color-code-number, #fbbf24); }
+    /* ── Syntax highlighting ── */
+    .hl-keyword { color: var(--cg-color-code-keyword); font-weight: var(--cg-font-weight-medium); }
+    .hl-string { color: var(--cg-color-code-string); }
+    .hl-comment { color: var(--cg-color-code-comment); font-style: italic; }
+    .hl-number { color: var(--cg-color-code-number); }
+    .hl-function { color: var(--cg-color-code-function); }
+    .hl-tag { color: var(--cg-color-code-keyword); }
+    .hl-attr { color: var(--cg-color-code-number); }
 
-    /* Expand button */
+    /* ── Expand button ── */
     .expand-bar {
       display: flex;
       justify-content: center;
-      padding: 6px;
-      background: linear-gradient(transparent, var(--cg-color-code-background, #09090b));
-      margin-top: -32px;
+      padding: var(--cg-spacing-12);
+      background: linear-gradient(transparent, var(--cg-color-code-background));
+      margin-top: calc(var(--cg-spacing-40) * -1);
       position: relative;
     }
     .expand-btn {
-      font-size: 0.7rem;
-      color: var(--cg-color-code-text, #e4e4e7);
-      background: var(--cg-color-code-border, #27272a);
-      border: 1px solid var(--cg-color-code-muted, #52525b);
-      padding: 4px var(--cg-spacing-12, 12px);
-      border-radius: 4px;
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-code-muted);
+      background: var(--cg-color-code-surface);
+      border: var(--cg-border-width-50) solid var(--cg-color-code-border);
+      padding: var(--cg-spacing-6) var(--cg-spacing-16);
+      border-radius: var(--cg-border-radius-full);
       cursor: pointer;
       font-family: inherit;
+      font-weight: var(--cg-font-weight-medium);
+      transition:
+        color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
-    .expand-btn:hover { color: var(--cg-color-code-text, #e4e4e7); }
+    .expand-btn:hover {
+      color: var(--cg-color-code-text);
+      background: var(--cg-color-code-border);
+    }
+    .expand-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+    }
 
-    /* Visually hidden but accessible to screen readers */
     .sr-only {
       position: absolute;
       width: 1px;
@@ -221,16 +238,15 @@ export class CgCodeBlock extends LitElement {
       border: 0;
     }
 
-    /* Rounded variants */
+    /* ── Rounded variants ── */
     :host([rounded="none"]) .wrapper { border-radius: 0; }
-    :host([rounded="sm"]) .wrapper { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .wrapper { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .wrapper { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .wrapper { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .wrapper { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"]) .wrapper { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="lg"]) .wrapper { border-radius: var(--cg-border-radius-200); }
   `];
 
   @property() code = '';
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property() language = '';
   @property() filename = '';
   @property({ type: Boolean, attribute: 'line-numbers', reflect: true }) lineNumbers = false;
@@ -252,29 +268,50 @@ export class CgCodeBlock extends LitElement {
     const lines = this.code.split('\n');
     const isLong = this.collapsible && lines.length > 15;
     const highlighted = highlight(this.code);
+    const showHeader = this.filename || this.language;
 
     return html`
       <div class="wrapper">
-        <div class="header">
-          <div class="header-left">
-            <div class="dots">
-              <span class="dot dot-red"></span>
-              <span class="dot dot-yellow"></span>
-              <span class="dot dot-green"></span>
+        ${showHeader ? html`
+          <div class="header">
+            <div class="header-left">
+              <div class="dots">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+              </div>
+              ${this.filename ? html`<span class="filename">${this.filename}</span>` : nothing}
             </div>
-            ${this.filename ? html`<span class="filename">${this.filename}</span>` : nothing}
+            <div class="actions">
+              ${this.language ? html`<span class="language">${this.language}</span>` : nothing}
+              <button class="copy-btn ${this._copied ? 'copied' : ''}" @click=${this._copy} aria-label="Copy code">
+                ${this._copied
+                  ? html`<cg-icon name="check" size="xs"></cg-icon> Copied`
+                  : html`<cg-icon name="copy" size="xs"></cg-icon> Copy`
+                }
+              </button>
+              <span class="sr-only" role="status" aria-live="polite">${this._copied ? 'Copied!' : ''}</span>
+            </div>
           </div>
-          <div class="actions">
-            ${this.language ? html`<span class="language">${this.language}</span>` : nothing}
-            <button class="action-btn ${this._copied ? 'copied' : ''}" @click=${this._copy} aria-label="Copy code to clipboard">
+          <div class="divider"></div>
+        ` : html`
+          <div class="header" style="border-bottom:none;">
+            <div class="header-left">
+              <div class="dots">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+              </div>
+            </div>
+            <button class="copy-btn ${this._copied ? 'copied' : ''}" @click=${this._copy} aria-label="Copy code">
               ${this._copied
-                ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"></path></svg> Copied`
-                : html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg> Copy`
+                ? html`<cg-icon name="check" size="xs"></cg-icon> Copied`
+                : html`<cg-icon name="copy" size="xs"></cg-icon> Copy`
               }
             </button>
             <span class="sr-only" role="status" aria-live="polite">${this._copied ? 'Copied!' : ''}</span>
           </div>
-        </div>
+        `}
 
         <div class="code-area ${isLong && this._collapsed ? 'collapsed' : ''}">
           <pre>${this.lineNumbers
@@ -285,7 +322,7 @@ export class CgCodeBlock extends LitElement {
 
         ${isLong && this._collapsed ? html`
           <div class="expand-bar">
-            <button class="expand-btn" @click=${() => { this._collapsed = false; }}>
+            <button class="expand-btn" aria-expanded="false" @click=${() => { this._collapsed = false; }}>
               Show all ${lines.length} lines
             </button>
           </div>

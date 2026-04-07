@@ -1,5 +1,7 @@
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, svg as svgT, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { SOLAR_ICONS } from './solar-icons.js';
 import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
 
@@ -47,8 +49,14 @@ const BUILTIN: Record<string, string> = {
   'menu': 'M3 12h18M3 6h18M3 18h18',
   'close': 'M18 6L6 18M6 6l12 12',
   'filter': 'M22 3H2l8 9.46V19l4 2v-8.54L22 3z',
-  'grip': 'M9 5h.01M9 12h.01M9 19h.01M15 5h.01M15 12h.01M15 19h.01',
   'sparkle': 'M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z',
+};
+
+// ── Filled-circle dot icons (can't use stroke paths — dots too small) ──
+const DOT_ICONS: Record<string, Array<[number, number]>> = {
+  'more-vertical': [[12, 5], [12, 12], [12, 19]],
+  'more-horizontal': [[5, 12], [12, 12], [19, 12]],
+  'grip': [[9, 5], [9, 12], [9, 19], [15, 5], [15, 12], [15, 19]],
 };
 
 // ── Short aliases → Solar icon names ──
@@ -101,6 +109,55 @@ const ALIASES: Record<string, string> = {
   'brain': 'cpu-linear', // closest AI icon
 };
 
+// ── SVG sanitization ──
+
+/** Strip dangerous elements and attributes from SVG content */
+function sanitizeSvg(raw: string): string | null {
+  let doc: Document;
+  try {
+    doc = new DOMParser().parseFromString(raw, 'image/svg+xml');
+  } catch {
+    return null;
+  }
+
+  // Check for parse errors
+  const parseError = doc.querySelector('parsererror');
+  if (parseError) return null;
+
+  // Must contain an SVG element
+  const svg = doc.querySelector('svg');
+  if (!svg) return null;
+
+  // Remove all script elements and event handler attributes
+  const stripDangerous = (el: Element) => {
+    // Remove dangerous child elements
+    const dangerous = el.querySelectorAll('script, iframe, object, embed, form, style, foreignObject, use');
+    dangerous.forEach(d => d.remove());
+
+    // Remove on* event handler attributes from all elements
+    const all = el.querySelectorAll('*');
+    const process = (node: Element) => {
+      const attrs = Array.from(node.attributes);
+      for (const attr of attrs) {
+        const name = attr.name.toLowerCase();
+        if (name.startsWith('on') || name === 'formaction') {
+          node.removeAttribute(attr.name);
+        }
+        const val = attr.value.trim().toLowerCase();
+        if ((name === 'href' || name === 'xlink:href') &&
+            (val.startsWith('javascript:') || val.startsWith('data:'))) {
+          node.removeAttribute(attr.name);
+        }
+      }
+    };
+    process(el);
+    all.forEach(process);
+  };
+
+  stripDangerous(svg);
+  return svg.outerHTML;
+}
+
 // ── Iconify API cache ──
 const API_CACHE = new Map<string, string>();
 
@@ -113,38 +170,39 @@ export class CgIcon extends LitElement {
       justify-content: center;
       width: 1em;
       height: 1em;
-      font-size: var(--cg-icon-size-150, 20px);
+      font-size: var(--cg-icon-size-150);
       color: currentColor;
       flex-shrink: 0;
     }
 
-    :host([size="xs"]) { font-size: 12px; }
-    :host([size="sm"]) { font-size: 16px; }
-    :host([size="md"]) { font-size: 20px; }
-    :host([size="lg"]) { font-size: 24px; }
-    :host([size="xl"]) { font-size: 32px; }
+    :host([size="xs"]) { font-size: var(--cg-icon-size-100); }
+    :host([size="sm"]) { font-size: var(--cg-icon-size-100); }
+    :host([size="md"]) { font-size: var(--cg-icon-size-150); }
+    :host([size="lg"]) { font-size: var(--cg-icon-size-200); }
+    :host([size="xl"]) { font-size: var(--cg-icon-size-300); }
 
-    :host([color="muted"]) { color: var(--cg-gray-500, #71717a); }
-    :host([color="accent"]) { color: var(--cg-brand-ai-accent, #dfff61); }
-    :host([color="success"]) { color: var(--cg-green-400, #4ade80); }
-    :host([color="warning"]) { color: var(--cg-yellow-400, #fbbf24); }
-    :host([color="danger"]) { color: var(--cg-red-400, #f87171); }
-    :host([color="info"]) { color: var(--cg-blue-400, #60a5fa); }
+    :host([color="muted"]) { color: var(--cg-color-surface-container-outlined); }
+    :host([color="accent"]) { color: var(--cg-color-action-primary-background-default); }
+    :host([color="success"]) { color: var(--cg-color-status-success-text-default); }
+    :host([color="warning"]) { color: var(--cg-color-status-warning-text-default); }
+    :host([color="danger"]) { color: var(--cg-color-status-error-text-default); }
+    :host([color="info"]) { color: var(--cg-color-status-info-text-default); }
 
     svg {
       width: 100%;
       height: 100%;
+      transition: color var(--cg-transition-duration-fast) var(--cg-motion-easing-color);
     }
 
     :host([name="loading"]) svg {
-      animation: spin 1s linear infinite;
+      animation: spin var(--cg-motion-duration-slow) linear infinite;
     }
 
     .placeholder {
       width: 100%;
       height: 100%;
-      border-radius: 4px;
-      background: var(--cg-gray-800, #27272a);
+      border-radius: var(--cg-border-radius-50);
+      background: var(--cg-color-surface-container-background);
     }
   `];
 
@@ -168,7 +226,7 @@ export class CgIcon extends LitElement {
       this._apiSvg = null;
       this._loading = false;
       // If not built-in or bundled, try API
-      if (this.name && !this._getBuiltin() && !this._getSolar()) {
+      if (this.name && !this._getBuiltin() && !DOT_ICONS[this.name] && !this._getSolar()) {
         this._fetchFromApi();
       }
     }
@@ -209,9 +267,12 @@ export class CgIcon extends LitElement {
     try {
       const res = await fetch(`https://api.iconify.design/solar/${solarName}.svg?height=24`);
       if (res.ok) {
-        const svg = await res.text();
-        API_CACHE.set(solarName, svg);
-        this._apiSvg = svg;
+        const raw = await res.text();
+        const safe = sanitizeSvg(raw);
+        if (safe) {
+          API_CACHE.set(solarName, safe);
+          this._apiSvg = safe;
+        }
       }
     } catch {
       // Silently fail — icon just won't render
@@ -230,13 +291,28 @@ export class CgIcon extends LitElement {
     // 1. Built-in stroke icon
     const builtinPath = this._getBuiltin();
     if (builtinPath) {
+      const paths = builtinPath.split(/(?=M)/).map(d =>
+        svgT`<path d="${d.trim()}"></path>`
+      );
       return html`
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
           stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
           role="${ariaRole}" aria-label="${ariaLabel}" aria-hidden="${ariaHidden}">
-          ${builtinPath.split(' M').map((d, i) =>
-            html`<path d="${i === 0 ? d : 'M' + d}"></path>`
-          )}
+          ${paths}
+        </svg>
+      `;
+    }
+
+    // 1b. Dot icons (filled circles — stroke dots are too small)
+    const dots = DOT_ICONS[this.name];
+    if (dots) {
+      const circles = dots.map(([cx, cy]) =>
+        svgT`<circle cx="${cx}" cy="${cy}" r="2"></circle>`
+      );
+      return html`
+        <svg viewBox="0 0 24 24" fill="currentColor"
+          role="${ariaRole}" aria-label="${ariaLabel}" aria-hidden="${ariaHidden}">
+          ${circles}
         </svg>
       `;
     }
@@ -246,8 +322,8 @@ export class CgIcon extends LitElement {
     if (solar) {
       return html`
         <svg viewBox="0 0 ${solar.width} ${solar.height}"
-          role="${ariaRole}" aria-label="${ariaLabel}" aria-hidden="${ariaHidden}"
-          .innerHTML=${solar.body}>
+          role="${ariaRole}" aria-label="${ariaLabel}" aria-hidden="${ariaHidden}">
+          ${unsafeSVG(solar.body)}
         </svg>
       `;
     }
@@ -255,7 +331,7 @@ export class CgIcon extends LitElement {
     // 3. API-fetched SVG
     if (this._apiSvg) {
       return html`<span role="${ariaRole}" aria-label="${ariaLabel}" aria-hidden="${ariaHidden}"
-        style="display:contents;" .innerHTML=${this._apiSvg}></span>`;
+        style="display:contents;">${unsafeHTML(this._apiSvg)}</span>`;
     }
 
     // 4. Loading placeholder

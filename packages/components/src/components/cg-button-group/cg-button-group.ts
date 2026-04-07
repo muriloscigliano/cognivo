@@ -15,20 +15,24 @@ import { hostBase, reducedMotion } from '../../styles/index.js';
 @customElement('cg-button-group')
 export class CgButtonGroup extends LitElement {
   static override styles = [hostBase, reducedMotion, css`
+    div[role="group"] {
+      display: flex;
+    }
+
     /* Direction */
-    :host([direction="row"]) { flex-direction: row; }
-    :host([direction="column"]) { flex-direction: column; width: 100%; }
+    :host([direction="row"]) div[role="group"] { flex-direction: row; }
+    :host([direction="column"]) div[role="group"] { flex-direction: column; width: 100%; }
 
     /* Gap */
-    :host([gap="none"]) { gap: 0; }
-    :host([gap="xs"]) { gap: var(--cg-spacing-4, 4px); }
-    :host([gap="sm"]) { gap: var(--cg-spacing-8, 8px); }
-    :host([gap="md"]) { gap: var(--cg-spacing-12, 12px); }
+    :host([gap="none"]) div[role="group"] { gap: 0; }
+    :host([gap="xs"]) div[role="group"] { gap: var(--cg-spacing-4); }
+    :host([gap="sm"]) div[role="group"] { gap: var(--cg-spacing-8); }
+    :host([gap="md"]) div[role="group"] { gap: var(--cg-spacing-12); }
 
     /* Alignment */
-    :host([align="start"]) { justify-content: flex-start; }
-    :host([align="center"]) { justify-content: center; }
-    :host([align="end"]) { justify-content: flex-end; }
+    :host([align="start"]) div[role="group"] { justify-content: flex-start; }
+    :host([align="center"]) div[role="group"] { justify-content: center; }
+    :host([align="end"]) div[role="group"] { justify-content: flex-end; }
     :host([align="stretch"]) ::slotted(*) { flex: 1; }
 
     /* Attached mode — buttons share borders */
@@ -41,13 +45,13 @@ export class CgButtonGroup extends LitElement {
     }
     :host([attached]) ::slotted(*:first-child) {
       margin-left: 0;
-      border-radius: var(--cg-border-radius-150, 12px) 0 0 var(--cg-border-radius-150, 12px);
+      border-radius: var(--cg-border-radius-150) 0 0 var(--cg-border-radius-150);
     }
     :host([attached]) ::slotted(*:last-child) {
-      border-radius: 0 var(--cg-border-radius-150, 12px) var(--cg-border-radius-150, 12px) 0;
+      border-radius: 0 var(--cg-border-radius-150) var(--cg-border-radius-150) 0;
     }
     :host([attached]) ::slotted(*:only-child) {
-      border-radius: var(--cg-border-radius-150, 12px);
+      border-radius: var(--cg-border-radius-150);
       margin-left: 0;
     }
 
@@ -58,10 +62,10 @@ export class CgButtonGroup extends LitElement {
     }
     :host([attached][direction="column"]) ::slotted(*:first-child) {
       margin-top: 0;
-      border-radius: var(--cg-border-radius-150, 12px) var(--cg-border-radius-150, 12px) 0 0;
+      border-radius: var(--cg-border-radius-150) var(--cg-border-radius-150) 0 0;
     }
     :host([attached][direction="column"]) ::slotted(*:last-child) {
-      border-radius: 0 0 var(--cg-border-radius-150, 12px) var(--cg-border-radius-150, 12px);
+      border-radius: 0 0 var(--cg-border-radius-150) var(--cg-border-radius-150);
     }
   `];
 

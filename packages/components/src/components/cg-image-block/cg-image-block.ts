@@ -17,17 +17,17 @@ export class CgImageBlock extends LitElement {
   static override styles = [hostBlock, reducedMotion, shimmerKeyframes, css`
     figure {
       margin: 0;
-      border-radius: var(--cg-border-radius-200, 24px);
+      border-radius: var(--cg-border-radius-200);
       overflow: hidden;
-      background: var(--cg-color-surface-container-background, #18181b);
+      background: var(--cg-color-surface-container-background);
     }
 
     /* Rounded variants */
     :host([rounded="none"]) figure { border-radius: 0; }
-    :host([rounded="sm"]) figure { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) figure { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) figure { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) figure { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) figure { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) figure { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) figure { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) figure { border-radius: var(--cg-border-radius-full); }
 
     .image-container {
       position: relative;
@@ -45,41 +45,77 @@ export class CgImageBlock extends LitElement {
       object-fit: cover;
       display: block;
       opacity: 0;
-      transition: opacity var(--cg-motion-duration-slower, 350ms) ease;
+      transition: opacity var(--cg-motion-duration-slower) var(--cg-motion-easing-color);
     }
     img.loaded { opacity: 1; }
 
     .skeleton {
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, var(--cg-gray-100, #f4f4f5) 25%, var(--cg-gray-200, #e4e4e7) 50%, var(--cg-gray-100, #f4f4f5) 75%);
+      background: linear-gradient(90deg, var(--cg-color-surface-container-background) 25%, var(--cg-color-surface-container-border) 50%, var(--cg-color-surface-container-background) 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
     }
-    .retry-btn:hover { opacity: 0.8; }
+    .error-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-24);
+      color: var(--cg-color-surface-container-outlined);
+    }
+    .error-state svg {
+      width: var(--cg-icon-size-300);
+      height: var(--cg-icon-size-300);
+      opacity: 0.4;
+    }
+    .error-state span {
+      font-size: var(--cg-font-size-sm);
+    }
+
+    .retry-btn {
+      padding: var(--cg-spacing-6) var(--cg-spacing-16);
+      border-radius: var(--cg-border-radius-100);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-surface-base-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
+      cursor: pointer;
+      transition: background var(--cg-motion-duration-normal) var(--cg-motion-easing-default), border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+    }
+    .retry-btn:hover {
+      background: var(--cg-color-action-tertiary-background-hover);
+      border-color: var(--cg-color-action-primary-background-default);
+    }
+    .retry-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--cg-color-focus-ring-offset), 0 0 0 4px var(--cg-color-focus-ring);
+    }
 
     figcaption {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
-      line-height: 1.4;
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-container-outlined);
+      line-height: var(--cg-line-height-snug);
     }
     .source {
-      color: var(--cg-text-accent, #e5ff6b);
+      color: var(--cg-color-action-primary-background-default);
       text-decoration: none;
-      font-weight: 500;
+      font-weight: var(--cg-font-weight-medium);
     }
     .source:hover { text-decoration: underline; }
 
     /* Clickable variant */
     :host([clickable]) figure { cursor: pointer; }
     :host([clickable]) figure:hover img { transform: scale(1.02); }
-    :host([clickable]) img { transition: opacity var(--cg-motion-duration-slower, 350ms) ease, transform 0.2s ease; }
-  
+    :host([clickable]) figure:active img { transform: scale(0.99); }
+    :host([clickable]) img { transition: opacity var(--cg-motion-duration-slower) var(--cg-motion-easing-color), transform var(--cg-motion-duration-normal) var(--cg-motion-easing-default); }
 
     :focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      box-shadow: 0 0 0 2px var(--cg-color-focus-ring-offset), 0 0 0 4px var(--cg-color-focus-ring);
     }
   `];
 
@@ -105,9 +141,22 @@ export class CgImageBlock extends LitElement {
     }
   }
 
+  private _handleKeydown(e: KeyboardEvent) {
+    if (this.clickable && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      this._handleClick();
+    }
+  }
+
   override render() {
     return html`
-      <figure @click=${this.clickable ? this._handleClick : nothing}>
+      <figure
+        @click=${this.clickable ? this._handleClick : nothing}
+        @keydown=${this.clickable ? this._handleKeydown : nothing}
+        tabindex=${this.clickable ? '0' : nothing}
+        role=${this.clickable ? 'button' : nothing}
+        aria-label=${this.clickable ? `View image: ${this.alt}` : nothing}
+      >
         <div class="image-container">
           ${this._loading && !this._error ? html`<div class="skeleton"></div>` : nothing}
           ${this._error ? html`

@@ -16,7 +16,7 @@ export class CgStack extends LitElement {
     :host {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-16, 16px);
+      gap: var(--cg-spacing-16);
     }
 
     /* Direction */
@@ -27,12 +27,12 @@ export class CgStack extends LitElement {
 
     /* Gap */
     :host([gap="none"]) { gap: 0; }
-    :host([gap="xs"]) { gap: var(--cg-spacing-4, 4px); }
-    :host([gap="sm"]) { gap: var(--cg-spacing-8, 8px); }
-    :host([gap="md"]) { gap: var(--cg-spacing-16, 16px); }
-    :host([gap="lg"]) { gap: var(--cg-spacing-24, 24px); }
-    :host([gap="xl"]) { gap: var(--cg-spacing-32, 32px); }
-    :host([gap="2xl"]) { gap: var(--cg-spacing-48, 48px); }
+    :host([gap="xs"]) { gap: var(--cg-spacing-4); }
+    :host([gap="sm"]) { gap: var(--cg-spacing-8); }
+    :host([gap="md"]) { gap: var(--cg-spacing-16); }
+    :host([gap="lg"]) { gap: var(--cg-spacing-24); }
+    :host([gap="xl"]) { gap: var(--cg-spacing-32); }
+    :host([gap="2xl"]) { gap: var(--cg-spacing-48); }
 
     /* Align */
     :host([align="start"]) { align-items: flex-start; }
@@ -50,7 +50,7 @@ export class CgStack extends LitElement {
     :host([justify="evenly"]) { justify-content: space-evenly; }
 
     /* Wrap */
-    :host([wrap]) { flex-wrap: wrap; }
+    :host([wrap="wrap"]) { flex-wrap: wrap; }
     :host([wrap="reverse"]) { flex-wrap: wrap-reverse; }
 
     /* Full width/height */
@@ -61,7 +61,7 @@ export class CgStack extends LitElement {
   @property({ reflect: true }) gap: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' = 'md';
   @property({ reflect: true }) align: 'start' | 'center' | 'end' | 'stretch' | 'baseline' = 'stretch';
   @property({ reflect: true }) justify: 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly' = 'start';
-  @property({ type: Boolean, reflect: true }) wrap = false;
+  @property({ reflect: true }) wrap: 'none' | 'wrap' | 'reverse' = 'none';
   @property({ type: Boolean, reflect: true }) full = false;
 
   override render() {

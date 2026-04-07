@@ -5,65 +5,72 @@ import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
 /**
  * <cg-spinner> — Spinning loading indicator.
  *
- * Features:
- * - CSS-only spinning ring (border-top colored)
- * - Smooth rotation animation
- * - Size variants (xs, sm, md, lg, xl)
- * - Color variants (default, accent, white)
- * - aria-label for screen readers
- * - prefers-reduced-motion: pulsing instead of spinning
+ * @example
+ * ```html
+ * <cg-spinner size="md"></cg-spinner>
+ * <cg-spinner size="lg" color="accent"></cg-spinner>
+ * <cg-spinner size="sm" color="white"></cg-spinner>
+ * ```
+ *
+ * @cssprop --cg-component-spinner-size-md - Spinner diameter (20px)
+ * @cssprop --cg-color-loading-spinner-primary - Active arc color
+ * @cssprop --cg-color-loading-spinner-secondary - Track color
  */
 @customElement('cg-spinner')
 export class CgSpinner extends LitElement {
   static override styles = [hostBase, reducedMotion, spinKeyframes, css`
     :host {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
     }
+    :host([hidden]) { display: none; }
 
     .spinner {
       border-radius: 50%;
       border-style: solid;
-      border-color: var(--cg-color-surface-base-border, #27272a);
-      animation: spin 0.8s linear infinite;
+      border-color: var(--cg-color-loading-spinner-secondary);
+      border-top-color: var(--cg-color-loading-spinner-primary);
+      animation: spin var(--cg-motion-duration-slow) linear infinite;
     }
 
-    /* ── Sizes ── */
+    /* ── Sizes (Tier 3) ── */
     :host([size="xs"]) .spinner {
-      width: 14px;
-      height: 14px;
-      border-width: 2px;
+      width: var(--cg-component-spinner-size-xs);
+      height: var(--cg-component-spinner-size-xs);
+      border-width: var(--cg-border-width-100);
     }
     :host([size="sm"]) .spinner {
-      width: 20px;
-      height: 20px;
-      border-width: 2px;
+      width: var(--cg-component-spinner-size-sm);
+      height: var(--cg-component-spinner-size-sm);
+      border-width: var(--cg-border-width-100);
     }
     :host([size="md"]) .spinner {
-      width: 28px;
-      height: 28px;
-      border-width: 3px;
+      width: var(--cg-component-spinner-size-md);
+      height: var(--cg-component-spinner-size-md);
+      border-width: var(--cg-border-width-100);
     }
     :host([size="lg"]) .spinner {
-      width: 40px;
-      height: 40px;
-      border-width: 3px;
+      width: var(--cg-component-spinner-size-lg);
+      height: var(--cg-component-spinner-size-lg);
+      border-width: var(--cg-border-width-100);
     }
     :host([size="xl"]) .spinner {
-      width: 56px;
-      height: 56px;
-      border-width: 4px;
+      width: var(--cg-component-spinner-size-xl);
+      height: var(--cg-component-spinner-size-xl);
+      border-width: var(--cg-border-width-300);
     }
 
     /* ── Color variants ── */
     :host([color="default"]) .spinner {
-      border-top-color: var(--cg-color-text-secondary, #a1a1aa);
+      border-top-color: var(--cg-color-loading-spinner-primary);
     }
     :host([color="accent"]) .spinner {
-      border-top-color: var(--cg-brand-ai-accent, #dfff61);
+      border-top-color: var(--cg-color-action-primary-background-default);
     }
     :host([color="white"]) .spinner {
-      border-top-color: var(--cg-color-text-primary, #fafafa);
+      border-color: rgba(255, 255, 255, 0.25);
+      border-top-color: rgba(255, 255, 255, 0.9);
     }
 
     .sr-only {
@@ -76,6 +83,18 @@ export class CgSpinner extends LitElement {
       clip: rect(0, 0, 0, 0);
       white-space: nowrap;
       border: 0;
+    }
+
+    /* Reduced motion: replace spin with gentle opacity pulse */
+    @media (prefers-reduced-motion: reduce) {
+      .spinner {
+        animation: spinnerPulse 2s ease-in-out infinite !important;
+      }
+
+      @keyframes spinnerPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
     }
   `];
 

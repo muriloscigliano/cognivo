@@ -16,16 +16,16 @@ export class CgBadgeGroup extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
     :host {
       display: block;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+      font-family: var(--cg-font-family-primary);
     }
 
     .label {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-gray-500, #71717a);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-tertiary-text);
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      margin-bottom: var(--cg-spacing-8, 8px);
+      margin-bottom: var(--cg-spacing-8);
     }
 
     .badges {
@@ -34,18 +34,18 @@ export class CgBadgeGroup extends LitElement {
       align-items: center;
     }
 
-    :host([gap="xs"]) .badges { gap: var(--cg-spacing-4, 4px); }
-    :host([gap="sm"]) .badges { gap: 6px; }
-    :host([gap="md"]) .badges { gap: var(--cg-spacing-8, 8px); }
-    :host([gap="lg"]) .badges { gap: var(--cg-spacing-12, 12px); }
+    :host([gap="xs"]) .badges { gap: var(--cg-spacing-4); }
+    :host([gap="sm"]) .badges { gap: var(--cg-spacing-6); }
+    :host([gap="md"]) .badges { gap: var(--cg-spacing-8); }
+    :host([gap="lg"]) .badges { gap: var(--cg-spacing-12); }
 
     .overflow {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-gray-500, #71717a);
-      padding: 2px 8px;
-      background: var(--cg-gray-200, #e4e4e7);
-      border-radius: var(--cg-border-radius-100, 8px);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-tertiary-text);
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
+      background: var(--cg-color-action-secondary-background-default);
+      border-radius: var(--cg-border-radius-100);
       cursor: default;
     }
   `];

@@ -24,100 +24,104 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class AiHeatmap extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
     }
 
     .container {
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      padding: var(--cg-spacing-16, 16px);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-16);
       overflow: auto;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      position: relative;
     }
 
     .title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      color: var(--cg-color-surface-base-text, #fafafa);
-      margin-bottom: var(--cg-spacing-12, 12px);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
+      margin-bottom: var(--cg-spacing-12);
     }
 
     svg { display: block; }
 
     .cell {
       cursor: pointer;
-      transition: opacity 150ms;
+      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
-    .cell:hover { opacity: 0.85; stroke: var(--cg-color-surface-base-text, #fafafa); stroke-width: 1.5; }
-    .cell:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 1px; }
+    .cell:hover { opacity: 0.85; stroke: var(--cg-color-surface-base-text); stroke-width: 1.5; }
+    .cell:focus-visible {
+      outline: none;
+      stroke: var(--cg-color-focus-ring);
+      stroke-width: 2;
+    }
 
     .cell-text {
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
+      font-family: var(--cg-font-family-mono);
       pointer-events: none;
     }
 
     .axis-label {
-      font-size: var(--cg-font-size-xs, 12px);
-      fill: var(--cg-gray-400, #a1a1aa);
+      font-size: var(--cg-font-size-xs);
+      fill: var(--cg-color-input-text-placeholder);
     }
 
     /* Tooltip */
     .tooltip {
       position: absolute;
-      background: var(--cg-gray-800, #27272a);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      border-radius: var(--cg-border-radius-100, 8px);
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      background: var(--cg-color-surface-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-6) var(--cg-spacing-8);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-base-text);
       pointer-events: none;
       z-index: 10;
       white-space: nowrap;
-      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
     }
     .tooltip-row { display: block; }
-    .tooltip-value { font-weight: 700; color: var(--cg-brand-ai-accent, #dfff61); }
+    .tooltip-value { font-weight: var(--cg-font-weight-bold); color: var(--cg-color-surface-base-text); }
 
     /* Legend */
     .legend {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      margin-top: var(--cg-spacing-8, 8px);
-      font-size: 10px;
-      color: var(--cg-gray-500, #71717a);
+      gap: var(--cg-spacing-8);
+      margin-top: var(--cg-spacing-12);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
     .legend-bar {
-      height: 8px;
-      width: 80px;
-      border-radius: var(--cg-border-radius-50, 4px);
+      height: var(--cg-spacing-8);
+      width: var(--cg-spacing-80);
+      border-radius: var(--cg-border-radius-50);
     }
 
     .empty {
       text-align: center;
-      padding: var(--cg-spacing-24, 24px);
-      color: var(--cg-gray-500, #71717a);
-      font-size: var(--cg-font-size-sm, 14px);
+      padding: var(--cg-spacing-24);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
     }
-    }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .container { border-radius: 0; }
+    :host([rounded="sm"]) .container { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .container { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .container { border-radius: var(--cg-border-radius-150); }
   `];
+
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   /** 2D data array (rows × cols) */
   @property({ type: Array }) data: number[][] = [];
-
   /** Row labels */
   @property({ type: Array }) rowLabels: string[] = [];
-
   /** Column labels */
   @property({ type: Array }) colLabels: string[] = [];
-
   /** Color scale: sequential (min→max) or diverging (neg→zero→pos) */
   @property({ type: String }) colorScale: 'sequential' | 'diverging' = 'sequential';
-
   /** Show values in cells */
   @property({ type: Boolean }) showValues: boolean = true;
-
   /** Title */
   @property({ type: String }) override title: string = '';
 
@@ -134,28 +138,31 @@ export class AiHeatmap extends LitElement {
   private get _min(): number { return Math.min(...this._flatValues); }
   private get _max(): number { return Math.max(...this._flatValues); }
 
+  /**
+   * Compute cell fill color algorithmically.
+   * Uses hardcoded RGB values because heatmap gradients must be computed per-value —
+   * CSS custom properties can't be interpolated numerically in JS.
+   * Dark neutral: rgb(39,39,42) matches --cg-gray-800 (#27272a).
+   */
   private _getColor(value: number): string {
     if (this.colorScale === 'diverging') {
-      // Diverging: red (negative) → dark neutral (zero) → green (positive)
       const absMax = Math.max(Math.abs(this._min), Math.abs(this._max));
-      if (absMax === 0) return '#27272a';
-      const t = Math.max(-1, Math.min(1, value / absMax)); // clamp -1 to 1
+      if (absMax === 0) return 'rgb(39, 39, 42)';
+      const t = Math.max(-1, Math.min(1, value / absMax));
       if (t < 0) {
-        // Negative: neutral (#27272a) → red (#f87171)
-        const s = -t; // 0 to 1
+        const s = -t;
         const r = Math.round(39 + (248 - 39) * s);
         const g = Math.round(39 + (113 - 39) * s);
         const b = Math.round(42 + (113 - 42) * s);
         return `rgb(${r}, ${g}, ${b})`;
       }
-      // Positive: neutral (#27272a) → green (#4ade80)
       const r = Math.round(39 + (74 - 39) * t);
       const g = Math.round(39 + (222 - 39) * t);
       const b = Math.round(42 + (128 - 42) * t);
       return `rgb(${r}, ${g}, ${b})`;
     }
 
-    // Sequential: dark → lime
+    // Sequential: dark → lime (matches --cg-brand-ai-accent range)
     const range = this._max - this._min || 1;
     const t = (value - this._min) / range;
     const r = Math.round(39 + (223 - 39) * t);
@@ -164,10 +171,11 @@ export class AiHeatmap extends LitElement {
     return `rgb(${r}, ${g}, ${b})`;
   }
 
+  /** Contrast text color — dark on bright cells, light on dark cells. */
   private _getTextColor(value: number): string {
     const range = this._max - this._min || 1;
     const t = (value - this._min) / range;
-    return t > 0.6 ? '#000' : '#fafafa';
+    return t > 0.6 ? 'rgb(0, 0, 0)' : 'rgb(250, 250, 250)';
   }
 
   private _handleCellClick(row: number, col: number) {
@@ -210,7 +218,7 @@ export class AiHeatmap extends LitElement {
     const svgH = mt + rows * cs;
 
     return html`
-      <div class="container" style="position: relative;">
+      <div class="container">
         ${this.title ? html`<div class="title">${this.title}</div>` : nothing}
 
         <svg width="${svgW}" height="${svgH}" role="grid" aria-label="${this.title || 'Heatmap'}">
@@ -252,7 +260,7 @@ export class AiHeatmap extends LitElement {
           </div>
         ` : nothing}
 
-        <div class="legend">
+        <div class="legend" aria-hidden="true">
           <span>${this._min}</span>
           <div class="legend-bar" style="background: linear-gradient(90deg, ${this._getColor(this._min)}, ${this._getColor(this._max)});"></div>
           <span>${this._max}</span>

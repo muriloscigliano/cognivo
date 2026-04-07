@@ -32,14 +32,12 @@ export interface FeatureFlag {
 export class AiFeatureFlag extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      background: var(--cg-color-surface-base, #18181b);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      border: 1px solid var(--cg-color-border-default, #27272a);
-      border-radius: var(--cg-radius-lg, 12px);
-      padding: var(--cg-spacing-16, 16px);
-      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      background: var(--cg-color-surface-base);
+      color: var(--cg-color-surface-base-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-16);
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
@@ -47,86 +45,89 @@ export class AiFeatureFlag extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: var(--cg-spacing-12, 12px);
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
-      margin-bottom: var(--cg-spacing-12, 12px);
+      padding-bottom: var(--cg-spacing-12);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      margin-bottom: var(--cg-spacing-12);
     }
 
     h3 {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-semibold, 600);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
       margin: 0;
     }
 
     .env-badge {
-      padding: 2px var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-radius-full, 9999px);
-      font-size: 10px;
-      font-weight: var(--cg-font-weight-semibold, 600);
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-full);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      background: rgba(223, 255, 97, 0.1);
-      color: var(--cg-color-accent, #dfff61);
+      background: var(--cg-overlay-accent-subtle);
+      color: var(--cg-color-surface-base-text);
     }
 
     .search-bar {
-      margin-bottom: var(--cg-spacing-12, 12px);
+      margin-bottom: var(--cg-spacing-12);
     }
 
     .search-input {
       width: 100%;
-      background: var(--cg-color-surface-overlay, #27272a);
-      border: 1px solid var(--cg-color-border-default, #3f3f46);
-      border-radius: var(--cg-radius-md, 8px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      font-size: var(--cg-font-size-sm, 14px);
+      background: var(--cg-color-surface-overlay);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-sm);
       font-family: inherit;
       box-sizing: border-box;
     }
 
     .search-input::placeholder {
-      color: var(--cg-color-text-tertiary, #71717a);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     .search-input:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
+      outline: 2px solid var(--cg-color-accent-border);
       outline-offset: -2px;
     }
 
     .group-label {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-color-text-tertiary, #71717a);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-input-text-placeholder);
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      margin: 12px 0 6px 0;
+      margin: var(--cg-spacing-12) 0 var(--cg-spacing-6) 0;
     }
 
     .flag-list {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-4);
     }
 
     .flag-item {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-12, 12px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      background: var(--cg-color-surface-overlay, #27272a);
-      border-radius: var(--cg-radius-md, 8px);
-      border: 1px solid var(--cg-color-border-default, #27272a);
+      gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      background: var(--cg-color-surface-overlay);
+      border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       cursor: pointer;
     }
 
     .flag-item:hover {
-      border-color: var(--cg-color-border-default, #3f3f46);
+      border-color: var(--cg-color-surface-cards-border);
+    }
+    .flag-item:active {
+      transform: scale(var(--cg-interaction-press-scale));
     }
 
     .flag-item:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .flag-info {
@@ -135,33 +136,33 @@ export class AiFeatureFlag extends LitElement {
     }
 
     .flag-name {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-medium, 500);
-      margin-bottom: 2px;
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
+      margin-bottom: var(--cg-spacing-2);
     }
 
     .flag-desc {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
     .flag-env {
-      padding: 2px var(--cg-spacing-6, 6px);
-      border-radius: var(--cg-radius-sm, 4px);
-      font-size: 10px;
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--cg-color-text-tertiary, #71717a);
+      padding: var(--cg-spacing-2) var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-50);
+      font-size: var(--cg-font-size-xs);
+      background: var(--cg-overlay-dark-subtle);
+      color: var(--cg-color-input-text-placeholder);
       flex-shrink: 0;
     }
 
     .toggle-switch {
       position: relative;
       display: inline-block;
-      width: 36px;
-      height: 20px;
+      width: var(--cg-spacing-32);
+      height: var(--cg-spacing-20);
       flex-shrink: 0;
     }
 
@@ -175,61 +176,60 @@ export class AiFeatureFlag extends LitElement {
     .toggle-track {
       position: absolute;
       inset: 0;
-      background: var(--cg-color-surface-base, #18181b);
-      border-radius: var(--cg-border-radius-100, 8px);
-      border: 1px solid var(--cg-color-border-default, #3f3f46);
+      background: var(--cg-color-surface-base);
+      border-radius: var(--cg-border-radius-full);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       cursor: pointer;
-      transition: background 0.15s ease;
+      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     .toggle-track::after {
       content: '';
       position: absolute;
-      width: 14px;
-      height: 14px;
+      width: var(--cg-spacing-12);
+      height: var(--cg-spacing-12);
       border-radius: 50%;
-      background: var(--cg-gray-500, #71717a);
-      top: 2px;
-      left: 2px;
-      transition: transform 0.15s ease, background 0.15s ease;
+      background: var(--cg-color-input-text-placeholder);
+      top: var(--cg-spacing-2);
+      left: var(--cg-spacing-2);
+      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color), background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     .toggle-switch input:checked + .toggle-track {
-      background: rgba(223, 255, 97, 0.2);
-      border-color: var(--cg-color-accent, #dfff61);
+      background: var(--cg-overlay-accent-medium);
+      border-color: var(--cg-color-surface-base-text);
     }
 
     .toggle-switch input:checked + .toggle-track::after {
-      transform: translateX(16px);
-      background: var(--cg-color-accent, #dfff61);
+      transform: translateX(var(--cg-spacing-16);
+      background: var(--cg-color-action-primary-background-default);
     }
 
     .toggle-switch input:focus-visible + .toggle-track {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .count {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-color-text-tertiary, #71717a);
-      margin-top: var(--cg-spacing-12, 12px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-top: var(--cg-spacing-12);
       text-align: center;
     }
 
     .empty {
       text-align: center;
-      padding: var(--cg-spacing-24, 24px);
-      color: var(--cg-color-text-tertiary, #71717a);
-      font-size: var(--cg-font-size-sm, 14px);
-    }
+      padding: var(--cg-spacing-24);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
     }
 
     /* ── Rounded variants ── */
     :host([rounded="none"]) { border-radius: 0; }
-    :host([rounded="sm"]) { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) { border-radius: var(--cg-border-radius-full); }
   `];
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) flags: FeatureFlag[] = [];

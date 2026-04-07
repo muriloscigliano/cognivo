@@ -1,132 +1,194 @@
 /**
  * @element ai-source-graph
- * SVG radial graph visualizing which knowledge sources contributed to an
- * AI response. Line thickness indicates attribution weight. Click a node
- * to expand source details with type badge and excerpt.
+ * Source attribution panel showing which knowledge sources contributed to an
+ * AI response — Perplexity/ChatGPT-style numbered list with type badges,
+ * weight bars, expandable excerpts, and inline footnote references.
  *
  * @example
  * ```html
  * <ai-source-graph
- *   responseId="resp-42"
  *   .sources=${[
- *     { id: 's1', title: 'API Docs', type: 'doc', weight: 0.8, excerpt: 'Rate limits apply...' },
+ *     { id: 's1', title: 'API Docs', type: 'doc', weight: 0.8, url: '#', excerpt: 'Rate limits...' },
  *     { id: 's2', title: 'Stack Overflow', type: 'web', weight: 0.4 }
  *   ]}
  * ></ai-source-graph>
  * ```
  *
- * @prop {SourceNode[]} sources - Array of source nodes with id, title, type, weight, excerpt
- * @prop {string} responseId - Label for the center node (default 'Response')
- *
- * @fires {CustomEvent<{id: string, title: string, type: string, weight: number}>} ai-source-click - When a source node is clicked
+ * @fires {CustomEvent<{id, title, type, weight}>} ai-source-click - Source clicked
  */
-import { LitElement, html, css, svg, nothing } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 interface SourceNode {
   id: string;
   title: string;
   type: 'doc' | 'web' | 'database' | 'api';
-  weight: number; // 0-1
+  weight: number;
+  url?: string;
   excerpt?: string;
 }
 
+const TYPE_BADGE = 'accent';
+
 @customElement('ai-source-graph')
 export class AiSourceGraph extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
-
-    .container {
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      padding: var(--cg-spacing-16, 16px);
-      position: relative;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
+    :host {
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
     }
 
-    .title {
-      font-size: 12px; font-weight: 700; color: var(--cg-gray-400, #a1a1aa);
-      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--cg-spacing-12, 12px);
+    .panel {
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      overflow: hidden;
     }
 
-    svg { display: block; margin: 0 auto; }
-
-    .edge { fill: none; stroke-linecap: round; }
-    .node-circle { cursor: pointer; transition: opacity 150ms; }
-    .node-circle:hover { opacity: 0.8; }
-    .node-label {
-      font-size: 10px;
-      fill: var(--cg-gray-400, #a1a1aa);
-      text-anchor: middle;
-      pointer-events: none;
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
     }
-    .center-label {
-      font-size: var(--cg-font-size-xs, 12px); font-weight: 700;
-      fill: var(--cg-brand-ai-accent, #dfff61);
-      text-anchor: middle;
+    .header-title {
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-bold);
+      color: var(--cg-color-surface-base-text);
+      flex: 1;
     }
-    .node-icon {
-      font-size: var(--cg-font-size-xs, 12px); text-anchor: middle; dominant-baseline: central;
-      pointer-events: none;
+    .source-count {
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
 
-    /* Detail panel */
-    .detail {
-      margin-top: var(--cg-spacing-12, 12px);
-      padding: var(--cg-spacing-12, 12px);
-      background: var(--cg-color-surface-base-background, #09090b);
-      border-radius: var(--cg-border-radius-100, 8px);
-      animation: fadeIn 200ms ease;
-    }
-    .detail-header { display: flex; align-items: center; gap: var(--cg-spacing-8, 8px); margin-bottom: var(--cg-spacing-6, 6px); }
-    .detail-type {
-      font-size: 9px; font-weight: 700; padding: 2px var(--cg-spacing-6, 6px); border-radius: 3px;
-      text-transform: uppercase;
-    }
-    .detail-type.doc { background: rgba(139, 92, 246, 0.12); color: #a78bfa; }
-    .detail-type.web { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
-    .detail-type.database { background: rgba(34, 197, 94, 0.12); color: #4ade80; }
-    .detail-type.api { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
-    .detail-title { font-size: 13px; font-weight: 600; color: var(--cg-color-surface-base-text, #fafafa); }
-    .detail-weight {
-      font-size: var(--cg-font-size-xs, 12px); font-weight: 700; margin-left: auto;
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      color: var(--cg-brand-ai-accent, #dfff61);
-    }
-    .detail-excerpt {
-      font-size: 12px; color: var(--cg-gray-400, #a1a1aa); line-height: 1.4;
+    /* ── Source list ── */
+    .sources {
+      display: flex;
+      flex-direction: column;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
+    .source {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
+      cursor: pointer;
+      transition:
+        background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
-
-    .empty { text-align: center; padding: 32px; color: var(--cg-gray-500, #71717a); font-size: 13px; }
-
-    :focus-visible {
+    .source:last-child { border-bottom: none; }
+    .source:hover { background: var(--cg-overlay-dark-subtle); }
+    .source:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      box-shadow: inset 0 0 0 2px var(--cg-color-focus-ring);
     }
+
+    /* Footnote number */
+    .footnote {
+      width: var(--cg-spacing-24);
+      height: var(--cg-spacing-24);
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-surface-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
+      color: var(--cg-color-surface-base-text);
+      font-family: var(--cg-font-family-mono);
+    }
+
+    /* Source content */
+    .source-body { flex: 1; min-width: 0; }
+    .source-top {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-8);
+    }
+    .source-title {
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
+      line-height: var(--cg-line-height-tight);
+    }
+    .source-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .source-title a:hover { text-decoration: underline; }
+
+    /* Weight bar */
+    .weight-area {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-6);
+      margin-left: auto;
+    }
+    .weight-bar {
+      width: var(--cg-spacing-48);
+      height: var(--cg-spacing-4);
+      background: var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-full);
+      overflow: hidden;
+    }
+    .weight-fill {
+      height: 100%;
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-action-primary-background-default);
+      transition: width var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+    }
+    .weight-label {
+      font-size: var(--cg-font-size-xs);
+      font-family: var(--cg-font-family-mono);
+      color: var(--cg-color-input-text-placeholder);
+      min-width: var(--cg-spacing-32);
+      text-align: right;
+    }
+
+    /* Excerpt */
+    .excerpt {
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      line-height: var(--cg-line-height-normal);
+      margin-top: var(--cg-spacing-4);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .source.expanded .excerpt {
+      -webkit-line-clamp: unset;
+      display: block;
+    }
+
+    .empty {
+      text-align: center;
+      padding: var(--cg-spacing-32);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
+    }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .panel { border-radius: 0; }
+    :host([rounded="sm"]) .panel { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .panel { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .panel { border-radius: var(--cg-border-radius-150); }
   `];
 
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property({ type: Array }) sources: SourceNode[] = [];
-  @property({ type: String }) responseId: string = 'Response';
 
-  @state() private _selectedId: string = '';
-
-  private _typeColors: Record<string, string> = {
-    doc: '#a78bfa', web: '#60a5fa', database: '#4ade80', api: '#fbbf24',
-  };
-
-  private _typeIcons: Record<string, string> = {
-    doc: 'DOC', web: 'WEB', database: 'DB', api: 'API',
-  };
+  @state() private _expandedId: string = '';
 
   private _handleSourceClick(source: SourceNode) {
-    this._selectedId = this._selectedId === source.id ? '' : source.id;
+    this._expandedId = this._expandedId === source.id ? '' : source.id;
     this.dispatchEvent(new CustomEvent('ai-source-click', {
       bubbles: true, composed: true,
       detail: { id: source.id, title: source.title, type: source.type, weight: source.weight },
@@ -135,67 +197,43 @@ export class AiSourceGraph extends LitElement {
 
   override render() {
     if (this.sources.length === 0) {
-      return html`<div class="container"><div class="empty">No source data</div></div>`;
+      return html`<div class="panel"><div class="empty">No sources</div></div>`;
     }
 
-    const cx = 160, cy = 120, radius = 80;
-    const svgW = 320, svgH = 240;
-    const n = this.sources.length;
-
-    const selected = this.sources.find(s => s.id === this._selectedId);
+    const sorted = [...this.sources].sort((a, b) => b.weight - a.weight);
 
     return html`
-      <div class="container" role="figure" aria-label="Source attribution graph">
-        <div class="title">Source Attribution</div>
-
-        <svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}">
-          <!-- Edges -->
-          ${this.sources.map((s, i) => {
-            const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
-            const sx = cx + Math.cos(angle) * radius;
-            const sy = cy + Math.sin(angle) * radius;
-            const strokeW = 1 + s.weight * 4;
-            const color = this._typeColors[s.type] || '#71717a';
-            return svg`<line class="edge" x1="${cx}" y1="${cy}" x2="${sx}" y2="${sy}"
-              stroke="${color}" stroke-width="${strokeW}" opacity="${0.3 + s.weight * 0.5}" />`;
-          })}
-
-          <!-- Center node -->
-          ${svg`
-            <circle cx="${cx}" cy="${cy}" r="20" fill="rgba(223, 255, 97, 0.12)" stroke="var(--cg-brand-ai-accent, #dfff61)" stroke-width="1.5" />
-            <text class="center-label" x="${cx}" y="${cy + 4}">AI</text>
-          `}
-
-          <!-- Source nodes -->
-          ${this.sources.map((s, i) => {
-            const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
-            const sx = cx + Math.cos(angle) * radius;
-            const sy = cy + Math.sin(angle) * radius;
-            const color = this._typeColors[s.type] || '#71717a';
-            const nodeR = 14 + s.weight * 8;
-            const isSelected = s.id === this._selectedId;
-
-            return svg`
-              <circle class="node-circle" cx="${sx}" cy="${sy}" r="${nodeR}"
-                fill="${color}22" stroke="${color}" stroke-width="${isSelected ? 2 : 1}"
+      <div class="panel" role="list" aria-label="Source attribution">
+        <div class="header">
+          <span class="header-title">Sources</span>
+          <span class="source-count">${this.sources.length}</span>
+        </div>
+        <div class="sources">
+          ${sorted.map((s, i) => {
+            const isExpanded = s.id === this._expandedId;
+            return html`
+              <div class="source ${isExpanded ? 'expanded' : ''}"
+                role="listitem" tabindex="0"
                 @click=${() => this._handleSourceClick(s)}
-                tabindex="0" role="button" aria-label="${s.title} (${Math.round(s.weight * 100)}% weight)" />
-              <text class="node-icon" x="${sx}" y="${sy}">${this._typeIcons[s.type] || '•'}</text>
-              <text class="node-label" x="${sx}" y="${sy + nodeR + 12}">${s.title.length > 15 ? s.title.slice(0, 14) + '…' : s.title}</text>
+                @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleSourceClick(s); } }}>
+                <span class="footnote">${i + 1}</span>
+                <div class="source-body">
+                  <div class="source-top">
+                    <span class="source-title">
+                      ${s.url ? html`<a href=${s.url} target="_blank" rel="noopener" @click=${(e: Event) => e.stopPropagation()}>${s.title}</a>` : s.title}
+                    </span>
+                    <cg-badge variant=${TYPE_BADGE} label=${s.type} size="sm" rounded="full"></cg-badge>
+                  </div>
+                  ${s.excerpt ? html`<div class="excerpt">${s.excerpt}</div>` : nothing}
+                </div>
+                <div class="weight-area">
+                  <div class="weight-bar"><div class="weight-fill" style="width: ${Math.round(s.weight * 100)}%"></div></div>
+                  <span class="weight-label">${Math.round(s.weight * 100)}%</span>
+                </div>
+              </div>
             `;
           })}
-        </svg>
-
-        ${selected ? html`
-          <div class="detail">
-            <div class="detail-header">
-              <span class="detail-type ${selected.type}">${selected.type}</span>
-              <span class="detail-title">${selected.title}</span>
-              <span class="detail-weight">${Math.round(selected.weight * 100)}%</span>
-            </div>
-            ${selected.excerpt ? html`<div class="detail-excerpt">${selected.excerpt}</div>` : nothing}
-          </div>
-        ` : nothing}
+        </div>
       </div>
     `;
   }

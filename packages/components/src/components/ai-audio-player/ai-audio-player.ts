@@ -25,43 +25,41 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class AiAudioPlayer extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
     .player {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-12, 12px);
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      background: var(--cg-color-bg-secondary, #27272a);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid var(--cg-color-border-primary, #3f3f46);
-      border-radius: var(--cg-border-radius-150, 12px);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      background: var(--cg-color-surface-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
     }
 
     .play-btn {
-      width: 40px;
-      height: 40px;
+      width: var(--cg-spacing-40);
+      height: var(--cg-spacing-40);
       border-radius: 50%;
       border: none;
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: var(--cg-color-surface-container-background, #18181b);
-      font-size: var(--cg-font-size-base, 16px);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-container-background);
+      font-size: var(--cg-font-size-base);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
       padding: 0;
-      transition: transform 100ms ease;
+      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
     .play-btn:hover { transform: scale(1.05); }
-    .play-btn:active { transform: scale(var(--cg-interaction-press-scale, 0.97)); }
+    .play-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .play-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
 
     .content {
@@ -69,7 +67,7 @@ export class AiAudioPlayer extends LitElement {
       min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-6, 6px);
+      gap: var(--cg-spacing-6);
     }
 
     .title-row {
@@ -79,17 +77,17 @@ export class AiAudioPlayer extends LitElement {
     }
 
     .title {
-      color: var(--cg-color-text-primary, #fafafa);
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
     .time {
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
       font-variant-numeric: tabular-nums;
       flex-shrink: 0;
     }
@@ -97,56 +95,57 @@ export class AiAudioPlayer extends LitElement {
     .waveform {
       display: flex;
       align-items: center;
-      gap: 2px;
-      height: 24px;
+      gap: var(--cg-spacing-2);
+      height: var(--cg-spacing-24);
     }
 
     .wave-bar {
       flex: 1;
-      min-width: 2px;
-      max-width: 4px;
-      border-radius: 1px;
-      transition: background 100ms ease;
+      min-width: var(--cg-spacing-2);
+      max-width: var(--cg-spacing-4);
+      border-radius: var(--cg-border-radius-25);
+      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
     .wave-bar.past {
-      background: var(--cg-brand-ai-accent, #dfff61);
+      background: var(--cg-color-action-primary-background-default);
     }
     .wave-bar.future {
-      background: var(--cg-color-border-primary, #3f3f46);
+      background: var(--cg-color-surface-cards-border);
     }
 
     .progress-track {
       width: 100%;
-      height: 4px;
-      background: var(--cg-color-border-primary, #3f3f46);
-      border-radius: 2px;
+      height: var(--cg-spacing-4);
+      background: var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-25);
       cursor: pointer;
       position: relative;
     }
     .progress-fill {
       height: 100%;
-      background: var(--cg-brand-ai-accent, #dfff61);
-      border-radius: 2px;
-      transition: width 100ms linear;
+      background: var(--cg-color-action-primary-background-default);
+      border-radius: var(--cg-border-radius-25);
+      transition: width var(--cg-motion-duration-fast) linear;
     }
 
     .speed-btn {
       background: none;
-      border: 1px solid var(--cg-color-border-primary, #3f3f46);
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-100, 8px);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
+      padding: var(--cg-spacing-4) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-100);
       cursor: pointer;
       flex-shrink: 0;
       font-family: inherit;
     }
-    .speed-btn:hover { color: var(--cg-color-text-primary, #fafafa); }
+    .speed-btn:hover { color: var(--cg-color-surface-base-text); }
     .speed-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
+    @media (prefers-reduced-motion: reduce) {
       .wave-bar { transition: none; }
       .progress-fill { transition: none; }
     }
@@ -231,6 +230,23 @@ export class AiAudioPlayer extends LitElement {
     }
   }
 
+  private _seekKeydown(e: KeyboardEvent) {
+    const dur = this.duration || this._audio?.duration || 0;
+    if (!this._audio || !dur) return;
+    let handled = true;
+    switch (e.key) {
+      case 'ArrowRight': this._audio.currentTime = Math.min(dur, this._audio.currentTime + 5); break;
+      case 'ArrowLeft': this._audio.currentTime = Math.max(0, this._audio.currentTime - 5); break;
+      case 'Home': this._audio.currentTime = 0; break;
+      case 'End': this._audio.currentTime = dur; break;
+      default: handled = false;
+    }
+    if (handled) {
+      e.preventDefault();
+      this._currentTime = this._audio.currentTime;
+    }
+  }
+
   private _cycleSpeed() {
     const idx = this._speeds.indexOf(this._speed);
     this._speed = this._speeds[(idx + 1) % this._speeds.length];
@@ -276,6 +292,7 @@ export class AiAudioPlayer extends LitElement {
             aria-valuemax=${Math.floor(dur)}
             aria-valuenow=${Math.floor(this._currentTime)}
             @click=${this._seek}
+            @keydown=${this._seekKeydown}
           >
             <div class="progress-fill" style="width: ${pct}%"></div>
           </div>

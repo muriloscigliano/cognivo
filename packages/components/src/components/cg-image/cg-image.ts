@@ -17,16 +17,16 @@ export class CgImage extends LitElement {
   static override styles = [hostBlock, reducedMotion, shimmerKeyframes, css`
     :host {
       overflow: hidden;
-      border-radius: var(--cg-border-radius-150, 12px);
-      background: var(--cg-color-surface-container-background, #18181b);
+      border-radius: var(--cg-border-radius-150);
+      background: var(--cg-color-surface-container-background);
     }
 
     /* Rounded variants */
     :host([rounded="none"]) { border-radius: 0; }
-    :host([rounded="sm"]) { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) { border-radius: var(--cg-border-radius-full); }
 
     .container {
       position: relative;
@@ -54,9 +54,9 @@ export class CgImage extends LitElement {
     .skeleton {
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, var(--cg-gray-100, #f4f4f5) 25%, var(--cg-gray-200, #e4e4e7) 50%, var(--cg-gray-100, #f4f4f5) 75%);
+      background: linear-gradient(90deg, var(--cg-color-surface-container-background) 25%, var(--cg-color-surface-container-border) 50%, var(--cg-color-surface-container-background) 75%);
       background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
+      animation: shimmer 1.5s linear infinite;
     }
 
     /* Error state */
@@ -67,31 +67,36 @@ export class CgImage extends LitElement {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: var(--cg-spacing-8, 8px);
-      color: var(--cg-gray-500, #71717a);
-      background: var(--cg-color-surface-container-background, #18181b);
+      gap: var(--cg-spacing-8);
+      color: var(--cg-color-surface-container-outlined);
+      background: var(--cg-color-surface-container-background);
     }
     .error-fallback svg {
-      width: 32px;
-      height: 32px;
-      opacity: 0.5;
+      width: var(--cg-icon-size-300);
+      height: var(--cg-icon-size-300);
+      opacity: 0.4;
     }
     .error-fallback span {
-      font-size: var(--cg-font-size-xs, 12px);
+      font-size: var(--cg-font-size-xs);
     }
 
     /* Loaded transition */
     img {
       opacity: 0;
-      transition: opacity var(--cg-motion-duration-slower, 350ms) ease;
+      transition: opacity var(--cg-motion-duration-slower) var(--cg-motion-easing-color);
     }
     img.loaded {
       opacity: 1;
-      animation: imgFadeIn 300ms ease-out;
+      animation: imgFadeIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter);
     }
     @keyframes imgFadeIn {
       from { opacity: 0; transform: scale(1.01); }
       to { opacity: 1; transform: scale(1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      img { transition: none; }
+      img.loaded { animation: none; }
     }
   `];
 
@@ -108,11 +113,13 @@ export class CgImage extends LitElement {
   private _handleLoad() {
     this._loading = false;
     this._error = false;
+    this.dispatchEvent(new CustomEvent('cg-image-load', { bubbles: true, composed: true }));
   }
 
   private _handleError() {
     this._loading = false;
     this._error = true;
+    this.dispatchEvent(new CustomEvent('cg-image-error', { bubbles: true, composed: true }));
   }
 
   override render() {

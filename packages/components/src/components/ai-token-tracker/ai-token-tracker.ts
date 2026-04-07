@@ -29,139 +29,120 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class AiTokenTracker extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     /* Compact mode */
     .compact {
       display: inline-flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      color: var(--cg-gray-400, #a1a1aa);
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-4) var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-100);
+      background: var(--cg-color-surface-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      font-size: var(--cg-font-size-xs);
+      font-family: var(--cg-font-family-mono);
+      color: var(--cg-color-input-text-placeholder);
       cursor: pointer;
-      transition: all 150ms;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
-    .compact:hover { border-color: var(--cg-gray-600, #52525b); }
-    .compact .sep { color: var(--cg-gray-700, #3f3f46); }
-    .compact .tokens { color: var(--cg-brand-ai-accent, #dfff61); font-weight: 700; }
-    .compact .cost-val { color: var(--cg-green-400, #4ade80); }
-    .compact .latency-val { color: var(--cg-gray-500, #71717a); }
+    .compact:hover { border-color: var(--cg-color-input-border-hover); }
+    .compact:active { transform: scale(var(--cg-interaction-press-scale)); }
+    .compact .sep { color: var(--cg-color-surface-cards-border); }
+    .compact .tokens { color: var(--cg-color-surface-base-text); font-weight: var(--cg-font-weight-bold); }
+    .compact .cost-val { color: var(--cg-color-status-success-text-default); }
+    .compact .latency-val { color: var(--cg-color-input-text-placeholder); }
 
     /* Detailed mode */
     .detailed {
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-100, 8px);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      padding: var(--cg-spacing-20);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
+      min-width: 320px;
     }
 
     .detail-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: var(--cg-spacing-12, 12px);
+      margin-bottom: var(--cg-spacing-16);
     }
     .detail-title {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      color: var(--cg-gray-400, #a1a1aa);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-input-text-placeholder);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
     .model-badge {
-      font-size: 10px;
-      padding: 2px var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-50, 4px);
-      background: rgba(223, 255, 97, 0.1);
-      color: var(--cg-brand-ai-accent, #dfff61);
-      font-weight: 700;
+      font-size: var(--cg-font-size-xs);
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-overlay-accent-subtle);
+      color: var(--cg-color-surface-base-text);
+      font-weight: var(--cg-font-weight-medium);
     }
 
     .metrics {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: var(--cg-spacing-12, 12px);
-      margin-bottom: var(--cg-spacing-12, 12px);
+      display: flex;
+      margin-bottom: var(--cg-spacing-16);
     }
     .metric {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: var(--cg-spacing-2);
+      padding: 0 var(--cg-spacing-16);
+      border-right: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
+    .metric:first-child { padding-left: 0; }
+    .metric:last-child { border-right: none; padding-right: 0; }
     .metric-label {
-      font-size: 10px;
-      color: var(--cg-gray-500, #71717a);
-      font-weight: 600;
-      text-transform: uppercase;
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      font-weight: var(--cg-font-weight-medium);
     }
     .metric-value {
-      font-size: var(--cg-font-size-base, 16px);
-      font-weight: 700;
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-lg);
+      font-weight: var(--cg-font-weight-semibold);
+      font-family: var(--cg-font-family-mono);
+      color: var(--cg-color-surface-base-text);
+      letter-spacing: var(--cg-letter-spacing-tight);
     }
-    .metric-value.accent { color: var(--cg-brand-ai-accent, #dfff61); }
-    .metric-value.green { color: var(--cg-green-400, #4ade80); }
-
-    /* Latency bar */
-    .latency-bar {
-      height: 4px;
-      border-radius: 2px;
-      background: var(--cg-gray-800, #27272a);
-      overflow: hidden;
-      margin-top: var(--cg-spacing-4, 4px);
-    }
-    .latency-fill {
-      height: 100%;
-      border-radius: 2px;
-      transition: width 300ms ease;
-    }
-    .latency-fill.fast { background: var(--cg-green-400, #4ade80); }
-    .latency-fill.medium { background: var(--cg-yellow-400, #fbbf24); }
-    .latency-fill.slow { background: var(--cg-red-400, #f87171); }
+    .metric-value.green { color: var(--cg-color-status-success-text-default); }
 
     /* Budget */
     .budget {
-      margin-top: var(--cg-spacing-8, 8px);
-      padding-top: 10px;
-      border-top: 1px solid var(--cg-gray-800, #27272a);
+      padding-top: var(--cg-spacing-12);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
     .budget-header {
       display: flex;
       justify-content: space-between;
-      font-size: var(--cg-font-size-xs, 12px);
-      margin-bottom: var(--cg-spacing-6, 6px);
+      font-size: var(--cg-font-size-xs);
+      margin-bottom: var(--cg-spacing-6);
     }
-    .budget-label { color: var(--cg-gray-500, #71717a); }
-    .budget-value { color: var(--cg-color-surface-base-text, #fafafa); font-weight: 600; }
+    .budget-label { color: var(--cg-color-input-text-placeholder); }
+    .budget-value { color: var(--cg-color-surface-base-text); font-weight: var(--cg-font-weight-semibold); }
     .budget-bar {
-      height: 6px;
-      border-radius: 3px;
-      background: var(--cg-gray-800, #27272a);
+      height: var(--cg-spacing-6);
+      border-radius: var(--cg-spacing-4);
+      background: var(--cg-color-surface-container-background);
       overflow: hidden;
     }
     .budget-fill {
       height: 100%;
-      border-radius: 3px;
-      transition: width 300ms ease;
+      border-radius: var(--cg-spacing-4);
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
-    .budget-fill.ok { background: var(--cg-green-400, #4ade80); }
-    .budget-fill.warning { background: var(--cg-yellow-400, #fbbf24); }
-    .budget-fill.danger { background: var(--cg-red-400, #f87171); }
+    .budget-fill.ok { background: var(--cg-color-status-success-text-default); }
+    .budget-fill.warning { background: var(--cg-color-status-warning-text-default); }
+    .budget-fill.danger { background: var(--cg-color-status-error-text-default); }
 
     :focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
   `];
 
@@ -226,11 +207,11 @@ export class AiTokenTracker extends LitElement {
         <div class="metrics">
           <div class="metric">
             <span class="metric-label">Input</span>
-            <span class="metric-value accent">${this.inputTokens.toLocaleString()}</span>
+            <span class="metric-value">${this.inputTokens.toLocaleString()}</span>
           </div>
           <div class="metric">
             <span class="metric-label">Output</span>
-            <span class="metric-value accent">${this.outputTokens.toLocaleString()}</span>
+            <span class="metric-value">${this.outputTokens.toLocaleString()}</span>
           </div>
           <div class="metric">
             <span class="metric-label">Cost</span>
@@ -239,9 +220,6 @@ export class AiTokenTracker extends LitElement {
           <div class="metric">
             <span class="metric-label">Latency</span>
             <span class="metric-value">${this._latencyStr}</span>
-            <div class="latency-bar">
-              <div class="latency-fill ${this._latencyClass}" style="width: ${Math.min(this.latency / 5000, 100)}%"></div>
-            </div>
           </div>
         </div>
 

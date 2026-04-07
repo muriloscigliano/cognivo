@@ -26,7 +26,7 @@ import { hostBase, reducedMotion, fadeSlideInKeyframes } from '../../styles/inde
 export class AiUsageMeter extends LitElement {
   static override styles = [hostBase, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     :host([hidden]) { display: none; }
 
@@ -34,14 +34,12 @@ export class AiUsageMeter extends LitElement {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: var(--cg-spacing-12, 12px);
-      padding: var(--cg-spacing-16, 16px);
-      background: var(--cg-color-bg-primary, #18181b);
-      border: 1px solid var(--cg-color-border-primary, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
+      gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-16);
+      background: var(--cg-color-surface-base-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
       min-width: 180px;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     .ring-wrapper {
@@ -58,7 +56,7 @@ export class AiUsageMeter extends LitElement {
 
     .ring-bg {
       fill: none;
-      stroke: var(--cg-color-border-primary, #3f3f46);
+      stroke: var(--cg-color-surface-cards-border);
       stroke-width: 8;
     }
 
@@ -66,11 +64,11 @@ export class AiUsageMeter extends LitElement {
       fill: none;
       stroke-width: 8;
       stroke-linecap: round;
-      transition: stroke-dashoffset 500ms ease, stroke 300ms ease;
+      transition: stroke-dashoffset var(--cg-motion-duration-slow) var(--cg-motion-easing-default), stroke var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
-    .ring-fill.normal  { stroke: var(--cg-brand-ai-accent, #dfff61); }
-    .ring-fill.warning { stroke: #eab308; }
-    .ring-fill.danger  { stroke: var(--cg-color-status-error-text-default, #ef4444); }
+    .ring-fill.normal  { stroke: var(--cg-color-surface-base-text); }
+    .ring-fill.warning { stroke: var(--cg-color-status-warning-text); }
+    .ring-fill.danger  { stroke: var(--cg-color-status-error-text-default); }
 
     .ring-text {
       position: absolute;
@@ -82,17 +80,17 @@ export class AiUsageMeter extends LitElement {
     }
 
     .pct {
-      font-size: var(--cg-font-size-xl, 20px);
-      font-weight: 800;
-      color: var(--cg-color-text-primary, #fafafa);
+      font-size: var(--cg-font-size-xl);
+      font-weight: var(--cg-font-weight-extrabold);
+      color: var(--cg-color-surface-base-text);
       font-variant-numeric: tabular-nums;
     }
 
     .pct-label {
-      font-size: 10px;
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
 
     .info {
@@ -100,40 +98,41 @@ export class AiUsageMeter extends LitElement {
     }
 
     .label {
-      color: var(--cg-color-text-primary, #fafafa);
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      margin-bottom: var(--cg-spacing-4, 4px);
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      margin-bottom: var(--cg-spacing-4);
     }
 
     .detail {
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
       font-variant-numeric: tabular-nums;
     }
 
     .reset {
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
-      margin-top: 2px;
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
+      margin-top: var(--cg-spacing-2);
     }
 
     .upgrade-btn {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
-      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
+      border-radius: var(--cg-border-radius-100);
       border: none;
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: var(--cg-color-surface-container-background, #18181b);
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 700;
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-container-background);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-bold);
       cursor: pointer;
       font-family: inherit;
-      transition: filter 150ms ease;
+      transition: filter var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
     }
     .upgrade-btn:hover { filter: brightness(1.1); }
+    .upgrade-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .upgrade-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
 
   `];

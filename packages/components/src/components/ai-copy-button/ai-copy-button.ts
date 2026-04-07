@@ -21,76 +21,99 @@ import { hostBase, reducedMotion, fadeSlideInKeyframes } from '../../styles/inde
 export class AiCopyButton extends LitElement {
   static override styles = [hostBase, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
     .copy-btn {
       display: inline-flex;
       align-items: center;
-      gap: var(--cg-spacing-6, 6px);
+      gap: var(--cg-spacing-6);
       font-family: inherit;
-      font-weight: 500;
+      font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
       border: none;
-      border-radius: var(--cg-border-radius-100, 8px);
-      transition: background 150ms ease, color 150ms ease, transform 100ms ease;
+      border-radius: var(--cg-border-radius-100);
+      transition: background var(--cg-motion-duration-normal) var(--cg-motion-easing-color), color var(--cg-motion-duration-normal) var(--cg-motion-easing-color), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
       white-space: nowrap;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
     .copy-btn:active {
-      transform: scale(var(--cg-interaction-press-scale, 0.97));
+      transform: scale(var(--cg-interaction-press-scale));
     }
     .copy-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     /* Default variant */
     :host([variant="default"]) .copy-btn,
     :host(:not([variant])) .copy-btn {
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
-      font-size: var(--cg-font-size-sm, 14px);
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      border: 1px solid var(--cg-color-border, #27272a);
+      padding: var(--cg-spacing-6) var(--cg-spacing-12);
+      font-size: var(--cg-font-size-sm);
+      background: var(--cg-overlay-dark-subtle);
+      color: var(--cg-color-input-text-placeholder);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
     :host([variant="default"]) .copy-btn:hover,
     :host(:not([variant])) .copy-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--cg-color-text-primary, #fafafa);
+      background: var(--cg-overlay-dark-strong);
+      color: var(--cg-color-surface-base-text);
     }
 
     /* Minimal variant */
     :host([variant="minimal"]) .copy-btn {
-      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
-      font-size: var(--cg-font-size-xs, 12px);
+      padding: var(--cg-spacing-4) var(--cg-spacing-8);
+      font-size: var(--cg-font-size-xs);
       background: none;
-      color: var(--cg-color-text-tertiary, #71717a);
+      color: var(--cg-color-input-text-placeholder);
     }
     :host([variant="minimal"]) .copy-btn:hover {
-      color: var(--cg-color-text-primary, #fafafa);
+      color: var(--cg-color-surface-base-text);
     }
 
     /* Icon-only variant */
     :host([variant="icon-only"]) .copy-btn {
-      padding: 4px;
-      font-size: var(--cg-font-size-sm, 14px);
+      padding: var(--cg-spacing-4);
+      font-size: var(--cg-font-size-sm);
       background: none;
-      color: var(--cg-color-text-tertiary, #71717a);
+      color: var(--cg-color-input-text-placeholder);
       line-height: 1;
     }
     :host([variant="icon-only"]) .copy-btn:hover {
-      color: var(--cg-color-text-primary, #fafafa);
+      color: var(--cg-color-surface-base-text);
     }
     :host([variant="icon-only"]) .label-text {
       display: none;
     }
 
-    /* Copied state */
+    /* Copied (success) state */
     .copy-btn[data-copied="true"] {
-      color: var(--cg-color-accent, #dfff61) !important;
+      color: var(--cg-color-status-success-text) !important;
+    }
+
+    /* Error state */
+    .copy-btn[data-error="true"] {
+      color: var(--cg-color-status-error-text) !important;
+      animation: error-shake var(--cg-motion-duration-slow) var(--cg-motion-easing-color);
+    }
+    @keyframes error-shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-3px); }
+      40% { transform: translateX(3px); }
+      60% { transform: translateX(-2px); }
+      80% { transform: translateX(2px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .copy-btn[data-error="true"] {
+        animation: none;
+      }
+    }
+
+    /* Disabled state */
+    .copy-btn:disabled {
+      opacity: 0.5;
+      cursor: var(--cg-cursor-not-allowed);
+      pointer-events: none;
     }
 
     .icon {
@@ -98,14 +121,15 @@ export class AiCopyButton extends LitElement {
       font-size: inherit;
       line-height: 1;
     }
-    }
   `];
   @property({ type: String }) value = '';
   @property({ type: String }) label = 'Copy';
   @property({ type: String, reflect: true }) variant: 'default' | 'minimal' | 'icon-only' = 'default';
   @property({ type: Number }) timeout = 2000;
+  @property({ type: Boolean, reflect: true }) disabled = false;
 
   @state() private _copied = false;
+  @state() private _error = false;
 
   private _timer: ReturnType<typeof setTimeout> | null = null;
 
@@ -115,7 +139,7 @@ export class AiCopyButton extends LitElement {
   }
 
   private async _handleCopy(): Promise<void> {
-    if (!this.value) return;
+    if (!this.value || this.disabled) return;
     try {
       if (navigator.clipboard) {
         await navigator.clipboard.writeText(this.value);
@@ -143,19 +167,28 @@ export class AiCopyButton extends LitElement {
         this._timer = null;
       }, this.timeout);
     } catch (err) {
+      this._error = true;
       this.dispatchEvent(new CustomEvent('ai-copy-error', {
         detail: { error: err instanceof Error ? err.message : 'Copy failed' },
         bubbles: true,
         composed: true,
       }));
+
+      if (this._timer) clearTimeout(this._timer);
+      this._timer = setTimeout(() => {
+        this._error = false;
+        this._timer = null;
+      }, this.timeout);
     }
   }
 
   private get _icon(): string {
+    if (this._error) return '\u2717';
     return this._copied ? '\u2713' : '\u2398';
   }
 
   private get _displayLabel(): string {
+    if (this._error) return 'Failed';
     return this._copied ? 'Copied!' : this.label;
   }
 
@@ -163,10 +196,11 @@ export class AiCopyButton extends LitElement {
     return html`
       <button
         class="copy-btn"
-        role="button"
-        tabindex="0"
+        ?disabled=${this.disabled}
         data-copied=${this._copied ? 'true' : 'false'}
+        data-error=${this._error ? 'true' : 'false'}
         aria-label=${this._displayLabel}
+        aria-disabled=${this.disabled ? 'true' : 'false'}
         @click=${this._handleCopy}
       >
         <span class="icon">${this._icon}</span>

@@ -35,150 +35,158 @@ interface Permission {
 export class AiPermissionGate extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     :host([hidden]) { display: none; }
 
     .container {
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      padding: var(--cg-spacing-16, 16px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      background: var(--cg-color-surface-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-16);
+      color: var(--cg-color-surface-base-text);
     }
 
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: var(--cg-spacing-16, 16px);
+      margin-bottom: var(--cg-spacing-16);
     }
 
     .title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
     }
 
     .role-badge {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      background: var(--cg-color-surface-container-border, #27272a);
-      color: var(--cg-gray-400, #a1a1aa);
-      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-100, 8px);
+      background: var(--cg-color-surface-cards-border);
+      color: var(--cg-color-input-text-placeholder);
+      padding: var(--cg-spacing-4) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-100);
     }
 
     .feature-list {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-4);
     }
 
     .feature-row {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      background: #09090b;
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      transition: border-color 120ms ease;
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-100);
+      background: var(--cg-color-surface-base-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
-    .feature-row:hover { border-color: var(--cg-gray-700, #3f3f46); }
+    .feature-row:hover { border-color: var(--cg-color-surface-cards-border); }
 
     .status-icon {
-      width: 22px;
-      height: 22px;
+      width: var(--cg-spacing-20);
+      height: var(--cg-spacing-20);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: var(--cg-font-size-xs, 12px);
+      font-size: var(--cg-font-size-xs);
       flex-shrink: 0;
     }
     .status-icon.allowed {
-      background: rgba(34, 197, 94, 0.15);
-      color: #22c55e;
+      background: var(--cg-color-status-success-background-default);
+      color: var(--cg-color-status-success-text);
     }
     .status-icon.denied {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--cg-color-status-error-text-default, #ef4444);
+      background: var(--cg-color-status-error-background-default);
+      color: var(--cg-color-status-error-text-default);
     }
 
     .feature-info { flex: 1; min-width: 0; }
 
     .feature-name {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
     }
 
     .feature-role {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-600, #52525b);
-      margin-top: 2px;
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-top: var(--cg-spacing-2);
     }
 
     .feature-reason {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
-      margin-top: 2px;
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-top: var(--cg-spacing-2);
       font-style: italic;
     }
 
     .request-btn {
       background: transparent;
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      color: var(--cg-gray-400, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-border-radius-100, 8px);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      padding: var(--cg-spacing-6) var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-100);
       cursor: pointer;
       flex-shrink: 0;
-      transition: all 150ms ease;
+      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     .request-btn:hover {
-      border-color: var(--cg-brand-ai-accent, #dfff61);
-      color: var(--cg-brand-ai-accent, #dfff61);
+      border-color: var(--cg-color-surface-base-text);
+      color: var(--cg-color-surface-base-text);
+    }
+    .request-btn:active {
+      transform: scale(var(--cg-interaction-press-scale));
     }
     .request-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .summary {
-      margin-top: var(--cg-spacing-12, 12px);
-      padding-top: 12px;
-      border-top: 1px solid var(--cg-color-surface-container-border, #27272a);
+      margin-top: var(--cg-spacing-12);
+      padding-top: var(--cg-spacing-12);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       display: flex;
-      gap: var(--cg-spacing-16, 16px);
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
+      gap: var(--cg-spacing-16);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     .summary-item {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-4);
     }
 
-    .dot-green { color: #22c55e; }
-    .dot-red { color: var(--cg-color-status-error-text-default, #ef4444); }
+    .dot-green { color: var(--cg-color-status-success-text); }
+    .dot-red { color: var(--cg-color-status-error-text-default); }
 
     .empty-state {
       text-align: center;
-      color: var(--cg-gray-600, #52525b);
-      font-size: var(--cg-font-size-sm, 14px);
-      padding: var(--cg-spacing-24, 24px) 0;
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
+      padding: var(--cg-spacing-24) 0;
     }
 
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .container { border-radius: 0; }
+    :host([rounded="sm"]) .container { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .container { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .container { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) .container { border-radius: var(--cg-border-radius-full); }
   `];
 
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) permissions: Permission[] = [];
   @property({ type: String }) currentRole = '';
 

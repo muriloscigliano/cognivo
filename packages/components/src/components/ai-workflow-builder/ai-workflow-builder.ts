@@ -6,7 +6,7 @@
  *
  * @example
  * ```html
- * <ai-workflow-builder title="Support Agent" .steps=${[
+ * <ai-workflow-builder heading="Support Agent" .steps=${[
  *   { id: '1', label: 'Receive Query', type: 'start', status: 'complete' },
  *   { id: '2', label: 'Classify Intent', type: 'agent', status: 'active', description: 'Using GPT-4' },
  *   { id: '3', label: 'Search KB', type: 'tool', status: 'pending', next: ['4'] },
@@ -15,7 +15,7 @@
  * ```
  *
  * @prop {WorkflowStep[]} steps - Array of workflow step objects
- * @prop {string} title - Workflow header title (default 'Workflow')
+ * @prop {string} heading - Workflow header title (default 'Workflow')
  *
  * @fires {CustomEvent<{id: string, label: string, type: string, status: string}>} ai-workflow-step-click - When a step is clicked
  */
@@ -36,76 +36,74 @@ interface WorkflowStep {
 export class AiWorkflowBuilder extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     .container {
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px); padding: var(--cg-spacing-16, 16px); overflow: auto;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150); padding: var(--cg-spacing-16); overflow: auto;
     }
 
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--cg-spacing-16, 16px); }
-    .title { font-size: 14px; font-weight: 700; color: var(--cg-color-surface-base-text, #fafafa); }
-    .step-count { font-size: 11px; color: var(--cg-gray-500, #71717a); }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--cg-spacing-16); }
+    .title { font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-bold); color: var(--cg-color-surface-base-text); }
+    .step-count { font-size: var(--cg-font-size-xs); color: var(--cg-color-input-text-placeholder); }
 
     .flow { display: flex; flex-direction: column; align-items: center; gap: 0; }
 
     .step-wrapper { display: flex; flex-direction: column; align-items: center; }
 
-    .connector { width: 2px; height: 20px; background: var(--cg-gray-700, #3f3f46); }
-    .connector.active { background: var(--cg-brand-ai-accent, #dfff61); }
+    .connector { width: var(--cg-spacing-2); height: var(--cg-spacing-20); background: var(--cg-color-surface-cards-border); }
+    .connector.active { background: var(--cg-color-action-primary-background-default); }
 
     .step {
-      display: flex; align-items: center; gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px); border-radius: var(--cg-border-radius-100, 8px);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      background: var(--cg-color-surface-base-background, #09090b);
-      min-width: 200px; cursor: pointer; transition: all 150ms;
+      display: flex; align-items: center; gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16); border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      background: var(--cg-color-surface-base-background);
+      min-width: var(--cg-spacing-96); cursor: pointer; transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color), background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
-    .step:hover { border-color: var(--cg-gray-600, #52525b); }
-    .step:focus-visible { outline: 2px solid var(--cg-brand-ai-accent, #dfff61); outline-offset: 2px; }
-    .step.active { border-color: var(--cg-brand-ai-accent, #dfff61); background: rgba(223, 255, 97, 0.04); }
-    .step.complete { border-color: var(--cg-green-400, #4ade80); }
-    .step.error { border-color: var(--cg-red-400, #f87171); }
+    .step:hover { border-color: var(--cg-color-input-border-hover); }
+    .step:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); outline-offset: var(--cg-outline-offset-default); }
+    .step.active { border-color: var(--cg-color-surface-base-text); background: var(--cg-overlay-accent-subtle); }
+    .step.complete { border-color: var(--cg-color-status-success-text-default); }
+    .step.error { border-color: var(--cg-color-status-error-text-default); }
     .step.skipped { opacity: 0.5; }
 
     .step-icon {
-      width: 28px; height: 28px; border-radius: var(--cg-border-radius-100, 8px);
+      width: var(--cg-spacing-24); height: var(--cg-spacing-24); border-radius: var(--cg-border-radius-100);
       display: flex; align-items: center; justify-content: center;
-      font-size: var(--cg-font-size-xs, 12px); flex-shrink: 0;
+      font-size: var(--cg-font-size-xs); flex-shrink: 0;
     }
-    .step-icon.start { background: rgba(34, 197, 94, 0.12); color: #4ade80; }
-    .step-icon.agent { background: rgba(223, 255, 97, 0.12); color: #dfff61; }
-    .step-icon.tool { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
-    .step-icon.condition { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
-    .step-icon.end { background: rgba(139, 92, 246, 0.12); color: #a78bfa; }
+    .step-icon.start { background: var(--cg-color-status-success-background-default); color: var(--cg-color-status-success-text); }
+    .step-icon.agent { background: var(--cg-overlay-accent-light); color: var(--cg-color-surface-base-text); }
+    .step-icon.tool { background: var(--cg-color-status-info-background-default); color: var(--cg-color-status-info-text); }
+    .step-icon.condition { background: var(--cg-color-status-warning-background-default); color: var(--cg-color-status-warning-text); }
+    .step-icon.end { background: var(--cg-color-surface-container-background); color: var(--cg-color-input-text-placeholder); }
 
     .step-info { flex: 1; min-width: 0; }
-    .step-label { font-size: 13px; font-weight: 600; color: var(--cg-color-surface-base-text, #fafafa); }
-    .step-desc { font-size: 11px; color: var(--cg-gray-500, #71717a); margin-top: 2px; }
-    .step-type { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--cg-gray-500, #71717a); }
+    .step-label { font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-semibold); color: var(--cg-color-surface-base-text); }
+    .step-desc { font-size: var(--cg-font-size-xs); color: var(--cg-color-input-text-placeholder); margin-top: var(--cg-spacing-2); }
+    .step-type { font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-bold); text-transform: uppercase; letter-spacing: 0.05em; color: var(--cg-color-input-text-placeholder); }
 
-    .step-status { font-size: var(--cg-font-size-xs, 12px); flex-shrink: 0; }
+    .step-status { font-size: var(--cg-font-size-xs); flex-shrink: 0; }
 
-    .branch { display: flex; gap: var(--cg-spacing-16, 16px); align-items: flex-start; }
-    .branch-line { width: 1px; height: 100%; background: var(--cg-gray-700, #3f3f46); }
+    .branch { display: flex; gap: var(--cg-spacing-16); align-items: flex-start; }
+    .branch-line { width: var(--cg-spacing-1); height: 100%; background: var(--cg-color-surface-cards-border); }
 
-    .empty { text-align: center; padding: 32px; color: var(--cg-gray-500, #71717a); font-size: 13px; }
+    .empty { text-align: center; padding: var(--cg-spacing-32); color: var(--cg-color-input-text-placeholder); font-size: var(--cg-font-size-sm); }
 
     /* ── Rounded variants ── */
     :host([rounded="none"]) .container { border-radius: 0; }
-    :host([rounded="sm"]) .container { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .container { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .container { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .container { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .container { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .container { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .container { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) .container { border-radius: var(--cg-border-radius-full); }
   `];
 
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) steps: WorkflowStep[] = [];
-  @property({ type: String }) override title: string = 'Workflow';
+  @property({ type: String }) heading: string = 'Workflow';
 
   private _getTypeIcon(type: string): unknown {
     if (type === 'start') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
@@ -134,12 +132,12 @@ export class AiWorkflowBuilder extends LitElement {
     if (this.steps.length === 0) return html`<div class="container"><div class="empty">No workflow defined</div></div>`;
 
     return html`
-      <div class="container" role="figure" aria-label="${this.title}">
+      <div class="container" role="figure" aria-label="${this.heading}">
         <div class="header">
-          <span class="title">${this.title}</span>
+          <span class="title">${this.heading}</span>
           <span class="step-count">${this.steps.length} steps</span>
         </div>
-        <div class="flow">
+        <div class="flow" role="list">
           ${this.steps.map((step, i) => html`
             ${i > 0 ? html`<div class="connector ${step.status === 'active' || step.status === 'complete' ? 'active' : ''}"></div>` : nothing}
             <div class="step ${step.status || 'pending'}" tabindex="0" role="listitem"

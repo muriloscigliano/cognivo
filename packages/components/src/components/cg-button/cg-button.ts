@@ -17,10 +17,10 @@ import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
  * @slot prefix - Icon or content before the label
  * @slot suffix - Icon or content after the label
  *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Primary button background color
- * @cssprop [--cg-component-button-height-md=38px] - Button height (md size)
- * @cssprop [--cg-interaction-press-scale=0.97] - Scale on press/active
- * @cssprop [--cg-motion-duration-fast=80ms] - Color transition speed
+ * @cssprop --cg-color-action-primary-background-default - Primary button background color
+ * @cssprop --cg-component-button-height-md - Button height (md size, 48px)
+ * @cssprop --cg-interaction-press-scale - Scale on press/active (0.97)
+ * @cssprop --cg-transition-duration-fast - Color transition speed
  */
 @customElement('cg-button')
 export class CgButton extends LitElement {
@@ -29,145 +29,115 @@ export class CgButton extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: var(--cg-spacing-8, 8px);
-      border: 1px solid transparent;
+      gap: var(--cg-spacing-8);
+      border: var(--cg-border-width-50) solid transparent;
       cursor: pointer;
       font-family: inherit;
-      font-weight: var(--cg-font-weight-semibold, 600);
+      font-weight: var(--cg-font-weight-medium);
       line-height: 1;
       white-space: nowrap;
       text-decoration: none;
       transition:
-        transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
-        background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        border-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        box-shadow 150ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1));
+        background-color var(--cg-transition-duration-fast) ease,
+        border-color var(--cg-transition-duration-fast) ease,
+        box-shadow var(--cg-transition-duration-fast) ease,
+        transform var(--cg-transition-duration-fast) ease;
       -webkit-font-smoothing: antialiased;
       position: relative;
-      overflow: hidden;
-      box-shadow: 0 0 0 0px transparent, 0 0 0 0px transparent;
     }
 
-    /* Ripple effect */
-    button::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
-      opacity: 0;
-      transform: scale(0);
-      transition: transform 400ms ease-out, opacity 400ms ease-out;
-      pointer-events: none;
-      border-radius: inherit;
-    }
-    button:active:not(:disabled)::after {
-      opacity: 1;
-      transform: scale(2.5);
-      transition: 0s;
-    }
-
-    /* Press scale — HeroUI pattern */
+    /* Press scale */
     button:active:not(:disabled) {
-      transform: scale(var(--cg-interaction-press-scale, 0.97));
+      transform: scale(var(--cg-interaction-press-scale));
     }
 
-    /* Focus ring — animated dual layer */
+    /* Focus ring — dual-layer */
     button:focus-visible {
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
       outline: none;
     }
 
     /* ── Sizes ── */
     :host([size="sm"]) button {
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-12, 12px);
-      font-size: var(--cg-font-size-xs, 12px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      min-height: var(--cg-component-button-height-sm, 32px);
+      padding: 0 var(--cg-spacing-12);
+      font-size: var(--cg-font-size-xs);
+      border-radius: var(--cg-component-button-radius-sm);
+      height: var(--cg-component-button-height-sm);
     }
     :host([size="md"]) button {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
-      font-size: var(--cg-font-size-sm, 14px);
-      border-radius: var(--cg-border-radius-150, 12px);
-      min-height: var(--cg-component-button-height-md, 38px);
+      padding: 0 var(--cg-spacing-16);
+      font-size: var(--cg-font-size-sm);
+      border-radius: var(--cg-component-button-radius-md);
+      height: var(--cg-component-button-height-md);
     }
     :host([size="lg"]) button {
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-24, 24px);
-      font-size: var(--cg-font-size-md, 18px);
-      border-radius: var(--cg-border-radius-150, 12px);
-      min-height: var(--cg-component-button-height-lg, 44px);
+      padding: 0 var(--cg-spacing-24);
+      font-size: var(--cg-font-size-base);
+      border-radius: var(--cg-component-button-radius-lg);
+      height: var(--cg-component-button-height-lg);
     }
 
     /* ── Rounded overrides ── */
     :host([rounded="none"]) button { border-radius: 0; }
-    :host([rounded="sm"]) button { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) button { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) button { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) button { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) button { border-radius: var(--cg-component-button-radius-sm); }
+    :host([rounded="md"]) button { border-radius: var(--cg-component-button-radius-md); }
+    :host([rounded="lg"]) button { border-radius: var(--cg-component-button-radius-lg); }
+    :host([rounded="full"]) button { border-radius: var(--cg-border-radius-full); }
 
     /* ── Primary variant ── */
     :host([variant="primary"]) button {
-      background: var(--cg-color-action-primary-background-default, #dfff61);
-      color: var(--cg-color-action-primary-text-default, #000000);
-      border-color: var(--cg-color-action-primary-border-default, #dfff61);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-action-primary-text-default);
+      border-color: var(--cg-color-action-primary-border-default);
     }
     :host([variant="primary"]) button:not(:disabled):hover {
-      background: var(--cg-color-action-primary-background-hover, #e2ff70);
-    }
-    :host([variant="primary"]) button:not(:disabled):active {
-      background: var(--cg-color-action-primary-background-active, #dfff61);
-      transform: scale(var(--cg-interaction-press-scale, 0.97));
+      background: var(--cg-color-action-primary-background-hover);
     }
 
     /* ── Secondary variant ── */
     :host([variant="secondary"]) button {
-      background: var(--cg-color-action-secondary-background-default, #27272a);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      border-color: var(--cg-color-surface-container-border, #27272a);
+      background: var(--cg-color-action-secondary-background-default);
+      color: var(--cg-color-action-secondary-text-default);
+      border-color: var(--cg-color-action-secondary-border-default);
     }
     :host([variant="secondary"]) button:not(:disabled):hover {
-      background: var(--cg-color-action-secondary-background-hover, #3f3f46);
-    }
-    :host([variant="secondary"]) button:not(:disabled):active {
-      background: var(--cg-color-action-secondary-background-active, #3f3f46);
-      transform: scale(var(--cg-interaction-press-scale, 0.97));
+      background: var(--cg-color-action-secondary-background-hover);
     }
 
     /* ── Tertiary (ghost) variant ── */
     :host([variant="tertiary"]) button {
       background: transparent;
-      color: var(--cg-text-accent, #e5ff6b);
+      color: var(--cg-color-action-tertiary-text-default);
       border-color: transparent;
     }
     :host([variant="tertiary"]) button:not(:disabled):hover {
-      background: var(--cg-color-action-tertiary-background-hover, #27272a);
-    }
-    :host([variant="tertiary"]) button:not(:disabled):active {
-      background: var(--cg-overlay-accent-medium, rgba(223, 255, 97, 0.18));
-      transform: scale(var(--cg-interaction-press-scale, 0.97));
+      background: var(--cg-color-action-tertiary-background-hover);
     }
 
     /* ── Danger type ── */
     :host([type="danger"]) button {
-      background: var(--cg-color-status-error-background-default, rgba(239, 68, 68, 0.12));
-      color: var(--cg-text-danger, #ef4444);
-      border-color: var(--cg-color-status-error-border-default, rgba(239, 68, 68, 0.25));
+      background: var(--cg-color-status-error-background-default);
+      color: var(--cg-color-status-error-text-default);
+      border-color: var(--cg-color-status-error-border-default);
     }
     :host([type="danger"][variant="primary"]) button {
-      background: var(--cg-text-danger, #ef4444);
-      color: var(--cg-gray-white, #ffffff);
-      border-color: var(--cg-text-danger, #ef4444);
+      background: var(--cg-color-status-error-text-default);
+      color: var(--cg-color-status-error-text-inverse);
+      border-color: transparent;
     }
     :host([type="danger"]) button:not(:disabled):hover {
-      filter: brightness(0.95);
+      background: var(--cg-color-status-error-background-hover);
+    }
+    :host([type="danger"][variant="primary"]) button:not(:disabled):hover {
+      background: var(--cg-color-status-error-background-hover);
     }
 
     /* ── Disabled ── */
     button:disabled {
       opacity: 0.5;
-      cursor: var(--cg-cursor-not-allowed, not-allowed);
-      transform: none !important;
+      pointer-events: none;
     }
 
     /* ── Loading ── */
@@ -177,16 +147,47 @@ export class CgButton extends LitElement {
     }
     .spinner {
       position: absolute;
-      width: 16px;
-      height: 16px;
-      border: 2px solid currentColor;
+      width: var(--cg-icon-size-md);
+      height: var(--cg-icon-size-md);
+      border: var(--cg-border-width-100) solid currentColor;
       border-right-color: transparent;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
+      border-radius: var(--cg-border-radius-full);
+      animation: spin var(--cg-motion-duration-slow) linear infinite;
     }
-    :host([loading]) .spinner { color: var(--cg-color-action-primary-text-default, #000000); }
-    :host([loading][variant="secondary"]) .spinner { color: var(--cg-color-surface-base-text, #fafafa); }
-    :host([loading][variant="tertiary"]) .spinner { color: var(--cg-text-accent, #e5ff6b); }
+    :host([loading]) .spinner { color: var(--cg-color-action-primary-text-default); }
+    :host([loading][variant="secondary"]) .spinner { color: var(--cg-color-action-secondary-text-default); }
+    :host([loading][variant="tertiary"]) .spinner { color: var(--cg-color-action-tertiary-text-default); }
+
+    /* ── Error state ── */
+    :host([status="error"]) button {
+      background: var(--cg-color-status-error-background-default);
+      color: var(--cg-color-status-error-text-default);
+      border-color: var(--cg-color-status-error-border-default);
+    }
+    :host([status="error"]) button:not(:disabled):hover {
+      background: var(--cg-color-status-error-background-hover);
+    }
+    :host([status="error"]) .spinner { color: var(--cg-color-status-error-text-default); }
+
+    /* ── Success state ── */
+    :host([status="success"]) button {
+      background: var(--cg-color-status-success-background-default);
+      color: var(--cg-color-status-success-text-default);
+      border-color: var(--cg-color-status-success-border-default);
+    }
+    :host([status="success"]) button:not(:disabled):hover {
+      background: var(--cg-color-status-success-background-hover);
+    }
+    :host([status="success"]) .spinner { color: var(--cg-color-status-success-text-default); }
+
+    /* ── Full width ── */
+    :host([full]) {
+      display: block;
+      width: 100%;
+    }
+    :host([full]) button {
+      width: 100%;
+    }
   `];
 
   @property({ reflect: true }) variant: 'primary' | 'secondary' | 'tertiary' = 'primary';
@@ -196,6 +197,7 @@ export class CgButton extends LitElement {
   @property({ type: Boolean, reflect: true }) disabled = false;
   @property({ type: Boolean, reflect: true }) loading = false;
   @property({ type: Boolean, reflect: true }) full = false;
+  @property({ reflect: true }) status: 'idle' | 'error' | 'success' = 'idle';
   @property() label = '';
 
   override render() {

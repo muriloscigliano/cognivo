@@ -1,8 +1,8 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, pulseKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
-/** Step definition for cg-steps, with title, description, and status (done/active/pending/error). */
+/** Step definition for cg-steps. */
 export interface StepItem {
   title: string;
   description?: string;
@@ -12,52 +12,25 @@ export interface StepItem {
 /**
  * <cg-steps> — Step indicator with vertical/horizontal mode and clickable steps.
  *
- * Features:
- * - Vertical and horizontal layouts
- * - 4 status states: done (check), active (filled), pending (outline), error (x)
- * - Clickable steps (emit event)
- * - Connecting lines that change color with status
- * - Active step pulse animation
- * - Compact mode
+ * @example
+ * ```html
+ * <cg-steps .items=${[{title:'Account',status:'done'},{title:'Profile',status:'active'},{title:'Review'}]}></cg-steps>
+ * ```
+ *
+ * @fires {CustomEvent<{index, item}>} cg-step-click - When a clickable step is clicked
+ *
+ * @cssprop --cg-color-status-success-text-default - Done state color
+ * @cssprop --cg-color-action-primary-background-default - Active state color
  */
 @customElement('cg-steps')
 export class CgSteps extends LitElement {
-  static override styles = [hostBlock, reducedMotion, pulseKeyframes, css`
+  static override styles = [hostBlock, reducedMotion, css`
     /* Vertical layout (default) */
     .steps-vertical { display: flex; flex-direction: column; }
 
     .step-v {
       display: flex;
-      gap: var(--cg-spacing-12, 12px);
-      animation: stepIn 300ms cubic-bezier(0.2, 0, 0, 1) both;
-    }
-    .step-v:nth-child(1) { animation-delay: 0ms; }
-    .step-v:nth-child(2) { animation-delay: 60ms; }
-    .step-v:nth-child(3) { animation-delay: 120ms; }
-    .step-v:nth-child(4) { animation-delay: 180ms; }
-    .step-v:nth-child(5) { animation-delay: 240ms; }
-    .step-v:nth-child(6) { animation-delay: 300ms; }
-
-    .step-h {
-      animation: stepIn 300ms cubic-bezier(0.2, 0, 0, 1) both;
-    }
-    .step-h:nth-child(1) { animation-delay: 0ms; }
-    .step-h:nth-child(2) { animation-delay: 60ms; }
-    .step-h:nth-child(3) { animation-delay: 120ms; }
-    .step-h:nth-child(4) { animation-delay: 180ms; }
-    .step-h:nth-child(5) { animation-delay: 240ms; }
-    .step-h:nth-child(6) { animation-delay: 300ms; }
-
-    @keyframes stepIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .indicator-v {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex-shrink: 0;
+      gap: var(--cg-spacing-12);
     }
 
     /* Horizontal layout */
@@ -74,119 +47,135 @@ export class CgSteps extends LitElement {
       position: relative;
     }
 
+    .indicator-v {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
     .indicator-h {
       display: flex;
       align-items: center;
       width: 100%;
-      margin-bottom: 8px;
+      margin-bottom: var(--cg-spacing-8);
     }
 
+    /* ── Connecting lines ── */
     .h-line {
       flex: 1;
-      height: 2px;
-      background: var(--cg-gray-200, #e4e4e7);
-      transition: background 0.3s ease;
+      height: var(--cg-spacing-2);
+      background: var(--cg-color-surface-container-border);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
-    .h-line.done { background: var(--cg-color-status-success-text-default, #4ade80); }
-    .h-line:first-child { visibility: hidden; }
+    .h-line.done { background: var(--cg-color-status-success-text-default); }
     .step-h:first-child .h-line:first-child { visibility: hidden; }
     .step-h:last-child .h-line:last-child { visibility: hidden; }
 
-    /* Circle */
+    .v-line {
+      width: var(--cg-spacing-2);
+      flex: 1;
+      min-height: var(--cg-spacing-24);
+      background: var(--cg-color-surface-container-border);
+      margin: var(--cg-spacing-4) 0;
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+    }
+    .v-line.done { background: var(--cg-color-status-success-text-default); }
+
+    /* ── Circle ── */
     .circle {
-      width: 32px;
-      height: 32px;
-      border-radius: var(--cg-border-radius-full, 99999px);
+      width: var(--cg-spacing-32);
+      height: var(--cg-spacing-32);
+      border-radius: var(--cg-border-radius-full);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.8rem;
-      font-weight: var(--cg-font-weight-bold, 700);
-      border: 2px solid var(--cg-gray-300, #d4d4d8);
-      color: var(--cg-gray-500, #71717a);
-      background: var(--cg-color-surface-container-background, #18181b);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
+      border: var(--cg-border-width-100) solid var(--cg-color-surface-container-border);
+      color: var(--cg-color-surface-container-outlined);
+      background: var(--cg-color-surface-container-background);
       flex-shrink: 0;
       position: relative;
-      transition: all var(--cg-motion-duration-slow, 250ms) ease;
+      transition:
+        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        border-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
 
-    :host([compact]) .circle { width: 24px; height: 24px; font-size: 0.65rem; }
+    :host([compact]) .circle {
+      width: var(--cg-spacing-24);
+      height: var(--cg-spacing-24);
+      font-size: var(--cg-font-size-xs);
+    }
 
     .circle.done {
-      background: var(--cg-color-status-success-text-default, #4ade80);
-      border-color: var(--cg-color-status-success-text-default, #4ade80);
-      color: var(--cg-gray-white, #ffffff);
+      background: var(--cg-color-status-success-text-default);
+      border-color: var(--cg-color-status-success-text-default);
+      color: var(--cg-color-status-success-text-inverse);
     }
     .circle.active {
-      background: var(--cg-focus-ring-color, #c8e650);
-      border-color: var(--cg-focus-ring-color, #c8e650);
-      color: var(--cg-gray-white, #ffffff);
-      box-shadow: 0 0 0 4px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25));
+      background: var(--cg-color-action-primary-background-default);
+      border-color: var(--cg-color-action-primary-border-default);
+      color: var(--cg-color-action-primary-text-default);
     }
     .circle.error {
-      background: var(--cg-text-danger, #ef4444);
-      border-color: var(--cg-text-danger, #ef4444);
-      color: var(--cg-gray-white, #ffffff);
+      background: var(--cg-color-status-error-text-default);
+      border-color: var(--cg-color-status-error-text-default);
+      color: var(--cg-color-status-error-text-inverse);
     }
-
-    .circle svg { width: 14px; height: 14px; }
-    :host([compact]) .circle svg { width: 11px; height: 11px; }
 
     /* Active pulse */
-    .circle.active { animation: pulse 2s ease-in-out infinite; }
-
-    /* Clickable */
-    :host([clickable]) .circle {
-      cursor: pointer;
+    .circle.active { animation: stepPulse 2s ease-in-out infinite; }
+    @keyframes stepPulse {
+      0%, 100% { box-shadow: 0 0 0 0 transparent; }
+      50% { box-shadow: 0 0 0 var(--cg-spacing-4) var(--cg-overlay-accent-subtle); }
     }
+
+    /* ── Clickable ── */
+    :host([clickable]) .circle { cursor: pointer; }
+    :host([clickable]) .circle:active { transform: scale(var(--cg-interaction-press-scale)); }
     :host([clickable]) .circle:hover:not(.active) {
-      border-color: var(--cg-focus-ring-color, #c8e650);
-      color: var(--cg-text-accent, #e5ff6b);
+      border-color: var(--cg-color-action-primary-border-default);
+      color: var(--cg-color-action-primary-background-default);
     }
     :host([clickable]) .circle:focus-visible {
-      outline: 2px solid var(--cg-focus-ring-color, #c8e650);
-      outline-offset: 2px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
 
-    /* Vertical connecting line */
-    .v-line {
-      width: 2px;
-      flex: 1;
-      min-height: 24px;
-      background: var(--cg-gray-200, #e4e4e7);
-      margin: var(--cg-spacing-4, 4px) 0;
-      transition: background 0.3s ease;
-    }
-    .v-line.done { background: var(--cg-color-status-success-text-default, #4ade80); }
-
-    /* Body text */
+    /* ── Body text ── */
     .body {
-      padding-bottom: var(--cg-spacing-24, 24px);
+      padding-bottom: var(--cg-spacing-24);
       min-width: 0;
     }
-
     .step-h .body {
       text-align: center;
-      padding: 0 4px;
+      padding: 0 var(--cg-spacing-4);
     }
 
     .title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: 1.3;
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
+      line-height: var(--cg-line-height-snug);
     }
-    :host([compact]) .title { font-size: var(--cg-font-size-xs, 12px); }
-    .title.active { color: var(--cg-text-accent, #e5ff6b); }
-    .title.done { color: var(--cg-color-status-success-text-default, #4ade80); }
-    .title.error { color: var(--cg-text-danger, #ef4444); }
+    :host([compact]) .title { font-size: var(--cg-font-size-xs); }
+
+    .title.active { color: var(--cg-color-action-primary-background-default); }
+    .title.done { color: var(--cg-color-status-success-text-default); }
+    .title.error { color: var(--cg-color-status-error-text-default); }
 
     .desc {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
-      margin-top: 2px;
-      line-height: 1.4;
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-container-outlined);
+      margin-top: var(--cg-spacing-2);
+      line-height: var(--cg-line-height-snug);
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .circle.active { animation: none; }
     }
   `];
 
@@ -206,9 +195,9 @@ export class CgSteps extends LitElement {
 
   private _renderCircle(status: string, index: number) {
     const inner = status === 'done'
-      ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6L9 17l-5-5"></path></svg>`
+      ? html`<cg-icon name="check" size="xs"></cg-icon>`
       : status === 'error'
-        ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"></path></svg>`
+        ? html`<cg-icon name="x" size="xs"></cg-icon>`
         : `${index + 1}`;
 
     return html`
@@ -230,7 +219,7 @@ export class CgSteps extends LitElement {
   override render() {
     if (this.direction === 'horizontal') {
       return html`
-        <div class="steps-horizontal">
+        <div class="steps-horizontal" role="list" aria-label="Steps">
           ${this.items.map((item, i) => {
             const status = this._getStatus(item, i);
             return html`
@@ -252,7 +241,7 @@ export class CgSteps extends LitElement {
     }
 
     return html`
-      <div class="steps-vertical">
+      <div class="steps-vertical" role="list" aria-label="Steps">
         ${this.items.map((item, i) => {
           const status = this._getStatus(item, i);
           const isLast = i === this.items.length - 1;

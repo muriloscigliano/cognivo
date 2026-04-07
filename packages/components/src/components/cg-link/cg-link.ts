@@ -18,12 +18,12 @@ export class CgLink extends LitElement {
     a {
       display: inline-flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-4);
       text-decoration: none;
       position: relative;
       cursor: pointer;
-      font-weight: var(--cg-font-weight-medium, 500);
-      transition: color 150ms ease;
+      font-weight: var(--cg-font-weight-medium);
+      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     /* Underline animation — grows from center */
@@ -33,9 +33,9 @@ export class CgLink extends LitElement {
       bottom: -1px;
       left: 50%;
       width: 0;
-      height: 1px;
+      height: var(--cg-border-width-50);
       background: currentColor;
-      transition: width var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)), left var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default), left var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
     a:hover::after {
       left: 0;
@@ -45,33 +45,40 @@ export class CgLink extends LitElement {
     /* Focus ring — dual layer */
     a:focus-visible {
       outline: none;
-      border-radius: var(--cg-border-radius-50, 4px);
+      border-radius: var(--cg-border-radius-50);
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+        0 0 0 2px var(--cg-color-surface-base-background),
+        0 0 0 4px var(--cg-focus-ring-color);
     }
 
     /* Sizes */
-    :host([size="sm"]) a { font-size: var(--cg-font-size-xs, 12px); }
-    :host([size="md"]) a { font-size: var(--cg-font-size-sm, 14px); }
-    :host([size="lg"]) a { font-size: var(--cg-font-size-base, 16px); }
+    :host([size="sm"]) a { font-size: var(--cg-font-size-xs); }
+    :host([size="md"]) a { font-size: var(--cg-font-size-sm); }
+    :host([size="lg"]) a { font-size: var(--cg-font-size-base); }
 
     /* Variant: default */
-    :host([variant="default"]) a { color: var(--cg-color-surface-base-text, #fafafa); }
-    :host([variant="default"]) a:hover { color: var(--cg-brand-ai-accent, #dfff61); }
+    :host([variant="default"]) a { color: var(--cg-color-surface-base-text); }
+    :host([variant="default"]) a:hover { color: var(--cg-color-accent-text); }
 
     /* Variant: accent */
-    :host([variant="accent"]) a { color: var(--cg-brand-ai-accent, #dfff61); }
-    :host([variant="accent"]) a:hover { color: var(--cg-text-accent, #e5ff6b); }
+    :host([variant="accent"]) a { color: var(--cg-color-accent-text); }
+    :host([variant="accent"]) a:hover { color: var(--cg-color-accent-text); }
 
     /* Variant: muted */
-    :host([variant="muted"]) a { color: var(--cg-color-input-text-placeholder, #71717a); }
-    :host([variant="muted"]) a:hover { color: var(--cg-color-surface-base-text, #fafafa); }
+    :host([variant="muted"]) a { color: var(--cg-color-input-text-placeholder); }
+    :host([variant="muted"]) a:hover { color: var(--cg-color-surface-base-text); }
 
     /* Variant: underline — always show underline */
-    :host([variant="underline"]) a { color: var(--cg-color-surface-base-text, #fafafa); text-decoration: underline; text-underline-offset: 3px; }
+    :host([variant="underline"]) a { color: var(--cg-color-surface-base-text); text-decoration: underline; text-underline-offset: var(--cg-spacing-2); text-decoration-skip-ink: auto; }
     :host([variant="underline"]) a::after { display: none; }
-    :host([variant="underline"]) a:hover { color: var(--cg-brand-ai-accent, #dfff61); }
+    :host([variant="underline"]) a:hover { color: var(--cg-color-accent-text); }
+
+    /* Active press feedback */
+    a:active {
+      opacity: 0.8;
+      transform: scale(var(--cg-interaction-press-scale));
+      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default), opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+    }
 
     /* Disabled */
     :host([disabled]) a {

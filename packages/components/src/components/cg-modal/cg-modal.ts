@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { spinKeyframes, reducedMotion } from '../../styles/index.js';
 
 /**
  * @element cg-modal
@@ -14,35 +15,36 @@ import { customElement, property, state } from 'lit/decorators.js';
  * ```
  *
  * @slot - Default slot for modal body content
+ * @slot icon - Icon displayed above the title
  * @slot footer - Action buttons area below the body
  *
  * @fires {CustomEvent} cg-modal-open - When the modal opens
  * @fires {CustomEvent} cg-modal-close - When the modal closes
  *
- * @cssprop [--cg-color-surface-raised-background=#1e1e22] - Modal background
- * @cssprop [--cg-border-radius-200=16px] - Modal border radius
- * @cssprop [--cg-motion-easing-bounce=cubic-bezier(0.34,1.56,0.64,1)] - Open animation
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Close button focus ring
+ * @cssprop --cg-color-modal-container-background - Modal background
+ * @cssprop --cg-component-modal-radius - Modal border radius
+ * @cssprop --cg-motion-easing-bounce - Open animation easing
+ * @cssprop --cg-color-focus-ring - Close button focus ring
  */
 @customElement('cg-modal')
 export class CgModal extends LitElement {
-  static override styles = css`
+  static override styles = [spinKeyframes, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      transition: color var(--cg-transition-duration-fast) var(--cg-motion-easing-color);
       display: contents;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+      font-family: var(--cg-font-family-primary);
     }
 
     .backdrop {
       position: fixed;
       inset: 0;
       z-index: 9998;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      background: var(--cg-color-modal-overlay-background);
+      backdrop-filter: blur(16px) saturate(150%);
+      -webkit-backdrop-filter: blur(16px) saturate(150%);
       opacity: 0;
       pointer-events: none;
-      transition: opacity var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
 
     :host([open]) .backdrop {
@@ -57,7 +59,7 @@ export class CgModal extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: var(--cg-spacing-16, 16px);
+      padding: var(--cg-spacing-16);
       pointer-events: none;
     }
 
@@ -70,36 +72,21 @@ export class CgModal extends LitElement {
       isolation: isolate;
       display: flex;
       flex-direction: column;
-      max-height: calc(100vh - 64px);
-      backdrop-filter: blur(16px) saturate(1.3);
-      -webkit-backdrop-filter: blur(16px) saturate(1.3);
-      background: rgba(24, 24, 27, 0.85);
-      border: 1px solid var(--cg-color-surface-base-border, #27272a);
-      border-radius: var(--cg-border-radius-200, 16px);
+      max-height: calc(100vh - var(--cg-spacing-48) * 2);
+      background: var(--cg-color-modal-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
+      border-radius: var(--cg-component-modal-radius);
       box-shadow:
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
-        0 20px 25px -5px rgba(0, 0, 0, 0.4),
-        0 8px 10px -6px rgba(0, 0, 0, 0.3);
+        0 var(--cg-shadow-lg-y) var(--cg-shadow-lg-blur) var(--cg-shadow-lg-spread) rgba(0, 0, 0, 0.25),
+        0 var(--cg-shadow-sm-y) var(--cg-shadow-sm-blur) var(--cg-shadow-sm-spread) rgba(0, 0, 0, 0.1);
       overflow: hidden;
 
       /* Animation */
       opacity: 0;
       transform: scale(0.95);
       transition:
-        opacity var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
-        transform 250ms var(--cg-motion-easing-bounce, cubic-bezier(0.34, 1.56, 0.64, 1));
-    }
-
-    .modal::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      opacity: 0.03;
-      pointer-events: none;
-      z-index: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      mix-blend-mode: overlay;
+        opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        transform var(--cg-motion-duration-slow) var(--cg-motion-easing-bounce);
     }
 
     :host([open]) .modal {
@@ -117,17 +104,17 @@ export class CgModal extends LitElement {
       to { opacity: 0; }
     }
     .modal.closing {
-      animation: modal-exit 150ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+      animation: modal-exit var(--cg-transition-duration-fast) var(--cg-motion-easing-exit) forwards;
     }
     .backdrop.closing {
       pointer-events: auto;
-      animation: backdrop-exit 150ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+      animation: backdrop-exit var(--cg-transition-duration-fast) var(--cg-motion-easing-exit) forwards;
     }
 
     @media (prefers-reduced-motion: reduce) {
       .backdrop,
       .modal {
-        transition: opacity 100ms ease;
+        transition: opacity var(--cg-transition-duration-fast) ease;
       }
       .modal {
         transform: scale(1) !important;
@@ -135,86 +122,112 @@ export class CgModal extends LitElement {
     }
 
     /* ── Sizes ── */
-    :host([size="sm"]) .modal { width: 400px; max-width: 100%; }
-    :host([size="md"]) .modal { width: 560px; max-width: 100%; }
-    :host([size="lg"]) .modal { width: 720px; max-width: 100%; }
-    :host([size="xl"]) .modal { width: 960px; max-width: 100%; }
+    :host([size="sm"]) .modal { width: var(--cg-component-modal-width-sm); max-width: 100%; }
+    :host([size="md"]) .modal { width: var(--cg-component-modal-width-md); max-width: 100%; }
+    :host([size="lg"]) .modal { width: var(--cg-component-modal-width-lg); max-width: 100%; }
+    :host([size="xl"]) .modal { width: var(--cg-component-modal-width-xl); max-width: 100%; }
 
     /* ── Header ── */
     .modal-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      padding: var(--cg-spacing-16, 16px) var(--cg-spacing-24, 24px);
-      border-bottom: 1px solid var(--cg-color-surface-base-border, #27272a);
-      border-image: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.06), transparent) 1;
+      padding: var(--cg-spacing-24) var(--cg-spacing-24) var(--cg-spacing-4);
       flex-shrink: 0;
     }
 
+    .modal-header-content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--cg-spacing-12);
+      flex: 1;
+      min-width: 0;
+    }
+
+    .modal-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--cg-spacing-40);
+      height: var(--cg-spacing-40);
+      border-radius: var(--cg-border-radius-100);
+      background: var(--cg-color-action-tertiary-background-hover);
+      color: var(--cg-color-action-primary-background-default);
+      font-size: var(--cg-icon-size-200);
+    }
+
     .modal-title {
-      font-size: var(--cg-font-size-lg, 18px);
-      font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-color-text-primary, #fafafa);
+      font-size: var(--cg-font-size-md);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-modal-header-text);
       margin: 0;
-      line-height: 1.3;
+      line-height: var(--cg-line-height-snug);
+    }
+
+    /* When no icon — align title with close button */
+    .modal-header-content:not(:has(.modal-icon)) .modal-title {
+      padding-top: var(--cg-spacing-4);
     }
 
     .close-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
+      width: var(--cg-spacing-32);
+      height: var(--cg-spacing-32);
       border: none;
-      border-radius: var(--cg-border-radius-100, 8px);
-      background: transparent;
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-action-tertiary-background-hover);
+      color: var(--cg-color-surface-container-outlined);
       cursor: pointer;
-      font-size: 18px;
+      font-size: var(--cg-font-size-sm);
       line-height: 1;
       padding: 0;
       flex-shrink: 0;
       transition:
-        background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-color),
+        color var(--cg-transition-duration-fast) var(--cg-motion-easing-color),
+        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
 
     .close-btn:hover {
-      background: var(--cg-color-surface-hover-background, rgba(255, 255, 255, 0.06));
-      color: var(--cg-color-text-primary, #fafafa);
+      background: var(--cg-color-action-secondary-background-hover);
+      color: var(--cg-color-surface-container-text);
     }
 
     .close-btn:active {
-      transform: scale(var(--cg-interaction-press-scale, 0.97));
+      transform: scale(var(--cg-interaction-press-scale));
     }
 
     .close-btn:focus-visible {
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
       outline: none;
     }
 
     /* ── Body ── */
     .modal-body {
-      padding: var(--cg-spacing-24, 24px);
+      position: relative;
+      padding: var(--cg-spacing-16) var(--cg-spacing-24) var(--cg-spacing-24);
       overflow-y: auto;
       flex: 1;
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-sm, 14px);
-      line-height: 1.6;
+      color: var(--cg-color-surface-container-outlined);
+      font-size: var(--cg-font-size-sm);
+      line-height: var(--cg-line-height-relaxed);
     }
 
     /* ── Footer ── */
     .modal-footer {
-      padding: var(--cg-spacing-16, 16px) var(--cg-spacing-24, 24px);
-      border-top: 1px solid var(--cg-color-surface-base-border, #27272a);
+      padding: var(--cg-spacing-12) var(--cg-spacing-24) var(--cg-spacing-24);
+      flex-shrink: 0;
+    }
+
+    .modal-footer ::slotted(*) {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: var(--cg-spacing-8, 8px);
-      flex-shrink: 0;
+      gap: var(--cg-spacing-12);
     }
 
     .modal-footer:empty,
@@ -229,18 +242,67 @@ export class CgModal extends LitElement {
 
     /* Rounded variants */
     :host([rounded="none"]) .modal { border-radius: 0; }
-    :host([rounded="sm"]) .modal { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .modal { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .modal { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .modal { border-radius: var(--cg-border-radius-full, 99999px); }
-  `;
+    :host([rounded="sm"]) .modal { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"]) .modal { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="lg"]) .modal { border-radius: var(--cg-component-modal-radius); }
+    :host([rounded="full"]) .modal { border-radius: var(--cg-border-radius-full); }
+
+    /* ── Loading overlay ── */
+    .modal-loading-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--cg-spacing-12);
+      background: var(--cg-color-modal-container-background);
+      border-radius: inherit;
+    }
+    .modal-spinner {
+      width: var(--cg-spacing-24);
+      height: var(--cg-spacing-24);
+      border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border);
+      border-top-color: var(--cg-color-surface-container-text);
+      border-radius: var(--cg-border-radius-full);
+      animation: spin var(--cg-motion-duration-slow) linear infinite;
+    }
+    .modal-loading-text {
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-container-outlined);
+    }
+
+    /* ── Error banner ── */
+    .modal-error-banner {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      margin: 0 var(--cg-spacing-24);
+      margin-top: var(--cg-spacing-16);
+      background: var(--cg-color-status-error-background-default);
+      border: var(--cg-border-width-50) solid var(--cg-color-status-error-border-default);
+      border-radius: var(--cg-border-radius-100);
+      color: var(--cg-color-status-error-text-default);
+      font-size: var(--cg-font-size-sm);
+      line-height: var(--cg-line-height-snug);
+    }
+    .modal-error-icon {
+      flex-shrink: 0;
+      font-size: var(--cg-font-size-md);
+    }
+  `];
 
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String }) override title = '';
+  @property({ type: String }) icon = '';
   @property({ type: String, reflect: true }) size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Boolean }) closable = true;
   @property({ type: Boolean }) persistent = false;
+  @property({ type: Boolean, reflect: true }) loading = false;
+  @property({ type: String }) error = '';
 
   @state() private _hasFooter = false;
   @state() private _closing = false;
@@ -305,7 +367,9 @@ export class CgModal extends LitElement {
     const root = this.shadowRoot;
     if (!root) return;
     const selectors = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-    this._focusableElements = [...root.querySelectorAll<HTMLElement>(selectors)];
+    const shadowFocusable = [...root.querySelectorAll<HTMLElement>(selectors)];
+    const lightFocusable = [...this.querySelectorAll<HTMLElement>(selectors)];
+    this._focusableElements = [...shadowFocusable, ...lightFocusable].filter(el => !el.closest('[hidden]') && el.offsetParent !== null);
   }
 
   private _handleKeydown(e: KeyboardEvent) {
@@ -370,31 +434,50 @@ export class CgModal extends LitElement {
           class="modal ${this._closing ? 'closing' : ''}"
           role="dialog"
           aria-modal="true"
-          aria-label="${this.title || 'Dialog'}"
+          aria-label="${this.title ? nothing : 'Dialog'}"
+          aria-labelledby="${this.title ? 'modal-title' : nothing}"
           tabindex="-1"
         >
-          ${this.title || this.closable ? html`
+          ${this.title || this.closable || this.icon ? html`
             <div class="modal-header">
-              <h2 class="modal-title">${this.title}</h2>
+              <div class="modal-header-content">
+                ${this.icon ? html`
+                  <div class="modal-icon">
+                    <slot name="icon"><cg-icon name="${this.icon}" size="md"></cg-icon></slot>
+                  </div>
+                ` : nothing}
+                <h2 class="modal-title" id="modal-title">${this.title}</h2>
+              </div>
               ${this.closable ? html`
                 <button
                   class="close-btn"
                   aria-label="Close dialog"
                   @click="${this._requestClose}"
                 >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                  </svg>
+                  <cg-icon name="x" size="xs"></cg-icon>
                 </button>
               ` : nothing}
             </div>
           ` : nothing}
 
+          ${this.error ? html`
+            <div class="modal-error-banner" role="alert">
+              <cg-icon class="modal-error-icon" name="warning" size="sm" color="danger"></cg-icon>
+              <span>${this.error}</span>
+            </div>
+          ` : nothing}
+
           <div class="modal-body">
             <slot></slot>
+            ${this.loading ? html`
+              <div class="modal-loading-overlay" aria-busy="true" aria-label="Loading">
+                <span class="modal-spinner"></span>
+                <span class="modal-loading-text">Loading...</span>
+              </div>
+            ` : nothing}
           </div>
 
-          <div class="modal-footer" style="${this._hasFooter ? '' : 'display:none'}">
+          <div class="modal-footer" ?hidden=${!this._hasFooter}>
             <slot name="footer" @slotchange="${this._handleFooterSlotChange}"></slot>
           </div>
         </div>

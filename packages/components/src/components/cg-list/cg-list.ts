@@ -1,8 +1,8 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, entranceStagger } from '../../styles/index.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
-/** Item definition for cg-list, with title, subtitle, image/icon, and optional action. */
+/** Item definition for cg-list. */
 export interface ListItem {
   title: string;
   subtitle?: string;
@@ -15,180 +15,201 @@ export interface ListItem {
 
 /**
  * @element cg-list
- * Data list with bullet, number, image, or plain variants and optional item actions.
- *
- * @example
- * ```html
- * <cg-list
- *   variant="image"
- *   clickable
- *   .items=${[
- *     {title:'Alice', subtitle:'Engineer', image:'/alice.jpg', meta:'Online'},
- *     {title:'Bob', subtitle:'Designer', image:'/bob.jpg', actionLabel:'View'},
- *   ]}
- * ></cg-list>
- * ```
+ * Data list with bullet, number, image, or plain variants.
  *
  * @fires {CustomEvent<{item: ListItem, index: number}>} cg-list-click - When a clickable item is clicked
- * @fires {CustomEvent<{item: ListItem, index: number, action: string}>} cg-list-action - When an item action button is clicked
- *
- * @cssprop [--cg-overlay-accent-subtle=rgba(223,255,97,0.06)] - Hover background
- * @cssprop [--cg-text-accent=#e5ff6b] - Action button text color
- * @cssprop [--cg-color-surface-container-border=#27272a] - Divider color
- * @cssprop [--cg-color-surface-base-text=#fafafa] - Item title color
+ * @fires {CustomEvent<{item: ListItem, index: number, action: string}>} cg-list-action - When an action button is clicked
  */
 @customElement('cg-list')
 export class CgList extends LitElement {
-  static override styles = [hostBlock, reducedMotion, entranceStagger, css`
+  static override styles = [hostBlock, reducedMotion, css`
+
+    /* ── Empty state ── */
     .empty {
-      text-align: center;
-      padding: var(--cg-spacing-24, 24px);
-      color: var(--cg-gray-500, #71717a);
-      font-size: var(--cg-font-size-sm, 14px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-48) var(--cg-spacing-24);
+      color: var(--cg-color-surface-container-outlined);
+    }
+    .empty-icon {
+      width: var(--cg-spacing-48);
+      height: var(--cg-spacing-48);
+      opacity: 0.3;
+    }
+    .empty-text {
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
     }
 
+    /* ── Item ── */
     .item {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-12, 12px);
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      transition: background var(--cg-motion-duration-fast, 80ms) ease;
+      gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid transparent;
+      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default), border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      min-height: 44px;
     }
 
+    /* ── Contained variant — card wrapper ── */
+    :host([contained]) {
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
+      padding: var(--cg-spacing-4);
+      background: var(--cg-color-surface-cards-background);
+    }
+
+    /* ── Dividers — inset past leading element ── */
     :host([dividers]) .item {
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
       border-radius: 0;
       padding-left: 0;
       padding-right: 0;
+      position: relative;
     }
-    :host([dividers]) .item:last-child { border-bottom: none; }
+    :host([dividers]) .item::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--cg-border-width-50);
+      background: var(--cg-color-surface-base-divider);
+    }
+    :host([dividers]) .item:last-child::after { display: none; }
 
-    :host([hoverable]) .item:hover {
-      background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.06));
+    /* Inset dividers when leading element present */
+    :host([dividers][variant="image"]) .item::after,
+    :host([dividers][variant="number"]) .item::after,
+    :host([dividers][variant="bullet"]) .item::after {
+      left: var(--cg-spacing-48);
+    }
+
+    /* ── Hover ── */
+    :host([hoverable]) .item:hover,
+    :host([clickable]) .item:hover {
+      background: var(--cg-overlay-dark-subtle);
+      border-color: var(--cg-color-surface-cards-border);
     }
 
     :host([clickable]) .item {
       cursor: pointer;
     }
-    :host([clickable]) .item:hover {
-      background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.06));
-    }
     :host([clickable]) .item:active {
-      background: var(--cg-overlay-accent-light, rgba(223, 255, 97, 0.12));
+      background: var(--cg-overlay-dark-light);
     }
     :host([clickable]) .item:focus-visible {
-      outline: 2px solid var(--cg-focus-ring-color, #c8e650);
-      outline-offset: -2px;
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--cg-color-focus-ring-offset), inset 0 0 0 4px var(--cg-color-focus-ring);
+      border-radius: var(--cg-border-radius-100);
     }
 
-    /* Indicators */
+    /* ── Number indicator — subtle, not heavy ── */
     .num {
-      width: 28px;
-      height: 28px;
-      border-radius: var(--cg-border-radius-full, 99999px);
-      background: var(--cg-focus-ring-color, #c8e650);
-      color: var(--cg-gray-white, #ffffff);
+      width: var(--cg-spacing-24);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.75rem;
-      font-weight: var(--cg-font-weight-bold, 700);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-container-outlined);
       flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
     }
 
+    /* ── Bullet ── */
     .bullet {
-      width: 6px;
-      height: 6px;
-      border-radius: var(--cg-border-radius-full, 99999px);
-      background: var(--cg-gray-400, #a1a1aa);
+      width: var(--cg-spacing-6);
+      height: var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-surface-container-outlined);
       flex-shrink: 0;
-      margin: 0 4px;
+      margin: 0 var(--cg-spacing-4);
     }
 
+    /* ── Avatar ── */
     .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--cg-border-radius-full, 99999px);
+      width: var(--cg-spacing-40);
+      height: var(--cg-spacing-40);
+      border-radius: var(--cg-border-radius-full);
       object-fit: cover;
       flex-shrink: 0;
-      background: var(--cg-color-surface-container-background, #18181b);
+      background: var(--cg-color-surface-container-background);
     }
 
-    /* Body */
+    /* ── Body ── */
     .body {
       flex: 1;
       min-width: 0;
     }
-
     .title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-medium, 500);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: var(--cg-line-height-snug, 1.375);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-base-text);
+      line-height: var(--cg-line-height-snug);
     }
-
     .subtitle {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
-      margin-top: 2px;
-      line-height: var(--cg-line-height-snug, 1.375);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-container-outlined);
+      margin-top: var(--cg-spacing-2);
+      line-height: var(--cg-line-height-snug);
     }
 
-    /* Right side */
+    /* ── Right side — actions appear on hover ── */
     .right {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
       flex-shrink: 0;
     }
-
     .meta {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-container-outlined);
       white-space: nowrap;
     }
 
     .action-btn {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-text-accent, #e5ff6b);
-      font-weight: var(--cg-font-weight-medium, 500);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-action-primary-background-default);
+      font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
       white-space: nowrap;
       background: none;
       border: none;
-      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-50, 4px);
+      padding: var(--cg-spacing-4) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-50);
       font-family: inherit;
-      transition: background var(--cg-motion-duration-fast, 80ms);
+      opacity: 0;
+      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
-    .action-btn:hover { background: var(--cg-overlay-accent-light, rgba(223, 255, 97, 0.12)); text-decoration: underline; }
-    .action-btn:focus-visible { outline: 2px solid var(--cg-focus-ring-color, #c8e650); outline-offset: 1px; }
+    .item:hover .action-btn { opacity: 1; }
+    .action-btn:hover { background: var(--cg-overlay-accent-light); }
+    .action-btn:focus-visible {
+      opacity: 1;
+      outline: none;
+      box-shadow: 0 0 0 2px var(--cg-color-focus-ring-offset), 0 0 0 4px var(--cg-color-focus-ring);
+    }
 
     .chevron {
-      width: 16px;
-      height: 16px;
-      color: var(--cg-gray-400, #a1a1aa);
+      width: var(--cg-icon-size-100);
+      height: var(--cg-icon-size-100);
+      color: var(--cg-color-surface-container-outlined);
       flex-shrink: 0;
+      opacity: 0.5;
+      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
-  
-    .item { transition: background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)), transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)); animation: staggerFadeIn 200ms ease-out both; animation-delay: calc(var(--stagger-index, 0) * 40ms); }
-    .item:hover { transform: translateX(2px); background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.06)); }
-
-    /* Rounded variants */
-    :host([rounded="none"]) .item { border-radius: 0; }
-    :host([rounded="sm"]) .item { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .item { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .item { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .item { border-radius: var(--cg-border-radius-full, 99999px); }
+    .item:hover .chevron { opacity: 1; }
   `];
 
   @property({ type: Array }) items: ListItem[] = [];
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
-  @property() variant: 'number' | 'bullet' | 'image' | 'plain' = 'bullet';
-  @property({ type: Boolean, reflect: true }) dividers = true;
-  @property({ type: Boolean, reflect: true }) hoverable = false;
+  @property({ reflect: true }) variant: 'number' | 'bullet' | 'image' | 'plain' = 'plain';
+  @property({ type: Boolean, reflect: true }) dividers = false;
+  @property({ type: Boolean, reflect: true }) hoverable = true;
   @property({ type: Boolean, reflect: true }) clickable = false;
+  @property({ type: Boolean, reflect: true }) contained = false;
   @property() emptyText = 'No items';
 
   private _handleItemClick(item: ListItem, index: number) {
@@ -211,15 +232,22 @@ export class CgList extends LitElement {
 
   override render() {
     if (this.items.length === 0) {
-      return html`<div class="empty">${this.emptyText}</div>`;
+      return html`
+        <div class="empty">
+          <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+            <path d="M8 8h8M8 12h5M8 16h3"></path>
+          </svg>
+          <span class="empty-text">${this.emptyText}</span>
+        </div>
+      `;
     }
 
-    return html`${this.items.map((item, i) => html`
+    return html`<div role="list">${this.items.map((item, i) => html`
       <div
         class="item"
-        style="--stagger-index: ${i}"
+        role="listitem"
         tabindex=${this.clickable ? '0' : nothing}
-        role=${this.clickable ? 'button' : nothing}
         @click=${() => this._handleItemClick(item, i)}
         @keydown=${(e: KeyboardEvent) => { if (this.clickable && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); this._handleItemClick(item, i); } }}
       >
@@ -235,10 +263,10 @@ export class CgList extends LitElement {
         <div class="right">
           ${item.meta ? html`<span class="meta">${item.meta}</span>` : nothing}
           ${item.actionLabel ? html`<button class="action-btn" @click=${(e: Event) => this._handleAction(e, item, i)}>${item.actionLabel}</button>` : nothing}
-          ${this.clickable ? html`<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"></path></svg>` : nothing}
+          ${this.clickable ? html`<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>` : nothing}
         </div>
       </div>
-    `)}`;
+    `)}</div>`;
   }
 }
 

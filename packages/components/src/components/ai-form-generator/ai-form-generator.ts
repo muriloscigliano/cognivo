@@ -1,26 +1,19 @@
 /**
  * @element ai-form-generator
- * Dynamic form rendered from a JSON schema with field validation, ideal for LLM-generated forms.
+ * Dynamic form from AI-generated JSON schema using Cognivo design system components.
  *
- * @example
- * ```html
- * <ai-form-generator
- *   .schema=${{title:'Feedback', fields:[
- *     {name:'rating', type:'number', label:'Rating', min:1, max:5, required:true},
- *     {name:'comment', type:'textarea', label:'Comment'}
- *   ]}}
- * ></ai-form-generator>
- * ```
- *
- * @fires {CustomEvent<{name, value, values}>} ai-form-change - Field value changed
- * @fires {CustomEvent<{valid, errors}>} ai-form-validate - Validation result after submit attempt
- * @fires {CustomEvent<{values}>} ai-form-submit - Form submitted with all values
- *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Submit button and focus ring color
+ * @fires {CustomEvent<{values}>} ai-form-submit
+ * @fires {CustomEvent<{name, value, values}>} ai-form-change
+ * @fires {CustomEvent<{valid, errors}>} ai-form-validate
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
+import '../cg-input/cg-input.js';
+import '../cg-textarea/cg-textarea.js';
+import '../cg-select/cg-select.js';
+import '../cg-checkbox/cg-checkbox.js';
+import '../cg-button/cg-button.js';
 
 interface FormField {
   name: string;
@@ -45,117 +38,79 @@ interface FormSchema {
 
 @customElement('ai-form-generator')
 export class AiFormGenerator extends LitElement {
-  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
-    :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
-    }
+  static override styles = [hostBlock, reducedMotion, css`
+    :host { display: block; }
 
     .form {
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
       overflow: hidden;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
     .form-header {
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+      padding: var(--cg-spacing-20) var(--cg-spacing-24) var(--cg-spacing-12);
     }
-    .form-title { font-size: 16px; font-weight: 700; color: var(--cg-color-surface-base-text, #fafafa); }
-    .form-desc { font-size: 12px; color: var(--cg-gray-500, #71717a); margin-top: 4px; }
+    .form-title {
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
+    }
+    .form-desc {
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-top: var(--cg-spacing-4);
+    }
 
-    .form-body { padding: var(--cg-spacing-16, 16px); display: flex; flex-direction: column; gap: var(--cg-spacing-12, 12px); }
+    .form-body {
+      padding: var(--cg-spacing-8) var(--cg-spacing-24) var(--cg-spacing-16);
+      display: flex;
+      flex-direction: column;
+      gap: var(--cg-spacing-16);
+      overflow: hidden;
+    }
+    .form-body > * {
+      min-width: 0;
+    }
 
-    /* Section */
     .section-label {
-      font-size: 11px; font-weight: 700; color: var(--cg-gray-400, #a1a1aa);
-      text-transform: uppercase; letter-spacing: 0.05em;
-      padding-top: 8px; margin-bottom: -4px;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-input-text-placeholder);
+      text-transform: uppercase;
+      letter-spacing: var(--cg-letter-spacing-wide);
+      padding-top: var(--cg-spacing-8);
     }
 
-    /* Field */
-    .field { display: flex; flex-direction: column; gap: var(--cg-spacing-4, 4px); }
-    .field-label {
-      font-size: 12px; font-weight: 600; color: var(--cg-gray-300, #d4d4d8);
-    }
-    .field-label .required { color: var(--cg-red-400, #f87171); margin-left: 2px; }
-
-    input, select, textarea {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px); border-radius: var(--cg-border-radius-100, 8px);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      background: var(--cg-color-surface-base-background, #09090b);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      font: inherit; font-size: var(--cg-font-size-sm, 14px); outline: none;
-      transition: border-color 150ms;
-    }
-    input:focus, select:focus, textarea:focus { border-color: var(--cg-brand-ai-accent, #dfff61); }
-    input::placeholder, textarea::placeholder { color: var(--cg-gray-600, #52525b); }
-    input.error, select.error, textarea.error { border-color: var(--cg-red-400, #f87171); }
-    textarea { min-height: 80px; resize: vertical; }
-    select { cursor: pointer; }
-
-    /* Checkbox */
-    .checkbox-row {
-      display: flex; align-items: center; gap: var(--cg-spacing-8, 8px);
-      cursor: pointer;
-    }
-    .checkbox-row input[type="checkbox"] {
-      width: 16px; height: 16px; cursor: pointer;
-      accent-color: var(--cg-brand-ai-accent, #dfff61);
-    }
-    .checkbox-label { font-size: 13px; color: var(--cg-color-surface-base-text, #fafafa); }
-
-    .field-error { font-size: 11px; color: var(--cg-red-400, #f87171); }
-
-    /* Footer */
     .form-footer {
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      border-top: 1px solid var(--cg-gray-800, #27272a);
-      display: flex; justify-content: flex-end; gap: var(--cg-spacing-8, 8px);
+      padding: var(--cg-spacing-16) var(--cg-spacing-24);
     }
-    .submit-btn {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px); border-radius: var(--cg-border-radius-100, 8px); border: none;
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: #000; font: inherit; font-size: var(--cg-font-size-sm, 14px); font-weight: 700;
-      cursor: pointer; transition: all 150ms;
-    }
-    .submit-btn:hover { filter: brightness(1.1); }
-    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    /* Loading */
     .loading-overlay {
-      display: flex; align-items: center; justify-content: center;
-      padding: 40px; color: var(--cg-gray-500, #71717a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--cg-spacing-48);
+      color: var(--cg-color-input-text-placeholder);
     }
 
-    .ai-badge {
-      display: inline-flex; align-items: center; gap: var(--cg-spacing-4, 4px);
-      font-size: 10px; font-weight: 700; padding: 2px var(--cg-spacing-8, 8px); border-radius: var(--cg-border-radius-50, 4px);
-      background: rgba(223, 255, 97, 0.08); color: var(--cg-brand-ai-accent, #dfff61);
-      margin-left: 8px;
-    }
-
-    .empty { padding: 32px; text-align: center; color: var(--cg-gray-500, #71717a); font-size: 13px; }
-    }
-  
-
-    :focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+    .empty {
+      padding: var(--cg-spacing-32);
+      text-align: center;
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
     }
   `];
+
   @property({ type: Object }) schema: FormSchema | null = null;
   @property({ type: Object }) values: Record<string, unknown> = {};
-  @property({ type: Boolean }) loading: boolean = false;
+  @property({ type: Boolean }) loading = false;
 
   @state() private _values: Record<string, unknown> = {};
   @state() private _errors: Record<string, string> = {};
 
   override updated(changed: Map<string, unknown>) {
     if (changed.has('schema') && this.schema) {
-      // Init defaults
       const vals: Record<string, unknown> = { ...this.values };
       for (const f of this.schema.fields) {
         if (vals[f.name] === undefined && f.default !== undefined) vals[f.name] = f.default;
@@ -170,7 +125,6 @@ export class AiFormGenerator extends LitElement {
 
   private _setValue(name: string, value: unknown) {
     this._values = { ...this._values, [name]: value };
-    // Clear error on edit
     if (this._errors[name]) {
       const errs = { ...this._errors };
       delete errs[name];
@@ -185,7 +139,6 @@ export class AiFormGenerator extends LitElement {
   private _validate(): boolean {
     if (!this.schema) return false;
     const errors: Record<string, string> = {};
-
     for (const f of this.schema.fields) {
       const val = this._values[f.name];
       if (f.required && (val === undefined || val === '' || val === null)) {
@@ -199,15 +152,10 @@ export class AiFormGenerator extends LitElement {
       }
       if (f.pattern && val) {
         try {
-          if (!new RegExp(f.pattern).test(String(val))) {
-            errors[f.name] = 'Invalid format';
-          }
-        } catch {
-          // Invalid regex pattern — skip validation
-        }
+          if (!new RegExp(f.pattern).test(String(val))) errors[f.name] = 'Invalid format';
+        } catch { /* skip */ }
       }
     }
-
     this._errors = errors;
     this.dispatchEvent(new CustomEvent('ai-form-validate', {
       bubbles: true, composed: true,
@@ -230,53 +178,52 @@ export class AiFormGenerator extends LitElement {
 
     if (field.type === 'checkbox') {
       return html`
-        <div class="field">
-          <label class="checkbox-row">
-            <input type="checkbox" .checked=${!!val}
-              @change=${(e: Event) => this._setValue(field.name, (e.target as HTMLInputElement).checked)} />
-            <span class="checkbox-label">${field.label}</span>
-          </label>
-          ${err ? html`<span class="field-error">${err}</span>` : nothing}
-        </div>
+        <cg-checkbox
+          label="${field.label}"
+          ?checked=${!!val}
+          @cg-change=${(e: CustomEvent) => this._setValue(field.name, e.detail.checked)}
+        ></cg-checkbox>
       `;
     }
 
     if (field.type === 'select') {
       return html`
-        <div class="field">
-          <label class="field-label">${field.label}${field.required ? html`<span class="required">*</span>` : nothing}</label>
-          <select class="${err ? 'error' : ''}" .value=${String(val)}
-            aria-invalid="${err ? 'true' : 'false'}"
-            @change=${(e: Event) => this._setValue(field.name, (e.target as HTMLSelectElement).value)}>
-            <option value="">${field.placeholder || 'Select...'}</option>
-            ${(field.options || []).map(o => html`<option value="${o.value}" ?selected=${val === o.value}>${o.label}</option>`)}
-          </select>
-          ${err ? html`<span class="field-error">${err}</span>` : nothing}
-        </div>
+        <cg-select
+          label="${field.label}"
+          placeholder="${field.placeholder || 'Select...'}"
+          .value=${String(val)}
+          .options=${(field.options || []).map(o => ({ value: o.value, label: o.label }))}
+          ?error=${!!err}
+          @cg-change=${(e: CustomEvent) => this._setValue(field.name, e.detail.value)}
+        ></cg-select>
+        ${err ? html`<cg-label error="${err}"></cg-label>` : nothing}
       `;
     }
 
     if (field.type === 'textarea') {
       return html`
-        <div class="field">
-          <label class="field-label">${field.label}${field.required ? html`<span class="required">*</span>` : nothing}</label>
-          <textarea class="${err ? 'error' : ''}" .value=${String(val)}
-            placeholder="${field.placeholder || ''}"
-            @input=${(e: Event) => this._setValue(field.name, (e.target as HTMLTextAreaElement).value)}></textarea>
-          ${err ? html`<span class="field-error">${err}</span>` : nothing}
-        </div>
+        <cg-textarea
+          label="${field.label}"
+          placeholder="${field.placeholder || ''}"
+          .value=${String(val)}
+          ?error=${!!err}
+          helper="${err || ''}"
+          @cg-input=${(e: CustomEvent) => this._setValue(field.name, e.detail.value)}
+        ></cg-textarea>
       `;
     }
 
     return html`
-      <div class="field">
-        <label class="field-label">${field.label}${field.required ? html`<span class="required">*</span>` : nothing}</label>
-        <input type="${field.type}" class="${err ? 'error' : ''}" .value=${String(val)}
-          placeholder="${field.placeholder || ''}"
-          aria-invalid="${err ? 'true' : 'false'}"
-          @input=${(e: Event) => this._setValue(field.name, (e.target as HTMLInputElement).value)} />
-        ${err ? html`<span class="field-error">${err}</span>` : nothing}
-      </div>
+      <cg-input
+        label="${field.label}"
+        type="${field.type}"
+        placeholder="${field.placeholder || ''}"
+        .value=${String(val)}
+        ?error=${!!err}
+        ?required=${field.required}
+        helper="${err || ''}"
+        @cg-input=${(e: CustomEvent) => this._setValue(field.name, e.detail.value)}
+      ></cg-input>
     `;
   }
 
@@ -289,7 +236,6 @@ export class AiFormGenerator extends LitElement {
       return html`<div class="form"><div class="empty">No form schema provided</div></div>`;
     }
 
-    // Group by section
     const sections = new Map<string, FormField[]>();
     for (const f of this.schema.fields) {
       const sec = f.section || '';
@@ -301,7 +247,7 @@ export class AiFormGenerator extends LitElement {
       <div class="form" role="form" aria-label="${this.schema.title || 'AI-generated form'}">
         ${this.schema.title ? html`
           <div class="form-header">
-            <div class="form-title">${this.schema.title}<span class="ai-badge">AI Generated</span></div>
+            <div class="form-title">${this.schema.title}</div>
             ${this.schema.description ? html`<div class="form-desc">${this.schema.description}</div>` : nothing}
           </div>
         ` : nothing}
@@ -314,9 +260,9 @@ export class AiFormGenerator extends LitElement {
         </div>
 
         <div class="form-footer">
-          <button class="submit-btn" @click=${this._handleSubmit}>
+          <cg-button variant="primary" full @cg-click=${this._handleSubmit}>
             ${this.schema.submitLabel || 'Submit'}
-          </button>
+          </cg-button>
         </div>
       </div>
     `;

@@ -32,13 +32,11 @@ export interface ProgressPhase {
 export class AiProgressSteps extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     :host([hidden]) { display: none; }
 
     .steps {
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
       display: flex;
       align-items: flex-start;
       gap: 0;
@@ -58,10 +56,16 @@ export class AiProgressSteps extends LitElement {
       font-family: inherit;
       color: inherit;
     }
+    .step:hover .dot {
+      border-color: var(--cg-color-input-border-hover);
+    }
+    .step:active {
+      transform: scale(var(--cg-interaction-press-scale));
+    }
     .step:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
-      outline-offset: 2px;
-      border-radius: var(--cg-border-radius-50, 4px);
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
+      border-radius: var(--cg-border-radius-50);
     }
 
     .step-row {
@@ -73,80 +77,80 @@ export class AiProgressSteps extends LitElement {
     .line {
       flex: 1;
       height: 2px;
-      background: var(--cg-color-border, #27272a);
-      transition: background 200ms ease;
+      background: var(--cg-color-surface-cards-border);
+      transition: background var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
     }
     .line.done {
-      background: var(--cg-color-accent, #dfff61);
+      background: var(--cg-color-action-primary-background-default);
     }
     .line.hide { visibility: hidden; }
 
     .dot {
       flex-shrink: 0;
-      width: 28px;
-      height: 28px;
+      width: var(--cg-spacing-24);
+      height: var(--cg-spacing-24);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      border: 2px solid var(--cg-color-border, #27272a);
-      background: var(--cg-color-surface, #18181b);
-      color: var(--cg-color-text-tertiary, #71717a);
-      transition: all 200ms ease;
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      border: var(--cg-border-width-100) solid var(--cg-color-surface-cards-border);
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-input-text-placeholder);
+      transition: opacity var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
     }
 
     .dot[data-status="complete"] {
-      border-color: var(--cg-color-accent, #dfff61);
-      background: var(--cg-color-accent, #dfff61);
-      color: var(--cg-color-surface-container-background, #18181b);
+      border-color: var(--cg-color-surface-base-text);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-container-background);
     }
     .dot[data-status="active"] {
-      border-color: var(--cg-color-accent, #dfff61);
-      color: var(--cg-color-accent, #dfff61);
+      border-color: var(--cg-color-surface-base-text);
+      color: var(--cg-color-surface-base-text);
       animation: pulse 1.5s ease-in-out infinite;
     }
     .dot[data-status="error"] {
-      border-color: var(--cg-color-status-error-text-default, #ef4444);
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--cg-color-status-error-text-default, #ef4444);
+      border-color: var(--cg-color-status-error-text-default);
+      background: var(--cg-color-status-error-background-default);
+      color: var(--cg-color-status-error-text-default);
     }
 
     @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(223, 255, 97, 0.3); }
-      50% { box-shadow: 0 0 0 6px rgba(223, 255, 97, 0); }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
     }
 
     .info {
-      margin-top: var(--cg-spacing-6, 6px);
+      margin-top: var(--cg-spacing-6);
       text-align: center;
     }
 
     .label {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 500;
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-input-text-placeholder);
       white-space: nowrap;
     }
     .step[data-status="active"] .label {
-      color: var(--cg-color-text-primary, #fafafa);
+      color: var(--cg-color-surface-base-text);
     }
     .step[data-status="complete"] .label {
-      color: var(--cg-color-accent, #dfff61);
+      color: var(--cg-color-surface-base-text);
     }
     .step[data-status="error"] .label {
-      color: var(--cg-color-status-error-text-default, #ef4444);
+      color: var(--cg-color-status-error-text-default);
     }
 
     .duration {
-      font-size: 10px;
-      color: var(--cg-color-text-tertiary, #71717a);
-      margin-top: 2px;
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-top: var(--cg-spacing-2);
     }
 
     /* Compact mode */
-    :host([compact]) .dot { width: 22px; height: 22px; font-size: var(--cg-font-size-xs, 12px); }
+    :host([compact]) .dot { width: var(--cg-spacing-20); height: var(--cg-spacing-20); font-size: var(--cg-font-size-xs); }
     :host([compact]) .info { display: none; }
 
   `];

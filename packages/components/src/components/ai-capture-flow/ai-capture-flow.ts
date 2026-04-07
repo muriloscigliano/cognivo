@@ -7,7 +7,7 @@
  * <ai-capture-flow
  *   step="upload"
  *   accept=".pdf,.jpg,.png"
- *   title="Document Scan"
+ *   heading="Document Scan"
  * ></ai-capture-flow>
  * ```
  *
@@ -29,24 +29,22 @@ const STEPS: Step[] = ['upload', 'preview', 'processing', 'complete'];
 export class AiCaptureFlow extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter) both;
     }
 
     .card {
-      background: var(--cg-color-surface-cards-background, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid var(--cg-color-surface-cards-border, #27272a);
-      border-radius: var(--cg-border-radius-200, 12px);
-      padding: var(--cg-spacing-16, 16px);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-200);
+      padding: var(--cg-spacing-16);
     }
 
     /* ── Title ── */
     .title {
-      font-size: var(--cg-font-size-base, 16px);
-      font-weight: 700;
-      color: var(--cg-color-surface-base-text, #fafafa);
-      margin-bottom: var(--cg-spacing-16, 16px);
+      font-size: var(--cg-font-size-base);
+      font-weight: var(--cg-font-weight-bold);
+      color: var(--cg-color-surface-base-text);
+      margin-bottom: var(--cg-spacing-16);
     }
 
     /* ── Step indicator ── */
@@ -54,68 +52,67 @@ export class AiCaptureFlow extends LitElement {
       display: flex;
       align-items: center;
       gap: 0;
-      margin-bottom: var(--cg-spacing-16, 16px);
+      margin-bottom: var(--cg-spacing-16);
     }
     .step-dot {
-      width: 24px;
-      height: 24px;
+      width: var(--cg-spacing-24);
+      height: var(--cg-spacing-24);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
       flex-shrink: 0;
-      transition: all 200ms ease;
+      transition: opacity var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
     }
     .step-dot.done {
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: var(--cg-color-surface-base-background, #09090b);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-base-background);
     }
     .step-dot.active {
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: var(--cg-color-surface-base-background, #09090b);
-      box-shadow: 0 0 0 3px rgba(223, 255, 97, 0.25);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-base-background);
     }
     .step-dot.pending {
-      background: var(--cg-gray-800, #27272a);
-      color: var(--cg-gray-500, #71717a);
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-input-text-placeholder);
     }
     .step-line {
       flex: 1;
       height: 2px;
-      background: var(--cg-gray-800, #27272a);
-      transition: background 200ms ease;
+      background: var(--cg-color-surface-container-background);
+      transition: background var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
     }
-    .step-line.done { background: var(--cg-brand-ai-accent, #dfff61); }
+    .step-line.done { background: var(--cg-color-action-primary-background-default); }
 
     /* ── Upload zone ── */
     .upload-zone {
-      border: 2px dashed var(--cg-gray-700, #3f3f46);
-      border-radius: var(--cg-border-radius-100, 8px);
-      padding: var(--cg-spacing-24, 24px) var(--cg-spacing-16, 16px);
+      border: 2px dashed var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-24) var(--cg-spacing-16);
       text-align: center;
       cursor: pointer;
-      transition: all 150ms ease;
+      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     .upload-zone:hover, .upload-zone.drag-over {
-      border-color: var(--cg-brand-ai-accent, #dfff61);
-      background: rgba(223, 255, 97, 0.04);
+      border-color: var(--cg-color-surface-base-text);
+      background: var(--cg-overlay-accent-subtle);
     }
     .upload-zone:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
-    .upload-icon { font-size: 32px; margin-bottom: var(--cg-spacing-8, 8px); }
+    .upload-icon { font-size: var(--cg-font-size-3xl); margin-bottom: var(--cg-spacing-8); }
     .upload-text {
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-gray-400, #a1a1aa);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-input-text-placeholder);
       line-height: 1.5;
     }
     .upload-hint {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
-      margin-top: var(--cg-spacing-6, 6px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-top: var(--cg-spacing-6);
     }
     input[type="file"] { display: none; }
 
@@ -123,98 +120,98 @@ export class AiCaptureFlow extends LitElement {
     .preview { text-align: center; }
     .preview-img {
       max-width: 100%;
-      max-height: 240px;
-      border-radius: var(--cg-border-radius-100, 8px);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      margin-bottom: var(--cg-spacing-16, 16px);
+      max-height: var(240px);
+      border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      margin-bottom: var(--cg-spacing-16);
       object-fit: contain;
     }
 
     /* ── Progress ── */
     .processing { text-align: center; }
     .progress-label {
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-gray-400, #a1a1aa);
-      margin-bottom: var(--cg-spacing-12, 12px);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-input-text-placeholder);
+      margin-bottom: var(--cg-spacing-12);
     }
     .progress-bar {
       width: 100%;
-      height: 6px;
-      background: var(--cg-gray-800, #27272a);
-      border-radius: 3px;
+      height: var(--cg-spacing-6);
+      background: var(--cg-color-surface-container-background);
+      border-radius: var(--cg-border-radius-25);
       overflow: hidden;
-      margin-bottom: var(--cg-spacing-8, 8px);
+      margin-bottom: var(--cg-spacing-8);
     }
     .progress-fill {
       height: 100%;
-      background: var(--cg-brand-ai-accent, #dfff61);
-      border-radius: 3px;
-      transition: width 300ms ease;
+      background: var(--cg-color-action-primary-background-default);
+      border-radius: var(--cg-border-radius-25);
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
     .progress-pct {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      color: var(--cg-brand-ai-accent, #dfff61);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
     }
 
     /* ── Result ── */
     .result { text-align: center; }
     .result-icon {
-      font-size: var(--cg-font-size-2xl, 24px);
-      margin-bottom: var(--cg-spacing-8, 8px);
-      color: var(--cg-green-400, #4ade80);
+      font-size: var(--cg-font-size-2xl);
+      margin-bottom: var(--cg-spacing-8);
+      color: var(--cg-color-status-success-text-default);
     }
     .result-text {
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-base-text);
       line-height: 1.5;
-      margin-bottom: var(--cg-spacing-16, 16px);
+      margin-bottom: var(--cg-spacing-16);
       white-space: pre-wrap;
     }
 
     /* ── Error ── */
-    .error-icon { color: var(--cg-red-400, #f87171); }
-    .error-text { color: var(--cg-red-400, #f87171); }
+    .error-icon { color: var(--cg-color-status-error-text-default); }
+    .error-text { color: var(--cg-color-status-error-text-default); }
 
     /* ── Buttons ── */
     .btn-row {
       display: flex;
-      gap: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
       justify-content: center;
-      margin-top: var(--cg-spacing-16, 16px);
+      margin-top: var(--cg-spacing-16);
     }
-    button {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
+    .btn-row button {
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
+      border-radius: var(--cg-border-radius-100);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       border: none;
-      transition: all 150ms ease;
+      font-family: inherit;
+      transition: filter var(--cg-motion-duration-fast) var(--cg-motion-easing-color), background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
-    button:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+    .btn-row button:focus-visible {
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
     .btn-primary {
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: var(--cg-color-surface-base-background, #09090b);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-base-background);
     }
     .btn-primary:hover { filter: brightness(0.9); }
     .btn-secondary {
-      background: var(--cg-gray-800, #27272a);
-      color: var(--cg-gray-300, #d4d4d8);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-surface-base-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
-    .btn-secondary:hover { background: var(--cg-gray-700, #3f3f46); }
-    }
+    .btn-secondary:hover { background: var(--cg-color-surface-cards-border); }
   `];
   @property({ type: String }) step: Step = 'upload';
   @property({ type: String }) accept = '.pdf,.jpg,.png';
   @property({ type: String }) previewUrl = '';
   @property({ type: String }) result = '';
   @property({ type: Number }) progress = 0;
-  @property({ type: String }) override title = 'Capture';
+  @property({ type: String }) heading = 'Capture';
 
   @state() private _dragOver = false;
 
@@ -343,8 +340,8 @@ export class AiCaptureFlow extends LitElement {
 
   override render() {
     return html`
-      <div class="card" role="region" aria-label="${this.title}">
-        ${this.title ? html`<div class="title">${this.title}</div>` : nothing}
+      <div class="card" role="region" aria-label="${this.heading}">
+        ${this.heading ? html`<div class="title">${this.heading}</div>` : nothing}
         ${this._renderSteps()}
         ${this.step === 'upload' ? this._renderUpload()
           : this.step === 'preview' ? this._renderPreview()

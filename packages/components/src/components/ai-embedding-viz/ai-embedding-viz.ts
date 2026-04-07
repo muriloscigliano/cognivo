@@ -37,115 +37,111 @@ const CLUSTER_COLORS = [
 export class AiEmbeddingViz extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
     .container {
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      padding: var(--cg-spacing-16, 16px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      background: var(--cg-color-surface-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-16);
+      color: var(--cg-color-surface-base-text);
     }
 
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: var(--cg-spacing-12, 12px);
+      margin-bottom: var(--cg-spacing-12);
     }
 
     .title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
     }
 
     .point-count {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     .chart-area {
       position: relative;
-      background: var(--cg-color-surface-base-background, #09090b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-100, 8px);
+      background: var(--cg-color-surface-base-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-100);
       overflow: hidden;
     }
 
     svg {
       display: block;
       width: 100%;
-      height: 300px;
+      height: var(200px);
     }
 
     .point {
       cursor: pointer;
-      transition: r 120ms ease;
+      transition: r var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     .point:hover { r: 7; }
     .point:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .point-label {
-      font-size: 9px;
-      fill: var(--cg-gray-400, #a1a1aa);
+      font-size: var(--cg-font-size-xs);
+      fill: var(--cg-color-input-text-placeholder);
       pointer-events: none;
     }
 
     .tooltip {
       position: absolute;
-      background: #09090b;
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      color: #e4e4e7;
-      font-size: var(--cg-font-size-xs, 12px);
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-100, 8px);
+      background: var(--cg-color-surface-base-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-xs);
+      padding: var(--cg-spacing-6) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-100);
       white-space: nowrap;
       pointer-events: none;
       z-index: 10;
-      box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
       transform: translate(-50%, -100%);
-      margin-top: -10px;
+      margin-top: calc(-1 * var(--cg-spacing-8);
     }
 
     .legend {
       display: flex;
       flex-wrap: wrap;
-      gap: var(--cg-spacing-8, 8px);
-      margin-top: var(--cg-spacing-8, 8px);
+      gap: var(--cg-spacing-8);
+      margin-top: var(--cg-spacing-8);
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-400, #a1a1aa);
+      gap: var(--cg-spacing-4);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     .legend-dot {
-      width: 8px;
-      height: 8px;
+      width: var(--cg-spacing-8);
+      height: var(--cg-spacing-8);
       border-radius: 50%;
     }
 
     .empty-state {
       text-align: center;
-      color: var(--cg-gray-600, #52525b);
-      font-size: var(--cg-font-size-sm, 14px);
-      padding: var(--cg-spacing-24, 24px) 0;
+      color: var(--cg-color-input-border-hover);
+      font-size: var(--cg-font-size-sm);
+      padding: var(--cg-spacing-24) 0;
     }
 
     .axis-label {
-      font-size: 9px;
-      fill: var(--cg-gray-600, #52525b);
-    }
+      font-size: var(--cg-font-size-xs);
+      fill: var(--cg-color-input-border-hover);
     }
   `];
   @property({ type: Array }) points: EmbeddingPoint[] = [];

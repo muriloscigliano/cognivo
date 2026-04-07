@@ -32,42 +32,40 @@ export interface A11yIssue {
 export class AiAccessibilityReport extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      background: var(--cg-color-surface-base, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      border: 1px solid var(--cg-color-border-default, #27272a);
-      border-radius: var(--cg-radius-lg, 12px);
-      padding: var(--cg-spacing-16, 16px);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      background: var(--cg-color-surface-base);
+      color: var(--cg-color-surface-base-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-16);
+      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
     .header {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-16, 16px);
-      padding-bottom: var(--cg-spacing-12, 12px);
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
-      margin-bottom: var(--cg-spacing-16, 16px);
+      gap: var(--cg-spacing-16);
+      padding-bottom: var(--cg-spacing-12);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      margin-bottom: var(--cg-spacing-16);
     }
 
     .score-circle {
       position: relative;
-      width: 64px;
-      height: 64px;
+      width: var(--_ai-a11y-score-size, 64px);
+      height: var(--_ai-a11y-score-size, 64px);
       flex-shrink: 0;
     }
 
     .score-circle svg {
-      width: 64px;
-      height: 64px;
+      width: var(--_ai-a11y-score-size, 64px);
+      height: var(--_ai-a11y-score-size, 64px);
       transform: rotate(-90deg);
     }
 
     .score-bg {
       fill: none;
-      stroke: var(--cg-color-surface-overlay, #27272a);
+      stroke: var(--cg-color-surface-overlay);
       stroke-width: 5;
     }
 
@@ -75,7 +73,7 @@ export class AiAccessibilityReport extends LitElement {
       fill: none;
       stroke-width: 5;
       stroke-linecap: round;
-      transition: stroke-dashoffset 0.5s ease;
+      transition: stroke-dashoffset var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
 
     .score-text {
@@ -84,8 +82,8 @@ export class AiAccessibilityReport extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: var(--cg-font-size-lg, 18px);
-      font-weight: var(--cg-font-weight-bold, 700);
+      font-size: var(--cg-font-size-lg);
+      font-weight: var(--cg-font-weight-bold);
     }
 
     .header-info {
@@ -93,81 +91,82 @@ export class AiAccessibilityReport extends LitElement {
     }
 
     .title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-semibold, 600);
-      margin: 0 0 4px 0;
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      margin: 0 0 var(--cg-spacing-4) 0;
     }
 
     .breakdown {
       display: flex;
-      gap: var(--cg-spacing-12, 12px);
-      font-size: var(--cg-font-size-xs, 12px);
+      gap: var(--cg-spacing-12);
+      font-size: var(--cg-font-size-xs);
     }
 
     .breakdown-item {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-4);
     }
 
     .sev-dot {
-      width: 8px;
-      height: 8px;
+      width: var(--cg-spacing-8);
+      height: var(--cg-spacing-8);
       border-radius: 50%;
     }
 
-    .sev-error { background: var(--cg-color-status-error-text-default, #f87171); }
-    .sev-warning { background: #facc15; }
-    .sev-info { background: var(--cg-color-status-info-text-default, #60a5fa); }
+    .sev-error { background: var(--cg-color-status-error-text-default); }
+    .sev-warning { background: var(--cg-color-status-warning-text); }
+    .sev-info { background: var(--cg-color-status-info-text); }
 
     .issue-list {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-4);
     }
 
     .issue-item {
-      border-radius: var(--cg-radius-md, 8px);
-      border: 1px solid var(--cg-color-border-default, #27272a);
+      border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       overflow: hidden;
     }
 
     .issue-header {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
       cursor: pointer;
       background: transparent;
       border: none;
       color: inherit;
       width: 100%;
       font-family: inherit;
-      font-size: var(--cg-font-size-sm, 14px);
+      font-size: var(--cg-font-size-sm);
       text-align: left;
     }
 
     .issue-header:hover {
-      background: var(--cg-color-surface-hover, #27272a);
+      background: var(--cg-color-surface-cards-hover-background);
     }
 
+    .issue-header:active { transform: scale(var(--cg-interaction-press-scale)); }
     .issue-header:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
-      outline-offset: -2px;
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--cg-overlay-accent-strong);
     }
 
     .sev-icon {
       flex-shrink: 0;
-      font-size: var(--cg-font-size-sm, 14px);
+      font-size: var(--cg-font-size-sm);
     }
 
-    .sev-icon-error { color: var(--cg-color-status-error-text-default, #f87171); }
-    .sev-icon-warning { color: #facc15; }
-    .sev-icon-info { color: var(--cg-color-status-info-text-default, #60a5fa); }
+    .sev-icon-error { color: var(--cg-color-status-error-text-default); }
+    .sev-icon-warning { color: var(--cg-color-status-warning-text); }
+    .sev-icon-info { color: var(--cg-color-status-info-text); }
 
     .issue-rule {
       flex: 1;
-      font-weight: var(--cg-font-weight-medium, 500);
+      font-weight: var(--cg-font-weight-medium);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -175,56 +174,56 @@ export class AiAccessibilityReport extends LitElement {
 
     .level-badge {
       display: inline-flex;
-      padding: 2px var(--cg-spacing-6, 6px);
-      border-radius: var(--cg-radius-sm, 4px);
-      font-size: 10px;
-      font-weight: var(--cg-font-weight-bold, 700);
+      padding: var(--cg-spacing-2) var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-50);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
       flex-shrink: 0;
     }
 
     .level-A {
-      background: rgba(96, 165, 250, 0.15);
-      color: var(--cg-color-status-info-text-default, #60a5fa);
+      background: var(--cg-color-status-info-background-default);
+      color: var(--cg-color-status-info-text);
     }
 
     .level-AA {
-      background: rgba(250, 204, 21, 0.15);
-      color: #facc15;
+      background: var(--cg-color-status-warning-background-default);
+      color: var(--cg-color-status-warning-text);
     }
 
     .level-AAA {
-      background: rgba(192, 132, 252, 0.15);
-      color: #c084fc;
+      background: var(--cg-overlay-accent-subtle);
+      color: var(--cg-color-surface-base-text);
     }
 
     .issue-details {
-      padding: 8px 12px 12px 32px;
-      border-top: 1px solid var(--cg-color-border-default, #27272a);
-      font-size: var(--cg-font-size-xs, 12px);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12) var(--cg-spacing-12) var(--cg-spacing-32);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      font-size: var(--cg-font-size-xs);
     }
 
     .issue-desc {
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      color: var(--cg-color-input-text-placeholder);
       line-height: 1.5;
-      margin-bottom: var(--cg-spacing-6, 6px);
+      margin-bottom: var(--cg-spacing-6);
     }
 
     .issue-element {
       display: inline-block;
-      padding: 2px var(--cg-spacing-8, 8px);
-      background: var(--cg-color-surface-overlay, #27272a);
-      border-radius: var(--cg-radius-sm, 4px);
-      font-family: var(--cg-font-family-mono, 'JetBrains Mono', monospace);
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-color-accent, #dfff61);
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
+      background: var(--cg-color-surface-overlay);
+      border-radius: var(--cg-border-radius-50);
+      font-family: var(--cg-font-family-mono);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-base-text);
       word-break: break-all;
     }
 
     .empty {
       text-align: center;
-      padding: var(--cg-spacing-24, 24px);
-      color: var(--cg-color-text-tertiary, #71717a);
-      font-size: var(--cg-font-size-sm, 14px);
+      padding: var(--cg-spacing-24);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
     }
 
   `];
@@ -240,10 +239,10 @@ export class AiAccessibilityReport extends LitElement {
   private get _infoCount() { return this.issues.filter(i => i.severity === 'info').length; }
 
   private _getScoreColor(): string {
-    if (this.score >= 90) return '#4ade80';
-    if (this.score >= 70) return '#facc15';
-    if (this.score >= 50) return '#fb923c';
-    return '#f87171';
+    if (this.score >= 90) return 'var(--cg-color-status-success-text)';
+    if (this.score >= 70) return 'var(--cg-color-status-warning-text)';
+    if (this.score >= 50) return 'var(--cg-color-status-warning-text-default)';
+    return 'var(--cg-color-status-error-text)';
   }
 
   private _toggle(idx: number): void {

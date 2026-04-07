@@ -1,198 +1,115 @@
-import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state, query } from 'lit/decorators.js';
+import { LitElement, html, css, nothing, svg } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
-/**
- * <cg-chart> — Pure SVG chart component. No external deps.
- *
- * Types: bar, horizontal-bar, line, area, pie, donut
- * Features: tooltip on hover, axis labels, grid lines, responsive,
- *           animated entrance, value labels on bars, percentage on pie
- */
+/** Data point for cg-chart */
+export interface ChartSeries {
+  label: string;
+  value: number;
+  color?: string;
+}
 
-/** Data series entry for cg-chart, with label, numeric value, and optional color override. */
-export interface ChartSeries { label: string; value: number; color?: string; }
-
-/** Token names for chart palette — resolved at runtime via getComputedStyle */
-const PALETTE_TOKENS = [
-  '--cg-color-chart-1',
-  '--cg-color-chart-2',
-  '--cg-color-chart-3',
-  '--cg-color-chart-4',
-  '--cg-color-chart-5',
-  '--cg-color-chart-6',
-  '--cg-color-chart-7',
-  '--cg-color-chart-8',
+/** Default palette — hex colors that work directly in SVG fill/stroke attributes */
+const PALETTE = [
+  '#dfff61', '#14b8a6', '#22c55e', '#f59e0b',
+  '#f97316', '#ec4899', '#8b5cf6', '#ef4444',
 ];
 
 @customElement('cg-chart')
 export class CgChart extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
-    .chart-container {
-      position: relative;
+    :host { display: block; }
+
+    .wrap { position: relative; }
+    .wrap.contained {
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
+      padding: var(--cg-spacing-20);
     }
 
+    .header { margin-bottom: var(--cg-spacing-12); }
     .title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      margin-bottom: var(--cg-spacing-12, 12px);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
     }
-
     .subtitle {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-color-chart-axis, #52525b);
-      margin-top: -8px;
-      margin-bottom: var(--cg-spacing-12, 12px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-top: var(--cg-spacing-2);
     }
 
-    svg {
-      width: 100%;
-      overflow: visible;
-      font-family: inherit;
+    .svg-wrap { position: relative; }
+    svg { display: block; width: 100%; }
+
+    /* ── Entrance animations ── */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes lineTrace {
+      from { stroke-dashoffset: var(--dash); }
+      to { stroke-dashoffset: 0; }
     }
 
-    /* Bar hover */
-    .bar-rect {
-      transition: opacity var(--cg-motion-duration-normal, 150ms) ease;
-      cursor: pointer;
+    .anim-line {
+      stroke-dasharray: var(--dash);
+      stroke-dashoffset: var(--dash);
+      animation: lineTrace 900ms cubic-bezier(0.4, 0, 1, 1) forwards;
     }
-    .bar-rect:hover {
-      opacity: 0.8;
-      filter: brightness(1.05);
+    .anim-dot {
+      animation: fadeIn 200ms cubic-bezier(0.4, 0, 1, 1) both;
     }
-
-    /* Pie/Donut hover */
-    .pie-slice {
-      transition: transform var(--cg-motion-duration-normal, 150ms) ease, filter 0.15s ease;
-      cursor: pointer;
-      transform-origin: center;
+    .anim-slice {
+      animation: fadeIn 400ms cubic-bezier(0.4, 0, 1, 1) both;
     }
-    .pie-slice:hover {
-      filter: brightness(1.1) drop-shadow(0 2px 4px var(--cg-overlay-dark-medium, rgba(0, 0, 0, 0.3));
-    }
-
-    /* Line dots */
-    .line-dot {
-      transition: r 0.12s ease;
-      cursor: pointer;
-    }
-    .line-dot:hover {
-      r: 5;
-    }
-
-    /* Grid lines */
-    .grid-line {
-      stroke: var(--cg-color-chart-grid, #27272a);
-      stroke-width: 0.5;
-      stroke-dasharray: 3 3;
-    }
-
-    /* Axis text */
-    .axis-label {
-      font-size: 10px;
-      fill: var(--cg-color-chart-axis, #52525b);
-    }
-    .axis-value {
-      font-size: 9px;
-      fill: var(--cg-color-chart-axis, #52525b);
-    }
-
-    /* Value label on bars */
-    .bar-value {
-      font-size: 9px;
-      font-weight: 600;
-      fill: var(--cg-color-surface-base-text, #fafafa);
+    .anim-legend {
+      animation: fadeIn 200ms cubic-bezier(0.4, 0, 1, 1) both;
     }
 
     /* Tooltip */
-    .tooltip {
+    .tip {
       position: absolute;
-      background: var(--cg-gray-800, #27272a);
-      color: var(--cg-gray-white, #ffffff);
-      padding: 6px 10px;
-      border-radius: var(--cg-border-radius-150, 12px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 500;
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-surface-base-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      padding: var(--cg-spacing-4) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-50);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
       pointer-events: none;
       white-space: nowrap;
       transform: translate(-50%, -100%);
       margin-top: -8px;
-      box-shadow: 0 4px 12px var(--cg-overlay-dark-medium, rgba(0, 0, 0, 0.3));
       z-index: 10;
-      opacity: 0;
-      transition: opacity var(--cg-motion-duration-normal, 150ms) ease;
+      display: none;
     }
-    .tooltip.visible { opacity: 1; }
-    .tooltip::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 50%;
-      transform: translateX(-50%);
-      border: 4px solid transparent;
-      border-top-color: var(--cg-gray-800, #27272a);
-    }
+    .tip.show { display: block; }
 
     /* Legend */
     .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--cg-spacing-12, 12px);
-      margin-top: var(--cg-spacing-12, 12px);
-      justify-content: center;
+      display: flex; flex-wrap: wrap; gap: var(--cg-spacing-12);
+      margin-top: var(--cg-spacing-16); padding-top: var(--cg-spacing-12);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
     .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-color-chart-axis, #52525b);
-      cursor: default;
+      display: inline-flex; align-items: center; gap: var(--cg-spacing-4);
+      font-size: var(--cg-font-size-xs); color: var(--cg-color-input-text-placeholder);
     }
     .legend-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 3px;
-      flex-shrink: 0;
+      width: var(--cg-spacing-8); height: var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-full); flex-shrink: 0;
     }
-    .legend-value {
-      font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-color-surface-base-text, #fafafa);
+    .legend-val {
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
     }
 
-    /* Empty state */
     .empty {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--cg-color-chart-axis, #52525b);
-      font-size: var(--cg-font-size-sm, 14px);
-      min-height: 120px;
-    }
-
-    /* Entrance animation */
-    @keyframes growUp {
-      from { transform: scaleY(0); }
-      to { transform: scaleY(1); }
-    }
-    .bar-rect {
-      animation: growUp 0.4s var(--cg-motion-easing-bounce, cubic-bezier(0.34, 1.56, 0.64, 1)) both;
-      transform-origin: bottom;
-    }
-    .bar-rect:nth-child(2) { animation-delay: 0.05s; }
-    .bar-rect:nth-child(3) { animation-delay: 0.1s; }
-    .bar-rect:nth-child(4) { animation-delay: 0.15s; }
-    .bar-rect:nth-child(5) { animation-delay: 0.2s; }
-    .bar-rect:nth-child(6) { animation-delay: 0.25s; }
-
-    @keyframes drawLine {
-      from { stroke-dashoffset: 1000; }
-      to { stroke-dashoffset: 0; }
-    }
-    .line-path {
-      stroke-dasharray: 1000;
-      animation: drawLine 1s ease-out forwards;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm); min-height: 120px;
     }
   `];
 
@@ -200,263 +117,333 @@ export class CgChart extends LitElement {
   @property() type: 'bar' | 'horizontal-bar' | 'line' | 'area' | 'pie' | 'donut' = 'bar';
   @property() override title = '';
   @property() subtitle = '';
-  @property({ type: Number }) height = 240;
+  @property({ type: Number }) height = 200;
   @property({ type: Boolean }) showLegend = true;
   @property({ type: Boolean }) showValues = true;
+  /** Wrap chart in a card container */
+  @property({ type: Boolean }) contained = false;
   @property({ type: Boolean }) showGrid = true;
-  @property() emptyText = 'No data available';
+  @property() emptyText = 'No data';
 
-  @state() private _tooltip = { visible: false, x: 0, y: 0, text: '' };
+  @state() private _tipX = 0;
+  @state() private _tipY = 0;
+  @state() private _tipText = '';
+  @state() private _tipShow = false;
 
-  /** Resolved palette colors from CSS custom properties */
-  private _resolvedPalette: string[] = [];
+  // Resolved theme colors for SVG
+  private _grid = '#333';
+  private _axis = '#888';
+  private _text = '#eee';
+  private _bg = '#111';
+  private _resolved = false;
 
-  private _resolvePalette(): string[] {
-    if (this._resolvedPalette.length > 0) return this._resolvedPalette;
-    const styles = getComputedStyle(this);
-    this._resolvedPalette = PALETTE_TOKENS.map(token =>
-      styles.getPropertyValue(token).trim() || token
-    );
-    return this._resolvedPalette;
+  private _resolve() {
+    if (this._resolved) return;
+    const s = getComputedStyle(this);
+    this._grid = s.getPropertyValue('--cg-color-chart-grid').trim() || this._grid;
+    this._axis = s.getPropertyValue('--cg-color-chart-axis').trim() || this._axis;
+    this._text = s.getPropertyValue('--cg-color-surface-base-text').trim() || this._text;
+    this._bg = s.getPropertyValue('--cg-color-surface-container-background').trim() || this._bg;
+    for (let i = 0; i < 8; i++) {
+      const v = s.getPropertyValue(`--cg-color-chart-${i + 1}`).trim();
+      if (v) PALETTE[i] = v;
+    }
+    this._resolved = true;
   }
 
-  override connectedCallback() {
-    super.connectedCallback();
-    // Reset resolved palette so it re-reads tokens on reconnect
-    this._resolvedPalette = [];
+  override firstUpdated() {
+    this._resolve();
+    this.requestUpdate();
   }
 
-  override updated() {
-    // Clear cache so palette is re-resolved when properties change
-    this._resolvedPalette = [];
+  private _animId = 0;
+  private _animated = false;
+
+  override updated(changed: Map<string, unknown>) {
+    if (!this._animated && this.data.length > 0) {
+      this._animated = true;
+      this._animateBars();
+    }
+    if (changed.has('data') || changed.has('type')) {
+      this._animated = false;
+      cancelAnimationFrame(this._animId);
+      // Re-animate on next frame after render
+      requestAnimationFrame(() => {
+        this._animated = true;
+        this._animateBars();
+      });
+    }
   }
 
-  private _color(i: number, d: ChartSeries): string {
-    if (d.color) return d.color;
-    const palette = this._resolvePalette();
-    return palette[i % palette.length]!;
-  }
+  private _easeOut(t: number) { return 1 - (1 - t) * (1 - t); }
 
-  private _showTooltip(e: MouseEvent, label: string, value: number) {
-    const rect = (e.currentTarget as SVGElement).closest('svg')!.getBoundingClientRect();
-    this._tooltip = {
-      visible: true,
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-      text: `${label}: ${this._formatValue(value)}`,
+  private _animateBars() {
+    const bars = this.shadowRoot?.querySelectorAll<SVGRectElement>('.bar-anim');
+    const hbars = this.shadowRoot?.querySelectorAll<SVGRectElement>('.hbar-anim');
+    const vals = this.shadowRoot?.querySelectorAll<SVGElement>('.val-anim');
+    if (!bars?.length && !hbars?.length) return;
+
+    const dur = 500;
+    const start = performance.now();
+
+    const tick = (now: number) => {
+      const elapsed = now - start;
+
+      bars?.forEach(rect => {
+        const delay = Number(rect.dataset.delay) || 0;
+        const t = Math.min(1, Math.max(0, (elapsed - delay) / dur));
+        const p = this._easeOut(t);
+        const targetH = Number(rect.dataset.h);
+        const targetY = Number(rect.dataset.y);
+        const baseY = targetY + targetH;
+        const h = targetH * p;
+        rect.setAttribute('height', String(h));
+        rect.setAttribute('y', String(baseY - h));
+      });
+
+      hbars?.forEach(rect => {
+        const delay = Number(rect.dataset.delay) || 0;
+        const t = Math.min(1, Math.max(0, (elapsed - delay) / dur));
+        const p = this._easeOut(t);
+        const targetW = Number(rect.dataset.w);
+        rect.setAttribute('width', String(targetW * p));
+      });
+
+      vals?.forEach(el => {
+        const delay = Number(el.dataset.delay) || 0;
+        const t = Math.min(1, Math.max(0, (elapsed - delay) / 200));
+        el.setAttribute('opacity', String(t));
+      });
+
+      const maxDelay = Math.max(
+        ...[...bars || []].map(r => Number(r.dataset.delay) || 0),
+        ...[...hbars || []].map(r => Number(r.dataset.delay) || 0),
+        ...[...vals || []].map(r => Number(r.dataset.delay) || 0),
+      );
+      if (elapsed < maxDelay + dur + 200) {
+        this._animId = requestAnimationFrame(tick);
+      }
     };
+
+    this._animId = requestAnimationFrame(tick);
   }
 
-  private _hideTooltip() {
-    this._tooltip = { ...this._tooltip, visible: false };
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    cancelAnimationFrame(this._animId);
   }
 
-  private _formatValue(v: number): string {
-    if (Math.abs(v) >= 1_000_000) return (v / 1_000_000).toFixed(1) + 'M';
-    if (Math.abs(v) >= 1_000) return (v / 1_000).toFixed(1) + 'K';
+  private _color(i: number, d: ChartSeries) { return d.color || PALETTE[i % PALETTE.length]!; }
+
+  private _fmt(v: number) {
+    if (Math.abs(v) >= 1e6) return (v / 1e6).toFixed(1) + 'M';
+    if (Math.abs(v) >= 1e3) return (v / 1e3).toFixed(1) + 'K';
     return v % 1 === 0 ? String(v) : v.toFixed(1);
   }
 
-  // ── Bar Chart ─────────────────────────────────────────────────────────────
+  private _tip(e: MouseEvent, label: string, value: number) {
+    const r = (e.currentTarget as Element).closest('.svg-wrap')!.getBoundingClientRect();
+    this._tipX = e.clientX - r.left;
+    this._tipY = e.clientY - r.top;
+    this._tipText = `${label}: ${this._fmt(value)}`;
+    this._tipShow = true;
+  }
+  private _untip() { this._tipShow = false; }
 
-  private _renderBar() {
-    const pad = { top: 8, right: 8, bottom: 28, left: 40 };
-    const max = Math.max(...this.data.map(d => d.value), 1);
-    const w = 300;
-    const h = this.height;
-    const plotW = w - pad.left - pad.right;
-    const plotH = h - pad.top - pad.bottom;
-    const barW = (plotW / this.data.length) * 0.65;
-    const gap = (plotW / this.data.length) * 0.35;
+  // ═══ BAR ═══
+  private _bar() {
+    const { data, height: H } = this;
+    const W = 400, T = 20, R = 16, B = 28, L = 44;
+    const pw = W - L - R, ph = H - T - B;
+    const max = Math.max(...data.map(d => d.value), 1);
+    const n = data.length;
+    const bw = (pw / n) * 0.6;
+    const step = pw / n;
 
-    // Grid lines (4 lines)
-    const gridLines = [0.25, 0.5, 0.75, 1].map(pct => {
-      const y = pad.top + plotH - plotH * pct;
-      return html`
-        <line class="grid-line" x1=${pad.left} y1=${y} x2=${w - pad.right} y2=${y} />
-        <text class="axis-value" x=${pad.left - 4} y=${y + 3} text-anchor="end">${this._formatValue(max * pct)}</text>
-      `;
-    });
-
-    return html`
-      <svg viewBox="0 0 ${w} ${h}" height=${h}>
-        ${this.showGrid ? gridLines : nothing}
-        ${this.data.map((d, i) => {
-          const barH = (d.value / max) * plotH;
-          const x = pad.left + i * (plotW / this.data.length) + gap / 2;
-          const y = pad.top + plotH - barH;
-          return html`
-            <rect class="bar-rect" x=${x} y=${y} width=${barW} height=${barH} rx="3" fill=${this._color(i, d)}
-              @mouseenter=${(e: MouseEvent) => this._showTooltip(e, d.label, d.value)}
-              @mouseleave=${this._hideTooltip}>
-            </rect>
-            ${this.showValues ? html`<text class="bar-value" x=${x + barW / 2} y=${y - 4} text-anchor="middle">${this._formatValue(d.value)}</text>` : nothing}
-            <text class="axis-label" x=${x + barW / 2} y=${h - 4} text-anchor="middle">${d.label}</text>
-          `;
-        })}
-      </svg>
+    return svg`
+      ${this.showGrid ? [0.25, 0.5, 0.75, 1].map(p => {
+        const y = T + ph - ph * p;
+        return svg`
+          <line x1="${L}" y1="${y}" x2="${W - R}" y2="${y}" stroke="${this._grid}" stroke-width="0.5" stroke-dasharray="3,3" />
+          <text x="${L - 6}" y="${y + 4}" text-anchor="end" fill="${this._axis}" font-size="10">${this._fmt(max * p)}</text>
+        `;
+      }) : nothing}
+      ${data.map((d, i) => {
+        const bh = (d.value / max) * ph;
+        const x = L + i * step + (step - bw) / 2;
+        const yFinal = T + ph - bh;
+        const yBase = T + ph;
+        const c = this._color(i, d);
+        return svg`
+          <rect class="bar-anim" x="${x}" y="${yBase}" width="${bw}" height="0" rx="4" fill="${c}" style="cursor:pointer"
+            data-y="${yFinal}" data-h="${bh}" data-delay="${i * 50}"
+            @mouseenter=${(e: MouseEvent) => this._tip(e, d.label, d.value)}
+            @mouseleave=${this._untip} />
+          ${this.showValues ? svg`<text class="val-anim" x="${x + bw / 2}" y="${yFinal - 6}" text-anchor="middle" fill="${this._text}" font-size="10" font-weight="600" opacity="0" data-delay="${i * 50 + 300}">${this._fmt(d.value)}</text>` : nothing}
+          <text x="${x + bw / 2}" y="${H - 6}" text-anchor="middle" fill="${this._axis}" font-size="10">${d.label}</text>
+        `;
+      })}
     `;
   }
 
-  // ── Line / Area Chart ─────────────────────────────────────────────────────
+  // ═══ HORIZONTAL BAR ═══
+  private _hbar() {
+    const { data } = this;
+    const W = 400, lW = 72, gap = 8, bH = 28;
+    const H = data.length * (bH + gap);
+    const max = Math.max(...data.map(d => d.value), 1);
 
-  private _renderLineArea(fill: boolean) {
-    const pad = { top: 8, right: 16, bottom: 28, left: 40 };
-    const max = Math.max(...this.data.map(d => d.value), 1);
-    const w = 300;
-    const h = this.height;
-    const plotW = w - pad.left - pad.right;
-    const plotH = h - pad.top - pad.bottom;
+    return svg`
+      ${data.map((d, i) => {
+        const y = i * (bH + gap);
+        const bW = (d.value / max) * (W - lW - 60);
+        const c = this._color(i, d);
+        return svg`
+          <text x="${lW - 6}" y="${y + bH / 2 + 4}" text-anchor="end" fill="${this._axis}" font-size="11">${d.label}</text>
+          <rect class="hbar-anim" x="${lW}" y="${y}" width="0" height="${bH}" rx="4" fill="${c}" style="cursor:pointer"
+            data-w="${bW}" data-delay="${i * 50}"
+            @mouseenter=${(e: MouseEvent) => this._tip(e, d.label, d.value)}
+            @mouseleave=${this._untip} />
+          <text class="val-anim" x="${lW + bW + 8}" y="${y + bH / 2 + 4}" fill="${this._text}" font-size="11" font-weight="600" opacity="0" data-delay="${i * 50 + 300}">${this._fmt(d.value)}</text>
+        `;
+      })}
+    `;
+  }
 
-    const points = this.data.map((d, i) => ({
-      x: pad.left + (i / Math.max(this.data.length - 1, 1)) * plotW,
-      y: pad.top + plotH - (d.value / max) * plotH,
+  // ═══ LINE / AREA ═══
+  private _line(area: boolean) {
+    const { data, height: H } = this;
+    const W = 400, T = 12, R = 16, B = 28, L = 44;
+    const pw = W - L - R, ph = H - T - B;
+    const max = Math.max(...data.map(d => d.value), 1);
+    const c = this._color(0, data[0]!);
+
+    const pts = data.map((d, i) => ({
+      x: L + (i / Math.max(data.length - 1, 1)) * pw,
+      y: T + ph - (d.value / max) * ph,
     }));
+    const line = pts.map((p, i) => `${i ? 'L' : 'M'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+    const areaD = `${line} L${pts.at(-1)!.x.toFixed(1)},${(T + ph).toFixed(1)} L${pts[0]!.x.toFixed(1)},${(T + ph).toFixed(1)} Z`;
 
-    const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
-    const areaPath = `${linePath} L ${points[points.length - 1]!.x} ${pad.top + plotH} L ${points[0]!.x} ${pad.top + plotH} Z`;
-
-    const gridLines = [0.25, 0.5, 0.75, 1].map(pct => {
-      const y = pad.top + plotH - plotH * pct;
-      return html`
-        <line class="grid-line" x1=${pad.left} y1=${y} x2=${w - pad.right} y2=${y} />
-        <text class="axis-value" x=${pad.left - 4} y=${y + 3} text-anchor="end">${this._formatValue(max * pct)}</text>
-      `;
-    });
-
-    const lineColor = this._color(0, this.data[0]!);
-
-    return html`
-      <svg viewBox="0 0 ${w} ${h}" height=${h}>
-        ${this.showGrid ? gridLines : nothing}
-        ${fill ? html`<path d=${areaPath} fill="${lineColor}" opacity="0.1" />` : nothing}
-        <path class="line-path" d=${linePath} fill="none" stroke="${lineColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-        ${points.map((p, i) => html`
-          <circle class="line-dot" cx=${p.x} cy=${p.y} r="3.5" fill="${lineColor}" stroke="var(--cg-color-surface-container-background, #18181b)" stroke-width="2"
-            @mouseenter=${(e: MouseEvent) => this._showTooltip(e, this.data[i]!.label, this.data[i]!.value)}
-            @mouseleave=${this._hideTooltip} />
-        `)}
-        ${this.data.map((d, i) => html`
-          <text class="axis-label" x=${points[i]!.x} y=${h - 4} text-anchor="middle">${d.label}</text>
-        `)}
-      </svg>
+    return svg`
+      ${this.showGrid ? [0.25, 0.5, 0.75, 1].map(p => {
+        const y = T + ph - ph * p;
+        return svg`
+          <line x1="${L}" y1="${y}" x2="${W - R}" y2="${y}" stroke="${this._grid}" stroke-width="0.5" stroke-dasharray="3,3" />
+          <text x="${L - 6}" y="${y + 4}" text-anchor="end" fill="${this._axis}" font-size="10">${this._fmt(max * p)}</text>
+        `;
+      }) : nothing}
+      ${area ? svg`<path d="${areaD}" fill="${c}" opacity="0.2" />` : nothing}
+      <path class="anim-line" d="${line}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="--dash:2000" />
+      ${pts.map((p, i) => svg`
+        <circle class="anim-dot" cx="${p.x}" cy="${p.y}" r="4" fill="${c}" stroke="${this._bg}" stroke-width="2" style="cursor:pointer; animation-delay:${400 + i * 50}ms"
+          @mouseenter=${(e: MouseEvent) => this._tip(e, data[i]!.label, data[i]!.value)}
+          @mouseleave=${this._untip} />
+      `)}
+      ${data.map((d, i) => svg`
+        <text x="${pts[i]!.x}" y="${H - 6}" text-anchor="middle" fill="${this._axis}" font-size="10">${d.label}</text>
+      `)}
     `;
   }
 
-  // ── Pie / Donut Chart ─────────────────────────────────────────────────────
+  // ═══ PIE / DONUT ═══
+  private _pie(donut: boolean) {
+    const { data } = this;
+    const total = data.reduce((s, d) => s + d.value, 0) || 1;
+    const sz = Math.min(this.height, 240);
+    const r = sz * 0.4;
+    const cx = sz / 2, cy = sz / 2;
+    const rad = (a: number) => a * Math.PI / 180;
+    let ang = -90;
 
-  private _renderPie(donut = false) {
-    const total = this.data.reduce((s, d) => s + d.value, 0) || 1;
-    const size = Math.min(this.height, 260);
-    const r = size * 0.38;
-    const cx = size / 2, cy = size / 2;
-    let angle = -90;
-
-    const slices = this.data.map((d, i) => {
-      const sweep = (d.value / total) * 360;
-      const endAngle = angle + sweep;
-      const mid = angle + sweep / 2;
-      const large = sweep > 180 ? 1 : 0;
-      const rad = (a: number) => (a * Math.PI) / 180;
-
-      const x1 = cx + r * Math.cos(rad(angle));
-      const y1 = cy + r * Math.sin(rad(angle));
-      const x2 = cx + r * Math.cos(rad(endAngle));
-      const y2 = cy + r * Math.sin(rad(endAngle));
-
-      // Label position
-      const labelR = r * (donut ? 1.25 : 0.65);
-      const lx = cx + labelR * Math.cos(rad(mid));
-      const ly = cy + labelR * Math.sin(rad(mid));
-
+    const slices = data.map((d, i) => {
+      const sw = (d.value / total) * 360;
+      const end = ang + sw;
+      const lg = sw > 180 ? 1 : 0;
+      const x1 = cx + r * Math.cos(rad(ang));
+      const y1 = cy + r * Math.sin(rad(ang));
+      const x2 = cx + r * Math.cos(rad(end));
+      const y2 = cy + r * Math.sin(rad(end));
+      const mid = ang + sw / 2;
+      const lr = r * (donut ? 1.2 : 0.6);
+      const lx = cx + lr * Math.cos(rad(mid));
+      const ly = cy + lr * Math.sin(rad(mid));
       const pct = Math.round((d.value / total) * 100);
-      const path = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`;
+      const c = this._color(i, d);
+      const p = `M${cx},${cy} L${x1.toFixed(1)},${y1.toFixed(1)} A${r},${r} 0 ${lg} 1 ${x2.toFixed(1)},${y2.toFixed(1)} Z`;
+      ang = end;
 
-      angle = endAngle;
-
-      return html`
-        <path class="pie-slice" d=${path} fill=${this._color(i, d)}
-          @mouseenter=${(e: MouseEvent) => this._showTooltip(e, d.label, d.value)}
-          @mouseleave=${this._hideTooltip} />
-        ${pct >= 5 ? html`
-          <text x=${lx} y=${ly} text-anchor="middle" dominant-baseline="central"
-            fill="${donut ? 'var(--cg-color-chart-axis, #52525b)' : 'var(--cg-gray-white, #ffffff)'}" font-size="10" font-weight="600">${pct}%</text>
-        ` : nothing}
+      return svg`
+        <path class="anim-slice" d="${p}" fill="${c}" style="cursor:pointer; animation-delay:${i * 60}ms"
+          @mouseenter=${(e: MouseEvent) => this._tip(e, d.label, d.value)}
+          @mouseleave=${this._untip} />
+        ${pct >= 5 ? svg`<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="central" fill="${donut ? this._axis : '#000'}" font-size="10" font-weight="600">${pct}%</text>` : nothing}
       `;
     });
 
-    const innerR = r * 0.55;
-
-    return html`
-      <svg viewBox="0 0 ${size} ${size}" height=${size} style="max-width: ${size}px; margin: 0 auto; display: block;">
-        ${slices}
-        ${donut ? html`
-          <circle cx=${cx} cy=${cy} r=${innerR} fill="var(--cg-color-surface-container-background, #18181b)" />
-          <text x=${cx} y=${cy - 6} text-anchor="middle" font-size="18" font-weight="700" fill="var(--cg-color-surface-base-text, #fafafa)">${this._formatValue(total)}</text>
-          <text x=${cx} y=${cy + 10} text-anchor="middle" font-size="9" fill="var(--cg-color-chart-axis, #52525b)">${'Total'}</text>
-        ` : nothing}
-      </svg>
+    return svg`
+      ${slices}
+      ${donut ? svg`
+        <circle cx="${cx}" cy="${cy}" r="${r * 0.55}" fill="${this._bg}" />
+        <text x="${cx}" y="${cy - 4}" text-anchor="middle" fill="${this._text}" font-size="16" font-weight="700">${this._fmt(total)}</text>
+        <text x="${cx}" y="${cy + 12}" text-anchor="middle" fill="${this._axis}" font-size="9">Total</text>
+      ` : nothing}
     `;
   }
 
-  // ── Horizontal Bar ────────────────────────────────────────────────────────
+  private _svgHeight() {
+    if (this.type === 'horizontal-bar') return this.data.length * 36;
+    if (this.type === 'pie' || this.type === 'donut') return Math.min(this.height, 240);
+    return this.height;
+  }
 
-  private _renderHorizontalBar() {
-    const max = Math.max(...this.data.map(d => d.value), 1);
-    const barH = 28;
-    const gap = 8;
-    const labelW = 80;
-    const h = this.data.length * (barH + gap);
-    const w = 300;
-
-    return html`
-      <svg viewBox="0 0 ${w} ${h}" height=${h}>
-        ${this.data.map((d, i) => {
-          const y = i * (barH + gap);
-          const barW = ((d.value / max) * (w - labelW - 50));
-          return html`
-            <text class="axis-label" x=${labelW - 4} y=${y + barH / 2 + 4} text-anchor="end" font-size="11">${d.label}</text>
-            <rect class="bar-rect" x=${labelW} y=${y} width=${barW} height=${barH} rx="4" fill=${this._color(i, d)}
-              @mouseenter=${(e: MouseEvent) => this._showTooltip(e, d.label, d.value)}
-              @mouseleave=${this._hideTooltip} />
-            <text class="bar-value" x=${labelW + barW + 6} y=${y + barH / 2 + 4} font-size="11">${this._formatValue(d.value)}</text>
-          `;
-        })}
-      </svg>
-    `;
+  private _svgWidth() {
+    if (this.type === 'pie' || this.type === 'donut') return Math.min(this.height, 240);
+    return 400;
   }
 
   override render() {
-    if (this.data.length === 0) {
-      return html`<div class="empty">${this.emptyText}</div>`;
+    if (!this.data.length) return html`<div class="wrap ${this.contained ? 'contained' : ''}"><div class="empty">${this.emptyText}</div></div>`;
+
+    const vw = this._svgWidth();
+    const vh = this._svgHeight();
+    const isPie = this.type === 'pie' || this.type === 'donut';
+
+    let chartSvg;
+    switch (this.type) {
+      case 'bar': chartSvg = this._bar(); break;
+      case 'horizontal-bar': chartSvg = this._hbar(); break;
+      case 'line': chartSvg = this._line(false); break;
+      case 'area': chartSvg = this._line(true); break;
+      case 'pie': chartSvg = this._pie(false); break;
+      case 'donut': chartSvg = this._pie(true); break;
     }
 
     return html`
-      <div class="chart-container">
-        ${this.title ? html`<div class="title">${this.title}</div>` : nothing}
-        ${this.subtitle ? html`<div class="subtitle">${this.subtitle}</div>` : nothing}
+      <div class="wrap ${this.contained ? 'contained' : ''}">
+        ${this.title || this.subtitle ? html`
+          <div class="header">
+            ${this.title ? html`<div class="title">${this.title}</div>` : nothing}
+            ${this.subtitle ? html`<div class="subtitle">${this.subtitle}</div>` : nothing}
+          </div>
+        ` : nothing}
 
-        <div style="position: relative;">
-          ${this.type === 'bar' ? this._renderBar() : nothing}
-          ${this.type === 'horizontal-bar' ? this._renderHorizontalBar() : nothing}
-          ${this.type === 'line' ? this._renderLineArea(false) : nothing}
-          ${this.type === 'area' ? this._renderLineArea(true) : nothing}
-          ${this.type === 'pie' ? this._renderPie(false) : nothing}
-          ${this.type === 'donut' ? this._renderPie(true) : nothing}
-
-          <div class="tooltip ${this._tooltip.visible ? 'visible' : ''}"
-            style="left: ${this._tooltip.x}px; top: ${this._tooltip.y}px;">
-            ${this._tooltip.text}
+        <div class="svg-wrap">
+          <svg viewBox="0 0 ${vw} ${vh}" style="${isPie ? `max-width:${vw}px; margin:0 auto;` : ''}">
+            ${chartSvg}
+          </svg>
+          <div class="tip ${this._tipShow ? 'show' : ''}" style="left:${this._tipX}px;top:${this._tipY}px;">
+            ${this._tipText}
           </div>
         </div>
 
         ${this.showLegend ? html`
           <div class="legend">
             ${this.data.map((d, i) => html`
-              <span class="legend-item">
-                <span class="legend-dot" style="background: ${this._color(i, d)}"></span>
+              <span class="legend-item anim-legend" style="animation-delay:${300 + i * 40}ms">
+                <span class="legend-dot" style="background:${this._color(i, d)}"></span>
                 <span>${d.label}</span>
-                <span class="legend-value">${this._formatValue(d.value)}</span>
+                <span class="legend-val">${this._fmt(d.value)}</span>
               </span>
             `)}
           </div>

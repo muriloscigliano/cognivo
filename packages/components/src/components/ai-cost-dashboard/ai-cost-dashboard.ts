@@ -29,123 +29,129 @@ interface CostEntry {
 export class AiCostDashboard extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     :host([hidden]) { display: none; }
 
     .container {
-      background: var(--cg-color-surface-container-background, #18181b);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      padding: var(--cg-spacing-16, 16px);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-200);
+      padding: var(--cg-spacing-20);
+      color: var(--cg-color-surface-base-text);
     }
 
     .header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: var(--cg-spacing-16, 16px);
+      padding-bottom: var(--cg-spacing-16);
+      margin-bottom: var(--cg-spacing-16);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
     }
 
     .title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
+      font-size: var(--cg-font-size-base);
+      font-weight: var(--cg-font-weight-bold);
     }
 
     .period {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     /* ── Summary cards ── */
     .summary {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: var(--cg-spacing-8, 8px);
-      margin-bottom: var(--cg-spacing-16, 16px);
+      gap: var(--cg-spacing-8);
+      margin-bottom: var(--cg-spacing-16);
     }
 
     .stat-card {
-      background: var(--cg-color-surface-base-background, #09090b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-100, 8px);
-      padding: var(--cg-spacing-12, 12px);
+      background: var(--cg-color-surface-base-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
+      border-radius: var(--cg-border-radius-100);
+      padding: var(--cg-spacing-12);
     }
 
     .stat-label {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
-      margin-bottom: var(--cg-spacing-4, 4px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-bottom: var(--cg-spacing-4);
     }
 
     .stat-value {
-      font-size: var(--cg-font-size-lg, 18px);
-      font-weight: 700;
-      color: var(--cg-brand-ai-accent, #dfff61);
+      font-size: var(--cg-font-size-lg);
+      font-weight: var(--cg-font-weight-bold);
+      color: var(--cg-color-surface-base-text);
     }
 
-    .stat-value.warn { color: #eab308; }
-    .stat-value.danger { color: var(--cg-color-status-error-text-default, #ef4444); }
+    .stat-value.warn { color: var(--cg-color-status-warning-text); }
+    .stat-value.danger { color: var(--cg-color-status-error-text-default); }
 
     /* ── Budget bar ── */
     .budget-section {
-      margin-bottom: var(--cg-spacing-16, 16px);
+      margin-bottom: var(--cg-spacing-16);
     }
 
     .budget-header {
       display: flex;
       justify-content: space-between;
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
-      margin-bottom: var(--cg-spacing-6, 6px);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      margin-bottom: var(--cg-spacing-6);
     }
 
     .budget-track {
-      height: 8px;
-      background: var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-50, 4px);
+      height: var(--cg-spacing-8);
+      background: var(--cg-color-surface-cards-divider);
+      border-radius: var(--cg-border-radius-100);
       overflow: hidden;
     }
 
     .budget-fill {
       height: 100%;
-      border-radius: var(--cg-border-radius-50, 4px);
-      background: var(--cg-brand-ai-accent, #dfff61);
-      transition: width 300ms ease;
+      border-radius: var(--cg-border-radius-100);
+      background: var(--cg-color-action-primary-background-default);
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
-    .budget-fill.warn { background: #eab308; }
-    .budget-fill.danger { background: var(--cg-color-status-error-text-default, #ef4444); }
+    .budget-fill.warn { background: var(--cg-color-status-warning-text); }
+    .budget-fill.danger { background: var(--cg-color-status-error-text-default); }
 
     /* ── Model breakdown ── */
     .breakdown-title {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
-      color: var(--cg-gray-400, #a1a1aa);
-      margin-bottom: var(--cg-spacing-8, 8px);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-input-text-placeholder);
+      margin-bottom: var(--cg-spacing-12);
+      padding-top: var(--cg-spacing-16);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
+      text-transform: uppercase;
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
 
     .model-row {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      margin-bottom: var(--cg-spacing-6, 6px);
+      gap: var(--cg-spacing-8);
       cursor: pointer;
-      padding: var(--cg-spacing-4, 4px) 0;
-      transition: opacity 120ms ease;
+      padding: var(--cg-spacing-8) 0;
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
+      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
     }
+    .model-row:last-of-type { border-bottom: none; }
     .model-row:hover { opacity: 0.85; }
+    .model-row:active { transform: scale(var(--cg-interaction-press-scale)); }
     .model-row:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
 
     .model-name {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-300, #d4d4d8);
-      width: 100px;
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-surface-base-text);
+      min-width: var(--cg-spacing-96);
       flex-shrink: 0;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -154,52 +160,56 @@ export class AiCostDashboard extends LitElement {
 
     .model-bar-track {
       flex: 1;
-      height: 6px;
-      background: var(--cg-color-surface-container-border, #27272a);
-      border-radius: 3px;
+      height: var(--cg-spacing-6);
+      background: var(--cg-color-surface-cards-divider);
+      border-radius: var(--cg-border-radius-100);
       overflow: hidden;
     }
 
     .model-bar-fill {
       height: 100%;
-      border-radius: 3px;
-      background: var(--cg-brand-ai-accent, #dfff61);
-      transition: width 300ms ease;
+      border-radius: var(--cg-border-radius-100);
+      background: var(--cg-color-action-primary-background-default);
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
 
     .model-cost {
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #71717a);
-      width: 60px;
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
+      min-width: var(--cg-spacing-56);
       text-align: right;
       flex-shrink: 0;
     }
 
     /* ── Mini trend chart ── */
     .trend-section {
-      margin-top: var(--cg-spacing-16, 16px);
+      margin-top: var(--cg-spacing-16);
+      padding-top: var(--cg-spacing-16);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
     }
 
     .trend-title {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
-      color: var(--cg-gray-400, #a1a1aa);
-      margin-bottom: var(--cg-spacing-8, 8px);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-input-text-placeholder);
+      margin-bottom: var(--cg-spacing-12);
+      text-transform: uppercase;
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
 
     .trend-chart {
       display: flex;
       align-items: flex-end;
-      gap: 3px;
-      height: 48px;
+      gap: var(--cg-spacing-3);
+      height: var(--cg-spacing-48);
     }
 
     .trend-bar {
       flex: 1;
-      background: var(--cg-brand-ai-accent, #dfff61);
-      border-radius: 2px 2px 0 0;
-      min-height: 2px;
-      transition: height 200ms ease;
+      background: var(--cg-color-action-primary-background-default);
+      border-radius: var(--cg-border-radius-50) var(--cg-border-radius-50) 0 0;
+      min-height: var(--cg-spacing-2);
+      transition: height var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
       opacity: 0.7;
     }
     .trend-bar:hover {
@@ -208,10 +218,9 @@ export class AiCostDashboard extends LitElement {
 
     .empty-state {
       text-align: center;
-      color: var(--cg-gray-600, #52525b);
-      font-size: var(--cg-font-size-sm, 14px);
-      padding: var(--cg-spacing-24, 24px) 0;
-    }
+      color: var(--cg-color-input-border-hover);
+      font-size: var(--cg-font-size-sm);
+      padding: var(--cg-spacing-24) 0;
     }
   `];
   @property({ type: Array }) entries: CostEntry[] = [];

@@ -1,5 +1,5 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 /**
@@ -24,85 +24,75 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
  *
  * @cssprop [--cg-color-surface-cards-background=#18181b] - Card background
  * @cssprop [--cg-color-surface-cards-border=#27272a] - Card border (outlined)
- * @cssprop [--cg-border-radius-200=24px] - Card border radius
+ * @cssprop [--cg-border-radius-200=16px] - Card border radius
  * @cssprop [--cg-interaction-hover-lift=-1px] - Clickable card hover lift
  */
 @customElement('cg-card')
 export class CgCard extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     .card {
-      border-radius: var(--cg-border-radius-200, 24px);
+      position: relative;
+      border-radius: var(--cg-component-card-radius);
       overflow: hidden;
-      transition: all var(--cg-motion-duration-normal, 150ms) ease;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      transition: border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-default), background var(--cg-motion-duration-normal) var(--cg-motion-easing-default), transform var(--cg-motion-duration-normal) var(--cg-motion-easing-default), box-shadow var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      background: var(--cg-color-surface-cards-background);
     }
 
     /* ── Variants ── */
 
-    /* Elevated (default) — shadow, white bg */
+    /* Elevated (default) — shadow lifts card off the surface */
     :host([variant="elevated"]) .card {
-      background: var(--cg-color-surface-cards-background, #18181b);
-      box-shadow:
-        var(--cg-shadow-sm-x, 0px) var(--cg-shadow-sm-y, 1px) var(--cg-shadow-sm-blur, 4px) var(--cg-shadow-sm-spread, 0px) var(--cg-shadow-sm-Color, #616161);
+      background: var(--cg-color-surface-cards-background);
+      border-color: var(--cg-color-surface-cards-border);
+      box-shadow: var(--cg-elevation-1);
     }
 
-    /* Outlined — border, white bg */
+    /* Outlined — transparent bg, border defines the container */
     :host([variant="outlined"]) .card {
-      background: var(--cg-color-surface-cards-background, #18181b);
-      border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-cards-border, #27272a);
+      background: transparent;
+      border-color: var(--cg-color-surface-cards-outlined);
+      box-shadow: none;
     }
 
-    /* Filled — subtle bg, no border */
+    /* Filled — heavier surface fill, no border, no shadow */
     :host([variant="filled"]) .card {
-      background: var(--cg-color-surface-container-background, #18181b);
+      background: var(--cg-color-surface-cards-emphasis);
+      border-color: transparent;
+      box-shadow: none;
     }
 
     /* ── Interactive (clickable) ── */
     :host([clickable]) .card {
       cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-    :host([clickable]) .card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, var(--cg-brand-ai-accent, #dfff61) 0%, rgba(129, 140, 248, 0.5) 100%);
-      opacity: 0.05;
-      transform: translateY(102%);
-      transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 0;
-      border-radius: inherit;
-      pointer-events: none;
-    }
-    :host([clickable]) .card:hover::before {
-      transform: translateY(0);
     }
     :host([clickable]) .card:hover {
-      box-shadow: var(--cg-shadow-md-x, 0px) var(--cg-shadow-md-y, 4px) var(--cg-shadow-md-blur, 12px) var(--cg-shadow-md-spread, 0px) var(--cg-shadow-md-Color, #000000);
-      transform: translateY(var(--cg-interaction-hover-lift, -1px));
+      border-color: var(--cg-color-surface-cards-hover-border);
+      background: var(--cg-color-surface-cards-hover-background);
+    }
+    :host([clickable][variant="elevated"]) .card:hover {
+      box-shadow: var(--cg-elevation-2);
+      transform: translateY(var(--cg-interaction-hover-lift));
     }
     :host([clickable]) .card:active {
-      transform: translateY(0);
-      box-shadow: var(--cg-shadow-sm-x, 0px) var(--cg-shadow-sm-y, 1px) var(--cg-shadow-sm-blur, 4px) var(--cg-shadow-sm-spread, 0px) var(--cg-shadow-sm-Color, #616161);
+      transform: scale(var(--cg-interaction-press-scale));
     }
-    :host([clickable]) .card:focus-within {
-      outline: 2px solid var(--cg-focus-ring-color, #c8e650);
-      outline-offset: 2px;
+    :host([clickable]) .card:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--cg-color-focus-ring-offset), 0 0 0 4px var(--cg-color-focus-ring);
     }
 
     /* ── Padding ── */
     :host([padding="none"]) .body { padding: 0; }
-    :host([padding="sm"]) .body { padding: var(--cg-spacing-12, 12px); }
-    :host([padding="md"]) .body { padding: var(--cg-spacing-16, 16px) var(--cg-spacing-24, 24px); }
-    :host([padding="lg"]) .body { padding: var(--cg-spacing-24, 24px); }
+    :host([padding="sm"]) .body { padding: var(--cg-component-card-padding-sm); }
+    :host([padding="md"]) .body { padding: var(--cg-component-card-padding-md) var(--cg-spacing-24); }
+    :host([padding="lg"]) .body { padding: var(--cg-component-card-padding-lg); }
 
-    /* ── Content z-index for liquid fill ── */
+    /* ── Content z-index ── */
     .header, .body, .footer {
       position: relative;
       z-index: 1;
@@ -110,7 +100,10 @@ export class CgCard extends LitElement {
 
     /* ── Header slot ── */
     .header {
-      padding: var(--cg-spacing-16, 16px) var(--cg-spacing-24, 24px) 0;
+      padding: var(--cg-spacing-20) var(--cg-spacing-24) var(--cg-component-card-padding-md);
+    }
+    .header:not(.has-content) {
+      display: none;
     }
     .header ::slotted(*) {
       margin: 0;
@@ -118,40 +111,64 @@ export class CgCard extends LitElement {
 
     /* ── Body ── */
     .body {
-      padding: var(--cg-spacing-16, 16px) var(--cg-spacing-24, 24px);
+      padding: var(--cg-component-card-padding-lg);
     }
 
     /* ── Footer slot ── */
     .footer {
-      padding: 0 var(--cg-spacing-24, 24px) var(--cg-spacing-16, 16px);
+      padding: var(--cg-component-card-padding-md) var(--cg-spacing-24);
     }
-    .footer-divider {
-      border-top: 1px solid var(--cg-color-surface-cards-border, #27272a);
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-24, 24px);
+    .footer:not(.has-content) {
+      display: none;
     }
-  
 
-    :focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+    /* Disabled state */
+    :host([disabled]) .card {
+      background: var(--cg-color-surface-cards-disable-background);
+      border-color: var(--cg-color-surface-cards-disable-border);
+      color: var(--cg-color-surface-cards-disable-text);
+      pointer-events: none;
     }
 
     /* Rounded variants */
     :host([rounded="none"]) .card { border-radius: 0; }
-    :host([rounded="sm"]) .card { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .card { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .card { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .card { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .card { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .card { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .card { border-radius: var(--cg-component-card-radius); }
+    :host([rounded="full"]) .card { border-radius: var(--cg-border-radius-full); }
   `];
 
   @property({ reflect: true }) variant: 'elevated' | 'outlined' | 'filled' = 'elevated';
   @property({ reflect: true }) padding: 'none' | 'sm' | 'md' | 'lg' = 'md';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Boolean, reflect: true }) clickable = false;
+  @property({ type: Boolean, reflect: true }) disabled = false;
+
+  @state() private _hasHeader = false;
+  @state() private _hasFooter = false;
+
+  private _onHeaderSlotChange(e: Event) {
+    const slot = e.target as HTMLSlotElement;
+    this._hasHeader = slot.assignedNodes({ flatten: true }).length > 0;
+  }
+
+  private _onFooterSlotChange(e: Event) {
+    const slot = e.target as HTMLSlotElement;
+    this._hasFooter = slot.assignedNodes({ flatten: true }).length > 0;
+  }
 
   private _handleClick() {
+    if (this.disabled) return;
     if (this.clickable) {
       this.dispatchEvent(new CustomEvent('cg-card-click', { bubbles: true, composed: true }));
+    }
+  }
+
+  private _handleKeydown(e: KeyboardEvent) {
+    if (this.disabled) return;
+    if (this.clickable && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      this._handleClick();
     }
   }
 
@@ -160,12 +177,14 @@ export class CgCard extends LitElement {
       <div
         class="card"
         @click=${this.clickable ? this._handleClick : nothing}
+        @keydown=${this.clickable ? this._handleKeydown : nothing}
         role=${this.clickable ? 'button' : nothing}
-        tabindex=${this.clickable ? '0' : nothing}
+        tabindex=${this.clickable && !this.disabled ? '0' : nothing}
+        aria-disabled=${this.disabled ? 'true' : nothing}
       >
-        <div class="header"><slot name="header"></slot></div>
+        <div class="header ${this._hasHeader ? 'has-content' : ''}"><slot name="header" @slotchange=${this._onHeaderSlotChange}></slot></div>
         <div class="body"><slot></slot></div>
-        <div class="footer"><slot name="footer"></slot></div>
+        <div class="footer ${this._hasFooter ? 'has-content' : ''}"><slot name="footer" @slotchange=${this._onFooterSlotChange}></slot></div>
       </div>
     `;
   }

@@ -32,61 +32,68 @@ export interface ComparisonModel {
 export class AiModelComparison extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
     .wrapper {
       overflow-x: auto;
-      border: 1px solid var(--cg-color-border-primary, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
-      background: var(--cg-color-bg-primary, #18181b);
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150);
+      background: var(--cg-color-surface-base-background);
     }
+
+    /* ── Rounded variants ── */
+    :host([rounded="none"]) .wrapper { border-radius: 0; }
+    :host([rounded="sm"]) .wrapper { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .wrapper { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .wrapper { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) .wrapper { border-radius: var(--cg-border-radius-full); }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: var(--cg-font-size-sm, 14px);
+      font-size: var(--cg-font-size-sm);
     }
 
     th, td {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
       text-align: left;
-      border-bottom: 1px solid var(--cg-color-border-primary, #27272a);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
 
+    tr:hover { background: var(--cg-overlay-dark-subtle); }
+
     th {
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: var(--cg-letter-spacing-wide);
       position: sticky;
       top: 0;
-      background: var(--cg-color-bg-secondary, #27272a);
+      background: var(--cg-color-surface-container-background);
     }
 
     .model-header {
       text-align: center;
-      min-width: 120px;
+      min-width: var(--cg-spacing-96);
     }
 
     .model-name {
-      color: var(--cg-color-text-primary, #fafafa);
-      font-weight: 700;
-      font-size: var(--cg-font-size-sm, 14px);
+      color: var(--cg-color-surface-base-text);
+      font-weight: var(--cg-font-weight-bold);
+      font-size: var(--cg-font-size-sm);
     }
 
     .model-provider {
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
     }
 
     .metric-label {
-      color: var(--cg-color-text-primary, #fafafa);
-      font-weight: 600;
+      color: var(--cg-color-surface-base-text);
+      font-weight: var(--cg-font-weight-semibold);
       white-space: nowrap;
     }
 
@@ -99,79 +106,78 @@ export class AiModelComparison extends LitElement {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
+      gap: var(--cg-spacing-4);
     }
 
     .score-bar-track {
-      width: 60px;
-      height: 6px;
-      background: var(--cg-color-border-primary, #3f3f46);
-      border-radius: 3px;
+      width: var(--cg-spacing-64);
+      height: var(--cg-spacing-6);
+      background: var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-50);
       overflow: hidden;
     }
 
     .score-bar-fill {
       height: 100%;
-      border-radius: 3px;
-      transition: width 300ms ease;
+      border-radius: var(--cg-border-radius-50);
+      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
-    .score-bar-fill.low    { background: var(--cg-color-status-error-text-default, #ef4444); }
-    .score-bar-fill.mid    { background: #eab308; }
-    .score-bar-fill.high   { background: var(--cg-color-status-success-text-default, #22c55e); }
-    .score-bar-fill.best   { background: var(--cg-brand-ai-accent, #dfff61); }
+    .score-bar-fill.low    { background: var(--cg-color-status-error-text-default); }
+    .score-bar-fill.mid    { background: var(--cg-color-status-warning-text); }
+    .score-bar-fill.high   { background: var(--cg-color-status-success-text-default); }
+    .score-bar-fill.best   { background: var(--cg-color-action-primary-background-default); }
 
     .score-value {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
-      color: var(--cg-color-text-primary, #fafafa);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
     }
     .score-value.best {
-      color: var(--cg-brand-ai-accent, #dfff61);
+      color: var(--cg-color-surface-base-text);
     }
 
     .meta-cell {
       text-align: center;
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
     }
 
     .cost-badge {
       display: inline-block;
-      padding: 2px var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-border-radius-50, 4px);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 700;
-      background: var(--cg-color-bg-secondary, #27272a);
-      border: 1px solid var(--cg-color-border-primary, #3f3f46);
-      color: var(--cg-color-text-primary, #fafafa);
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-50);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-bold);
+      background: var(--cg-color-surface-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      color: var(--cg-color-surface-base-text);
     }
 
     .select-btn {
       display: block;
-      margin: 4px auto 0;
-      padding: var(--cg-spacing-6, 6px) var(--cg-spacing-16, 16px);
-      border-radius: var(--cg-border-radius-100, 8px);
-      border: 1px solid var(--cg-color-border-primary, #3f3f46);
+      margin: var(--cg-spacing-4) auto 0;
+      padding: var(--cg-spacing-6) var(--cg-spacing-16);
+      border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       background: transparent;
-      color: var(--cg-color-text-primary, #fafafa);
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       font-family: inherit;
-      transition: background 150ms ease;
+      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
     .select-btn:hover {
-      background: var(--cg-brand-ai-accent, #dfff61);
-      color: var(--cg-color-surface-container-background, #18181b);
-      border-color: var(--cg-brand-ai-accent, #dfff61);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-surface-container-background);
+      border-color: var(--cg-color-surface-base-text);
     }
     .select-btn:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
-    }
-      .select-btn { transition: none; }
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
   `];
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) models: ComparisonModel[] = [];
 
   private _getMetrics(): string[] {

@@ -61,9 +61,9 @@ export class CgBreadcrumbs extends LitElement {
     .separator {
       display: inline-flex;
       align-items: center;
-      padding: 0 var(--cg-spacing-8, 8px);
-      color: var(--cg-color-text-disabled, #52525b);
-      font-size: var(--cg-font-size-xs, 12px);
+      padding: 0 var(--cg-spacing-8);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
       user-select: none;
       flex-shrink: 0;
     }
@@ -71,12 +71,12 @@ export class CgBreadcrumbs extends LitElement {
     .crumb-link {
       display: inline-flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
-      padding: var(--cg-spacing-4, 4px) var(--cg-spacing-4, 4px);
-      border-radius: var(--cg-border-radius-050, 4px);
-      font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      gap: var(--cg-spacing-4);
+      padding: var(--cg-spacing-2) 0;
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-container-text);
       text-decoration: none;
+      text-underline-offset: var(--cg-spacing-4);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -85,23 +85,25 @@ export class CgBreadcrumbs extends LitElement {
       border: none;
       background: transparent;
       font-family: inherit;
-      line-height: 1.4;
+      line-height: var(--cg-line-height-snug);
+      border-radius: var(--cg-border-radius-50);
       -webkit-font-smoothing: antialiased;
+      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     .crumb-link:hover {
-      color: var(--cg-color-text-primary, #fafafa);
-      background: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.06));
+      color: var(--cg-color-surface-base-text);
+      text-decoration: underline;
     }
 
     .crumb-link:active {
-      transform: scale(var(--cg-interaction-press-scale, 0.97));
+      transform: scale(var(--cg-interaction-press-scale));
     }
 
     .crumb-link:focus-visible {
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+        0 0 0 2px var(--cg-color-surface-base-background),
+        0 0 0 4px var(--cg-focus-ring-color);
       outline: none;
     }
 
@@ -109,25 +111,25 @@ export class CgBreadcrumbs extends LitElement {
     .crumb-current {
       display: inline-flex;
       align-items: center;
-      gap: var(--cg-spacing-4, 4px);
-      padding: var(--cg-spacing-4, 4px);
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-color-text-primary, #fafafa);
+      gap: var(--cg-spacing-4);
+      padding: var(--cg-spacing-4);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 200px;
-      line-height: 1.4;
+      line-height: var(--cg-line-height-snug);
     }
 
     .crumb-icon {
       flex-shrink: 0;
       display: inline-flex;
       align-items: center;
-      font-size: 14px;
-      width: 16px;
-      height: 16px;
+      font-size: var(--cg-font-size-sm);
+      width: var(--cg-icon-size-100);
+      height: var(--cg-icon-size-100);
       justify-content: center;
     }
 
@@ -135,40 +137,39 @@ export class CgBreadcrumbs extends LitElement {
     .ellipsis {
       display: inline-flex;
       align-items: center;
-      color: var(--cg-color-text-disabled, #52525b);
+      color: var(--cg-color-input-text-placeholder);
       cursor: pointer;
-      padding: var(--cg-spacing-2, 2px) var(--cg-spacing-4, 4px);
-      border-radius: var(--cg-border-radius-050, 4px);
+      padding: var(--cg-spacing-2) var(--cg-spacing-4);
+      border-radius: var(--cg-border-radius-50);
       border: none;
       background: transparent;
       font-family: inherit;
-      font-size: var(--cg-font-size-sm, 14px);
-      line-height: 1.4;
-      letter-spacing: 2px;
+      font-size: var(--cg-font-size-sm);
+      line-height: var(--cg-line-height-snug);
+      letter-spacing: var(--cg-letter-spacing-widest);
     }
 
     .ellipsis:hover {
-      background: var(--cg-color-surface-hover-background, rgba(255, 255, 255, 0.06));
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      color: var(--cg-color-surface-base-text);
     }
 
     .ellipsis:focus-visible {
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+        0 0 0 2px var(--cg-color-surface-base-background),
+        0 0 0 4px var(--cg-focus-ring-color);
       outline: none;
     }
 
     /* Size variants */
-    :host([size="sm"]) .crumb-link { font-size: 12px; padding: 2px 6px; }
-    :host([size="sm"]) .crumb-current { font-size: 12px; padding: 2px 6px; }
-    :host([size="sm"]) .separator { padding: 0 4px; font-size: 10px; }
-    :host([size="sm"]) .ellipsis { font-size: 12px; padding: 2px 4px; }
+    :host([size="sm"]) .crumb-link,
+    :host([size="sm"]) .crumb-current { font-size: var(--cg-font-size-xs); }
+    :host([size="sm"]) .separator { padding: 0 var(--cg-spacing-4); font-size: var(--cg-font-size-xs); }
+    :host([size="sm"]) .ellipsis { font-size: var(--cg-font-size-xs); }
 
-    :host([size="lg"]) .crumb-link { font-size: 16px; padding: 6px 12px; }
-    :host([size="lg"]) .crumb-current { font-size: 16px; padding: 6px 12px; }
-    :host([size="lg"]) .separator { padding: 0 8px; font-size: 14px; }
-    :host([size="lg"]) .ellipsis { font-size: 16px; padding: 4px 8px; }
+    :host([size="lg"]) .crumb-link,
+    :host([size="lg"]) .crumb-current { font-size: var(--cg-font-size-base); }
+    :host([size="lg"]) .separator { padding: 0 var(--cg-spacing-8); font-size: var(--cg-font-size-sm); }
+    :host([size="lg"]) .ellipsis { font-size: var(--cg-font-size-base); }
 
     /* ── Responsive collapse on small screens ── */
     @media (max-width: 640px) {
@@ -183,7 +184,6 @@ export class CgBreadcrumbs extends LitElement {
       .crumb-link,
       .crumb-current {
         max-width: 120px;
-        padding: var(--cg-spacing-2, 2px) var(--cg-spacing-4, 4px);
       }
     }
 

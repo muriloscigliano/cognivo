@@ -1,26 +1,14 @@
 /**
  * @element ai-guardrail
- * Content safety filter display with policy check list, blocked content, and optional override controls.
+ * Content safety filter display with policy checks, blocked content blur, and override controls.
  *
- * @example
- * ```html
- * <ai-guardrail
- *   status="flagged"
- *   severityLevel="medium"
- *   .checks=${[{policy:'PII Detection', passed:false, detail:'Email address found'}]}
- *   allowOverride
- * ></ai-guardrail>
- * ```
- *
- * @fires {CustomEvent} ai-guardrail-override - Override button clicked
- * @fires {CustomEvent} ai-guardrail-report - Report button clicked
- * @fires {CustomEvent} ai-guardrail-reveal - Blocked content revealed
- *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Safe status accent
+ * @fires {CustomEvent} ai-guardrail-override - Override clicked
+ * @fires {CustomEvent} ai-guardrail-report - Report clicked
+ * @fires {CustomEvent} ai-guardrail-reveal - Blocked content revealed/hidden
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface PolicyCheck {
   policy: string;
@@ -30,143 +18,150 @@ interface PolicyCheck {
 
 @customElement('ai-guardrail')
 export class AiGuardrail extends LitElement {
-  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
-    :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
-    }
-
+  static override styles = [hostBlock, reducedMotion, css`
     .panel {
-      background: var(--cg-color-surface-container-background, #18181b);
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
-      border-radius: var(--cg-border-radius-150, 12px);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
       overflow: hidden;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
     }
 
-    /* Status bar */
+    /* ── Status bar ── */
     .status-bar {
-      display: flex; align-items: center; gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      font-size: var(--cg-font-size-sm, 14px); font-weight: 600;
+      display: flex; align-items: center; gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-16) var(--cg-spacing-20);
+      font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-semibold);
     }
-    .status-bar.safe { background: rgba(34, 197, 94, 0.08); color: var(--cg-green-400, #4ade80); border-bottom: 1px solid rgba(34, 197, 94, 0.15); }
-    .status-bar.flagged { background: rgba(245, 158, 11, 0.08); color: var(--cg-yellow-400, #fbbf24); border-bottom: 1px solid rgba(245, 158, 11, 0.15); }
-    .status-bar.blocked { background: rgba(239, 68, 68, 0.08); color: var(--cg-red-400, #f87171); border-bottom: 1px solid rgba(239, 68, 68, 0.15); }
+    .status-bar svg { width: var(--cg-spacing-16); height: var(--cg-spacing-16); flex-shrink: 0; }
+    .status-bar.safe {
+      background: var(--cg-color-status-success-background-default);
+      color: var(--cg-color-status-success-text-default);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-status-success-border-default);
+    }
+    .status-bar.flagged {
+      background: var(--cg-color-status-warning-background-default);
+      color: var(--cg-color-status-warning-text-default);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-status-warning-border-default);
+    }
+    .status-bar.blocked {
+      background: var(--cg-color-status-error-background-default);
+      color: var(--cg-color-status-error-text-default);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-status-error-border-default);
+    }
 
-    .status-icon { font-size: var(--cg-font-size-base, 16px); }
     .status-text { flex: 1; }
     .severity {
-      font-size: 10px; font-weight: 700; padding: 2px var(--cg-spacing-8, 8px); border-radius: var(--cg-border-radius-50, 4px);
-      text-transform: uppercase;
+      font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-semibold);
+      padding: var(--cg-spacing-2) var(--cg-spacing-8); border-radius: var(--cg-border-radius-full);
+      text-transform: uppercase; letter-spacing: var(--cg-letter-spacing-wide);
     }
-    .severity.low { background: rgba(34, 197, 94, 0.12); color: var(--cg-color-status-success-text-default, #4ade80); }
-    .severity.medium { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
-    .severity.high { background: rgba(249, 115, 22, 0.12); color: #fb923c; }
-    .severity.critical { background: rgba(239, 68, 68, 0.12); color: #f87171; }
+    .severity.low { background: var(--cg-color-status-success-background-default); color: var(--cg-color-status-success-text-default); }
+    .severity.medium { background: var(--cg-color-status-warning-background-default); color: var(--cg-color-status-warning-text-default); }
+    .severity.high { background: var(--cg-color-status-warning-background-default); color: var(--cg-color-status-warning-text-default); }
+    .severity.critical { background: var(--cg-color-status-error-background-default); color: var(--cg-color-status-error-text-default); }
 
-    /* Policy checks */
-    .checks { padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px); }
+    /* ── Policy checks ── */
+    .checks { padding: var(--cg-spacing-16) var(--cg-spacing-20); }
     .checks-label {
-      font-size: 11px; font-weight: 700; color: var(--cg-gray-400, #a1a1aa);
-      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--cg-spacing-8, 8px);
+      font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-container-outlined);
+      text-transform: uppercase; letter-spacing: var(--cg-letter-spacing-wide);
+      margin-bottom: var(--cg-spacing-12);
     }
 
     .check {
-      display: flex; align-items: flex-start; gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-6, 6px) 0;
-      border-bottom: 1px solid var(--cg-gray-800, #27272a);
+      display: flex; align-items: flex-start; gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-6) 0;
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
     }
     .check:last-child { border-bottom: none; }
 
-    .check-icon { font-size: var(--cg-font-size-sm, 14px); flex-shrink: 0; margin-top: 1px; }
-    .check-icon.pass { color: var(--cg-green-400, #4ade80); }
-    .check-icon.fail { color: var(--cg-red-400, #f87171); }
+    .check-icon { flex-shrink: 0; margin-top: var(--cg-spacing-2); }
+    .check-icon svg { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
+    .check-icon.pass { color: var(--cg-color-status-success-text-default); }
+    .check-icon.fail { color: var(--cg-color-status-error-text-default); }
 
     .check-info { flex: 1; }
-    .check-policy { font-size: 13px; color: var(--cg-color-surface-base-text, #fafafa); font-weight: 500; }
-    .check-reason { font-size: 11px; color: var(--cg-gray-500, #71717a); margin-top: 2px; }
+    .check-policy { font-size: var(--cg-font-size-sm); color: var(--cg-color-surface-base-text); font-weight: var(--cg-font-weight-medium); }
+    .check-reason { font-size: var(--cg-font-size-xs); color: var(--cg-color-surface-container-outlined); margin-top: var(--cg-spacing-2); }
 
-    /* Blocked content */
+    /* ── Blocked content ── */
     .blocked-section {
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      border-top: 1px solid var(--cg-gray-800, #27272a);
+      padding: var(--cg-spacing-16) var(--cg-spacing-20);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
     }
     .blocked-label {
-      font-size: 11px; font-weight: 700; color: var(--cg-red-400, #f87171);
-      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--cg-spacing-8, 8px);
+      font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-status-error-text-default);
+      text-transform: uppercase; letter-spacing: var(--cg-letter-spacing-wide);
+      margin-bottom: var(--cg-spacing-12);
     }
     .blocked-content {
-      padding: 10px 12px; border-radius: var(--cg-border-radius-100, 8px);
-      background: rgba(239, 68, 68, 0.06);
-      border: 1px solid rgba(239, 68, 68, 0.15);
-      font-size: 12px; color: var(--cg-gray-400, #a1a1aa);
-      font-family: var(--cg-font-family-mono, 'Fira Code', monospace);
-      line-height: 1.5;
-      filter: blur(3px);
-      transition: filter 200ms;
+      padding: var(--cg-spacing-12) var(--cg-spacing-16); border-radius: var(--cg-border-radius-100);
+      background: var(--cg-color-status-error-background-default);
+      border: var(--cg-border-width-50) solid var(--cg-color-status-error-border-default);
+      font-size: var(--cg-font-size-sm); color: var(--cg-color-surface-base-text);
+      font-family: var(--cg-font-family-mono);
+      line-height: var(--cg-line-height-relaxed);
+      filter: blur(4px);
+      transition: filter var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
       cursor: pointer;
     }
     .blocked-content.revealed { filter: none; }
     .blocked-hint {
-      font-size: 11px; color: var(--cg-gray-500, #71717a);
-      margin-top: var(--cg-spacing-6, 6px); text-align: center;
+      font-size: var(--cg-font-size-xs); color: var(--cg-color-surface-container-outlined);
+      margin-top: var(--cg-spacing-6); text-align: center;
     }
 
-    /* Override */
-    .override-section {
-      padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      border-top: 1px solid var(--cg-gray-800, #27272a);
-      display: flex; align-items: center; gap: var(--cg-spacing-8, 8px);
+    /* ── Actions ── */
+    .actions {
+      padding: var(--cg-spacing-16) var(--cg-spacing-20);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
+      display: flex; align-items: center; gap: var(--cg-spacing-12);
     }
-    .override-btn {
-      padding: 5px 14px; border-radius: var(--cg-border-radius-100, 8px);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      background: rgba(239, 68, 68, 0.08);
-      color: var(--cg-red-400, #f87171);
-      font: inherit; font-size: var(--cg-font-size-xs, 12px); font-weight: 700;
-      cursor: pointer; transition: all 150ms;
-    }
-    .override-btn:hover { background: rgba(239, 68, 68, 0.15); }
     .override-warning {
-      font-size: 11px; color: var(--cg-gray-500, #71717a); flex: 1;
-    }
-    .report-btn {
-      padding: 5px 14px; border-radius: var(--cg-border-radius-100, 8px);
-      border: 1px solid var(--cg-gray-700, #3f3f46);
-      background: none; color: var(--cg-gray-400, #a1a1aa);
-      font: inherit; font-size: var(--cg-font-size-xs, 12px); font-weight: 600;
-      cursor: pointer; transition: all 150ms;
-    }
-    .report-btn:hover { border-color: var(--cg-gray-600, #52525b); color: var(--cg-color-surface-base-text, #fafafa); }
-    }
-  
-
-    :focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background, #09090b), 0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+      font-size: var(--cg-font-size-xs); color: var(--cg-color-surface-container-outlined); flex: 1;
     }
 
-    /* ── Rounded variants ── */
+    .btn {
+      padding: var(--cg-spacing-6) var(--cg-spacing-12); border-radius: var(--cg-border-radius-100);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      background: transparent; color: var(--cg-color-surface-container-outlined);
+      font: inherit; font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-medium);
+      cursor: pointer;
+      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+    }
+    .btn:hover { border-color: var(--cg-color-surface-cards-hover-border); color: var(--cg-color-surface-base-text); }
+    .btn:active { transform: scale(var(--cg-interaction-press-scale)); }
+    .btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+
+    .btn.danger {
+      border-color: var(--cg-color-status-error-border-default);
+      background: var(--cg-color-status-error-background-default);
+      color: var(--cg-color-status-error-text-default);
+    }
+    .btn.danger:hover { background: var(--cg-color-status-error-text-default); color: var(--cg-gray-white); }
+
+    /* ── Rounded ── */
     :host([rounded="none"]) .panel { border-radius: 0; }
-    :host([rounded="sm"]) .panel { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .panel { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .panel { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) .panel { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) .panel { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .panel { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .panel { border-radius: var(--cg-component-card-radius); }
   `];
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
-  @property({ type: String }) status: 'safe' | 'flagged' | 'blocked' = 'safe';
+
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
+  @property() status: 'safe' | 'flagged' | 'blocked' = 'safe';
   @property({ type: Array }) checks: PolicyCheck[] = [];
-  @property({ type: String }) blockedContent: string = '';
-  @property({ type: Boolean }) allowOverride: boolean = false;
-  @property({ type: String }) severityLevel: 'low' | 'medium' | 'high' | 'critical' = 'low';
+  @property() blockedContent = '';
+  @property({ type: Boolean }) allowOverride = false;
+  @property() severityLevel: 'low' | 'medium' | 'high' | 'critical' = 'low';
 
-  @state() private _revealed: boolean = false;
+  @state() private _revealed = false;
 
-  private _getStatusIcon(): unknown {
-    if (this.status === 'safe') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
-    if (this.status === 'flagged') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>`;
-    return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`;
+  private _getStatusIcon() {
+    if (this.status === 'safe') return html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
+    if (this.status === 'flagged') return html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>`;
+    return html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`;
   }
 
   private _getStatusText(): string {
@@ -175,25 +170,17 @@ export class AiGuardrail extends LitElement {
     return 'Content blocked by safety filter';
   }
 
-  private _handleOverride() {
-    this.dispatchEvent(new CustomEvent('ai-guardrail-override', {
-      bubbles: true, composed: true,
-      detail: { status: this.status, severity: this.severityLevel },
-    }));
-  }
-
-  private _handleReport() {
-    this.dispatchEvent(new CustomEvent('ai-guardrail-report', {
-      bubbles: true, composed: true,
-      detail: { status: this.status, checks: this.checks },
-    }));
+  private _checkIcon(passed: boolean) {
+    return passed
+      ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`
+      : html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`;
   }
 
   override render() {
     return html`
-      <div class="panel" role="alert" aria-live="polite" aria-atomic="true" aria-label="Safety filter: ${this.status}">
+      <div class="panel" role="alert" aria-live="polite" aria-label="Safety filter: ${this.status}">
         <div class="status-bar ${this.status}">
-          <span class="status-icon">${this._getStatusIcon()}</span>
+          ${this._getStatusIcon()}
           <span class="status-text">${this._getStatusText()}</span>
           ${this.status !== 'safe' ? html`<span class="severity ${this.severityLevel}">${this.severityLevel}</span>` : nothing}
         </div>
@@ -203,7 +190,7 @@ export class AiGuardrail extends LitElement {
             <div class="checks-label">Policy Checks (${this.checks.filter(c => c.passed).length}/${this.checks.length} passed)</div>
             ${this.checks.map(c => html`
               <div class="check">
-                <span class="check-icon ${c.passed ? 'pass' : 'fail'}">${c.passed ? html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>` : html`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`}</span>
+                <span class="check-icon ${c.passed ? 'pass' : 'fail'}">${this._checkIcon(c.passed)}</span>
                 <div class="check-info">
                   <div class="check-policy">${c.policy}</div>
                   ${c.reason ? html`<div class="check-reason">${c.reason}</div>` : nothing}
@@ -217,23 +204,19 @@ export class AiGuardrail extends LitElement {
           <div class="blocked-section">
             <div class="blocked-label">Blocked Content</div>
             <div class="blocked-content ${this._revealed ? 'revealed' : ''}"
-              @click=${() => {
-                this._revealed = !this._revealed;
-                this.dispatchEvent(new CustomEvent('ai-guardrail-reveal', {
-                  bubbles: true, composed: true,
-                  detail: { revealed: this._revealed },
-                }));
-              }}>${this.blockedContent}</div>
-            <div class="blocked-hint">${this._revealed ? 'Click to hide' : 'Click to reveal (content may be harmful)'}</div>
+              @click=${() => { this._revealed = !this._revealed; this.dispatchEvent(new CustomEvent('ai-guardrail-reveal', { bubbles: true, composed: true, detail: { revealed: this._revealed } })); }}>
+              ${this.blockedContent}
+            </div>
+            <div class="blocked-hint">${this._revealed ? 'Click to hide' : 'Click to reveal (may contain harmful content)'}</div>
           </div>
         ` : nothing}
 
         ${(this.allowOverride || this.status !== 'safe') ? html`
-          <div class="override-section">
-            <button class="report-btn" @click=${this._handleReport}>Report Issue</button>
+          <div class="actions">
+            <button class="btn" @click=${() => this.dispatchEvent(new CustomEvent('ai-guardrail-report', { bubbles: true, composed: true, detail: { status: this.status, checks: this.checks } }))}>Report Issue</button>
             ${this.allowOverride ? html`
               <span class="override-warning">Override requires admin approval</span>
-              <button class="override-btn" @click=${this._handleOverride}>Override</button>
+              <button class="btn danger" @click=${() => this.dispatchEvent(new CustomEvent('ai-guardrail-override', { bubbles: true, composed: true, detail: { status: this.status, severity: this.severityLevel } }))}>Override</button>
             ` : nothing}
           </div>
         ` : nothing}

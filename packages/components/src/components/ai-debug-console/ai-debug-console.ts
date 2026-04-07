@@ -31,46 +31,45 @@ export interface DebugEntry {
 export class AiDebugConsole extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      background: var(--cg-color-surface-base, #18181b);
-      color: var(--cg-color-surface-base-text, #fafafa);
-      border: 1px solid var(--cg-color-border-default, #27272a);
-      border-radius: var(--cg-radius-lg, 12px);
+      background: var(--cg-color-code-background);
+      color: var(--cg-color-code-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-code-border);
+      border-radius: var(--cg-border-radius-150);
       overflow: hidden;
-      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
     }
     :host([hidden]) { display: none; }
 
     .toggle-bar {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
       cursor: pointer;
       background: transparent;
       border: none;
       color: inherit;
       width: 100%;
       font-family: inherit;
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: var(--cg-font-weight-semibold, 600);
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-semibold);
       text-align: left;
     }
 
     .toggle-bar:hover {
-      background: var(--cg-color-surface-hover, #27272a);
+      background: var(--cg-color-surface-cards-hover-background);
     }
 
+    .toggle-bar:active { transform: scale(var(--cg-interaction-press-scale)); }
     .toggle-bar:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
-      outline-offset: -2px;
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--cg-overlay-accent-strong);
     }
 
     .chevron {
-      transition: transform 0.15s ease;
-      font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-color-text-tertiary, #71717a);
+      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     .chevron.open {
@@ -85,40 +84,40 @@ export class AiDebugConsole extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 20px;
-      height: 20px;
-      padding: 0 6px;
-      border-radius: var(--cg-radius-full, 9999px);
-      background: rgba(223, 255, 97, 0.15);
-      color: var(--cg-color-accent, #dfff61);
-      font-size: 10px;
-      font-weight: var(--cg-font-weight-semibold, 600);
+      min-width: var(--cg-spacing-20);
+      height: var(--cg-spacing-20);
+      padding: 0 var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-overlay-accent-subtle);
+      color: var(--cg-color-surface-base-text);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-semibold);
     }
 
     .clear-btn {
       background: transparent;
-      border: 1px solid var(--cg-color-border-default, #3f3f46);
-      border-radius: var(--cg-radius-sm, 4px);
-      padding: 2px var(--cg-spacing-8, 8px);
-      font-size: 10px;
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-50);
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
+      font-size: var(--cg-font-size-xs);
+      color: var(--cg-color-input-text-placeholder);
       cursor: pointer;
       font-family: inherit;
     }
 
     .clear-btn:hover {
-      background: var(--cg-color-surface-hover, #3f3f46);
-      color: var(--cg-color-surface-base-text, #fafafa);
+      background: var(--cg-color-surface-cards-hover-background);
+      color: var(--cg-color-surface-base-text);
     }
 
     .clear-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
-      outline-offset: 2px;
+      outline: 2px solid var(--cg-color-accent-border);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .panel {
-      border-top: 1px solid var(--cg-color-border-default, #27272a);
-      max-height: 400px;
+      border-top: var(--cg-border-width-50) solid var(--cg-color-code-border);
+      max-height: var(--_ai-debug-panel-max-height, 400px);
       overflow-y: auto;
     }
 
@@ -128,7 +127,7 @@ export class AiDebugConsole extends LitElement {
     }
 
     .entry {
-      border-bottom: 1px solid var(--cg-color-border-default, #27272a);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-code-border);
     }
 
     .entry:last-child {
@@ -138,53 +137,53 @@ export class AiDebugConsole extends LitElement {
     .entry-header {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8, 8px);
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px);
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
       cursor: pointer;
       background: transparent;
       border: none;
       color: inherit;
       width: 100%;
       font-family: inherit;
-      font-size: var(--cg-font-size-xs, 12px);
+      font-size: var(--cg-font-size-xs);
       text-align: left;
     }
 
     .entry-header:hover {
-      background: rgba(255, 255, 255, 0.02);
+      background: var(--cg-overlay-dark-subtle);
     }
 
     .entry-header:focus-visible {
-      outline: 2px solid var(--cg-color-accent, #dfff61);
+      outline: 2px solid var(--cg-color-accent-border);
       outline-offset: -2px;
     }
 
     .type-dot {
-      width: 8px;
-      height: 8px;
+      width: var(--cg-spacing-8);
+      height: var(--cg-spacing-8);
       border-radius: 50%;
       flex-shrink: 0;
     }
 
-    .type-request { background: #60a5fa; }
-    .type-response { background: var(--cg-color-status-success-text-default, #4ade80); }
-    .type-error { background: #f87171; }
-    .type-info { background: var(--cg-gray-400, #a1a1aa); }
+    .type-request { background: var(--cg-color-status-info-text); }
+    .type-response { background: var(--cg-color-status-success-text); }
+    .type-error { background: var(--cg-color-status-error-text); }
+    .type-info { background: var(--cg-color-input-text-placeholder); }
 
     .type-label {
-      font-weight: var(--cg-font-weight-semibold, 600);
+      font-weight: var(--cg-font-weight-semibold);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      min-width: 56px;
+      letter-spacing: var(--cg-letter-spacing-wide);
+      min-width: var(--cg-spacing-56);
     }
 
-    .label-request { color: #60a5fa; }
-    .label-response { color: var(--cg-color-status-success-text-default, #4ade80); }
-    .label-error { color: #f87171; }
-    .label-info { color: var(--cg-gray-400, #a1a1aa); }
+    .label-request { color: var(--cg-color-status-info-text); }
+    .label-response { color: var(--cg-color-status-success-text); }
+    .label-error { color: var(--cg-color-status-error-text); }
+    .label-info { color: var(--cg-color-input-text-placeholder); }
 
     .entry-ts {
-      color: var(--cg-color-text-tertiary, #71717a);
+      color: var(--cg-color-input-text-placeholder);
       flex-shrink: 0;
     }
 
@@ -193,42 +192,41 @@ export class AiDebugConsole extends LitElement {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-family: var(--cg-font-family-mono, 'JetBrains Mono', monospace);
+      color: var(--cg-color-input-text-placeholder);
+      font-family: var(--cg-font-family-mono);
     }
 
     .entry-duration {
-      color: var(--cg-color-text-tertiary, #71717a);
+      color: var(--cg-color-input-text-placeholder);
       flex-shrink: 0;
     }
 
     .entry-content {
-      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-16, 16px) var(--cg-spacing-12, 12px) var(--cg-spacing-24, 24px);
-      font-family: var(--cg-font-family-mono, 'JetBrains Mono', monospace);
-      font-size: var(--cg-font-size-xs, 12px);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16) var(--cg-spacing-12) var(--cg-spacing-24);
+      font-family: var(--cg-font-family-mono);
+      font-size: var(--cg-font-size-xs);
       line-height: 1.5;
       white-space: pre-wrap;
       word-break: break-word;
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      background: rgba(0, 0, 0, 0.2);
-      max-height: 200px;
+      color: var(--cg-color-code-text);
+      background: var(--cg-color-code-background);
+      max-height: var(--_ai-debug-entry-max-height, 200px);
       overflow-y: auto;
     }
 
     .empty {
       text-align: center;
-      padding: var(--cg-spacing-24, 24px);
-      color: var(--cg-color-text-tertiary, #71717a);
-      font-size: var(--cg-font-size-xs, 12px);
-    }
+      padding: var(--cg-spacing-24);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
     }
 
     /* ── Rounded variants ── */
     :host([rounded="none"]) { border-radius: 0; }
-    :host([rounded="sm"]) { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) { border-radius: var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"]) { border-radius: var(--cg-border-radius-full, 99999px); }
+    :host([rounded="sm"]) { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="full"]) { border-radius: var(--cg-border-radius-full); }
   `];
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) entries: DebugEntry[] = [];
@@ -275,7 +273,8 @@ export class AiDebugConsole extends LitElement {
     const visible = this._visibleEntries;
 
     return html`
-      <button class="toggle-bar" @click=${this._onToggle}
+      <div class="toggle-bar" role="button" @click=${this._onToggle}
+              @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._onToggle(); } }}
               aria-expanded=${this.open ? 'true' : 'false'}
               aria-label="Debug console"
               tabindex="0">
@@ -286,7 +285,7 @@ export class AiDebugConsole extends LitElement {
           <button class="clear-btn" @click=${this._onClear}
                   aria-label="Clear entries" tabindex="0">Clear</button>
         ` : nothing}
-      </button>
+      </div>
       ${this.open ? html`
         <div class="panel" role="log" aria-label="Debug entries">
           ${visible.length === 0 ? html`

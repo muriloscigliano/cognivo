@@ -36,126 +36,106 @@ interface KpiItem {
 export class AiKpiGrid extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast, 200ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
     }
 
     .card {
-      background: var(--cg-color-surface-cards-background, #18181b);
-      border: 1px solid var(--cg-color-surface-cards-border, #27272a);
-      border-radius: var(--cg-border-radius-200, 12px);
-      padding: var(--cg-spacing-20, 20px);
-      box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
     }
 
     .card-title {
-      font-size: var(--cg-font-size-sm, 14px);
-      font-weight: 600;
-      color: var(--cg-gray-400, #a1a1aa);
-      padding-bottom: var(--cg-spacing-16, 16px);
-      margin-bottom: var(--cg-spacing-16, 16px);
-      border-bottom: 1px solid var(--cg-color-surface-container-border, #27272a);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-input-text-placeholder);
+      padding: var(--cg-spacing-16) var(--cg-spacing-20) var(--cg-spacing-8);
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
 
+    /* Inset grid container */
     .grid {
       display: grid;
-      gap: var(--cg-spacing-16, 16px);
+      margin: 0 var(--cg-spacing-12) var(--cg-spacing-12);
+      background: var(--cg-overlay-dark-subtle);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-125);
+      overflow: hidden;
     }
 
     /* ── KPI cell ── */
     .kpi {
-      padding: var(--cg-spacing-14, 14px);
-      background: var(--cg-gray-900, #09090b);
-      border-radius: var(--cg-border-radius-100, 10px);
+      padding: var(--cg-spacing-16) var(--cg-spacing-20);
       cursor: pointer;
-      transition: all 150ms ease;
-      border: 1px solid var(--cg-color-surface-container-border, #27272a);
+      transition: background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      /* Borders via box-shadow trick — inner dividers only, no doubling */
+      box-shadow:
+        inset calc(-1 * var(--cg-border-width-50)) 0 0 var(--cg-color-surface-cards-border),
+        inset 0 calc(-1 * var(--cg-border-width-50)) 0 var(--cg-color-surface-cards-border);
     }
-    .kpi:hover {
-      border-color: var(--cg-gray-700, #3f3f46);
-      background: var(--cg-gray-800, #27272a);
-    }
+    .kpi:hover { background: var(--cg-color-action-secondary-background-hover); }
     .kpi:focus-visible {
-      outline: 2px solid var(--cg-brand-ai-accent, #dfff61);
-      outline-offset: 2px;
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--cg-overlay-accent-strong);
     }
+    /* Single column — no right border, just bottom */
+    :host([columns="1"]) .kpi {
+      box-shadow: inset 0 calc(-1 * var(--cg-border-width-50)) 0 var(--cg-color-surface-cards-border);
+    }
+    :host([columns="1"]) .kpi:last-child { box-shadow: none; }
 
-    .kpi-top {
-      display: flex;
-      align-items: center;
-      gap: var(--cg-spacing-6, 6px);
-      margin-bottom: var(--cg-spacing-8, 8px);
-    }
-    .kpi-icon {
-      font-size: var(--cg-font-size-base, 16px);
-      flex-shrink: 0;
-    }
+
     .kpi-label {
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 500;
-      color: var(--cg-gray-400, #a1a1aa);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-input-text-placeholder);
+      margin-bottom: var(--cg-spacing-4);
     }
 
     .kpi-value {
-      font-size: var(--cg-font-size-2xl, 24px);
-      font-weight: 700;
-      color: var(--cg-color-surface-base-text, #fafafa);
-      line-height: 1.2;
-      margin-bottom: var(--cg-spacing-4, 4px);
+      font-size: var(--cg-font-size-xl);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
+      line-height: var(--cg-line-height-tight);
+      letter-spacing: var(--cg-letter-spacing-tight);
+      margin-bottom: var(--cg-spacing-4);
     }
 
     .kpi-delta {
       display: inline-flex;
       align-items: center;
-      gap: 3px;
-      font-size: var(--cg-font-size-xs, 12px);
-      font-weight: 600;
+      gap: var(--cg-spacing-4);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
     }
-    .kpi-delta.up { color: var(--cg-green-400, #4ade80); }
-    .kpi-delta.down { color: var(--cg-red-400, #f87171); }
-    .kpi-delta.neutral { color: var(--cg-gray-400, #a1a1aa); }
-
-    .arrow { font-size: var(--cg-font-size-xs, 12px); }
+    .kpi-delta.up { color: var(--cg-color-status-success-text-default); }
+    .kpi-delta.down { color: var(--cg-color-status-error-text-default); }
+    .kpi-delta.neutral { color: var(--cg-color-input-text-placeholder); }
 
     /* ── Loading skeleton ── */
     .skeleton-cell {
-      padding: var(--cg-spacing-12, 12px);
-      background: var(--cg-gray-900, #09090b);
-      border-radius: var(--cg-border-radius-100, 8px);
+      padding: var(--cg-spacing-16) var(--cg-spacing-20);
     }
     .skel-line {
-      border-radius: var(--cg-border-radius-50, 4px);
+      border-radius: var(--cg-border-radius-50);
       background: linear-gradient(
         90deg,
-        var(--cg-gray-800, #27272a) 25%,
-        var(--cg-gray-700, #3f3f46) 50%,
-        var(--cg-gray-800, #27272a) 75%
+        var(--cg-color-surface-container-background) 25%,
+        var(--cg-color-surface-cards-border) 50%,
+        var(--cg-color-surface-container-background) 75%
       );
       background-size: 200% 100%;
       animation: shimmer 1.5s linear infinite;
     }
-    .skel-label { width: 60%; height: 10px; margin-bottom: var(--cg-spacing-8, 8px); }
-    .skel-value { width: 50%; height: 22px; margin-bottom: var(--cg-spacing-6, 6px); }
-    .skel-delta { width: 40%; height: 10px; }
-      .skel-line { animation: none; background: var(--cg-gray-800, #27272a); }
-    }
+    .skel-label { width: 60%; height: var(--cg-spacing-8); margin-bottom: var(--cg-spacing-8); }
+    .skel-value { width: 50%; height: var(--cg-spacing-20); margin-bottom: var(--cg-spacing-6); }
+    .skel-delta { width: 40%; height: var(--cg-spacing-8); }
 
-    /* ── Rounded variants ── */
-    :host([rounded="none"]) .card { border-radius: 0; }
-    :host([rounded="sm"]) .card { border-radius: var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"]) .card { border-radius: var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"]) .card { border-radius: var(--cg-border-radius-200, 12px); }
-    :host([rounded="full"]) .card { border-radius: var(--cg-border-radius-full, 99999px); }
   `];
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: String }) override title = '';
   @property({ attribute: false }) kpis: KpiItem[] = [];
-  @property({ type: Number }) columns = 2;
+  @property({ type: Number, reflect: true }) columns = 2;
   @property({ type: Boolean }) loading = false;
 
   private _handleKpiClick(kpi: KpiItem) {
@@ -196,10 +176,7 @@ export class AiKpiGrid extends LitElement {
               @click=${() => this._handleKpiClick(kpi)}
               @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleKpiClick(kpi); } }}
             >
-              <div class="kpi-top">
-                ${kpi.icon ? html`<span class="kpi-icon" aria-hidden="true">${kpi.icon}</span>` : nothing}
-                <span class="kpi-label">${kpi.label}</span>
-              </div>
+              <div class="kpi-label">${kpi.label}</div>
               <div class="kpi-value">${kpi.value}</div>
               ${kpi.delta ? html`
                 <span class="kpi-delta ${kpi.trend || 'neutral'}">

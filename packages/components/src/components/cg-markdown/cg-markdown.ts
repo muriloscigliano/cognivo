@@ -2,33 +2,166 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
+/** Allowed HTML tags after markdown parsing */
+const ALLOWED_TAGS = new Set([
+  'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'hr',
+  'strong', 'b', 'em', 'i', 'u', 's', 'del', 'ins',
+  'code', 'pre', 'blockquote',
+  'ul', 'ol', 'li',
+  'a', 'img',
+  'table', 'thead', 'tbody', 'tr', 'th', 'td',
+  'div', 'span', 'sub', 'sup', 'mark', 'abbr',
+]);
+
+/** Dangerous tags that must be stripped entirely */
+const DANGEROUS_TAGS = /(<\s*\/?\s*(script|iframe|object|embed|form|style|link|meta|base|applet|svg|math)\b[^>]*>)/gi;
+const DANGEROUS_ATTRS = /\s+(on\w+|formaction)\s*=\s*("[^"]*"|'[^']*'|[^\s>]*)/gi;
+const DANGEROUS_HREF = /\s+(href|src|action|xlink:href)\s*=\s*("[^"]*"|'[^']*'|[^\s>]*)/gi;
+
+function sanitizeHtml(html: string): string {
+  let clean = html.replace(DANGEROUS_TAGS, '');
+  clean = clean.replace(DANGEROUS_ATTRS, '');
+  clean = clean.replace(DANGEROUS_HREF, (match, attr, value) => {
+    const unquoted = value.replace(/^["']|["']$/g, '').trim().toLowerCase();
+    if (unquoted.startsWith('javascript:') || unquoted.startsWith('data:')) return '';
+    return match;
+  });
+  clean = clean.replace(/<\s*\/?\s*(\w+)[^>]*>/g, (match, tag) => {
+    if (ALLOWED_TAGS.has(tag.toLowerCase())) return match;
+    return '';
+  });
+  return clean;
+}
+
 /**
- * <cg-markdown> — Lightweight markdown renderer (bold, italic, code, links, lists, headings).
- * No external dependency — simple regex-based parsing for LLM output.
+ * <cg-markdown> — Lightweight markdown renderer for LLM output.
+ *
+ * @example
+ * ```html
+ * <cg-markdown text="## Hello\n\nThis is **bold**."></cg-markdown>
+ * ```
+ *
+ * @cssprop --cg-color-surface-base-text - Body text color
+ * @cssprop --cg-font-size-sm - Body font size (14px)
  */
 @customElement('cg-markdown')
 export class CgMarkdown extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
     :host {
-      color: var(--cg-color-surface-base-text, #fafafa); line-height: var(--cg-line-height-relaxed, 1.625); font-size: var(--cg-font-size-sm, 14px); }
-    .md h1 { font-size: 1.5rem; font-weight: 700; margin: 1em 0 0.5em; }
-    .md h2 { font-size: 1.25rem; font-weight: 700; margin: 1em 0 0.5em; }
-    .md h3 { font-size: 1.1rem; font-weight: 600; margin: 0.8em 0 0.4em; }
-    .md p { margin: 0.5em 0; }
-    .md strong { font-weight: 600; }
+      color: var(--cg-color-surface-base-text);
+      line-height: var(--cg-line-height-relaxed);
+      font-size: var(--cg-font-size-sm);
+    }
+
+    .md h1 {
+      font-size: var(--cg-font-size-2xl);
+      font-weight: var(--cg-font-weight-bold);
+      color: var(--cg-color-surface-base-text);
+      margin: var(--cg-spacing-24) 0 var(--cg-spacing-12);
+      line-height: var(--cg-line-height-tight);
+    }
+    .md h2 {
+      font-size: var(--cg-font-size-xl);
+      font-weight: var(--cg-font-weight-bold);
+      color: var(--cg-color-surface-base-text);
+      margin: var(--cg-spacing-20) 0 var(--cg-spacing-8);
+      line-height: var(--cg-line-height-tight);
+    }
+    .md h3 {
+      font-size: var(--cg-font-size-lg);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-base-text);
+      margin: var(--cg-spacing-16) 0 var(--cg-spacing-8);
+      line-height: var(--cg-line-height-snug);
+    }
+
+    .md p {
+      margin: var(--cg-spacing-12) 0;
+    }
+
+    .md strong { font-weight: var(--cg-font-weight-semibold); }
     .md em { font-style: italic; }
-    .md code { background: var(--cg-overlay-accent-light, rgba(223, 255, 97, 0.12)); padding: 2px 5px; border-radius: var(--cg-border-radius-50, 4px); font-family: monospace; font-size: 0.85em; }
-    .md pre { background: var(--cg-gray-900, #18181b); color: var(--cg-gray-200, #e4e4e7); padding: var(--cg-spacing-12, 12px); border-radius: var(--cg-border-radius-100, 8px); overflow-x: auto; font-family: monospace; font-size: 0.82rem; line-height: var(--cg-line-height-normal, 1.5); margin: 0.5em 0; }
-    .md pre code { background: none; padding: 0; color: inherit; }
-    .md a { color: var(--cg-text-accent, #e5ff6b); text-decoration: underline; text-underline-offset: 2px; }
+
+    /* ── Inline code ── */
+    .md code {
+      background: var(--cg-overlay-dark-subtle);
+      padding: var(--cg-spacing-2) var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-50);
+      font-family: var(--cg-font-family-mono);
+      font-size: var(--cg-font-size-xs);
+    }
+
+    /* ── Code block ── */
+    .md pre {
+      background: var(--cg-color-code-background);
+      color: var(--cg-color-code-text);
+      padding: var(--cg-spacing-16);
+      border-radius: var(--cg-border-radius-150);
+      border: var(--cg-border-width-50) solid var(--cg-color-code-border);
+      overflow-x: auto;
+      font-family: var(--cg-font-family-mono);
+      font-size: var(--cg-font-size-xs);
+      line-height: var(--cg-line-height-relaxed);
+      margin: var(--cg-spacing-12) 0;
+    }
+    .md pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+      font-size: inherit;
+      border-radius: 0;
+    }
+
+    /* ── Links ── */
+    .md a {
+      color: var(--cg-color-action-primary-background-default);
+      text-decoration: underline;
+      text-underline-offset: var(--cg-spacing-2);
+    }
     .md a:hover { opacity: 0.8; }
-    .md ul, .md ol { margin: 0.5em 0; padding-left: 1.5em; }
-    .md li { margin: 0.2em 0; }
-    .md blockquote { border-left: 3px solid var(--cg-focus-ring-color, #c8e650); padding-left: var(--cg-spacing-12, 12px); color: var(--cg-gray-600, #52525b); margin: 0.5em 0; }
-    .md hr { border: none; border-top: 1px solid var(--cg-color-surface-container-border, #27272a); margin: 1em 0; }
-    .md table { width: 100%; border-collapse: collapse; margin: 0.5em 0; font-size: 0.85em; }
-    .md th { text-align: left; padding: var(--cg-spacing-8, 8px); border-bottom: 2px solid var(--cg-color-surface-container-border, #27272a); font-weight: var(--cg-font-weight-semibold, 600); }
-    .md td { padding: var(--cg-spacing-8, 8px); border-bottom: 1px solid var(--cg-gray-100, #f4f4f5); }
+
+    /* ── Lists ── */
+    .md ul, .md ol {
+      margin: var(--cg-spacing-12) 0;
+      padding-left: var(--cg-spacing-24);
+    }
+    .md li { margin: var(--cg-spacing-4) 0; }
+
+    /* ── Blockquote ── */
+    .md blockquote {
+      border-left: var(--cg-border-width-300) solid var(--cg-color-action-primary-background-default);
+      padding-left: var(--cg-spacing-16);
+      color: var(--cg-color-surface-container-outlined);
+      margin: var(--cg-spacing-12) 0;
+      font-style: italic;
+    }
+
+    /* ── HR ── */
+    .md hr {
+      border: none;
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
+      margin: var(--cg-spacing-24) 0;
+    }
+
+    /* ── Table ── */
+    .md table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: var(--cg-spacing-12) 0;
+      font-size: var(--cg-font-size-sm);
+    }
+    .md th {
+      text-align: left;
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      border-bottom: var(--cg-border-width-100) solid var(--cg-color-surface-container-border);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-surface-container-outlined);
+      font-size: var(--cg-font-size-xs);
+    }
+    .md td {
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
+    }
   `];
 
   @property() text = '';
@@ -53,7 +186,7 @@ export class CgMarkdown extends LitElement {
   }
 
   override render() {
-    return html`<div class="md" .innerHTML=${this._render(this.text)}></div>`;
+    return html`<div class="md" .innerHTML=${sanitizeHtml(this._render(this.text))}></div>`;
   }
 }
 

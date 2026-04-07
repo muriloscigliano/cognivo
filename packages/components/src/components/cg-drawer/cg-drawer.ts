@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { spinKeyframes, reducedMotion } from '../../styles/index.js';
 
 /**
  * @element cg-drawer
@@ -13,22 +14,24 @@ import { customElement, property, state } from 'lit/decorators.js';
  * ```
  *
  * @slot - Default slot for drawer body content
+ * @slot footer - Action buttons area below the body
  *
  * @fires {CustomEvent} cg-drawer-open - When the drawer opens
  * @fires {CustomEvent} cg-drawer-close - When the drawer closes
+ * @fires {CustomEvent} cg-drawer-back - When the back button is clicked
  *
- * @cssprop [--cg-color-surface-raised-background=#1e1e22] - Panel background
- * @cssprop [--cg-border-radius-200=16px] - Panel border radius
- * @cssprop [--cg-motion-easing-bounce=cubic-bezier(0.34,1.56,0.64,1)] - Slide spring
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Close button focus ring
+ * @cssprop --cg-color-modal-container-background - Panel background
+ * @cssprop --cg-border-radius-200 - Panel border radius (28px)
+ * @cssprop --cg-motion-easing-bounce - Slide spring easing
+ * @cssprop --cg-color-focus-ring - Close button focus ring
  */
 @customElement('cg-drawer')
 export class CgDrawer extends LitElement {
-  static override styles = css`
+  static override styles = [spinKeyframes, reducedMotion, css`
     :host {
-      transition: color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+      transition: color var(--cg-transition-duration-fast) var(--cg-motion-easing-color);
       display: contents;
-      font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+      font-family: var(--cg-font-family-primary);
     }
 
     /* ── Backdrop ── */
@@ -36,12 +39,12 @@ export class CgDrawer extends LitElement {
       position: fixed;
       inset: 0;
       z-index: 9998;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(2px);
-      -webkit-backdrop-filter: blur(2px);
+      background: var(--cg-color-modal-overlay-background);
+      backdrop-filter: blur(16px) saturate(150%);
+      -webkit-backdrop-filter: blur(16px) saturate(150%);
       opacity: 0;
       pointer-events: none;
-      transition: opacity var(--cg-motion-duration-slow, 300ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
 
     :host([open]) .backdrop {
@@ -57,29 +60,25 @@ export class CgDrawer extends LitElement {
       z-index: 9999;
       display: flex;
       flex-direction: column;
-      backdrop-filter: blur(16px) saturate(1.3);
-      -webkit-backdrop-filter: blur(16px) saturate(1.3);
-      background: rgba(24, 24, 27, 0.85);
-      border: 1px solid var(--cg-color-surface-base-border, #27272a);
+      background: var(--cg-color-modal-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
       box-shadow:
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
-        0 20px 25px -5px rgba(0, 0, 0, 0.4),
-        0 8px 10px -6px rgba(0, 0, 0, 0.3);
-      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+        0 var(--cg-shadow-lg-y) var(--cg-shadow-lg-blur) var(--cg-shadow-lg-spread) rgba(0, 0, 0, 0.25),
+        0 var(--cg-shadow-sm-y) var(--cg-shadow-sm-blur) var(--cg-shadow-sm-spread) rgba(0, 0, 0, 0.1);
       overflow: hidden;
-      transition: transform 300ms var(--cg-motion-easing-bounce, cubic-bezier(0.34, 1.56, 0.64, 1));
+      transition: transform var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .backdrop { transition: opacity 100ms ease; }
-      .panel { transition: transform 150ms ease; }
+      .backdrop { transition: opacity var(--cg-transition-duration-fast) ease; }
+      .panel { transition: transform var(--cg-transition-duration-fast) ease; }
     }
 
     /* ── Side: Left ── */
     :host([side="left"]) .panel {
       left: 0;
       border-left: none;
-      border-radius: 0 var(--cg-border-radius-200, 16px) var(--cg-border-radius-200, 16px) 0;
+      border-radius: 0 var(--cg-component-drawer-radius) var(--cg-component-drawer-radius) 0;
       transform: translateX(-100%);
     }
     :host([side="left"][open]) .panel {
@@ -90,7 +89,7 @@ export class CgDrawer extends LitElement {
     :host([side="right"]) .panel {
       right: 0;
       border-right: none;
-      border-radius: var(--cg-border-radius-200, 16px) 0 0 var(--cg-border-radius-200, 16px);
+      border-radius: var(--cg-component-drawer-radius) 0 0 var(--cg-component-drawer-radius);
       transform: translateX(100%);
     }
     :host([side="right"][open]) .panel {
@@ -111,20 +110,20 @@ export class CgDrawer extends LitElement {
       to { opacity: 0; }
     }
     :host([side="left"]) .panel.closing {
-      animation: drawer-exit-left 200ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+      animation: drawer-exit-left var(--cg-transition-duration-fast) var(--cg-motion-easing-exit) forwards;
     }
     :host([side="right"]) .panel.closing {
-      animation: drawer-exit-right 200ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+      animation: drawer-exit-right var(--cg-transition-duration-fast) var(--cg-motion-easing-exit) forwards;
     }
     .backdrop.closing {
       pointer-events: auto;
-      animation: backdrop-exit 200ms var(--cg-motion-easing-exit, cubic-bezier(0.4, 0, 1, 1)) forwards;
+      animation: backdrop-exit var(--cg-transition-duration-fast) var(--cg-motion-easing-exit) forwards;
     }
 
     /* ── Sizes ── */
-    :host([size="sm"]) .panel { width: 320px; max-width: 85vw; }
-    :host([size="md"]) .panel { width: 480px; max-width: 85vw; }
-    :host([size="lg"]) .panel { width: 640px; max-width: 90vw; }
+    :host([size="sm"]) .panel { width: var(--cg-component-drawer-width-sm); max-width: 85vw; }
+    :host([size="md"]) .panel { width: var(--cg-component-drawer-width-md); max-width: 85vw; }
+    :host([size="lg"]) .panel { width: var(--cg-component-drawer-width-lg); max-width: 90vw; }
     :host([size="full"]) .panel {
       width: 100vw;
       max-width: 100vw;
@@ -135,91 +134,209 @@ export class CgDrawer extends LitElement {
     .drawer-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: var(--cg-spacing-16, 16px) var(--cg-spacing-24, 24px);
-      border-bottom: 1px solid var(--cg-color-surface-base-border, #27272a);
+      gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-20) var(--cg-spacing-24);
       flex-shrink: 0;
     }
 
+    .drawer-header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-12);
+      flex: 1;
+      min-width: 0;
+    }
+
+    .drawer-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--cg-color-action-primary-background-default);
+    }
+
     .drawer-title {
-      font-size: var(--cg-font-size-lg, 18px);
-      font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-color-text-primary, #fafafa);
+      font-size: var(--cg-font-size-md);
+      font-weight: var(--cg-font-weight-semibold);
+      color: var(--cg-color-modal-header-text);
       margin: 0;
-      line-height: var(--cg-line-height-snug, 1.375);
+      line-height: var(--cg-line-height-snug);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .close-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
+      width: var(--cg-spacing-32);
+      height: var(--cg-spacing-32);
       border: none;
-      border-radius: var(--cg-border-radius-100, 8px);
-      background: transparent;
-      color: var(--cg-color-text-secondary, #a1a1aa);
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-action-tertiary-background-hover);
+      color: var(--cg-color-surface-container-outlined);
       cursor: pointer;
-      font-size: 18px;
+      font-size: var(--cg-font-size-sm);
       line-height: 1;
       padding: 0;
       flex-shrink: 0;
       transition:
-        background-color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        color var(--cg-motion-duration-fast, 80ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-        transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-color),
+        color var(--cg-transition-duration-fast) var(--cg-motion-easing-color),
+        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
     }
 
     .close-btn:hover {
-      background: var(--cg-color-surface-hover-background, rgba(255, 255, 255, 0.06));
-      color: var(--cg-color-text-primary, #fafafa);
+      background: var(--cg-color-action-secondary-background-hover);
+      color: var(--cg-color-surface-container-text);
     }
 
     .close-btn:active {
-      transform: scale(var(--cg-interaction-press-scale, 0.97));
+      transform: scale(var(--cg-interaction-press-scale));
     }
 
     .close-btn:focus-visible {
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-        0 0 0 4px var(--cg-brand-ai-accent, #dfff61);
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
+      outline: none;
+    }
+
+    /* Back button — same style as close btn */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--cg-spacing-32);
+      height: var(--cg-spacing-32);
+      border: none;
+      border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-action-tertiary-background-hover);
+      color: var(--cg-color-surface-container-outlined);
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+      transition:
+        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-color),
+        color var(--cg-transition-duration-fast) var(--cg-motion-easing-color),
+        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+    }
+    .back-btn:hover {
+      background: var(--cg-color-action-secondary-background-hover);
+      color: var(--cg-color-surface-container-text);
+    }
+    .back-btn:active {
+      transform: scale(var(--cg-interaction-press-scale));
+    }
+    .back-btn:focus-visible {
+      box-shadow:
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
       outline: none;
     }
 
     /* ── Body ── */
     .drawer-body {
+      position: relative;
       flex: 1;
       overflow-y: auto;
-      padding: var(--cg-spacing-24, 24px);
-      color: var(--cg-color-text-secondary, #a1a1aa);
-      font-size: var(--cg-font-size-sm, 14px);
-      line-height: var(--cg-line-height-relaxed, 1.625);
+      padding: var(--cg-spacing-4) var(--cg-spacing-24) var(--cg-spacing-24);
+      color: var(--cg-color-surface-container-outlined);
+      font-size: var(--cg-font-size-sm);
+      line-height: var(--cg-line-height-relaxed);
+    }
+
+    /* ── Footer ── */
+    .drawer-footer {
+      padding: var(--cg-spacing-16) var(--cg-spacing-24);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
+      flex-shrink: 0;
+    }
+    .drawer-footer ::slotted(*) {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: var(--cg-spacing-12);
+    }
+    .drawer-footer:empty,
+    .drawer-footer ::slotted(:empty) {
+      display: none;
     }
 
     /* Rounded variants */
     :host([rounded="none"][side="left"]) .panel { border-radius: 0; }
     :host([rounded="none"][side="right"]) .panel { border-radius: 0; }
-    :host([rounded="sm"][side="left"]) .panel { border-radius: 0 var(--cg-border-radius-50, 4px) var(--cg-border-radius-50, 4px) 0; }
-    :host([rounded="sm"][side="right"]) .panel { border-radius: var(--cg-border-radius-50, 4px) 0 0 var(--cg-border-radius-50, 4px); }
-    :host([rounded="md"][side="left"]) .panel { border-radius: 0 var(--cg-border-radius-100, 8px) var(--cg-border-radius-100, 8px) 0; }
-    :host([rounded="md"][side="right"]) .panel { border-radius: var(--cg-border-radius-100, 8px) 0 0 var(--cg-border-radius-100, 8px); }
-    :host([rounded="lg"][side="left"]) .panel { border-radius: 0 var(--cg-border-radius-150, 12px) var(--cg-border-radius-150, 12px) 0; }
-    :host([rounded="lg"][side="right"]) .panel { border-radius: var(--cg-border-radius-150, 12px) 0 0 var(--cg-border-radius-150, 12px); }
-    :host([rounded="full"][side="left"]) .panel { border-radius: 0 var(--cg-border-radius-full, 99999px) var(--cg-border-radius-full, 99999px) 0; }
-    :host([rounded="full"][side="right"]) .panel { border-radius: var(--cg-border-radius-full, 99999px) 0 0 var(--cg-border-radius-full, 99999px); }
-  `;
+    :host([rounded="sm"][side="left"]) .panel { border-radius: 0 var(--cg-border-radius-50) var(--cg-border-radius-50) 0; }
+    :host([rounded="sm"][side="right"]) .panel { border-radius: var(--cg-border-radius-50) 0 0 var(--cg-border-radius-50); }
+    :host([rounded="md"][side="left"]) .panel { border-radius: 0 var(--cg-border-radius-100) var(--cg-border-radius-100) 0; }
+    :host([rounded="md"][side="right"]) .panel { border-radius: var(--cg-border-radius-100) 0 0 var(--cg-border-radius-100); }
+    :host([rounded="lg"][side="left"]) .panel { border-radius: 0 var(--cg-component-drawer-radius) var(--cg-component-drawer-radius) 0; }
+    :host([rounded="lg"][side="right"]) .panel { border-radius: var(--cg-component-drawer-radius) 0 0 var(--cg-component-drawer-radius); }
+    :host([rounded="full"][side="left"]) .panel { border-radius: 0 var(--cg-border-radius-full) var(--cg-border-radius-full) 0; }
+    :host([rounded="full"][side="right"]) .panel { border-radius: var(--cg-border-radius-full) 0 0 var(--cg-border-radius-full); }
+
+    /* ── Loading overlay ── */
+    .drawer-loading-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--cg-spacing-12);
+      background: var(--cg-color-modal-container-background);
+    }
+    .drawer-spinner {
+      width: var(--cg-spacing-24);
+      height: var(--cg-spacing-24);
+      border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border);
+      border-top-color: var(--cg-color-surface-container-text);
+      border-radius: var(--cg-border-radius-full);
+      animation: spin var(--cg-motion-duration-slow) linear infinite;
+    }
+    .drawer-loading-text {
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-container-outlined);
+    }
+
+    /* ── Error banner ── */
+    .drawer-error-banner {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      margin: 0 var(--cg-spacing-24);
+      background: var(--cg-color-status-error-background-default);
+      border: var(--cg-border-width-50) solid var(--cg-color-status-error-border-default);
+      border-radius: var(--cg-border-radius-100);
+      color: var(--cg-color-status-error-text-default);
+      font-size: var(--cg-font-size-sm);
+      line-height: var(--cg-line-height-snug);
+    }
+    .drawer-error-icon {
+      flex-shrink: 0;
+    }
+  `];
 
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String, reflect: true }) side: 'left' | 'right' = 'right';
   @property({ type: String, reflect: true }) size: 'sm' | 'md' | 'lg' | 'full' = 'md';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: String }) override title = '';
+  @property({ type: String }) icon = '';
+  @property({ type: Boolean }) back = false;
   @property({ type: Boolean }) closable = true;
   @property({ type: Boolean }) persistent = false;
+  @property({ type: Boolean, reflect: true }) loading = false;
+  @property({ type: String }) error = '';
 
+  @state() private _hasFooter = false;
   @state() private _closing = false;
 
   private _previousOverflow = '';
+  private _previousFocus: HTMLElement | null = null;
   private _keydownHandler = this._handleKeydown.bind(this);
 
   override updated(changed: Map<string, unknown>) {
@@ -237,6 +354,7 @@ export class CgDrawer extends LitElement {
   }
 
   private _onOpen() {
+    this._previousFocus = document.activeElement as HTMLElement;
     this._previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     document.addEventListener('keydown', this._keydownHandler);
@@ -262,6 +380,8 @@ export class CgDrawer extends LitElement {
   private _onClose() {
     document.body.style.overflow = this._previousOverflow;
     document.removeEventListener('keydown', this._keydownHandler);
+    this._previousFocus?.focus();
+    this._previousFocus = null;
     this.dispatchEvent(new CustomEvent('cg-drawer-close', { bubbles: true, composed: true }));
   }
 
@@ -317,6 +437,15 @@ export class CgDrawer extends LitElement {
     }
   }
 
+  private _handleBack() {
+    this.dispatchEvent(new CustomEvent('cg-drawer-back', { bubbles: true, composed: true }));
+  }
+
+  private _handleFooterSlotChange(e: Event) {
+    const slot = e.target as HTMLSlotElement;
+    this._hasFooter = slot.assignedNodes({ flatten: true }).length > 0;
+  }
+
   private _handleBackdropClick() {
     if (!this.persistent && this.closable) {
       this._requestClose();
@@ -338,27 +467,54 @@ export class CgDrawer extends LitElement {
         class="panel ${this._closing ? 'closing' : ''}"
         role="dialog"
         aria-modal="true"
-        aria-label="${this.title || 'Side panel'}"
+        aria-label="${this.title ? nothing : 'Side panel'}"
+        aria-labelledby="${this.title ? 'drawer-title' : nothing}"
         tabindex="-1"
       >
-        ${this.title || this.closable ? html`
+        ${this.title || this.closable || this.back ? html`
           <div class="drawer-header">
-            <h2 class="drawer-title">${this.title}</h2>
+            <div class="drawer-header-left">
+              ${this.back ? html`
+                <button class="back-btn" aria-label="Go back" @click="${this._handleBack}">
+                  <cg-icon name="chevron-left" size="sm"></cg-icon>
+                </button>
+              ` : nothing}
+              ${this.icon ? html`
+                <span class="drawer-icon"><cg-icon name="${this.icon}" size="md"></cg-icon></span>
+              ` : nothing}
+              <h2 class="drawer-title" id="drawer-title">${this.title}</h2>
+            </div>
             ${this.closable ? html`
               <button
                 class="close-btn"
                 aria-label="Close panel"
                 @click="${this._requestClose}"
               >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
+                <cg-icon name="x" size="xs"></cg-icon>
               </button>
             ` : nothing}
           </div>
         ` : nothing}
+
+        ${this.error ? html`
+          <div class="drawer-error-banner" role="alert">
+            <cg-icon class="drawer-error-icon" name="warning" size="sm" color="danger"></cg-icon>
+            <span>${this.error}</span>
+          </div>
+        ` : nothing}
+
         <div class="drawer-body">
           <slot></slot>
+          ${this.loading ? html`
+            <div class="drawer-loading-overlay" aria-busy="true" aria-label="Loading">
+              <span class="drawer-spinner"></span>
+              <span class="drawer-loading-text">Loading...</span>
+            </div>
+          ` : nothing}
+        </div>
+
+        <div class="drawer-footer" ?hidden=${!this._hasFooter}>
+          <slot name="footer" @slotchange="${this._handleFooterSlotChange}"></slot>
         </div>
       </div>
     `;
