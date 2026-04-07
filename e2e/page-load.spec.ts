@@ -23,10 +23,10 @@ test.describe('Showcase — Page Load', () => {
     expect(count).toBeGreaterThanOrEqual(6);
   });
 
-  test('renders 125 components in sidebar', async ({ page }) => {
+  test('renders 143 components in sidebar', async ({ page }) => {
     await page.goto(SHOWCASE);
     const items = page.locator('.sidebar-item');
-    await expect(items).toHaveCount(125);
+    await expect(items).toHaveCount(143);
   });
 
   test('shows welcome page by default', async ({ page }) => {

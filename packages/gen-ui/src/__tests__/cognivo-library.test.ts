@@ -44,9 +44,9 @@ describe('Cognivo component definitions', () => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 describe('cognivoLibrary', () => {
-  it('contains all 125 components', () => {
+  it('contains all 143 components', () => {
     const count = Object.keys(cognivoLibrary.components).length;
-    expect(count).toBeGreaterThanOrEqual(125);
+    expect(count).toBeGreaterThanOrEqual(143);
   });
 
   it('root is Stack', () => {

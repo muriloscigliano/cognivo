@@ -14,7 +14,7 @@ Monorepo with pnpm workspaces + Turborepo.
 ## Packages
 - `packages/gen-ui` — Streaming parser, component registry, prompt gen, bias engine (110 tests)
 - `packages/gen-ui-lit` — Lit renderer for generative UI
-- `packages/components` — 125 Lit web components (52 foundation + 73 AI-native), 842 tests
+- `packages/components` — 143 Lit web components (54 foundation + 89 AI-native), 1,107 tests
 - `packages/tokens` — 1,800+ design tokens, 3-tier system, 5-level elevation, palette generator
 - `packages/adapter-react` — React wrappers with TypeScript props
 - `packages/adapter-vue` — Vue wrappers with TypeScript props
@@ -35,6 +35,21 @@ pnpm --filter @cognivo/design-advisor build
 - Web Components use Shadow DOM via Lit
 - All token names prefixed with `--cg-`
 - Component tag names: `<ai-*>` for AI components, `<bias-*>` for design advisor
+
+## TOKEN TIER SYSTEM — MANDATORY
+
+**All component CSS MUST follow this tier hierarchy. See `CLAUDE.token-guardrails.md` for full reference.**
+
+### Tier Priority: 3 → 2 → 1
+- **Tier 3 (component)**: `--cg-component-{name}-{prop}` — USE FIRST for radius, height, padding of specific components
+- **Tier 2 (semantic)**: `--cg-color-{purpose}-{state}` — USE for ALL colors (actions, surfaces, status)
+- **Tier 1 (core)**: `--cg-spacing-*`, `--cg-font-*`, `--cg-border-width-*` — USE for generic values only
+
+### NEVER in component CSS:
+- `--cg-gray-*` / `--cg-red-*` / `--cg-blue-*` (tier 1 palette) — use tier 2 semantic colors instead
+- `--cg-brand-ai-accent` / `--cg-brand-primary-*` (tier 1 brand) — use `--cg-color-action-primary-*` instead
+- Raw `#hex` / `rgba()` / `px` without `var()` wrapper
+- `transition: all` — use explicit property list
 
 ---
 

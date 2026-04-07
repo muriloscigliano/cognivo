@@ -10,4 +10,13 @@ export default defineConfig({
       allow: [resolve(__dirname, '../..')],
     },
   },
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        'gen-ui': resolve(__dirname, 'gen-ui.html'),
+        dashboard: resolve(__dirname, 'dashboard.html'),
+      },
+    },
+  },
 });

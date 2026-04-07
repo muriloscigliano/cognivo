@@ -587,6 +587,19 @@ export function renderComponentPage(container: HTMLElement, comp: ComponentMeta)
       (liveElement as any).value = 'react';
       liveElement.style.maxWidth = '300px';
     }
+    if (comp.tag === 'ai-workflow-builder') {
+      (liveElement as any).heading = 'Support Agent';
+      (liveElement as any).steps = [
+        { id: '1', label: 'Receive Query', type: 'start', status: 'complete' },
+        { id: '2', label: 'Classify Intent', type: 'agent', status: 'complete', description: 'Using GPT-4o' },
+        { id: '3', label: 'Search Knowledge Base', type: 'tool', status: 'active', description: 'Vector search across docs' },
+        { id: '4', label: 'Check Confidence', type: 'condition', status: 'pending' },
+        { id: '5', label: 'Generate Response', type: 'agent', status: 'pending' },
+        { id: '6', label: 'Send Reply', type: 'end', status: 'pending' },
+      ];
+      liveElement.style.maxWidth = '460px';
+      liveElement.style.width = '100%';
+    }
     if (comp.tag === 'ai-thinking') {
       (liveElement as any).text = 'Analyzing your data...';
       (liveElement as any).delay = 0;
@@ -891,6 +904,32 @@ export function renderComponentPage(container: HTMLElement, comp: ComponentMeta)
       ];
       (liveElement as any).highlightPath = '4';
     }
+    if (comp.tag === 'ai-data-table') {
+      (liveElement as any).sortable = true;
+      (liveElement as any).columns = [
+        { key: 'name', label: 'Name' },
+        { key: 'role', label: 'Role' },
+        { key: 'score', label: 'Score', type: 'number' },
+        { key: 'status', label: 'Status' },
+      ];
+      (liveElement as any).data = [
+        { name: 'Alice Chen', role: 'Engineer', score: 94, status: 'Active' },
+        { name: 'Bob Park', role: 'Designer', score: 87, status: 'Active' },
+        { name: 'Carol Wu', role: 'PM', score: 12, status: 'Inactive' },
+        { name: 'Dave Kim', role: 'Engineer', score: 91, status: 'Active' },
+      ];
+      (liveElement as any).anomalies = [
+        { row: 2, col: 'score', severity: 'high', reason: 'Unusually low — 85% below average' },
+      ];
+    }
+    if (comp.tag === 'ai-ab-test') {
+      (liveElement as any).title = 'Model Comparison';
+      (liveElement as any).labelA = 'GPT-4o';
+      (liveElement as any).labelB = 'Claude 3.5';
+      (liveElement as any).variantA = 'The quarterly revenue increased by 18% year-over-year, primarily driven by expansion in enterprise accounts and reduced churn rates across all segments.';
+      (liveElement as any).variantB = 'Q4 revenue rose 18% YoY. Key drivers:\n• Enterprise expansion (+23%)\n• Churn reduction (4.2% → 3.1%)\n• APAC market entry contributing $1.2M';
+      liveElement.style.maxWidth = '600px';
+    }
     if (comp.tag === 'ai-reward-signal') {
       (liveElement as any).score = 78;
       (liveElement as any).maxScore = 100;
@@ -1140,6 +1179,248 @@ export function renderComponentPage(container: HTMLElement, comp: ComponentMeta)
         (liveElement as any).current = (e as CustomEvent).detail.page;
       });
     }
+    // ── Batch: components with complex data props ──
+    if (comp.tag === 'ai-accessibility-report') {
+      (liveElement as any).issues = [
+        { id: '1', severity: 'critical', element: '<img>', rule: 'img-alt', message: 'Image missing alt text', suggestion: 'Add descriptive alt attribute' },
+        { id: '2', severity: 'warning', element: '<button>', rule: 'button-name', message: 'Button has no accessible name', suggestion: 'Add aria-label or visible text' },
+        { id: '3', severity: 'info', element: '<div>', rule: 'landmark-unique', message: 'Landmark region not unique', suggestion: 'Add aria-label to distinguish regions' },
+      ];
+      liveElement.style.maxWidth = '520px';
+    }
+    if (comp.tag === 'ai-action-preview') {
+      (liveElement as any).title = 'Send Email';
+      (liveElement as any).description = 'This will send an email to the selected recipients.';
+      (liveElement as any).details = { to: 'team@acme.com', subject: 'Q4 Report Ready', body: 'The quarterly report has been generated and is ready for review.' };
+      liveElement.style.maxWidth = '460px';
+    }
+    if (comp.tag === 'ai-analytics-chart') {
+      (liveElement as any).title = 'Monthly Revenue';
+      (liveElement as any).series = [
+        { label: 'Jan', value: 42000 }, { label: 'Feb', value: 48000 },
+        { label: 'Mar', value: 55000 }, { label: 'Apr', value: 51000 },
+        { label: 'May', value: 62000 }, { label: 'Jun', value: 71000 },
+      ];
+      liveElement.style.maxWidth = '500px';
+    }
+    if (comp.tag === 'ai-api-key-manager') {
+      (liveElement as any).keys = [
+        { id: '1', name: 'Production', prefix: 'sk-prod-****7f3a', created: '2026-01-15', lastUsed: '2 hours ago', status: 'active' },
+        { id: '2', name: 'Development', prefix: 'sk-dev-****2b1c', created: '2026-02-20', lastUsed: '5 days ago', status: 'active' },
+        { id: '3', name: 'Staging (old)', prefix: 'sk-stg-****9e4d', created: '2025-10-01', lastUsed: '30 days ago', status: 'revoked' },
+      ];
+      liveElement.style.maxWidth = '520px';
+    }
+    if (comp.tag === 'ai-assistant-widget') {
+      (liveElement as any).messages = [
+        { role: 'assistant', content: 'Hi! How can I help you today?' },
+        { role: 'user', content: 'What are the top features?' },
+        { role: 'assistant', content: '1. 140+ components\n2. 1,800+ design tokens\n3. Full accessibility support' },
+      ];
+      liveElement.style.maxWidth = '360px';
+      liveElement.style.height = '400px';
+    }
+    if (comp.tag === 'ai-changelog') {
+      (liveElement as any).entries = [
+        { version: 'v0.6.0', date: '2026-04-01', type: 'feature', title: 'AI Workflow Builder', description: 'Visual DAG for defining agent workflows.' },
+        { version: 'v0.5.2', date: '2026-03-15', type: 'fix', title: 'Token fallback cleanup', description: 'Removed all CSS fallback values from component tokens.' },
+        { version: 'v0.5.0', date: '2026-03-01', type: 'feature', title: 'Wave 5 — AI Collaboration', description: 'Added 12 collaboration components: audio, video, presence, and more.' },
+      ];
+      liveElement.style.maxWidth = '520px';
+    }
+    if (comp.tag === 'ai-command-palette') {
+      (liveElement as any).commands = [
+        { id: 'new', label: 'New conversation', shortcut: '⌘N', group: 'Actions' },
+        { id: 'search', label: 'Search components', shortcut: '⌘K', group: 'Actions' },
+        { id: 'theme', label: 'Toggle dark mode', shortcut: '⌘D', group: 'Settings' },
+        { id: 'export', label: 'Export as JSON', group: 'Data' },
+      ];
+      (liveElement as any).open = true;
+      liveElement.style.maxWidth = '480px';
+    }
+    if (comp.tag === 'ai-cost-dashboard') {
+      (liveElement as any).budget = 50;
+      (liveElement as any).period = 'Last 7 days';
+      (liveElement as any).entries = [
+        { date: 'Mon', model: 'GPT-4o', inputTokens: 5000, outputTokens: 2000, cost: 3.50 },
+        { date: 'Tue', model: 'Claude', inputTokens: 8000, outputTokens: 3000, cost: 5.20 },
+        { date: 'Wed', model: 'GPT-4o', inputTokens: 6000, outputTokens: 2500, cost: 4.10 },
+      ];
+      liveElement.style.maxWidth = '500px';
+    }
+    if (comp.tag === 'ai-data-preview') {
+      (liveElement as any).title = 'User Record';
+      (liveElement as any).data = {
+        id: 'usr_3f8a2c',
+        name: 'Alice Johnson',
+        email: 'alice@acme.com',
+        role: 'Admin',
+        lastLogin: '2026-04-06T14:30:00Z',
+        active: true,
+      };
+      liveElement.style.maxWidth = '420px';
+    }
+    if (comp.tag === 'ai-debug-console') {
+      (liveElement as any).entries = [
+        { level: 'info', message: 'Model loaded: Claude 3.5 Sonnet', timestamp: Date.now() - 5000 },
+        { level: 'warn', message: 'Context window at 85% capacity', timestamp: Date.now() - 3000 },
+        { level: 'error', message: 'Rate limit exceeded — retrying in 2s', timestamp: Date.now() - 1000 },
+        { level: 'info', message: 'Retry successful — response generated', timestamp: Date.now() },
+      ];
+      liveElement.style.maxWidth = '540px';
+      liveElement.style.height = '280px';
+    }
+    if (comp.tag === 'ai-embedding-viz') {
+      (liveElement as any).points = [
+        { id: '1', x: 0.2, y: 0.8, label: 'Revenue Report', cluster: 'finance' },
+        { id: '2', x: 0.25, y: 0.75, label: 'Q4 Earnings', cluster: 'finance' },
+        { id: '3', x: 0.7, y: 0.3, label: 'API Docs', cluster: 'technical' },
+        { id: '4', x: 0.65, y: 0.35, label: 'SDK Guide', cluster: 'technical' },
+        { id: '5', x: 0.5, y: 0.5, label: 'Product Roadmap', cluster: 'strategy' },
+      ];
+      liveElement.style.maxWidth = '500px';
+    }
+    if (comp.tag === 'ai-feature-flag') {
+      (liveElement as any).flags = [
+        { id: 'dark-mode', name: 'Dark Mode', enabled: true, description: 'Enable dark theme across the app' },
+        { id: 'ai-suggestions', name: 'AI Suggestions', enabled: true, description: 'Show AI-powered suggestions in search', rollout: 75 },
+        { id: 'new-dashboard', name: 'New Dashboard', enabled: false, description: 'Redesigned analytics dashboard', rollout: 0 },
+      ];
+      liveElement.style.maxWidth = '480px';
+    }
+    if (comp.tag === 'ai-json-viewer') {
+      (liveElement as any).data = {
+        model: 'claude-3.5-sonnet',
+        usage: { input_tokens: 1250, output_tokens: 890, total_cost: '$0.0089' },
+        choices: [{ index: 0, finish_reason: 'stop', message: { role: 'assistant', content: 'Hello!' } }],
+      };
+      liveElement.style.maxWidth = '500px';
+    }
+    if (comp.tag === 'ai-keyboard-shortcuts') {
+      (liveElement as any).shortcuts = [
+        { keys: ['⌘', 'K'], description: 'Open search', category: 'Navigation' },
+        { keys: ['⌘', 'N'], description: 'New conversation', category: 'Actions' },
+        { keys: ['⌘', '⇧', 'D'], description: 'Toggle dark mode', category: 'Settings' },
+        { keys: ['Esc'], description: 'Close panel', category: 'Navigation' },
+      ];
+      liveElement.style.maxWidth = '420px';
+    }
+    if (comp.tag === 'ai-model-comparison') {
+      (liveElement as any).models = [
+        { name: 'GPT-4o', provider: 'OpenAI', latency: '1.2s', cost: '$0.015/1K', quality: 92 },
+        { name: 'Claude 3.5 Sonnet', provider: 'Anthropic', latency: '0.8s', cost: '$0.008/1K', quality: 94 },
+        { name: 'Gemini Pro', provider: 'Google', latency: '1.5s', cost: '$0.005/1K', quality: 87 },
+      ];
+      liveElement.style.maxWidth = '560px';
+    }
+    if (comp.tag === 'ai-notification-center') {
+      (liveElement as any).notifications = [
+        { id: '1', title: 'Analysis Complete', message: 'Q4 revenue report is ready', type: 'success', timestamp: Date.now() - 60000 },
+        { id: '2', title: 'Rate Limit Warning', message: '80% of daily quota used', type: 'warning', timestamp: Date.now() - 300000, read: true },
+        { id: '3', title: 'Model Update', message: 'Claude 3.5 Sonnet v2 available', type: 'info', timestamp: Date.now() - 3600000 },
+      ];
+      liveElement.style.maxWidth = '420px';
+    }
+    if (comp.tag === 'ai-onboarding') {
+      (liveElement as any).steps = [
+        { id: '1', title: 'Connect your data', description: 'Link databases, APIs, or upload files.', status: 'complete' },
+        { id: '2', title: 'Configure AI model', description: 'Choose a model and set parameters.', status: 'active' },
+        { id: '3', title: 'Test & deploy', description: 'Run a test query and go live.', status: 'pending' },
+      ];
+      liveElement.style.maxWidth = '480px';
+    }
+    if (comp.tag === 'ai-permission-gate') {
+      (liveElement as any).permissions = [
+        { id: 'read', label: 'Read access', description: 'View data and reports', granted: true },
+        { id: 'write', label: 'Write access', description: 'Create and edit records', granted: true },
+        { id: 'admin', label: 'Admin access', description: 'Manage users and settings', granted: false },
+        { id: 'delete', label: 'Delete access', description: 'Remove records permanently', granted: false },
+      ];
+      liveElement.style.maxWidth = '440px';
+    }
+    if (comp.tag === 'ai-presence') {
+      (liveElement as any).users = [
+        { id: '1', name: 'Alice', avatar: '', status: 'online', activity: 'Editing prompt' },
+        { id: '2', name: 'Bob', avatar: '', status: 'online', activity: 'Reviewing results' },
+        { id: '3', name: 'Carol', avatar: '', status: 'away', activity: 'Last seen 10m ago' },
+      ];
+      liveElement.style.maxWidth = '320px';
+    }
+    if (comp.tag === 'ai-progress-steps') {
+      (liveElement as any).phases = [
+        { label: 'Data Collection', status: 'complete', progress: 100 },
+        { label: 'Processing', status: 'active', progress: 65 },
+        { label: 'Analysis', status: 'pending', progress: 0 },
+        { label: 'Report', status: 'pending', progress: 0 },
+      ];
+      liveElement.style.maxWidth = '480px';
+    }
+    if (comp.tag === 'ai-prompt-template') {
+      (liveElement as any).template = 'You are a {{role}}. Analyze the {{topic}} data and provide {{format}} insights.';
+      (liveElement as any).variables = { role: 'data analyst', topic: 'revenue', format: 'bullet-point' };
+      liveElement.style.maxWidth = '520px';
+    }
+    if (comp.tag === 'ai-sidebar') {
+      (liveElement as any).sections = [
+        { id: 'recent', label: 'Recent', items: [{ id: '1', label: 'Q4 Analysis' }, { id: '2', label: 'User Research' }] },
+        { id: 'saved', label: 'Saved', items: [{ id: '3', label: 'Prompt Templates' }, { id: '4', label: 'Model Configs' }] },
+      ];
+      liveElement.style.maxWidth = '260px';
+      liveElement.style.height = '360px';
+    }
+    if (comp.tag === 'ai-status-page') {
+      (liveElement as any).services = [
+        { name: 'API Gateway', status: 'operational', uptime: 99.99 },
+        { name: 'Model Inference', status: 'degraded', uptime: 99.7, message: 'Elevated latency' },
+        { name: 'Vector Database', status: 'operational', uptime: 99.95 },
+        { name: 'File Storage', status: 'operational', uptime: 100 },
+      ];
+      liveElement.style.maxWidth = '480px';
+    }
+    if (comp.tag === 'ai-test-runner') {
+      (liveElement as any).tests = [
+        { id: '1', name: 'Relevance check', status: 'pass', duration: 120 },
+        { id: '2', name: 'Safety filter', status: 'pass', duration: 85 },
+        { id: '3', name: 'Hallucination detection', status: 'fail', duration: 340, error: 'Factual error in paragraph 2' },
+        { id: '4', name: 'Format compliance', status: 'running' },
+      ];
+      liveElement.style.maxWidth = '480px';
+    }
+    if (comp.tag === 'ai-tool-card-resolver') {
+      (liveElement as any).registry = {
+        tools: [
+          { name: 'web_search', description: 'Search the web for information', icon: 'search' },
+          { name: 'code_exec', description: 'Execute code in a sandbox', icon: 'code' },
+          { name: 'file_read', description: 'Read file contents', icon: 'file' },
+        ],
+      };
+      liveElement.style.maxWidth = '400px';
+    }
+    if (comp.tag === 'ai-validation-checklist') {
+      (liveElement as any).checks = [
+        { id: '1', label: 'Response is factually accurate', status: 'pass' },
+        { id: '2', label: 'No PII in output', status: 'pass' },
+        { id: '3', label: 'Tone matches guidelines', status: 'warning', note: 'Slightly formal' },
+        { id: '4', label: 'Under token limit', status: 'fail', note: 'Exceeded by 120 tokens' },
+      ];
+      liveElement.style.maxWidth = '440px';
+    }
+    if (comp.tag === 'ai-version-selector') {
+      (liveElement as any).versions = [
+        { id: 'v3', label: 'v3 — Current', date: '2026-04-01', author: 'Alice', active: true },
+        { id: 'v2', label: 'v2 — Previous', date: '2026-03-15', author: 'Bob' },
+        { id: 'v1', label: 'v1 — Initial', date: '2026-02-01', author: 'Alice' },
+      ];
+      liveElement.style.maxWidth = '360px';
+    }
+    if (comp.tag === 'ai-webhook-config') {
+      (liveElement as any).webhooks = [
+        { id: '1', url: 'https://api.acme.com/hooks/ai-complete', events: ['completion', 'error'], active: true },
+        { id: '2', url: 'https://slack.com/api/post', events: ['error'], active: false },
+      ];
+      (liveElement as any).availableEvents = ['completion', 'error', 'rate-limit', 'model-switch'];
+      liveElement.style.maxWidth = '520px';
+    }
     previewArea.appendChild(liveElement);
 
     // Code output
@@ -1294,7 +1575,7 @@ export function renderWelcome(container: HTMLElement, count: number) {
     <div class="welcome">
       <h1><span class="hi">Cognivo</span></h1>
       <p>
-        The AI-native component library. 140 web components built with Lit 3,
+        The AI-native component library. ${count} web components built with Lit 3,
         powered by 1,800+ design tokens and 184 cognitive biases.
       </p>
 
@@ -1304,7 +1585,7 @@ export function renderWelcome(container: HTMLElement, count: number) {
           <div class="stat-lbl">Components</div>
         </div>
         <div class="stat-cell">
-          <div class="stat-val">88</div>
+          <div class="stat-val">89</div>
           <div class="stat-lbl">AI-Native</div>
         </div>
         <div class="stat-cell">

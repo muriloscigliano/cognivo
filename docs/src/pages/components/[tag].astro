@@ -1,0 +1,132 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { registry } from '../../data/components';
+import type { ComponentMeta } from '../../data/components';
+
+export function getStaticPaths() {
+  return registry.map(comp => ({ params: { tag: comp.tag }, props: { comp } }));
+}
+
+const { comp } = Astro.props as { comp: ComponentMeta };
+const cls = comp.tag.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('');
+const same = registry.filter(c => c.category === comp.category);
+const i = same.findIndex(c => c.tag === comp.tag);
+const prev = i > 0 ? same[i-1] : null;
+const next = i < same.length-1 ? same[i+1] : null;
+function esc(s: string) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+---
+
+<DocsLayout title={comp.name}>
+  <p class="bc"><a href="/components">Components</a> <span>/</span> {comp.name}</p>
+
+  <h1>{comp.name}</h1>
+  <p class="desc">{comp.description}</p>
+
+  <h2 id="import">Import</h2>
+  <pre><code>{`import { ${cls} } from '@cognivo/components';`}</code></pre>
+
+  {comp.examples.length > 0 && (
+    <>
+      <h2 id="examples">Examples</h2>
+      {comp.examples.map(ex => (
+        <div class="ex">
+          <div class="exl">{ex.label}</div>
+          <pre><code set:html={esc(ex.html)} /></pre>
+        </div>
+      ))}
+    </>
+  )}
+
+  {comp.props.length > 0 && (
+    <>
+      <h2 id="props">Props</h2>
+      <div class="tb">
+        <table>
+          <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            {comp.props.map(p => (
+              <tr>
+                <td><code class="pn">{p.name}</code></td>
+                <td class="ty">{p.type}</td>
+                <td class="df">{p.default || '—'}</td>
+                <td>{p.description}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  )}
+
+  {comp.events.length > 0 && (
+    <>
+      <h2 id="events">Events</h2>
+      <div class="tb">
+        <table>
+          <thead><tr><th>Event</th><th>Detail</th><th>Description</th></tr></thead>
+          <tbody>
+            {comp.events.map(ev => (
+              <tr>
+                <td><code class="pn">{ev.name}</code></td>
+                <td class="ty">{ev.detail}</td>
+                <td>{ev.description}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  )}
+
+  <nav class="pnav">
+    {prev ? <a href={`/components/${prev.tag}`} class="pc"><span class="pd">&larr; Previous</span><span class="pname">{prev.name}</span></a> : <div/>}
+    {next ? <a href={`/components/${next.tag}`} class="pc r"><span class="pd">Next &rarr;</span><span class="pname">{next.name}</span></a> : <div/>}
+  </nav>
+
+  <style>
+    .bc { font-size: 14px; color: var(--fg-3); margin-bottom: 24px; }
+    .bc a { color: var(--fg-3); } .bc a:hover { color: var(--fg-2); }
+    .bc span { margin: 0 6px; }
+
+    h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 12px; }
+
+    .desc { font-size: 16px; color: var(--fg-2); line-height: 1.7; margin-bottom: 40px; }
+
+    h2 {
+      font-size: 22px; font-weight: 600; letter-spacing: -0.02em;
+      margin: 48px 0 16px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Examples */
+    .ex { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 12px; }
+    .exl { padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--fg-3); border-bottom: 1px solid var(--border); background: var(--bg-subtle); }
+    .ex pre { margin: 0; border: none; border-radius: 0; }
+
+    /* Tables */
+    .tb { border: 1px solid var(--border); border-radius: var(--radius); overflow-x: auto; margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left; padding: 10px 16px;
+      font-size: 13px; font-weight: 500; color: var(--fg-3);
+      background: var(--bg-subtle); border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 10px 16px; font-size: 14px;
+      border-bottom: 1px solid var(--border); color: var(--fg-2);
+      vertical-align: top; line-height: 1.5;
+    }
+    tr:last-child td { border-bottom: none; }
+    .pn { background: none; padding: 0; color: var(--fg); font-weight: 500; font-size: 14px; }
+    .ty { font-family: var(--font-mono); font-size: 13px; color: var(--fg-3); }
+    .df { font-family: var(--font-mono); font-size: 13px; color: var(--fg-3); }
+
+    /* Prev/Next */
+    .pnav { display: flex; justify-content: space-between; gap: 16px; margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--border); }
+    .pc { display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius); transition: border-color 120ms; }
+    .pc:hover { border-color: var(--border-hover); }
+    .pc.r { text-align: right; margin-left: auto; }
+    .pd { font-size: 13px; color: var(--fg-3); }
+    .pname { font-size: 15px; font-weight: 500; }
+  </style>
+</DocsLayout>

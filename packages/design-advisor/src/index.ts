@@ -91,7 +91,61 @@ export { BiasCategory, ImpactLevel } from './biases/core/types.js';
 // COMPONENTS
 // ============================================================================
 
-export { BiasCardElement, BiasLibraryElement } from './components/index.js';
+export {
+  BiasCardElement,
+  BiasLibraryElement,
+  AtlasPatternCardElement,
+  AtlasLibraryElement,
+} from './components/index.js';
+
+// ============================================================================
+// ATLAS DATA BRIDGE
+// ============================================================================
+
+export {
+  // Registry
+  AtlasRegistry,
+  atlasRegistry,
+  getAllPatterns,
+  queryPatterns,
+  getPatternsForComponent,
+  getComponentsForPattern,
+  getBiasesForPattern,
+  getAtlasBridgeStats,
+
+  // Pattern data
+  ALL_ATLAS_PATTERNS,
+  AI_PATTERN_CARDS,
+  HUMAN_PATTERN_CARDS,
+  SYSTEM_PATTERN_CARDS,
+
+  // Mappings
+  COMPONENT_PATTERN_MAP,
+  BIAS_PATTERN_MAP,
+
+  // Constants
+  LAYER_ID_MAP,
+
+  // Workflow Audit
+  auditWorkflow,
+
+  // Recommendations
+  recommendComponents,
+} from './atlas/index.js';
+
+export type {
+  AtlasDimension,
+  AtlasLayer,
+  ImplementationStatus,
+  AtlasPatternCard,
+  AtlasQuery,
+  AtlasBridgeStats,
+  WorkflowAuditInput,
+  BiasRisk,
+  AtlasGap,
+  WorkflowAuditResult,
+  ComponentRecommendation,
+} from './atlas/index.js';
 
 // ============================================================================
 // VERSION

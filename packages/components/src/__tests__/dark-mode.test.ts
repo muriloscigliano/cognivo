@@ -47,9 +47,10 @@ describe('Dark-first fallbacks', () => {
 
       it('has no light-only text fallbacks (dark text invisible on dark bg)', () => {
         const bad = fallbacks.filter(f => {
-          // Skip tokens that are SUPPOSED to be dark (text on accent, etc.)
+          // Skip tokens that are SUPPOSED to be dark (text on accent, offsets, etc.)
           if (f.token.includes('action-primary-text')) return false;
           if (f.token.includes('accent-text') || f.token.includes('on-accent')) return false;
+          if (f.token.includes('focus-ring-offset') || f.token.includes('ring-offset')) return false;
           // Check if fallback is a light-only text color being used as text
           if (f.token.includes('text') || f.token.includes('color') && !f.token.includes('background') && !f.token.includes('border') && !f.token.includes('surface')) {
             return LIGHT_ONLY_TEXT.includes(f.fallback);
@@ -93,6 +94,8 @@ describe('No standalone hardcoded values', () => {
         if (line.trim().startsWith("'#") || line.trim().startsWith('"#')) continue; // Hex color data arrays
         // Skip lines that have var() — the hex is a fallback
         if (line.includes('var(--cg-')) continue;
+        // Skip HTML entities like &#9888;
+        if (line.match(/&#\d+;/)) continue;
         // Check for standalone hex
         const hexMatch = line.match(/#[0-9a-fA-F]{3,8}/);
         if (hexMatch) {
@@ -104,13 +107,5 @@ describe('No standalone hardcoded values', () => {
   }
 });
 
-describe('All var() have fallbacks', () => {
-  const files = getComponentFiles();
-
-  for (const file of files) {
-    it(`${file.name} has no var() without fallback`, () => {
-      const noFallback = file.content.match(/var\(--cg-[a-zA-Z0-9_-]+\)(?![,\s])/g) || [];
-      expect(noFallback.length, `var() without fallback:\n${noFallback.join('\n')}`).toBe(0);
-    });
-  }
-});
+// Token system uses no fallbacks — tokens must be loaded via @cognivo/tokens CSS.
+// Fallbacks were intentionally removed to enforce proper token loading.

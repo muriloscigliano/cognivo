@@ -96,7 +96,7 @@ export class AiRewardSignal extends LitElement {
     .progress-fill {
       height: 100%;
       border-radius: var(--cg-border-radius-50);
-      background: var(--cg-color-surface-base-text);
+      background: var(--cg-color-action-primary-background-default);
       transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
     }
 
@@ -109,13 +109,13 @@ export class AiRewardSignal extends LitElement {
     }
     .spark-line {
       fill: none;
-      stroke: var(--cg-color-surface-base-text);
+      stroke: var(--cg-color-action-primary-background-default);
       stroke-width: 1.5;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
     .spark-area {
-      fill: var(--cg-overlay-dark-subtle);
+      fill: var(--cg-overlay-accent-subtle);
     }
 
     /* ── Labels ── */

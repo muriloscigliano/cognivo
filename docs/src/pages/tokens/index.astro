@@ -1,0 +1,578 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+
+const tiers = [
+  {
+    name: 'Tier 1: Core Primitives',
+    desc: 'Raw values with no semantic meaning. The building blocks.',
+    tokens: '~310 tokens',
+    examples: [
+      { token: '--cg-gray-500', value: '#737373', desc: 'Gray palette midpoint' },
+      { token: '--cg-spacing-16', value: '16px', desc: 'Base spacing unit' },
+      { token: '--cg-font-size-md', value: '16px', desc: 'Medium body text' },
+      { token: '--cg-border-radius-150', value: '12px', desc: 'Medium radius' },
+      { token: '--cg-brand-ai-accent', value: '#DFFF61', desc: 'Brand lime-yellow' },
+    ],
+  },
+  {
+    name: 'Tier 2: Semantic Tokens',
+    desc: 'Map primitives to UI intent. These are what you use in components.',
+    tokens: '~700+ tokens',
+    examples: [
+      { token: '--cg-color-action-primary-background-default', value: 'Lime accent', desc: 'Primary button fill' },
+      { token: '--cg-color-status-success-text', value: 'Green', desc: 'Success state text' },
+      { token: '--cg-color-surface-container-background', value: 'Dark gray', desc: 'Page background' },
+      { token: '--cg-typography-heading-h1-fontSize', value: '48px', desc: 'H1 heading size' },
+      { token: '--cg-ai-confidence-high-color', value: 'Teal', desc: 'High confidence indicator' },
+    ],
+  },
+  {
+    name: 'Tier 3: Component Tokens',
+    desc: 'Component-specific sizing and spacing. Used internally by components.',
+    tokens: '~102 tokens',
+    examples: [
+      { token: '--cg-component-button-height-md', value: '40px', desc: 'Medium button height' },
+      { token: '--cg-component-input-height-md', value: '44px', desc: 'Medium input height' },
+      { token: '--cg-component-card-radius', value: '12px', desc: 'Card border radius' },
+      { token: '--cg-component-modal-radius', value: '16px', desc: 'Modal border radius' },
+      { token: '--cg-component-badge-height-md', value: '24px', desc: 'Badge height' },
+    ],
+  },
+];
+
+const categories = [
+  { name: 'Colors', count: 777, desc: 'Action, status, surface, brand, and AI state colors across light and dark themes.' },
+  { name: 'Typography', count: 162, desc: '6 heading styles, 5 body, 3 label sizes, caption, code, and overline presets.' },
+  { name: 'Font Base', count: 66, desc: '3 font families, 10 sizes, 9 weights, 5 line heights, 6 letter spacings.' },
+  { name: 'Spacing', count: 37, desc: '17-step scale from 0 to 96px. Base unit: 8px.' },
+  { name: 'Borders', count: 37, desc: 'Radius (8 steps), width (4 steps), and style tokens.' },
+  { name: 'AI States', count: 196, desc: 'Confidence levels, anomaly severity, thinking animation, insight types.' },
+  { name: 'Component', count: 102, desc: 'Button, input, card, modal, badge, table, and more — per-component sizing.' },
+  { name: 'Motion', count: 20, desc: '5 durations (0-350ms) and 5 easing curves.' },
+  { name: 'Elevation', count: 10, desc: '5 shadow levels with light and dark variants.' },
+];
+
+const spacingScale = [0, 1, 2, 4, 6, 8, 12, 16, 20, 24, 32, 40, 48, 56, 64, 80, 96];
+
+const elevations = [
+  { level: 1, use: 'Cards, inputs', shadow: '0 1px 3px' },
+  { level: 2, use: 'Hover states, tooltips', shadow: '0 4px 6px' },
+  { level: 3, use: 'Dropdowns, popovers', shadow: '0 10px 15px' },
+  { level: 4, use: 'Modals', shadow: '0 20px 25px' },
+  { level: 5, use: 'Drawers, command palette', shadow: '0 25px 50px' },
+];
+
+const motionDurations = [
+  { name: 'instant', value: '0ms', use: 'Immediate feedback' },
+  { name: 'fast', value: '80ms', use: 'Micro-interactions' },
+  { name: 'normal', value: '150ms', use: 'Standard transitions' },
+  { name: 'slow', value: '250ms', use: 'Complex animations' },
+  { name: 'slower', value: '350ms', use: 'Page transitions' },
+];
+
+const motionEasings = [
+  { name: 'default', curve: 'cubic-bezier(0.4, 0, 0.2, 1)', use: 'Standard' },
+  { name: 'enter', curve: 'cubic-bezier(0, 0, 0.2, 1)', use: 'Elements appearing' },
+  { name: 'exit', curve: 'cubic-bezier(0.4, 0, 1, 1)', use: 'Elements leaving' },
+  { name: 'bounce', curve: 'cubic-bezier(0.34, 1.56, 0.64, 1)', use: 'Spring/playful' },
+  { name: 'color', curve: 'cubic-bezier(0, 0, 0.58, 1)', use: 'Color/opacity' },
+];
+---
+
+<DocsLayout title="Design Tokens">
+  <div class="tokens-page">
+    <header class="page-header">
+      <h1>Design Tokens</h1>
+      <p class="subtitle">1,853 CSS custom properties organized in a 3-tier architecture. All prefixed with <code>--cg-</code>.</p>
+    </header>
+
+    <!-- Install -->
+    <section class="section">
+      <h2>Installation</h2>
+      <pre><code>pnpm add @cognivo/tokens</code></pre>
+      <pre style="margin-top: 8px;"><code>{`/* Import in CSS */
+@import '@cognivo/tokens';
+
+/* Or in JS */
+import '@cognivo/tokens/dist/index.css';`}</code></pre>
+    </section>
+
+    <!-- Dark Mode -->
+    <section class="section">
+      <h2>Dark Mode</h2>
+      <p>All tokens respond to the <code>data-theme</code> attribute. Light is the default; dark overrides semantic tokens only.</p>
+      <pre><code>{`<!-- Light theme (default) -->
+<html>
+
+<!-- Dark theme -->
+<html data-theme="dark">
+
+<!-- Toggle with JS -->
+<script>
+  document.documentElement.setAttribute('data-theme', 'dark');
+</script>`}</code></pre>
+    </section>
+
+    <!-- Token Counts -->
+    <section class="section">
+      <h2>Token Breakdown</h2>
+      <p style="margin-bottom: 1rem; color: var(--text-2);">1,853 tokens organized across 9 categories:</p>
+      <div class="cat-grid">
+        {categories.map(cat => (
+          <div class="cat-card">
+            <div class="cat-count">{cat.count}</div>
+            <div class="cat-name">{cat.name}</div>
+            <div class="cat-desc">{cat.desc}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 3-Tier System -->
+    <section class="section">
+      <h2>3-Tier Architecture</h2>
+      <p style="margin-bottom: 1.5rem; color: var(--text-2);">
+        Tokens follow a strict hierarchy: <strong>Tier 3 &rarr; Tier 2 &rarr; Tier 1</strong>. Always prefer higher-tier tokens.
+      </p>
+
+      {tiers.map(tier => (
+        <div class="tier-block">
+          <div class="tier-header">
+            <h3>{tier.name}</h3>
+            <span class="tier-count">{tier.tokens}</span>
+          </div>
+          <p class="tier-desc">{tier.desc}</p>
+          <div class="token-examples">
+            {tier.examples.map(ex => (
+              <div class="token-row">
+                <code class="token-name">{ex.token}</code>
+                <span class="token-value">{ex.value}</span>
+                <span class="token-desc">{ex.desc}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      <div class="rule-box">
+        <strong>Rule:</strong> Never use Tier 1 palette tokens (<code>--cg-gray-*</code>, <code>--cg-red-*</code>) directly in components.
+        Use Tier 2 semantic tokens (<code>--cg-color-action-*</code>, <code>--cg-color-status-*</code>) instead.
+      </div>
+    </section>
+
+    <!-- Spacing -->
+    <section class="section">
+      <h2>Spacing Scale</h2>
+      <p style="margin-bottom: 1rem; color: var(--text-2);">17-step scale based on 8px grid. Use <code>--cg-spacing-{`{value}`}</code>.</p>
+      <div class="spacing-grid">
+        {spacingScale.map(s => (
+          <div class="spacing-item">
+            <div class="spacing-bar" style={`width: ${Math.max(s, 2)}px; height: 20px;`}></div>
+            <code class="spacing-token">--cg-spacing-{s}</code>
+            <span class="spacing-value">{s}px</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Typography -->
+    <section class="section">
+      <h2>Typography</h2>
+      <div class="type-block">
+        <h3>Font Families</h3>
+        <div class="token-examples">
+          <div class="token-row">
+            <code class="token-name">--cg-font-family-primary</code>
+            <span class="token-value">Inter</span>
+            <span class="token-desc">UI text, body copy</span>
+          </div>
+          <div class="token-row">
+            <code class="token-name">--cg-font-family-display</code>
+            <span class="token-value">Satoshi</span>
+            <span class="token-desc">Headings, marketing</span>
+          </div>
+          <div class="token-row">
+            <code class="token-name">--cg-font-family-mono</code>
+            <span class="token-value">Fira Code</span>
+            <span class="token-desc">Code, data, badges</span>
+          </div>
+        </div>
+      </div>
+      <div class="type-block">
+        <h3>Size Scale</h3>
+        <p style="color: var(--text-2); margin-bottom: 0.75rem; font-size: 0.875rem;">
+          10 sizes from <code>xs</code> (12px) to <code>5xl</code> (60px). Use <code>--cg-font-size-{`{size}`}</code>.
+        </p>
+      </div>
+      <div class="type-block">
+        <h3>Typography Presets</h3>
+        <p style="color: var(--text-2); font-size: 0.875rem;">
+          Composite tokens for full type styles: <code>--cg-typography-heading-h1-fontSize</code>,
+          <code>--cg-typography-body-large-lineHeight</code>, etc.
+          Covers 6 headings, 5 body, 3 label, caption, code, and overline.
+        </p>
+      </div>
+    </section>
+
+    <!-- Elevation -->
+    <section class="section">
+      <h2>Elevation</h2>
+      <p style="margin-bottom: 1rem; color: var(--text-2);">5-level shadow system. Automatically adjusts for dark mode.</p>
+      <div class="table-wrap">
+        <table class="ref-table">
+          <thead>
+            <tr><th>Level</th><th>Token</th><th>Shadow</th><th>Use</th></tr>
+          </thead>
+          <tbody>
+            {elevations.map(e => (
+              <tr>
+                <td><strong>{e.level}</strong></td>
+                <td><code>--cg-elevation-{e.level}</code></td>
+                <td class="muted">{e.shadow}</td>
+                <td>{e.use}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Motion -->
+    <section class="section">
+      <h2>Motion</h2>
+      <div class="type-block">
+        <h3>Durations</h3>
+        <div class="table-wrap">
+          <table class="ref-table">
+            <thead><tr><th>Token</th><th>Value</th><th>Use</th></tr></thead>
+            <tbody>
+              {motionDurations.map(d => (
+                <tr>
+                  <td><code>--cg-motion-duration-{d.name}</code></td>
+                  <td class="muted">{d.value}</td>
+                  <td>{d.use}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="type-block">
+        <h3>Easing Curves</h3>
+        <div class="table-wrap">
+          <table class="ref-table">
+            <thead><tr><th>Token</th><th>Curve</th><th>Use</th></tr></thead>
+            <tbody>
+              {motionEasings.map(e => (
+                <tr>
+                  <td><code>--cg-motion-easing-{e.name}</code></td>
+                  <td class="muted" style="font-size: 0.75rem;">{e.curve}</td>
+                  <td>{e.use}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Tokens -->
+    <section class="section">
+      <h2>AI State Tokens</h2>
+      <p style="margin-bottom: 1rem; color: var(--text-2);">196 tokens for AI-specific UI states. Unique to Cognivo.</p>
+
+      <div class="type-block">
+        <h3>Confidence Levels</h3>
+        <div class="token-examples">
+          <div class="token-row">
+            <code class="token-name">--cg-ai-confidence-high-color</code>
+            <span class="token-desc">Score &ge; 80% — teal</span>
+          </div>
+          <div class="token-row">
+            <code class="token-name">--cg-ai-confidence-medium-color</code>
+            <span class="token-desc">Score 50-79% — yellow</span>
+          </div>
+          <div class="token-row">
+            <code class="token-name">--cg-ai-confidence-low-color</code>
+            <span class="token-desc">Score &lt; 50% — red</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="type-block">
+        <h3>Anomaly Detection</h3>
+        <p style="color: var(--text-2); font-size: 0.875rem; margin-bottom: 0.5rem;">
+          4 severity levels (critical, high, medium, low) with glow effects for visual urgency.
+        </p>
+      </div>
+
+      <div class="type-block">
+        <h3>Thinking Animation</h3>
+        <div class="token-examples">
+          <div class="token-row">
+            <code class="token-name">--cg-ai-thinking-duration</code>
+            <span class="token-value">1400ms</span>
+            <span class="token-desc">Full cycle duration</span>
+          </div>
+          <div class="token-row">
+            <code class="token-name">--cg-ai-thinking-dot-size</code>
+            <span class="token-value">6-10px</span>
+            <span class="token-desc">Dot indicator size range</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="type-block">
+        <h3>Insight Types</h3>
+        <p style="color: var(--text-2); font-size: 0.875rem;">
+          4 insight categories with dedicated colors and icons: explanation, forecast, classification, optimization.
+        </p>
+      </div>
+    </section>
+
+    <!-- Usage -->
+    <section class="section">
+      <h2>Usage Example</h2>
+      <pre><code>{`.my-card {
+  background: var(--cg-color-surface-card-background-default);
+  border: 1px solid var(--cg-color-surface-card-border);
+  border-radius: var(--cg-component-card-radius);
+  padding: var(--cg-spacing-24);
+  box-shadow: var(--cg-elevation-1);
+  transition: box-shadow var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+}
+
+.my-card:hover {
+  box-shadow: var(--cg-elevation-2);
+}
+
+.confidence-badge {
+  background: var(--cg-ai-confidence-high-background);
+  color: var(--cg-ai-confidence-high-color);
+  font: var(--cg-font-size-xs) var(--cg-font-family-mono);
+}`}</code></pre>
+    </section>
+
+    <!-- Naming Convention -->
+    <section class="section">
+      <h2>Naming Convention</h2>
+      <pre><code>--cg-[category]-[subcategory]-[property]-[variant]-[state]
+
+Examples:
+  --cg-color-action-primary-background-default
+  --cg-color-status-success-text
+  --cg-typography-heading-h1-fontSize
+  --cg-component-button-height-md
+  --cg-motion-duration-normal
+  --cg-ai-confidence-high-color</code></pre>
+    </section>
+  </div>
+
+  <style>
+    .tokens-page { }
+
+    .page-header h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--text-2);
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .section { margin-bottom: 3rem; }
+    .section h2 {
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Category grid ── */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 12px;
+    }
+    .cat-card {
+      padding: 16px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .cat-count {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+    .cat-name {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .cat-desc {
+      font-size: 0.8125rem;
+      color: var(--text-2);
+      line-height: 1.5;
+    }
+
+    /* ── Tier blocks ── */
+    .tier-block {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .tier-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border);
+    }
+    .tier-header h3 {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .tier-count {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      font-family: var(--font-mono);
+    }
+    .tier-desc {
+      padding: 12px 18px;
+      font-size: 0.875rem;
+      color: var(--text-2);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    /* ── Token examples ── */
+    .token-examples {
+      padding: 4px 0;
+    }
+    .token-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.8125rem;
+    }
+    .token-row:last-child { border-bottom: none; }
+    .token-name {
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+    }
+    .token-value {
+      color: var(--text-3);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+    .token-desc {
+      color: var(--text-2);
+      font-size: 0.8125rem;
+    }
+
+    /* ── Rule box ── */
+    .rule-box {
+      padding: 14px 18px;
+      background: rgba(223, 255, 97, 0.04);
+      border: 1px solid rgba(223, 255, 97, 0.12);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      color: var(--text-2);
+      margin-top: 16px;
+    }
+    .rule-box strong {
+      color: var(--accent);
+    }
+
+    /* ── Spacing grid ── */
+    .spacing-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .spacing-item {
+      display: grid;
+      grid-template-columns: 100px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 4px 0;
+    }
+    .spacing-bar {
+      background: var(--accent);
+      border-radius: 2px;
+      opacity: 0.6;
+      min-width: 2px;
+    }
+    .spacing-token {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      color: var(--text-2);
+    }
+    .spacing-value {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      color: var(--text-3);
+    }
+
+    /* ── Type blocks ── */
+    .type-block {
+      margin-bottom: 1.5rem;
+    }
+    .type-block h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    /* ── Tables ── */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+    }
+    .ref-table th {
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-subtle);
+    }
+    .ref-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: var(--text-2);
+      vertical-align: top;
+    }
+    .ref-table tr:last-child td { border-bottom: none; }
+    .muted { color: var(--text-3); }
+
+    @media (max-width: 640px) {
+      .cat-grid { grid-template-columns: 1fr; }
+      .token-row { grid-template-columns: 1fr; gap: 2px; }
+      .spacing-item { grid-template-columns: 60px 1fr auto; }
+    }
+  </style>
+</DocsLayout>

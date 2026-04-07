@@ -36,7 +36,7 @@ interface WorkflowStep {
 export class AiWorkflowBuilder extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .container {
@@ -61,10 +61,11 @@ export class AiWorkflowBuilder extends LitElement {
       padding: var(--cg-spacing-8) var(--cg-spacing-16); border-radius: var(--cg-border-radius-100);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       background: var(--cg-color-surface-base-background);
-      min-width: var(--cg-spacing-96); cursor: pointer; transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color), background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      min-width: var(--cg-spacing-96); cursor: pointer; transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .step:hover { border-color: var(--cg-color-input-border-hover); }
-    .step:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); outline-offset: var(--cg-outline-offset-default); }
+    .step:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-spacing-2) var(--cg-overlay-accent-strong); outline-offset: var(--cg-outline-offset-default); }
+    .step:active { transform: scale(0.98); }
     .step.active { border-color: var(--cg-color-surface-base-text); background: var(--cg-overlay-accent-subtle); }
     .step.complete { border-color: var(--cg-color-status-success-text-default); }
     .step.error { border-color: var(--cg-color-status-error-text-default); }
@@ -75,16 +76,16 @@ export class AiWorkflowBuilder extends LitElement {
       display: flex; align-items: center; justify-content: center;
       font-size: var(--cg-font-size-xs); flex-shrink: 0;
     }
-    .step-icon.start { background: var(--cg-color-status-success-background-default); color: var(--cg-color-status-success-text); }
+    .step-icon.start { background: var(--cg-color-status-success-background-default); color: var(--cg-color-status-success-text-default); }
     .step-icon.agent { background: var(--cg-overlay-accent-light); color: var(--cg-color-surface-base-text); }
-    .step-icon.tool { background: var(--cg-color-status-info-background-default); color: var(--cg-color-status-info-text); }
-    .step-icon.condition { background: var(--cg-color-status-warning-background-default); color: var(--cg-color-status-warning-text); }
+    .step-icon.tool { background: var(--cg-color-status-info-background-default); color: var(--cg-color-status-info-text-default); }
+    .step-icon.condition { background: var(--cg-color-status-warning-background-default); color: var(--cg-color-status-warning-text-default); }
     .step-icon.end { background: var(--cg-color-surface-container-background); color: var(--cg-color-input-text-placeholder); }
 
     .step-info { flex: 1; min-width: 0; }
     .step-label { font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-semibold); color: var(--cg-color-surface-base-text); }
     .step-desc { font-size: var(--cg-font-size-xs); color: var(--cg-color-input-text-placeholder); margin-top: var(--cg-spacing-2); }
-    .step-type { font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-bold); text-transform: uppercase; letter-spacing: 0.05em; color: var(--cg-color-input-text-placeholder); }
+    .step-type { font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-bold); text-transform: uppercase; letter-spacing: var(--cg-letter-spacing-wider); color: var(--cg-color-input-text-placeholder); }
 
     .step-status { font-size: var(--cg-font-size-xs); flex-shrink: 0; }
 
@@ -141,6 +142,7 @@ export class AiWorkflowBuilder extends LitElement {
           ${this.steps.map((step, i) => html`
             ${i > 0 ? html`<div class="connector ${step.status === 'active' || step.status === 'complete' ? 'active' : ''}"></div>` : nothing}
             <div class="step ${step.status || 'pending'}" tabindex="0" role="listitem"
+              aria-current=${step.status === 'active' ? 'step' : nothing}
               @click=${() => this._handleStepClick(step)}
               @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleStepClick(step); } }}>
               <div class="step-icon ${step.type}" aria-hidden="true">${this._getTypeIcon(step.type)}</div>

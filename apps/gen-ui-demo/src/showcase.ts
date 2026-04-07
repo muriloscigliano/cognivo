@@ -1,25 +1,22 @@
 /**
- * Cognivo Component Showcase — HeroUI-style sidebar + component pages
- * Pure client-side routing via hash. No framework dependency.
+ * Cognivo Component Showcase
  */
 import '../../../packages/tokens/dist/index.css';
 import '@cognivo/components';
 import { registry, categories } from './pages/registry';
 import { renderComponentPage, renderWelcome } from './pages/render';
 
-// ─── DOM refs ─────────────────────────────────────────────────────────────────
 const sidebarEl = document.getElementById('sidebar')!;
 const mainEl = document.getElementById('main')!;
 const searchEl = document.getElementById('search') as HTMLInputElement;
 const themeToggle = document.getElementById('theme-toggle')!;
 const countBadge = document.getElementById('count-badge')!;
 
-// ─── State ────────────────────────────────────────────────────────────────────
-let currentTag: string = '';
-let searchQuery: string = '';
+let currentTag = '';
+let searchQuery = '';
 
-// ─── Sidebar ──────────────────────────────────────────────────────────────────
-function renderSidebar(filter: string = '') {
+// ─── Sidebar ─────────────────────────────────────────────────────────────────
+function renderSidebar(filter = '') {
   const lf = filter.toLowerCase();
   let html = '';
 
@@ -31,20 +28,16 @@ function renderSidebar(filter: string = '') {
 
     if (filtered.length === 0) continue;
 
-    html += `<div class="sidebar-category">`;
-    html += `<div class="category-label">${cat.label} (${filtered.length})</div>`;
+    html += `<div class="cat-title">${cat.label}</div>`;
     for (const comp of filtered) {
-      const active = comp.tag === currentTag ? 'active' : '';
-      html += `<a class="sidebar-item ${active}" href="#${comp.tag}" data-tag="${comp.tag}">
-        <span class="tag-prefix">&lt;</span>${comp.name}
-      </a>`;
+      const active = comp.tag === currentTag ? ' active' : '';
+      html += `<a class="sb-item${active}" href="#${comp.tag}" data-tag="${comp.tag}"><span class="sb-tag">&lt;</span>${comp.name}</a>`;
     }
-    html += `</div>`;
   }
 
   sidebarEl.innerHTML = html;
 
-  sidebarEl.querySelectorAll('.sidebar-item').forEach(el => {
+  sidebarEl.querySelectorAll('.sb-item').forEach(el => {
     el.addEventListener('click', (e) => {
       e.preventDefault();
       navigate((el as HTMLElement).dataset.tag!);
@@ -52,7 +45,7 @@ function renderSidebar(filter: string = '') {
   });
 }
 
-// ─── Navigation ───────────────────────────────────────────────────────────────
+// ─── Navigation ──────────────────────────────────────────────────────────────
 function navigate(tag: string) {
   currentTag = tag;
   window.location.hash = tag;
@@ -69,7 +62,7 @@ function renderPage() {
 
   const comp = registry.find(c => c.tag === currentTag);
   if (!comp) {
-    mainEl.innerHTML = `<div style="padding: 40px; color: var(--text-muted);">Component not found: ${currentTag}</div>`;
+    mainEl.innerHTML = `<div style="padding:48px;color:var(--text-3)">Component not found: ${currentTag}</div>`;
     return;
   }
 
@@ -78,7 +71,7 @@ function renderPage() {
   mainEl.scrollTop = 0;
 }
 
-// ─── Search ───────────────────────────────────────────────────────────────────
+// ─── Search ──────────────────────────────────────────────────────────────────
 searchEl.addEventListener('input', () => {
   searchQuery = searchEl.value;
   renderSidebar(searchQuery);
@@ -92,16 +85,20 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// ─── Theme toggle ─────────────────────────────────────────────────────────────
+// ─── Theme ───────────────────────────────────────────────────────────────────
+const sunSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+const moonSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+
 themeToggle.addEventListener('click', () => {
   const html = document.documentElement;
   const isDark = html.getAttribute('data-theme') === 'dark';
   html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  themeToggle.textContent = isDark ? 'Light' : 'Dark';
+  themeToggle.innerHTML = isDark ? moonSvg : sunSvg;
 });
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
-countBadge.textContent = `${registry.length} components`;
+// ─── Init ────────────────────────────────────────────────────────────────────
+countBadge.textContent = `${registry.length}`;
+themeToggle.innerHTML = sunSvg;
 
 const initialHash = window.location.hash.slice(1);
 if (initialHash) currentTag = initialHash;

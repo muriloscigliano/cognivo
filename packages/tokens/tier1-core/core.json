@@ -538,19 +538,23 @@
     "radius": {
       "50": {
         "$type": "dimension",
-        "$value": "4px"
+        "$value": "8px"
       },
       "100": {
         "$type": "dimension",
-        "$value": "8px"
+        "$value": "12px"
+      },
+      "125": {
+        "$type": "dimension",
+        "$value": "16px"
       },
       "150": {
         "$type": "dimension",
-        "$value": "12px"
+        "$value": "20px"
       },
       "200": {
         "$type": "dimension",
-        "$value": "24px"
+        "$value": "28px"
       },
       "250": {
         "$type": "dimension",

@@ -65,7 +65,7 @@ describe('cg-textarea', () => {
       ? styles.map(s => s.cssText).join('')
       : (styles as { cssText: string }).cssText;
     expect(cssText).toContain('error');
-    expect(cssText).toContain('cg-text-danger');
+    expect(cssText).toContain('cg-color-status-error-text');
   });
 
   it('success state applies success attribute', async () => {

@@ -109,8 +109,15 @@ describe('cg-badge', () => {
     expect((detail as { label: string }).label).toBe('Remove me');
   });
 
-  it('has role="status" on the badge element', async () => {
+  it('has role="presentation" when dot is false', async () => {
     el = await createElement('cg-badge', { label: 'Status' });
+    const badge = el.shadowRoot!.querySelector('.badge');
+    expect(badge).not.toBeNull();
+    expect(badge!.getAttribute('role')).toBe('presentation');
+  });
+
+  it('has role="status" when dot is true', async () => {
+    el = await createElement('cg-badge', { dot: true, label: 'Live' });
     const badge = el.shadowRoot!.querySelector('.badge');
     expect(badge).not.toBeNull();
     expect(badge!.getAttribute('role')).toBe('status');

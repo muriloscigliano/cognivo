@@ -143,7 +143,21 @@ describe('cg-callout', () => {
     vi.useRealTimers();
   });
 
-  it('has role="alert"', () => {
+  it('has role="note" for info variant (default)', () => {
+    const callout = el.shadowRoot!.querySelector('.callout');
+    expect(callout!.getAttribute('role')).toBe('note');
+  });
+
+  it('has role="alert" for danger variant', async () => {
+    el.variant = 'danger';
+    await el.updateComplete;
+    const callout = el.shadowRoot!.querySelector('.callout');
+    expect(callout!.getAttribute('role')).toBe('alert');
+  });
+
+  it('has role="alert" for warning variant', async () => {
+    el.variant = 'warning';
+    await el.updateComplete;
     const callout = el.shadowRoot!.querySelector('.callout');
     expect(callout!.getAttribute('role')).toBe('alert');
   });

@@ -7,6 +7,7 @@ export default defineConfig({
       entry: {
         index: resolve(__dirname, 'src/index.ts'),
         registry: resolve(__dirname, 'src/utils/bias-registry.ts'),
+        atlas: resolve(__dirname, 'src/atlas/index.ts'),
         components: resolve(__dirname, 'src/components/index.ts'),
         'categories/perception': resolve(__dirname, 'src/categories/perception.ts'),
         'categories/decision-making': resolve(__dirname, 'src/categories/decision-making.ts'),
@@ -19,7 +20,7 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: ['lit', '@cognivo/core'],
+      external: ['lit', '@cognivo/core', '@quietloudlab/ai-interaction-atlas'],
       output: {
         manualChunks(id) {
           if (id.includes('/biases/') && !id.includes('/core/')) {

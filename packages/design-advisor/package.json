@@ -14,6 +14,10 @@
     "./registry": {
       "import": "./dist/registry.js"
     },
+    "./atlas": {
+      "import": "./dist/atlas.js",
+      "types": "./dist/atlas/index.d.ts"
+    },
     "./components": {
       "import": "./dist/components.js"
     },
@@ -42,9 +46,13 @@
       "import": "./dist/categories/cognitive.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
-  "sideEffects": ["./dist/components.js"],
+  "sideEffects": [
+    "./dist/components.js"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/muriloscigliano/cognivo-1.git",
@@ -61,6 +69,7 @@
   },
   "dependencies": {
     "@cognivo/core": "workspace:*",
+    "@quietloudlab/ai-interaction-atlas": "^1.0.10",
     "lit": "^3.1.0"
   },
   "devDependencies": {

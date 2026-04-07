@@ -172,11 +172,11 @@ describe('cg-input', () => {
     expect(wrapper!.classList.contains('disabled')).toBe(true);
   });
 
-  it('size variant "sm" is reflected on host', async () => {
-    el.size = 'sm';
+  it('size variant "lg" is reflected on host', async () => {
+    el.size = 'lg';
     await el.updateComplete;
 
-    expect(el.getAttribute('size')).toBe('sm');
+    expect(el.getAttribute('size')).toBe('lg');
   });
 
   it('size variant "md" is reflected on host by default', () => {

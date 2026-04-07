@@ -1,124 +1,67 @@
 ---
 import DocsLayout from '../../layouts/DocsLayout.astro';
+import { registry, categories } from '../../data/components';
 
-const categories = [
-  {
-    name: 'Foundation',
-    count: 16,
-    description: 'Core UI building blocks: buttons, badges, avatars, tooltips, and layout primitives.',
-    components: [
-      { tag: 'cg-button', desc: 'Multi-variant button with loading states', example: '<cg-button variant="primary" loading>Submit</cg-button>' },
-      { tag: 'cg-badge', desc: 'Status and notification badges', example: '<cg-badge variant="success">Active</cg-badge>' },
-      { tag: 'cg-avatar', desc: 'User avatars with image, initials, or icon fallback', example: '<cg-avatar src="/photo.jpg" size="lg"></cg-avatar>' },
-      { tag: 'cg-tooltip', desc: 'Accessible tooltip with configurable placement', example: '<cg-tooltip text="More info" placement="top"><cg-button>Hover me</cg-button></cg-tooltip>' },
-      { tag: 'cg-card', desc: 'Content card with header, body, and footer slots', example: '<cg-card elevation="2"><p>Card content</p></cg-card>' },
-      { tag: 'cg-spinner', desc: 'Loading spinner with size and color options', example: '<cg-spinner size="md"></cg-spinner>' },
-    ],
-  },
-  {
-    name: 'Forms',
-    count: 13,
-    description: 'Input controls with validation, accessibility, and token-driven styling.',
-    components: [
-      { tag: 'cg-input', desc: 'Text input with validation and helper text', example: '<cg-input label="Email" type="email" required></cg-input>' },
-      { tag: 'cg-select', desc: 'Dropdown select with search and multi-select', example: '<cg-select label="Country" searchable></cg-select>' },
-      { tag: 'cg-checkbox', desc: 'Checkbox with indeterminate state', example: '<cg-checkbox checked>Accept terms</cg-checkbox>' },
-      { tag: 'cg-switch', desc: 'Toggle switch with on/off states', example: '<cg-switch label="Dark mode"></cg-switch>' },
-      { tag: 'cg-textarea', desc: 'Multi-line text input with auto-resize', example: '<cg-textarea label="Message" rows="3"></cg-textarea>' },
-      { tag: 'cg-slider', desc: 'Range slider with min/max and step', example: '<cg-slider min="0" max="100" value="50"></cg-slider>' },
-    ],
-  },
-  {
-    name: 'Data & Navigation',
-    count: 14,
-    description: 'Tables, tabs, breadcrumbs, pagination, and data display components.',
-    components: [
-      { tag: 'cg-table', desc: 'Sortable, filterable data table', example: '<cg-table sortable paginated></cg-table>' },
-      { tag: 'cg-tabs', desc: 'Tab navigation with lazy loading', example: '<cg-tabs><cg-tab label="Overview">...</cg-tab></cg-tabs>' },
-      { tag: 'cg-breadcrumb', desc: 'Navigation breadcrumb trail', example: '<cg-breadcrumb><cg-breadcrumb-item href="/">Home</cg-breadcrumb-item></cg-breadcrumb>' },
-      { tag: 'cg-pagination', desc: 'Page navigation with configurable range', example: '<cg-pagination total="100" page-size="10" current="1"></cg-pagination>' },
-      { tag: 'cg-accordion', desc: 'Collapsible content sections', example: '<cg-accordion><cg-accordion-item label="Details">...</cg-accordion-item></cg-accordion>' },
-    ],
-  },
-  {
-    name: 'Overlays',
-    count: 4,
-    description: 'Modals, drawers, popovers, and toast notifications.',
-    components: [
-      { tag: 'cg-modal', desc: 'Accessible modal dialog with focus trapping', example: '<cg-modal open><p>Modal content</p></cg-modal>' },
-      { tag: 'cg-drawer', desc: 'Slide-in panel from any edge', example: '<cg-drawer position="right" open>...</cg-drawer>' },
-      { tag: 'cg-popover', desc: 'Floating popover with arrow positioning', example: '<cg-popover trigger="click"><cg-button slot="trigger">Open</cg-button><p>Content</p></cg-popover>' },
-      { tag: 'cg-toast', desc: 'Toast notifications with auto-dismiss', example: '<cg-toast variant="success" duration="3000">Saved!</cg-toast>' },
-    ],
-  },
-  {
-    name: 'AI-Native',
-    count: 73,
-    description: 'Streaming generative UI, confidence indicators, chat interfaces, and AI-powered components.',
-    components: [
-      { tag: 'ai-thinking', desc: 'Animated thinking indicator with shimmer text', example: '<ai-thinking text="Analyzing data" shimmer></ai-thinking>' },
-      { tag: 'ai-badge', desc: 'Confidence score badge with color-coded levels', example: '<ai-badge score="0.92"></ai-badge>' },
-      { tag: 'ai-chat', desc: 'Full-featured chat with AI client integration', example: '<ai-chat></ai-chat>' },
-      { tag: 'ai-result-panel', desc: 'Structured AI results with source attribution', example: '<ai-result-panel></ai-result-panel>' },
-      { tag: 'ai-chart-summary', desc: 'AI-generated natural language chart summaries', example: '<ai-chart-summary></ai-chart-summary>' },
-      { tag: 'ai-insight-card', desc: 'Individual AI-generated insight display', example: '<ai-insight-card title="Revenue Trend" confidence="0.87"></ai-insight-card>' },
-    ],
-  },
-];
+const grouped = categories.map(cat => ({
+  ...cat,
+  items: registry.filter(c => c.category === cat.id),
+})).filter(g => g.items.length > 0);
+
+const total = registry.length;
 ---
 
 <DocsLayout title="Components">
-  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Components</h1>
-  <p style="color: #6b7280; margin-bottom: 1rem;">
-    125 web components built with <a href="https://lit.dev">Lit 3.x</a> and Shadow DOM.
-    52 foundation components plus 73 AI-native components. Works in any framework or vanilla HTML.
-  </p>
+  <h1>Components</h1>
+  <p class="sub">{total} web components built with Lit 3 and Shadow DOM. Works everywhere.</p>
 
-  <section style="margin-bottom: 2rem;">
-    <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem;">Installation</h2>
-    <pre><code>pnpm add @cognivo/components @cognivo/tokens</code></pre>
-    <p style="margin-top: 0.75rem; margin-bottom: 0.5rem;">Import once to register all custom elements:</p>
-    <pre><code>import '@cognivo/components';</code></pre>
-  </section>
+  <pre><code>pnpm add @cognivo/components @cognivo/tokens</code></pre>
 
-  <section style="margin-bottom: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
-    {categories.map(cat => (
-      <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 1rem; text-align: center;">
-        <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-primary);">{cat.count}</div>
-        <div style="font-size: 0.85rem; color: #6b7280;">{cat.name}</div>
+  {grouped.map(g => (
+    <section id={g.id}>
+      <h2>{g.label} <span class="cnt">{g.items.length}</span></h2>
+      <div class="grid">
+        {g.items.map(comp => (
+          <a href={`/components/${comp.tag}`} class="card">
+            <span class="card-name">{comp.name}</span>
+            <span class="card-tag">&lt;{comp.tag}&gt;</span>
+          </a>
+        ))}
       </div>
-    ))}
-  </section>
-
-  <hr style="border: none; border-top: 1px solid var(--color-border); margin-bottom: 2rem;" />
-
-  {categories.map(cat => (
-    <section style="margin-bottom: 2.5rem;">
-      <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem;">{cat.name} <span style="font-size: 0.9rem; font-weight: 400; color: #6b7280;">({cat.count} components)</span></h2>
-      <p style="color: #6b7280; margin-bottom: 1rem; font-size: 0.9rem;">{cat.description}</p>
-
-      {cat.components.map(comp => (
-        <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 10px; padding: 1.25rem; margin-bottom: 0.75rem;">
-          <div style="display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.4rem;">
-            <code style="font-size: 0.95rem; font-weight: 600;">&lt;{comp.tag}&gt;</code>
-            <span style="color: #6b7280; font-size: 0.85rem;">{comp.desc}</span>
-          </div>
-          <pre style="margin: 0;"><code>{comp.example}</code></pre>
-        </div>
-      ))}
     </section>
   ))}
 
-  <section style="margin-top: 2rem; padding: 1.25rem; background: var(--color-primary-light); border-radius: 8px;">
-    <p style="font-size: 0.9rem;">
-      <strong>Full interactive showcase:</strong> See all 125 components with live examples at <a href="/showcase.html">/showcase.html</a>
-    </p>
-  </section>
+  <style>
+    h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 6px; }
+    .sub { font-size: 15px; color: var(--text-2); margin-bottom: 24px; }
 
-  <section style="margin-top: 1.5rem; padding: 1.25rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px;">
-    <p style="font-size: 0.9rem;">
-      <strong>Framework wrappers:</strong> React and Vue wrappers are available via
-      <code>@cognivo/adapter-react</code> and <code>@cognivo/adapter-vue</code> (42 wrappers each).
-    </p>
-  </section>
+    h2 {
+      font-size: 16px; font-weight: 600;
+      margin: 36px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cnt { font-size: 12px; font-weight: 500; color: var(--text-3); font-family: var(--font-mono); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 6px;
+    }
+
+    .card {
+      display: flex; flex-direction: column; gap: 2px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: border-color 120ms;
+    }
+    .card:hover { border-color: var(--border-strong); }
+    .card-name { font-size: 13px; font-weight: 500; }
+    .card-tag { font: 12px var(--font-mono); color: var(--text-3); }
+
+    @media (max-width: 640px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
 </DocsLayout>

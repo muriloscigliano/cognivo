@@ -3,22 +3,22 @@
     "button": {
       "height": {
         "sm": { "$type": "dimension", "$value": "32px" },
-        "md": { "$type": "dimension", "$value": "38px" },
-        "lg": { "$type": "dimension", "$value": "44px" }
+        "md": { "$type": "dimension", "$value": "48px" },
+        "lg": { "$type": "dimension", "$value": "56px" }
       },
       "radius": {
-        "sm": { "$type": "dimension", "$value": "{border.radius.100}" },
-        "md": { "$type": "dimension", "$value": "{border.radius.150}" },
-        "lg": { "$type": "dimension", "$value": "{border.radius.150}" }
+        "sm": { "$type": "dimension", "$value": "{border.radius.50}" },
+        "md": { "$type": "dimension", "$value": "{border.radius.100}" },
+        "lg": { "$type": "dimension", "$value": "{border.radius.125}" }
       }
     },
     "input": {
       "height": {
         "sm": { "$type": "dimension", "$value": "32px" },
-        "md": { "$type": "dimension", "$value": "40px" },
-        "lg": { "$type": "dimension", "$value": "48px" }
+        "md": { "$type": "dimension", "$value": "48px" },
+        "lg": { "$type": "dimension", "$value": "56px" }
       },
-      "radius": { "$type": "dimension", "$value": "{border.radius.150}" }
+      "radius": { "$type": "dimension", "$value": "{border.radius.125}" }
     },
     "card": {
       "radius": { "$type": "dimension", "$value": "{border.radius.200}" },
@@ -36,10 +36,16 @@
       }
     },
     "table": {
-      "radius": { "$type": "dimension", "$value": "{border.radius.150}" }
+      "radius": { "$type": "dimension", "$value": "{border.radius.200}" }
     },
     "modal": {
-      "radius": { "$type": "dimension", "$value": "{border.radius.200}" }
+      "radius": { "$type": "dimension", "$value": "{border.radius.200}" },
+      "width": {
+        "sm": { "$type": "dimension", "$value": "400px" },
+        "md": { "$type": "dimension", "$value": "560px" },
+        "lg": { "$type": "dimension", "$value": "720px" },
+        "xl": { "$type": "dimension", "$value": "960px" }
+      }
     },
     "tooltip": {
       "radius": { "$type": "dimension", "$value": "{border.radius.100}" }
@@ -59,6 +65,45 @@
     },
     "pagination": {
       "button-size": { "$type": "dimension", "$value": "36px" }
+    },
+    "drawer": {
+      "radius": { "$type": "dimension", "$value": "{border.radius.200}" },
+      "width": {
+        "sm": { "$type": "dimension", "$value": "320px" },
+        "md": { "$type": "dimension", "$value": "480px" },
+        "lg": { "$type": "dimension", "$value": "640px" }
+      }
+    },
+    "otp": {
+      "box-width": { "$type": "dimension", "$value": "{spacing.48}" },
+      "box-height": { "$type": "dimension", "$value": "{spacing.56}" }
+    },
+    "ai-chat": {
+      "radius": { "$type": "dimension", "$value": "{border.radius.150}" },
+      "min-height": { "$type": "dimension", "$value": "400px" },
+      "max-height": { "$type": "dimension", "$value": "800px" }
+    },
+    "ai-badge": {
+      "radius-sm": { "$type": "dimension", "$value": "{border.radius.50}" },
+      "radius-md": { "$type": "dimension", "$value": "{border.radius.full}" },
+      "radius-lg": { "$type": "dimension", "$value": "{border.radius.100}" }
+    },
+    "spinner": {
+      "size": {
+        "xs": { "$type": "dimension", "$value": "{spacing.12}" },
+        "sm": { "$type": "dimension", "$value": "{spacing.16}" },
+        "md": { "$type": "dimension", "$value": "{spacing.20}" },
+        "lg": { "$type": "dimension", "$value": "{spacing.32}" },
+        "xl": { "$type": "dimension", "$value": "{spacing.48}" }
+      }
+    },
+    "progress": {
+      "height": {
+        "sm": { "$type": "dimension", "$value": "{spacing.4}" },
+        "md": { "$type": "dimension", "$value": "{spacing.8}" },
+        "lg": { "$type": "dimension", "$value": "{spacing.12}" }
+      },
+      "radius": { "$type": "dimension", "$value": "{border.radius.full}" }
     }
   }
 }

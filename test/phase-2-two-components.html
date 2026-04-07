@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 2: TWO Components!</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 50px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #1a1a1a;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #666;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .phase-badge {
+      display: inline-block;
+      background: #10b981;
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .component-showcase {
+      background: #f9fafb;
+      border-radius: 16px;
+      padding: 40px;
+      margin: 30px 0;
+    }
+
+    .component-section {
+      margin-bottom: 40px;
+    }
+
+    .component-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .component-label {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .component-label .number {
+      background: #667eea;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+    }
+
+    .demo-item {
+      text-align: center;
+      padding: 20px;
+      background: #f9fafb;
+      border-radius: 10px;
+      border: 2px solid #e5e7eb;
+    }
+
+    .demo-label {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .status {
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+
+    .status.success {
+      background: #d1fae5;
+      color: #047857;
+      border: 2px solid #10b981;
+    }
+
+    .status.error {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 2px solid #ef4444;
+    }
+
+    .checklist {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
+
+    .checklist h3 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: #1a1a1a;
+    }
+
+    .check-item {
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1rem;
+    }
+
+    .check-item.pass {
+      background: #d1fae5;
+      color: #047857;
+    }
+
+    .check-item.fail {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .check-icon {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    button {
+      padding: 14px 32px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: block;
+      margin: 20px auto;
+    }
+
+    button:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .celebration {
+      text-align: center;
+      padding: 40px;
+      font-size: 3rem;
+      display: none;
+    }
+
+    .celebration.show {
+      display: block;
+      animation: bounce 1s ease infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div style="text-align: center;">
+        <div class="phase-badge">PHASE 2 - MOMENTUM!</div>
+      </div>
+      <h1>🚀 Two Components Working!</h1>
+      <p class="subtitle">Building incrementally - each component validated!</p>
+
+      <div class="component-showcase">
+        <!-- Component 1: AI Thinking -->
+        <div class="component-section">
+          <div class="component-label">
+            <span class="number">1</span>
+            <span>AI Thinking Indicator</span>
+          </div>
+          <div class="demo-grid">
+            <div class="demo-item">
+              <div class="demo-label">Default</div>
+              <ai-thinking></ai-thinking>
+            </div>
+          </div>
+        </div>
+
+        <!-- Component 2: AI Badge -->
+        <div class="component-section">
+          <div class="component-label">
+            <span class="number">2</span>
+            <span>AI Confidence Badge</span>
+          </div>
+          <div class="demo-grid">
+            <div class="demo-item">
+              <div class="demo-label">High (95%)</div>
+              <ai-badge score="0.95" show-percentage></ai-badge>
+            </div>
+            <div class="demo-item">
+              <div class="demo-label">Medium (68%)</div>
+              <ai-badge score="0.68" show-percentage></ai-badge>
+            </div>
+            <div class="demo-item">
+              <div class="demo-label">Low (42%)</div>
+              <ai-badge score="0.42" show-percentage></ai-badge>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="status" class="status" style="display: none;"></div>
+
+      <button onclick="runValidation()">🔍 Validate Both Components</button>
+
+      <div class="checklist" id="checklist" style="display: none;">
+        <h3>✅ Validation Checklist:</h3>
+        <div id="checklistItems"></div>
+      </div>
+
+      <div class="celebration" id="celebration">
+        🎉🎊🚀
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    console.log('🎨 Phase 2 Test Loading...');
+
+    let componentsLoaded = false;
+
+    window.runValidation = function() {
+      const status = document.getElementById('status');
+      const checklist = document.getElementById('checklist');
+      const checklistItems = document.getElementById('checklistItems');
+      const celebration = document.getElementById('celebration');
+
+      status.style.display = 'block';
+      checklist.style.display = 'block';
+      checklistItems.innerHTML = '';
+      celebration.classList.remove('show');
+
+      const checks = [
+        {
+          name: 'ai-thinking component registered',
+          test: () => !!customElements.get('ai-thinking'),
+        },
+        {
+          name: 'ai-badge component registered',
+          test: () => !!customElements.get('ai-badge'),
+        },
+        {
+          name: 'ai-thinking element in DOM',
+          test: () => !!document.querySelector('ai-thinking'),
+        },
+        {
+          name: 'ai-badge elements in DOM',
+          test: () => document.querySelectorAll('ai-badge').length === 3,
+        },
+        {
+          name: 'ai-thinking has shadow DOM',
+          test: () => !!document.querySelector('ai-thinking')?.shadowRoot,
+        },
+        {
+          name: 'ai-badge has shadow DOM',
+          test: () => !!document.querySelector('ai-badge')?.shadowRoot,
+        },
+      ];
+
+      let allPassed = true;
+
+      checks.forEach(check => {
+        const passed = check.test();
+        allPassed = allPassed && passed;
+
+        const item = document.createElement('div');
+        item.className = `check-item ${passed ? 'pass' : 'fail'}`;
+        item.innerHTML = `
+          <span class="check-icon">${passed ? '✓' : '✗'}</span>
+          <span>${check.name}</span>
+        `;
+        checklistItems.appendChild(item);
+
+        console.log(`${passed ? '✅' : '❌'} ${check.name}`);
+      });
+
+      if (allPassed) {
+        status.className = 'status success';
+        status.innerHTML = `
+          <strong>🎉 PHASE 2 COMPLETE!</strong><br>
+          Both components are working perfectly!<br>
+          Ready to add component #3!
+        `;
+        celebration.classList.add('show');
+        console.log('🎉 PHASE 2 SUCCESS!');
+      } else {
+        status.className = 'status error';
+        status.textContent = '❌ Some checks failed - see details above';
+        console.error('❌ Phase 2 validation failed');
+      }
+    };
+
+    // Load components
+    import('../packages/components/dist/index.js')
+      .then(() => {
+        console.log('✅ Components module loaded');
+        componentsLoaded = true;
+
+        // Auto-run validation after load
+        setTimeout(() => {
+          runValidation();
+        }, 500);
+      })
+      .catch(error => {
+        console.error('❌ Failed to load components:', error);
+        const status = document.getElementById('status');
+        status.style.display = 'block';
+        status.className = 'status error';
+        status.textContent = `❌ Failed to load: ${error.message}`;
+      });
+  </script>
+</body>
+</html>

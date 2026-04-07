@@ -1,0 +1,5 @@
+{
+  "buildCommand": "pnpm build",
+  "outputDirectory": "apps/gen-ui-demo/dist",
+  "installCommand": "pnpm install"
+}

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 1: ONE Component Test</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 60px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #1a1a1a;
+      margin-bottom: 16px;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    .component-demo {
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 60px;
+      margin: 30px 0;
+      border: 2px solid #e5e7eb;
+    }
+
+    .component-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .status {
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .status.success {
+      background: #d1fae5;
+      color: #047857;
+      border: 2px solid #10b981;
+    }
+
+    .status.error {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 2px solid #ef4444;
+    }
+
+    .status.info {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 2px solid #3b82f6;
+    }
+
+    .debug {
+      background: #1a1a1a;
+      color: #e5e7eb;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: left;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-top: 30px;
+    }
+
+    .debug h3 {
+      color: white;
+      margin-bottom: 12px;
+      font-size: 1rem;
+    }
+
+    .debug .success-line {
+      color: #10b981;
+    }
+
+    .debug .error-line {
+      color: #ef4444;
+    }
+
+    button {
+      padding: 14px 32px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .phase-badge {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="phase-badge">PHASE 1 - FRESH START</div>
+    <h1>🎨 First Component Test</h1>
+    <p class="subtitle">Testing if our fresh start works!</p>
+
+    <div class="component-demo">
+      <div class="component-label">AI Thinking Indicator</div>
+      <ai-thinking></ai-thinking>
+    </div>
+
+    <div id="status" class="status info">
+      ⏳ Checking component registration...
+    </div>
+
+    <button onclick="runTest()">🔍 Run Test Again</button>
+
+    <div class="debug">
+      <h3>📋 Debug Console:</h3>
+      <div id="debugLog"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    const debugLog = document.getElementById('debugLog');
+    const statusDiv = document.getElementById('status');
+
+    function log(message, type = 'info') {
+      const line = document.createElement('div');
+      line.textContent = `> ${message}`;
+      if (type === 'success') line.className = 'success-line';
+      if (type === 'error') line.className = 'error-line';
+      debugLog.appendChild(line);
+      console.log(message);
+    }
+
+    window.runTest = function() {
+      debugLog.innerHTML = '';
+      log('🔍 Starting test...');
+
+      setTimeout(() => {
+        // Check if component is registered
+        const isRegistered = customElements.get('ai-thinking');
+
+        if (isRegistered) {
+          log('✅ Component registered: ai-thinking', 'success');
+
+          // Check if component is in DOM
+          const element = document.querySelector('ai-thinking');
+          if (element) {
+            log('✅ Component found in DOM', 'success');
+
+            // Check if it's a LitElement
+            if (element.shadowRoot) {
+              log('✅ Shadow DOM present', 'success');
+
+              // Check if dots are rendered
+              const dots = element.shadowRoot.querySelectorAll('.dot');
+              if (dots.length === 3) {
+                log(`✅ All 3 dots rendered`, 'success');
+                log('', 'info');
+                log('🎉 SUCCESS! Component works perfectly!', 'success');
+
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = '✅ <strong>SUCCESS!</strong><br>Component is registered, rendered, and animated!';
+              } else {
+                log(`❌ Expected 3 dots, found ${dots.length}`, 'error');
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Component rendered but dots missing';
+              }
+            } else {
+              log('❌ No shadow DOM found', 'error');
+              statusDiv.className = 'status error';
+              statusDiv.textContent = '❌ Component not using shadow DOM';
+            }
+          } else {
+            log('❌ Component not found in DOM', 'error');
+            statusDiv.className = 'status error';
+            statusDiv.textContent = '❌ Component not in DOM';
+          }
+        } else {
+          log('❌ Component not registered', 'error');
+          statusDiv.className = 'status error';
+          statusDiv.textContent = '❌ Component failed to register';
+        }
+      }, 500);
+    };
+
+    // Auto-run test on load
+    log('📦 Loading component module...');
+
+    import('../packages/components/dist/index.js')
+      .then(() => {
+        log('✅ Module loaded successfully', 'success');
+        runTest();
+      })
+      .catch(error => {
+        log(`❌ Failed to load module: ${error.message}`, 'error');
+        statusDiv.className = 'status error';
+        statusDiv.textContent = `❌ Failed to load: ${error.message}`;
+      });
+  </script>
+</body>
+</html>

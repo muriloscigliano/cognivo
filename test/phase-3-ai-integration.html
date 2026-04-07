@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 3: AI Integration - REAL AI!</title>
+
+  <!-- Import map to resolve @cognivo/core for the browser -->
+  <script type="importmap">
+    {
+      "imports": {
+        "@cognivo/core": "../packages/core/dist/index.js"
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #1a1a1a;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #666;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .phase-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 10px 24px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-icon {
+      font-size: 1.8rem;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      padding: 24px;
+      background: #f9fafb;
+      border-radius: 16px;
+      margin-bottom: 24px;
+    }
+
+    .demo-item {
+      text-align: center;
+      padding: 24px;
+      background: white;
+      border-radius: 12px;
+      border: 2px solid #e5e7eb;
+    }
+
+    .demo-label {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .api-setup {
+      background: #fffbeb;
+      border: 2px solid #fbbf24;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .api-setup h3 {
+      font-size: 1.1rem;
+      color: #92400e;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .api-input-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .api-input-group input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #fbbf24;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    .api-input-group button {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .api-input-group button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+    }
+
+    .api-status {
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .api-status.connected {
+      background: #d1fae5;
+      color: #047857;
+    }
+
+    .api-status.disconnected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .chat-section {
+      background: #f9fafb;
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .status {
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+
+    .status.success {
+      background: #d1fae5;
+      color: #047857;
+      border: 2px solid #10b981;
+    }
+
+    .status.error {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 2px solid #ef4444;
+    }
+
+    .info-box {
+      background: #e0e7ff;
+      border: 2px solid #6366f1;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .info-box h4 {
+      color: #3730a3;
+      margin-bottom: 12px;
+      font-size: 1rem;
+    }
+
+    .info-box ul {
+      color: #4338ca;
+      margin-left: 20px;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div style="text-align: center;">
+        <div class="phase-badge">PHASE 3 - MODERN AI INTEGRATION!</div>
+      </div>
+      <h1>🚀 Real AI Testing</h1>
+      <p class="subtitle">Modern components + Full Cognivo system integration!</p>
+
+      <!-- API Status Section -->
+      <div class="section">
+        <div class="api-setup">
+          <h3>🔑 OpenAI API Status</h3>
+          <div id="apiStatus" class="api-status disconnected">
+            🔄 Connecting automatically...
+          </div>
+        </div>
+      </div>
+
+      <!-- Modern Component Showcase -->
+      <div class="section">
+        <div class="section-title">
+          <span class="section-icon">✨</span>
+          <span>Modern Thinking Indicators</span>
+        </div>
+        <div class="demo-grid">
+          <div class="demo-item">
+            <div class="demo-label">Default</div>
+            <ai-thinking></ai-thinking>
+          </div>
+          <div class="demo-item">
+            <div class="demo-label">Custom Text</div>
+            <ai-thinking text="Analyzing"></ai-thinking>
+          </div>
+          <div class="demo-item">
+            <div class="demo-label">Shimmer Effect</div>
+            <ai-thinking text="Processing" shimmer></ai-thinking>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Badge Showcase -->
+      <div class="section">
+        <div class="section-title">
+          <span class="section-icon">🎯</span>
+          <span>AI Confidence Badges</span>
+        </div>
+        <div class="demo-grid">
+          <div class="demo-item">
+            <div class="demo-label">High Confidence</div>
+            <ai-badge score="0.95" show-percentage></ai-badge>
+          </div>
+          <div class="demo-item">
+            <div class="demo-label">Medium Confidence</div>
+            <ai-badge score="0.68" show-percentage></ai-badge>
+          </div>
+          <div class="demo-item">
+            <div class="demo-label">Low Confidence</div>
+            <ai-badge score="0.42" show-percentage></ai-badge>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Integration -->
+      <div class="section">
+        <div class="section-title">
+          <span class="section-icon">💬</span>
+          <span>AI Chat Component - End-to-End Test</span>
+        </div>
+
+        <div class="info-box">
+          <h4>What this tests:</h4>
+          <ul>
+            <li>Component rendering and registration</li>
+            <li>@cognivo/core AI Intent system</li>
+            <li>@cognivo/adapter-openai integration</li>
+            <li>Modern <code>&lt;ai-thinking&gt;</code> indicator during processing</li>
+            <li>Full end-to-end: User → AI → Response</li>
+          </ul>
+        </div>
+
+        <div class="chat-section">
+          <ai-chat id="chatComponent"></ai-chat>
+        </div>
+      </div>
+
+      <div id="status" class="status" style="display: none;"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    console.log('🎨 Phase 3: AI Integration Test Loading...');
+
+    let aiClient = null;
+
+    // Auto-connect with API key
+    async function connectAI() {
+      const apiKey = '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';
+      const status = document.getElementById('apiStatus');
+
+      try {
+        status.textContent = '🔄 Connecting to OpenAI...';
+
+        // Import the core and adapter
+        const { CognivoClient } = await import('../packages/core/dist/index.js');
+        const { OpenAIAdapter } = await import('../packages/adapter-openai/dist/index.js');
+
+        console.log('✅ Core and adapter loaded');
+
+        // Create OpenAI adapter
+        const adapter = new OpenAIAdapter({
+          apiKey: apiKey,
+          model: 'gpt-4o-mini', // Use cheaper model for testing
+        });
+
+        console.log('✅ OpenAI adapter created');
+
+        // Create Cognivo client
+        aiClient = new CognivoClient({
+          adapter: adapter,
+          intents: {
+            explain: {
+              systemPrompt: `You are a helpful data analyst. Analyze the provided dataset and answer the user's question concisely.
+Format your response in a friendly, conversational way.`,
+              outputSchema: {
+                type: 'object',
+                properties: {
+                  explanation: { type: 'string' },
+                  confidence: { type: 'number' },
+                },
+                required: ['explanation', 'confidence'],
+              },
+            },
+          },
+        });
+
+        console.log('✅ Cognivo client created');
+
+        // Connect to chat component
+        const chatComponent = document.getElementById('chatComponent');
+        chatComponent.aiClient = aiClient;
+
+        status.className = 'api-status connected';
+        status.innerHTML = '✅ Connected! Chat is ready - ask about the data!';
+
+        console.log('🎉 AI Integration complete!');
+      } catch (error) {
+        console.error('❌ Connection failed:', error);
+        status.className = 'api-status disconnected';
+        status.innerHTML = `❌ Connection failed: ${error.message}`;
+      }
+    }
+
+    // Load components and auto-connect
+    import('../packages/components/dist/index.js')
+      .then(() => {
+        console.log('✅ Components module loaded');
+        console.log('✅ Modern ai-thinking component ready!');
+        console.log('✅ ai-badge component ready!');
+        console.log('✅ ai-chat component ready!');
+
+        const status = document.getElementById('status');
+        status.style.display = 'block';
+        status.className = 'status success';
+        status.innerHTML = `
+          <strong>🎉 PHASE 3 READY!</strong><br>
+          All modern components loaded!<br>
+          Connecting to AI automatically...
+        `;
+
+        // Auto-connect AI after components load
+        setTimeout(() => {
+          connectAI();
+        }, 500);
+      })
+      .catch(error => {
+        console.error('❌ Failed to load components:', error);
+        const status = document.getElementById('status');
+        status.style.display = 'block';
+        status.className = 'status error';
+        status.textContent = `❌ Failed to load: ${error.message}`;
+      });
+  </script>
+</body>
+</html>

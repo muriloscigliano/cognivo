@@ -1,0 +1,326 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+
+const features = [
+  {
+    title: 'ARIA Roles & Attributes',
+    desc: 'Every interactive component ships with correct ARIA roles, states, and properties. Buttons have role="button", modals have role="dialog" with aria-modal, tabs implement the tabpanel pattern.',
+    components: ['cg-modal', 'cg-tabs', 'cg-accordion', 'cg-dropdown', 'ai-chat'],
+  },
+  {
+    title: 'Keyboard Navigation',
+    desc: 'All components are fully operable via keyboard. Arrow keys for radio groups, tabs, and dropdowns. Enter/Space for buttons and toggles. Escape to close overlays.',
+    components: ['cg-radio-group', 'cg-tabs', 'cg-dropdown', 'cg-modal', 'cg-drawer'],
+  },
+  {
+    title: 'Focus Management',
+    desc: 'Modal and drawer implement focus traps — Tab and Shift+Tab cycle within the overlay. Focus returns to the trigger element on close.',
+    components: ['cg-modal', 'cg-drawer', 'ai-command-palette'],
+  },
+  {
+    title: 'Focus Rings',
+    desc: 'Dual-layer focus rings (offset + accent color) appear on keyboard focus only (:focus-visible). Consistent across all interactive components.',
+    components: ['cg-button', 'cg-input', 'cg-select', 'cg-checkbox', 'cg-switch'],
+  },
+  {
+    title: 'Reduced Motion',
+    desc: 'All animations respect prefers-reduced-motion. When enabled, transitions are instant (0.01ms) and animations are disabled.',
+    components: ['All components'],
+  },
+  {
+    title: 'Touch Targets',
+    desc: 'Interactive elements maintain a minimum 44x44px touch target area following WCAG 2.5.5. Small visual elements have expanded hit areas.',
+    components: ['cg-button', 'cg-checkbox', 'cg-switch', 'cg-radio'],
+  },
+  {
+    title: 'Color Contrast',
+    desc: 'Semantic color tokens are designed to meet WCAG AA contrast ratios (4.5:1 for text, 3:1 for large text and UI elements) in both light and dark themes.',
+    components: ['All components via tokens'],
+  },
+  {
+    title: 'Screen Reader Support',
+    desc: 'Components use semantic HTML elements (button, input, dialog) where possible. ARIA labels, live regions, and descriptions provide context for assistive technology.',
+    components: ['ai-thinking', 'ai-streaming-text', 'cg-spinner', 'cg-progress-bar'],
+  },
+];
+
+const keyboardPatterns = [
+  { pattern: 'Button / Link', keys: 'Enter, Space', behavior: 'Activate the element' },
+  { pattern: 'Checkbox / Switch', keys: 'Space', behavior: 'Toggle checked state' },
+  { pattern: 'Radio Group', keys: 'Arrow Up/Down', behavior: 'Move selection between options' },
+  { pattern: 'Tabs', keys: 'Arrow Left/Right', behavior: 'Switch between tab panels' },
+  { pattern: 'Dropdown / Select', keys: 'Arrow Up/Down, Enter', behavior: 'Navigate and select options' },
+  { pattern: 'Modal / Drawer', keys: 'Escape', behavior: 'Close the overlay' },
+  { pattern: 'Modal / Drawer', keys: 'Tab, Shift+Tab', behavior: 'Cycle focus within trap' },
+  { pattern: 'Accordion', keys: 'Enter, Space', behavior: 'Toggle section open/closed' },
+  { pattern: 'Slider', keys: 'Arrow Left/Right', behavior: 'Adjust value by step' },
+  { pattern: 'Command Palette', keys: 'Arrow Up/Down, Enter', behavior: 'Navigate and execute commands' },
+];
+---
+
+<DocsLayout title="Accessibility">
+  <div class="a11y-page">
+    <header class="page-header">
+      <h1>Accessibility</h1>
+      <p class="subtitle">
+        Every Cognivo component is built with accessibility as a non-negotiable requirement.
+        ARIA attributes, keyboard navigation, focus management, and reduced motion — all built in.
+      </p>
+    </header>
+
+    <!-- Principles -->
+    <section class="section">
+      <h2>Principles</h2>
+      <div class="principles-grid">
+        <div class="principle">
+          <strong>Perceivable</strong>
+          <p>Sufficient color contrast, text alternatives, visible focus indicators, and no information conveyed by color alone.</p>
+        </div>
+        <div class="principle">
+          <strong>Operable</strong>
+          <p>Full keyboard access, no keyboard traps (except intentional focus traps in modals), sufficient touch targets.</p>
+        </div>
+        <div class="principle">
+          <strong>Understandable</strong>
+          <p>Consistent patterns, predictable behavior, clear error messages, and meaningful labels.</p>
+        </div>
+        <div class="principle">
+          <strong>Robust</strong>
+          <p>Valid HTML, proper ARIA usage, Shadow DOM with correct role propagation, works with assistive technology.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Built-in Features -->
+    <section class="section">
+      <h2>Built-in Features</h2>
+      {features.map(f => (
+        <div class="feature-block">
+          <h3>{f.title}</h3>
+          <p>{f.desc}</p>
+          <div class="feature-components">
+            {f.components.map(c => <code>{c}</code>)}
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <!-- Keyboard Patterns -->
+    <section class="section">
+      <h2>Keyboard Patterns</h2>
+      <p style="color: var(--text-2); margin-bottom: 1rem; font-size: 0.9rem;">
+        All interactive components follow WAI-ARIA keyboard interaction patterns.
+      </p>
+      <div class="table-wrap">
+        <table class="ref-table">
+          <thead>
+            <tr><th>Pattern</th><th>Keys</th><th>Behavior</th></tr>
+          </thead>
+          <tbody>
+            {keyboardPatterns.map(k => (
+              <tr>
+                <td><strong>{k.pattern}</strong></td>
+                <td><code>{k.keys}</code></td>
+                <td>{k.behavior}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Focus Ring Tokens -->
+    <section class="section">
+      <h2>Focus Ring System</h2>
+      <p style="color: var(--text-2); margin-bottom: 1rem; font-size: 0.9rem;">
+        Cognivo uses a dual-layer focus ring — a white offset ring plus an accent-colored outer ring.
+        This ensures visibility on both light and dark backgrounds.
+      </p>
+      <pre><code>{`/* Shared focus ring style (built into all interactive components) */
+:host(:focus-visible) {
+  outline: 2px solid var(--cg-color-action-primary-border-default);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(223, 255, 97, 0.15);
+}
+
+/* Focus rings only appear on keyboard navigation, not mouse clicks */
+/* Uses :focus-visible, NOT :focus */`}</code></pre>
+    </section>
+
+    <!-- Reduced Motion -->
+    <section class="section">
+      <h2>Reduced Motion</h2>
+      <p style="color: var(--text-2); margin-bottom: 1rem; font-size: 0.9rem;">
+        All components include this media query. Animations, transitions, and scroll behavior
+        are instantly disabled when the user has enabled reduced motion in their OS settings.
+      </p>
+      <pre><code>{`/* Applied globally across all components */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}`}</code></pre>
+    </section>
+
+    <!-- Dark Mode A11y -->
+    <section class="section">
+      <h2>Dark Mode Accessibility</h2>
+      <p style="color: var(--text-2); font-size: 0.9rem;">
+        Both light and dark themes maintain WCAG AA contrast ratios. The semantic token system
+        ensures that switching themes preserves readability — only the underlying palette values
+        change, not the contrast relationships. Dark mode uses lighter shadows with higher opacity
+        to maintain depth perception.
+      </p>
+    </section>
+
+    <!-- Testing -->
+    <section class="section">
+      <h2>Testing Accessibility</h2>
+      <pre><code>{`<!-- Use the built-in accessibility report component -->
+<ai-accessibility-report
+  target="#my-app"
+  auto-scan
+></ai-accessibility-report>
+
+<!-- Runs axe-core style checks and reports: -->
+<!-- - Missing alt text -->
+<!-- - Low contrast ratios -->
+<!-- - Missing ARIA labels -->
+<!-- - Keyboard trap detection -->
+<!-- - Touch target size violations -->`}</code></pre>
+      <div class="note">
+        The <a href="/components/ai-accessibility-report"><code>&lt;ai-accessibility-report&gt;</code></a>
+        component provides in-app accessibility auditing.
+      </div>
+    </section>
+  </div>
+
+  <style>
+    .a11y-page { }
+
+    .page-header h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--text-2);
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .section { margin-bottom: 3rem; }
+    .section h2 {
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Principles ── */
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .principle {
+      padding: 16px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .principle strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent);
+    }
+    .principle p {
+      font-size: 0.8125rem;
+      color: var(--text-2);
+      line-height: 1.5;
+    }
+
+    /* ── Feature blocks ── */
+    .feature-block {
+      padding: 16px 18px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+    .feature-block h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .feature-block p {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      line-height: 1.55;
+      margin-bottom: 8px;
+    }
+    .feature-components {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .feature-components code {
+      font-size: 0.6875rem;
+      padding: 2px 8px;
+      background: rgba(223, 255, 97, 0.06);
+      border: 1px solid rgba(223, 255, 97, 0.1);
+      border-radius: 4px;
+      color: var(--accent);
+    }
+
+    /* ── Tables ── */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+    }
+    .ref-table th {
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-subtle);
+    }
+    .ref-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: var(--text-2);
+    }
+    .ref-table tr:last-child td { border-bottom: none; }
+
+    .note {
+      padding: 12px 16px;
+      background: rgba(223, 255, 97, 0.04);
+      border: 1px solid rgba(223, 255, 97, 0.12);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      color: var(--text-2);
+      margin-top: 1rem;
+    }
+    .note a { color: var(--accent); }
+
+    @media (max-width: 640px) {
+      .principles-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</DocsLayout>

@@ -246,6 +246,9 @@ importers:
       '@cognivo/core':
         specifier: workspace:*
         version: link:../core
+      '@quietloudlab/ai-interaction-atlas':
+        specifier: ^1.0.10
+        version: 1.0.10
       lit:
         specifier: ^3.1.0
         version: 3.3.1
@@ -1073,6 +1076,10 @@ packages:
     resolution: {integrity: sha512-akea+6bHYBBfA9uQqSYmlJXn61cTa+jbO87xVLCWbTqbWadRVmhxlXATaOjOgcBaWU4ePo0wB41KMFv3o35IXA==}
     engines: {node: '>=18'}
     hasBin: true
+
+  '@quietloudlab/ai-interaction-atlas@1.0.10':
+    resolution: {integrity: sha512-wmfLdlemGXH0wuJ0XfOKJ9jFdtQrz037Y+GjIXQgcsitwDjr9zOwgPCaiqDHCUyvH4bbDYmP6mOf75o3XERFzw==}
+    engines: {node: '>=18.0.0'}
 
   '@rollup/pluginutils@5.3.0':
     resolution: {integrity: sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q==}
@@ -4745,6 +4752,8 @@ snapshots:
   '@playwright/test@1.58.2':
     dependencies:
       playwright: 1.58.2
+
+  '@quietloudlab/ai-interaction-atlas@1.0.10': {}
 
   '@rollup/pluginutils@5.3.0(rollup@4.53.2)':
     dependencies:

@@ -152,14 +152,13 @@ describe('cg-button', () => {
     expect(slot).not.toBeNull();
   });
 
-  // ── Ripple pseudo setup ──
+  // ── Button setup ──
 
-  it('button has position relative and overflow hidden for ripple ::after', async () => {
+  it('button has position relative', async () => {
     await create();
     const btn = el.shadowRoot!.querySelector('button')!;
     const styles = getComputedStyle(btn);
     expect(styles.position).toBe('relative');
-    expect(styles.overflow).toBe('hidden');
   });
 
   // ── Focus ring ──

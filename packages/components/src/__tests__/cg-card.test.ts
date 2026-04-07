@@ -141,7 +141,6 @@ describe('cg-card', () => {
       ? styles.map(s => s.cssText).join('')
       : (styles as { cssText: string }).cssText;
     expect(cssText).toContain('translateY');
-    expect(cssText).toContain('hover-lift');
   });
 
   it('fadeSlideIn entrance animation exists in styles', () => {

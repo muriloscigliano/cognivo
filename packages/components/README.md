@@ -1,6 +1,6 @@
 # @cognivo/components
 
-125 Web Components (52 foundation + 73 AI-native) built with Lit 3. Dark-first, accessible, framework-agnostic.
+143 Web Components (54 foundation + 89 AI-native) built with Lit 3. Dark-first, accessible, framework-agnostic.
 
 ## Install
 
@@ -22,7 +22,6 @@ pnpm add @cognivo/components @cognivo/tokens
 
 <!-- Input with floating label -->
 <cg-input label="Email" type="email" placeholder="you@example.com"></cg-input>
-<cg-input label="Password" type="password" error helper="Must be 8+ characters"></cg-input>
 
 <!-- Cards with hover-lift -->
 <cg-card variant="elevated" clickable>
@@ -45,26 +44,41 @@ import type { CgButton, CgInput, SelectOption, TabItem } from '@cognivo/componen
 
 ## Component Categories
 
-### Foundation (16)
-Stack, Separator, Text, Icon, Label, Link, Button, ButtonGroup, Card, Badge, BadgeGroup, Callout, Image, ImageBlock, ImageGallery, Spinner
+### Foundation (18)
+Stack, Separator, Text, Icon, Label, Link, Button, ButtonGroup, Card, Badge, BadgeGroup, Callout, Image, ImageBlock, ImageGallery, Spinner, Chip, AvatarGroup
 
-### Forms (13)
-Input (floating label), Textarea, Select, Checkbox (animated tick), Radio, RadioGroup (arrow-key nav), Switch (spring bounce), Slider, NumberInput, OTPInput, DatePicker, ColorPicker, Form
+### Forms (17)
+Input (floating label), Textarea, Select, Checkbox, Radio, RadioGroup, Switch, Slider, NumberInput, OTPInput, DatePicker, TimePicker, DateTimePicker, ColorPicker, Autocomplete, Listbox, Form
 
-### Data & Navigation (14)
-MetricCard, Table, Chart, Tabs, Accordion, Steps, Carousel, CodeBlock, Markdown, List, Breadcrumbs (responsive collapse), Pagination, Dropdown, Section
+### Data & Navigation (11)
+MetricCard, ProgressBar, Table, Chart, Tabs, Accordion, Steps, Carousel, CodeBlock, Markdown, List, Pagination
 
 ### Overlays (4)
 Modal (focus trap, exit animation), Drawer (focus trap, spring entrance), Dropdown (scale animation), Tooltip (viewport detection)
 
-### Layout (3)
-Stack, Separator, Section
+### Feedback (3)
+ProgressBar, Spinner, Skeleton
 
-### AI-Native (73)
-AiChat, AiThinking, AiStreamingText, AiInsightCard, AiResultPanel, AiChartSummary, AiConfidenceSlider, AiDataCard, AiDataTable, AiAgentCard, AiReasoningTree, AiCommandPalette, AiToast, AiTimeline, AiWorkflowBuilder, and 58 more.
+### AI Display (13)
+AiChat, AiThinking, AiStreamingText, AiBadge, AiInsightCard, AiResultPanel, AiChartSummary, AiCitation, AiToolIndicator, AiToast, AiAgentSteps, AiDataCard, AiFollowUp
 
-### Utility (2)
-FollowUp, AiRevealAnimation
+### AI Workflow (17)
+AiAgentCard, AiReasoningTree, AiGuardrail, AiRagPanel, AiMemoryPanel, AiPromptEditor, AiSearch, AiAnnotation, AiTimeline, AiDiffPanel, AiFeedback, AiTokenTracker, AiFormGenerator, AiAlertCard, AiPersonalizationDash, AiSimilarityCard, AiRewardSignal
+
+### AI Visualization (9)
+AiHeatmap, AiModelSelector, AiKpiGrid, AiContextWindow, AiEvalScorecard, AiSourceGraph, AiConfidenceSlider, AiSegmentationViewer, AiAssistantWidget
+
+### AI Production (8)
+AiWorkflowBuilder, AiAbTest, AiDataTable, AiNotificationCenter, AiCostDashboard, AiBatchProgress, AiChangelog, AiTranslationPanel
+
+### AI Collaboration (9)
+AiPresence, AiFileUpload, AiAudioPlayer, AiOnboarding, AiUsageMeter, AiModelComparison, AiErrorBoundary, AiStatusPage, AiEmptyState
+
+### AI DevOps (10)
+AiAnalyticsChart, AiApiKeyManager, AiTestRunner, AiWebhookConfig, AiVersionSelector, AiFeatureFlag, AiDebugConsole, AiAccessibilityReport, AiDataPreview, AiCollaborativeEditor
+
+### AI Essentials (13)
+AiSidebar, AiCommandPalette, AiToolCardResolver, AiActionPreview, AiCaptureFlow, AiRevealAnimation, AiRichMessage, AiKeyboardShortcuts, AiPromptTemplate, AiPermissionGate, AiEmbeddingViz, AiScenarioPanel, AiDetectionCanvas
 
 ## Key Features
 

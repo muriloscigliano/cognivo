@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cognivo Components - Component Library</title>
+
+  <!-- Import map to resolve @cognivo/core for the browser -->
+  <script type="importmap">
+    {
+      "imports": {
+        "@cognivo/core": "../packages/core/dist/index.js"
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      border-radius: 20px;
+      padding: 50px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #1a1a1a;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #667eea;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .component-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      margin-bottom: 30px;
+    }
+
+    .component-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .component-icon {
+      font-size: 3rem;
+    }
+
+    .component-title {
+      flex: 1;
+    }
+
+    .component-title h2 {
+      font-size: 2rem;
+      color: #1a1a1a;
+      margin-bottom: 5px;
+    }
+
+    .component-tag {
+      font-size: 0.85rem;
+      color: #666;
+      font-family: 'Courier New', monospace;
+      background: #f3f4f6;
+      padding: 4px 12px;
+      border-radius: 6px;
+    }
+
+    .component-description {
+      font-size: 1.1rem;
+      color: #4b5563;
+      line-height: 1.8;
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 30px 0 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-icon {
+      font-size: 1.5rem;
+    }
+
+    .demo-area {
+      background: #f9fafb;
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 30px;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .demo-item {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      border: 2px solid #e5e7eb;
+      text-align: center;
+    }
+
+    .demo-label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 20px;
+    }
+
+    .demo-output {
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .props-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .props-table th {
+      background: #f3f4f6;
+      padding: 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #1f2937;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .props-table td {
+      padding: 16px;
+      border-bottom: 1px solid #e5e7eb;
+      color: #4b5563;
+    }
+
+    .props-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .code {
+      font-family: 'Courier New', monospace;
+      background: #1f2937;
+      color: #10b981;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .type-badge {
+      display: inline-block;
+      background: #e0e7ff;
+      color: #4338ca;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    .usage-example {
+      background: #1f2937;
+      color: #d1d5db;
+      padding: 24px;
+      border-radius: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    .usage-example .tag {
+      color: #10b981;
+    }
+
+    .usage-example .attr {
+      color: #818cf8;
+    }
+
+    .usage-example .value {
+      color: #fbbf24;
+    }
+
+    .badge-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .info-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .info-badge.new {
+      background: #d1fae5;
+      color: #047857;
+    }
+
+    .info-badge.modern {
+      background: #e0e7ff;
+      color: #4338ca;
+    }
+
+    .info-badge.ai {
+      background: #fef3c7;
+      color: #92400e;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>🎨 Cognivo Components</h1>
+      <p class="subtitle">Modern AI-powered web components built with Lit</p>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Components</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Working</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">Modern</div>
+          <div class="stat-label">Design</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Component 1: AI Thinking -->
+    <div class="component-card">
+      <div class="component-header">
+        <div class="component-icon">✨</div>
+        <div class="component-title">
+          <h2>AI Thinking Indicator</h2>
+          <div class="component-tag">&lt;ai-thinking&gt;</div>
+        </div>
+        <div class="badge-group">
+          <div class="info-badge new">New</div>
+          <div class="info-badge modern">Modern</div>
+        </div>
+      </div>
+
+      <p class="component-description">
+        Modern text-based thinking animation inspired by Claude, ChatGPT, and Perplexity.
+        Shows customizable text with animated dots and optional shimmer effect.
+        Perfect for indicating AI processing states.
+      </p>
+
+      <div class="section-title">
+        <span class="section-icon">🎯</span>
+        <span>Live Examples</span>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-grid">
+          <div class="demo-item">
+            <div class="demo-label">Default</div>
+            <div class="demo-output">
+              <ai-thinking></ai-thinking>
+            </div>
+          </div>
+          <div class="demo-item">
+            <div class="demo-label">Custom Text</div>
+            <div class="demo-output">
+              <ai-thinking text="Analyzing"></ai-thinking>
+            </div>
+          </div>
+          <div class="demo-item">
+            <div class="demo-label">Shimmer Effect</div>
+            <div class="demo-output">
+              <ai-thinking text="Processing" shimmer></ai-thinking>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <span class="section-icon">⚙️</span>
+        <span>Properties</span>
+      </div>
+
+      <table class="props-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="code">text</span></td>
+            <td><span class="type-badge">string</span></td>
+            <td>"Thinking"</td>
+            <td>The text to display before the animated dots</td>
+          </tr>
+          <tr>
+            <td><span class="code">shimmer</span></td>
+            <td><span class="type-badge">boolean</span></td>
+            <td>false</td>
+            <td>Enable gradient shimmer effect on text</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="section-title">
+        <span class="section-icon">📝</span>
+        <span>Usage</span>
+      </div>
+
+      <div class="usage-example"><span class="tag">&lt;ai-thinking</span><span class="tag">&gt;&lt;/ai-thinking&gt;</span>
+
+<span class="tag">&lt;ai-thinking</span> <span class="attr">text</span>=<span class="value">"Analyzing"</span><span class="tag">&gt;&lt;/ai-thinking&gt;</span>
+
+<span class="tag">&lt;ai-thinking</span> <span class="attr">text</span>=<span class="value">"Processing"</span> <span class="attr">shimmer</span><span class="tag">&gt;&lt;/ai-thinking&gt;</span></div>
+    </div>
+
+    <!-- Component 2: AI Badge -->
+    <div class="component-card">
+      <div class="component-header">
+        <div class="component-icon">🎯</div>
+        <div class="component-title">
+          <h2>AI Confidence Badge</h2>
+          <div class="component-tag">&lt;ai-badge&gt;</div>
+        </div>
+        <div class="badge-group">
+          <div class="info-badge ai">AI-Powered</div>
+        </div>
+      </div>
+
+      <p class="component-description">
+        Displays AI confidence scores with color-coded visual feedback.
+        Automatically categorizes scores into high (≥80%), medium (50-79%), and low (<50%) with appropriate styling.
+      </p>
+
+      <div class="section-title">
+        <span class="section-icon">🎯</span>
+        <span>Live Examples</span>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-grid">
+          <div class="demo-item">
+            <div class="demo-label">High Confidence (95%)</div>
+            <div class="demo-output">
+              <ai-badge score="0.95" show-percentage></ai-badge>
+            </div>
+          </div>
+          <div class="demo-item">
+            <div class="demo-label">Medium Confidence (68%)</div>
+            <div class="demo-output">
+              <ai-badge score="0.68" show-percentage></ai-badge>
+            </div>
+          </div>
+          <div class="demo-item">
+            <div class="demo-label">Low Confidence (42%)</div>
+            <div class="demo-output">
+              <ai-badge score="0.42" show-percentage></ai-badge>
+            </div>
+          </div>
+          <div class="demo-item">
+            <div class="demo-label">Show Label Instead</div>
+            <div class="demo-output">
+              <ai-badge score="0.95"></ai-badge>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <span class="section-icon">⚙️</span>
+        <span>Properties</span>
+      </div>
+
+      <table class="props-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="code">score</span></td>
+            <td><span class="type-badge">number</span></td>
+            <td>0.85</td>
+            <td>Confidence score from 0 to 1</td>
+          </tr>
+          <tr>
+            <td><span class="code">show-percentage</span></td>
+            <td><span class="type-badge">boolean</span></td>
+            <td>true</td>
+            <td>Display percentage (95%) or label (high/medium/low)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="section-title">
+        <span class="section-icon">📝</span>
+        <span>Usage</span>
+      </div>
+
+      <div class="usage-example"><span class="tag">&lt;ai-badge</span> <span class="attr">score</span>=<span class="value">"0.95"</span> <span class="attr">show-percentage</span><span class="tag">&gt;&lt;/ai-badge&gt;</span>
+
+<span class="tag">&lt;ai-badge</span> <span class="attr">score</span>=<span class="value">"0.68"</span><span class="tag">&gt;&lt;/ai-badge&gt;</span></div>
+    </div>
+
+    <!-- Component 3: AI Chat -->
+    <div class="component-card">
+      <div class="component-header">
+        <div class="component-icon">💬</div>
+        <div class="component-title">
+          <h2>AI Chat Component</h2>
+          <div class="component-tag">&lt;ai-chat&gt;</div>
+        </div>
+        <div class="badge-group">
+          <div class="info-badge new">New</div>
+          <div class="info-badge ai">AI-Powered</div>
+          <div class="info-badge modern">Modern</div>
+        </div>
+      </div>
+
+      <p class="component-description">
+        Full-featured chat interface with real AI integration through Cognivo.
+        Displays message history, modern thinking indicators during AI processing,
+        and provides complete end-to-end AI conversation experience.
+      </p>
+
+      <div class="section-title">
+        <span class="section-icon">🎯</span>
+        <span>Live Example</span>
+      </div>
+
+      <div class="demo-area">
+        <ai-chat id="demoChat" style="width: 100%;"></ai-chat>
+      </div>
+
+      <div class="section-title">
+        <span class="section-icon">⚙️</span>
+        <span>Properties</span>
+      </div>
+
+      <table class="props-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="code">aiClient</span></td>
+            <td><span class="type-badge">CognivoClient</span></td>
+            <td>null</td>
+            <td>Cognivo client instance for AI integration</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="section-title">
+        <span class="section-icon">📝</span>
+        <span>Usage</span>
+      </div>
+
+      <div class="usage-example"><span class="tag">&lt;ai-chat</span> <span class="attr">id</span>=<span class="value">"chat"</span><span class="tag">&gt;&lt;/ai-chat&gt;</span>
+
+<span class="tag">&lt;script</span> <span class="attr">type</span>=<span class="value">"module"</span><span class="tag">&gt;</span>
+  <span style="color: #fbbf24">import</span> { CognivoClient } <span style="color: #fbbf24">from</span> <span class="value">'@cognivo/core'</span>;
+  <span style="color: #fbbf24">import</span> { OpenAIAdapter } <span style="color: #fbbf24">from</span> <span class="value">'@cognivo/adapter-openai'</span>;
+
+  <span style="color: #fbbf24">const</span> adapter = <span style="color: #fbbf24">new</span> <span style="color: #10b981">OpenAIAdapter</span>({ apiKey: <span class="value">'sk-...'</span> });
+  <span style="color: #fbbf24">const</span> client = <span style="color: #fbbf24">new</span> <span style="color: #10b981">CognivoClient</span>({ adapter, intents: {...} });
+
+  document.<span style="color: #10b981">getElementById</span>(<span class="value">'chat'</span>).aiClient = client;
+<span class="tag">&lt;/script&gt;</span></div>
+    </div>
+  </div>
+
+  <script type="module">
+    console.log('📚 Component List Loading...');
+    console.log('Current location:', window.location.href);
+    console.log('Attempting to load from:', new URL('../packages/components/dist/index.js', window.location.href).href);
+
+    // Load components
+    import('../packages/components/dist/index.js')
+      .then(() => {
+        console.log('✅ Components module loaded!');
+        console.log('✅ ai-thinking registered:', !!customElements.get('ai-thinking'));
+        console.log('✅ ai-badge registered:', !!customElements.get('ai-badge'));
+        console.log('✅ ai-chat registered:', !!customElements.get('ai-chat'));
+
+        // Force update to show components
+        setTimeout(() => {
+          console.log('🔍 Checking rendered components...');
+          console.log('ai-thinking elements:', document.querySelectorAll('ai-thinking').length);
+          console.log('ai-badge elements:', document.querySelectorAll('ai-badge').length);
+          console.log('ai-chat elements:', document.querySelectorAll('ai-chat').length);
+        }, 1000);
+      })
+      .catch(error => {
+        console.error('❌ Failed to load components:', error);
+        console.error('Error details:', error.message, error.stack);
+      });
+  </script>
+</body>
+</html>

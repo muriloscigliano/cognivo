@@ -391,13 +391,13 @@
     <div class="section">
       <span class="component-tag">Component</span>
       <h2>ai-insight-card</h2>
-      <p class="desc">Compact card for displaying AI-generated insights with type icon, text, confidence, and timestamp. Click or press Enter to interact.</p>
+      <p class="desc">Actionable AI insight with type icons, expandable detail, sources with relevance dots, cg-button bookmark/dismiss actions, loading skeleton, and selected state.</p>
       <div class="insight-grid" id="insight-grid">
-        <ai-insight-card type="explanation" text="Revenue growth is primarily driven by expansion in the APAC market, with Japan and South Korea leading adoption among enterprise customers." confidence="0.94" timestamp="Just now"></ai-insight-card>
+        <ai-insight-card type="explanation" text="Revenue growth is primarily driven by expansion in the APAC market, with Japan and South Korea leading adoption among enterprise customers." confidence="0.94" timestamp="Just now" status="new"></ai-insight-card>
         <ai-insight-card type="forecast" text="Based on current trends, projected Q1 2026 revenue will reach $5.1M, representing 22% growth if current customer acquisition rate holds." confidence="0.82" timestamp="2 min ago"></ai-insight-card>
-        <ai-insight-card type="anomaly" text="Unusual spike in API error rates detected between 2:00-4:00 AM UTC. Error rate jumped from 0.1% to 3.4%, primarily affecting the /v2/analytics endpoint." confidence="0.96" timestamp="5 min ago"></ai-insight-card>
+        <ai-insight-card type="anomaly" text="Unusual spike in API error rates detected between 2:00-4:00 AM UTC. Error rate jumped from 0.1% to 3.4%, primarily affecting the /v2/analytics endpoint." confidence="0.96" timestamp="5 min ago" status="new"></ai-insight-card>
         <ai-insight-card type="optimization" text="Reducing image payload sizes by 40% could improve page load time by 1.2s and increase mobile conversion rate by an estimated 8-12%." confidence="0.78" timestamp="10 min ago"></ai-insight-card>
-        <ai-insight-card type="classification" text="Support ticket #4821 has been auto-classified as billing inquiry with sub-category refund request. Suggested priority: medium." confidence="0.89" timestamp="15 min ago"></ai-insight-card>
+        <ai-insight-card type="classification" text="Support ticket #4821 has been auto-classified as billing inquiry with sub-category refund request. Suggested priority: medium." confidence="0.89" timestamp="15 min ago" status="read"></ai-insight-card>
       </div>
 
       <div class="card" style="margin-top: var(--cg-spacing-16, 16px);">
@@ -408,6 +408,11 @@
             <tr><td><code>text</code></td><td>string</td><td>""</td></tr>
             <tr><td><code>confidence</code></td><td>number (0-1)</td><td>0</td></tr>
             <tr><td><code>timestamp</code></td><td>string</td><td>""</td></tr>
+            <tr><td><code>expandable</code></td><td>boolean</td><td>false</td></tr>
+            <tr><td><code>sources</code></td><td>Source[]</td><td>[]</td></tr>
+            <tr><td><code>status</code></td><td>"new" | "read" | ""</td><td>""</td></tr>
+            <tr><td><code>selected</code></td><td>boolean</td><td>false</td></tr>
+            <tr><td><code>loading</code></td><td>boolean</td><td>false</td></tr>
           </tbody>
         </table>
 
@@ -417,7 +422,125 @@
           &nbsp;&nbsp;<span class="attr">text=</span><span class="str">"Unusual spike detected in Q3 data"</span><br>
           &nbsp;&nbsp;<span class="attr">confidence=</span><span class="str">"0.87"</span><br>
           &nbsp;&nbsp;<span class="attr">timestamp=</span><span class="str">"2 min ago"</span><br>
+          &nbsp;&nbsp;<span class="attr">status=</span><span class="str">"new"</span><br>
           <span class="tag">&gt;&lt;/ai-insight-card&gt;</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 5b. AI ALERT CARD ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-alert-card</h2>
+      <p class="desc">Priority alert card with urgency-colored left border, deadline badge, cg-button action, animated dismiss, Escape key support, and critical pulse animation.</p>
+      <div style="display: flex; flex-direction: column; gap: var(--cg-spacing-12);">
+        <ai-alert-card title="System Update" message="A new version is available with performance improvements." urgency="info" actionLabel="Update Now" deadline="Optional"></ai-alert-card>
+        <ai-alert-card title="High Memory Usage" message="Server memory at 87%. Consider scaling." urgency="warning" deadline="30m"></ai-alert-card>
+        <ai-alert-card title="Token Budget Exceeded" message="Context window is at 98% capacity." urgency="urgent" actionLabel="Truncate" deadline="2h remaining"></ai-alert-card>
+        <ai-alert-card title="Outage Detected" message="Primary API endpoint unreachable. 3 services affected." urgency="critical" actionLabel="View Status" deadline="NOW"></ai-alert-card>
+      </div>
+
+      <div class="card" style="margin-top: var(--cg-spacing-16, 16px);">
+        <table class="props-table">
+          <thead><tr><th>Property</th><th>Type</th><th>Default</th></tr></thead>
+          <tbody>
+            <tr><td><code>title</code></td><td>string</td><td>""</td></tr>
+            <tr><td><code>message</code></td><td>string</td><td>""</td></tr>
+            <tr><td><code>urgency</code></td><td>"info" | "warning" | "urgent" | "critical"</td><td>"info"</td></tr>
+            <tr><td><code>deadline</code></td><td>string</td><td>""</td></tr>
+            <tr><td><code>actionLabel</code></td><td>string</td><td>""</td></tr>
+            <tr><td><code>dismissible</code></td><td>boolean</td><td>true</td></tr>
+            <tr><td><code>rounded</code></td><td>"none" | "sm" | "md" | "lg" | "full"</td><td>"lg"</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-block">
+          <span class="tag">&lt;ai-alert-card</span><br>
+          &nbsp;&nbsp;<span class="attr">title=</span><span class="str">"Token Budget Exceeded"</span><br>
+          &nbsp;&nbsp;<span class="attr">urgency=</span><span class="str">"urgent"</span><br>
+          &nbsp;&nbsp;<span class="attr">message=</span><span class="str">"Context window at 98% capacity."</span><br>
+          &nbsp;&nbsp;<span class="attr">deadline=</span><span class="str">"2h remaining"</span><br>
+          &nbsp;&nbsp;<span class="attr">actionLabel=</span><span class="str">"Truncate"</span><br>
+          <span class="tag">&gt;&lt;/ai-alert-card&gt;</span>
+          <br><br>
+          <span class="comment">&lt;!-- Action uses cg-button: secondary for info/warning, primary+danger for urgent/critical --&gt;</span><br>
+          <span class="comment">&lt;!-- Dismiss uses cg-button variant="tertiary" with cg-icon --&gt;</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 5c. AI TOAST ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-toast</h2>
+      <p class="desc">Fixed-position toast notifications with type-colored left accent, progress bar auto-dismiss, optional title, slide animations, and queue management. Uses cg-button for dismiss.</p>
+      <div class="card">
+        <h3>Click to trigger toasts</h3>
+        <div style="display: flex; gap: var(--cg-spacing-8); flex-wrap: wrap; margin-bottom: var(--cg-spacing-16);">
+          <cg-button variant="secondary" size="sm" id="toast-info">Info</cg-button>
+          <cg-button variant="secondary" size="sm" id="toast-success">Success</cg-button>
+          <cg-button variant="secondary" size="sm" id="toast-warning">Warning</cg-button>
+          <cg-button variant="secondary" size="sm" id="toast-error">Error</cg-button>
+          <cg-button variant="secondary" size="sm" id="toast-ai">AI</cg-button>
+          <cg-button variant="secondary" size="sm" id="toast-titled">With Title</cg-button>
+        </div>
+        <ai-toast id="showcase-toast" position="top-right"></ai-toast>
+        <script>
+          document.getElementById('toast-info')?.addEventListener('click', () => {
+            document.getElementById('showcase-toast')?.show('New data available for analysis.');
+          });
+          document.getElementById('toast-success')?.addEventListener('click', () => {
+            document.getElementById('showcase-toast')?.show('Model updated successfully!', { type: 'success' });
+          });
+          document.getElementById('toast-warning')?.addEventListener('click', () => {
+            document.getElementById('showcase-toast')?.show('Token budget at 80%.', { type: 'warning' });
+          });
+          document.getElementById('toast-error')?.addEventListener('click', () => {
+            document.getElementById('showcase-toast')?.show('Rate limit exceeded.', { type: 'error', title: 'API Error' });
+          });
+          document.getElementById('toast-ai')?.addEventListener('click', () => {
+            document.getElementById('showcase-toast')?.show('Processing with Claude 3.5 Sonnet...', { type: 'ai' });
+          });
+          document.getElementById('toast-titled')?.addEventListener('click', () => {
+            document.getElementById('showcase-toast')?.show('Deployment completed with 0 errors.', { type: 'success', title: 'Deploy Complete', duration: 8000 });
+          });
+        </script>
+
+        <table class="props-table">
+          <thead><tr><th>Property</th><th>Type</th><th>Default</th></tr></thead>
+          <tbody>
+            <tr><td><code>position</code></td><td>"top-right" | "top-left" | "bottom-right" | "bottom-left"</td><td>"top-right"</td></tr>
+            <tr><td><code>rounded</code></td><td>"none" | "sm" | "md" | "lg"</td><td>"lg"</td></tr>
+            <tr><td><code>maxQueue</code></td><td>number</td><td>6</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Methods</h3>
+        <table class="props-table">
+          <thead><tr><th>Method</th><th>Signature</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>show</code></td><td>(message, options?) → string</td><td>Show toast. Options: { type, title, duration }. Returns ID.</td></tr>
+            <tr><td><code>dismiss</code></td><td>(id) → void</td><td>Dismiss specific toast</td></tr>
+            <tr><td><code>clear</code></td><td>() → void</td><td>Remove all toasts</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-block">
+          <span class="tag">const toast = document.querySelector('ai-toast');</span><br><br>
+          <span class="comment">// Simple</span><br>
+          <span class="tag">toast.show('Model updated!', { type: 'success' });</span><br><br>
+          <span class="comment">// With title</span><br>
+          <span class="tag">toast.show('Deployed with 0 errors.', {</span><br>
+          <span class="tag">&nbsp;&nbsp;type: 'success',</span><br>
+          <span class="tag">&nbsp;&nbsp;title: 'Deploy Complete',</span><br>
+          <span class="tag">&nbsp;&nbsp;duration: 8000</span><br>
+          <span class="tag">});</span><br><br>
+          <span class="comment">// Persistent (no auto-dismiss)</span><br>
+          <span class="tag">toast.show('Processing...', { type: 'ai', duration: 0 });</span>
         </div>
       </div>
     </div>
@@ -428,7 +551,7 @@
     <div class="section">
       <span class="component-tag">Component</span>
       <h2>ai-chat</h2>
-      <p class="desc">Full chat interface with AI client integration. Requires an <code>aiClient</code> property to be set programmatically. Supports IME/CJK input.</p>
+      <p class="desc">Full chat interface with AI client integration. Configurable intents, streaming support, conversation history, programmatic message API, and IME/CJK input.</p>
       <div class="card">
         <h3>Chat Interface (no AI client connected)</h3>
         <div class="chat-demo">
@@ -439,7 +562,27 @@
           <thead><tr><th>Property</th><th>Type</th><th>Default</th></tr></thead>
           <tbody>
             <tr><td><code>aiClient</code></td><td>AiClient</td><td>null</td></tr>
-            <tr><td><code>dataset</code></td><td>unknown[]</td><td>[]</td></tr>
+            <tr><td><code>chatDataset</code></td><td>unknown[]</td><td>[]</td></tr>
+            <tr><td><code>intent</code></td><td>string</td><td>'chat'</td></tr>
+            <tr><td><code>useStreaming</code></td><td>boolean</td><td>false</td></tr>
+            <tr><td><code>maxMessages</code></td><td>number</td><td>100</td></tr>
+            <tr><td><code>welcomeMessage</code></td><td>string</td><td>'Ask me about your data!'</td></tr>
+            <tr><td><code>placeholder</code></td><td>string</td><td>'Type a message...'</td></tr>
+            <tr><td><code>showActions</code></td><td>boolean</td><td>true</td></tr>
+            <tr><td><code>showFollowUps</code></td><td>boolean</td><td>true</td></tr>
+            <tr><td><code>rounded</code></td><td>'none' | 'sm' | 'md' | 'lg'</td><td>'lg'</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Methods</h3>
+        <table class="props-table">
+          <thead><tr><th>Method</th><th>Signature</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>addMessage</code></td><td>(role, content) → string</td><td>Add a message programmatically, returns message ID</td></tr>
+            <tr><td><code>clearMessages</code></td><td>() → void</td><td>Clear all messages and follow-ups</td></tr>
+            <tr><td><code>streamResponse</code></td><td>(token) → void</td><td>Append streaming token (external streaming control)</td></tr>
+            <tr><td><code>completeStream</code></td><td>(followUps?) → void</td><td>Finalize streaming message</td></tr>
+            <tr><td><code>exportConversation</code></td><td>() → string</td><td>Export conversation as markdown</td></tr>
           </tbody>
         </table>
 
@@ -449,14 +592,380 @@
           <span class="tag">const client = new OpenAiClient({ apiKey: </span><span class="str">'...'</span><span class="tag"> });</span><br>
           <span class="tag">const chat = document.querySelector('ai-chat');</span><br>
           <span class="tag">chat.aiClient = client;</span><br>
-          <span class="tag">chat.dataset = myData;</span>
+          <span class="tag">chat.intent = 'explain';</span><br>
+          <span class="tag">chat.chatDataset = myData;</span><br><br>
+          <span class="comment">// Programmatic messages</span><br>
+          <span class="tag">chat.addMessage('user', 'What are the trends?');</span><br>
+          <span class="tag">chat.addMessage('ai', 'Revenue is up **12%**.');</span><br><br>
+          <span class="comment">// Enable streaming</span><br>
+          <span class="tag">chat.useStreaming = true;</span>
         </div>
       </div>
     </div>
 
     <div class="section-divider"></div>
 
-    <!-- ===== 7. BIAS LIBRARY ===== -->
+    <!-- ===== 7. AI FEEDBACK ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-feedback</h2>
+      <p class="desc">User feedback widget with thumbs/stars/emoji modes, issue tags for negative feedback, optional comment field, and spring-bounce animations. Uses cg-badge and cg-chip.</p>
+      <div class="card">
+        <h3>Thumbs mode</h3>
+        <ai-feedback mode="thumbs" messageId="msg-demo-1"></ai-feedback>
+        <h3 style="margin-top: var(--cg-spacing-20);">Stars mode</h3>
+        <ai-feedback mode="stars" messageId="msg-demo-2"></ai-feedback>
+        <h3 style="margin-top: var(--cg-spacing-20);">Emoji mode</h3>
+        <ai-feedback mode="emoji" messageId="msg-demo-3"></ai-feedback>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 8. AI AGENT CARD ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-agent-card</h2>
+      <p class="desc">Multi-agent orchestration card with status badge, handoff chain, capability chips, and pause/cancel controls. Uses cg-badge, cg-chip, cg-button.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px;" id="agent-grid"></div>
+      <script>
+        requestAnimationFrame(() => {
+          const grid = document.getElementById('agent-grid');
+          if (!grid) return;
+          const agents = [
+            { name: 'Planner', role: 'Orchestrator', status: 'done', task: 'Task decomposition complete.', caps: ['planning','delegation'], chain: ['Planner'] },
+            { name: 'Researcher', role: 'Data Analyst', status: 'thinking', task: 'Querying vector store for Q4 revenue...', caps: ['search','summarize','RAG'], chain: ['Planner','Researcher'] },
+            { name: 'Coder', role: 'Code Generator', status: 'acting', task: 'Implementing auth module with JWT', caps: ['code','debug','test'], chain: ['Planner','Researcher','Coder'] },
+            { name: 'Reviewer', role: 'QA Agent', status: 'idle', caps: ['review','lint'], chain: ['Planner','Researcher','Coder','Reviewer'] },
+          ];
+          for (const a of agents) {
+            const el = document.createElement('ai-agent-card');
+            el.name = a.name; el.role = a.role; el.status = a.status;
+            if (a.task) el.task = a.task;
+            el.capabilities = a.caps; el.handoffChain = a.chain;
+            grid.appendChild(el);
+          }
+        });
+      </script>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 9. AI VOICE PANEL ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-voice-panel</h2>
+      <p class="desc">Self-managing voice panel with built-in Web Speech API, pulse rings, real-time transcript, push-to-talk, browser detection, and auto-timeout.</p>
+      <div style="display: flex; gap: var(--cg-spacing-16); flex-wrap: wrap;">
+        <ai-voice-panel style="max-width: 320px; flex: 1;"></ai-voice-panel>
+        <ai-voice-panel pushToTalk style="max-width: 320px; flex: 1;"></ai-voice-panel>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 10. AI TRANSLATION PANEL ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-translation-panel</h2>
+      <p class="desc">Split-pane translation with cg-select language pickers, cg-badge confidence, cg-button copy/translate, alternative translations, and loading state.</p>
+      <div id="translation-demo" style="max-width: 600px;"></div>
+      <script>
+        requestAnimationFrame(() => {
+          const wrap = document.getElementById('translation-demo');
+          if (!wrap) return;
+          const el = document.createElement('ai-translation-panel');
+          el.sourceText = 'Hello, how are you today? I hope everything is going well.';
+          el.targetText = 'Hola, como estas hoy? Espero que todo vaya bien.';
+          el.sourceLang = 'en'; el.targetLang = 'es'; el.confidence = 0.92;
+          el.alternatives = [
+            { text: 'Hola, que tal hoy? Espero que todo este bien.', confidence: 0.85 },
+            { text: 'Buenos dias, como te encuentras?', confidence: 0.78 },
+          ];
+          wrap.appendChild(el);
+        });
+      </script>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 11. AI HEATMAP ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-heatmap</h2>
+      <p class="desc">SVG matrix heatmap for confusion matrices, correlations, and feature importance. Sequential and diverging color scales, hover tooltips, keyboard nav.</p>
+      <div style="display: flex; gap: var(--cg-spacing-16); flex-wrap: wrap;" id="heatmap-demos"></div>
+      <script>
+        requestAnimationFrame(() => {
+          const wrap = document.getElementById('heatmap-demos');
+          if (!wrap) return;
+          const h1 = document.createElement('ai-heatmap');
+          h1.title = 'Confusion Matrix'; h1.showValues = true;
+          h1.data = [[85,10,5],[8,82,10],[3,12,85]];
+          h1.rowLabels = ['Cat','Dog','Bird']; h1.colLabels = ['Pred Cat','Pred Dog','Pred Bird'];
+          const h2 = document.createElement('ai-heatmap');
+          h2.title = 'Feature Correlation'; h2.colorScale = 'diverging'; h2.showValues = true;
+          h2.data = [[1,0.82,-0.45],[0.82,1,0.33],[-0.45,0.33,1]];
+          h2.rowLabels = ['Revenue','Users','Churn']; h2.colLabels = ['Revenue','Users','Churn'];
+          wrap.appendChild(h1); wrap.appendChild(h2);
+        });
+      </script>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 12. AI SOURCE GRAPH ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-source-graph</h2>
+      <p class="desc">Perplexity-style source attribution panel with numbered footnotes, cg-badge type badges, weight bars, expandable excerpts, and clickable links. Sources sorted by relevance.</p>
+      <div id="source-graph-demo" style="max-width: 520px;"></div>
+      <script>
+        requestAnimationFrame(() => {
+          const wrap = document.getElementById('source-graph-demo');
+          if (!wrap) return;
+          const el = document.createElement('ai-source-graph');
+          el.sources = [
+            { id: '1', title: 'Q4 Financial Report 2025', type: 'doc', weight: 0.92, url: '#', excerpt: 'Revenue grew 18% YoY driven by enterprise expansion in APAC markets. Gross margin improved to 78%.' },
+            { id: '2', title: 'CRM Database — Customers', type: 'database', weight: 0.75, excerpt: 'Active customers: 12,400 (+15% QoQ). Enterprise tier = 62% of ARR.' },
+            { id: '3', title: 'Gartner SaaS Market Report', type: 'web', weight: 0.53, url: '#', excerpt: 'Global SaaS market projected to reach $400B by 2027, AI-native tools growing at 45% CAGR.' },
+            { id: '4', title: 'Internal Analytics API', type: 'api', weight: 0.31, excerpt: 'GET /v2/metrics — real-time revenue, churn, NPS.' },
+            { id: '5', title: 'Board Meeting Notes', type: 'doc', weight: 0.28 },
+          ];
+          wrap.appendChild(el);
+        });
+      </script>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 13. AI SIMILARITY CARD ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-similarity-card</h2>
+      <p class="desc">Side-by-side item comparison with similarity score bridge, feature comparison bars, and cg-button accept/reject actions.</p>
+      <div id="similarity-demo" style="max-width: 500px;"></div>
+      <script>
+        requestAnimationFrame(() => {
+          const wrap = document.getElementById('similarity-demo');
+          if (!wrap) return;
+          const el = document.createElement('ai-similarity-card');
+          el.score = 0.87;
+          el.itemA = { label: 'Original Document', description: 'Q4 Revenue Report — 12 pages' };
+          el.itemB = { label: 'Candidate Match', description: 'Q4 Financial Summary — 8 pages' };
+          el.features = [
+            { name: 'Topic', scoreA: 0.95, scoreB: 0.9 },
+            { name: 'Structure', scoreA: 0.8, scoreB: 0.72 },
+            { name: 'Terminology', scoreA: 0.88, scoreB: 0.85 },
+          ];
+          wrap.appendChild(el);
+        });
+      </script>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 14. AI DATA CARD ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-data-card</h2>
+      <p class="desc">Compact key-value data card with typed formatting, cg-button copy, header badge, footer actions, and loading skeleton.</p>
+      <div id="data-card-demo" style="max-width: 400px;"></div>
+      <script>
+        requestAnimationFrame(() => {
+          const wrap = document.getElementById('data-card-demo');
+          if (!wrap) return;
+          const el = document.createElement('ai-data-card');
+          el.title = 'Model Details';
+          el.fields = [
+            { label: 'Model', value: 'Claude 3.5 Sonnet' },
+            { label: 'Provider', value: 'Anthropic' },
+            { label: 'Context', value: '200K tokens', copyable: true },
+            { label: 'Latency', value: '1.2s' },
+            { label: 'Cost', value: '$0.003 / 1K tokens', copyable: true },
+          ];
+          wrap.appendChild(el);
+        });
+      </script>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 15. AI EVAL SCORECARD ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-eval-scorecard</h2>
+      <p class="desc">LLM evaluation scorecard with metric bars, overall letter grade, comparison deltas, and expandable explanations.</p>
+      <div id="eval-demo" style="max-width: 450px;"></div>
+      <script>
+        requestAnimationFrame(() => {
+          const wrap = document.getElementById('eval-demo');
+          if (!wrap) return;
+          const el = document.createElement('ai-eval-scorecard');
+          el.title = 'Model Evaluation';
+          el.scores = [
+            { metric: 'Accuracy', score: 0.92, delta: 0.03 },
+            { metric: 'Relevance', score: 0.87, delta: -0.01 },
+            { metric: 'Fluency', score: 0.95, delta: 0.05 },
+            { metric: 'Safety', score: 0.98, delta: 0.0 },
+          ];
+          wrap.appendChild(el);
+        });
+      </script>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 16. AI TRANSFORM SLIDER ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-transform-slider</h2>
+      <p class="desc">Before/after image comparison with draggable divider, clip-path overlay, keyboard arrows, pointer capture, and smooth transitions. Horizontal and vertical.</p>
+      <div style="display: flex; gap: var(--cg-spacing-16); flex-wrap: wrap;">
+        <ai-transform-slider
+          beforeSrc="https://picsum.photos/seed/origShow/450/280"
+          afterSrc="https://picsum.photos/seed/enhShow/450/280"
+          beforeLabel="Original"
+          afterLabel="Enhanced"
+          style="max-width: 450px; flex: 1;"
+        ></ai-transform-slider>
+        <ai-transform-slider
+          beforeSrc="https://picsum.photos/seed/origVert/280/350"
+          afterSrc="https://picsum.photos/seed/enhVert/280/350"
+          beforeLabel="Before"
+          afterLabel="After"
+          orientation="vertical"
+          style="max-width: 280px;"
+        ></ai-transform-slider>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 17. AI DATA TABLE ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-data-table</h2>
+      <p class="desc">Sortable data table with AI-detected anomaly highlighting (colored left border + tooltip), proper table ARIA, and click events.</p>
+      <div id="data-table-demo" style="max-width: 600px;"></div>
+      <script>
+        requestAnimationFrame(() => {
+          const wrap = document.getElementById('data-table-demo');
+          if (!wrap) return;
+          const el = document.createElement('ai-data-table');
+          el.sortable = true;
+          el.columns = [
+            { key: 'name', label: 'Name' },
+            { key: 'role', label: 'Role' },
+            { key: 'score', label: 'Score', type: 'number' },
+            { key: 'status', label: 'Status' },
+          ];
+          el.data = [
+            { name: 'Alice Chen', role: 'Engineer', score: 94, status: 'Active' },
+            { name: 'Bob Park', role: 'Designer', score: 87, status: 'Active' },
+            { name: 'Carol Wu', role: 'PM', score: 12, status: 'Inactive' },
+            { name: 'Dave Kim', role: 'Engineer', score: 91, status: 'Active' },
+          ];
+          el.anomalies = [
+            { row: 2, col: 'score', severity: 'high', reason: 'Unusually low — 85% below average' },
+            { row: 2, col: 'status', severity: 'medium', reason: 'Only inactive member in team' },
+          ];
+          wrap.appendChild(el);
+        });
+      </script>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 18. AI AB TEST ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-ab-test</h2>
+      <p class="desc">Side-by-side A/B comparison with cg-button vote controls, swap, and winner highlight using brand accent. Clean, minimal.</p>
+      <div id="ab-test-demo" style="max-width: 600px;"></div>
+      <script>
+        requestAnimationFrame(() => {
+          const wrap = document.getElementById('ab-test-demo');
+          if (!wrap) return;
+          const el = document.createElement('ai-ab-test');
+          el.title = 'Model Comparison';
+          el.labelA = 'GPT-4o';
+          el.labelB = 'Claude 3.5';
+          el.variantA = 'The quarterly revenue increased by 18% year-over-year, primarily driven by expansion in enterprise accounts and reduced churn rates.';
+          el.variantB = 'Q4 revenue rose 18% YoY. Key drivers:\n• Enterprise expansion (+23%)\n• Churn reduction (4.2% → 3.1%)\n• APAC market entry contributing $1.2M';
+          wrap.appendChild(el);
+        });
+      </script>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 18. AI REWARD SIGNAL ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-reward-signal</h2>
+      <p class="desc">Monochrome reward/engagement card with large score, trend badge, progress bar, sparkline, and detail click.</p>
+      <div style="display: flex; gap: var(--cg-spacing-16); flex-wrap: wrap;" id="reward-demos"></div>
+      <script>
+        requestAnimationFrame(() => {
+          const wrap = document.getElementById('reward-demos');
+          if (!wrap) return;
+          const r1 = document.createElement('ai-reward-signal');
+          r1.score = 78; r1.maxScore = 100; r1.trend = 'up';
+          r1.label = 'Engagement Score'; r1.description = 'User engagement with AI suggestions.';
+          r1.history = [45, 52, 48, 60, 65, 72, 78];
+          r1.style.maxWidth = '320px'; r1.style.flex = '1';
+          const r2 = document.createElement('ai-reward-signal');
+          r2.score = 34; r2.maxScore = 100; r2.trend = 'down';
+          r2.label = 'Accuracy'; r2.description = 'Model prediction accuracy this week.';
+          r2.history = [62, 58, 50, 45, 40, 37, 34];
+          r2.style.maxWidth = '320px'; r2.style.flex = '1';
+          wrap.appendChild(r1); wrap.appendChild(r2);
+        });
+      </script>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 18. AI DATA LINEAGE ===== -->
+    <div class="section">
+      <span class="component-tag">Component</span>
+      <h2>ai-data-lineage</h2>
+      <p class="desc">Data provenance flow diagram with typed nodes (cg-badge), SVG arrow connectors, path highlighting, status dots, and keyboard navigation. Horizontal and vertical.</p>
+      <div style="display: flex; flex-direction: column; gap: var(--cg-spacing-16);" id="lineage-demos"></div>
+      <script>
+        requestAnimationFrame(() => {
+          const wrap = document.getElementById('lineage-demos');
+          if (!wrap) return;
+          const h = document.createElement('ai-data-lineage');
+          h.nodes = [
+            { id: '1', label: 'CSV Upload', type: 'source', status: 'complete' },
+            { id: '2', label: 'Clean & Normalize', type: 'transform', status: 'complete' },
+            { id: '3', label: 'GPT-4 Analysis', type: 'model', status: 'active' },
+            { id: '4', label: 'Summary Report', type: 'output' },
+          ];
+          h.edges = [{ from: '1', to: '2' }, { from: '2', to: '3' }, { from: '3', to: '4' }];
+          h.highlightPath = '4';
+          wrap.appendChild(h);
+
+          const v = document.createElement('ai-data-lineage');
+          v.direction = 'vertical';
+          v.nodes = [
+            { id: 'a', label: 'API Ingest', type: 'source' },
+            { id: 'b', label: 'Embed', type: 'transform' },
+            { id: 'c', label: 'Claude 3.5', type: 'model', status: 'active' },
+            { id: 'd', label: 'Output', type: 'output' },
+          ];
+          v.edges = [{ from: 'a', to: 'b' }, { from: 'b', to: 'c' }, { from: 'c', to: 'd' }];
+          v.style.maxWidth = '180px';
+          wrap.appendChild(v);
+        });
+      </script>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ===== 18. BIAS LIBRARY ===== -->
     <div class="section">
       <span class="component-tag">Design Advisor</span>
       <h2>bias-library</h2>

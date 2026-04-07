@@ -4,7 +4,7 @@ interface Props {
   description?: string;
 }
 
-const { title, description = 'AI-native component library + cognitive psychology design advisor' } = Astro.props;
+const { title, description = 'AI-native component library with cognitive psychology integration' } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -16,28 +16,63 @@ const { title, description = 'AI-native component library + cognitive psychology
   <title>{title} | Cognivo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
   <style is:global>
     :root {
-      --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      --font-mono: 'SF Mono', 'Fira Code', monospace;
-      --color-bg: #fafafa;
-      --color-text: #1a1a1a;
-      --color-primary: #7c3aed;
-      --color-primary-light: #ede9fe;
-      --color-border: #e5e7eb;
-      --color-surface: #ffffff;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', 'Segoe UI Mono', monospace;
+      --bg: #0a0a0a;
+      --bg-subtle: #111;
+      --bg-muted: #171717;
+      --border: rgba(255,255,255,0.06);
+      --border-hover: rgba(255,255,255,0.1);
+      --fg: #ededed;
+      --fg-2: #a0a0a0;
+      --fg-3: #666;
+      --accent: #dfff61;
+      --accent-dim: rgba(223,255,97,0.08);
+      --radius: 8px;
+      --radius-pill: 9999px;
       --max-width: 1200px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); line-height: 1.6; }
-    a { color: var(--color-primary); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    code { font-family: var(--font-mono); background: var(--color-primary-light); padding: 0.15em 0.35em; border-radius: 4px; font-size: 0.9em; }
-    pre { background: #1e1e2e; color: #cdd6f4; padding: 1.25rem; border-radius: 8px; overflow-x: auto; }
-    pre code { background: none; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      font-size: 16px;
+      color: var(--fg);
+      background: var(--bg);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.875em;
+      background: var(--bg-muted);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    pre {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      font-size: 14px;
+      line-height: 1.7;
+      margin: 16px 0;
+    }
+    pre code { background: none; padding: 0; font-size: inherit; }
+
+    ::selection { background: rgba(223,255,97,0.18); }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
   </style>
 </head>
 <body>

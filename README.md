@@ -2,7 +2,7 @@
 
 **AI-native component library with cognitive psychology integration.**
 
-125 Web Components built with Lit 3 — framework-agnostic, dark-first, accessible, powered by 1,800+ design tokens and 180 cognitive bias cards.
+143 Web Components built with Lit 3 — framework-agnostic, dark-first, accessible, powered by 1,800+ design tokens and 184 cognitive bias cards.
 
 ## Architecture
 
@@ -13,8 +13,8 @@
 │  React   │   Vue    │  Vanilla │    AI Streaming     │
 │ Adapter  │ Adapter  │  HTML    │     gen-ui-lit      │
 ├──────────┴──────────┴──────────┴────────────────────┤
-│              @cognivo/components (125)                │
-│         52 Foundation  +  73 AI-Native               │
+│              @cognivo/components (143)                │
+│         54 Foundation  +  89 AI-Native               │
 ├─────────────────────┬───────────────────────────────┤
 │  @cognivo/tokens    │      @cognivo/core             │
 │  1,800+ CSS vars    │  Guardrails, Agents, Caching   │
@@ -90,7 +90,7 @@ const biases = suggestBiasesForTree(result, cognivoLibrary);
 
 | Package | Description | Version |
 |---------|------------|---------|
-| [@cognivo/components](packages/components/) | 125 Lit Web Components (52 foundation + 73 AI-native) | 0.3.0 |
+| [@cognivo/components](packages/components/) | 143 Lit Web Components (54 foundation + 89 AI-native) | 0.3.0 |
 | [@cognivo/tokens](packages/tokens/) | 1,800+ design tokens, 3-tier system, palette generator | 0.3.0 |
 | [@cognivo/core](packages/core/) | AI integration: guardrails, agents, caching, routing, conversation | 0.3.0 |
 | [@cognivo/gen-ui](packages/gen-ui/) | Streaming parser, component registry, bias engine | 0.3.0 |
@@ -98,7 +98,7 @@ const biases = suggestBiasesForTree(result, cognivoLibrary);
 | [@cognivo/adapter-openai](packages/adapter-openai/) | OpenAI client with structured outputs | 0.3.0 |
 | [@cognivo/adapter-react](packages/adapter-react/) | React wrappers with TypeScript props | 0.3.0 |
 | [@cognivo/adapter-vue](packages/adapter-vue/) | Vue wrappers with TypeScript props | 0.3.0 |
-| [@cognivo/design-advisor](packages/design-advisor/) | 180 cognitive biases, psychology-based design analysis | 0.0.1 |
+| [@cognivo/design-advisor](packages/design-advisor/) | 184 cognitive biases, psychology-based design analysis | 0.0.1 |
 
 ## Key Features
 
@@ -109,7 +109,7 @@ const biases = suggestBiasesForTree(result, cognivoLibrary);
 - **AI-native components** — streaming text, thinking indicators, chat, reasoning trees
 - **Cognitive bias analysis** — 180 biases detected and reported during UI generation
 - **Framework adapters** — React and Vue wrappers with full TypeScript support
-- **842 tests** — comprehensive test coverage across all foundation components
+- **1,107 tests** — comprehensive test coverage across foundation and AI components
 - **Accessible** — ARIA, keyboard navigation, focus traps, reduced motion support
 
 ## Development

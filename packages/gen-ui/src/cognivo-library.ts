@@ -1,5 +1,5 @@
 /**
- * Cognivo Component Library — All 125 components registered for gen-ui.
+ * Cognivo Component Library — All 143 components registered for gen-ui.
  *
  * Each component has a Zod schema matching its actual @property() interface,
  * a tagName for Web Component rendering, and biasHints for cognitive psychology integration.
@@ -1462,7 +1462,7 @@ const ALL_COMPONENTS = [
 ];
 
 /**
- * Full Cognivo library — 125 components registered for LLM generation.
+ * Full Cognivo library — 143 components registered for LLM generation.
  */
 export const cognivoLibrary: Library = createLibrary({
   root: 'Stack',
