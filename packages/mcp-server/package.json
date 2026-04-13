@@ -1,0 +1,27 @@
+{
+  "name": "@cognivo/mcp-server",
+  "version": "0.1.0",
+  "description": "MCP server for the Cognivo design system — 143 components, 1800+ tokens, 180 cognitive biases",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "cognivo-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:catalog": "node --import tsx src/scripts/build-catalog.ts",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "tsx": "^4.19.0",
+    "vitest": "^2.1.0"
+  },
+  "license": "MIT"
+}

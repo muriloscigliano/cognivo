@@ -37,3 +37,7 @@ yarn-error.log*
 .cache
 tmp
 temp
+
+# MCP Server generated catalog
+packages/mcp-server/src/catalog/catalog.json
+packages/mcp-server/src/catalog/bias-full.json
