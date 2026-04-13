@@ -37,7 +37,7 @@ describe('cg-chart', () => {
     await create({ data: [] });
     const empty = el.shadowRoot!.querySelector('.empty');
     expect(empty).not.toBeNull();
-    expect(empty!.textContent).toContain('No data available');
+    expect(empty!.textContent).toContain('No data');
   });
 
   it('accepts data array', async () => {

@@ -33,20 +33,21 @@ describe('ai-streaming-text', () => {
     expect(container!.textContent).toContain('Hello world');
   });
 
-  it('shows cursor when streaming', async () => {
+  it('renders container when streaming', async () => {
     el.content = 'Hello';
     el.streaming = true;
     await el.updateComplete;
-    const cursor = el.shadowRoot!.querySelector('.cursor');
-    expect(cursor).not.toBeNull();
+    const container = el.shadowRoot!.querySelector('.container');
+    expect(container).not.toBeNull();
+    expect(container!.textContent).toContain('Hello');
   });
 
-  it('hides cursor when not streaming', async () => {
-    el.content = 'Hello';
+  it('shows empty state when content is cleared and not streaming', async () => {
+    el.content = '';
     el.streaming = false;
     await el.updateComplete;
-    const cursor = el.shadowRoot!.querySelector('.cursor');
-    expect(cursor).toBeNull();
+    const empty = el.shadowRoot!.querySelector('.empty');
+    expect(empty).not.toBeNull();
   });
 
   it('append() adds content and sets streaming', async () => {

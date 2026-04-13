@@ -27,9 +27,9 @@ import { property, state, customElement } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeInKeyframes } from '../../styles/index.js';
 
 // Browser-compat SpeechRecognition
-const SpeechRecognitionCtor: typeof SpeechRecognition | undefined =
+const SpeechRecognitionImpl: SpeechRecognitionCtor | undefined =
   typeof window !== 'undefined'
-    ? (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    ? window.SpeechRecognition || window.webkitSpeechRecognition
     : undefined;
 
 type VoiceState = 'idle' | 'listening' | 'processing' | 'error' | 'unsupported';
@@ -218,7 +218,7 @@ export class AiVoicePanel extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback();
-    if (!SpeechRecognitionCtor) {
+    if (!SpeechRecognitionImpl) {
       this._state = 'unsupported';
     }
   }
@@ -230,10 +230,10 @@ export class AiVoicePanel extends LitElement {
 
   /** Public API: start recognition */
   startRecognition() {
-    if (!SpeechRecognitionCtor || this._state === 'listening') return;
+    if (!SpeechRecognitionImpl || this._state === 'listening') return;
 
     this._cleanup();
-    const recognition = new SpeechRecognitionCtor();
+    const recognition = new SpeechRecognitionImpl();
     recognition.lang = this.language;
     recognition.continuous = this.continuous;
     recognition.interimResults = true;
@@ -252,10 +252,11 @@ export class AiVoicePanel extends LitElement {
       let final = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const result = event.results[i];
+        if (!result) continue;
         if (result.isFinal) {
-          final += result[0].transcript;
+          final += result[0]?.transcript ?? '';
         } else {
-          interim += result[0].transcript;
+          interim += result[0]?.transcript ?? '';
         }
       }
       if (final) {

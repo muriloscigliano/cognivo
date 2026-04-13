@@ -26,7 +26,8 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement, query } from 'lit/decorators.js';
-import type { AiClient } from '@cognivo/core';
+import { AiIntent } from '@cognivo/core';
+import type { AiClient, AiContext, AiRequestOptions, AiResult } from '@cognivo/core';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface MessageVersion {
@@ -307,9 +308,9 @@ export class AiChat extends LitElement {
 
   // ── Voice input ──
 
-  private _getSpeechRecognition(): typeof SpeechRecognition | null {
+  private _getSpeechRecognition(): SpeechRecognitionCtor | null {
     if (typeof window === 'undefined') return null;
-    return (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition || null;
+    return window.SpeechRecognition || window.webkitSpeechRecognition || null;
   }
 
   private _toggleVoice() {
@@ -338,10 +339,12 @@ export class AiChat extends LitElement {
       let interim = '';
       let final = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
-        if (event.results[i].isFinal) {
-          final += event.results[i][0].transcript;
+        const result = event.results[i];
+        if (!result) continue;
+        if (result.isFinal) {
+          final += result[0]?.transcript ?? '';
         } else {
-          interim += event.results[i][0].transcript;
+          interim += result[0]?.transcript ?? '';
         }
       }
       if (final) {
@@ -405,7 +408,7 @@ export class AiChat extends LitElement {
   private _buildHistory(): Array<{ role: string; content: string }> {
     return this._messages.map(m => ({
       role: m.role,
-      content: m.versions[m.activeVersion].content,
+      content: m.versions[m.activeVersion]?.content ?? '',
     }));
   }
 
@@ -466,11 +469,11 @@ export class AiChat extends LitElement {
     this._isThinking = true;
     this._abortController = new AbortController();
 
-    const context = {
+    const context: AiContext = {
       dataset: this.chatDataset.length > 0 ? this.chatDataset : [{ info: 'No data provided' }],
       meta: {
         userQuestion: text,
-        history: this._buildHistory(),
+        conversationHistory: JSON.stringify(this._buildHistory()),
       },
     };
 
@@ -506,18 +509,19 @@ export class AiChat extends LitElement {
     }
   }
 
-  private async _sendNonStreaming(context: Record<string, unknown>) {
-    const result = await (this.aiClient as AiClient).runIntent(
-      this.intent as any,
-      context as any,
-      { signal: this._abortController!.signal } as any,
+  private async _sendNonStreaming(context: AiContext) {
+    const options: AiRequestOptions = { signal: this._abortController!.signal };
+    const result: AiResult = await this.aiClient!.runIntent(
+      this.intent as AiIntent,
+      context,
+      options,
     );
 
     this._isThinking = false;
     const aiContent = String(
-      (result as any)?.explanation
-      || (result as any)?.content
-      || (result as any)?.text
+      result.explanation
+      || (result.metadata?.content)
+      || (result.metadata?.text)
       || 'Analysis complete.'
     );
 
@@ -535,7 +539,7 @@ export class AiChat extends LitElement {
     }));
   }
 
-  private async _sendStreaming(context: Record<string, unknown>) {
+  private async _sendStreaming(context: AiContext) {
     this._isThinking = false;
     this._isStreaming = true;
     this._streamingContent = '';
@@ -548,15 +552,16 @@ export class AiChat extends LitElement {
       activeVersion: 0,
     }];
 
+    const options: AiRequestOptions = { signal: this._abortController!.signal };
     const generator = this.aiClient!.streamIntent!(
-      this.intent as any,
-      context as any,
-      { signal: this._abortController!.signal } as any,
+      this.intent as AiIntent,
+      context,
+      options,
     );
 
     for await (const partial of generator) {
       if (this._abortController?.signal.aborted) break;
-      const token = String((partial as any)?.content || (partial as any)?.text || '');
+      const token = String(partial.explanation || partial.metadata?.content || partial.metadata?.text || '');
       this._streamingContent += token;
 
       this._messages = this._messages.map(m =>
@@ -613,14 +618,14 @@ export class AiChat extends LitElement {
 
     this.dispatchEvent(new CustomEvent('ai-response-received', {
       bubbles: true, composed: true,
-      detail: { message: lastMsg?.versions[0].content || '', timestamp: Date.now() },
+      detail: { message: lastMsg?.versions[0]?.content ?? '', timestamp: Date.now() },
     }));
   }
 
   /** Export conversation as markdown */
   exportConversation(): string {
     return this._messages.map(m => {
-      const v = m.versions[m.activeVersion];
+      const v = m.versions[m.activeVersion]!;
       return `**${m.role === 'user' ? 'User' : 'AI'}:** ${v.content}`;
     }).join('\n\n');
   }
@@ -633,7 +638,7 @@ export class AiChat extends LitElement {
   }
 
   private _handleCopy(msg: Message) {
-    const text = msg.versions[msg.activeVersion].content;
+    const text = msg.versions[msg.activeVersion]!.content;
     navigator.clipboard?.writeText(text);
     this._copiedId = msg.id;
     setTimeout(() => { this._copiedId = null; }, 2000);
@@ -702,7 +707,7 @@ export class AiChat extends LitElement {
                 <div class="empty-text">${this.welcomeMessage}</div>
               </div>
             ` : this._messages.map(msg => {
-              const v = msg.versions[msg.activeVersion];
+              const v = msg.versions[msg.activeVersion]!;
               return html`
                 <div class="msg ${msg.role}" role="article" aria-label="${msg.role === 'user' ? 'Your message' : 'AI response'}">
                   <div class="msg-content">

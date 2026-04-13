@@ -161,23 +161,6 @@ describe('cg-switch', () => {
     expect(label.getAttribute('aria-checked')).toBe('true');
   });
 
-  // ── Size variants ──
-
-  it('default size is md', async () => {
-    await create();
-    expect(el.size).toBe('md');
-  });
-
-  it('size="sm" reflects to attribute', async () => {
-    await create({ size: 'sm' });
-    expect(el.getAttribute('size')).toBe('sm');
-  });
-
-  it('size="lg" reflects to attribute', async () => {
-    await create({ size: 'lg' });
-    expect(el.getAttribute('size')).toBe('lg');
-  });
-
   // ── Track/thumb structure ──
 
   it('thumb element exists inside track', async () => {

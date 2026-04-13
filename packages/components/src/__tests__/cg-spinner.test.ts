@@ -39,9 +39,9 @@ describe('cg-spinner', () => {
     expect(el.getAttribute('size')).toBe('lg');
   });
 
-  it('default color variant is "accent"', async () => {
+  it('default color variant is "default"', async () => {
     await create();
-    expect(el.color).toBe('accent');
+    expect(el.color).toBe('default');
   });
 
   it('applies color variant', async () => {

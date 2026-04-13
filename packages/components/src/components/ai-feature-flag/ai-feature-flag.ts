@@ -201,7 +201,7 @@ export class AiFeatureFlag extends LitElement {
     }
 
     .toggle-switch input:checked + .toggle-track::after {
-      transform: translateX(var(--cg-spacing-16);
+      transform: translateX(var(--cg-spacing-16));
       background: var(--cg-color-action-primary-background-default);
     }
 

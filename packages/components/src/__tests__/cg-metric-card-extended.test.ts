@@ -112,17 +112,16 @@ describe('cg-metric-card extended', () => {
     el.delta = '+18%';
     el.trend = 'up';
     await el.updateComplete;
-    const arrow = el.shadowRoot!.querySelector('.arrow');
+    const arrow = el.shadowRoot!.querySelector('.delta-arrow');
     expect(arrow).toBeTruthy();
-    // Arrow now uses SVG instead of text character
-    expect(arrow!.querySelector('svg') || arrow!.textContent!.trim().length > 0).toBeTruthy();
+    expect(arrow!.querySelector('svg')).toBeTruthy();
   });
 
-  it('applies up delta class', async () => {
+  it('applies positive delta class for up trend', async () => {
     el.delta = '+18%';
     el.trend = 'up';
     await el.updateComplete;
     const delta = el.shadowRoot!.querySelector('.delta');
-    expect(delta!.classList.contains('up')).toBe(true);
+    expect(delta!.classList.contains('positive')).toBe(true);
   });
 });

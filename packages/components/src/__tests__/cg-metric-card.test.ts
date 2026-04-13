@@ -47,13 +47,13 @@ describe('cg-metric-card', () => {
     const delta = el.shadowRoot!.querySelector('.delta');
     expect(delta).not.toBeNull();
     expect(delta!.textContent).toContain('+18%');
-    expect(delta!.classList.contains('up')).toBe(true);
+    expect(delta!.classList.contains('positive')).toBe(true);
   });
 
   it('displays down trend', async () => {
     await create({ delta: '-5%', trend: 'down' });
     const delta = el.shadowRoot!.querySelector('.delta');
-    expect(delta!.classList.contains('down')).toBe(true);
+    expect(delta!.classList.contains('negative')).toBe(true);
   });
 
   it('default trend is neutral', async () => {

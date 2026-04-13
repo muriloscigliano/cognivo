@@ -45,10 +45,10 @@ export class CgDatePicker extends LitElement {
 
     :host([error]) .trigger { border-color: var(--cg-color-input-border-error); }
     :host([error]) .trigger:focus-visible,
-    :host([error]) .trigger.open { border-color: var(--cg-color-status-error-text-default); box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2); }
+    :host([error]) .trigger.open { border-color: var(--cg-color-status-error-text-default); box-shadow: 0 0 0 3px var(--cg-shadow-focus-error); }
     :host([success]) .trigger { border-color: var(--cg-color-input-icon-success); }
     :host([success]) .trigger:focus-visible,
-    :host([success]) .trigger.open { border-color: var(--cg-color-status-success-text-default); box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2); }
+    :host([success]) .trigger.open { border-color: var(--cg-color-status-success-text-default); box-shadow: 0 0 0 3px var(--cg-shadow-focus-success); }
 
     /* Size */
     :host([size="lg"]) .trigger { height: var(--cg-component-input-height-lg); padding: 0 var(--cg-spacing-4); font-size: var(--cg-font-size-base); }
@@ -98,7 +98,7 @@ export class CgDatePicker extends LitElement {
       position: absolute;
       top: 100%;
       left: 0;
-      z-index: 50;
+      z-index: var(--cg-z-index-200);
       min-width: 280px;
       margin-top: var(--cg-spacing-4);
       padding: var(--cg-spacing-16);
@@ -343,7 +343,7 @@ export class CgDatePicker extends LitElement {
     }
   }
 
-  override connectedCallback() { super.connectedCallback(); document.addEventListener('click', this._handleClickOutside); }
+  override connectedCallback() { super.connectedCallback(); document.removeEventListener('click', this._handleClickOutside); document.addEventListener('click', this._handleClickOutside); }
   override disconnectedCallback() { super.disconnectedCallback(); document.removeEventListener('click', this._handleClickOutside); }
 
   override render() {

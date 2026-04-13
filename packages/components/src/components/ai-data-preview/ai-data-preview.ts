@@ -229,7 +229,7 @@ export class AiDataPreview extends LitElement {
 
   private _renderTable(rows: Record<string, unknown>[], truncated: boolean) {
     if (rows.length === 0) return html`<div class="truncated-msg">No data</div>`;
-    const keys = Object.keys(rows[0]);
+    const keys = Object.keys(rows[0] as Record<string, unknown>);
     return html`
       <table role="table" aria-label="Data table">
         <thead><tr>${keys.map(k => html`<th scope="col">${k}</th>`)}</tr></thead>

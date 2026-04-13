@@ -13,24 +13,60 @@ const ALLOWED_TAGS = new Set([
   'div', 'span', 'sub', 'sup', 'mark', 'abbr',
 ]);
 
-/** Dangerous tags that must be stripped entirely */
-const DANGEROUS_TAGS = /(<\s*\/?\s*(script|iframe|object|embed|form|style|link|meta|base|applet|svg|math)\b[^>]*>)/gi;
-const DANGEROUS_ATTRS = /\s+(on\w+|formaction)\s*=\s*("[^"]*"|'[^']*'|[^\s>]*)/gi;
-const DANGEROUS_HREF = /\s+(href|src|action|xlink:href)\s*=\s*("[^"]*"|'[^']*'|[^\s>]*)/gi;
+/** Allowed attributes per tag — anything not listed is stripped */
+const ALLOWED_ATTRS: Record<string, Set<string>> = {
+  a: new Set(['href', 'target', 'rel']),
+  img: new Set(['src', 'alt', 'width', 'height']),
+  td: new Set(['colspan', 'rowspan']),
+  th: new Set(['colspan', 'rowspan']),
+  code: new Set(['class']),
+};
 
-function sanitizeHtml(html: string): string {
-  let clean = html.replace(DANGEROUS_TAGS, '');
-  clean = clean.replace(DANGEROUS_ATTRS, '');
-  clean = clean.replace(DANGEROUS_HREF, (match, attr, value) => {
-    const unquoted = value.replace(/^["']|["']$/g, '').trim().toLowerCase();
-    if (unquoted.startsWith('javascript:') || unquoted.startsWith('data:')) return '';
-    return match;
-  });
-  clean = clean.replace(/<\s*\/?\s*(\w+)[^>]*>/g, (match, tag) => {
-    if (ALLOWED_TAGS.has(tag.toLowerCase())) return match;
-    return '';
-  });
-  return clean;
+/** Safe URL protocols for href/src attributes */
+const SAFE_PROTOCOLS = /^(https?:|mailto:|#|\/)/i;
+
+/**
+ * DOM-based HTML sanitizer. Parses with the browser's HTML parser,
+ * walks the tree, and strips anything not explicitly allowed.
+ * Immune to encoding tricks, nested contexts, and regex bypasses.
+ */
+function sanitizeHtml(raw: string): string {
+  const doc = new DOMParser().parseFromString(raw, 'text/html');
+  const fragment = document.createDocumentFragment();
+
+  function walk(source: Node, target: Node) {
+    for (const child of Array.from(source.childNodes)) {
+      if (child.nodeType === Node.TEXT_NODE) {
+        target.appendChild(document.createTextNode(child.textContent ?? ''));
+        continue;
+      }
+      if (child.nodeType !== Node.ELEMENT_NODE) continue;
+      const el = child as Element;
+      const tag = el.tagName.toLowerCase();
+      if (!ALLOWED_TAGS.has(tag)) {
+        // Skip the element but keep its text children
+        walk(el, target);
+        continue;
+      }
+      const clean = document.createElement(tag);
+      const allowed = ALLOWED_ATTRS[tag];
+      if (allowed) {
+        for (const attr of Array.from(el.attributes)) {
+          if (!allowed.has(attr.name.toLowerCase())) continue;
+          const val = attr.value.trim().toLowerCase();
+          if ((attr.name === 'href' || attr.name === 'src') && !SAFE_PROTOCOLS.test(val)) continue;
+          clean.setAttribute(attr.name, attr.value);
+        }
+      }
+      target.appendChild(clean);
+      walk(el, clean);
+    }
+  }
+
+  walk(doc.body, fragment);
+  const container = document.createElement('div');
+  container.appendChild(fragment);
+  return container.innerHTML;
 }
 
 /**

@@ -27,28 +27,27 @@ describe('cg-date-picker', () => {
     expect(el.shadowRoot).toBeDefined();
   });
 
-  it('renders a date input', async () => {
+  it('renders a calendar trigger', async () => {
     await create();
-    const input = el.shadowRoot!.querySelector('input[type="date"]');
-    expect(input).not.toBeNull();
+    const trigger = el.shadowRoot!.querySelector('.trigger[role="combobox"]');
+    expect(trigger).not.toBeNull();
   });
 
   it('accepts min date', async () => {
     await create({ min: '2025-01-01' });
-    const input = el.shadowRoot!.querySelector('input')!;
-    expect(input.getAttribute('min')).toBe('2025-01-01');
+    expect(el.min).toBe('2025-01-01');
   });
 
   it('accepts max date', async () => {
     await create({ max: '2025-12-31' });
-    const input = el.shadowRoot!.querySelector('input')!;
-    expect(input.getAttribute('max')).toBe('2025-12-31');
+    expect(el.max).toBe('2025-12-31');
   });
 
-  it('disabled state disables the input', async () => {
+  it('disabled state disables the trigger', async () => {
     await create({ disabled: true });
-    const input = el.shadowRoot!.querySelector('input')!;
-    expect(input.disabled).toBe(true);
+    const trigger = el.shadowRoot!.querySelector('.trigger')!;
+    expect(trigger.classList.contains('disabled')).toBe(true);
+    expect(trigger.getAttribute('tabindex')).toBe('-1');
   });
 
   it('error attribute reflects', async () => {
@@ -56,10 +55,11 @@ describe('cg-date-picker', () => {
     expect(el.hasAttribute('error')).toBe(true);
   });
 
-  it('sets aria-invalid when error', async () => {
+  it('sets error border style when error', async () => {
     await create({ error: true });
-    const input = el.shadowRoot!.querySelector('input')!;
-    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(el.hasAttribute('error')).toBe(true);
+    const trigger = el.shadowRoot!.querySelector('.trigger');
+    expect(trigger).not.toBeNull();
   });
 
   it('default rounded is lg', async () => {

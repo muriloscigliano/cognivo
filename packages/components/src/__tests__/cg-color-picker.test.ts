@@ -27,27 +27,27 @@ describe('cg-color-picker', () => {
     expect(el.shadowRoot).toBeDefined();
   });
 
-  it('renders swatch grid', async () => {
+  it('renders color area', async () => {
     await create();
-    const grid = el.shadowRoot!.querySelector('.grid');
-    expect(grid).not.toBeNull();
+    const area = el.shadowRoot!.querySelector('.color-area');
+    expect(area).not.toBeNull();
   });
 
-  it('renders default color swatches', async () => {
+  it('renders default preset swatches', async () => {
     await create();
-    const swatches = el.shadowRoot!.querySelectorAll('.swatch');
-    expect(swatches.length).toBeGreaterThan(0);
+    const presets = el.shadowRoot!.querySelectorAll('.preset');
+    expect(presets.length).toBeGreaterThan(0);
   });
 
   it('accepts custom colors array', async () => {
     await create({ colors: ['#ff0000', '#00ff00', '#0000ff'] });
-    const swatches = el.shadowRoot!.querySelectorAll('.swatch');
-    expect(swatches.length).toBe(3);
+    const presets = el.shadowRoot!.querySelectorAll('.preset');
+    expect(presets.length).toBe(3);
   });
 
-  it('marks selected swatch', async () => {
+  it('marks selected preset', async () => {
     await create({ colors: ['#ff0000', '#00ff00'], value: '#ff0000' });
-    const selected = el.shadowRoot!.querySelectorAll('.swatch.selected');
+    const selected = el.shadowRoot!.querySelectorAll('.preset.active');
     expect(selected.length).toBe(1);
   });
 
@@ -64,21 +64,21 @@ describe('cg-color-picker', () => {
     expect(group).not.toBeNull();
   });
 
-  it('swatches have radio role', async () => {
+  it('presets have radio role', async () => {
     await create({ colors: ['#ff0000'] });
-    const swatch = el.shadowRoot!.querySelector('.swatch');
-    expect(swatch!.getAttribute('role')).toBe('radio');
+    const preset = el.shadowRoot!.querySelector('.preset');
+    expect(preset!.getAttribute('role')).toBe('radio');
   });
 
-  it('shows hex input when allowCustom is true', async () => {
-    await create({ allowCustom: true });
+  it('renders hex input in dropdown', async () => {
+    await create();
     const input = el.shadowRoot!.querySelector('.hex-input');
     expect(input).not.toBeNull();
   });
 
-  it('hides hex input by default', async () => {
+  it('renders hue slider', async () => {
     await create();
-    const input = el.shadowRoot!.querySelector('.hex-input');
-    expect(input).toBeNull();
+    const hueTrack = el.shadowRoot!.querySelector('.hue-track');
+    expect(hueTrack).not.toBeNull();
   });
 });

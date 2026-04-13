@@ -121,7 +121,7 @@ export class CgColorPicker extends LitElement {
       position: absolute;
       top: 100%;
       left: 0;
-      z-index: 50;
+      z-index: var(--cg-z-index-200);
       width: 272px;
       margin-top: var(--cg-spacing-4);
       padding: var(--cg-spacing-16);
@@ -385,7 +385,7 @@ export class CgColorPicker extends LitElement {
     if ((e.key === 'Enter' || e.key === ' ') && !this._open) { e.preventDefault(); this._toggle(); }
   }
 
-  override connectedCallback() { super.connectedCallback(); document.addEventListener('click', this._handleClickOutside); }
+  override connectedCallback() { super.connectedCallback(); document.removeEventListener('click', this._handleClickOutside); document.addEventListener('click', this._handleClickOutside); }
   override disconnectedCallback() { super.disconnectedCallback(); document.removeEventListener('click', this._handleClickOutside); }
 
   override render() {

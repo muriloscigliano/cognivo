@@ -163,9 +163,9 @@ describe('Wave 2: Data & Forms', () => {
     cleanup(el);
   });
 
-  it('cg-date-picker has date input', async () => {
+  it('cg-date-picker has calendar trigger', async () => {
     const el = await createElement('cg-date-picker', { name: 'date' });
-    expect(el.shadowRoot?.querySelector('input[type="date"]')).toBeTruthy();
+    expect(el.shadowRoot?.querySelector('.trigger[role="combobox"]')).toBeTruthy();
     cleanup(el);
   });
 

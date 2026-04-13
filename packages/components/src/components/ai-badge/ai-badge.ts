@@ -153,7 +153,7 @@ export class AiBadge extends LitElement {
       pointer-events: none;
       opacity: 0;
       transition: opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
-      z-index: 100;
+      z-index: var(--cg-z-index-300);
       box-shadow:
         0 var(--cg-shadow-sm-y) var(--cg-shadow-sm-blur) var(--cg-shadow-sm-spread) rgba(0, 0, 0, 0.08);
     }

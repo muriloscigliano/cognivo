@@ -54,15 +54,15 @@ describe('cg-code-block', () => {
 
   it('has a copy button', async () => {
     await create({ code: 'hello' });
-    const btn = el.shadowRoot!.querySelector('.action-btn');
+    const btn = el.shadowRoot!.querySelector('.copy-btn');
     expect(btn).not.toBeNull();
     expect(btn!.textContent).toContain('Copy');
   });
 
   it('copy button has accessible label', async () => {
     await create({ code: 'x' });
-    const btn = el.shadowRoot!.querySelector('.action-btn');
-    expect(btn!.getAttribute('aria-label')).toBe('Copy code to clipboard');
+    const btn = el.shadowRoot!.querySelector('.copy-btn');
+    expect(btn!.getAttribute('aria-label')).toBe('Copy code');
   });
 
   it('line-numbers attribute reflects', async () => {

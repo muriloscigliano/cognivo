@@ -130,20 +130,20 @@ export class CgChart extends LitElement {
   @state() private _tipText = '';
   @state() private _tipShow = false;
 
-  // Resolved theme colors for SVG
-  private _grid = '#333';
-  private _axis = '#888';
-  private _text = '#eee';
-  private _bg = '#111';
+  // Resolved theme colors for SVG — pulled from CSS custom properties at runtime
+  private _grid = '';
+  private _axis = '';
+  private _text = '';
+  private _bg = '';
   private _resolved = false;
 
   private _resolve() {
     if (this._resolved) return;
     const s = getComputedStyle(this);
-    this._grid = s.getPropertyValue('--cg-color-chart-grid').trim() || this._grid;
-    this._axis = s.getPropertyValue('--cg-color-chart-axis').trim() || this._axis;
-    this._text = s.getPropertyValue('--cg-color-surface-base-text').trim() || this._text;
-    this._bg = s.getPropertyValue('--cg-color-surface-container-background').trim() || this._bg;
+    this._grid = s.getPropertyValue('--cg-color-chart-grid').trim() || s.getPropertyValue('--cg-color-border-default').trim();
+    this._axis = s.getPropertyValue('--cg-color-chart-axis').trim() || s.getPropertyValue('--cg-color-text-muted').trim();
+    this._text = s.getPropertyValue('--cg-color-surface-base-text').trim() || s.getPropertyValue('--cg-color-text-default').trim();
+    this._bg = s.getPropertyValue('--cg-color-surface-container-background').trim() || s.getPropertyValue('--cg-color-surface-base').trim();
     for (let i = 0; i < 8; i++) {
       const v = s.getPropertyValue(`--cg-color-chart-${i + 1}`).trim();
       if (v) PALETTE[i] = v;
@@ -377,7 +377,7 @@ export class CgChart extends LitElement {
         <path class="anim-slice" d="${p}" fill="${c}" style="cursor:pointer; animation-delay:${i * 60}ms"
           @mouseenter=${(e: MouseEvent) => this._tip(e, d.label, d.value)}
           @mouseleave=${this._untip} />
-        ${pct >= 5 ? svg`<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="central" fill="${donut ? this._axis : '#000'}" font-size="10" font-weight="600">${pct}%</text>` : nothing}
+        ${pct >= 5 ? svg`<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="central" fill="${donut ? this._axis : this._text}" font-size="10" font-weight="600">${pct}%</text>` : nothing}
       `;
     });
 

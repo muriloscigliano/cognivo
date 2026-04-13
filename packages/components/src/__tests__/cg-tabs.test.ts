@@ -152,10 +152,10 @@ describe('cg-tabs', () => {
     expect(indicator).not.toBeNull();
   });
 
-  it('indicator not rendered in pills variant', async () => {
+  it('indicator rendered as sliding pill in pills variant', async () => {
     await create({ variant: 'pills' });
     const indicator = el.shadowRoot!.querySelector('.indicator');
-    expect(indicator).toBeNull();
+    expect(indicator).not.toBeNull();
   });
 
   // ── Pills variant ──

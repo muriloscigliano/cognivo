@@ -194,7 +194,7 @@ export class AiActionPreview extends LitElement {
   @property({ type: Number }) countdown = 0;
 
   @state() private _remaining = 0;
-  private _timer?: ReturnType<typeof setInterval>;
+  private _timer?: ReturnType<typeof setInterval> | undefined;
 
   override connectedCallback() {
     super.connectedCallback();
@@ -211,7 +211,7 @@ export class AiActionPreview extends LitElement {
   }
 
   private _clearTimer() {
-    if (this._timer) { clearInterval(this._timer); this._timer = undefined; }
+    if (this._timer !== undefined) { clearInterval(this._timer); this._timer = undefined; }
   }
 
   private _startCountdown() {

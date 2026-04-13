@@ -40,11 +40,11 @@ describe('cg-list', () => {
     expect(items.length).toBe(2);
   });
 
-  it('renders bullet variant by default', async () => {
+  it('renders plain variant by default', async () => {
     await create({ items: [{ title: 'A' }] });
-    expect(el.variant).toBe('bullet');
-    const bullet = el.shadowRoot!.querySelector('.bullet');
-    expect(bullet).not.toBeNull();
+    expect(el.variant).toBe('plain');
+    expect(el.shadowRoot!.querySelector('.bullet')).toBeNull();
+    expect(el.shadowRoot!.querySelector('.num')).toBeNull();
   });
 
   it('renders number variant', async () => {
@@ -84,9 +84,9 @@ describe('cg-list', () => {
     expect(detail.index).toBe(0);
   });
 
-  it('dividers enabled by default', async () => {
+  it('dividers disabled by default', async () => {
     await create({ items: [{ title: 'A' }] });
-    expect(el.dividers).toBe(true);
-    expect(el.getAttribute('dividers')).not.toBeNull();
+    expect(el.dividers).toBe(false);
+    expect(el.getAttribute('dividers')).toBeNull();
   });
 });

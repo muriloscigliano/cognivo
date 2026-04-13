@@ -47,7 +47,7 @@ export class AiToast extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
     :host {
       position: fixed;
-      z-index: 9999;
+      z-index: var(--cg-z-index-top);
       pointer-events: none;
     }
     :host([position="top-right"]), :host(:not([position])) { top: var(--cg-spacing-20); right: var(--cg-spacing-20); }
@@ -192,7 +192,7 @@ export class AiToast extends LitElement {
     // Support legacy signature: show(message, type, duration)
     let opts: ToastOptions = {};
     if (typeof options === 'string') {
-      opts = { type: options as Toast['type'], duration };
+      opts = { type: options as Toast['type'], ...(duration !== undefined && { duration }) };
     } else if (options) {
       opts = options;
     }

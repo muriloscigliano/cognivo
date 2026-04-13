@@ -137,7 +137,7 @@ export class AiEvalScorecard extends LitElement {
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property({ type: Array }) scores: EvalScore[] = [];
   @property() grade = '';
-  @property() title = 'Evaluation';
+  @property() override title = 'Evaluation';
   @property({ type: Object }) comparison: Record<string, number> | null = null;
 
   @state() private _expandedMetric = '';

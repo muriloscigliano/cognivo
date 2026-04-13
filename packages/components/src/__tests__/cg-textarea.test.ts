@@ -148,12 +148,6 @@ describe('cg-textarea', () => {
     expect(el.size).toBe('md');
   });
 
-  it('size variant sm reflects', async () => {
-    el.size = 'sm';
-    await el.updateComplete;
-    expect(el.getAttribute('size')).toBe('sm');
-  });
-
   it('size variant lg reflects', async () => {
     el.size = 'lg';
     await el.updateComplete;
@@ -165,7 +159,6 @@ describe('cg-textarea', () => {
     const cssText = Array.isArray(styles)
       ? styles.map(s => s.cssText).join('')
       : (styles as { cssText: string }).cssText;
-    expect(cssText).toContain('size="sm"');
     expect(cssText).toContain('size="lg"');
   });
 

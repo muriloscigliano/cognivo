@@ -49,9 +49,9 @@ describe('ai-thinking', () => {
     expect(dots).not.toBeNull();
   });
 
-  it('renders icon element', () => {
-    const icon = element.shadowRoot!.querySelector('.icon');
-    expect(icon).not.toBeNull();
+  it('renders dots element for default variant', () => {
+    const dots = element.shadowRoot!.querySelectorAll('.dot');
+    expect(dots.length).toBe(3);
   });
 
   it('does not apply shimmer class by default', () => {
@@ -88,9 +88,9 @@ describe('ai-thinking', () => {
     expect(updatedContainer!.getAttribute('aria-label')).toBe('Processing');
   });
 
-  it('marks icon as aria-hidden', () => {
-    const icon = element.shadowRoot!.querySelector('.icon');
-    expect(icon!.getAttribute('aria-hidden')).toBe('true');
+  it('marks dots as aria-hidden', () => {
+    const dots = element.shadowRoot!.querySelector('.dots');
+    expect(dots!.getAttribute('aria-hidden')).toBe('true');
   });
 
   it('marks dots as aria-hidden', () => {

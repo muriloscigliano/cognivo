@@ -41,7 +41,7 @@ export class AiCommandPalette extends LitElement {
     .overlay {
       position: fixed;
       inset: 0;
-      z-index: 9998;
+      z-index: var(--cg-z-index-500);
       background: var(--cg-overlay-dark-strong);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
@@ -260,7 +260,7 @@ export class AiCommandPalette extends LitElement {
       this._activeIndex = this._activeIndex <= 0 ? list.length - 1 : this._activeIndex - 1;
     } else if (e.key === 'Enter' && list[this._activeIndex]) {
       e.preventDefault();
-      this._select(list[this._activeIndex]);
+      this._select(list[this._activeIndex]!);
     } else if (e.key === 'Escape') {
       e.preventDefault();
       this._close();

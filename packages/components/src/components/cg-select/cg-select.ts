@@ -84,13 +84,13 @@ export class CgSelect extends LitElement {
     :host([error]) .trigger:focus-visible,
     :host([error]) .trigger.open {
       border-color: var(--cg-color-status-error-text-default);
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
     }
     :host([success]) .trigger { border-color: var(--cg-color-status-success-border-default); }
     :host([success]) .trigger:focus-visible,
     :host([success]) .trigger.open {
       border-color: var(--cg-color-status-success-text-default);
-      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-success);
     }
 
     .trigger-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -99,7 +99,7 @@ export class CgSelect extends LitElement {
     .trigger.open .chevron { transform: rotate(180deg); }
 
     .dropdown {
-      position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+      position: absolute; top: 100%; left: 0; right: 0; z-index: var(--cg-z-index-200);
       margin-top: var(--cg-spacing-4); padding: var(--cg-spacing-6);
       background: var(--cg-color-modal-container-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
@@ -256,7 +256,7 @@ export class CgSelect extends LitElement {
     if (!e.composedPath().includes(this)) this._close();
   };
 
-  override connectedCallback() { super.connectedCallback(); document.addEventListener('click', this._handleClickOutside); }
+  override connectedCallback() { super.connectedCallback(); document.removeEventListener('click', this._handleClickOutside); document.addEventListener('click', this._handleClickOutside); }
   override disconnectedCallback() { super.disconnectedCallback(); document.removeEventListener('click', this._handleClickOutside); }
 
   override render() {

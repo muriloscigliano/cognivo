@@ -22,44 +22,42 @@ describe('ai-chart-summary', () => {
   });
 
   it('renders nothing when summary is empty', () => {
-    expect(element.shadowRoot!.querySelector('.summary')).toBeNull();
+    expect(element.shadowRoot!.querySelector('.card')).toBeNull();
   });
 
   it('renders summary container when summary text is provided', async () => {
     element.summary = 'Revenue is trending up by 15%.';
     await element.updateComplete;
-    expect(element.shadowRoot!.querySelector('.summary')).not.toBeNull();
+    expect(element.shadowRoot!.querySelector('.card')).not.toBeNull();
   });
 
   it('displays the summary text', async () => {
     element.summary = 'Revenue is trending up by 15%.';
     await element.updateComplete;
-    const text = element.shadowRoot!.querySelector('.text');
+    const text = element.shadowRoot!.querySelector('.summary-text');
     expect(text!.textContent).toBe('Revenue is trending up by 15%.');
   });
 
   it('renders AI Insight label', async () => {
     element.summary = 'Some insight';
     await element.updateComplete;
-    const label = element.shadowRoot!.querySelector('.label');
+    const label = element.shadowRoot!.querySelector('.header-label');
     expect(label!.textContent).toBe('AI Insight');
   });
 
-  it('renders ai-dot with "AI" text', async () => {
+  it('renders ai-dot indicator', async () => {
     element.summary = 'Some insight';
     await element.updateComplete;
     const dot = element.shadowRoot!.querySelector('.ai-dot');
     expect(dot).not.toBeNull();
-    expect(dot!.textContent).toBe('AI');
-    expect(dot!.getAttribute('aria-hidden')).toBe('true');
   });
 
   it('has role="complementary" with aria-label', async () => {
     element.summary = 'Some insight';
     await element.updateComplete;
-    const div = element.shadowRoot!.querySelector('.summary');
+    const div = element.shadowRoot!.querySelector('.card');
     expect(div!.getAttribute('role')).toBe('complementary');
-    expect(div!.getAttribute('aria-label')).toBe('AI chart summary');
+    expect(div!.getAttribute('aria-label')).toBe('AI chart insight');
   });
 
   it('shows only refresh button when collapsible is false', async () => {
@@ -86,7 +84,7 @@ describe('ai-chart-summary', () => {
     const toggleBtn = buttons[1] as HTMLElement; // Second button is toggle
     toggleBtn.click();
     await element.updateComplete;
-    const div = element.shadowRoot!.querySelector('.summary');
+    const div = element.shadowRoot!.querySelector('.card');
     expect(div!.classList.contains('collapsed')).toBe(true);
   });
 

@@ -85,26 +85,28 @@ describe('ai-badge', () => {
     expect(score!.textContent).toBe('medium');
   });
 
-  it('renders icon for high confidence', () => {
-    const icon = element.shadowRoot!.querySelector('.icon');
+  it('renders cg-icon with "check" for high confidence', () => {
+    const icon = element.shadowRoot!.querySelector('cg-icon');
     expect(icon).toBeTruthy();
-    expect(icon!.querySelector('svg') || icon!.textContent!.trim().length > 0).toBeTruthy();
+    expect(icon!.getAttribute('name')).toBe('check');
   });
 
-  it('renders icon for medium confidence', async () => {
+  it('renders cg-icon with "info" for medium confidence', async () => {
     element.score = 0.6;
     await element.updateComplete;
 
-    const icon = element.shadowRoot!.querySelector('.icon');
+    const icon = element.shadowRoot!.querySelector('cg-icon');
     expect(icon).toBeTruthy();
+    expect(icon!.getAttribute('name')).toBe('info');
   });
 
-  it('renders icon for low confidence', async () => {
+  it('renders cg-icon with "warning" for low confidence', async () => {
     element.score = 0.3;
     await element.updateComplete;
 
-    const icon = element.shadowRoot!.querySelector('.icon');
+    const icon = element.shadowRoot!.querySelector('cg-icon');
     expect(icon).toBeTruthy();
+    expect(icon!.getAttribute('name')).toBe('warning');
   });
 
   it('has role="status"', () => {

@@ -249,7 +249,7 @@ export class AiAudioPlayer extends LitElement {
 
   private _cycleSpeed() {
     const idx = this._speeds.indexOf(this._speed);
-    this._speed = this._speeds[(idx + 1) % this._speeds.length];
+    this._speed = this._speeds[(idx + 1) % this._speeds.length] ?? 1;
     if (this._audio) this._audio.playbackRate = this._speed;
   }
 

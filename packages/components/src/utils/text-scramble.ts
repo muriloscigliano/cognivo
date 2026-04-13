@@ -167,7 +167,7 @@ function getCharSet(chars: CharSetPreset | string): string {
 }
 
 function randomChar(charSet: string): string {
-  return charSet[Math.floor(Math.random() * charSet.length)];
+  return charSet[Math.floor(Math.random() * charSet.length)] ?? '';
 }
 
 /**
@@ -254,7 +254,7 @@ export function createTextScramble(
   for (let i = 0; i < length; i++) {
     if (isSpace[i]) {
       resolved[i] = true;
-      display[i] = characters[i];
+      display[i] = characters[i] ?? '';
     }
   }
 
@@ -317,13 +317,13 @@ export function createTextScramble(
     // Resolve characters up to the current count
     let resolvedSoFar = 0;
     for (let orderIdx = 0; orderIdx < resolveOrder.length; orderIdx++) {
-      const charIdx = resolveOrder[orderIdx];
+      const charIdx = resolveOrder[orderIdx]!;
       if (isSpace[charIdx]) continue;
 
       if (resolvedSoFar < resolvedCount) {
         if (!resolved[charIdx]) {
           resolved[charIdx] = true;
-          display[charIdx] = characters[charIdx];
+          display[charIdx] = characters[charIdx] ?? '';
         }
         resolvedSoFar++;
       } else {
@@ -352,7 +352,7 @@ export function createTextScramble(
       for (let i = 0; i < length; i++) {
         if (!isSpace[i]) {
           resolved[i] = true;
-          display[i] = characters[i];
+          display[i] = characters[i] ?? '';
         }
       }
       onUpdate(buildHtml());
@@ -371,7 +371,7 @@ export function createTextScramble(
     for (let i = 0; i < length; i++) {
       if (isSpace[i]) {
         resolved[i] = true;
-        display[i] = characters[i];
+        display[i] = characters[i] ?? '';
       } else {
         resolved[i] = false;
         display[i] = randomChar(charSet);
@@ -397,7 +397,7 @@ export function createTextScramble(
     cancel();
     for (let i = 0; i < length; i++) {
       resolved[i] = true;
-      display[i] = characters[i];
+      display[i] = characters[i] ?? '';
     }
     onUpdate(buildHtml());
     onComplete?.();
@@ -451,7 +451,7 @@ export function createTextScramblePlain(
   for (let i = 0; i < length; i++) {
     if (isSpace[i]) {
       resolved[i] = true;
-      display[i] = characters[i];
+      display[i] = characters[i] ?? '';
     }
   }
 
@@ -486,7 +486,7 @@ export function createTextScramblePlain(
       if (resolvedSoFar < resolvedCount) {
         if (!resolved[charIdx]) {
           resolved[charIdx] = true;
-          display[charIdx] = characters[charIdx];
+          display[charIdx] = characters[charIdx] ?? '';
         }
         resolvedSoFar++;
       } else {
@@ -507,7 +507,7 @@ export function createTextScramblePlain(
     if (totalProgress >= 1) {
       for (let i = 0; i < length; i++) {
         resolved[i] = true;
-        display[i] = characters[i];
+        display[i] = characters[i] ?? '';
       }
       emit();
       rest.onComplete?.();
@@ -524,7 +524,7 @@ export function createTextScramblePlain(
     for (let i = 0; i < length; i++) {
       if (isSpace[i]) {
         resolved[i] = true;
-        display[i] = characters[i];
+        display[i] = characters[i] ?? '';
       } else {
         resolved[i] = false;
         display[i] = randomChar(charSet);
@@ -546,7 +546,7 @@ export function createTextScramblePlain(
     cancel();
     for (let i = 0; i < length; i++) {
       resolved[i] = true;
-      display[i] = characters[i];
+      display[i] = characters[i] ?? '';
     }
     emit();
     rest.onComplete?.();

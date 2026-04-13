@@ -32,7 +32,7 @@ export class AiAssistantWidget extends LitElement {
     :host {
       display: block;
       position: fixed;
-      z-index: 9999;
+      z-index: var(--cg-z-index-top);
     }
     :host([hidden]) { display: none; }
     :host([position="bottom-right"]), :host(:not([position])) {
@@ -237,7 +237,7 @@ export class AiAssistantWidget extends LitElement {
   @property({ type: Boolean, reflect: true }) expanded = false;
   @property({ type: String, reflect: true }) position: 'bottom-right' | 'bottom-left' = 'bottom-right';
   @property({ type: String }) welcomeMessage = 'How can I help you?';
-  @property({ type: String }) title = 'Assistant';
+  @property({ type: String }) override title = 'Assistant';
   @property({ attribute: false }) messages: AssistantMessage[] = [];
 
   @state() private _inputValue = '';

@@ -82,7 +82,13 @@ describe('Dark-first fallbacks', () => {
 describe('No standalone hardcoded values', () => {
   const files = getComponentFiles();
 
+  // Components that intentionally use raw hex values for functional reasons:
+  // - cg-color-picker: hue/saturation/alpha gradients require raw hex (#fff, #000, #f00 etc.)
+  const HEX_EXCLUSIONS = ['cg-color-picker'];
+
   for (const file of files) {
+    if (HEX_EXCLUSIONS.includes(file.name)) continue;
+
     it(`${file.name} has no standalone hex colors outside var()`, () => {
       // Find hex colors not inside var() fallbacks
       const lines = file.content.split('\n');
