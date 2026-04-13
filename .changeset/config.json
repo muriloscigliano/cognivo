@@ -1,0 +1,24 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "fixed": [
+    [
+      "@cognivo/core",
+      "@cognivo/components",
+      "@cognivo/tokens",
+      "@cognivo/design-advisor",
+      "@cognivo/gen-ui",
+      "@cognivo/gen-ui-lit",
+      "@cognivo/adapter-react",
+      "@cognivo/adapter-vue",
+      "@cognivo/adapter-openai",
+      "@cognivo/adapter-anthropic"
+    ]
+  ],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": ["@cognivo/mcp-server"]
+}

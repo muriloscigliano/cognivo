@@ -1,8 +1,25 @@
-# Cognivo
+<p align="center">
+  <h1 align="center">Cognivo</h1>
+</p>
 
-**AI-native component library with cognitive psychology integration.**
+<p align="center">
+  <strong>AI-Native Component Library + Cognitive Design System</strong>
+</p>
 
-143 Web Components built with Lit 3 — framework-agnostic, dark-first, accessible, powered by 1,800+ design tokens and 184 cognitive bias cards.
+<p align="center">
+  143 Web Components &bull; 1,800+ Design Tokens &bull; 180 Cognitive Biases &bull; React & Vue Adapters
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@cognivo/components"><img src="https://img.shields.io/npm/v/@cognivo/components?style=flat-square&color=dfff61" alt="npm version" /></a>
+  <a href="https://github.com/muriloscigliano/cognivo/blob/main/LICENSE"><img src="https://img.shields.io/github/license/muriloscigliano/cognivo?style=flat-square" alt="license" /></a>
+  <a href="https://github.com/muriloscigliano/cognivo/actions"><img src="https://img.shields.io/github/actions/workflow/status/muriloscigliano/cognivo/ci.yml?style=flat-square" alt="CI" /></a>
+  <a href="https://www.npmjs.com/package/@cognivo/components"><img src="https://img.shields.io/npm/dm/@cognivo/components?style=flat-square" alt="downloads" /></a>
+</p>
+
+---
+
+143 Web Components built with Lit 3 — framework-agnostic, dark-first, accessible, powered by 1,800+ design tokens and 180 cognitive bias cards.
 
 ## Architecture
 
@@ -29,25 +46,71 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-## Quick Start
-
-### Path 1: Components Only
+## Installation
 
 ```bash
-pnpm add @cognivo/components @cognivo/tokens
+# Core (any framework)
+npm install @cognivo/components @cognivo/tokens
+
+# React
+npm install @cognivo/adapter-react
+
+# Vue
+npm install @cognivo/adapter-vue
+
+# AI integration
+npm install @cognivo/core @cognivo/adapter-openai
+
+# Cognitive design advisor
+npm install @cognivo/design-advisor
 ```
 
+### CDN (no build step)
+
 ```html
-<link rel="stylesheet" href="node_modules/@cognivo/tokens/dist/index.css">
-<script type="module">
-  import '@cognivo/components';
-</script>
+<link rel="stylesheet" href="https://unpkg.com/@cognivo/tokens/dist/index.css" />
+<script type="module" src="https://unpkg.com/@cognivo/components/dist/cognivo.min.js"></script>
+```
+
+## Quick Start
+
+### Vanilla HTML
+
+```html
+<link rel="stylesheet" href="https://unpkg.com/@cognivo/tokens/dist/index.css" />
+<script type="module" src="https://unpkg.com/@cognivo/components/dist/cognivo.min.js"></script>
 
 <cg-button variant="primary">Click me</cg-button>
 <cg-input label="Email" type="email"></cg-input>
-<cg-card variant="elevated" clickable>
-  <ai-thinking variant="dots" label="Analyzing..."></ai-thinking>
-</cg-card>
+<ai-badge score="0.92" size="md" showPercentage></ai-badge>
+```
+
+### React
+
+```tsx
+import { CgButton, AiChat } from '@cognivo/adapter-react';
+import '@cognivo/tokens/dist/index.css';
+
+function App() {
+  return (
+    <CgButton variant="primary" onClick={() => alert('Hello!')}>
+      Click me
+    </CgButton>
+  );
+}
+```
+
+### Vue
+
+```vue
+<script setup>
+import { CgButton, AiChat } from '@cognivo/adapter-vue';
+import '@cognivo/tokens/dist/index.css';
+</script>
+
+<template>
+  <CgButton variant="primary" @click="handleClick">Click me</CgButton>
+</template>
 ```
 
 ### Path 2: AI Streaming UI
@@ -121,6 +184,18 @@ pnpm test              # Run all tests
 pnpm dev               # Start all dev servers
 ```
 
+## Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+
+```bash
+git clone https://github.com/muriloscigliano/cognivo.git
+cd cognivo
+pnpm install
+pnpm build
+pnpm test
+```
+
 ## License
 
-MIT
+[MIT](./LICENSE) - Murilo Scigliano
