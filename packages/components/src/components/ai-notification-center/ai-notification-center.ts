@@ -35,7 +35,7 @@ interface Notification {
 export class AiNotificationCenter extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([hidden]) { display: none; }
 
@@ -88,11 +88,11 @@ export class AiNotificationCenter extends LitElement {
       cursor: pointer;
       padding: var(--cg-spacing-4) var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-50);
-      transition: color var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .mark-all-btn:hover { color: var(--cg-color-surface-base-text); }
     .mark-all-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -114,12 +114,12 @@ export class AiNotificationCenter extends LitElement {
       margin-bottom: var(--cg-spacing-2);
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
       cursor: pointer;
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       position: relative;
     }
     .notification:hover { background: var(--cg-overlay-accent-subtle); }
     .notification:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: -2px;
     }
 
@@ -169,11 +169,11 @@ export class AiNotificationCenter extends LitElement {
       border-radius: var(--cg-border-radius-50);
       flex-shrink: 0;
       line-height: 1;
-      transition: color var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .dismiss-btn:hover { color: var(--cg-color-status-error-text-default); }
     .dismiss-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 

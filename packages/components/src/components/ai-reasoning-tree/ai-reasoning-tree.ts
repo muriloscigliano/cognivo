@@ -70,7 +70,7 @@ export class AiReasoningTree extends LitElement {
     .chevron {
       width: var(--cg-spacing-12);
       height: var(--cg-spacing-12);
-      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       flex-shrink: 0;
       opacity: 0.5;
     }

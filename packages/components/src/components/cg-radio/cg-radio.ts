@@ -62,10 +62,10 @@ export class CgRadio extends LitElement {
       align-items: center;
       justify-content: center;
       transition:
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        background var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        transform var(--cg-motion-duration-slow) var(--cg-motion-easing-bounce);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
     }
 
     /* Hover */
@@ -82,16 +82,15 @@ export class CgRadio extends LitElement {
     /* Focus ring */
     label:focus-visible .circle {
       border-color: var(--cg-color-radio-border-focus);
-      box-shadow:
-        0 0 0 2px var(--cg-color-focus-ring-offset),
-        0 0 0 4px var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 var(--cg-spacing-2) var(--cg-overlay-accent-strong);
+      outline: none;
     }
 
     /* Checked */
     .circle.checked {
       border-color: var(--cg-color-radio-border-checked);
       background: var(--cg-color-radio-background-checked);
-      animation: circlePop var(--cg-motion-duration-slow) var(--cg-motion-easing-bounce);
+      animation: circlePop var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
     }
 
     @keyframes circlePop {
@@ -104,17 +103,16 @@ export class CgRadio extends LitElement {
 
     /* ── Dot indicator ── */
     .dot {
-      width: var(--cg-spacing-8);
-      height: var(--cg-spacing-8);
+      width: 10px;
+      height: 10px;
       border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-radio-dot-default);
-      animation: dotIn var(--cg-motion-duration-slow) var(--cg-motion-easing-bounce) forwards;
+      animation: dotIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) forwards;
     }
 
     @keyframes dotIn {
       0% { transform: scale(0); }
-      60% { transform: scale(1.3); }
-      80% { transform: scale(0.9); }
+      60% { transform: scale(1.2); }
       100% { transform: scale(1); }
     }
 
@@ -129,7 +127,7 @@ export class CgRadio extends LitElement {
     .tick-icon .tick-path {
       stroke-dasharray: 24;
       stroke-dashoffset: 24;
-      animation: drawRadioTick var(--cg-motion-duration-slow) 60ms var(--cg-motion-easing-enter) forwards;
+      animation: drawRadioTick var(--cg-transition-duration-default) 60ms var(--cg-transition-easing-ease-out) forwards;
     }
 
     @keyframes drawRadioTick {
@@ -168,7 +166,7 @@ export class CgRadio extends LitElement {
       border: var(--cg-border-width-100) solid var(--cg-color-loading-spinner-secondary);
       border-top-color: var(--cg-color-loading-spinner-primary);
       border-radius: var(--cg-border-radius-full);
-      animation: cg-radio-spin var(--cg-motion-duration-slow) linear infinite;
+      animation: cg-radio-spin var(--cg-transition-duration-slow) linear infinite;
     }
     @keyframes cg-radio-spin {
       to { transform: rotate(360deg); }

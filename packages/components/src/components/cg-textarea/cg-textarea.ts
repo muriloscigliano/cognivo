@@ -16,7 +16,7 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
  * @fires {CustomEvent<{value: string}>} cg-input - On every input change
  *
  * @cssprop [--cg-color-input-background-default=#18181b] - Textarea background
- * @cssprop [--cg-focus-ring-color=#c8e650] - Focus border color
+ * @cssprop [--cg-color-focus-ring] - Focus border color
  * @cssprop [--cg-border-radius-150=12px] - Border radius
  * @cssprop [--cg-text-danger=#ef4444] - Error state border color
  */
@@ -57,13 +57,13 @@ export class CgTextarea extends LitElement {
       outline: none;
       min-height: var(--cg-spacing-96);
       transition:
-        border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color),
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     textarea::placeholder { color: transparent; }
     .field.floated textarea::placeholder {
       color: var(--cg-color-input-text-placeholder);
-      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host(:not([label])) textarea::placeholder { color: var(--cg-color-input-text-placeholder); }
 
@@ -90,7 +90,7 @@ export class CgTextarea extends LitElement {
       border: var(--cg-border-width-100) solid var(--cg-color-loading-spinner-secondary);
       border-top-color: var(--cg-color-loading-spinner-primary);
       border-radius: var(--cg-border-radius-full);
-      animation: cg-textarea-spin var(--cg-motion-duration-slow) linear infinite;
+      animation: cg-textarea-spin var(--cg-transition-duration-slow) linear infinite;
     }
     @keyframes cg-textarea-spin {
       to { transform: rotate(360deg); }
@@ -109,13 +109,13 @@ export class CgTextarea extends LitElement {
     :host([error]) textarea { border-color: var(--cg-color-input-border-error); }
     :host([error]) textarea:focus-visible {
       border-color: var(--cg-color-status-error-text-default);
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
     }
 
     :host([success]) textarea { border-color: var(--cg-color-input-icon-success); }
     :host([success]) textarea:focus-visible {
       border-color: var(--cg-color-status-success-text-default);
-      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-success);
     }
 
     :host([autoresize]) textarea { resize: none; overflow: hidden; }
@@ -132,10 +132,10 @@ export class CgTextarea extends LitElement {
       pointer-events: none;
       transform-origin: left top;
       transition:
-        top var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
-        transform var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
-        font-size var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
-        color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        top var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        font-size var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       z-index: 2;
       white-space: nowrap;
       overflow: hidden;

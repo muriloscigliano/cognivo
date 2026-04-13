@@ -34,7 +34,7 @@ interface TranslationAlternative {
 export class AiTranslationPanel extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeInKeyframes, css`
     :host {
-      animation: fadeIn var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      animation: fadeIn var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
 
     .panel {
@@ -152,8 +152,8 @@ export class AiTranslationPanel extends LitElement {
       border-radius: var(--cg-border-radius-100);
       cursor: pointer;
       transition:
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .alt-item:hover {
       border-color: var(--cg-color-input-border-hover);

@@ -45,7 +45,7 @@ export class CgImageGallery extends LitElement {
       position: absolute;
       inset: 0;
       background: transparent;
-      transition: background var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: background var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .img-wrapper:focus-visible {
       outline: none;
@@ -60,7 +60,7 @@ export class CgImageGallery extends LitElement {
       aspect-ratio: 1;
       object-fit: cover;
       display: block;
-      transition: transform var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: transform var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     .img-wrapper:hover img { transform: scale(1.03); }
     .img-wrapper:active img { transform: scale(0.98); }

@@ -31,7 +31,7 @@ export class CgSpinner extends LitElement {
       border-style: solid;
       border-color: var(--cg-color-loading-spinner-secondary);
       border-top-color: var(--cg-color-loading-spinner-primary);
-      animation: spin var(--cg-motion-duration-slow) linear infinite;
+      animation: spin var(--cg-transition-duration-slow) linear infinite;
     }
 
     /* ── Sizes (Tier 3) ── */

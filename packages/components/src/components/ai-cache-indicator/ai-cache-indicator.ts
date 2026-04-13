@@ -33,7 +33,7 @@ export class AiCacheIndicator extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-full);
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-input-text-placeholder);
     }
@@ -70,7 +70,7 @@ export class AiCacheIndicator extends LitElement {
       border-radius: var(--cg-border-radius-200);
       padding: var(--cg-spacing-16);
       color: var(--cg-color-surface-base-text);
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn 200ms var(--cg-transition-easing-ease-out) both;
       min-width: 240px;
     }
 
@@ -104,7 +104,7 @@ export class AiCacheIndicator extends LitElement {
       height: 100%;
       background: var(--cg-color-action-primary-background-default);
       border-radius: var(--cg-border-radius-50);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     .divider {
@@ -123,8 +123,8 @@ export class AiCacheIndicator extends LitElement {
       padding: var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-100);
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-                  color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+                  color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .clear-btn:hover {
       border-color: var(--cg-color-status-error-text-default);

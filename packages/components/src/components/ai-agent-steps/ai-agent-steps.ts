@@ -46,7 +46,7 @@ export class AiAgentSteps extends LitElement {
       gap: var(--cg-spacing-12);
       padding: var(--cg-spacing-12) var(--cg-spacing-16);
       border-radius: var(--cg-border-radius-100);
-      animation: stepIn var(--cg-motion-duration-slow) var(--cg-motion-easing-enter) both;
+      animation: stepIn var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out) both;
       animation-delay: calc(var(--step-index, 0) * 60ms);
     }
 
@@ -96,7 +96,7 @@ export class AiAgentSteps extends LitElement {
     .status-icon.complete svg {
       width: var(--cg-spacing-16);
       height: var(--cg-spacing-16);
-      animation: checkPop var(--cg-motion-duration-slow) var(--cg-motion-easing-bounce) both;
+      animation: checkPop var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out) both;
     }
 
     @keyframes checkPop {
@@ -161,7 +161,7 @@ export class AiAgentSteps extends LitElement {
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: textSweep 1.8s var(--cg-motion-easing-default) infinite;
+      animation: textSweep 1.8s var(--cg-transition-easing-default) infinite;
     }
 
     @keyframes textSweep {

@@ -52,7 +52,7 @@ export class CgSwitch extends LitElement {
       height: var(--cg-component-switch-height);
       border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-toggle-background-off);
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-color), box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default), box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       flex-shrink: 0;
     }
 
@@ -70,7 +70,7 @@ export class CgSwitch extends LitElement {
       background: var(--cg-color-toggle-thumb-off);
       top: var(--cg-spacing-2);
       left: var(--cg-spacing-2);
-      transition: transform var(--cg-motion-duration-normal) var(--cg-motion-easing-bounce), width var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out), width var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
 
@@ -128,7 +128,7 @@ export class CgSwitch extends LitElement {
       border: var(--cg-border-width-100) solid var(--cg-color-loading-spinner-secondary);
       border-top-color: var(--cg-color-loading-spinner-primary);
       border-radius: var(--cg-border-radius-full);
-      animation: cg-switch-spin var(--cg-motion-duration-slow) linear infinite;
+      animation: cg-switch-spin var(--cg-transition-duration-slow) linear infinite;
       flex-shrink: 0;
     }
     @keyframes cg-switch-spin {

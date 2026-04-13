@@ -15,18 +15,18 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class CgCallout extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     :host([hidden]) { display: none; }
 
     .callout {
       transition:
-        background-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color),
-        border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color),
-        color var(--cg-motion-duration-normal) var(--cg-motion-easing-color),
-        opacity var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
-        transform var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+        background-color var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        opacity var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-default);
       display: flex;
       align-items: center;
       gap: var(--cg-spacing-12);
@@ -100,12 +100,12 @@ export class CgCallout extends LitElement {
       padding: var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-50);
       display: flex;
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .dismiss:hover { opacity: 0.8; }
     .dismiss:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background), 0 0 0 4px var(--cg-focus-ring-color);
+      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background), 0 0 0 4px var(--cg-color-focus-ring);
     }
     .dismiss svg { width: var(--cg-spacing-16); height: var(--cg-spacing-16); }
 
@@ -114,7 +114,7 @@ export class CgCallout extends LitElement {
       to { opacity: 0; transform: translateY(-8px); }
     }
     .callout.dismissing {
-      animation: calloutExit var(--cg-motion-duration-slow) var(--cg-motion-easing-exit) forwards;
+      animation: calloutExit var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-in) forwards;
     }
 
     /* Rounded variants */

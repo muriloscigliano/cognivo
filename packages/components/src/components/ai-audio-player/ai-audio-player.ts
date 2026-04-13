@@ -25,7 +25,7 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class AiAudioPlayer extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -53,7 +53,7 @@ export class AiAudioPlayer extends LitElement {
       justify-content: center;
       flex-shrink: 0;
       padding: 0;
-      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .play-btn:hover { transform: scale(1.05); }
     .play-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
@@ -104,7 +104,7 @@ export class AiAudioPlayer extends LitElement {
       min-width: var(--cg-spacing-2);
       max-width: var(--cg-spacing-4);
       border-radius: var(--cg-border-radius-25);
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .wave-bar.past {
       background: var(--cg-color-action-primary-background-default);
@@ -125,7 +125,7 @@ export class AiAudioPlayer extends LitElement {
       height: 100%;
       background: var(--cg-color-action-primary-background-default);
       border-radius: var(--cg-border-radius-25);
-      transition: width var(--cg-motion-duration-fast) linear;
+      transition: width var(--cg-transition-duration-fast) linear;
     }
 
     .speed-btn {

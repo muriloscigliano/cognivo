@@ -22,24 +22,38 @@ function esc(s: string) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').re
   <h1>{comp.name}</h1>
   <p class="desc">{comp.description}</p>
 
-  <h2 id="import">Import</h2>
-  <pre><code>{`import { ${cls} } from '@cognivo/components';`}</code></pre>
+  <div class="badges">
+    <span class="badge">{comp.category}</span>
+    {comp.since && <span class="badge">{comp.since}</span>}
+  </div>
+
+  <h2 id="playground">Playground</h2>
+  <div id="playground-mount"></div>
 
   {comp.examples.length > 0 && (
     <>
       <h2 id="examples">Examples</h2>
-      {comp.examples.map(ex => (
-        <div class="ex">
-          <div class="exl">{ex.label}</div>
-          <pre><code set:html={esc(ex.html)} /></pre>
-        </div>
-      ))}
+      <div class="examples">
+        {comp.examples.map((ex, idx) => (
+          <div class="ex-card">
+            <div class="ex-header">{ex.label}</div>
+            <div class="ex-live" data-ex-idx={idx} set:html={ex.html} />
+            <div class="ex-code-wrap">
+              <pre class="ex-code"><code set:html={esc(ex.html.trim())} /></pre>
+              <button class="ex-copy">Copy</button>
+            </div>
+          </div>
+        ))}
+      </div>
     </>
   )}
 
+  <h2 id="import">Import</h2>
+  <pre><code>{`import { ${cls} } from '@cognivo/components';`}</code></pre>
+
   {comp.props.length > 0 && (
     <>
-      <h2 id="props">Props</h2>
+      <h2 id="props">API Reference</h2>
       <div class="tb">
         <table>
           <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
@@ -83,32 +97,146 @@ function esc(s: string) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').re
     {next ? <a href={`/components/${next.tag}`} class="pc r"><span class="pd">Next &rarr;</span><span class="pname">{next.name}</span></a> : <div/>}
   </nav>
 
+  <script src="../../scripts/playground.ts"></script>
+
   <style>
     .bc { font-size: 14px; color: var(--fg-3); margin-bottom: 24px; }
-    .bc a { color: var(--fg-3); } .bc a:hover { color: var(--fg-2); }
+    .bc a { color: var(--fg-3); } .bc a:hover { color: var(--accent); }
     .bc span { margin: 0 6px; }
 
     h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 12px; }
 
-    .desc { font-size: 16px; color: var(--fg-2); line-height: 1.7; margin-bottom: 40px; }
+    .desc { font-size: 16px; color: var(--fg-2); line-height: 1.7; margin-bottom: 12px; }
 
-    h2 {
-      font-size: 22px; font-weight: 600; letter-spacing: -0.02em;
-      margin: 48px 0 16px; padding-bottom: 10px;
-      border-bottom: 1px solid var(--border);
+    .badges { display: flex; gap: 8px; margin-bottom: 40px; }
+    .badge {
+      font: 600 11px/1 var(--font-mono);
+      padding: 5px 12px; border-radius: 6px;
+      text-transform: uppercase; letter-spacing: 0.04em;
+      background: var(--accent-dim); color: var(--accent);
+      border: 1px solid var(--accent-muted);
     }
 
-    /* Examples */
-    .ex { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 12px; }
-    .exl { padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--fg-3); border-bottom: 1px solid var(--border); background: var(--bg-subtle); }
-    .ex pre { margin: 0; border: none; border-radius: 0; }
+    h2 {
+      font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
+      margin: 40px 0 16px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    h2::before {
+      content: '';
+      display: inline-block;
+      width: 3px; height: 18px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
 
-    /* Tables */
-    .tb { border: 1px solid var(--border); border-radius: var(--radius); overflow-x: auto; margin-bottom: 8px; }
+    /* ── Playground ── */
+    :global(.pg-grid) {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    :global(.pg-preview) { background: var(--bg); border-right: 1px solid var(--border); }
+    :global(.pg-controls) { background: var(--bg-subtle); overflow-y: auto; max-height: 420px; }
+    :global(.pg-bar) {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px;
+      font: 600 10px/1 var(--font-sans);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--fg-3); border-bottom: 1px solid var(--border);
+    }
+    :global(.pg-area) {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 200px; padding: 32px; overflow: visible;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    :global(.pg-row) {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 16px; gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    :global(.pg-row:last-child) { border-bottom: none; }
+    :global(.pg-label) { font-size: 12px; font-weight: 500; color: var(--fg-2); white-space: nowrap; min-width: 60px; }
+    :global(.pg-select), :global(.pg-input) {
+      flex: 1; max-width: 130px; padding: 5px 8px;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--fg); font: 12px var(--font-mono); outline: none;
+    }
+    :global(.pg-select:focus), :global(.pg-input:focus) { border-color: var(--accent); }
+    :global(.pg-codeblock) { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-top: 8px; }
+    :global(.pg-out) {
+      padding: 14px 16px; font: 12px/1.6 var(--font-mono); color: var(--accent);
+      overflow-x: auto; white-space: pre; margin: 0; border: none; border-radius: 0;
+    }
+    :global(.pg-copy) {
+      font: 500 10px var(--font-sans); background: transparent;
+      border: 1px solid var(--border); color: var(--fg-3);
+      padding: 2px 8px; border-radius: 4px; cursor: pointer;
+    }
+    :global(.pg-copy:hover) { color: var(--fg-2); border-color: var(--border-hover); }
+
+    @media (max-width: 640px) {
+      :global(.pg-grid) { grid-template-columns: 1fr; }
+      :global(.pg-preview) { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+
+    /* ── Examples ── */
+    .examples { display: flex; flex-direction: column; gap: 16px; }
+
+    .ex-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .ex-header {
+      padding: 10px 16px;
+      font: 600 12px/1 var(--font-sans);
+      color: var(--fg-3);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-subtle);
+    }
+    :global(.ex-live) {
+      padding: 32px 24px;
+      display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+      background: var(--bg);
+      background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .ex-code-wrap {
+      position: relative;
+      border-top: 1px solid var(--border);
+      background: var(--bg-subtle);
+    }
+    .ex-code {
+      margin: 0; border: none; border-radius: 0;
+      padding: 14px 16px;
+      font: 12px/1.7 var(--font-mono);
+      color: var(--fg-3);
+      overflow-x: auto; white-space: pre;
+    }
+    .ex-copy {
+      position: absolute; top: 8px; right: 8px;
+      font: 500 10px var(--font-sans);
+      padding: 3px 10px; border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--bg-muted); color: var(--fg-3);
+      cursor: pointer; opacity: 0; transition: opacity 120ms;
+    }
+    .ex-code-wrap:hover .ex-copy { opacity: 1; }
+    .ex-copy:hover { color: var(--fg-2); border-color: var(--border-hover); }
+
+    /* ── Tables ── */
+    .tb { border: 1px solid var(--border); border-radius: 10px; overflow-x: auto; margin-bottom: 8px; }
     table { width: 100%; border-collapse: collapse; }
     th {
       text-align: left; padding: 10px 16px;
-      font-size: 13px; font-weight: 500; color: var(--fg-3);
+      font: 600 10px/1 var(--font-sans);
+      color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em;
       background: var(--bg-subtle); border-bottom: 1px solid var(--border);
     }
     td {
@@ -121,10 +249,10 @@ function esc(s: string) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').re
     .ty { font-family: var(--font-mono); font-size: 13px; color: var(--fg-3); }
     .df { font-family: var(--font-mono); font-size: 13px; color: var(--fg-3); }
 
-    /* Prev/Next */
+    /* ── Prev/Next ── */
     .pnav { display: flex; justify-content: space-between; gap: 16px; margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--border); }
-    .pc { display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius); transition: border-color 120ms; }
-    .pc:hover { border-color: var(--border-hover); }
+    .pc { display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; transition: border-color 120ms; }
+    .pc:hover { border-color: var(--accent); background: var(--accent-dim); }
     .pc.r { text-align: right; margin-left: auto; }
     .pd { font-size: 13px; color: var(--fg-3); }
     .pname { font-size: 15px; font-weight: 500; }

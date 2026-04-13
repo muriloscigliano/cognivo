@@ -321,7 +321,7 @@
 
     // Auto-connect with API key
     async function connectAI() {
-      const apiKey = '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';
+      const apiKey = prompt('Enter your OpenAI API key') || '';
       const status = document.getElementById('apiStatus');
 
       try {

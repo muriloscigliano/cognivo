@@ -48,8 +48,8 @@ export class CgInput extends LitElement {
       border-radius: var(--cg-component-input-radius);
       background: var(--cg-color-input-background-default);
       transition:
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       height: var(--cg-component-input-height-md);
       position: relative;
     }
@@ -101,7 +101,7 @@ export class CgInput extends LitElement {
     }
     :host([error]) .wrapper.focused {
       border-color: var(--cg-color-status-error-text-default);
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
     }
 
     /* Success */
@@ -110,7 +110,7 @@ export class CgInput extends LitElement {
     }
     :host([success]) .wrapper.focused {
       border-color: var(--cg-color-status-success-text-default);
-      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-success);
     }
 
     /* Disabled */
@@ -168,7 +168,7 @@ export class CgInput extends LitElement {
     /* Show placeholder only when label is floated (focused or has value) */
     .field.floated input::placeholder {
       color: var(--cg-color-input-text-placeholder);
-      transition: color var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
 
     input:disabled { cursor: not-allowed; }
@@ -185,10 +185,10 @@ export class CgInput extends LitElement {
       pointer-events: none;
       transform-origin: left top;
       transition:
-        top var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
-        transform var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
-        font-size var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
-        color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        top var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        font-size var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       z-index: 2;
       white-space: nowrap;
       overflow: hidden;
@@ -264,14 +264,14 @@ export class CgInput extends LitElement {
       padding: 0;
       flex-shrink: 0;
       transition:
-        background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       opacity: 0;
       transform: scale(0.8);
-      animation: clearIn 150ms var(--cg-motion-easing-enter) forwards;
+      animation: clearIn 150ms var(--cg-transition-easing-ease-out) forwards;
     }
-    .clear:hover { background: var(--cg-overlay-dark-light); color: var(--cg-color-surface-base-text); }
+    .clear:hover { background: var(--cg-overlay-accent-subtle); color: var(--cg-color-surface-base-text); }
     .clear:active { transform: scale(0.9); }
     .clear svg { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
 
@@ -286,7 +286,7 @@ export class CgInput extends LitElement {
       color: var(--cg-color-input-text-placeholder);
       flex-shrink: 0;
       font-variant-numeric: tabular-nums;
-      transition: color var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     :host([error]) .count { color: var(--cg-color-status-error-text-default); }
 
@@ -408,9 +408,7 @@ export class CgInput extends LitElement {
         ${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : nothing}
         ${this.clearable && this.value && !this.loading ? html`
           <button class="clear" @click=${this._handleClear} aria-label="Clear input" tabindex="-1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
-              <path d="M18 6L6 18M6 6l12 12"></path>
-            </svg>
+            <cg-icon name="x" size="xs"></cg-icon>
           </button>
         ` : nothing}
         ${this.maxlength ? html`<span class="count">${this.value.length}/${this.maxlength}</span>` : nothing}

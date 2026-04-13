@@ -38,7 +38,7 @@ interface LabelDef {
 export class AiAnnotation extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out) both;
     }
 
     .container {
@@ -70,8 +70,8 @@ export class AiAnnotation extends LitElement {
       font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
       transition:
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .label-btn:hover { background: var(--cg-overlay-dark-subtle); }
     .label-btn.selected { border-color: currentColor; background: var(--cg-overlay-dark-subtle); }
@@ -101,7 +101,7 @@ export class AiAnnotation extends LitElement {
     .annotated-span {
       cursor: pointer;
       border-bottom: var(--cg-border-width-100) solid;
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .annotated-span:hover { opacity: 0.7; }
     .annotated-span:focus-visible {

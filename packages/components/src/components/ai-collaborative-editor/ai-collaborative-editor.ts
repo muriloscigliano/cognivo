@@ -36,7 +36,7 @@ export class AiCollaborativeEditor extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);
       overflow: hidden;
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -136,7 +136,7 @@ export class AiCollaborativeEditor extends LitElement {
       width: var(--cg-spacing-6);
       height: var(--cg-spacing-6);
       border-radius: 50%;
-      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .presence-dot:hover {
       transform: scale(1.3);

@@ -26,7 +26,7 @@ export class CgSlider extends LitElement {
       display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--cg-spacing-8);
     }
     .label { font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-medium); color: var(--cg-color-surface-base-text); }
-    .value-display { font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-semibold); color: var(--cg-color-action-primary-background-default); transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-bounce); }
+    .value-display { font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-semibold); color: var(--cg-color-action-primary-background-default); transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out); }
     .value-display.active { transform: scale(1.1); }
 
     /* ── Track container ── */
@@ -55,7 +55,7 @@ export class CgSlider extends LitElement {
       height: 100%;
       border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-slider-track-filled);
-      transition: width var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       pointer-events: none;
     }
     .track-fill.dragging {
@@ -69,7 +69,7 @@ export class CgSlider extends LitElement {
       transform: translate(-50%, -50%);
       z-index: 2;
       pointer-events: none;
-      transition: left var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: left var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .thumb-wrapper.dragging {
       transition: none;
@@ -81,7 +81,7 @@ export class CgSlider extends LitElement {
       background: var(--cg-color-slider-thumb-background);
       border: var(--cg-border-width-100) solid var(--cg-color-surface-cards-border);
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-      transition: transform var(--cg-motion-duration-normal) var(--cg-motion-easing-bounce), box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out), box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       pointer-events: auto;
       cursor: grab;
     }
@@ -117,7 +117,7 @@ export class CgSlider extends LitElement {
       white-space: nowrap;
       pointer-events: none;
       opacity: 0;
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default), transform var(--cg-motion-duration-slow) cubic-bezier(0.22, 1.8, 0.36, 1);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-slow) cubic-bezier(0.22, 1.8, 0.36, 1);
     }
     .tooltip::after {
       content: '';
@@ -194,7 +194,7 @@ export class CgSlider extends LitElement {
     :host([variant="toggle"]) .thumb {
       width: var(--cg-spacing-20);
       height: var(--cg-spacing-20);
-      border: var(--cg-border-width-50) solid var(--cg-overlay-dark-light);
+      border: var(--cg-border-width-50) solid var(--cg-overlay-accent-subtle);
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
     }
     :host([variant="toggle"]) .thumb:hover {

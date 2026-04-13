@@ -71,7 +71,7 @@ export class AiChartSummary extends LitElement {
       border-radius: var(--cg-border-radius-50);
       cursor: pointer;
       padding: 0;
-      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .icon-btn:hover { color: var(--cg-color-surface-base-text); }
     .icon-btn:active { transform: scale(var(--cg-interaction-press-scale)); }

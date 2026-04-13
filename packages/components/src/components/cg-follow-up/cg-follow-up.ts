@@ -56,16 +56,16 @@ export class CgFollowUp extends LitElement {
       font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
       transition:
-        border-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       white-space: nowrap;
       line-height: var(--cg-line-height-snug);
       display: inline-flex;
       align-items: center;
       gap: var(--cg-spacing-6);
-      animation: fadeIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
+      animation: fadeIn var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out) both;
       animation-delay: calc(var(--item-index, 0) * 60ms);
     }
 
@@ -129,8 +129,8 @@ export class CgFollowUp extends LitElement {
       font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       transition:
-        border-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .more-badge:hover {
       border-color: var(--cg-color-action-primary-background-default);

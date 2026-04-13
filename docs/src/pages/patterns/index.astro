@@ -36,85 +36,85 @@ const client = new CachedClient(baseClient, {
   {
     name: 'Semantic Caching',
     module: 'SemanticCachedClient',
-    description: 'Cache AI responses by semantic similarity using embeddings. Returns cached results for semantically equivalent queries even if wording differs.',
+    description: 'Cache based on semantic similarity rather than exact match. Uses embeddings to find similar previous queries.',
     example: `import { SemanticCachedClient, SemanticCacheStore } from '@cognivo/core';
 
 const client = new SemanticCachedClient(baseClient, {
-  cache: new SemanticCacheStore({ embeddingFn, threshold: 0.92 }),
+  store: new SemanticCacheStore({ threshold: 0.9 }),
 });`,
   },
   {
-    name: 'Routing',
+    name: 'Model Routing',
     module: 'ModelRouterClient',
-    description: 'Route requests to different models based on intent, complexity, or custom rules. Use fast models for simple tasks and powerful models for complex ones.',
+    description: 'Route requests to different AI models based on intent, complexity, or custom logic. Optimize cost and quality.',
     example: `import { ModelRouterClient } from '@cognivo/core';
 
 const client = new ModelRouterClient({
   routes: [
-    { intent: AiIntent.Summarize, client: fastClient },
-    { intent: AiIntent.Forecast, client: powerfulClient },
+    { match: { intent: AiIntent.Summarize }, client: fastClient },
+    { match: { intent: AiIntent.Forecast }, client: advancedClient },
   ],
-  defaultClient: fastClient,
+  default: baseClient,
 });`,
   },
   {
     name: 'Conversation',
     module: 'ConversationalClient',
-    description: 'Maintain conversation history across multiple turns. Automatic context window management with configurable history length.',
-    example: `import { ConversationalClient, ConversationHistory } from '@cognivo/core';
+    description: 'Manage multi-turn conversations with automatic history tracking and context window management.',
+    example: `import { ConversationalClient } from '@cognivo/core';
 
 const client = new ConversationalClient(baseClient, {
-  history: new ConversationHistory({ maxTurns: 20 }),
+  maxTurns: 20,
+  systemPrompt: 'You are a data analyst.',
 });`,
   },
   {
     name: 'Circuit Breaker',
     module: 'CircuitBreakerClient',
-    description: 'Prevent cascading failures by tripping a circuit breaker after repeated errors. Auto-recovers after a cooldown period.',
+    description: 'Stop calling a failing provider after repeated errors. Auto-recover after a cooldown period.',
     example: `import { CircuitBreakerClient } from '@cognivo/core';
 
 const client = new CircuitBreakerClient(baseClient, {
   failureThreshold: 5,
-  resetTimeout: 30000, // 30s cooldown
+  cooldownMs: 30_000,
 });`,
   },
   {
     name: 'Self-Refine',
     module: 'SelfRefineClient',
-    description: 'Iteratively refine AI outputs by feeding results back through the model with critique prompts. Improves quality through multi-pass generation.',
+    description: 'Iteratively improve AI responses by feeding the output back as input. Useful for complex analysis.',
     example: `import { SelfRefineClient } from '@cognivo/core';
 
 const client = new SelfRefineClient(baseClient, {
   maxIterations: 3,
-  stopWhen: (result) => result.confidence > 0.9,
+  judge: (result) => result.confidence > 0.9,
 });`,
   },
   {
     name: 'Extended Thinking',
     module: 'ExtendedThinkingClient',
-    description: 'Chain-of-thought prompting that breaks complex problems into reasoning steps before generating a final answer.',
+    description: 'Chain-of-thought reasoning with structured steps. The AI shows its work before producing a final answer.',
     example: `import { ExtendedThinkingClient } from '@cognivo/core';
 
 const client = new ExtendedThinkingClient(baseClient, {
-  thinkingSteps: ['analyze', 'hypothesize', 'validate', 'conclude'],
+  steps: ['analyze', 'hypothesize', 'verify', 'conclude'],
 });`,
   },
   {
     name: 'Prompt Optimization',
     module: 'PromptOptimizer',
-    description: 'DSPy-inspired automatic prompt optimization. Evaluates prompt variants against test cases to find the best-performing prompt.',
-    example: `import { PromptOptimizer, PromptEvaluator, confidenceMetric } from '@cognivo/core';
+    description: 'Automatically improve prompts based on evaluation metrics. A/B test different prompt strategies.',
+    example: `import { PromptOptimizer, PromptEvaluator } from '@cognivo/core';
 
-const optimizer = new PromptOptimizer(baseClient, {
-  evaluator: new PromptEvaluator({ metrics: [confidenceMetric] }),
-  testCases: [...],
-});
-const bestPrompt = await optimizer.optimize();`,
+const optimizer = new PromptOptimizer({
+  evaluator: new PromptEvaluator({ metrics: ['relevance', 'coherence'] }),
+  variants: [promptA, promptB],
+});`,
   },
   {
     name: 'Agent Coordination',
     module: 'AgentCoordinator',
-    description: 'Coordinate multiple AI agents working on subtasks. Decompose complex tasks, assign to specialized agents, and merge results.',
+    description: 'Orchestrate multiple AI agents with a planner. Each agent has a role and the coordinator manages the workflow.',
     example: `import { AgentCoordinator } from '@cognivo/core';
 
 const coordinator = new AgentCoordinator({
@@ -139,32 +139,67 @@ console.log(tracer.spans); // [{ name, duration, metadata, ... }]`,
 ---
 
 <DocsLayout title="AI Patterns">
-  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">AI Integration Patterns</h1>
-  <p style="color: #6b7280; margin-bottom: 1rem;">
-    12 production-ready patterns for robust AI integration. All patterns implement the <code>AiClient</code> interface
+  <h1>AI Integration Patterns</h1>
+  <p class="subtitle">
+    12 production-ready patterns for robust AI integration. All patterns implement <code>AiClient</code>
     and compose via the decorator pattern.
   </p>
-  <p style="margin-bottom: 2rem; font-size: 0.9rem;">
-    <strong>Install:</strong> <code>pnpm add @cognivo/core</code> -- all patterns are included in the core package.
+  <p class="install">
+    <strong>Install:</strong> <code>pnpm add @cognivo/core</code> — all patterns included.
   </p>
 
   {patterns.map((pattern, i) => (
-    <section style="margin-bottom: 2rem; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem;">
-      <div style="display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.5rem;">
-        <span style="color: var(--accent); font-weight: 700; font-size: 0.85rem;">{String(i + 1).padStart(2, '0')}</span>
-        <h2 style="font-size: 1.25rem; font-weight: 700;">{pattern.name}</h2>
-        <code style="font-size: 0.8rem;">{pattern.module}</code>
+    <section class="pattern" id={`p${i}`}>
+      <div class="pattern-header">
+        <span class="pattern-num">{String(i + 1).padStart(2, '0')}</span>
+        <h2>{pattern.name}</h2>
+        <code class="pattern-mod">{pattern.module}</code>
       </div>
-      <p style="color: var(--text-2); margin-bottom: 1rem;">{pattern.description}</p>
+      <p>{pattern.description}</p>
       <pre><code>{pattern.example}</code></pre>
     </section>
   ))}
 
-  <section style="margin-top: 2rem; padding: 1.25rem; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px;">
-    <p style="font-size: 0.9rem;">
-      <strong>Composing patterns:</strong> All patterns implement <code>AiClient</code>, so you can stack them:
-      <code>ObservableClient(GuardedClient(CachedClient(OpenAiClient)))</code>.
-      See the <a href="/core">Core API</a> page for a full composition example.
-    </p>
-  </section>
+  <cg-callout variant="info" title="Composing Patterns">
+    <span>All patterns implement <code>AiClient</code>, so you can stack them:
+    <code>ObservableClient(GuardedClient(CachedClient(OpenAiClient)))</code>.
+    See the <a href="/core" style="color: var(--accent);">Core API</a> page for a full example.</span>
+  </cg-callout>
+
+  <style>
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.03em; }
+    .subtitle { color: var(--fg-2); margin-bottom: 12px; line-height: 1.7; }
+    .install { margin-bottom: 32px; font-size: 14px; color: var(--fg-3); }
+
+    .pattern {
+      margin-bottom: 20px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .pattern:hover { border-color: var(--border-hover); }
+    .pattern-header {
+      display: flex; align-items: baseline; gap: 10px;
+      margin-bottom: 8px;
+    }
+    .pattern-num {
+      font: 700 13px/1 var(--font-mono);
+      color: var(--accent);
+    }
+    .pattern-header h2 {
+      font-size: 18px; font-weight: 700;
+      margin: 0; padding: 0; border: none;
+    }
+    .pattern-header h2::before { display: none; }
+    .pattern-mod {
+      font-size: 12px;
+      color: var(--accent);
+      opacity: 0.7;
+    }
+    .pattern p {
+      color: var(--fg-2); margin-bottom: 16px; line-height: 1.7;
+    }
+    .pattern pre { margin: 0; }
+  </style>
 </DocsLayout>

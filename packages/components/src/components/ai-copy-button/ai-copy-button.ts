@@ -21,7 +21,7 @@ import { hostBase, reducedMotion, fadeSlideInKeyframes } from '../../styles/inde
 export class AiCopyButton extends LitElement {
   static override styles = [hostBase, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn 200ms var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -34,14 +34,14 @@ export class AiCopyButton extends LitElement {
       cursor: pointer;
       border: none;
       border-radius: var(--cg-border-radius-100);
-      transition: background var(--cg-motion-duration-normal) var(--cg-motion-easing-color), color var(--cg-motion-duration-normal) var(--cg-motion-easing-color), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: background var(--cg-transition-duration-default) var(--cg-transition-easing-default), color var(--cg-transition-duration-default) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       white-space: nowrap;
     }
     .copy-btn:active {
       transform: scale(var(--cg-interaction-press-scale));
     }
     .copy-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -94,7 +94,7 @@ export class AiCopyButton extends LitElement {
     /* Error state */
     .copy-btn[data-error="true"] {
       color: var(--cg-color-status-error-text) !important;
-      animation: error-shake var(--cg-motion-duration-slow) var(--cg-motion-easing-color);
+      animation: error-shake var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     @keyframes error-shake {
       0%, 100% { transform: translateX(0); }

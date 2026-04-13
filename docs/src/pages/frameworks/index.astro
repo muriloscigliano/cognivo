@@ -14,7 +14,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 
     <!-- Vanilla HTML -->
     <section class="section">
-      <h2>Vanilla HTML / Any Framework</h2>
+      <h2 id="vanilla">Vanilla HTML / Any Framework</h2>
       <p class="section-desc">Import once, use everywhere. No framework adapter needed.</p>
       <pre><code>{`<script type="module">
   import '@cognivo/components';
@@ -33,7 +33,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 
     <!-- React -->
     <section class="section">
-      <h2>React</h2>
+      <h2 id="react">React</h2>
       <p class="section-desc">Type-safe React wrappers with proper event handling and prop mapping.</p>
 
       <h3>Installation</h3>
@@ -97,7 +97,7 @@ const handleInput = (e: CustomEvent<{ value: string }>) => {
 
     <!-- Vue -->
     <section class="section">
-      <h2>Vue</h2>
+      <h2 id="vue">Vue</h2>
       <p class="section-desc">Vue 3 wrappers with v-model support and typed props.</p>
 
       <h3>Installation</h3>
@@ -138,7 +138,7 @@ const query = ref('');
 
     <!-- Svelte / Angular / Others -->
     <section class="section">
-      <h2>Svelte, Angular, SolidJS</h2>
+      <h2 id="svelte">Svelte, Angular, SolidJS</h2>
       <p class="section-desc">No adapter needed — use Web Components directly.</p>
 
       <h3>Svelte</h3>

@@ -30,7 +30,7 @@ import { sanitizeHTML } from '../../utils/sanitize.js';
 export class AiStreamingText extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .container {

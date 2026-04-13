@@ -40,7 +40,7 @@ export class AiTestRunner extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);
       padding: var(--cg-spacing-16);
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([hidden]) { display: none; }
 
@@ -116,13 +116,13 @@ export class AiTestRunner extends LitElement {
     .progress-pass {
       background: var(--cg-color-status-success-text);
       height: 100%;
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     .progress-fail {
       background: var(--cg-color-status-error-text);
       height: 100%;
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     .test-list {
@@ -220,7 +220,7 @@ export class AiTestRunner extends LitElement {
       border: var(--cg-border-width-100) solid var(--cg-color-status-warning-text);
       border-top-color: transparent;
       border-radius: 50%;
-      animation: spin var(--cg-motion-duration-slow) linear infinite;
+      animation: spin var(--cg-transition-duration-slow) linear infinite;
     }
 
   `];

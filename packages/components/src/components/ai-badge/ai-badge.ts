@@ -36,8 +36,8 @@ export class AiBadge extends LitElement {
       border: var(--cg-border-width-50) solid transparent;
       position: relative;
       transition:
-        filter var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+        filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .badge:focus-visible {
       outline: none;
@@ -87,7 +87,7 @@ export class AiBadge extends LitElement {
     :host([size="lg"]) .bar-fill {
       height: 100%;
       border-radius: var(--cg-border-radius-full);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     /* ── Colors ── */
@@ -131,7 +131,7 @@ export class AiBadge extends LitElement {
     .spark-bar {
       width: var(--cg-spacing-2);
       border-radius: var(--cg-border-radius-full);
-      transition: height var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: height var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
       opacity: 0.5;
     }
     .spark-bar:last-child { opacity: 1; }
@@ -152,7 +152,7 @@ export class AiBadge extends LitElement {
       white-space: nowrap;
       pointer-events: none;
       opacity: 0;
-      transition: opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       z-index: var(--cg-z-index-300);
       box-shadow:
         0 var(--cg-shadow-sm-y) var(--cg-shadow-sm-blur) var(--cg-shadow-sm-spread) rgba(0, 0, 0, 0.08);

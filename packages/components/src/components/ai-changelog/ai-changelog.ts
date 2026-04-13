@@ -36,7 +36,7 @@ const TYPE_CSS_CLASS: Record<string, string> = {
 export class AiChangelog extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -92,7 +92,7 @@ export class AiChangelog extends LitElement {
       border-radius: var(--cg-border-radius-100);
       padding: var(--cg-spacing-12);
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .entry-card:hover { border-color: var(--cg-color-surface-cards-border); }
     .entry-card:active { transform: scale(var(--cg-interaction-press-scale)); }
@@ -159,7 +159,7 @@ export class AiChangelog extends LitElement {
       line-height: 1.5;
       overflow: hidden;
       max-height: var(--cg-spacing-40);
-      transition: max-height var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: max-height var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .changes-preview.expanded {
       max-height: var(--_ai-changelog-expanded-max-height, 500px);
@@ -173,11 +173,11 @@ export class AiChangelog extends LitElement {
       cursor: pointer;
       padding: var(--cg-spacing-4) 0;
       margin-top: var(--cg-spacing-4);
-      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .expand-toggle:hover { color: var(--cg-color-surface-base-text); }
     .expand-toggle:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -196,7 +196,7 @@ export class AiChangelog extends LitElement {
       padding: var(--cg-spacing-4) var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-100);
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-default), color var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default), color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .rollback-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .rollback-btn:hover {
@@ -204,7 +204,7 @@ export class AiChangelog extends LitElement {
       color: var(--cg-color-status-warning-text);
     }
     .rollback-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 

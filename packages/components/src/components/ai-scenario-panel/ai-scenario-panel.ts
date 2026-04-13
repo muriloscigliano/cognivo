@@ -58,7 +58,7 @@ export class AiScenarioPanel extends LitElement {
       padding: var(--cg-spacing-16) var(--cg-spacing-16);
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       cursor: pointer;
-      transition: background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .scenario:last-child { border-bottom: none; }
     .scenario:hover { background: var(--cg-color-action-secondary-background-hover); }

@@ -56,7 +56,7 @@ export class AiMemoryPanel extends LitElement {
       background: none; border: none;
       border-bottom: var(--cg-border-width-100) solid transparent;
       cursor: pointer; font-family: inherit;
-      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .tab:hover { color: var(--cg-color-surface-base-text); }
     .tab.active {
@@ -91,7 +91,7 @@ export class AiMemoryPanel extends LitElement {
       padding: var(--cg-spacing-16) var(--cg-spacing-20);
       border-radius: var(--cg-border-radius-50);
       margin: 0 var(--cg-spacing-8);
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       position: relative;
     }
     .memory:hover { background: var(--cg-overlay-dark-subtle); }
@@ -122,7 +122,7 @@ export class AiMemoryPanel extends LitElement {
     .memory-actions {
       position: absolute; top: var(--cg-spacing-8); right: var(--cg-spacing-16);
       display: flex; gap: var(--cg-spacing-2);
-      opacity: 0; transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      opacity: 0; transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .memory:hover .memory-actions { opacity: 1; }
 
@@ -132,7 +132,7 @@ export class AiMemoryPanel extends LitElement {
       color: var(--cg-color-surface-container-outlined); cursor: pointer;
       display: flex; align-items: center; justify-content: center; padding: 0;
       border-radius: var(--cg-border-radius-50);
-      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .mem-btn svg { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
     .mem-btn:hover { color: var(--cg-color-surface-base-text); }

@@ -40,7 +40,7 @@ export interface DropdownItem {
 export class CgDropdown extends LitElement {
   static override styles = [entranceStagger, css`
     :host {
-      transition: color var(--cg-transition-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       display: inline-block;
       position: relative;
       font-family: var(--cg-font-family-primary);
@@ -54,7 +54,7 @@ export class CgDropdown extends LitElement {
 
     .menu {
       position: absolute;
-      z-index: 1000;
+      z-index: var(--cg-z-index-400);
       display: flex;
       flex-direction: column;
       min-width: 200px;
@@ -72,8 +72,8 @@ export class CgDropdown extends LitElement {
       transform-origin: top left;
       pointer-events: none;
       transition:
-        opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        transform var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     @keyframes dropdown-enter {
@@ -86,7 +86,7 @@ export class CgDropdown extends LitElement {
       opacity: 1;
       transform: scale(1);
       pointer-events: auto;
-      animation: dropdown-enter var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      animation: dropdown-enter var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     /* Position variants */
@@ -121,7 +121,7 @@ export class CgDropdown extends LitElement {
       to { opacity: 0; transform: scale(0.95); }
     }
     .menu.closing {
-      animation: dropdown-exit var(--cg-transition-duration-fast) var(--cg-motion-easing-exit) forwards;
+      animation: dropdown-exit var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-in) forwards;
     }
 
     /* Reduced motion */
@@ -165,8 +165,8 @@ export class CgDropdown extends LitElement {
 
     .menu-item:focus-visible {
       box-shadow:
-        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
-        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
+        0 0 0 2px var(--cg-color-focus-ring-offset),
+        0 0 0 calc(2px + 2px) var(--cg-color-focus-ring);
       outline: none;
     }
 
@@ -220,7 +220,7 @@ export class CgDropdown extends LitElement {
       border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border);
       border-top-color: var(--cg-color-surface-container-text);
       border-radius: var(--cg-border-radius-full);
-      animation: spin var(--cg-motion-duration-slow) linear infinite;
+      animation: spin var(--cg-transition-duration-slow) linear infinite;
     }
     @keyframes spin {
       to { transform: rotate(360deg); }

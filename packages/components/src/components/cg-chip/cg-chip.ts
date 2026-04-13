@@ -4,22 +4,18 @@ import { hostBase, reducedMotion } from '../../styles/index.js';
 
 /**
  * @element cg-chip
- * Pill-shaped tag/chip with color variants, optional icon, and remove button.
+ * Pill-shaped tag/chip with neutral default, color variants, optional icon,
+ * removable X button, and toggleable selected state.
  *
  * @example
  * ```html
- * <cg-chip label="TypeScript" variant="accent"></cg-chip>
- * <cg-chip label="Bug" variant="error" removable icon="[bug icon]"></cg-chip>
- * <cg-chip label="Done" variant="success" disabled></cg-chip>
+ * <cg-chip label="TypeScript"></cg-chip>
+ * <cg-chip label="Bug" variant="error" removable></cg-chip>
+ * <cg-chip label="Active" selected></cg-chip>
  * ```
  *
- * @fires {CustomEvent<{label: string}>} cg-chip-click - When the chip is clicked
+ * @fires {CustomEvent<{label: string, selected: boolean}>} cg-chip-click - When the chip is clicked
  * @fires {CustomEvent<{label: string}>} cg-chip-remove - When the remove button is clicked
- *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Accent variant color
- * @cssprop [--cg-interaction-press-scale=0.97] - Press scale feedback
- * @cssprop [--cg-color-surface-base-border=#27272a] - Default variant border
- * @cssprop [--cg-font-size-sm=14px] - Chip font size (md)
  */
 @customElement('cg-chip')
 export class CgChip extends LitElement {
@@ -28,8 +24,10 @@ export class CgChip extends LitElement {
       display: inline-flex;
       align-items: center;
       gap: var(--cg-spacing-4);
-      border: var(--cg-border-width-50) solid transparent;
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-surface-cards-background);
+      color: var(--cg-color-surface-base-text);
       cursor: pointer;
       font-family: inherit;
       font-weight: var(--cg-font-weight-medium);
@@ -38,12 +36,12 @@ export class CgChip extends LitElement {
       user-select: none;
       -webkit-font-smoothing: antialiased;
       transition:
-        transform var(--cg-motion-duration-slow) var(--cg-motion-easing-default),
-        background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     /* ── Sizes ── */
@@ -58,7 +56,13 @@ export class CgChip extends LitElement {
       height: var(--cg-spacing-32);
     }
 
-    /* ── Press scale ── */
+    /* ── Hover ── */
+    .chip:hover:not(.disabled) {
+      border-color: var(--cg-color-input-border-hover);
+      transform: scale(1.02);
+    }
+
+    /* ── Press ── */
     .chip:active:not(.disabled) {
       transform: scale(var(--cg-interaction-press-scale));
     }
@@ -66,9 +70,9 @@ export class CgChip extends LitElement {
     /* ── Focus ring ── */
     .chip:focus-visible {
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background),
-        0 0 0 4px var(--cg-focus-ring-color);
+        0 0 0 var(--cg-spacing-2) var(--cg-overlay-accent-strong);
       outline: none;
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     /* ── Disabled ── */
@@ -78,63 +82,54 @@ export class CgChip extends LitElement {
       pointer-events: none;
     }
 
-    /* ── Variant: default ── */
-    :host([variant="default"]) .chip {
-      background: var(--cg-color-badge-background-default);
-      color: var(--cg-color-surface-container-text);
-      border-color: var(--cg-color-surface-base-border);
-    }
-    :host([variant="default"]) .chip:hover:not(.disabled) {
-      background: var(--cg-color-action-secondary-background-hover);
-      transform: scale(1.02);
-    }
-
     /* ── Variant: success ── */
     :host([variant="success"]) .chip {
-      background: var(--cg-color-badge-background-success);
+      background: var(--cg-color-status-success-background-default);
       color: var(--cg-color-status-success-text-default);
       border-color: var(--cg-color-status-success-border-default);
     }
     :host([variant="success"]) .chip:hover:not(.disabled) {
       background: var(--cg-color-status-success-background-hover);
-      color: var(--cg-color-status-success-text-inverse);
-      transform: scale(1.02);
     }
 
     /* ── Variant: warning ── */
     :host([variant="warning"]) .chip {
-      background: var(--cg-color-badge-background-warning);
+      background: var(--cg-color-status-warning-background-default);
       color: var(--cg-color-status-warning-text-default);
       border-color: var(--cg-color-status-warning-border-default);
     }
     :host([variant="warning"]) .chip:hover:not(.disabled) {
       background: var(--cg-color-status-warning-background-hover);
-      color: var(--cg-color-status-warning-text-inverse);
-      transform: scale(1.02);
     }
 
     /* ── Variant: error ── */
     :host([variant="error"]) .chip {
-      background: var(--cg-color-badge-background-error);
+      background: var(--cg-color-status-error-background-default);
       color: var(--cg-color-status-error-text-default);
       border-color: var(--cg-color-status-error-border-default);
     }
     :host([variant="error"]) .chip:hover:not(.disabled) {
       background: var(--cg-color-status-error-background-hover);
-      color: var(--cg-color-status-error-text-inverse);
-      transform: scale(1.02);
     }
 
-    /* ── Variant: accent ── */
-    :host([variant="accent"]) .chip {
+    /* ── Variant: info ── */
+    :host([variant="info"]) .chip {
       background: var(--cg-color-status-info-background-default);
-      color: var(--cg-color-accent-text);
+      color: var(--cg-color-status-info-text-default);
       border-color: var(--cg-color-status-info-border-default);
     }
-    :host([variant="accent"]) .chip:hover:not(.disabled) {
+    :host([variant="info"]) .chip:hover:not(.disabled) {
       background: var(--cg-color-status-info-background-hover);
-      color: var(--cg-color-status-info-text-inverse);
-      transform: scale(1.02);
+    }
+
+    /* ── Selected state ── */
+    :host([selected]) .chip {
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-action-primary-text-default);
+      border-color: var(--cg-color-action-primary-background-default);
+    }
+    :host([selected]) .chip:hover:not(.disabled) {
+      background: var(--cg-color-action-primary-background-hover);
     }
 
     /* ── Rounded variants ── */
@@ -180,42 +175,34 @@ export class CgChip extends LitElement {
       flex-shrink: 0;
       opacity: 0.6;
       transition:
-        opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        transform var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-
-    .remove-btn:hover {
-      opacity: 1;
-      background: var(--cg-overlay-dark-light);
-    }
-
-    .remove-btn:active {
-      transform: scale(0.9);
-    }
-
+    .remove-btn:hover { opacity: 1; }
+    .remove-btn:active { transform: scale(0.9); }
     .remove-btn:focus-visible {
-      box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background),
-        0 0 0 4px var(--cg-focus-ring-color);
+      box-shadow: 0 0 0 var(--cg-spacing-2) var(--cg-overlay-accent-strong);
       outline: none;
     }
   `];
 
   @property({ type: String }) label = '';
-  @property({ type: String, reflect: true }) variant: 'default' | 'success' | 'warning' | 'error' | 'accent' = 'default';
+  @property({ type: String, reflect: true }) variant: 'default' | 'success' | 'warning' | 'error' | 'info' = 'default';
   @property({ type: Boolean }) removable = false;
   @property({ type: String, reflect: true }) size: 'sm' | 'md' = 'md';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'full';
   @property({ type: String }) icon = '';
   @property({ type: Boolean }) disabled = false;
+  @property({ type: Boolean, reflect: true }) selected = false;
 
   private _handleClick() {
     if (this.disabled) return;
+    this.selected = !this.selected;
     this.dispatchEvent(new CustomEvent('cg-chip-click', {
       bubbles: true,
       composed: true,
-      detail: { label: this.label },
+      detail: { label: this.label, selected: this.selected },
     }));
   }
 
@@ -236,6 +223,7 @@ export class CgChip extends LitElement {
         role="button"
         tabindex="${this.disabled ? '-1' : '0'}"
         aria-disabled="${this.disabled}"
+        aria-pressed="${this.selected}"
         aria-label="${this.label}"
         @click="${this._handleClick}"
         @keydown="${(e: KeyboardEvent) => {

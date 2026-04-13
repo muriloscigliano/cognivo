@@ -32,7 +32,7 @@ export interface ProgressPhase {
 export class AiProgressSteps extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([hidden]) { display: none; }
 
@@ -63,7 +63,7 @@ export class AiProgressSteps extends LitElement {
       transform: scale(var(--cg-interaction-press-scale));
     }
     .step:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
       border-radius: var(--cg-border-radius-50);
     }
@@ -78,7 +78,7 @@ export class AiProgressSteps extends LitElement {
       flex: 1;
       height: 2px;
       background: var(--cg-color-surface-cards-border);
-      transition: background var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      transition: background var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .line.done {
       background: var(--cg-color-action-primary-background-default);
@@ -98,7 +98,7 @@ export class AiProgressSteps extends LitElement {
       border: var(--cg-border-width-100) solid var(--cg-color-surface-cards-border);
       background: var(--cg-color-surface-container-background);
       color: var(--cg-color-input-text-placeholder);
-      transition: opacity var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      transition: opacity var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
 
     .dot[data-status="complete"] {

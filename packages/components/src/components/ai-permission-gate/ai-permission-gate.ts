@@ -35,7 +35,7 @@ interface Permission {
 export class AiPermissionGate extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([hidden]) { display: none; }
 
@@ -84,7 +84,7 @@ export class AiPermissionGate extends LitElement {
       border-radius: var(--cg-border-radius-100);
       background: var(--cg-color-surface-base-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .feature-row:hover { border-color: var(--cg-color-surface-cards-border); }
 
@@ -138,7 +138,7 @@ export class AiPermissionGate extends LitElement {
       border-radius: var(--cg-border-radius-100);
       cursor: pointer;
       flex-shrink: 0;
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .request-btn:hover {
       border-color: var(--cg-color-surface-base-text);
@@ -148,7 +148,7 @@ export class AiPermissionGate extends LitElement {
       transform: scale(var(--cg-interaction-press-scale));
     }
     .request-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 

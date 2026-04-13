@@ -39,7 +39,7 @@ export class AiModelSelector extends LitElement {
       background: transparent; color: var(--cg-color-surface-container-outlined);
       font: inherit; font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-medium);
       cursor: pointer; text-transform: capitalize;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .filter-chip:hover { border-color: var(--cg-color-surface-cards-hover-border); color: var(--cg-color-surface-base-text); }
     .filter-chip:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
@@ -59,7 +59,7 @@ export class AiModelSelector extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-bounce);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out);
       position: relative;
     }
     .model-card:hover { border-color: var(--cg-color-surface-cards-hover-border); background: var(--cg-color-surface-cards-hover-background); }
@@ -198,7 +198,7 @@ export class AiModelSelector extends LitElement {
             role="${this.multi ? 'checkbox' : 'radio'}" tabindex="0"
             aria-selected="${this._selectedIds.has(m.id)}"
             @click=${() => this._handleSelect(m)}>
-            ${this._selectedIds.has(m.id) ? html`<div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>` : nothing}
+            ${this._selectedIds.has(m.id) ? html`<div class="check"><cg-icon name="check" size="sm"></cg-icon></div>` : nothing}
             <div class="model-header">
               ${m.icon ? html`<span class="model-icon">${m.icon}</span>` : nothing}
               <div class="model-info">

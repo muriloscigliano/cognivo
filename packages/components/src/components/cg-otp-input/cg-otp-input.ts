@@ -40,10 +40,10 @@ export class CgOtpInput extends LitElement {
       caret-color: var(--cg-color-action-primary-background-default);
       outline: none;
       transition:
-        border-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        box-shadow var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
-      animation: otpCellIn var(--cg-motion-duration-slow) var(--cg-motion-easing-default) both;
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      animation: otpCellIn var(--cg-transition-duration-slow) var(--cg-transition-easing-default) both;
     }
 
     @keyframes otpCellIn {
@@ -73,7 +73,7 @@ export class CgOtpInput extends LitElement {
     }
     :host([error]) .box:focus {
       border-color: var(--cg-color-status-error-text-default);
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
     }
 
     /* ── Success state ── */
@@ -82,7 +82,7 @@ export class CgOtpInput extends LitElement {
     }
     :host([success]) .box:focus {
       border-color: var(--cg-color-status-success-text-default);
-      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-success);
     }
 
     .box.filled {

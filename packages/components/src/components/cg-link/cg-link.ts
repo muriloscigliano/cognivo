@@ -23,7 +23,7 @@ export class CgLink extends LitElement {
       position: relative;
       cursor: pointer;
       font-weight: var(--cg-font-weight-medium);
-      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     /* Underline animation — grows from center */
@@ -35,7 +35,7 @@ export class CgLink extends LitElement {
       width: 0;
       height: var(--cg-border-width-50);
       background: currentColor;
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default), left var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default), left var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     a:hover::after {
       left: 0;
@@ -48,7 +48,7 @@ export class CgLink extends LitElement {
       border-radius: var(--cg-border-radius-50);
       box-shadow:
         0 0 0 2px var(--cg-color-surface-base-background),
-        0 0 0 4px var(--cg-focus-ring-color);
+        0 0 0 4px var(--cg-color-focus-ring);
     }
 
     /* Sizes */
@@ -58,11 +58,11 @@ export class CgLink extends LitElement {
 
     /* Variant: default */
     :host([variant="default"]) a { color: var(--cg-color-surface-base-text); }
-    :host([variant="default"]) a:hover { color: var(--cg-color-accent-text); }
+    :host([variant="default"]) a:hover { color: var(--cg-color-surface-base-text); }
 
     /* Variant: accent */
-    :host([variant="accent"]) a { color: var(--cg-color-accent-text); }
-    :host([variant="accent"]) a:hover { color: var(--cg-color-accent-text); }
+    :host([variant="accent"]) a { color: var(--cg-color-surface-base-text); }
+    :host([variant="accent"]) a:hover { color: var(--cg-color-surface-base-text); }
 
     /* Variant: muted */
     :host([variant="muted"]) a { color: var(--cg-color-input-text-placeholder); }
@@ -71,13 +71,13 @@ export class CgLink extends LitElement {
     /* Variant: underline — always show underline */
     :host([variant="underline"]) a { color: var(--cg-color-surface-base-text); text-decoration: underline; text-underline-offset: var(--cg-spacing-2); text-decoration-skip-ink: auto; }
     :host([variant="underline"]) a::after { display: none; }
-    :host([variant="underline"]) a:hover { color: var(--cg-color-accent-text); }
+    :host([variant="underline"]) a:hover { color: var(--cg-color-surface-base-text); }
 
     /* Active press feedback */
     a:active {
       opacity: 0.8;
       transform: scale(var(--cg-interaction-press-scale));
-      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default), opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default), opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     /* Disabled */

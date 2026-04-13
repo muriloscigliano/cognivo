@@ -54,8 +54,8 @@ export class AiSearch extends LitElement {
       padding: 0 var(--cg-spacing-12);
       height: var(--cg-component-input-height-md);
       transition:
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .input-row:hover { border-color: var(--cg-color-input-border-hover); }
     .input-row:focus-within { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
@@ -106,7 +106,7 @@ export class AiSearch extends LitElement {
       font-size: var(--cg-font-size-sm);
       font-family: inherit;
       display: flex;
-      transition: color var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .clear-btn:focus-visible {
       outline: none;
@@ -123,7 +123,7 @@ export class AiSearch extends LitElement {
       background: var(--cg-color-modal-container-background);
       border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
       border-radius: var(--cg-border-radius-100);
-      z-index: 50;
+      z-index: var(--cg-z-index-200);
       max-height: 360px;
       overflow-y: auto;
     }
@@ -160,9 +160,9 @@ export class AiSearch extends LitElement {
       font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       transition:
-        border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color),
-        color var(--cg-motion-duration-normal) var(--cg-motion-easing-color),
-        background-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+        border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        background-color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .filter-tag:hover { border-color: var(--cg-color-input-border-hover); color: var(--cg-color-surface-base-text); }
     .filter-tag:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
@@ -175,7 +175,7 @@ export class AiSearch extends LitElement {
       gap: var(--cg-spacing-8);
       padding: var(--cg-spacing-8) var(--cg-spacing-12);
       cursor: pointer;
-      transition: background var(--cg-motion-duration-fast);
+      transition: background var(--cg-transition-duration-fast);
     }
     .result-item:hover, .result-item.highlighted { background: var(--cg-overlay-dark-subtle); }
     .result-item:active { transform: scale(var(--cg-interaction-press-scale)); }
@@ -204,7 +204,7 @@ export class AiSearch extends LitElement {
       gap: var(--cg-spacing-8);
       padding: var(--cg-spacing-6) var(--cg-spacing-12);
       cursor: pointer;
-      transition: background var(--cg-motion-duration-fast);
+      transition: background var(--cg-transition-duration-fast);
     }
     .recent-item:hover { background: var(--cg-overlay-dark-subtle); }
     .recent-icon { color: var(--cg-color-input-border-hover); font-size: var(--cg-font-size-xs); }
@@ -216,7 +216,7 @@ export class AiSearch extends LitElement {
       cursor: pointer;
       font-size: var(--cg-font-size-xs);
       opacity: 0;
-      transition: opacity var(--cg-motion-duration-normal);
+      transition: opacity var(--cg-transition-duration-default);
     }
     .recent-item:hover .recent-delete { opacity: 1; }
     .recent-delete:focus-visible {
@@ -309,7 +309,7 @@ export class AiSearch extends LitElement {
     return html`
       <div class="search-wrapper" role="combobox" aria-expanded="${showDropdown}" aria-haspopup="listbox">
         <div class="input-row">
-          <span class="search-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span>
+          <span class="search-icon" aria-hidden="true"><cg-icon name="search" size="sm"></cg-icon></span>
           <input type="text"
             .value=${this._query}
             .placeholder=${this.placeholder}
@@ -319,7 +319,7 @@ export class AiSearch extends LitElement {
             @blur=${this._handleBlur}
             @keydown=${this._handleKeyDown} />
           ${this._query ? html`
-            <button class="clear-btn" @click=${this._handleClear} aria-label="Clear search"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+            <button class="clear-btn" @click=${this._handleClear} aria-label="Clear search"><cg-icon name="x" size="xs"></cg-icon></button>
           ` : html`<span class="shortcut"><kbd>Cmd</kbd>+<kbd>K</kbd></span>`}
         </div>
 
@@ -356,7 +356,7 @@ export class AiSearch extends LitElement {
               ${this.suggestions.map((s, i) => html`
                 <div class="result-item ${(i + this.results.length) === this._highlightIndex ? 'highlighted' : ''}"
                   role="option" @mousedown=${(e: Event) => { e.preventDefault(); this._query = s; }}>
-                  <span class="result-icon" style="color: var(--cg-color-surface-base-text);"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg></span>
+                  <span class="result-icon" style="color: var(--cg-color-surface-base-text);"><cg-icon name="sparkle" size="xs"></cg-icon></span>
                   <div class="result-info"><div class="result-title">${s}</div></div>
                 </div>
               `)}

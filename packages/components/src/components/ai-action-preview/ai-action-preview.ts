@@ -28,7 +28,7 @@ type Severity = 'low' | 'medium' | 'high' | 'critical';
 export class AiActionPreview extends LitElement {
   static override styles = [hostBlock, reducedMotion, pulseKeyframes, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
     }
 
     .card {
@@ -146,10 +146,10 @@ export class AiActionPreview extends LitElement {
       font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-                  color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-                  filter var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-                  transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+                  color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+                  filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+                  transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       border: none;
     }
     button:focus-visible {

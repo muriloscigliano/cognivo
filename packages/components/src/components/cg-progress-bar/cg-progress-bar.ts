@@ -82,14 +82,14 @@ export class CgProgressBar extends LitElement {
       border-radius: var(--cg-component-progress-radius);
       background: var(--cg-color-loading-spinner-primary);
       opacity: 0.25;
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     /* ── Fill bar ── */
     .fill {
       height: 100%;
       border-radius: var(--cg-component-progress-radius);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
       position: relative;
       overflow: hidden;
     }

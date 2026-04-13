@@ -64,7 +64,7 @@ export class CgCheckbox extends LitElement {
       align-items: center;
       justify-content: center;
       position: relative;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default), box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-bounce);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default), box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out);
     }
 
     /* ── Rounded variants ── */
@@ -94,7 +94,7 @@ export class CgCheckbox extends LitElement {
     .box.checked {
       background: var(--cg-color-checkbox-background-checked);
       border-color: var(--cg-color-checkbox-border-checked);
-      animation: boxPop var(--cg-motion-duration-slow) var(--cg-motion-easing-bounce);
+      animation: boxPop var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out);
     }
 
     /* Indeterminate */
@@ -114,13 +114,13 @@ export class CgCheckbox extends LitElement {
     .check-icon .tick {
       stroke-dasharray: 24;
       stroke-dashoffset: 24;
-      animation: drawTick var(--cg-motion-duration-slow) 60ms var(--cg-motion-easing-enter) forwards;
+      animation: drawTick var(--cg-transition-duration-slow) 60ms var(--cg-transition-easing-ease-out) forwards;
     }
 
     .check-icon .dash {
       stroke-dasharray: 14;
       stroke-dashoffset: 14;
-      animation: drawDash var(--cg-motion-duration-normal) 40ms var(--cg-motion-easing-enter) forwards;
+      animation: drawDash var(--cg-transition-duration-default) 40ms var(--cg-transition-easing-ease-out) forwards;
     }
 
     @keyframes drawTick {
@@ -184,7 +184,7 @@ export class CgCheckbox extends LitElement {
       border: var(--cg-border-width-100) solid var(--cg-color-loading-spinner-secondary);
       border-top-color: var(--cg-color-loading-spinner-primary);
       border-radius: var(--cg-border-radius-full);
-      animation: cg-checkbox-spin var(--cg-motion-duration-slow) linear infinite;
+      animation: cg-checkbox-spin var(--cg-transition-duration-slow) linear infinite;
     }
     @keyframes cg-checkbox-spin {
       to { transform: rotate(360deg); }

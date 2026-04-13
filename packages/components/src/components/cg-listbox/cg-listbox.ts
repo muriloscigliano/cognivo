@@ -44,7 +44,7 @@ export class CgListbox extends LitElement {
       cursor: pointer;
       font-size: var(--cg-font-size-sm);
       color: var(--cg-color-surface-base-text);
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       border: var(--cg-border-width-50) solid transparent;
       min-height: 44px;
     }
@@ -66,7 +66,7 @@ export class CgListbox extends LitElement {
     }
 
     .option:active:not(.disabled) {
-      background: var(--cg-overlay-dark-light);
+      background: var(--cg-overlay-accent-subtle);
     }
 
     /* Checkmark tick */
@@ -76,7 +76,7 @@ export class CgListbox extends LitElement {
       flex-shrink: 0;
       color: var(--cg-color-action-primary-background-default);
       opacity: 0;
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .option.selected .check {
       opacity: 1;

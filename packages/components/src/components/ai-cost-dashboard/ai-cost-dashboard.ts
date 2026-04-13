@@ -29,7 +29,7 @@ interface CostEntry {
 export class AiCostDashboard extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([hidden]) { display: none; }
 
@@ -114,7 +114,7 @@ export class AiCostDashboard extends LitElement {
       height: 100%;
       border-radius: var(--cg-border-radius-100);
       background: var(--cg-color-action-primary-background-default);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     .budget-fill.warn { background: var(--cg-color-status-warning-text); }
     .budget-fill.danger { background: var(--cg-color-status-error-text-default); }
@@ -138,7 +138,7 @@ export class AiCostDashboard extends LitElement {
       cursor: pointer;
       padding: var(--cg-spacing-8) 0;
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .model-row:last-of-type { border-bottom: none; }
     .model-row:hover { opacity: 0.85; }
@@ -170,7 +170,7 @@ export class AiCostDashboard extends LitElement {
       height: 100%;
       border-radius: var(--cg-border-radius-100);
       background: var(--cg-color-action-primary-background-default);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     .model-cost {
@@ -209,7 +209,7 @@ export class AiCostDashboard extends LitElement {
       background: var(--cg-color-action-primary-background-default);
       border-radius: var(--cg-border-radius-50) var(--cg-border-radius-50) 0 0;
       min-height: var(--cg-spacing-2);
-      transition: height var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: height var(--cg-transition-duration-default) var(--cg-transition-easing-default);
       opacity: 0.7;
     }
     .trend-bar:hover {

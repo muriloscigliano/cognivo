@@ -31,7 +31,7 @@ export interface ValidationCheck {
 export class AiValidationChecklist extends LitElement {
   static override styles = [hostBlock, reducedMotion, spinKeyframes, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn 200ms var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -64,7 +64,7 @@ export class AiValidationChecklist extends LitElement {
       padding: var(--cg-spacing-6) var(--cg-spacing-16);
       border-radius: var(--cg-border-radius-full);
       cursor: pointer;
-      transition: filter var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .run-btn:hover { filter: brightness(0.9); }
     .run-btn:focus-visible {
@@ -89,7 +89,7 @@ export class AiValidationChecklist extends LitElement {
       height: 100%;
       background: var(--cg-color-action-primary-background-default);
       border-radius: var(--cg-border-radius-50);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     /* ── Check list ── */
@@ -109,7 +109,7 @@ export class AiValidationChecklist extends LitElement {
       padding: var(--cg-spacing-8) var(--cg-spacing-12);
       border-radius: var(--cg-border-radius-100);
       cursor: pointer;
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .check-item:hover {
       background: var(--cg-color-surface-cards-border);

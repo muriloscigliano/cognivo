@@ -12,7 +12,7 @@ import { css } from 'lit';
  * (Apple/macOS pattern used in premium dark UIs)
  */
 export const insetHighlight = css`
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 0 var(--cg-overlay-white-light);
 `;
 
 /**
@@ -23,7 +23,7 @@ export const insetHighlight = css`
 export const surfaceGradient = css`
   background-image: linear-gradient(
     to bottom,
-    rgba(255, 255, 255, 0.03) 0%,
+    var(--cg-overlay-white-subtle) 0%,
     transparent 100%
   );
 `;
@@ -85,7 +85,7 @@ export const rippleEffect = css`
     inset: 0;
     background: radial-gradient(
       circle at 50% 50%,
-      rgba(255, 255, 255, 0.15) 0%,
+      var(--cg-overlay-white-strong) 0%,
       transparent 70%
     );
     opacity: 0;
@@ -150,13 +150,13 @@ export const exitFadeScaleKeyframes = css`
  * Use sparingly: max 2-3 glass elements per viewport.
  */
 export const glassCard = css`
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--cg-overlay-white-subtle);
   backdrop-filter: blur(12px) saturate(1.1);
   -webkit-backdrop-filter: blur(12px) saturate(1.1);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--cg-overlay-white-medium);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.36),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    0 8px 32px var(--cg-overlay-dark-strong),
+    inset 0 1px 0 var(--cg-overlay-white-light);
 `;
 
 /**

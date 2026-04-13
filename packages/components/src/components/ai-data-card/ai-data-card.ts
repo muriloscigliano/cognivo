@@ -48,7 +48,7 @@ interface CardAction {
 export class AiDataCard extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .card {
@@ -147,7 +147,7 @@ export class AiDataCard extends LitElement {
       color: var(--cg-color-surface-base-text);
       text-decoration: none;
       cursor: pointer;
-      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .val-link:hover {
       text-decoration: underline;

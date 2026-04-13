@@ -22,13 +22,13 @@ import { customElement, property, state } from 'lit/decorators.js';
  * @cssprop --cg-color-tooltip-background - Tooltip background
  * @cssprop --cg-font-size-xs - Tooltip font size (12px)
  * @cssprop --cg-component-tooltip-radius - Tooltip border radius
- * @cssprop --cg-motion-duration-slow - Fade+scale animation duration (250ms)
+ * @cssprop --cg-transition-duration-slow - Fade+scale animation duration (250ms)
  */
 @customElement('cg-tooltip')
 export class CgTooltip extends LitElement {
   static override styles = css`
     :host {
-      transition: color var(--cg-transition-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       display: inline-block;
       position: relative;
       font-family: var(--cg-font-family-primary);
@@ -57,8 +57,8 @@ export class CgTooltip extends LitElement {
       opacity: 0;
       transform: scale(0.92);
       transition:
-        opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        transform var(--cg-motion-duration-slow) cubic-bezier(0.34, 1.56, 0.64, 1);
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-slow) cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     /* Rich content slot may contain block elements */
@@ -77,7 +77,7 @@ export class CgTooltip extends LitElement {
       to { opacity: 0; transform: scale(0.92); }
     }
     .tooltip.closing {
-      animation: tooltip-exit var(--cg-transition-duration-fast) var(--cg-motion-easing-exit) forwards;
+      animation: tooltip-exit var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-in) forwards;
     }
 
     @media (prefers-reduced-motion: reduce) {

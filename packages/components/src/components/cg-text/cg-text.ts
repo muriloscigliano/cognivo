@@ -41,7 +41,7 @@ export class CgText extends LitElement {
     /* Colors */
     :host([color="default"]) { color: var(--cg-color-surface-base-text); }
     :host([color="muted"]) { color: var(--cg-color-surface-cards-disable-text); }
-    :host([color="accent"]) { color: var(--cg-color-accent-text); }
+    :host([color="accent"]) { color: var(--cg-color-surface-base-text); }
     :host([color="success"]) { color: var(--cg-color-status-success-text-default); }
     :host([color="warning"]) { color: var(--cg-color-status-warning-text-default); }
     :host([color="danger"]) { color: var(--cg-color-status-error-text-default); }

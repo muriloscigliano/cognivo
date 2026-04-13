@@ -45,7 +45,7 @@ export class AiResultPanel extends LitElement {
     }
     .collapse-icon {
       color: var(--cg-color-input-text-placeholder);
-      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .collapse-icon svg { width: 12px; height: 12px; display: block; }
     .panel.collapsed .collapse-icon { transform: rotate(-90deg); }
@@ -62,8 +62,8 @@ export class AiResultPanel extends LitElement {
       cursor: pointer;
       font-family: inherit;
       transition:
-        color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .header-btn:hover { color: var(--cg-color-surface-base-text); border-color: var(--cg-color-input-border-hover); }
     .header-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
@@ -89,7 +89,7 @@ export class AiResultPanel extends LitElement {
       border-bottom: var(--cg-border-width-100) solid transparent;
       cursor: pointer;
       font-family: inherit;
-      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .tab:hover { color: var(--cg-color-surface-base-text); }
     .tab.active {
@@ -201,7 +201,7 @@ export class AiResultPanel extends LitElement {
     .driver-fill {
       height: 100%;
       border-radius: var(--cg-border-radius-full);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     .driver-fill.positive { background: var(--cg-color-status-success-text-default); }
     .driver-fill.negative { background: var(--cg-color-status-error-text-default); }

@@ -36,7 +36,7 @@ interface KpiItem {
 export class AiKpiGrid extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .card {
@@ -68,7 +68,7 @@ export class AiKpiGrid extends LitElement {
     .kpi {
       padding: var(--cg-spacing-16) var(--cg-spacing-20);
       cursor: pointer;
-      transition: background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       /* Borders via box-shadow trick — inner dividers only, no doubling */
       box-shadow:
         inset calc(-1 * var(--cg-border-width-50)) 0 0 var(--cg-color-surface-cards-border),

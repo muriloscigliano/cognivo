@@ -27,7 +27,7 @@ export class CgNumberInput extends LitElement {
       border-radius: var(--cg-border-radius-100);
       background: var(--cg-color-input-background-default);
       overflow: hidden;
-      transition: border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-default), box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default), box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .wrapper.focused {
       border-color: var(--cg-color-input-border-focus);
@@ -42,7 +42,7 @@ export class CgNumberInput extends LitElement {
     :host([error]) .wrapper { border-color: var(--cg-color-input-border-error); }
     :host([error]) .wrapper.focused {
       border-color: var(--cg-color-status-error-text-default);
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
     }
     :host([error]) .label { color: var(--cg-color-status-error-text-default); }
 
@@ -50,7 +50,7 @@ export class CgNumberInput extends LitElement {
     :host([success]) .wrapper { border-color: var(--cg-color-status-success-text-default); }
     :host([success]) .wrapper.focused {
       border-color: var(--cg-color-status-success-text-default);
-      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-success);
     }
     :host([success]) .label { color: var(--cg-color-status-success-text-default); }
 
@@ -62,7 +62,7 @@ export class CgNumberInput extends LitElement {
       border: var(--cg-border-width-100) solid var(--cg-color-loading-spinner-secondary);
       border-top-color: var(--cg-color-loading-spinner-primary);
       border-radius: var(--cg-border-radius-full);
-      animation: cg-number-spin var(--cg-motion-duration-slow) linear infinite;
+      animation: cg-number-spin var(--cg-transition-duration-slow) linear infinite;
       flex-shrink: 0;
       margin: 0 var(--cg-spacing-4);
     }
@@ -87,7 +87,7 @@ export class CgNumberInput extends LitElement {
       cursor: pointer;
       padding: 0;
       flex-shrink: 0;
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-bounce);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out);
       -webkit-user-select: none;
       user-select: none;
     }

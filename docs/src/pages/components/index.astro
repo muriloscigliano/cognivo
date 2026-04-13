@@ -8,22 +8,49 @@ const grouped = categories.map(cat => ({
 })).filter(g => g.items.length > 0);
 
 const total = registry.length;
+const aiCount = registry.filter(c => c.tag.startsWith('ai-')).length;
+const foundationCount = total - aiCount;
 ---
 
 <DocsLayout title="Components">
   <h1>Components</h1>
   <p class="sub">{total} web components built with Lit 3 and Shadow DOM. Works everywhere.</p>
 
+  <div class="stats">
+    <div class="stat">
+      <span class="stat-val">{total}</span>
+      <span class="stat-label">Total</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val">{foundationCount}</span>
+      <span class="stat-label">Foundation</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val">{aiCount}</span>
+      <span class="stat-label">AI-Native</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val">{categories.length}</span>
+      <span class="stat-label">Categories</span>
+    </div>
+  </div>
+
   <pre><code>pnpm add @cognivo/components @cognivo/tokens</code></pre>
 
   {grouped.map(g => (
     <section id={g.id}>
-      <h2>{g.label} <span class="cnt">{g.items.length}</span></h2>
+      <h2>
+        {g.label}
+        <span class="cat-count">{g.items.length}</span>
+      </h2>
       <div class="grid">
         {g.items.map(comp => (
           <a href={`/components/${comp.tag}`} class="card">
-            <span class="card-name">{comp.name}</span>
-            <span class="card-tag">&lt;{comp.tag}&gt;</span>
+            <span class="card-icon">{comp.tag.startsWith('ai-') ? '◆' : '○'}</span>
+            <div class="card-info">
+              <span class="card-name">{comp.name}</span>
+              <span class="card-tag">&lt;{comp.tag}&gt;</span>
+            </div>
           </a>
         ))}
       </div>
@@ -31,37 +58,101 @@ const total = registry.length;
   ))}
 
   <style>
-    h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 6px; }
-    .sub { font-size: 15px; color: var(--text-2); margin-bottom: 24px; }
+    h1 {
+      font-size: 2rem; font-weight: 700; letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+    .sub { font-size: 15px; color: var(--fg-2); margin-bottom: 28px; }
 
+    /* Stats row */
+    .stats {
+      display: flex; gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+    .stat {
+      flex: 1;
+      background: var(--bg-subtle);
+      padding: 16px 20px;
+      text-align: center;
+    }
+    .stat-val {
+      display: block;
+      font-size: 24px; font-weight: 700;
+      color: var(--fg);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .stat-label {
+      display: block;
+      font: 500 11px/1 var(--font-mono);
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 8px;
+    }
+
+    /* Category headers — matches [tag].astro h2 style */
     h2 {
-      font-size: 16px; font-weight: 600;
-      margin: 36px 0 12px;
-      padding-bottom: 8px;
+      font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
+      margin: 40px 0 16px;
+      padding-bottom: 10px;
       border-bottom: 1px solid var(--border);
       display: flex; align-items: center; gap: 8px;
+      color: var(--fg);
     }
-    .cnt { font-size: 12px; font-weight: 500; color: var(--text-3); font-family: var(--font-mono); }
+    .cat-count {
+      font: 500 12px/1 var(--font-mono);
+      color: var(--fg-4);
+      margin-left: auto;
+    }
 
+    /* Component grid */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 6px;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px;
     }
 
     .card {
-      display: flex; flex-direction: column; gap: 2px;
-      padding: 10px 12px;
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 20px;
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      transition: border-color 120ms;
+      transition: border-color 120ms, background 120ms;
+      height: 120px;
     }
-    .card:hover { border-color: var(--border-strong); }
-    .card-name { font-size: 13px; font-weight: 500; }
-    .card-tag { font: 12px var(--font-mono); color: var(--text-3); }
+    .card:hover {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .card-icon {
+      font-size: 10px;
+      color: var(--fg-4);
+      flex-shrink: 0;
+      width: 16px; text-align: center;
+      margin-top: 3px;
+    }
+    .card:hover .card-icon { color: var(--accent); }
+    .card-info { min-width: 0; }
+    .card-name {
+      display: block;
+      font-size: 14px; font-weight: 500; color: var(--fg);
+      margin-bottom: 4px;
+    }
+    .card-tag {
+      display: block;
+      font: 12px var(--font-mono); color: var(--fg-4);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .card:hover .card-tag { color: var(--accent); }
 
     @media (max-width: 640px) {
-      .grid { grid-template-columns: 1fr 1fr; }
+      .grid { grid-template-columns: 1fr; }
+      .stats { flex-direction: column; }
     }
   </style>
 </DocsLayout>

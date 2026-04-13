@@ -35,7 +35,7 @@ export class AiPresence extends LitElement {
   static override styles = [hostBase, reducedMotion, fadeSlideInKeyframes, css`
     :host {
       align-items: center;
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([hidden]) { display: none; }
 
@@ -53,7 +53,7 @@ export class AiPresence extends LitElement {
       position: relative;
       margin-left: calc(-1 * var(--cg-spacing-8);
       z-index: 1;
-      transition: transform var(--cg-motion-duration-normal) var(--cg-motion-easing-color), z-index 0ms;
+      transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-default), z-index 0ms;
     }
     .avatar-wrapper:first-child { margin-left: 0; }
     .avatar-wrapper:hover,
@@ -134,7 +134,7 @@ export class AiPresence extends LitElement {
       white-space: nowrap;
       pointer-events: none;
       opacity: 0;
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       z-index: 20;
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }

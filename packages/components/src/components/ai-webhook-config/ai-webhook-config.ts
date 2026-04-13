@@ -41,7 +41,7 @@ export class AiWebhookConfig extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);
       padding: var(--cg-spacing-16);
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([hidden]) { display: none; }
 
@@ -70,7 +70,7 @@ export class AiWebhookConfig extends LitElement {
       font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       font-family: inherit;
-      transition: filter var(--cg-motion-duration-fast) var(--cg-motion-easing-color), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .add-btn:hover {
       filter: brightness(1.1);
@@ -78,7 +78,7 @@ export class AiWebhookConfig extends LitElement {
     }
 
     .add-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -109,7 +109,7 @@ export class AiWebhookConfig extends LitElement {
     }
 
     input[type="url"]:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: -2px;
     }
 
@@ -134,7 +134,7 @@ export class AiWebhookConfig extends LitElement {
     }
 
     .event-chip:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -159,7 +159,7 @@ export class AiWebhookConfig extends LitElement {
       color: var(--cg-color-input-text-placeholder);
       cursor: pointer;
       font-family: inherit;
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .btn-sm:hover {
       border-color: var(--cg-color-surface-base-text);
@@ -168,7 +168,7 @@ export class AiWebhookConfig extends LitElement {
     }
 
     .btn-sm:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -234,7 +234,7 @@ export class AiWebhookConfig extends LitElement {
       border-radius: var(--cg-border-radius-full);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       cursor: pointer;
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .toggle-track::after {
@@ -246,7 +246,7 @@ export class AiWebhookConfig extends LitElement {
       background: var(--cg-color-input-text-placeholder);
       top: var(--cg-spacing-2);
       left: var(--cg-spacing-2);
-      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color), background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .toggle-switch input:checked + .toggle-track {
@@ -260,7 +260,7 @@ export class AiWebhookConfig extends LitElement {
     }
 
     .toggle-switch input:focus-visible + .toggle-track {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 

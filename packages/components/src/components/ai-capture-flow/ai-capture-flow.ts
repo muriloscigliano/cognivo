@@ -29,7 +29,7 @@ const STEPS: Step[] = ['upload', 'preview', 'processing', 'complete'];
 export class AiCaptureFlow extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn 200ms var(--cg-transition-easing-ease-out) both;
     }
 
     .card {
@@ -64,7 +64,7 @@ export class AiCaptureFlow extends LitElement {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-bold);
       flex-shrink: 0;
-      transition: opacity var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      transition: opacity var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .step-dot.done {
       background: var(--cg-color-action-primary-background-default);
@@ -82,7 +82,7 @@ export class AiCaptureFlow extends LitElement {
       flex: 1;
       height: 2px;
       background: var(--cg-color-surface-container-background);
-      transition: background var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      transition: background var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .step-line.done { background: var(--cg-color-action-primary-background-default); }
 
@@ -93,14 +93,14 @@ export class AiCaptureFlow extends LitElement {
       padding: var(--cg-spacing-24) var(--cg-spacing-16);
       text-align: center;
       cursor: pointer;
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .upload-zone:hover, .upload-zone.drag-over {
       border-color: var(--cg-color-surface-base-text);
       background: var(--cg-overlay-accent-subtle);
     }
     .upload-zone:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
     .upload-icon { font-size: var(--cg-font-size-3xl); margin-bottom: var(--cg-spacing-8); }
@@ -146,7 +146,7 @@ export class AiCaptureFlow extends LitElement {
       height: 100%;
       background: var(--cg-color-action-primary-background-default);
       border-radius: var(--cg-border-radius-25);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     .progress-pct {
       font-size: var(--cg-font-size-sm);
@@ -188,10 +188,10 @@ export class AiCaptureFlow extends LitElement {
       cursor: pointer;
       border: none;
       font-family: inherit;
-      transition: filter var(--cg-motion-duration-fast) var(--cg-motion-easing-color), background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .btn-row button:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
     .btn-primary {

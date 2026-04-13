@@ -46,7 +46,7 @@ export class CgLabel extends LitElement {
       color: var(--cg-color-input-text-placeholder);
       margin-top: var(--cg-spacing-2);
       line-height: var(--cg-line-height-snug);
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .error-text {
@@ -54,7 +54,7 @@ export class CgLabel extends LitElement {
       color: var(--cg-color-status-error-text-default);
       margin-top: var(--cg-spacing-2);
       line-height: var(--cg-line-height-snug);
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
   `];
 

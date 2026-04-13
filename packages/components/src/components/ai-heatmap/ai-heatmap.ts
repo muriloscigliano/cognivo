@@ -24,7 +24,7 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class AiHeatmap extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out) both;
     }
 
     .container {
@@ -47,7 +47,7 @@ export class AiHeatmap extends LitElement {
 
     .cell {
       cursor: pointer;
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .cell:hover { opacity: 0.85; stroke: var(--cg-color-surface-base-text); stroke-width: 1.5; }
     .cell:focus-visible {

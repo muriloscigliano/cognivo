@@ -66,7 +66,7 @@ export class CgSteps extends LitElement {
       flex: 1;
       height: var(--cg-spacing-2);
       background: var(--cg-color-surface-container-border);
-      transition: background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .h-line.done { background: var(--cg-color-status-success-text-default); }
     .step-h:first-child .h-line:first-child { visibility: hidden; }
@@ -78,7 +78,7 @@ export class CgSteps extends LitElement {
       min-height: var(--cg-spacing-24);
       background: var(--cg-color-surface-container-border);
       margin: var(--cg-spacing-4) 0;
-      transition: background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .v-line.done { background: var(--cg-color-status-success-text-default); }
 
@@ -98,9 +98,9 @@ export class CgSteps extends LitElement {
       flex-shrink: 0;
       position: relative;
       transition:
-        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        border-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     :host([compact]) .circle {

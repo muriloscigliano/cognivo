@@ -26,7 +26,7 @@ import { hostBlock, reducedMotion, fadeInKeyframes } from '../../styles/index.js
 export class AiTransformSlider extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeInKeyframes, css`
     :host {
-      animation: fadeIn var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      animation: fadeIn var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
 
     .container {
@@ -70,8 +70,8 @@ export class AiTransformSlider extends LitElement {
     .divider {
       position: absolute;
       z-index: 2;
-      transition: left var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-                  top var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: left var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+                  top var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .container.dragging .divider { transition: none; }
 
@@ -102,16 +102,16 @@ export class AiTransformSlider extends LitElement {
       justify-content: center;
       transform: translate(-50%, -50%);
       transition:
-        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        left var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        top var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        left var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        top var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .container.dragging .handle {
-      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-                  border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-                  box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+                  border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+                  box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .handle:hover {
       transform: translate(-50%, -50%) scale(1.1);

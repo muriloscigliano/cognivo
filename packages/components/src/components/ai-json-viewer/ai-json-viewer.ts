@@ -31,7 +31,7 @@ export class AiJsonViewer extends LitElement {
       font-size: var(--cg-font-size-sm);
       line-height: 1.6;
       color: var(--cg-color-surface-base-text);
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -55,7 +55,7 @@ export class AiJsonViewer extends LitElement {
       text-decoration: underline;
     }
     .key:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: 1px;
       border-radius: var(--cg-border-radius-25);
     }
@@ -79,13 +79,13 @@ export class AiJsonViewer extends LitElement {
       font-size: var(--cg-font-size-xs);
       vertical-align: middle;
       border-radius: var(--cg-border-radius-25);
-      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .toggle:hover {
       color: var(--cg-color-surface-base-text);
     }
     .toggle:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: 1px;
     }
 

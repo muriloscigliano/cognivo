@@ -45,7 +45,7 @@ export interface SidebarSection {
 export class AiSidebar extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([hidden]) { display: none; }
 
@@ -57,7 +57,7 @@ export class AiSidebar extends LitElement {
       border-right: var(--cg-border-width-50) solid var(--cg-color-surface-sidebar-border);
       width: var(--ai-sidebar-width, 240px);
       overflow: hidden;
-      transition: width var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      transition: width var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     :host([collapsed]) .sidebar {
       width: var(--ai-sidebar-collapsed-width, 56px);
@@ -74,13 +74,13 @@ export class AiSidebar extends LitElement {
       padding: var(--cg-spacing-12);
       cursor: pointer;
       font-size: var(--cg-font-size-sm);
-      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .collapse-btn:hover {
       color: var(--cg-color-surface-base-text);
     }
     .collapse-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: -2px;
     }
 
@@ -121,7 +121,7 @@ export class AiSidebar extends LitElement {
       white-space: nowrap;
       overflow: hidden;
       text-align: left;
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-color), color var(--cg-motion-duration-fast) var(--cg-motion-easing-color), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default), color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([collapsed]) .item {
       justify-content: center;
@@ -133,7 +133,7 @@ export class AiSidebar extends LitElement {
     }
     .item:active { transform: scale(var(--cg-interaction-press-scale)); }
     .item:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: -2px;
     }
     .item[aria-current="true"] {

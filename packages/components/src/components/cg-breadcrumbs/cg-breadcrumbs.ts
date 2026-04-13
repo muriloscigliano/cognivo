@@ -88,7 +88,7 @@ export class CgBreadcrumbs extends LitElement {
       line-height: var(--cg-line-height-snug);
       border-radius: var(--cg-border-radius-50);
       -webkit-font-smoothing: antialiased;
-      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .crumb-link:hover {
@@ -103,7 +103,7 @@ export class CgBreadcrumbs extends LitElement {
     .crumb-link:focus-visible {
       box-shadow:
         0 0 0 2px var(--cg-color-surface-base-background),
-        0 0 0 4px var(--cg-focus-ring-color);
+        0 0 0 4px var(--cg-color-focus-ring);
       outline: none;
     }
 
@@ -156,7 +156,7 @@ export class CgBreadcrumbs extends LitElement {
     .ellipsis:focus-visible {
       box-shadow:
         0 0 0 2px var(--cg-color-surface-base-background),
-        0 0 0 4px var(--cg-focus-ring-color);
+        0 0 0 4px var(--cg-color-focus-ring);
       outline: none;
     }
 

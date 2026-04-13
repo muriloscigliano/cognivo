@@ -38,7 +38,7 @@ type VoiceState = 'idle' | 'listening' | 'processing' | 'error' | 'unsupported';
 export class AiVoicePanel extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeInKeyframes, css`
     :host {
-      animation: fadeIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter);
+      animation: fadeIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
     }
 
     .panel {
@@ -84,7 +84,7 @@ export class AiVoicePanel extends LitElement {
       pointer-events: none;
     }
     .listening .pulse-ring {
-      animation: voicePulse 2s var(--cg-motion-easing-default) infinite;
+      animation: voicePulse 2s var(--cg-transition-easing-default) infinite;
     }
     .listening .pulse-ring:nth-child(2) { animation-delay: 0.6s; }
     .listening .pulse-ring:nth-child(3) { animation-delay: 1.2s; }
@@ -107,10 +107,10 @@ export class AiVoicePanel extends LitElement {
       align-items: center;
       justify-content: center;
       transition:
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        color var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        background var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       z-index: 1;
       position: relative;
     }

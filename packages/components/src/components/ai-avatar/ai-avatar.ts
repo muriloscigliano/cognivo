@@ -21,7 +21,7 @@ import { hostBase, reducedMotion, shimmerKeyframes, fadeSlideInKeyframes } from 
 export class AiAvatar extends LitElement {
   static override styles = [hostBase, reducedMotion, shimmerKeyframes, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 

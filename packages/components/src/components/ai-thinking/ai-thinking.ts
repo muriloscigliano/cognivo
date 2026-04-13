@@ -142,7 +142,7 @@ export class AiThinking extends LitElement {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, transparent 25%, var(--cg-overlay-dark-light) 50%, transparent 75%);
+      background: linear-gradient(90deg, transparent 25%, var(--cg-overlay-accent-subtle) 50%, transparent 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s linear infinite;
     }
@@ -169,7 +169,7 @@ export class AiThinking extends LitElement {
       height: 100%;
       background: var(--cg-color-action-primary-background-default);
       border-radius: var(--cg-border-radius-full);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     /* ── Tools ── */
@@ -189,7 +189,7 @@ export class AiThinking extends LitElement {
       background: var(--cg-color-surface-cards-background);
       color: var(--cg-color-surface-container-outlined);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      animation: materialize var(--cg-motion-duration-slow) var(--cg-motion-easing-enter) both;
+      animation: materialize var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out) both;
     }
     .tool-icon {
       width: var(--cg-spacing-12);
@@ -213,7 +213,7 @@ export class AiThinking extends LitElement {
       font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
       font-family: inherit;
-      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       margin-left: auto;
       flex-shrink: 0;
     }
@@ -309,8 +309,8 @@ export class AiThinking extends LitElement {
   }
 
   private _renderToolIcon(status: string) {
-    if (status === 'complete') return html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
-    if (status === 'error') return html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`;
+    if (status === 'complete') return html`<cg-icon name="check" size="xs"></cg-icon>`;
+    if (status === 'error') return html`<cg-icon name="x" size="xs"></cg-icon>`;
     return html`<span style="width:100%;height:100%;border:1.5px solid currentColor;border-top-color:transparent;border-radius:50%;display:block;"></span>`;
   }
 

@@ -36,7 +36,7 @@ export class AiDebugConsole extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-code-border);
       border-radius: var(--cg-border-radius-150);
       overflow: hidden;
-      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -67,7 +67,7 @@ export class AiDebugConsole extends LitElement {
     }
 
     .chevron {
-      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-input-text-placeholder);
     }
@@ -111,7 +111,7 @@ export class AiDebugConsole extends LitElement {
     }
 
     .clear-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -154,7 +154,7 @@ export class AiDebugConsole extends LitElement {
     }
 
     .entry-header:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: -2px;
     }
 

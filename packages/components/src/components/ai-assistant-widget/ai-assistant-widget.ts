@@ -57,7 +57,7 @@ export class AiAssistantWidget extends LitElement {
       align-items: center;
       justify-content: center;
       font-size: var(--cg-font-size-xl);
-      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color), filter var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default), filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       box-shadow: none;
     }
     .fab:hover {
@@ -87,7 +87,7 @@ export class AiAssistantWidget extends LitElement {
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      animation: scaleIn 200ms var(--cg-motion-easing-enter) both;
+      animation: scaleIn 200ms var(--cg-transition-easing-ease-out) both;
     }
 
     :host([position="bottom-right"]) .panel,
@@ -125,7 +125,7 @@ export class AiAssistantWidget extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .close-btn:hover {
       color: var(--cg-color-surface-base-text);
@@ -194,7 +194,7 @@ export class AiAssistantWidget extends LitElement {
       font-size: var(--cg-font-size-sm);
       font-family: inherit;
       outline: none;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .input-field::placeholder {
       color: var(--cg-color-input-text-placeholder);
@@ -216,7 +216,7 @@ export class AiAssistantWidget extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      transition: filter var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .send-btn:hover { filter: brightness(0.9); }
     .send-btn:disabled {

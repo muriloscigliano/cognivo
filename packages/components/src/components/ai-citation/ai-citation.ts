@@ -37,8 +37,8 @@ export class AiCitation extends LitElement {
       margin: 0 var(--cg-spacing-1);
       border: var(--cg-border-width-50) solid transparent;
       transition:
-        background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .cite-badge:hover {
       background: var(--cg-overlay-accent-medium);

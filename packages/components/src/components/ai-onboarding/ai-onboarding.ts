@@ -38,7 +38,7 @@ export interface OnboardingStep {
 export class AiOnboarding extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([hidden]) { display: none; }
 
@@ -78,7 +78,7 @@ export class AiOnboarding extends LitElement {
     }
     .dismiss-btn:hover { color: var(--cg-color-surface-base-text); }
     .dismiss-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -108,7 +108,7 @@ export class AiOnboarding extends LitElement {
       height: var(--cg-spacing-8);
       border-radius: 50%;
       background: var(--cg-color-surface-cards-border);
-      transition: background var(--cg-motion-duration-normal) var(--cg-motion-easing-color), transform var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      transition: background var(--cg-transition-duration-default) var(--cg-transition-easing-default), transform var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .dot.active {
       background: var(--cg-color-action-primary-background-default);
@@ -136,14 +136,14 @@ export class AiOnboarding extends LitElement {
       cursor: pointer;
       border: none;
       font-family: inherit;
-      transition: opacity var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      transition: opacity var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .nav-btn:disabled {
       opacity: 0.3;
       cursor: not-allowed;
     }
     .nav-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 

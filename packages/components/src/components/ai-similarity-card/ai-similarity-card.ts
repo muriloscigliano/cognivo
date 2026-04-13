@@ -59,7 +59,7 @@ export class AiSimilarityCard extends LitElement {
       border-radius: var(--cg-border-radius-100);
       padding: var(--cg-spacing-16);
       display: flex; flex-direction: column; gap: var(--cg-spacing-8);
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .item-card:hover { border-color: var(--cg-color-surface-cards-hover-border); }
 
@@ -128,12 +128,12 @@ export class AiSimilarityCard extends LitElement {
     .feature-bar-a {
       height: 100%; border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-action-primary-background-default);
-      transition: width var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .feature-bar-b {
       height: 100%; border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-surface-container-outlined);
-      transition: width var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .feature-vs {
       font-size: var(--cg-font-size-xs);

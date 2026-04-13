@@ -32,7 +32,7 @@ interface UploadedFile {
 export class AiFileUpload extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -42,7 +42,7 @@ export class AiFileUpload extends LitElement {
       padding: var(--cg-spacing-24);
       text-align: center;
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color), background var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      transition: border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default), background var(--cg-transition-duration-default) var(--cg-transition-easing-default);
       background: transparent;
     }
     .dropzone:hover,
@@ -50,7 +50,7 @@ export class AiFileUpload extends LitElement {
       border-color: var(--cg-color-surface-base-text);
       background: var(--cg-overlay-accent-subtle);
     }
-    .dropzone:active { transform: scale(var(--cg-interaction-press-scale)); transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color); }
+    .dropzone:active { transform: scale(var(--cg-interaction-press-scale)); transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default); }
     .dropzone:focus-visible {
       outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
@@ -75,7 +75,7 @@ export class AiFileUpload extends LitElement {
       height: 100%;
       background: var(--cg-color-action-primary-background-default);
       border-radius: var(--cg-border-radius-50);
-      transition: width var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      transition: width var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
 
     .drop-icon { font-size: var(--cg-spacing-32); margin-bottom: var(--cg-spacing-8); }
@@ -141,7 +141,7 @@ export class AiFileUpload extends LitElement {
       border-radius: var(--cg-border-radius-50);
       font-size: var(--cg-font-size-sm);
       line-height: 1;
-      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .remove-btn:hover { color: var(--cg-color-status-error-text-default); }
     .remove-btn:focus-visible {

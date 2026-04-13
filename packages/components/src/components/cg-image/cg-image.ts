@@ -83,11 +83,11 @@ export class CgImage extends LitElement {
     /* Loaded transition */
     img {
       opacity: 0;
-      transition: opacity var(--cg-motion-duration-slower) var(--cg-motion-easing-color);
+      transition: opacity var(--cg-transition-duration-slower) var(--cg-transition-easing-default);
     }
     img.loaded {
       opacity: 1;
-      animation: imgFadeIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter);
+      animation: imgFadeIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
     }
     @keyframes imgFadeIn {
       from { opacity: 0; transform: scale(1.01); }

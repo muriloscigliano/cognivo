@@ -19,7 +19,7 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
  *
  * @cssprop [--cg-color-input-background-default=#18181b] - Trigger background
  * @cssprop [--cg-color-surface-container-background=#18181b] - Dropdown panel background
- * @cssprop [--cg-focus-ring-color=#c8e650] - Focus/hover border accent
+ * @cssprop [--cg-color-focus-ring] - Focus/hover border accent
  * @cssprop [--cg-border-radius-150=12px] - Border radius for trigger and dropdown
  */
 
@@ -55,7 +55,7 @@ export class CgSelect extends LitElement {
       font: inherit; font-size: var(--cg-font-size-sm);
       color: var(--cg-color-input-text-default);
       cursor: pointer; height: var(--cg-component-select-height-md);
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       outline: none;
     }
     .trigger:hover:not(.disabled) { border-color: var(--cg-color-input-border-hover); }
@@ -72,7 +72,7 @@ export class CgSelect extends LitElement {
       border: var(--cg-border-width-100) solid var(--cg-color-loading-spinner-secondary);
       border-top-color: var(--cg-color-loading-spinner-primary);
       border-radius: var(--cg-border-radius-full);
-      animation: cg-select-spin var(--cg-motion-duration-slow) linear infinite;
+      animation: cg-select-spin var(--cg-transition-duration-slow) linear infinite;
       flex-shrink: 0;
     }
     @keyframes cg-select-spin {
@@ -95,7 +95,7 @@ export class CgSelect extends LitElement {
 
     .trigger-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .placeholder { color: var(--cg-color-input-text-placeholder); }
-    .chevron { width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); flex-shrink: 0; transition: transform var(--cg-motion-duration-normal) var(--cg-motion-easing-default); color: var(--cg-color-surface-container-outlined); }
+    .chevron { width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); flex-shrink: 0; transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-default); color: var(--cg-color-surface-container-outlined); }
     .trigger.open .chevron { transform: rotate(180deg); }
 
     .dropdown {
@@ -106,7 +106,7 @@ export class CgSelect extends LitElement {
       border-radius: var(--cg-component-card-radius);
       max-height: 240px; overflow-y: auto;
       opacity: 0; transform: translateY(calc(-1 * var(--cg-spacing-4))) scale(0.98); pointer-events: none;
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .dropdown.open {
       opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
@@ -117,7 +117,7 @@ export class CgSelect extends LitElement {
       padding: var(--cg-spacing-8) var(--cg-spacing-12); border-radius: var(--cg-border-radius-150); cursor: pointer;
       font-size: var(--cg-font-size-sm);
       color: var(--cg-color-surface-base-text);
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       display: flex; align-items: center; gap: var(--cg-spacing-8);
     }
     .option:hover { background: var(--cg-overlay-dark-subtle); }
@@ -128,7 +128,7 @@ export class CgSelect extends LitElement {
       width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); flex-shrink: 0;
       margin-left: auto; opacity: 0;
       color: var(--cg-color-action-primary-background-default);
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .option.selected .check { opacity: 1; }
 

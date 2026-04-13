@@ -35,8 +35,8 @@ export class CgTimePicker extends LitElement {
       cursor: pointer;
       outline: none;
       transition:
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .trigger:hover:not(.disabled) { border-color: var(--cg-color-input-border-hover); }
     .trigger:focus-visible { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
@@ -45,10 +45,10 @@ export class CgTimePicker extends LitElement {
 
     :host([error]) .trigger { border-color: var(--cg-color-input-border-error); }
     :host([error]) .trigger:focus-visible,
-    :host([error]) .trigger.open { border-color: var(--cg-color-status-error-text-default); box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2); }
+    :host([error]) .trigger.open { border-color: var(--cg-color-status-error-text-default); box-shadow: 0 0 0 3px var(--cg-shadow-focus-error); }
     :host([success]) .trigger { border-color: var(--cg-color-input-icon-success); }
     :host([success]) .trigger:focus-visible,
-    :host([success]) .trigger.open { border-color: var(--cg-color-status-success-text-default); box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2); }
+    :host([success]) .trigger.open { border-color: var(--cg-color-status-success-text-default); box-shadow: 0 0 0 3px var(--cg-shadow-focus-success); }
 
     /* Size */
     :host([size="lg"]) .trigger { height: var(--cg-component-input-height-lg); padding: 0 var(--cg-spacing-4); font-size: var(--cg-font-size-base); }
@@ -99,7 +99,7 @@ export class CgTimePicker extends LitElement {
       position: absolute;
       top: 100%;
       left: 0;
-      z-index: 50;
+      z-index: var(--cg-z-index-200);
       min-width: 240px;
       margin-top: var(--cg-spacing-4);
       padding: var(--cg-spacing-16);
@@ -110,8 +110,8 @@ export class CgTimePicker extends LitElement {
       transform: translateY(calc(-1 * var(--cg-spacing-4))) scale(0.98);
       pointer-events: none;
       transition:
-        opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .dropdown.open {
       opacity: 1;
@@ -164,8 +164,8 @@ export class CgTimePicker extends LitElement {
       border-radius: var(--cg-border-radius-50);
       cursor: pointer;
       transition:
-        background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .time-option:hover { background: var(--cg-color-action-secondary-background-hover); }
     .time-option:active { transform: scale(var(--cg-interaction-press-scale)); }
@@ -205,9 +205,9 @@ export class CgTimePicker extends LitElement {
       border-radius: var(--cg-border-radius-50);
       cursor: pointer;
       transition:
-        background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .period-btn:hover { border-color: var(--cg-color-input-border-hover); }
     .period-btn.active {

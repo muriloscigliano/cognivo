@@ -74,7 +74,7 @@ export class AiEvalScorecard extends LitElement {
       border-radius: var(--cg-border-radius-100);
       border: var(--cg-border-width-50) solid transparent;
       cursor: pointer;
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default), border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default), border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .metric:hover { background: var(--cg-overlay-dark-subtle); border-color: var(--cg-color-surface-cards-border); }
     .metric:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
@@ -110,7 +110,7 @@ export class AiEvalScorecard extends LitElement {
       height: 100%; border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-action-primary-background-default);
       opacity: 0.6;
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     /* Explanation */

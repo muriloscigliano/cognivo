@@ -39,7 +39,7 @@ export class CgTabs extends LitElement {
       height: var(--cg-border-width-100);
       background: var(--cg-color-action-primary-background-default);
       border-radius: var(--cg-border-radius-full);
-      transition: left var(--cg-motion-duration-normal) var(--cg-motion-easing-default), width var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: left var(--cg-transition-duration-default) var(--cg-transition-easing-default), width var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
 
     .tab {
@@ -54,7 +54,7 @@ export class CgTabs extends LitElement {
       border: none;
       cursor: pointer;
       white-space: nowrap;
-      transition: color var(--cg-motion-duration-normal) var(--cg-motion-easing-default), background var(--cg-motion-duration-normal) var(--cg-motion-easing-default), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-bounce);
+      transition: color var(--cg-transition-duration-default) var(--cg-transition-easing-default), background var(--cg-transition-duration-default) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out);
       font-family: inherit;
       position: relative;
     }
@@ -119,7 +119,7 @@ export class CgTabs extends LitElement {
       border-radius: var(--cg-border-radius-100);
       background: var(--cg-color-surface-tabbar-selected-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      transition: left var(--cg-motion-duration-normal) var(--cg-motion-easing-bounce), width var(--cg-motion-duration-normal) var(--cg-motion-easing-bounce);
+      transition: left var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out), width var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
       z-index: 0;
     }
     :host([variant="pills"]) .tab { z-index: 1; }

@@ -25,7 +25,7 @@ import { hostBlock, reducedMotion, pulseKeyframes, fadeSlideInKeyframes } from '
 export class AiBatchProgress extends LitElement {
   static override styles = [hostBlock, reducedMotion, pulseKeyframes, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn 200ms var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -129,13 +129,13 @@ export class AiBatchProgress extends LitElement {
     .progress-success {
       height: 100%;
       background: var(--cg-color-status-success-text-default);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     .progress-fail {
       height: 100%;
       background: var(--cg-color-status-error-text-default);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     /* ── Pulse animation for running ── */
@@ -173,14 +173,14 @@ export class AiBatchProgress extends LitElement {
       padding: var(--cg-spacing-8) var(--cg-spacing-12);
       border-radius: var(--cg-border-radius-100);
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color), color var(--cg-motion-duration-fast) var(--cg-motion-easing-color), background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .action-btn:hover {
       border-color: var(--cg-color-surface-cards-border);
       color: var(--cg-color-surface-base-text);
     }
     .action-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 

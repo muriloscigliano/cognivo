@@ -191,11 +191,11 @@ export class CgIcon extends LitElement {
     svg {
       width: 100%;
       height: 100%;
-      transition: color var(--cg-transition-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     :host([name="loading"]) svg {
-      animation: spin var(--cg-motion-duration-slow) linear infinite;
+      animation: spin var(--cg-transition-duration-slow) linear infinite;
     }
 
     .placeholder {

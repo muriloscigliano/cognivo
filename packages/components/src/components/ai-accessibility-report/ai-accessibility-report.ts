@@ -37,7 +37,7 @@ export class AiAccessibilityReport extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);
       padding: var(--cg-spacing-16);
-      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -73,7 +73,7 @@ export class AiAccessibilityReport extends LitElement {
       fill: none;
       stroke-width: 5;
       stroke-linecap: round;
-      transition: stroke-dashoffset var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: stroke-dashoffset var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     .score-text {

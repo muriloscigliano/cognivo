@@ -88,7 +88,7 @@ const motionEasings = [
 
     <!-- Install -->
     <section class="section">
-      <h2>Installation</h2>
+      <h2 id="installation">Installation</h2>
       <pre><code>pnpm add @cognivo/tokens</code></pre>
       <pre style="margin-top: 8px;"><code>{`/* Import in CSS */
 @import '@cognivo/tokens';
@@ -99,7 +99,7 @@ import '@cognivo/tokens/dist/index.css';`}</code></pre>
 
     <!-- Dark Mode -->
     <section class="section">
-      <h2>Dark Mode</h2>
+      <h2 id="darkmode">Dark Mode</h2>
       <p>All tokens respond to the <code>data-theme</code> attribute. Light is the default; dark overrides semantic tokens only.</p>
       <pre><code>{`<!-- Light theme (default) -->
 <html>
@@ -115,7 +115,7 @@ import '@cognivo/tokens/dist/index.css';`}</code></pre>
 
     <!-- Token Counts -->
     <section class="section">
-      <h2>Token Breakdown</h2>
+      <h2 id="breakdown">Token Breakdown</h2>
       <p style="margin-bottom: 1rem; color: var(--text-2);">1,853 tokens organized across 9 categories:</p>
       <div class="cat-grid">
         {categories.map(cat => (
@@ -130,7 +130,7 @@ import '@cognivo/tokens/dist/index.css';`}</code></pre>
 
     <!-- 3-Tier System -->
     <section class="section">
-      <h2>3-Tier Architecture</h2>
+      <h2 id="tiers">3-Tier Architecture</h2>
       <p style="margin-bottom: 1.5rem; color: var(--text-2);">
         Tokens follow a strict hierarchy: <strong>Tier 3 &rarr; Tier 2 &rarr; Tier 1</strong>. Always prefer higher-tier tokens.
       </p>
@@ -162,7 +162,7 @@ import '@cognivo/tokens/dist/index.css';`}</code></pre>
 
     <!-- Spacing -->
     <section class="section">
-      <h2>Spacing Scale</h2>
+      <h2 id="spacing">Spacing Scale</h2>
       <p style="margin-bottom: 1rem; color: var(--text-2);">17-step scale based on 8px grid. Use <code>--cg-spacing-{`{value}`}</code>.</p>
       <div class="spacing-grid">
         {spacingScale.map(s => (
@@ -177,7 +177,7 @@ import '@cognivo/tokens/dist/index.css';`}</code></pre>
 
     <!-- Typography -->
     <section class="section">
-      <h2>Typography</h2>
+      <h2 id="typography">Typography</h2>
       <div class="type-block">
         <h3>Font Families</h3>
         <div class="token-examples">
@@ -216,7 +216,7 @@ import '@cognivo/tokens/dist/index.css';`}</code></pre>
 
     <!-- Elevation -->
     <section class="section">
-      <h2>Elevation</h2>
+      <h2 id="elevation">Elevation</h2>
       <p style="margin-bottom: 1rem; color: var(--text-2);">5-level shadow system. Automatically adjusts for dark mode.</p>
       <div class="table-wrap">
         <table class="ref-table">
@@ -239,7 +239,7 @@ import '@cognivo/tokens/dist/index.css';`}</code></pre>
 
     <!-- Motion -->
     <section class="section">
-      <h2>Motion</h2>
+      <h2 id="motion">Motion</h2>
       <div class="type-block">
         <h3>Durations</h3>
         <div class="table-wrap">
@@ -278,7 +278,7 @@ import '@cognivo/tokens/dist/index.css';`}</code></pre>
 
     <!-- AI Tokens -->
     <section class="section">
-      <h2>AI State Tokens</h2>
+      <h2 id="ai-tokens">AI State Tokens</h2>
       <p style="margin-bottom: 1rem; color: var(--text-2);">196 tokens for AI-specific UI states. Unique to Cognivo.</p>
 
       <div class="type-block">
@@ -330,9 +330,122 @@ import '@cognivo/tokens/dist/index.css';`}</code></pre>
       </div>
     </section>
 
+    <!-- Color Palette -->
+    <section class="section">
+      <h2 id="palette">Color Palette</h2>
+      <p style="margin-bottom: 1.5rem; color: var(--fg-2);">Tier 1 palette colors. Use Tier 2 semantic tokens in components — never reference these directly.</p>
+
+      <div class="palette-group">
+        <h3>Gray Scale</h3>
+        <div class="swatches">
+          <div class="swatch" style="--sw: var(--cg-gray-50, #fafafa);"><span class="sw-fill"></span><span class="sw-name">50</span></div>
+          <div class="swatch" style="--sw: var(--cg-gray-100, #f4f4f5);"><span class="sw-fill"></span><span class="sw-name">100</span></div>
+          <div class="swatch" style="--sw: var(--cg-gray-200, #e4e4e7);"><span class="sw-fill"></span><span class="sw-name">200</span></div>
+          <div class="swatch" style="--sw: var(--cg-gray-300, #d4d4d8);"><span class="sw-fill"></span><span class="sw-name">300</span></div>
+          <div class="swatch" style="--sw: var(--cg-gray-400, #a1a1aa);"><span class="sw-fill"></span><span class="sw-name">400</span></div>
+          <div class="swatch" style="--sw: var(--cg-gray-500, #71717a);"><span class="sw-fill"></span><span class="sw-name">500</span></div>
+          <div class="swatch" style="--sw: var(--cg-gray-600, #52525b);"><span class="sw-fill"></span><span class="sw-name">600</span></div>
+          <div class="swatch" style="--sw: var(--cg-gray-700, #3f3f46);"><span class="sw-fill"></span><span class="sw-name">700</span></div>
+          <div class="swatch" style="--sw: var(--cg-gray-800, #27272a);"><span class="sw-fill"></span><span class="sw-name">800</span></div>
+          <div class="swatch" style="--sw: var(--cg-gray-900, #18181b);"><span class="sw-fill"></span><span class="sw-name">900</span></div>
+          <div class="swatch" style="--sw: var(--cg-gray-950, #09090b);"><span class="sw-fill"></span><span class="sw-name">950</span></div>
+        </div>
+      </div>
+
+      <div class="palette-group">
+        <h3>Brand</h3>
+        <div class="swatches">
+          <div class="swatch lg" style="--sw: var(--cg-brand-ai-accent, #dfff61);"><span class="sw-fill"></span><span class="sw-name">AI Accent</span></div>
+          <div class="swatch lg" style="--sw: var(--cg-brand-primary-500, #6366f1);"><span class="sw-fill"></span><span class="sw-name">Primary</span></div>
+        </div>
+      </div>
+
+      <div class="palette-group">
+        <h3>Status Colors</h3>
+        <div class="swatches">
+          <div class="swatch lg" style="--sw: var(--cg-green-500, #22c55e);"><span class="sw-fill"></span><span class="sw-name">Success</span></div>
+          <div class="swatch lg" style="--sw: var(--cg-yellow-500, #eab308);"><span class="sw-fill"></span><span class="sw-name">Warning</span></div>
+          <div class="swatch lg" style="--sw: var(--cg-red-500, #ef4444);"><span class="sw-fill"></span><span class="sw-name">Error</span></div>
+          <div class="swatch lg" style="--sw: var(--cg-blue-500, #3b82f6);"><span class="sw-fill"></span><span class="sw-name">Info</span></div>
+        </div>
+      </div>
+
+      <div class="palette-group">
+        <h3>Semantic Surfaces (Dark Theme)</h3>
+        <div class="swatches">
+          <div class="swatch wide" style="--sw: var(--cg-color-surface-base-background);"><span class="sw-fill"></span><span class="sw-name">Base BG</span></div>
+          <div class="swatch wide" style="--sw: var(--cg-color-surface-cards-background);"><span class="sw-fill"></span><span class="sw-name">Card BG</span></div>
+          <div class="swatch wide" style="--sw: var(--cg-color-surface-container-background);"><span class="sw-fill"></span><span class="sw-name">Container</span></div>
+          <div class="swatch wide" style="--sw: var(--cg-color-action-primary-background-default);"><span class="sw-fill"></span><span class="sw-name">Action Primary</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- New Tokens (recent additions) -->
+    <section class="section">
+      <h2 id="new-tokens">Recently Added Tokens</h2>
+      <p style="margin-bottom: 1.5rem; color: var(--fg-2);">New tokens added in the latest release.</p>
+
+      <div class="type-block">
+        <h3>Layout & Breakpoints</h3>
+        <div class="token-examples">
+          <div class="token-row"><code class="token-name">--cg-layout-breakpoint-sm</code><span class="token-value">640px</span><span class="token-desc">Small screens</span></div>
+          <div class="token-row"><code class="token-name">--cg-layout-breakpoint-md</code><span class="token-value">768px</span><span class="token-desc">Medium screens</span></div>
+          <div class="token-row"><code class="token-name">--cg-layout-breakpoint-lg</code><span class="token-value">1024px</span><span class="token-desc">Large screens</span></div>
+          <div class="token-row"><code class="token-name">--cg-layout-breakpoint-xl</code><span class="token-value">1280px</span><span class="token-desc">Extra large</span></div>
+          <div class="token-row"><code class="token-name">--cg-layout-breakpoint-2xl</code><span class="token-value">1536px</span><span class="token-desc">Ultra wide</span></div>
+          <div class="token-row"><code class="token-name">--cg-layout-grid-columns</code><span class="token-value">12</span><span class="token-desc">Grid column count</span></div>
+          <div class="token-row"><code class="token-name">--cg-layout-grid-gap-md</code><span class="token-value">16px</span><span class="token-desc">Medium grid gap</span></div>
+        </div>
+      </div>
+
+      <div class="type-block">
+        <h3>Aspect Ratios</h3>
+        <div class="token-examples">
+          <div class="token-row"><code class="token-name">--cg-layout-aspect-ratio-square</code><span class="token-value">1</span><span class="token-desc">1:1</span></div>
+          <div class="token-row"><code class="token-name">--cg-layout-aspect-ratio-video</code><span class="token-value">16/9</span><span class="token-desc">Video standard</span></div>
+          <div class="token-row"><code class="token-name">--cg-layout-aspect-ratio-card</code><span class="token-value">3/2</span><span class="token-desc">Card preview</span></div>
+          <div class="token-row"><code class="token-name">--cg-layout-aspect-ratio-portrait</code><span class="token-value">3/4</span><span class="token-desc">Portrait images</span></div>
+          <div class="token-row"><code class="token-name">--cg-layout-aspect-ratio-ultrawide</code><span class="token-value">21/9</span><span class="token-desc">Ultra wide</span></div>
+        </div>
+      </div>
+
+      <div class="type-block">
+        <h3>Overlays & Focus Shadows</h3>
+        <div class="token-examples">
+          <div class="token-row"><code class="token-name">--cg-overlay-white-subtle</code><span class="token-value">rgba(255,255,255,0.04)</span><span class="token-desc">Glass/premium effects</span></div>
+          <div class="token-row"><code class="token-name">--cg-overlay-white-medium</code><span class="token-value">rgba(255,255,255,0.12)</span><span class="token-desc">Frosted glass</span></div>
+          <div class="token-row"><code class="token-name">--cg-shadow-focus-error</code><span class="token-value">0 0 0 3px rgba(239,68,68,0.2)</span><span class="token-desc">Error input ring</span></div>
+          <div class="token-row"><code class="token-name">--cg-shadow-focus-success</code><span class="token-value">0 0 0 3px rgba(34,197,94,0.2)</span><span class="token-desc">Success input ring</span></div>
+          <div class="token-row"><code class="token-name">--cg-shadow-focus-primary</code><span class="token-value">0 0 0 3px rgba(223,255,97,0.2)</span><span class="token-desc">Primary focus ring</span></div>
+        </div>
+      </div>
+
+      <div class="type-block">
+        <h3>Elevation Shadows</h3>
+        <div class="shadow-demos">
+          <div class="shadow-card" style="box-shadow: var(--cg-shadow-elevation-xs, 0 1px 2px rgba(0,0,0,0.3));"><span>XS</span></div>
+          <div class="shadow-card" style="box-shadow: var(--cg-shadow-elevation-sm, 0 1px 3px rgba(0,0,0,0.3));"><span>SM</span></div>
+          <div class="shadow-card" style="box-shadow: var(--cg-shadow-elevation-md, 0 4px 6px rgba(0,0,0,0.3));"><span>MD</span></div>
+          <div class="shadow-card" style="box-shadow: var(--cg-shadow-elevation-lg, 0 10px 15px rgba(0,0,0,0.3));"><span>LG</span></div>
+          <div class="shadow-card" style="box-shadow: var(--cg-shadow-elevation-xl, 0 20px 25px rgba(0,0,0,0.3));"><span>XL</span></div>
+        </div>
+      </div>
+
+      <div class="type-block">
+        <h3>Large Spacing</h3>
+        <div class="token-examples">
+          <div class="token-row"><code class="token-name">--cg-spacing-128</code><span class="token-value">128px</span><span class="token-desc">Page section gaps</span></div>
+          <div class="token-row"><code class="token-name">--cg-spacing-160</code><span class="token-value">160px</span><span class="token-desc">Large section spacing</span></div>
+          <div class="token-row"><code class="token-name">--cg-spacing-192</code><span class="token-value">192px</span><span class="token-desc">Hero padding</span></div>
+          <div class="token-row"><code class="token-name">--cg-spacing-256</code><span class="token-value">256px</span><span class="token-desc">Full section spacing</span></div>
+        </div>
+      </div>
+    </section>
+
     <!-- Usage -->
     <section class="section">
-      <h2>Usage Example</h2>
+      <h2 id="usage">Usage Example</h2>
       <pre><code>{`.my-card {
   background: var(--cg-color-surface-card-background-default);
   border: 1px solid var(--cg-color-surface-card-border);
@@ -355,7 +468,7 @@ import '@cognivo/tokens/dist/index.css';`}</code></pre>
 
     <!-- Naming Convention -->
     <section class="section">
-      <h2>Naming Convention</h2>
+      <h2 id="naming">Naming Convention</h2>
       <pre><code>--cg-[category]-[subcategory]-[property]-[variant]-[state]
 
 Examples:
@@ -569,10 +682,55 @@ Examples:
     .ref-table tr:last-child td { border-bottom: none; }
     .muted { color: var(--text-3); }
 
+    /* ── Color palette ── */
+    .palette-group { margin-bottom: 24px; }
+    .palette-group h3 {
+      font-size: 14px; font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .swatches {
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+    .swatch {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .sw-fill {
+      display: block;
+      width: 48px; height: 48px;
+      border-radius: 8px;
+      background: var(--sw);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .swatch.lg .sw-fill { width: 64px; height: 48px; }
+    .swatch.wide .sw-fill { width: 80px; height: 48px; }
+    .sw-name {
+      font: 500 10px/1 var(--font-mono);
+      color: var(--fg-3);
+    }
+
+    /* ── Shadow demos ── */
+    .shadow-demos {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      padding: 24px 0;
+    }
+    .shadow-card {
+      width: 80px; height: 80px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .shadow-card span {
+      font: 600 12px/1 var(--font-mono);
+      color: var(--fg-3);
+    }
+
     @media (max-width: 640px) {
       .cat-grid { grid-template-columns: 1fr; }
       .token-row { grid-template-columns: 1fr; gap: 2px; }
       .spacing-item { grid-template-columns: 60px 1fr auto; }
+      .swatches { gap: 4px; }
+      .sw-fill { width: 36px !important; height: 36px; }
     }
   </style>
 </DocsLayout>

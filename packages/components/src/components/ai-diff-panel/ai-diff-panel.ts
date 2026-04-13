@@ -30,7 +30,7 @@ interface DiffLine {
 export class AiDiffPanel extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out) both;
     }
 
     .panel {
@@ -39,8 +39,8 @@ export class AiDiffPanel extends LitElement {
       border-radius: var(--cg-component-card-radius);
       overflow: hidden;
       transition:
-        border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color),
-        box-shadow var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+        border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .panel:hover {
       border-color: var(--cg-color-code-muted);
@@ -77,7 +77,7 @@ export class AiDiffPanel extends LitElement {
       background: none;
       color: var(--cg-color-input-text-placeholder);
       font-family: inherit;
-      transition: background var(--cg-motion-duration-fast), color var(--cg-motion-duration-fast);
+      transition: background var(--cg-transition-duration-fast), color var(--cg-transition-duration-fast);
     }
     .mode-btn.active {
       background: var(--cg-color-code-border);

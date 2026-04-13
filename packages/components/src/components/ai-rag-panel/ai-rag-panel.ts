@@ -60,7 +60,7 @@ export class AiRagPanel extends LitElement {
       background: transparent; color: var(--cg-color-surface-container-outlined);
       font: inherit; font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-medium);
       cursor: pointer; text-transform: capitalize;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .control-btn:hover { border-color: var(--cg-color-surface-cards-hover-border); color: var(--cg-color-surface-base-text); }
     .control-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
@@ -74,7 +74,7 @@ export class AiRagPanel extends LitElement {
       padding: var(--cg-spacing-16) var(--cg-spacing-20);
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
       cursor: pointer;
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .doc:hover { background: var(--cg-overlay-dark-subtle); }
     .doc:last-child { border-bottom: none; }
@@ -123,7 +123,7 @@ export class AiRagPanel extends LitElement {
       height: 100%; border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-action-primary-background-default);
       opacity: 0.6;
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     .empty {

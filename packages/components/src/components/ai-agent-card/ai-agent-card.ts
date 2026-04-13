@@ -38,7 +38,7 @@ const STATUS_BADGE_MAP: Record<AgentStatus, string> = {
 export class AiAgentCard extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, pulseKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out) both;
     }
 
     /* ── Card ── */
@@ -50,8 +50,8 @@ export class AiAgentCard extends LitElement {
       position: relative;
       overflow: hidden;
       transition:
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .card:hover {
       border-color: var(--cg-color-surface-cards-hover-border);
@@ -79,7 +79,7 @@ export class AiAgentCard extends LitElement {
       top: 0; left: 0; right: 0;
       height: var(--cg-spacing-2);
       background: linear-gradient(90deg, transparent, var(--cg-color-action-primary-background-default), transparent);
-      animation: shimmerSlide 2s var(--cg-motion-easing-default) infinite;
+      animation: shimmerSlide 2s var(--cg-transition-easing-default) infinite;
     }
     .card.error-state::before {
       background: linear-gradient(90deg, transparent, var(--cg-color-status-error-text-default), transparent);

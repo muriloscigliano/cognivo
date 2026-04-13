@@ -1,121 +1,203 @@
 ---
 import DocsLayout from '../layouts/DocsLayout.astro';
+import { registry } from '../data/components';
+const total = registry.length;
+const aiCount = registry.filter(c => c.tag.startsWith('ai-')).length;
 ---
 
 <DocsLayout title="Getting Started">
-  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Getting Started</h1>
-  <p style="color: var(--text-2); margin-bottom: 2rem;">Install Cognivo and start building AI-powered interfaces in minutes.</p>
+  <h1>Getting Started</h1>
+  <p class="subtitle">The only open-source component library built from the ground up for AI interfaces — with cognitive psychology baked in. MIT licensed, forever free.</p>
 
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Installation</h2>
-    <p style="margin-bottom: 1rem;">Install the core package and an adapter for your AI provider:</p>
-    <pre><code>pnpm add @cognivo/core @cognivo/adapter-openai</code></pre>
-    <p style="margin-top: 1rem; margin-bottom: 1rem;">For UI components and design tokens (Lit web components):</p>
-    <pre><code>pnpm add @cognivo/components @cognivo/tokens</code></pre>
-    <p style="margin-top: 1rem; margin-bottom: 1rem;">For the cognitive bias design advisor:</p>
-    <pre><code>pnpm add @cognivo/design-advisor</code></pre>
+  <section>
+    <h2 id="different">What makes Cognivo different?</h2>
+    <p>
+      Every component library gives you buttons, inputs, and modals. Cognivo gives you that <em>plus</em>
+      three layers that don't exist anywhere else:
+    </p>
+
+    <div class="diff-grid">
+      <div class="diff-card">
+        <span class="diff-num">01</span>
+        <h3>{aiCount} AI-Native Components</h3>
+        <p>
+          Chat interfaces, streaming text, thinking indicators, confidence sliders, agent cards,
+          reasoning trees, evaluation scorecards, workflow builders — purpose-built for AI-first products.
+          Not adapted from generic components. Designed from scratch for LLM outputs, streaming responses,
+          and human-AI interaction patterns.
+        </p>
+      </div>
+      <div class="diff-card">
+        <span class="diff-num">02</span>
+        <h3>Streaming Generative UI</h3>
+        <p>
+          AI models don't return finished pages — they stream tokens. Cognivo parses streaming JSON from
+          any LLM and renders live components in real-time. Your AI doesn't just generate text.
+          It generates interactive interfaces: charts, tables, forms, dashboards — as the tokens arrive.
+        </p>
+      </div>
+      <div class="diff-card">
+        <span class="diff-num">03</span>
+        <h3>184 Cognitive Biases</h3>
+        <p>
+          Every design decision triggers cognitive biases. Anchoring affects how users perceive prices.
+          Loss aversion drives urgency. Social proof drives adoption. Cognivo is the first design system
+          that maps these biases to components, audits your interfaces for psychological impact, and
+          flags when you cross from persuasion into manipulation.
+        </p>
+      </div>
+    </div>
+
+    <cg-callout variant="info" title="The bottom line">
+      <span>Other libraries make you build the AI layer, the streaming pipeline, and the psychology audit yourself.
+      Cognivo ships it all — from API call to rendered, psychologically-aware UI — in one integrated system.</span>
+    </cg-callout>
   </section>
 
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Quick Start: AI Client</h2>
-    <p style="margin-bottom: 1rem;">Create an AI client with the OpenAI adapter and send your first request:</p>
-    <pre><code>import {'{'} ContextBuilder, AiIntent {'}'} from '@cognivo/core';
-import {'{'} OpenAiClient {'}'} from '@cognivo/adapter-openai';
+  <section>
+    <h2 id="installation">Installation</h2>
+    <p>Install what you need. All packages work independently or together.</p>
 
-// 1. Create a client
-const client = new OpenAiClient({'{'} apiKey: process.env.OPENAI_API_KEY {'}'});
+    <h3>AI Client + Components (most common)</h3>
+    <pre><code>pnpm add @cognivo/core @cognivo/adapter-openai @cognivo/components @cognivo/tokens</code></pre>
 
-// 2. Build context with your data
+    <h3>Components only</h3>
+    <pre><code>pnpm add @cognivo/components @cognivo/tokens</code></pre>
+
+    <h3>Cognitive bias advisor</h3>
+    <pre><code>pnpm add @cognivo/design-advisor</code></pre>
+
+    <h3>Streaming generative UI</h3>
+    <pre><code>pnpm add @cognivo/gen-ui @cognivo/gen-ui-lit</code></pre>
+  </section>
+
+  <section>
+    <h2 id="quickstart">Quick Start: 3 minutes to your first AI interface</h2>
+
+    <h3>Step 1 — Create an AI client</h3>
+    <pre><code>{`import { ContextBuilder, AiIntent } from '@cognivo/core';
+import { OpenAiClient } from '@cognivo/adapter-openai';
+
+const client = new OpenAiClient({ apiKey: process.env.OPENAI_API_KEY });
+
 const context = new ContextBuilder()
-  .withDataset([{'{'} revenue: 50000, month: 'Jan' {'}'}, {'{'} revenue: 62000, month: 'Feb' {'}'}])
+  .withDataset([{ revenue: 50000, month: 'Jan' }, { revenue: 62000, month: 'Feb' }])
   .withIntent(AiIntent.Summarize)
   .build();
 
-// 3. Send the request
-const result = await client.run(context);</code></pre>
-  </section>
+const result = await client.run(context);`}</code></pre>
 
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Quick Start: Components</h2>
-    <p style="margin-bottom: 1rem;">Import the components package to register all custom elements, then use them in your HTML:</p>
-    <pre><code>import '@cognivo/components';
+    <h3>Step 2 — Render with components</h3>
+    <pre><code>{`import '@cognivo/components';
 
-// Now use in HTML:
-// &lt;ai-thinking text="Analyzing..."&gt;&lt;/ai-thinking&gt;
-// &lt;ai-badge score="0.92"&gt;&lt;/ai-badge&gt;
-// &lt;ai-chat&gt;&lt;/ai-chat&gt;</code></pre>
-  </section>
+// These just work — no framework required
+// <ai-chat></ai-chat>
+// <ai-thinking text="Analyzing..."></ai-thinking>
+// <ai-result-panel title="Q4 Analysis" confidence="91"></ai-result-panel>
+// <cg-button variant="primary">Get Started</cg-button>`}</code></pre>
 
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Quick Start: Generative UI</h2>
-    <p style="margin-bottom: 1rem;">Stream AI-generated UI components in real time with the gen-ui packages:</p>
-    <pre><code>pnpm add @cognivo/gen-ui @cognivo/gen-ui-lit</code></pre>
-    <pre style="margin-top: 1rem;"><code>import {'{'} cognivoLibrary, createStreamingParser {'}'} from '@cognivo/gen-ui';
-import {'{'} LitRenderer {'}'} from '@cognivo/gen-ui-lit';
+    <h3>Step 3 — Stream generative UI (optional)</h3>
+    <pre><code>{`import { cognivoLibrary, createStreamingParser } from '@cognivo/gen-ui';
+import { LitRenderer } from '@cognivo/gen-ui-lit';
 
 const renderer = new LitRenderer(cognivoLibrary);
 const parser = createStreamingParser(cognivoLibrary.toJSONSchema());
 
-for await (const token of llmStream) {'{'}
+// AI generates live UI as tokens stream in
+for await (const token of llmStream) {
   const result = parser.push(token);
   if (result.root) renderer.render(result, container);
-{'}'}</code></pre>
-  </section>
+}`}</code></pre>
 
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Quick Start: Design Advisor</h2>
-    <p style="margin-bottom: 1rem;">Access the cognitive bias library to improve your design decisions:</p>
-    <pre><code>import {'{'} BiasRegistry, queryBiases {'}'} from '@cognivo/design-advisor';
+    <h3>Step 4 — Audit with cognitive biases (optional)</h3>
+    <pre><code>{`import { queryBiases, recommendBiases } from '@cognivo/design-advisor';
 
-// Search for biases relevant to pricing pages
-const biases = queryBiases({'{'} tags: ['pricing', 'conversion'] {'}'});
+// What biases matter for this pricing page?
+const biases = queryBiases({ tags: ['pricing', 'conversion'] });
+// → Anchoring, Decoy Effect, Loss Aversion, Price-Quality Inference
 
-// Get a specific bias
-import {'{'} anchoringBias {'}'} from '@cognivo/design-advisor';
-console.log(anchoringBias.name);        // "Anchoring Bias"
-console.log(anchoringBias.description); // Full description with design implications</code></pre>
-  </section>
-
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Dark Mode</h2>
-    <p style="margin-bottom: 1rem;">All components and tokens support dark mode out of the box. Set the <code>data-theme</code> attribute on your root element:</p>
-    <pre><code>&lt;html data-theme="dark"&gt;</code></pre>
-    <p style="margin-top: 0.75rem; font-size: 0.9rem; color: var(--text-2);">All <code>--cg-*</code> tokens automatically adapt to the selected theme.</p>
-  </section>
-
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Interactive Showcase</h2>
-    <p style="margin-bottom: 1rem;">See all 143 components in action with live examples:</p>
-    <p><a href="/components" style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--accent); color: #09090b; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-decoration: none;">Browse Components &rarr;</a></p>
+// Get actionable recommendations
+const recs = recommendBiases({
+  page: 'pricing',
+  goals: ['increase conversion'],
+});`}</code></pre>
   </section>
 
   <section>
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Next Steps</h2>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
-      <a href="/components" style="display: block; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem;">
-        <strong style="display: block; margin-bottom: 0.25rem;">Components</strong>
-        <span style="color: var(--text-2); font-size: 0.9rem;">Explore 143 web components</span>
+    <h2 id="darkmode">Dark Mode</h2>
+    <p>All {total} components and 1,800+ tokens support dark mode. One attribute:</p>
+    <pre><code>&lt;html data-theme="dark"&gt;</code></pre>
+    <p class="hint">All <code>--cg-*</code> tokens automatically adapt. Zero additional configuration.</p>
+  </section>
+
+  <section>
+    <h2 id="explore">Explore</h2>
+    <div style="margin-bottom: 24px;">
+      <cg-button variant="primary" rounded="md" onclick="window.location.href='/components'">Browse {total} Components →</cg-button>
+    </div>
+    <div class="nav-grid">
+      <a href="/components" class="nav-card">
+        <strong>Components</strong>
+        <span>Interactive playground for all {total} components</span>
       </a>
-      <a href="/core" style="display: block; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem;">
-        <strong style="display: block; margin-bottom: 0.25rem;">Core API</strong>
-        <span style="color: var(--text-2); font-size: 0.9rem;">AiClient, intents, context building</span>
+      <a href="/core" class="nav-card">
+        <strong>Core API</strong>
+        <span>AiClient, intents, context building, decorators</span>
       </a>
-      <a href="/patterns" style="display: block; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem;">
-        <strong style="display: block; margin-bottom: 0.25rem;">AI Patterns</strong>
-        <span style="color: var(--text-2); font-size: 0.9rem;">12 production-ready integration patterns</span>
+      <a href="/patterns" class="nav-card">
+        <strong>AI Patterns</strong>
+        <span>12 production-ready integration patterns</span>
       </a>
-      <a href="/tokens" style="display: block; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem;">
-        <strong style="display: block; margin-bottom: 0.25rem;">Design Tokens</strong>
-        <span style="color: var(--text-2); font-size: 0.9rem;">1,853 CSS custom properties</span>
+      <a href="/tokens" class="nav-card">
+        <strong>Design Tokens</strong>
+        <span>1,800+ CSS properties, color palette, spacing</span>
       </a>
-      <a href="/frameworks" style="display: block; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem;">
-        <strong style="display: block; margin-bottom: 0.25rem;">Frameworks</strong>
-        <span style="color: var(--text-2); font-size: 0.9rem;">React, Vue, Svelte, Angular guides</span>
+      <a href="/frameworks" class="nav-card">
+        <strong>Frameworks</strong>
+        <span>React, Vue, Svelte, Angular integration</span>
       </a>
-      <a href="/accessibility" style="display: block; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem;">
-        <strong style="display: block; margin-bottom: 0.25rem;">Accessibility</strong>
-        <span style="color: var(--text-2); font-size: 0.9rem;">ARIA, keyboard, focus management</span>
+      <a href="/design-advisor" class="nav-card">
+        <strong>Cognitive Psychology</strong>
+        <span>184 biases mapped to design decisions</span>
       </a>
     </div>
   </section>
+
+  <style>
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.03em; }
+    .subtitle { color: var(--fg-2); margin-bottom: 40px; font-size: 16px; line-height: 1.7; max-width: 640px; }
+    section { margin-bottom: 48px; }
+    h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 16px; letter-spacing: -0.01em; }
+    h3 { font-size: 15px; font-weight: 600; margin: 24px 0 8px; color: var(--fg); }
+    p { margin-bottom: 12px; color: var(--fg-2); line-height: 1.7; }
+    .hint { font-size: 14px; color: var(--fg-3); margin-top: 8px; }
+
+    .diff-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px; margin: 20px 0 24px;
+    }
+    .diff-card {
+      padding: 24px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+    }
+    .diff-card:hover { border-color: var(--border-hover); }
+    .diff-num { font: 700 13px/1 var(--font-mono); color: var(--accent); }
+    .diff-card h3 { margin-top: 8px; font-size: 16px; }
+    .diff-card p { font-size: 14px; color: var(--fg-3); margin: 0; }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
+    }
+    .nav-card {
+      display: block; padding: 20px;
+      border: 1px solid var(--border); border-radius: 10px;
+      transition: border-color 120ms, background 120ms;
+    }
+    .nav-card:hover { border-color: var(--accent); background: var(--accent-dim); }
+    .nav-card strong { display: block; margin-bottom: 4px; color: var(--fg); font-size: 15px; }
+    .nav-card span { color: var(--fg-3); font-size: 14px; }
+    .nav-card:hover strong { color: var(--accent); }
+  </style>
 </DocsLayout>

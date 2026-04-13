@@ -23,14 +23,14 @@ import { spinKeyframes, reducedMotion } from '../../styles/index.js';
  *
  * @cssprop --cg-color-modal-container-background - Modal background
  * @cssprop --cg-component-modal-radius - Modal border radius
- * @cssprop --cg-motion-easing-bounce - Open animation easing
+ * @cssprop --cg-transition-easing-ease-out - Open animation easing
  * @cssprop --cg-color-focus-ring - Close button focus ring
  */
 @customElement('cg-modal')
 export class CgModal extends LitElement {
   static override styles = [spinKeyframes, reducedMotion, css`
     :host {
-      transition: color var(--cg-transition-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       display: contents;
       font-family: var(--cg-font-family-primary);
     }
@@ -38,13 +38,13 @@ export class CgModal extends LitElement {
     .backdrop {
       position: fixed;
       inset: 0;
-      z-index: 9998;
+      z-index: var(--cg-z-index-500);
       background: var(--cg-color-modal-overlay-background);
       backdrop-filter: blur(16px) saturate(150%);
       -webkit-backdrop-filter: blur(16px) saturate(150%);
       opacity: 0;
       pointer-events: none;
-      transition: opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     :host([open]) .backdrop {
@@ -55,7 +55,7 @@ export class CgModal extends LitElement {
     .modal-container {
       position: fixed;
       inset: 0;
-      z-index: 9999;
+      z-index: var(--cg-z-index-top);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -85,8 +85,8 @@ export class CgModal extends LitElement {
       opacity: 0;
       transform: scale(0.95);
       transition:
-        opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        transform var(--cg-motion-duration-slow) var(--cg-motion-easing-bounce);
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out);
     }
 
     :host([open]) .modal {
@@ -104,11 +104,11 @@ export class CgModal extends LitElement {
       to { opacity: 0; }
     }
     .modal.closing {
-      animation: modal-exit var(--cg-transition-duration-fast) var(--cg-motion-easing-exit) forwards;
+      animation: modal-exit var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-in) forwards;
     }
     .backdrop.closing {
       pointer-events: auto;
-      animation: backdrop-exit var(--cg-transition-duration-fast) var(--cg-motion-easing-exit) forwards;
+      animation: backdrop-exit var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-in) forwards;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -185,9 +185,9 @@ export class CgModal extends LitElement {
       padding: 0;
       flex-shrink: 0;
       transition:
-        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-color),
-        color var(--cg-transition-duration-fast) var(--cg-motion-easing-color),
-        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .close-btn:hover {
@@ -201,8 +201,8 @@ export class CgModal extends LitElement {
 
     .close-btn:focus-visible {
       box-shadow:
-        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
-        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
+        0 0 0 2px var(--cg-color-focus-ring-offset),
+        0 0 0 calc(2px + 2px) var(--cg-color-focus-ring);
       outline: none;
     }
 
@@ -266,7 +266,7 @@ export class CgModal extends LitElement {
       border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border);
       border-top-color: var(--cg-color-surface-container-text);
       border-radius: var(--cg-border-radius-full);
-      animation: spin var(--cg-motion-duration-slow) linear infinite;
+      animation: spin var(--cg-transition-duration-slow) linear infinite;
     }
     .modal-loading-text {
       font-size: var(--cg-font-size-sm);

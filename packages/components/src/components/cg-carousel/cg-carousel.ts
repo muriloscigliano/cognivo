@@ -82,10 +82,10 @@ export class CgCarousel extends LitElement {
       box-shadow:
         0 var(--cg-shadow-sm-y) var(--cg-shadow-sm-blur) var(--cg-shadow-sm-spread) rgba(0, 0, 0, 0.08);
       transition:
-        opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host(:hover) .nav-btn:not(:disabled) { opacity: 1; }
 
@@ -123,7 +123,7 @@ export class CgCarousel extends LitElement {
       cursor: pointer;
       padding: 0;
       transition:
-        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         width var(--cg-transition-duration-fast) cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     .dot:hover { background: var(--cg-color-surface-container-outlined); }

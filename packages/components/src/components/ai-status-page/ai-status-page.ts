@@ -31,7 +31,7 @@ export interface StatusService {
 export class AiStatusPage extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([hidden]) { display: none; }
 
@@ -102,7 +102,7 @@ export class AiStatusPage extends LitElement {
       width: 100%;
       text-align: left;
       font-family: inherit;
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       color: inherit;
     }
     .service-item:active { transform: scale(var(--cg-interaction-press-scale)); }
@@ -156,7 +156,7 @@ export class AiStatusPage extends LitElement {
     .latency-bar-fill {
       height: 100%;
       border-radius: var(--cg-border-radius-25);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     .latency-bar-fill.fast { background: var(--cg-color-status-success-text); }
     .latency-bar-fill.mid  { background: var(--cg-color-status-warning-text); }

@@ -29,7 +29,7 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class AiTokenTracker extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     /* Compact mode */
@@ -45,7 +45,7 @@ export class AiTokenTracker extends LitElement {
       font-family: var(--cg-font-family-mono);
       color: var(--cg-color-input-text-placeholder);
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .compact:hover { border-color: var(--cg-color-input-border-hover); }
     .compact:active { transform: scale(var(--cg-interaction-press-scale)); }
@@ -134,7 +134,7 @@ export class AiTokenTracker extends LitElement {
     .budget-fill {
       height: 100%;
       border-radius: var(--cg-spacing-4);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     .budget-fill.ok { background: var(--cg-color-status-success-text-default); }
     .budget-fill.warning { background: var(--cg-color-status-warning-text-default); }

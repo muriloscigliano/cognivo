@@ -58,7 +58,7 @@ export class AiCommandPalette extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
       border-radius: var(--cg-border-radius-150);
       overflow: hidden;
-      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
     }
 
     .search-wrap {
@@ -127,7 +127,7 @@ export class AiCommandPalette extends LitElement {
       font-family: inherit;
       cursor: pointer;
       text-align: left;
-      transition: background-color var(--cg-motion-duration-normal) var(--cg-motion-easing-color), color var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      transition: background-color var(--cg-transition-duration-default) var(--cg-transition-easing-default), color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
       min-height: var(--cg-spacing-40);
       border-radius: var(--cg-border-radius-100);
       margin: 0 var(--cg-spacing-4);
@@ -136,7 +136,7 @@ export class AiCommandPalette extends LitElement {
       background: var(--cg-color-surface-cards-border);
       color: var(--cg-color-surface-base-text);
     }
-    .cmd:active { transform: scale(var(--cg-interaction-press-scale)); transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color); }
+    .cmd:active { transform: scale(var(--cg-interaction-press-scale)); transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default); }
     .cmd:focus-visible {
       outline: none;
       box-shadow:

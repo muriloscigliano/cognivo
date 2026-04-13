@@ -30,7 +30,7 @@ import { hostBlock, reducedMotion, shimmerKeyframes, fadeSlideInKeyframes } from
 export class AiToolCardResolver extends LitElement {
   static override styles = [hostBlock, reducedMotion, shimmerKeyframes, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .card {
@@ -38,7 +38,7 @@ export class AiToolCardResolver extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-200);
       overflow: hidden;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .card:hover {
       border-color: var(--cg-color-input-border-hover);

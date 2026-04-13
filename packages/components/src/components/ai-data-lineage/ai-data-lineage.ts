@@ -72,8 +72,8 @@ export class AiDataLineage extends LitElement {
       text-align: center;
       position: relative;
       transition:
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .node:hover {
       border-color: var(--cg-color-input-border-hover);

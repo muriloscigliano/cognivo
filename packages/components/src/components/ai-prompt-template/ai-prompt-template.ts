@@ -28,7 +28,7 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class AiPromptTemplate extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([hidden]) { display: none; }
 
@@ -65,7 +65,7 @@ export class AiPromptTemplate extends LitElement {
       padding: var(--cg-spacing-4) var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-100);
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .mode-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .mode-btn.active {
@@ -109,7 +109,7 @@ export class AiPromptTemplate extends LitElement {
       resize: vertical;
     }
     .template-textarea:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: -2px;
     }
 
@@ -166,7 +166,7 @@ export class AiPromptTemplate extends LitElement {
       font-family: inherit;
     }
     .var-input:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: -2px;
     }
     .var-input:disabled {

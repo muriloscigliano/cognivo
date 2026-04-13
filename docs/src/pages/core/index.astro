@@ -3,28 +3,26 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 ---
 
 <DocsLayout title="Core API">
-  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Core API</h1>
-  <p style="color: #6b7280; margin-bottom: 2rem;">
-    <code>@cognivo/core</code> provides framework-agnostic AI integration logic: client interfaces, context building, intents, and result types.
-  </p>
+  <h1>Core API</h1>
+  <p class="subtitle"><code>@cognivo/core</code> — framework-agnostic AI integration logic: client interfaces, context building, intents, and result types.</p>
 
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Installation</h2>
+  <section>
+    <h2 id="installation">Installation</h2>
     <pre><code>pnpm add @cognivo/core @cognivo/adapter-openai</code></pre>
   </section>
 
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">AiClient Interface</h2>
-    <p style="margin-bottom: 1rem;">All adapters implement the <code>AiClient</code> interface. You can swap providers without changing application code.</p>
-    <pre><code>interface AiClient {'{'}
-  run(context: AiContext, options?: AiRequestOptions): Promise&lt;AiResult&gt;;
-{'}'}</code></pre>
+  <section>
+    <h2 id="client">AiClient Interface</h2>
+    <p>All adapters implement the <code>AiClient</code> interface. Swap providers without changing application code.</p>
+    <pre><code>{`interface AiClient {
+  run(context: AiContext, options?: AiRequestOptions): Promise<AiResult>;
+}`}</code></pre>
   </section>
 
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Intents</h2>
-    <p style="margin-bottom: 1rem;">Intents describe what you want the AI to do with your data. Available intents:</p>
-    <pre><code>import {'{'} AiIntent {'}'} from '@cognivo/core';
+  <section>
+    <h2 id="intents">Intents</h2>
+    <p>Intents describe what you want the AI to do with your data:</p>
+    <pre><code>{`import { AiIntent } from '@cognivo/core';
 
 AiIntent.Summarize      // Summarize a dataset
 AiIntent.Explain        // Explain a data point or trend
@@ -33,27 +31,27 @@ AiIntent.DetectAnomaly  // Find outliers or anomalies
 AiIntent.Classify       // Categorize data points
 AiIntent.Recommend      // Generate recommendations
 AiIntent.Compare        // Compare datasets or segments
-AiIntent.Ask            // Free-form question about data</code></pre>
+AiIntent.Ask            // Free-form question about data`}</code></pre>
   </section>
 
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Context Building</h2>
-    <p style="margin-bottom: 1rem;">Use <code>ContextBuilder</code> to assemble structured context for the AI:</p>
-    <pre><code>import {'{'} ContextBuilder, AiIntent {'}'} from '@cognivo/core';
+  <section>
+    <h2 id="context">Context Building</h2>
+    <p>Use <code>ContextBuilder</code> to assemble structured context for the AI:</p>
+    <pre><code>{`import { ContextBuilder, AiIntent } from '@cognivo/core';
 
 const context = new ContextBuilder()
   .withDataset(salesData)
   .withIntent(AiIntent.DetectAnomaly)
-  .withMeta({'{'} timeRange: 'last-30-days', metric: 'revenue' {'}'})
+  .withMeta({ timeRange: 'last-30-days', metric: 'revenue' })
   .build();
 
-const result = await client.run(context);</code></pre>
+const result = await client.run(context);`}</code></pre>
   </section>
 
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Result Types</h2>
-    <p style="margin-bottom: 1rem;">AI responses are returned as typed <code>AiResult</code> objects:</p>
-    <pre><code>interface AiResult {'{'}
+  <section>
+    <h2 id="results">Result Types</h2>
+    <p>AI responses are returned as typed <code>AiResult</code> objects:</p>
+    <pre><code>{`interface AiResult {
   answer: string;              // Natural language response
   confidence: number;          // 0-1 confidence score
   driver?: AiDriver;           // Key driver analysis
@@ -61,39 +59,55 @@ const result = await client.run(context);</code></pre>
   forecasts?: AiForecast[];    // Predicted values
   classifications?: AiClassification[];
   recommendations?: AiRecommendation[];
-{'}'}</code></pre>
-  </section>
-
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Decorator Pattern</h2>
-    <p style="margin-bottom: 1rem;">Core clients wrap each other in a decorator pattern. Stack capabilities as needed:</p>
-    <pre><code>import {'{'} OpenAiClient {'}'} from '@cognivo/adapter-openai';
-import {'{'} GuardedClient, CachedClient, ObservableClient, InMemoryLruCache, InMemoryTracer {'}'} from '@cognivo/core';
-
-const base = new OpenAiClient({'{'} apiKey: '...' {'}'});
-const cached = new CachedClient(base, {'{'} cache: new InMemoryLruCache() {'}'});
-const guarded = new GuardedClient(cached, {'{'} rules: [noPromptInjectionRule, maxLengthRule(500)] {'}'});
-const client = new ObservableClient(guarded, {'{'} tracer: new InMemoryTracer() {'}'});
-
-// Uses all layers: observability → guardrails → caching → OpenAI
-const result = await client.run(context);</code></pre>
+}`}</code></pre>
   </section>
 
   <section>
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Key Exports</h2>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
-      <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 1rem;">
-        <strong>Client Layer</strong>
-        <p style="font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem;">BaseAiClient, GuardedClient, CachedClient, FallbackClient, ObservableClient, ConversationalClient</p>
-      </div>
-      <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 1rem;">
-        <strong>Patterns</strong>
-        <p style="font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem;">CircuitBreaker, SelfRefineClient, ExtendedThinkingClient, ModelRouterClient, AgentCoordinator</p>
-      </div>
-      <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 1rem;">
-        <strong>Utilities</strong>
-        <p style="font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem;">ContextBuilder, PromptOptimizer, PromptEvaluator, InMemoryTracer, InMemoryLruCache, SemanticCacheStore</p>
-      </div>
+    <h2 id="decorators">Decorator Pattern</h2>
+    <p>Core clients wrap each other in a decorator pattern. Stack capabilities as needed:</p>
+    <pre><code>{`import { OpenAiClient } from '@cognivo/adapter-openai';
+import { GuardedClient, CachedClient, ObservableClient, InMemoryLruCache, InMemoryTracer } from '@cognivo/core';
+
+const base = new OpenAiClient({ apiKey: '...' });
+const cached = new CachedClient(base, { cache: new InMemoryLruCache() });
+const guarded = new GuardedClient(cached, { rules: [noPromptInjectionRule, maxLengthRule(500)] });
+const client = new ObservableClient(guarded, { tracer: new InMemoryTracer() });
+
+// Uses all layers: observability → guardrails → caching → OpenAI
+const result = await client.run(context);`}</code></pre>
+  </section>
+
+  <section>
+    <h2 id="exports">Key Exports</h2>
+    <div class="export-grid">
+      <cg-card>
+        <span slot="header">Client Layer</span>
+        <p>BaseAiClient, GuardedClient, CachedClient, FallbackClient, ObservableClient, ConversationalClient</p>
+      </cg-card>
+      <cg-card>
+        <span slot="header">Patterns</span>
+        <p>CircuitBreaker, SelfRefineClient, ExtendedThinkingClient, ModelRouterClient, AgentCoordinator</p>
+      </cg-card>
+      <cg-card>
+        <span slot="header">Utilities</span>
+        <p>ContextBuilder, PromptOptimizer, PromptEvaluator, InMemoryTracer, InMemoryLruCache, SemanticCacheStore</p>
+      </cg-card>
     </div>
   </section>
+
+  <style>
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.03em; }
+    .subtitle { color: var(--fg-2); margin-bottom: 40px; font-size: 16px; line-height: 1.7; }
+    section { margin-bottom: 48px; }
+    h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 16px; letter-spacing: -0.01em; }
+    p { margin-bottom: 12px; color: var(--fg-2); line-height: 1.7; }
+    .export-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .export-grid p { font-size: 14px; color: var(--fg-3); margin: 0; }
+    .export-grid cg-card { --cg-color-surface-cards-border: var(--border); }
+    .export-grid cg-card:hover { --cg-color-surface-cards-border: var(--accent); }
+  </style>
 </DocsLayout>

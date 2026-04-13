@@ -23,7 +23,7 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class AiConfidenceSlider extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
     }
 
     .container {
@@ -108,7 +108,7 @@ export class AiConfidenceSlider extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       background: none; color: var(--cg-color-input-text-placeholder);
       font: inherit; font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-semibold);
-      cursor: pointer; transition: opacity var(--cg-motion-duration-fast); text-align: center;
+      cursor: pointer; transition: opacity var(--cg-transition-duration-fast); text-align: center;
     }
     .preset-btn:hover { border-color: var(--cg-color-input-border-hover); color: var(--cg-color-surface-base-text); }
     .preset-btn:focus-visible {
@@ -123,7 +123,7 @@ export class AiConfidenceSlider extends LitElement {
     }
     .dist-bar {
       flex: 1; border-radius: var(--cg-spacing-2) var(--cg-spacing-2) 0 0; min-height: var(--cg-spacing-2);
-      transition: opacity var(--cg-motion-duration-fast);
+      transition: opacity var(--cg-transition-duration-fast);
     }
     .dist-bar.below { opacity: 0.2; }
   `];

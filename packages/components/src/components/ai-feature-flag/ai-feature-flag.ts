@@ -37,7 +37,7 @@ export class AiFeatureFlag extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);
       padding: var(--cg-spacing-16);
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn 200ms var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -88,7 +88,7 @@ export class AiFeatureFlag extends LitElement {
     }
 
     .search-input:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: -2px;
     }
 
@@ -126,7 +126,7 @@ export class AiFeatureFlag extends LitElement {
     }
 
     .flag-item:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -180,7 +180,7 @@ export class AiFeatureFlag extends LitElement {
       border-radius: var(--cg-border-radius-full);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       cursor: pointer;
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .toggle-track::after {
@@ -192,7 +192,7 @@ export class AiFeatureFlag extends LitElement {
       background: var(--cg-color-input-text-placeholder);
       top: var(--cg-spacing-2);
       left: var(--cg-spacing-2);
-      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color), background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .toggle-switch input:checked + .toggle-track {
@@ -206,7 +206,7 @@ export class AiFeatureFlag extends LitElement {
     }
 
     .toggle-switch input:focus-visible + .toggle-track {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 

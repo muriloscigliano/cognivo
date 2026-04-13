@@ -128,7 +128,7 @@ export class CgTable extends LitElement {
     th.sortable:hover { color: var(--cg-color-action-primary-background-default); }
     th.sortable:active {
       transform: scale(0.98);
-      transition: transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     th.sortable:focus-visible {
       outline: none;
@@ -178,7 +178,7 @@ export class CgTable extends LitElement {
 
     /* ── Row states ── */
     tbody tr {
-      transition: background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     tbody tr:hover td {
       background: var(--cg-color-action-tertiary-background-hover);

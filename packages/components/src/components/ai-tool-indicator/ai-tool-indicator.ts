@@ -36,8 +36,8 @@ export class AiToolIndicator extends LitElement {
       font-weight: var(--cg-font-weight-medium);
       color: var(--cg-color-surface-container-outlined);
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
-      animation: slideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      animation: slideIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
       animation-delay: calc(var(--tool-index, 0) * 60ms);
     }
     .tool:hover {
@@ -90,7 +90,7 @@ export class AiToolIndicator extends LitElement {
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: textSweep 1.8s var(--cg-motion-easing-default) infinite;
+      animation: textSweep 1.8s var(--cg-transition-easing-default) infinite;
     }
     @keyframes textSweep {
       0% { background-position: 100% 50%; }

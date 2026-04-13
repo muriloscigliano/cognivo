@@ -35,8 +35,8 @@ export class CgDatePicker extends LitElement {
       cursor: pointer;
       outline: none;
       transition:
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .trigger:hover:not(.disabled) { border-color: var(--cg-color-input-border-hover); }
     .trigger:focus-visible { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
@@ -109,8 +109,8 @@ export class CgDatePicker extends LitElement {
       transform: translateY(calc(-1 * var(--cg-spacing-4))) scale(0.98);
       pointer-events: none;
       transition:
-        opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .dropdown.open {
       opacity: 1;
@@ -146,7 +146,7 @@ export class CgDatePicker extends LitElement {
       color: var(--cg-color-surface-container-text);
       border-radius: var(--cg-border-radius-50);
       cursor: pointer;
-      transition: background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .cal-btn:hover { background: var(--cg-color-action-secondary-background-hover); }
     .cal-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
@@ -190,8 +190,8 @@ export class CgDatePicker extends LitElement {
       border-radius: var(--cg-border-radius-50);
       cursor: pointer;
       transition:
-        background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .cal-day:hover { background: var(--cg-color-action-secondary-background-hover); }
     .cal-day:active { transform: scale(var(--cg-interaction-press-scale)); }

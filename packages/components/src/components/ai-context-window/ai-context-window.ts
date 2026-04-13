@@ -52,7 +52,7 @@ export class AiContextWindow extends LitElement {
     }
     .segment {
       height: 100%;
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
       cursor: pointer;
       position: relative;
     }

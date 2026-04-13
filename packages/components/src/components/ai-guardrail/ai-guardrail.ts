@@ -104,7 +104,7 @@ export class AiGuardrail extends LitElement {
       font-family: var(--cg-font-family-mono);
       line-height: var(--cg-line-height-relaxed);
       filter: blur(4px);
-      transition: filter var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: filter var(--cg-transition-duration-default) var(--cg-transition-easing-default);
       cursor: pointer;
     }
     .blocked-content.revealed { filter: none; }
@@ -129,7 +129,7 @@ export class AiGuardrail extends LitElement {
       background: transparent; color: var(--cg-color-surface-container-outlined);
       font: inherit; font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .btn:hover { border-color: var(--cg-color-surface-cards-hover-border); color: var(--cg-color-surface-base-text); }
     .btn:active { transform: scale(var(--cg-interaction-press-scale)); }

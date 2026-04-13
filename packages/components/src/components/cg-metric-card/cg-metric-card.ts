@@ -20,7 +20,7 @@ export class CgMetricCard extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-component-card-radius);
       padding: var(--cg-spacing-20);
-      transition: border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-default), transform var(--cg-motion-duration-normal) var(--cg-motion-easing-default), box-shadow var(--cg-motion-duration-normal) var(--cg-motion-easing-default), background var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default), transform var(--cg-transition-duration-default) var(--cg-transition-easing-default), box-shadow var(--cg-transition-duration-default) var(--cg-transition-easing-default), background var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     :host([size="sm"]) .card { padding: var(--cg-spacing-12) var(--cg-spacing-16); }
     :host([size="lg"]) .card { padding: var(--cg-spacing-24) var(--cg-spacing-32); }
@@ -45,14 +45,14 @@ export class CgMetricCard extends LitElement {
 
     /* Value entrance animation */
     .value {
-      animation: valueSlideIn var(--cg-motion-duration-slow) var(--cg-motion-easing-enter) both;
+      animation: valueSlideIn var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out) both;
     }
     @keyframes valueSlideIn {
       from { opacity: 0; transform: translateY(var(--cg-spacing-4)); }
       to { opacity: 1; transform: translateY(0); }
     }
     .delta-row {
-      animation: valueSlideIn var(--cg-motion-duration-slow) 80ms var(--cg-motion-easing-enter) both;
+      animation: valueSlideIn var(--cg-transition-duration-slow) 80ms var(--cg-transition-easing-ease-out) both;
     }
 
     /* ── Header row ── */
@@ -151,11 +151,11 @@ export class CgMetricCard extends LitElement {
       flex: 1;
       border-radius: var(--cg-border-radius-50);
       min-width: var(--cg-spacing-4);
-      transition: height var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: height var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     .spark-bar {
       opacity: 0.4;
-      transition: height var(--cg-motion-duration-slow) var(--cg-motion-easing-default), opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-bounce);
+      transition: height var(--cg-transition-duration-slow) var(--cg-transition-easing-default), opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out);
     }
     .spark-bar.highlight {
       opacity: 1;
@@ -180,7 +180,7 @@ export class CgMetricCard extends LitElement {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, transparent 25%, var(--cg-overlay-dark-light) 50%, transparent 75%);
+      background: linear-gradient(90deg, transparent 25%, var(--cg-overlay-accent-subtle) 50%, transparent 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s linear infinite;
     }

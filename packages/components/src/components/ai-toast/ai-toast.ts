@@ -74,13 +74,13 @@ export class AiToast extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-toast-border);
       border-left: var(--cg-border-width-200) solid transparent;
       pointer-events: auto;
-      animation: toastIn var(--cg-motion-duration-slow) var(--cg-motion-easing-enter);
+      animation: toastIn var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out);
       position: relative;
       overflow: hidden;
       box-shadow: var(--cg-elevation-2);
     }
     .toast.dismissing {
-      animation: toastOut var(--cg-motion-duration-normal) var(--cg-motion-easing-exit) forwards;
+      animation: toastOut var(--cg-transition-duration-default) var(--cg-transition-easing-ease-in) forwards;
       pointer-events: none;
     }
 

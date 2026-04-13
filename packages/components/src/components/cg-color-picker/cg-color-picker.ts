@@ -87,8 +87,8 @@ export class CgColorPicker extends LitElement {
       outline: none;
       min-width: 180px;
       transition:
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .trigger:hover:not(.disabled) { border-color: var(--cg-color-input-border-hover); }
     .trigger:focus-visible { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
@@ -112,7 +112,7 @@ export class CgColorPicker extends LitElement {
       height: var(--cg-icon-size-100);
       color: var(--cg-color-input-text-placeholder);
       flex-shrink: 0;
-      transition: transform var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .trigger.open .trigger-chevron { transform: rotate(180deg); }
 
@@ -132,8 +132,8 @@ export class CgColorPicker extends LitElement {
       transform: translateY(calc(-1 * var(--cg-spacing-4))) scale(0.98);
       pointer-events: none;
       transition:
-        opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .dropdown.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
 
@@ -219,8 +219,8 @@ export class CgColorPicker extends LitElement {
       padding: var(--cg-spacing-6) var(--cg-spacing-8);
       outline: none;
       transition:
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .hex-input:focus { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
     .copy-btn {
@@ -230,7 +230,7 @@ export class CgColorPicker extends LitElement {
       border-radius: var(--cg-border-radius-50);
       background: transparent; color: var(--cg-color-surface-container-text);
       cursor: pointer; flex-shrink: 0;
-      transition: background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .copy-btn:hover { background: var(--cg-color-action-secondary-background-hover); }
     .copy-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
@@ -269,7 +269,7 @@ export class CgColorPicker extends LitElement {
       border-radius: var(--cg-border-radius-50);
       border: var(--cg-border-width-50) solid var(--cg-overlay-dark-subtle);
       cursor: pointer; padding: 0;
-      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .preset:hover { transform: scale(1.2); }
     .preset:active { transform: scale(var(--cg-interaction-press-scale)); }

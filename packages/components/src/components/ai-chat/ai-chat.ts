@@ -73,7 +73,7 @@ export class AiChat extends LitElement {
 
     .msg {
       max-width: 85%;
-      animation: slideIn var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      animation: slideIn var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     .msg.user { align-self: flex-end; }
     .msg.ai { align-self: flex-start; }
@@ -129,7 +129,7 @@ export class AiChat extends LitElement {
       gap: var(--cg-spacing-4);
       margin-top: var(--cg-spacing-6);
       opacity: 0;
-      transition: opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .msg:hover .actions, .msg:focus-within .actions { opacity: 1; }
 
@@ -170,8 +170,8 @@ export class AiChat extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
       border-radius: var(--cg-border-radius-200);
       transition:
-        border-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        box-shadow var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .input-box:focus-within {
       border-color: var(--cg-color-input-border-focus);
@@ -206,9 +206,9 @@ export class AiChat extends LitElement {
       align-items: center;
       justify-content: center;
       transition:
-        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        border-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .icon-btn:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
     .icon-btn:disabled { opacity: 0.3; cursor: default; }

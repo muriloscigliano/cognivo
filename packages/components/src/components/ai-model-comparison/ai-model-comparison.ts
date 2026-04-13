@@ -32,7 +32,7 @@ export interface ComparisonModel {
 export class AiModelComparison extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn 200ms var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -120,7 +120,7 @@ export class AiModelComparison extends LitElement {
     .score-bar-fill {
       height: 100%;
       border-radius: var(--cg-border-radius-50);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     .score-bar-fill.low    { background: var(--cg-color-status-error-text-default); }
     .score-bar-fill.mid    { background: var(--cg-color-status-warning-text); }
@@ -165,7 +165,7 @@ export class AiModelComparison extends LitElement {
       font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       font-family: inherit;
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .select-btn:hover {
       background: var(--cg-color-action-primary-background-default);
@@ -173,7 +173,7 @@ export class AiModelComparison extends LitElement {
       border-color: var(--cg-color-surface-base-text);
     }
     .select-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
   `];

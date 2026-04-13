@@ -26,7 +26,7 @@ import { hostBase, reducedMotion, fadeSlideInKeyframes } from '../../styles/inde
 export class AiUsageMeter extends LitElement {
   static override styles = [hostBase, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([hidden]) { display: none; }
 
@@ -64,7 +64,7 @@ export class AiUsageMeter extends LitElement {
       fill: none;
       stroke-width: 8;
       stroke-linecap: round;
-      transition: stroke-dashoffset var(--cg-motion-duration-slow) var(--cg-motion-easing-default), stroke var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: stroke-dashoffset var(--cg-transition-duration-slow) var(--cg-transition-easing-default), stroke var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     .ring-fill.normal  { stroke: var(--cg-color-surface-base-text); }
     .ring-fill.warning { stroke: var(--cg-color-status-warning-text); }
@@ -126,7 +126,7 @@ export class AiUsageMeter extends LitElement {
       font-weight: var(--cg-font-weight-bold);
       cursor: pointer;
       font-family: inherit;
-      transition: filter var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: filter var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .upgrade-btn:hover { filter: brightness(1.1); }
     .upgrade-btn:active { transform: scale(var(--cg-interaction-press-scale)); }

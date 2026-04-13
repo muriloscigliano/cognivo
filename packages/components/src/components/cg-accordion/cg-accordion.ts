@@ -67,7 +67,7 @@ export class CgAccordion extends LitElement {
       color: var(--cg-color-surface-base-text);
       cursor: pointer;
       text-align: left;
-      transition: background var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: background var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
 
     .trigger:hover:not(:disabled) {
@@ -99,7 +99,7 @@ export class CgAccordion extends LitElement {
       height: var(--cg-icon-size-100);
       flex-shrink: 0;
       color: var(--cg-color-surface-container-outlined);
-      transition: transform var(--cg-motion-duration-normal) var(--cg-motion-easing-bounce), color var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out), color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .item.open .chevron {
       transform: rotate(180deg);
@@ -110,7 +110,7 @@ export class CgAccordion extends LitElement {
     .content-wrapper {
       display: grid;
       grid-template-rows: 0fr;
-      transition: grid-template-rows var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: grid-template-rows var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     .item.open .content-wrapper {
       grid-template-rows: 1fr;
@@ -126,7 +126,7 @@ export class CgAccordion extends LitElement {
       color: var(--cg-color-surface-container-outlined);
       line-height: var(--cg-line-height-relaxed);
       opacity: 0;
-      transition: opacity var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: opacity var(--cg-transition-duration-default) var(--cg-transition-easing-default);
       transition-delay: 50ms;
     }
     .item.open .content-inner {

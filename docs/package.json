@@ -9,6 +9,7 @@
     "preview": "astro preview"
   },
   "dependencies": {
+    "@cognivo/components": "workspace:*",
     "@cognivo/design-advisor": "workspace:*",
     "@cognivo/tokens": "workspace:*",
     "@lit/reactive-element": "^2.1.2",

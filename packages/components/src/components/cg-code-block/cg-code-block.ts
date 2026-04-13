@@ -127,8 +127,8 @@ export class CgCodeBlock extends LitElement {
       cursor: pointer;
       font-family: inherit;
       transition:
-        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .copy-btn:hover {
       background: var(--cg-overlay-dark-subtle);
@@ -214,8 +214,8 @@ export class CgCodeBlock extends LitElement {
       font-family: inherit;
       font-weight: var(--cg-font-weight-medium);
       transition:
-        color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .expand-btn:hover {
       color: var(--cg-color-code-text);

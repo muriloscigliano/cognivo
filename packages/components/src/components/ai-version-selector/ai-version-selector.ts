@@ -39,7 +39,7 @@ export class AiVersionSelector extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);
       padding: var(--cg-spacing-16);
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([hidden]) { display: none; }
 
@@ -64,7 +64,7 @@ export class AiVersionSelector extends LitElement {
       border-radius: var(--cg-border-radius-100);
       border: var(--cg-border-width-100) solid transparent;
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .version-item:hover {
@@ -76,7 +76,7 @@ export class AiVersionSelector extends LitElement {
     }
 
     .version-item:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -193,7 +193,7 @@ export class AiVersionSelector extends LitElement {
     }
 
     input[type="range"]:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-spacing-4);
       border-radius: var(--cg-spacing-2);
     }
@@ -208,7 +208,7 @@ export class AiVersionSelector extends LitElement {
 
     .promote-btn {
       background: transparent;
-      border: var(--cg-border-width-50) solid var(--cg-color-accent-border);
+      border: var(--cg-border-width-50) solid var(--cg-overlay-accent-strong);
       color: var(--cg-color-surface-base-text);
       border-radius: var(--cg-border-radius-50);
       padding: var(--cg-spacing-3) var(--cg-spacing-8);
@@ -220,7 +220,7 @@ export class AiVersionSelector extends LitElement {
     }
 
     .promote-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 

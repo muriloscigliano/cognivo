@@ -2,135 +2,311 @@
 import DocsLayout from '../../layouts/DocsLayout.astro';
 ---
 
-<DocsLayout title="Design Advisor">
-  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Design Advisor</h1>
-  <p style="color: #6b7280; margin-bottom: 1rem;">
-    <code>@cognivo/design-advisor</code> <strong>v0.3.0</strong> provides a comprehensive library of 184 cognitive biases with design implications,
-    examples, and implementation guidance. Use it to make psychology-informed design decisions.
-  </p>
-  <p style="margin-bottom: 2rem;">
-    <a href="/biases" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #7c3aed; color: white; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-decoration: none;">
-      Explore Biases Interactively &rarr;
-    </a>
+<DocsLayout title="Cognitive Psychology">
+  <h1>Cognitive Psychology & Design</h1>
+  <p class="subtitle">
+    Cognivo integrates 184 cognitive biases into the design workflow — not as an afterthought, but as a core architectural layer.
+    Every component, every pattern, every design decision can be traced back to how the human brain actually processes information.
   </p>
 
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Installation</h2>
-    <pre><code>pnpm add @cognivo/design-advisor</code></pre>
-  </section>
-
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Bias Library</h2>
-    <p style="margin-bottom: 1rem;">Access individual biases directly or search the full library of 184 biases:</p>
-    <pre><code>import {'{'}
-  anchoringBias,
-  lossAversion,
-  socialProof,
-  vonRestorffEffect,
-  framingEffect,
-  allBiases,
-  getBiasById,
-  getBiasesByCategory,
-  getBiasesByTag,
-  searchBiases,
-{'}'} from '@cognivo/design-advisor';
-
-// Direct access
-console.log(anchoringBias.name);        // "Anchoring Bias"
-console.log(anchoringBias.category);    // BiasCategory.Decision
-
-// Search by tag
-const pricingBiases = getBiasesByTag('pricing');
-
-// Full-text search
-const results = searchBiases('conversion');
-
-// Browse all
-console.log(allBiases.length);          // 184</code></pre>
-  </section>
-
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">BiasRegistry</h2>
-    <p style="margin-bottom: 1rem;">The <code>BiasRegistry</code> provides advanced querying and recommendations:</p>
-    <pre><code>import {'{'} BiasRegistry, queryBiases, recommendBiases, getStatistics {'}'} from '@cognivo/design-advisor';
-
-// Query by multiple criteria
-const biases = queryBiases({'{'}
-  category: 'decision',
-  tags: ['pricing', 'ecommerce'],
-{'}'});
-
-// Get recommendations for a design context
-const recommendations = recommendBiases({'{'}
-  page: 'pricing',
-  goals: ['increase conversion', 'build trust'],
-{'}'});
-
-// Library statistics
-const stats = getStatistics();
-console.log(stats);  // {'{'} total: 184, byCategory: {'{'} ... {'}'} {'}'}</code></pre>
-  </section>
-
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">LazyBiasRegistry</h2>
-    <p style="margin-bottom: 1rem;">For large applications, use the lazy registry to load biases on demand and reduce initial bundle size:</p>
-    <pre><code>import {'{'} LazyBiasRegistry {'}'} from '@cognivo/design-advisor';
-
-const registry = new LazyBiasRegistry();
-
-// Biases are loaded lazily when accessed
-const bias = await registry.get('anchoring-bias');
-const all = await registry.getAll();</code></pre>
-  </section>
-
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">BiasCard Type</h2>
-    <p style="margin-bottom: 1rem;">Each bias is a fully structured <code>BiasCard</code> object:</p>
-    <pre><code>interface BiasCard {'{'}
-  id: string;
-  name: string;
-  category: BiasCategory;
-  description: string;
-  designImplications: string[];
-  useCases: UseCase[];
-  avoidCases: AvoidCase[];
-  realWorldExamples: RealWorldExample[];
-  implementationSteps: ImplementationStep[];
-  accessibilityGuidelines: AccessibilityGuideline[];
-  ethicalConsiderations: EthicalConsideration[];
-  // ... and more
-{'}'}</code></pre>
-  </section>
-
-  <section style="margin-bottom: 2.5rem;">
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Web Components</h2>
-    <p style="margin-bottom: 1rem;">Two web components for embedding the bias library directly in your app:</p>
-    <pre><code>import {'{'} BiasCardElement, BiasLibraryElement {'}'} from '@cognivo/design-advisor';
-
-// &lt;bias-card&gt; — Display a single bias card with full details
-// &lt;bias-library&gt; — Full browsable library with search, filter, and category navigation
-
-// Use in HTML:
-// &lt;bias-card bias-id="anchoring-bias"&gt;&lt;/bias-card&gt;
-// &lt;bias-library&gt;&lt;/bias-library&gt;</code></pre>
+  <section>
+    <h2 id="why">Why Cognitive Psychology in a Component Library?</h2>
+    <p>
+      Most design systems stop at visual consistency — colors, spacing, typography. But the highest-performing interfaces
+      understand <strong>how people think</strong>, not just what they see.
+    </p>
+    <p>
+      Users don't make rational decisions. They rely on mental shortcuts (heuristics), fall prey to systematic errors (biases),
+      and process information through predictable cognitive patterns. Cognivo makes these patterns programmable.
+    </p>
+    <div class="insight-grid">
+      <div class="insight">
+        <span class="insight-num">01</span>
+        <h3>Decision Architecture</h3>
+        <p>How you present choices changes what people choose. Anchoring, framing, and decoy effects are not tricks — they're how the brain works. Cognivo helps you design with this, not against it.</p>
+      </div>
+      <div class="insight">
+        <span class="insight-num">02</span>
+        <h3>Cognitive Load Management</h3>
+        <p>Working memory holds ~4 items. Every unnecessary element competes for attention. Our token system, component states, and layout patterns are designed to minimize cognitive overhead.</p>
+      </div>
+      <div class="insight">
+        <span class="insight-num">03</span>
+        <h3>Trust & Credibility</h3>
+        <p>AI interfaces have a unique trust problem. Users need to calibrate confidence in machine outputs. Our confidence sliders, source citations, and reasoning trees make AI transparent.</p>
+      </div>
+      <div class="insight">
+        <span class="insight-num">04</span>
+        <h3>Behavioral Outcomes</h3>
+        <p>Every UI interaction triggers cognitive biases. Loss aversion drives urgency. Social proof drives adoption. The Von Restorff effect drives attention. Cognivo maps these to components.</p>
+      </div>
+    </div>
   </section>
 
   <section>
-    <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Search, Query & Recommend API</h2>
-    <p style="margin-bottom: 1rem;">Three ways to find the right biases for your design context:</p>
-    <pre><code>import {'{'} searchBiases, queryBiases, recommendBiases {'}'} from '@cognivo/design-advisor';
+    <h2 id="categories">The 7 Bias Categories</h2>
+    <p>184 biases organized into 7 categories that map to different stages of the user journey:</p>
+    <div class="cat-grid">
+      <div class="cat-card">
+        <span class="cat-num">42</span>
+        <h3>Decision</h3>
+        <p>Anchoring, framing, decoy effect, loss aversion, sunk cost. How users evaluate options and make choices.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-num">31</span>
+        <h3>Memory</h3>
+        <p>Primacy/recency, serial position, spacing effect, Von Restorff. How users remember and recall information.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-num">28</span>
+        <h3>Social</h3>
+        <p>Social proof, authority bias, bandwagon effect, in-group favoritism. How others influence user behavior.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-num">25</span>
+        <h3>Attention</h3>
+        <p>Change blindness, inattentional blindness, banner blindness, selective attention. What users notice and miss.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-num">22</span>
+        <h3>Perception</h3>
+        <p>Gestalt principles, aesthetic-usability effect, peak-end rule, halo effect. How users interpret visual information.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-num">20</span>
+        <h3>Learning</h3>
+        <p>Progressive disclosure, chunking, scaffolding, dual coding. How users acquire and process new information.</p>
+      </div>
+      <div class="cat-card">
+        <span class="cat-num">16</span>
+        <h3>Motivation</h3>
+        <p>Endowment effect, IKEA effect, goal gradient, variable reward. What drives users to take action.</p>
+      </div>
+    </div>
+  </section>
 
-// Full-text search
-const results = searchBiases('conversion');
+  <section>
+    <h2 id="how">How It Works in Practice</h2>
+    <p>The design advisor isn't a separate tool — it's woven into how you build interfaces.</p>
 
-// Structured query by category and tags
-const biases = queryBiases({'{'} category: 'decision', tags: ['pricing'] {'}'});
+    <h3>1. Query biases for your context</h3>
+    <p>Building a pricing page? Ask the advisor which cognitive biases are relevant:</p>
+    <pre><code>{`import { queryBiases, recommendBiases } from '@cognivo/design-advisor';
 
-// Context-aware recommendations
-const recs = recommendBiases({'{'} page: 'checkout', goals: ['reduce abandonment'] {'}'});</code></pre>
-    <p style="margin-top: 1rem; font-size: 0.9rem;">
-      <a href="/showcase.html">See the live bias library browser</a> |
-      <a href="/biases">Interactive bias explorer</a>
+// What biases matter for pricing pages?
+const biases = queryBiases({
+  tags: ['pricing', 'conversion', 'ecommerce'],
+});
+// → Anchoring Bias, Decoy Effect, Loss Aversion, Price-Quality Inference...
+
+// Get actionable recommendations
+const recs = recommendBiases({
+  page: 'pricing',
+  goals: ['increase conversion', 'reduce abandonment'],
+});
+// → Returns ranked biases with specific implementation steps`}</code></pre>
+
+    <h3>2. Map biases to components</h3>
+    <p>Each bias connects to specific Cognivo components that implement it:</p>
+    <pre><code>{`// Anchoring Bias → Show the highest price first
+// Component: <ai-ab-test> for testing price anchors
+// Component: <cg-metric-card> for displaying reference numbers
+
+// Loss Aversion → Frame outcomes as losses, not gains
+// Component: <ai-alert-card urgency="urgent"> for scarcity
+// Component: <ai-countdown> for time-limited offers
+
+// Social Proof → Show what others are doing
+// Component: <ai-presence> for live user count
+// Component: <cg-badge> for "Popular" / "Most chosen" labels`}</code></pre>
+
+    <h3>3. Audit your designs</h3>
+    <p>Review any interface through a cognitive lens:</p>
+    <pre><code>{`import { auditDesign } from '@cognivo/design-advisor';
+
+const audit = auditDesign({
+  components: ['ai-chat', 'cg-button', 'ai-confidence-slider'],
+  context: 'AI assistant for financial advice',
+});
+
+// Returns:
+// - Active biases (what's being triggered)
+// - Missing opportunities (biases you could leverage)
+// - Risk assessment (biases that might harm trust)
+// - Ethical considerations per bias`}</code></pre>
+  </section>
+
+  <section>
+    <h2 id="structure">Bias Card Structure</h2>
+    <p>Each of the 184 biases is a richly structured object — not just a definition, but a complete design toolkit:</p>
+    <pre><code>{`interface BiasCard {
+  id: string;                          // 'anchoring-bias'
+  name: string;                        // 'Anchoring Bias'
+  category: BiasCategory;              // 'decision'
+  description: string;                 // Full psychological description
+  designImplications: string[];        // How it affects UI design
+  useCases: UseCase[];                 // When to leverage it
+  avoidCases: AvoidCase[];             // When NOT to use it
+  realWorldExamples: RealWorldExample[];  // Apple, Amazon, Stripe examples
+  implementationSteps: ImplementationStep[]; // Step-by-step guide
+  accessibilityGuidelines: AccessibilityGuideline[];
+  ethicalConsiderations: EthicalConsideration[];
+  relatedBiases: string[];             // Connected biases
+  tags: string[];                      // Searchable tags
+  strength: 'strong' | 'moderate' | 'subtle';
+  reversibility: 'reversible' | 'sticky' | 'permanent';
+}`}</code></pre>
+  </section>
+
+  <section>
+    <h2 id="examples">Real-World Examples</h2>
+    <p>Every bias includes documented real-world examples from companies that use them effectively:</p>
+    <div class="example-grid">
+      <div class="example-card">
+        <h3>Anchoring Bias</h3>
+        <p class="example-co">Used by: Stripe, Apple, Salesforce</p>
+        <p>Show the enterprise plan first ($299/mo) so the team plan ($49/mo) feels like a deal. The first number anchors perception of value.</p>
+      </div>
+      <div class="example-card">
+        <h3>Loss Aversion</h3>
+        <p class="example-co">Used by: Booking.com, Amazon, Duolingo</p>
+        <p>"Only 2 left in stock" triggers loss aversion 2x stronger than the equivalent gain. Frame features as "Don't lose access to..." not "Gain access to..."</p>
+      </div>
+      <div class="example-card">
+        <h3>Social Proof</h3>
+        <p class="example-co">Used by: GitHub, Vercel, Linear</p>
+        <p>"Used by 100K+ developers" reduces evaluation friction. Real-time presence indicators ("3 people viewing") create urgency through social validation.</p>
+      </div>
+      <div class="example-card">
+        <h3>Von Restorff Effect</h3>
+        <p class="example-co">Used by: Notion, Figma, Slack</p>
+        <p>The one item that's visually different gets remembered. Accent colors, badges ("New", "Popular"), and visual breaks exploit this for CTAs and key features.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 id="api">Installation & API</h2>
+    <pre><code>pnpm add @cognivo/design-advisor</code></pre>
+    <pre><code>{`import {
+  // Direct bias access
+  anchoringBias, lossAversion, socialProof,
+  allBiases, getBiasById,
+
+  // Search & query
+  searchBiases, queryBiases, getBiasesByTag, getBiasesByCategory,
+
+  // Recommendations
+  recommendBiases,
+
+  // Registry
+  BiasRegistry, LazyBiasRegistry,
+
+  // Audit
+  auditDesign, getStatistics,
+} from '@cognivo/design-advisor';`}</code></pre>
+  </section>
+
+  <section>
+    <h2 id="components">Web Components</h2>
+    <p>Embed the bias library directly in your app with two components:</p>
+    <pre><code>{`// Single bias card with full details
+<bias-card bias-id="anchoring-bias"></bias-card>
+
+// Full browsable library with search, filter, category navigation
+<bias-library></bias-library>`}</code></pre>
+    <cg-callout variant="info" title="Coming Soon">
+      <span>Interactive bias explorer with flip cards and category filters is in development.</span>
+    </cg-callout>
+  </section>
+
+  <section>
+    <h2 id="ethics">Ethical Framework</h2>
+    <p>
+      Every bias in the library includes ethical considerations. Cognivo distinguishes between:
+    </p>
+    <div class="ethics-grid">
+      <div class="ethics-card green">
+        <h3>Assistive Use</h3>
+        <p>Leveraging biases to help users make better decisions — progressive disclosure reduces overwhelm, anchoring provides context.</p>
+      </div>
+      <div class="ethics-card yellow">
+        <h3>Persuasive Use</h3>
+        <p>Using biases to nudge users toward intended outcomes — social proof on pricing pages, scarcity on limited offers.</p>
+      </div>
+      <div class="ethics-card red">
+        <h3>Manipulative Use</h3>
+        <p>Exploiting biases against user interests — dark patterns, artificial scarcity, hidden costs. Flagged and documented as anti-patterns.</p>
+      </div>
+    </div>
+    <p style="margin-top: 16px; color: var(--fg-3); font-size: 14px;">
+      The design advisor flags when a bias application crosses from persuasive to manipulative,
+      helping teams stay ethical while still building high-converting interfaces.
     </p>
   </section>
+
+  <style>
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.03em; }
+    .subtitle { color: var(--fg-2); margin-bottom: 40px; font-size: 16px; line-height: 1.7; max-width: 720px; }
+    section { margin-bottom: 48px; }
+    h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 16px; letter-spacing: -0.01em; }
+    h3 { font-size: 15px; font-weight: 600; margin: 24px 0 8px; }
+    p { margin-bottom: 12px; color: var(--fg-2); line-height: 1.7; }
+
+    .insight-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px; margin-top: 20px;
+    }
+    .insight {
+      padding: 24px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+    }
+    .insight:hover { border-color: var(--border-hover); }
+    .insight-num { font: 700 13px/1 var(--font-mono); color: var(--accent); }
+    .insight h3 { margin-top: 8px; font-size: 15px; }
+    .insight p { font-size: 14px; color: var(--fg-3); margin: 0; }
+
+    .cat-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px; margin-top: 16px;
+    }
+    .cat-card {
+      padding: 20px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+    }
+    .cat-card:hover { border-color: var(--accent); }
+    .cat-num {
+      font: 800 24px/1 var(--font-mono); color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+    .cat-card h3 { margin-top: 4px; font-size: 15px; }
+    .cat-card p { font-size: 13px; color: var(--fg-3); margin: 0; }
+
+    .example-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px; margin-top: 16px;
+    }
+    .example-card {
+      padding: 20px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+    }
+    .example-card:hover { border-color: var(--border-hover); }
+    .example-card h3 { margin-top: 0; font-size: 15px; }
+    .example-co { font-size: 12px; color: var(--accent); margin-bottom: 8px; font-weight: 500; }
+    .example-card p:last-child { font-size: 13px; color: var(--fg-3); margin: 0; }
+
+    .ethics-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px; margin-top: 16px;
+    }
+    .ethics-card {
+      padding: 20px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+    }
+    .ethics-card.green { border-left: 3px solid #22c55e; }
+    .ethics-card.yellow { border-left: 3px solid #eab308; }
+    .ethics-card.red { border-left: 3px solid #ef4444; }
+    .ethics-card h3 { margin-top: 0; font-size: 15px; }
+    .ethics-card p { font-size: 13px; color: var(--fg-3); margin: 0; }
+  </style>
 </DocsLayout>

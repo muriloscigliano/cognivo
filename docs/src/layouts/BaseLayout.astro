@@ -8,32 +8,75 @@ const { title, description = 'AI-native component library with cognitive psychol
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark" style="scroll-behavior: smooth;">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
   <title>{title} | Cognivo</title>
+  <style>
+    @view-transition { navigation: auto; }
+    ::view-transition-old(root),
+    ::view-transition-new(root),
+    ::view-transition-old(main-content),
+    ::view-transition-new(main-content) { animation: none; }
+  </style>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
   <style is:global>
     :root {
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-      --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', 'Segoe UI Mono', monospace;
-      --bg: #0a0a0a;
-      --bg-subtle: #111;
-      --bg-muted: #171717;
-      --border: rgba(255,255,255,0.06);
-      --border-hover: rgba(255,255,255,0.1);
-      --fg: #ededed;
-      --fg-2: #a0a0a0;
-      --fg-3: #666;
-      --accent: #dfff61;
-      --accent-dim: rgba(223,255,97,0.08);
-      --radius: 8px;
+      --font-mono: 'Geist Mono', 'SF Mono', 'Cascadia Code', ui-monospace, monospace;
+      --radius: 10px;
       --radius-pill: 9999px;
-      --max-width: 1200px;
+      --max-width: 1400px;
+    }
+
+    /* Dark theme (default) */
+    [data-theme="dark"] {
+      --bg: #09090b;
+      --bg-subtle: #111113;
+      --bg-muted: #18181b;
+      --border: #1e1e22;
+      --border-subtle: rgba(255,255,255,0.04);
+      --border-hover: #2e2e33;
+      --border-strong: rgba(255,255,255,0.15);
+      --fg: #fafafa;
+      --fg-2: #a1a1aa;
+      --fg-3: #71717a;
+      --fg-4: #3f3f46;
+      --text-1: var(--fg); --text-2: var(--fg-2); --text-3: var(--fg-3); --text-4: var(--fg-4);
+      --accent: #dfff61;
+      --accent-dim: rgba(223,255,97,0.07);
+      --accent-muted: rgba(223,255,97,0.12);
+      --shadow-card: 0 1px 2px rgba(0,0,0,0.4);
+      --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.5);
+      --row-hover: rgba(255,255,255,0.02);
+      --dot-color: rgba(255,255,255,0.03);
+    }
+
+    /* Light theme */
+    [data-theme="light"] {
+      --bg: #ffffff;
+      --bg-subtle: #f4f4f5;
+      --bg-muted: #e4e4e7;
+      --border: #e4e4e7;
+      --border-subtle: rgba(0,0,0,0.04);
+      --border-hover: #a1a1aa;
+      --border-strong: rgba(0,0,0,0.12);
+      --fg: #09090b;
+      --fg-2: #52525b;
+      --fg-3: #71717a;
+      --fg-4: #a1a1aa;
+      --text-1: var(--fg); --text-2: var(--fg-2); --text-3: var(--fg-3); --text-4: var(--fg-4);
+      --accent: #4d7c0f;
+      --accent-dim: rgba(77,124,15,0.06);
+      --accent-muted: rgba(77,124,15,0.1);
+      --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.08);
+      --row-hover: rgba(0,0,0,0.02);
+      --dot-color: rgba(0,0,0,0.04);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -48,13 +91,15 @@ const { title, description = 'AI-native component library with cognitive psychol
     }
 
     a { color: inherit; text-decoration: none; }
+    a:not([class]):hover { color: var(--accent); }
 
     code {
       font-family: var(--font-mono);
-      font-size: 0.875em;
+      font-size: 0.85em;
       background: var(--bg-muted);
-      padding: 2px 6px;
-      border-radius: 4px;
+      padding: 2px 7px;
+      border-radius: 5px;
+      color: var(--accent);
     }
 
     pre {
@@ -63,19 +108,30 @@ const { title, description = 'AI-native component library with cognitive psychol
       padding: 16px 20px;
       border-radius: var(--radius);
       overflow-x: auto;
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.7;
       margin: 16px 0;
     }
-    pre code { background: none; padding: 0; font-size: inherit; }
+    pre code { background: none; padding: 0; font-size: inherit; color: var(--fg-2); }
 
-    ::selection { background: rgba(223,255,97,0.18); }
+    /* Global accent touches for doc content */
+    strong { color: var(--fg); }
+    h1 code, h2 code, h3 code { font-size: 0.85em; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+    ::selection { background: rgba(223,255,97,0.18); color: #fff; }
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+    * { scrollbar-width: thin; scrollbar-color: #27272a transparent; }
   </style>
 </head>
 <body>
   <slot />
+  <script>
+    import '@cognivo/components';
+    import '@cognivo/tokens/dist/index.css';
+  </script>
 </body>
 </html>

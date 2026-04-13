@@ -23,7 +23,7 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class AiErrorBoundary extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -98,7 +98,7 @@ export class AiErrorBoundary extends LitElement {
     }
     .details-toggle:hover { color: var(--cg-color-surface-base-text); }
     .details-toggle:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -131,7 +131,7 @@ export class AiErrorBoundary extends LitElement {
       cursor: pointer;
       border: none;
       font-family: inherit;
-      transition: filter var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .btn:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
     .btn:focus-visible {

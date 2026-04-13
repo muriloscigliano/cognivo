@@ -56,7 +56,7 @@ export class AiPromptEditor extends LitElement {
       padding: var(--cg-spacing-12) var(--cg-spacing-16);
       cursor: pointer;
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .version-item:hover { background: var(--cg-overlay-dark-subtle); }
     .version-item.selected {
@@ -106,7 +106,7 @@ export class AiPromptEditor extends LitElement {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .action-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .action-btn:hover { border-color: var(--cg-color-surface-cards-hover-border); color: var(--cg-color-surface-base-text); }

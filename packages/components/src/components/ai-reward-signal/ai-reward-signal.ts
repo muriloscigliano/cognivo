@@ -27,8 +27,8 @@ export class AiRewardSignal extends LitElement {
       color: var(--cg-color-surface-base-text);
       cursor: pointer;
       transition:
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .container:hover {
       border-color: var(--cg-color-input-border-hover);
@@ -97,7 +97,7 @@ export class AiRewardSignal extends LitElement {
       height: 100%;
       border-radius: var(--cg-border-radius-50);
       background: var(--cg-color-action-primary-background-default);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     /* ── Sparkline ── */

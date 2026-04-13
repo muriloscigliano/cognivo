@@ -42,7 +42,7 @@ export class AiSegmentationViewer extends LitElement {
     .canvas-wrap img { display: block; width: 100%; height: auto; }
     .mask-overlay {
       position: absolute; inset: 0; pointer-events: none;
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .mask-overlay.selected {
       outline: var(--cg-border-width-100) solid var(--cg-color-action-primary-background-default);
@@ -74,7 +74,7 @@ export class AiSegmentationViewer extends LitElement {
       font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-medium);
       color: var(--cg-color-surface-container-outlined);
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default), color var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .legend-item:hover { border-color: var(--cg-color-surface-cards-hover-border); color: var(--cg-color-surface-base-text); }
     .legend-item.selected { border-color: var(--cg-color-action-primary-background-default); color: var(--cg-color-surface-base-text); }

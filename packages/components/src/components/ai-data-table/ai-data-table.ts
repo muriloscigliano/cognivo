@@ -121,7 +121,7 @@ export class AiDataTable extends LitElement {
     td.clickable { cursor: pointer; }
 
     /* Row states */
-    tbody tr { transition: background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default); }
+    tbody tr { transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default); }
     tbody tr:hover td { background: var(--cg-color-action-tertiary-background-hover); }
 
     /* Striped */

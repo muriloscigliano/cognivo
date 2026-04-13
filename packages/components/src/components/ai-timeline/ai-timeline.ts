@@ -36,8 +36,8 @@ export class AiTimeline extends LitElement {
       position: relative;
       cursor: pointer;
       border-radius: var(--cg-border-radius-100);
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
-      animation: stepIn var(--cg-motion-duration-slow) var(--cg-motion-easing-enter) both;
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      animation: stepIn var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out) both;
       animation-delay: calc(var(--step-index, 0) * 50ms);
     }
     .step:hover { background: var(--cg-overlay-dark-subtle); }
@@ -101,7 +101,7 @@ export class AiTimeline extends LitElement {
       color: var(--cg-color-status-success-text-default);
     }
     .dot.complete svg {
-      animation: checkPop var(--cg-motion-duration-slow) var(--cg-motion-easing-bounce) both;
+      animation: checkPop var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out) both;
     }
     .dot.error {
       background: var(--cg-color-status-error-background-default);
@@ -155,7 +155,7 @@ export class AiTimeline extends LitElement {
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: textSweep 1.8s var(--cg-motion-easing-default) infinite;
+      animation: textSweep 1.8s var(--cg-transition-easing-default) infinite;
     }
     @keyframes textSweep {
       0% { background-position: 100% 50%; }
@@ -180,7 +180,7 @@ export class AiTimeline extends LitElement {
     .duration-fill {
       height: 100%;
       border-radius: var(--cg-border-radius-full);
-      transition: width var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     .step.complete .duration-fill { background: var(--cg-color-status-success-text-default); opacity: 0.6; }
     .step.active .duration-fill { background: var(--cg-color-action-primary-background-default); animation: indeterminate 1.5s linear infinite; }

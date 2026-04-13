@@ -24,7 +24,7 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class AiEmptyState extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -49,7 +49,7 @@ export class AiEmptyState extends LitElement {
       justify-content: center;
       margin-bottom: var(--cg-spacing-16);
       font-size: var(--cg-font-size-2xl);
-      transition: transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .icon-wrapper:hover {
@@ -110,7 +110,7 @@ export class AiEmptyState extends LitElement {
       font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       font-family: inherit;
-      transition: filter var(--cg-motion-duration-fast) var(--cg-motion-easing-color), transform var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     /* Default action style */
@@ -139,7 +139,7 @@ export class AiEmptyState extends LitElement {
     .action-btn:hover { filter: brightness(1.1); }
     .action-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .action-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 

@@ -24,7 +24,7 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class AiFeedback extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
     }
 
     .container {
@@ -110,10 +110,10 @@ export class AiFeedback extends LitElement {
       align-items: center;
       justify-content: center;
       transition:
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        background var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        color var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .thumb-btn:hover {
       border-color: var(--cg-color-input-border-hover);
@@ -146,8 +146,8 @@ export class AiFeedback extends LitElement {
       cursor: pointer;
       padding: var(--cg-spacing-2);
       transition:
-        color var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
-        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        color var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .star-btn:hover { transform: scale(1.15); }
     .star-btn.active {
@@ -159,7 +159,7 @@ export class AiFeedback extends LitElement {
     .star-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); outline-offset: var(--cg-outline-offset-default); }
 
     /* Star SVG fill transition */
-    .star-btn svg { transition: fill var(--cg-motion-duration-fast) var(--cg-motion-easing-default); }
+    .star-btn svg { transition: fill var(--cg-transition-duration-fast) var(--cg-transition-easing-default); }
     .star-btn.active svg { fill: var(--cg-color-status-warning-text-default); }
 
     /* ── Emoji ── */
@@ -175,10 +175,10 @@ export class AiFeedback extends LitElement {
       align-items: center;
       justify-content: center;
       transition:
-        opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        background var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       opacity: 0.5;
     }
     .emoji-btn:hover { opacity: 0.85; background: var(--cg-overlay-dark-subtle); transform: scale(1.1); }
@@ -200,7 +200,7 @@ export class AiFeedback extends LitElement {
       display: flex;
       flex-wrap: wrap;
       gap: var(--cg-spacing-6);
-      animation: sectionReveal var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      animation: sectionReveal var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
     }
     .tag {
       padding: var(--cg-spacing-4) var(--cg-spacing-12);
@@ -212,13 +212,13 @@ export class AiFeedback extends LitElement {
       font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       transition:
-        border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
-        color var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
-        background var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
-        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        background var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       font-family: inherit;
-      animation: chipIn 350ms var(--cg-motion-easing-enter) both;
+      animation: chipIn 350ms var(--cg-transition-easing-ease-out) both;
       animation-delay: calc(var(--chip-index, 0) * 60ms);
     }
     .tag:hover {
@@ -238,7 +238,7 @@ export class AiFeedback extends LitElement {
 
     /* ── Comment ── */
     .comment-area {
-      animation: sectionReveal var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      animation: sectionReveal var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
       overflow: hidden;
     }
     textarea {
@@ -253,7 +253,7 @@ export class AiFeedback extends LitElement {
       font-size: var(--cg-font-size-xs);
       resize: vertical;
       outline: none;
-      transition: border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     textarea:focus {
       border-color: var(--cg-color-input-border-focus);
@@ -264,7 +264,7 @@ export class AiFeedback extends LitElement {
     /* ── Submit ── */
     .submit-wrap {
       align-self: flex-start;
-      animation: chipIn 300ms var(--cg-motion-easing-enter) both;
+      animation: chipIn 300ms var(--cg-transition-easing-ease-out) both;
     }
     .submit-btn {
       position: relative;
@@ -279,9 +279,9 @@ export class AiFeedback extends LitElement {
       font-weight: var(--cg-font-weight-bold);
       cursor: pointer;
       transition:
-        background-color var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
-        opacity var(--cg-motion-duration-normal) var(--cg-motion-easing-default),
-        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        background-color var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        opacity var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .submit-btn:hover { background: var(--cg-color-action-primary-background-hover); }
     .submit-btn:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
@@ -322,7 +322,7 @@ export class AiFeedback extends LitElement {
       animation: checkDraw 400ms ease-out 200ms forwards;
     }
     .submitted-text {
-      animation: successReveal 400ms var(--cg-motion-easing-enter) 350ms both;
+      animation: successReveal 400ms var(--cg-transition-easing-ease-out) 350ms both;
     }
 
     /* ── Rounded variants ── */

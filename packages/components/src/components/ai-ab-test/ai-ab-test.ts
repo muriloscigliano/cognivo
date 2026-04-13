@@ -56,7 +56,7 @@ export class AiAbTest extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-100);
       padding: var(--cg-spacing-16);
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       min-height: var(--cg-spacing-80);
     }
     .variant.winner {

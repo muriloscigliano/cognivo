@@ -37,7 +37,7 @@ const CLUSTER_COLORS = [
 export class AiEmbeddingViz extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -82,11 +82,11 @@ export class AiEmbeddingViz extends LitElement {
 
     .point {
       cursor: pointer;
-      transition: r var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: r var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .point:hover { r: 7; }
     .point:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 

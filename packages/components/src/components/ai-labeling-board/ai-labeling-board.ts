@@ -38,7 +38,7 @@ interface LabelDef {
 export class AiLabelingBoard extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeInKeyframes, css`
     :host {
-      animation: fadeIn var(--cg-motion-duration-normal) var(--cg-motion-easing-color);
+      animation: fadeIn var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
 
     .panel {
@@ -85,8 +85,8 @@ export class AiLabelingBoard extends LitElement {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-                  color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+                  color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .palette-btn:hover {
       border-color: var(--cg-color-input-border-hover);
@@ -117,8 +117,8 @@ export class AiLabelingBoard extends LitElement {
       color: var(--cg-color-input-text-placeholder);
       font-size: var(--cg-font-size-xs);
       cursor: pointer;
-      transition: border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-                  color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+                  color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .add-label-btn:hover {
       border-color: var(--cg-color-input-border-hover);
@@ -141,7 +141,7 @@ export class AiLabelingBoard extends LitElement {
       gap: var(--cg-spacing-12);
       padding: var(--cg-spacing-12) var(--cg-spacing-16);
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      transition: background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       cursor: default;
     }
     .item-row:last-child {
@@ -222,7 +222,7 @@ export class AiLabelingBoard extends LitElement {
       display: flex;
       align-items: center;
       border-radius: var(--cg-border-radius-full);
-      transition: color var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .remove-btn:hover {
       color: var(--cg-color-status-error-text-default);

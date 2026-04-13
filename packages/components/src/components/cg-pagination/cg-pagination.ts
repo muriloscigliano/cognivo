@@ -51,10 +51,10 @@ export class CgPagination extends LitElement {
       line-height: 1;
       white-space: nowrap;
       transition:
-        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        border-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       -webkit-font-smoothing: antialiased;
     }
 

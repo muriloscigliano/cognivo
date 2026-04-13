@@ -33,9 +33,9 @@ export class AiInsightCard extends LitElement {
       cursor: pointer;
       position: relative;
       transition:
-        border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-color),
-        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .card:hover {
       border-color: var(--cg-color-surface-cards-hover-border);
@@ -130,7 +130,7 @@ export class AiInsightCard extends LitElement {
       margin-top: var(--cg-spacing-12);
       padding-top: var(--cg-spacing-12);
       border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      animation: detailReveal var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      animation: detailReveal var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
     }
     @keyframes detailReveal {
       from { opacity: 0; transform: translateY(-4px); }
@@ -159,8 +159,8 @@ export class AiInsightCard extends LitElement {
     }
     .source a:hover { text-decoration: underline; }
     .source a:focus-visible {
-      outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
-      outline-offset: var(--cg-outline-offset-default);
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
       border-radius: var(--cg-border-radius-50);
     }
     .source-dot { width: var(--cg-spacing-4); height: var(--cg-spacing-4); border-radius: var(--cg-border-radius-full); flex-shrink: 0; }
@@ -176,7 +176,7 @@ export class AiInsightCard extends LitElement {
       top: var(--cg-spacing-8);
       right: var(--cg-spacing-8);
       opacity: 0;
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .card:hover .actions { opacity: 1; }
 
@@ -225,15 +225,15 @@ export class AiInsightCard extends LitElement {
   @property({ type: Boolean }) loading = false;
   @property({ type: Boolean }) selected = false;
 
-  private _getIcon() {
+  private _getIconName(): string {
     const icons: Record<string, string> = {
-      explanation: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>',
-      forecast: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
-      anomaly: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
-      optimization: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
-      classification: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>',
+      explanation: 'info',
+      forecast: 'chart',
+      anomaly: 'warning',
+      optimization: 'sparkle',
+      classification: 'filter',
     };
-    return icons[this.type] || icons.explanation;
+    return icons[this.type] || 'info';
   }
 
   private _handleClick() {
@@ -290,7 +290,7 @@ export class AiInsightCard extends LitElement {
           </cg-button>
         </div>
 
-        <div class="icon-area ${this.type}" aria-hidden="true" .innerHTML=${sanitizeHTML(this._getIcon() ?? '')}></div>
+        <div class="icon-area ${this.type}" aria-hidden="true"><cg-icon name="${this._getIconName()}" size="sm"></cg-icon></div>
 
         <div class="content">
           <div class="type-label">${this.type}</div>

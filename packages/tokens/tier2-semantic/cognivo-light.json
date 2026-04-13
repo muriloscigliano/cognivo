@@ -1978,6 +1978,74 @@
         "$type": "color",
         "$value": "rgba(0, 0, 0, 0.4)"
       }
+    },
+    "white": {
+      "subtle": {
+        "$type": "color",
+        "$value": "rgba(255, 255, 255, 0.03)",
+        "$description": "Barely visible white overlay for glass effects"
+      },
+      "light": {
+        "$type": "color",
+        "$value": "rgba(255, 255, 255, 0.05)",
+        "$description": "Subtle white overlay for inset highlights"
+      },
+      "medium": {
+        "$type": "color",
+        "$value": "rgba(255, 255, 255, 0.08)",
+        "$description": "Medium white overlay for borders and dividers"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "rgba(255, 255, 255, 0.15)",
+        "$description": "Strong white overlay for ripple effects and highlights"
+      }
+    }
+  },
+  "shadow": {
+    "focus": {
+      "error": {
+        "$type": "color",
+        "$value": "rgba(239, 68, 68, 0.2)",
+        "$description": "Focus ring shadow for error state inputs"
+      },
+      "success": {
+        "$type": "color",
+        "$value": "rgba(34, 197, 94, 0.2)",
+        "$description": "Focus ring shadow for success state inputs"
+      },
+      "primary": {
+        "$type": "color",
+        "$value": "rgba(99, 102, 241, 0.25)",
+        "$description": "Focus ring shadow for primary interactive elements"
+      }
+    },
+    "elevation": {
+      "xs": {
+        "$type": "string",
+        "$value": "0 1px 2px rgba(0, 0, 0, 0.05)",
+        "$description": "Minimal shadow for subtle depth"
+      },
+      "sm": {
+        "$type": "string",
+        "$value": "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
+        "$description": "Small shadow for cards and inputs"
+      },
+      "md": {
+        "$type": "string",
+        "$value": "0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)",
+        "$description": "Medium shadow for hover states"
+      },
+      "lg": {
+        "$type": "string",
+        "$value": "0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05)",
+        "$description": "Large shadow for dropdowns and popovers"
+      },
+      "xl": {
+        "$type": "string",
+        "$value": "0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04)",
+        "$description": "Extra-large shadow for modals"
+      }
     }
   },
   "text": {

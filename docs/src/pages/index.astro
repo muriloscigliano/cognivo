@@ -1,27 +1,31 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { registry } from '../data/components';
+
+const total = registry.length;
+const aiCount = registry.filter(c => c.tag.startsWith('ai-')).length;
 
 const stats = [
-  { value: '143', label: 'Components', detail: '54 foundation + 89 AI-native' },
-  { value: '1,800+', label: 'Design Tokens', detail: '3-tier system with palette generator' },
-  { value: '1,107', label: 'Tests', detail: '1,062 passing across all packages' },
-  { value: '184', label: 'Cognitive Biases', detail: 'With design implications & guidance' },
+  { value: `${total}`, label: 'Components', detail: `${total - aiCount} foundation + ${aiCount} AI-native` },
+  { value: '1,800+', label: 'Design Tokens', detail: '3-tier system with dark mode' },
+  { value: '1,147', label: 'Tests', detail: 'Passing across all packages' },
+  { value: '184', label: 'Cognitive Biases', detail: 'Design implications & guidance' },
 ];
 
 const packages = [
-  { name: '@cognivo/components', desc: '143 Lit web components with Shadow DOM', icon: '◆' },
-  { name: '@cognivo/tokens', desc: '1,800+ design tokens, 3-tier system', icon: '◈' },
-  { name: '@cognivo/core', desc: 'Framework-agnostic AI integration', icon: '⬡' },
-  { name: '@cognivo/gen-ui', desc: 'Streaming parser & component registry', icon: '▣' },
-  { name: '@cognivo/adapter-react', desc: 'React wrappers with TypeScript props', icon: '◎' },
-  { name: '@cognivo/adapter-vue', desc: 'Vue wrappers with TypeScript props', icon: '◉' },
-  { name: '@cognivo/design-advisor', desc: '184 cognitive bias cards & registry', icon: '◇' },
-  { name: '@cognivo/adapter-openai', desc: 'OpenAI client with structured outputs', icon: '⬢' },
+  { name: '@cognivo/components', desc: `${total} Lit web components with Shadow DOM` },
+  { name: '@cognivo/tokens', desc: '1,800+ design tokens, 3-tier system' },
+  { name: '@cognivo/core', desc: 'Framework-agnostic AI client + patterns' },
+  { name: '@cognivo/gen-ui', desc: 'Streaming parser & component registry' },
+  { name: '@cognivo/adapter-react', desc: 'React wrappers with TypeScript props' },
+  { name: '@cognivo/adapter-vue', desc: 'Vue wrappers with TypeScript props' },
+  { name: '@cognivo/adapter-openai', desc: 'OpenAI client with structured outputs' },
+  { name: '@cognivo/design-advisor', desc: '184 cognitive bias cards & registry' },
 ];
 
 const features = [
   { title: 'AI-Native Components', desc: 'Chat, streaming text, thinking indicators, command palettes, confidence sliders — built for AI-first interfaces.', accent: true },
-  { title: 'Design Token System', desc: '3-tier token architecture: core primitives, semantic layer, component-specific. Full dark mode. Zero magic numbers.', accent: false },
+  { title: 'Design Token System', desc: '3-tier architecture: core primitives, semantic layer, component-specific. Full dark mode. Zero magic numbers.', accent: false },
   { title: 'Cognitive Psychology', desc: '184 documented cognitive biases with design implications. Know which biases your UI triggers and why.', accent: false },
   { title: 'Framework Agnostic', desc: 'Web Components work everywhere. First-class React and Vue adapters included. No lock-in.', accent: false },
   { title: 'Accessibility First', desc: 'ARIA roles, keyboard navigation, focus management, reduced-motion support, 44px touch targets. All built-in.', accent: false },
@@ -30,126 +34,399 @@ const features = [
 ---
 
 <BaseLayout title="Home">
-  <section style="position: relative; overflow: hidden; padding: 6rem 2rem 4rem; text-align: center;">
-    <div style="position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(223, 255, 97, 0.06) 0%, transparent 70%); pointer-events: none;"></div>
-
-    <div style="position: relative; max-width: var(--max-width); margin: 0 auto;">
-      <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: var(--accent-muted); border: 1px solid rgba(223, 255, 97, 0.2); border-radius: var(--radius-pill); font-size: 0.8125rem; font-weight: 500; color: var(--accent); margin-bottom: 2rem;">
-        <span style="width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite;"></span>
-        v0.3 — 143 components shipping
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <span class="hero-dot"></span>
+        v0.3 — {total} components shipping
       </div>
 
-      <h1 style="font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 1.5rem;">
+      <h1>
         Build AI interfaces<br />
-        <span style="background: linear-gradient(135deg, var(--accent), #a3e635); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">that think with users</span>
+        <span class="hero-accent">that think with users</span>
       </h1>
 
-      <p style="font-size: clamp(1rem, 2vw, 1.25rem); color: var(--text-2); max-width: 640px; margin: 0 auto 2.5rem; line-height: 1.7;">
-        AI-native component library with cognitive psychology integration.<br />
-        143 Web Components. 1,800+ design tokens. 184 cognitive biases. Works everywhere.
+      <p class="hero-sub">
+        Open-source AI-native component library with cognitive psychology integration.<br />
+        {total} Web Components. 1,800+ design tokens. 184 cognitive biases. MIT licensed.
       </p>
 
-      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 5rem;">
-        <a href="/getting-started" style="display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #09090b; padding: 12px 28px; border-radius: var(--radius); font-weight: 600; font-size: 0.9375rem; box-shadow: 0 0 20px rgba(223, 255, 97, 0.15);">
-          Get Started <span style="font-size: 1.1em;">→</span>
-        </a>
-        <a href="/components" style="display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border-strong); padding: 12px 28px; border-radius: var(--radius); color: var(--text-1); font-weight: 500; font-size: 0.9375rem;">
-          Browse Components
-        </a>
-        <a href="https://github.com/muriloscigliano/cognivo" style="display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); padding: 12px 28px; border-radius: var(--radius); color: var(--text-2); font-weight: 500; font-size: 0.9375rem;">
-          GitHub
-        </a>
+      <div class="hero-actions">
+        <cg-button variant="primary" size="lg" rounded="md" onclick="window.location.href='/getting-started'">Get Started →</cg-button>
+        <cg-button variant="secondary" size="lg" rounded="md" onclick="window.location.href='/components'">Browse Components</cg-button>
+        <cg-button variant="tertiary" size="lg" rounded="md" onclick="window.open('https://github.com/muriloscigliano/cognivo','_blank')">GitHub</cg-button>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border-radius: var(--radius); overflow: hidden; max-width: 900px; margin: 0 auto;">
+      <div class="stats-grid">
         {stats.map(stat => (
-          <div style="background: var(--bg-subtle); padding: 24px 16px; text-align: center;">
-            <div style="font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text-1); line-height: 1;">{stat.value}</div>
-            <div style="font-size: 0.8125rem; font-weight: 600; color: var(--accent); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em;">{stat.label}</div>
-            <div style="font-size: 0.75rem; color: var(--text-3); margin-top: 4px;">{stat.detail}</div>
+          <div class="stat-cell">
+            <div class="stat-val">{stat.value}</div>
+            <div class="stat-label">{stat.label}</div>
+            <div class="stat-detail">{stat.detail}</div>
           </div>
         ))}
       </div>
     </div>
   </section>
 
-  <section style="max-width: var(--max-width); margin: 0 auto; padding: 0 2rem 5rem;">
-    <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;">
-      <div style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; border-bottom: 1px solid var(--border);">
-        <span style="width: 12px; height: 12px; border-radius: 50%; background: #ef4444;"></span>
-        <span style="width: 12px; height: 12px; border-radius: 50%; background: #eab308;"></span>
-        <span style="width: 12px; height: 12px; border-radius: 50%; background: #22c55e;"></span>
-        <span style="margin-left: auto; font-size: 0.75rem; color: var(--text-3); font-family: var(--font-mono);">quickstart.html</span>
+  <!-- Code preview -->
+  <section class="container">
+    <div class="code-window">
+      <div class="code-chrome">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <span class="code-filename">quickstart.html</span>
       </div>
-      <pre style="margin: 0; border: none; border-radius: 0; padding: 24px; font-size: 0.875rem; line-height: 1.8;"><code><span style="color: #71717a;">&lt;!-- Import once --&gt;</span>
-<span style="color: #71717a;">&lt;script</span> <span style="color: var(--accent);">type</span>=<span style="color: #a3e635;">"module"</span> <span style="color: var(--accent);">src</span>=<span style="color: #a3e635;">"@cognivo/components"</span><span style="color: #71717a;">&gt;&lt;/script&gt;</span>
+      <pre class="code-body"><code><span class="c-dim">&lt;!-- Import once --&gt;</span>
+<span class="c-dim">&lt;script</span> <span class="c-key">type</span>=<span class="c-str">"module"</span> <span class="c-key">src</span>=<span class="c-str">"@cognivo/components"</span><span class="c-dim">&gt;&lt;/script&gt;</span>
 
-<span style="color: #71717a;">&lt;!-- Use anywhere --&gt;</span>
-<span style="color: #71717a;">&lt;</span><span style="color: var(--accent);">ai-chat</span><span style="color: #71717a;">&gt;&lt;/</span><span style="color: var(--accent);">ai-chat</span><span style="color: #71717a;">&gt;</span>
-<span style="color: #71717a;">&lt;</span><span style="color: var(--accent);">cg-button</span> <span style="color: #a3e635;">variant</span>=<span style="color: #a3e635;">"primary"</span><span style="color: #71717a;">&gt;</span>Get Started<span style="color: #71717a;">&lt;/</span><span style="color: var(--accent);">cg-button</span><span style="color: #71717a;">&gt;</span></code></pre>
+<span class="c-dim">&lt;!-- Use anywhere --&gt;</span>
+<span class="c-dim">&lt;</span><span class="c-tag">ai-chat</span><span class="c-dim">&gt;&lt;/</span><span class="c-tag">ai-chat</span><span class="c-dim">&gt;</span>
+<span class="c-dim">&lt;</span><span class="c-tag">cg-button</span> <span class="c-str">variant</span>=<span class="c-str">"primary"</span><span class="c-dim">&gt;</span>Get Started<span class="c-dim">&lt;/</span><span class="c-tag">cg-button</span><span class="c-dim">&gt;</span></code></pre>
     </div>
   </section>
 
-  <section style="max-width: var(--max-width); margin: 0 auto; padding: 0 2rem 5rem;">
-    <div style="text-align: center; margin-bottom: 3rem;">
-      <h2 style="font-size: 2rem; font-weight: 700; letter-spacing: -0.02em;">Built different</h2>
-      <p style="color: var(--text-2); margin-top: 8px; font-size: 1.0625rem;">Not just components — a cognitive design system.</p>
+  <!-- Why different -->
+  <section class="container">
+    <div class="section-header">
+      <h2>Why another component library?</h2>
+      <p>Because none of them were built for what's coming.</p>
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px;">
+    <div class="compare-grid">
+      <div class="compare-card other">
+        <h3>Every other library</h3>
+        <ul>
+          <li>Generic UI components (buttons, inputs, modals)</li>
+          <li>Static design tokens (colors, spacing)</li>
+          <li>No AI-specific primitives</li>
+          <li>No streaming support</li>
+          <li>No understanding of cognitive biases</li>
+          <li>Build the AI layer yourself</li>
+        </ul>
+      </div>
+      <div class="compare-card cognivo">
+        <h3>Cognivo</h3>
+        <ul>
+          <li>89 AI-native components (chat, thinking, confidence, agents)</li>
+          <li>1,800+ tokens with AI state system (confidence, anomaly, thinking)</li>
+          <li>Streaming generative UI — AI renders components in real-time</li>
+          <li>184 cognitive biases mapped to components and patterns</li>
+          <li>12 production AI patterns (guardrails, caching, circuit breaker)</li>
+          <li>From API call to rendered UI in one pipeline</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="container">
+    <div class="section-header">
+      <h2>Three layers no one else has</h2>
+      <p>Components, AI integration, and cognitive psychology — in one system.</p>
+    </div>
+
+    <div class="features-grid">
       {features.map(f => (
-        <div style={`background: var(--bg-subtle); border: 1px solid ${f.accent ? 'rgba(223, 255, 97, 0.15)' : 'var(--border)'}; border-radius: var(--radius); padding: 28px;`}>
-          <h3 style="font-size: 1.0625rem; font-weight: 600; margin-bottom: 8px;">{f.title}</h3>
-          <p style="color: var(--text-2); font-size: 0.9375rem; line-height: 1.6;">{f.desc}</p>
+        <div class:list={['feature-card', { accent: f.accent }]}>
+          <h3>{f.title}</h3>
+          <p>{f.desc}</p>
         </div>
       ))}
     </div>
   </section>
 
-  <section style="max-width: var(--max-width); margin: 0 auto; padding: 0 2rem 5rem;">
-    <div style="text-align: center; margin-bottom: 3rem;">
-      <h2 style="font-size: 2rem; font-weight: 700; letter-spacing: -0.02em;">10 packages, one system</h2>
-      <p style="color: var(--text-2); margin-top: 8px; font-size: 1.0625rem;">pnpm workspaces + Turborepo. Install what you need.</p>
+  <!-- Packages -->
+  <section class="container">
+    <div class="section-header">
+      <h2>8 packages, one system</h2>
+      <p>pnpm workspaces + Turborepo. Install what you need.</p>
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px;">
+    <div class="pkg-grid">
       {packages.map(pkg => (
-        <div style="display: flex; align-items: flex-start; gap: 14px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px;">
-          <span style="font-size: 1.25rem; color: var(--accent); flex-shrink: 0; margin-top: 2px;">{pkg.icon}</span>
-          <div>
-            <div style="font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 600; color: var(--text-1); margin-bottom: 4px;">{pkg.name}</div>
-            <div style="font-size: 0.8125rem; color: var(--text-3); line-height: 1.5;">{pkg.desc}</div>
-          </div>
+        <div class="pkg-card">
+          <code class="pkg-name">{pkg.name}</code>
+          <span class="pkg-desc">{pkg.desc}</span>
         </div>
       ))}
     </div>
   </section>
 
-  <section style="max-width: var(--max-width); margin: 0 auto; padding: 0 2rem 6rem; text-align: center;">
-    <div style="background: var(--bg-subtle); border: 1px solid rgba(223, 255, 97, 0.1); border-radius: var(--radius); padding: 48px 32px; position: relative; overflow: hidden;">
-      <div style="position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 400px; height: 400px; background: radial-gradient(circle, rgba(223, 255, 97, 0.04) 0%, transparent 70%); pointer-events: none;"></div>
-      <div style="position: relative;">
-        <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.02em;">Ready to build?</h2>
-        <p style="color: var(--text-2); margin-bottom: 24px;">Get started in under 2 minutes. Zero config.</p>
-        <a href="/getting-started" style="display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #09090b; padding: 12px 28px; border-radius: var(--radius); font-weight: 600; font-size: 0.9375rem;">
-          Get Started →
-        </a>
-        <p style="margin-top: 16px; font-family: var(--font-mono); font-size: 0.8125rem; color: var(--text-3);">
-          pnpm add @cognivo/components @cognivo/tokens
-        </p>
+  <!-- Open Source -->
+  <section class="container">
+    <div class="section-header">
+      <h2>Open source, MIT licensed</h2>
+      <p>Free forever. No vendor lock-in. Build what you want.</p>
+    </div>
+
+    <div class="oss-grid">
+      <div class="oss-card">
+        <h3>MIT License</h3>
+        <p>Use Cognivo in personal projects, startups, and enterprise products. No attribution required. No usage limits. No premium tier.</p>
+      </div>
+      <div class="oss-card">
+        <h3>Community-driven</h3>
+        <p>Every component, token, and bias card is open for contribution. File issues, submit PRs, and shape the roadmap on GitHub.</p>
+      </div>
+      <div class="oss-card">
+        <h3>No lock-in</h3>
+        <p>Web Components work in every framework. Standard CSS custom properties. No proprietary runtime. Fork it, extend it, own it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="container cta-section">
+    <div class="cta-box">
+      <div class="cta-glow"></div>
+      <div class="cta-inner">
+        <h2>Ready to build?</h2>
+        <p>Get started in under 2 minutes. Zero config.</p>
+        <cg-button variant="primary" size="lg" rounded="md" onclick="window.location.href='/getting-started'">Get Started →</cg-button>
+        <code class="cta-install">pnpm add @cognivo/components @cognivo/tokens</code>
       </div>
     </div>
   </section>
 
   <style>
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative; overflow: hidden;
+      padding: 6rem 2rem 4rem; text-align: center;
     }
+    .hero-glow {
+      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(223,255,97,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner { position: relative; max-width: 1100px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px;
+      background: var(--accent-muted);
+      border: 1px solid rgba(223,255,97,0.15);
+      border-radius: var(--radius-pill);
+      font-size: 13px; font-weight: 500; color: var(--accent);
+      margin-bottom: 2rem;
+    }
+    .hero-dot {
+      width: 6px; height: 6px;
+      background: var(--accent); border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800;
+      line-height: 1.1; letter-spacing: -0.04em;
+      margin-bottom: 1.5rem;
+    }
+    .hero-accent {
+      background: linear-gradient(135deg, var(--accent), #a3e635);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.125rem);
+      color: var(--fg-2); max-width: 580px;
+      margin: 0 auto 2.5rem; line-height: 1.7;
+    }
+    .hero-actions {
+      display: flex; gap: 12px; justify-content: center;
+      flex-wrap: wrap; margin-bottom: 4rem;
+    }
+
+    /* Stats */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      max-width: 900px; margin: 0 auto;
+    }
+    .stat-cell {
+      background: var(--bg-subtle); padding: 24px 16px; text-align: center;
+    }
+    .stat-val {
+      font-size: 1.75rem; font-weight: 800;
+      letter-spacing: -0.02em; color: var(--fg); line-height: 1;
+    }
+    .stat-label {
+      font: 600 10px/1 var(--font-mono);
+      color: var(--accent); text-transform: uppercase;
+      letter-spacing: 0.06em; margin-top: 6px;
+    }
+    .stat-detail {
+      font-size: 12px; color: var(--fg-4); margin-top: 4px;
+    }
+
+    /* ── Code window ── */
+    .code-window {
+      background: var(--bg-subtle); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .code-chrome {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot.red { background: #ef4444; }
+    .dot.yellow { background: #eab308; }
+    .dot.green { background: #22c55e; }
+    .code-filename {
+      margin-left: auto; font: 500 12px var(--font-mono); color: var(--fg-4);
+    }
+    .code-body {
+      margin: 0; border: none; border-radius: 0;
+      padding: 24px; font-size: 14px; line-height: 1.8;
+    }
+    .c-dim { color: var(--fg-4); }
+    .c-key { color: var(--accent); }
+    .c-str { color: #a3e635; }
+    .c-tag { color: var(--accent); }
+
+    /* ── Section header ── */
+    .section-header {
+      text-align: center; margin-bottom: 2.5rem;
+    }
+    .section-header h2 {
+      font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em;
+    }
+    .section-header p {
+      color: var(--fg-2); margin-top: 8px; font-size: 16px;
+    }
+
+    /* ── Compare ── */
+    .compare-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .compare-card {
+      padding: 28px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+    }
+    .compare-card h3 {
+      font-size: 16px; font-weight: 600; margin-bottom: 16px;
+    }
+    .compare-card ul {
+      list-style: none; padding: 0;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .compare-card li {
+      font-size: 14px; line-height: 1.5;
+      padding-left: 20px; position: relative;
+    }
+    .compare-card.other li { color: var(--fg-3); }
+    .compare-card.other li::before {
+      content: '—'; position: absolute; left: 0; color: var(--fg-4);
+    }
+    .compare-card.cognivo {
+      border-color: rgba(223,255,97,0.2);
+      background: var(--accent-dim);
+    }
+    .compare-card.cognivo li { color: var(--fg-2); }
+    .compare-card.cognivo li::before {
+      content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 600;
+    }
+
+    /* ── Features ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 12px;
+    }
+    .feature-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px;
+      transition: border-color 150ms;
+    }
+    .feature-card:hover { border-color: var(--border-hover); }
+    .feature-card.accent { border-color: rgba(223,255,97,0.15); }
+    .feature-card.accent:hover { border-color: rgba(223,255,97,0.3); }
+    .feature-card h3 {
+      font-size: 16px; font-weight: 600; margin-bottom: 8px;
+    }
+    .feature-card p {
+      color: var(--fg-2); font-size: 14px; line-height: 1.6;
+    }
+
+    /* ── Packages ── */
+    .pkg-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 10px;
+    }
+    .pkg-card {
+      display: flex; flex-direction: column; gap: 6px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: border-color 150ms;
+    }
+    .pkg-card:hover { border-color: var(--accent); }
+    .pkg-name {
+      font: 600 13px var(--font-mono);
+      color: var(--accent); background: none; padding: 0;
+    }
+    .pkg-desc { font-size: 13px; color: var(--fg-3); line-height: 1.5; }
+
+    /* ── Open Source ── */
+    .oss-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .oss-card {
+      padding: 24px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+    }
+    .oss-card:hover { border-color: var(--border-hover); }
+    .oss-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .oss-card p { font-size: 14px; color: var(--fg-3); line-height: 1.6; }
+
+    /* ── CTA ── */
+    .cta-section { padding-bottom: 6rem; }
+    .cta-box {
+      background: var(--bg-subtle);
+      border: 1px solid rgba(223,255,97,0.1);
+      border-radius: var(--radius);
+      padding: 48px 32px;
+      position: relative; overflow: hidden;
+      text-align: center;
+    }
+    .cta-glow {
+      position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(223,255,97,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-inner { position: relative; }
+    .cta-inner h2 {
+      font-size: 1.75rem; font-weight: 700;
+      margin-bottom: 12px; letter-spacing: -0.02em;
+    }
+    .cta-inner p {
+      color: var(--fg-2); margin-bottom: 24px;
+    }
+    .cta-install {
+      display: block; margin-top: 16px;
+      font: 500 13px var(--font-mono);
+      color: var(--fg-4); background: none; padding: 0;
+    }
+
     @media (max-width: 768px) {
-      section > div[style*="grid-template-columns: repeat(4"] {
-        grid-template-columns: repeat(2, 1fr) !important;
-      }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .compare-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .pkg-grid { grid-template-columns: 1fr; }
+      .oss-grid { grid-template-columns: 1fr; }
     }
     @media (prefers-reduced-motion: reduce) {
       * { animation: none !important; transition-duration: 0.01ms !important; }

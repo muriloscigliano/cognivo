@@ -22,14 +22,14 @@ import { spinKeyframes, reducedMotion } from '../../styles/index.js';
  *
  * @cssprop --cg-color-modal-container-background - Panel background
  * @cssprop --cg-border-radius-200 - Panel border radius (28px)
- * @cssprop --cg-motion-easing-bounce - Slide spring easing
+ * @cssprop --cg-transition-easing-ease-out - Slide spring easing
  * @cssprop --cg-color-focus-ring - Close button focus ring
  */
 @customElement('cg-drawer')
 export class CgDrawer extends LitElement {
   static override styles = [spinKeyframes, reducedMotion, css`
     :host {
-      transition: color var(--cg-transition-duration-fast) var(--cg-motion-easing-color);
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       display: contents;
       font-family: var(--cg-font-family-primary);
     }
@@ -38,13 +38,13 @@ export class CgDrawer extends LitElement {
     .backdrop {
       position: fixed;
       inset: 0;
-      z-index: 9998;
+      z-index: var(--cg-z-index-500);
       background: var(--cg-color-modal-overlay-background);
       backdrop-filter: blur(16px) saturate(150%);
       -webkit-backdrop-filter: blur(16px) saturate(150%);
       opacity: 0;
       pointer-events: none;
-      transition: opacity var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     :host([open]) .backdrop {
@@ -57,7 +57,7 @@ export class CgDrawer extends LitElement {
       position: fixed;
       top: 0;
       bottom: 0;
-      z-index: 9999;
+      z-index: var(--cg-z-index-top);
       display: flex;
       flex-direction: column;
       background: var(--cg-color-modal-container-background);
@@ -66,7 +66,7 @@ export class CgDrawer extends LitElement {
         0 var(--cg-shadow-lg-y) var(--cg-shadow-lg-blur) var(--cg-shadow-lg-spread) rgba(0, 0, 0, 0.25),
         0 var(--cg-shadow-sm-y) var(--cg-shadow-sm-blur) var(--cg-shadow-sm-spread) rgba(0, 0, 0, 0.1);
       overflow: hidden;
-      transition: transform var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+      transition: transform var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -110,14 +110,14 @@ export class CgDrawer extends LitElement {
       to { opacity: 0; }
     }
     :host([side="left"]) .panel.closing {
-      animation: drawer-exit-left var(--cg-transition-duration-fast) var(--cg-motion-easing-exit) forwards;
+      animation: drawer-exit-left var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-in) forwards;
     }
     :host([side="right"]) .panel.closing {
-      animation: drawer-exit-right var(--cg-transition-duration-fast) var(--cg-motion-easing-exit) forwards;
+      animation: drawer-exit-right var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-in) forwards;
     }
     .backdrop.closing {
       pointer-events: auto;
-      animation: backdrop-exit var(--cg-transition-duration-fast) var(--cg-motion-easing-exit) forwards;
+      animation: backdrop-exit var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-in) forwards;
     }
 
     /* ── Sizes ── */
@@ -182,9 +182,9 @@ export class CgDrawer extends LitElement {
       padding: 0;
       flex-shrink: 0;
       transition:
-        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-color),
-        color var(--cg-transition-duration-fast) var(--cg-motion-easing-color),
-        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .close-btn:hover {
@@ -198,8 +198,8 @@ export class CgDrawer extends LitElement {
 
     .close-btn:focus-visible {
       box-shadow:
-        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
-        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
+        0 0 0 2px var(--cg-color-focus-ring-offset),
+        0 0 0 calc(2px + 2px) var(--cg-color-focus-ring);
       outline: none;
     }
 
@@ -218,9 +218,9 @@ export class CgDrawer extends LitElement {
       padding: 0;
       flex-shrink: 0;
       transition:
-        background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-color),
-        color var(--cg-transition-duration-fast) var(--cg-motion-easing-color),
-        transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .back-btn:hover {
       background: var(--cg-color-action-secondary-background-hover);
@@ -231,8 +231,8 @@ export class CgDrawer extends LitElement {
     }
     .back-btn:focus-visible {
       box-shadow:
-        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
-        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
+        0 0 0 2px var(--cg-color-focus-ring-offset),
+        0 0 0 calc(2px + 2px) var(--cg-color-focus-ring);
       outline: none;
     }
 
@@ -294,7 +294,7 @@ export class CgDrawer extends LitElement {
       border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border);
       border-top-color: var(--cg-color-surface-container-text);
       border-radius: var(--cg-border-radius-full);
-      animation: spin var(--cg-motion-duration-slow) linear infinite;
+      animation: spin var(--cg-transition-duration-slow) linear infinite;
     }
     .drawer-loading-text {
       font-size: var(--cg-font-size-sm);

@@ -29,7 +29,7 @@ type Urgency = 'info' | 'warning' | 'urgent' | 'critical';
 export class AiAlertCard extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, pulseKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .card {
@@ -43,8 +43,8 @@ export class AiAlertCard extends LitElement {
       position: relative;
       border-left: var(--cg-border-width-200) solid transparent;
       transition:
-        box-shadow var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
-        transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .card:hover {
       transform: translateY(-1px);
@@ -63,7 +63,7 @@ export class AiAlertCard extends LitElement {
     }
     .card.critical {
       border-left-color: var(--cg-color-status-error-text-default);
-      animation: pulse-glow var(--cg-motion-duration-slower) var(--cg-motion-easing-default) infinite;
+      animation: pulse-glow var(--cg-transition-duration-slower) var(--cg-transition-easing-default) infinite;
     }
 
     /* ── Dismiss exit ── */
@@ -72,7 +72,7 @@ export class AiAlertCard extends LitElement {
       to { opacity: 0; transform: translateY(-8px) scale(0.97); }
     }
     .card.dismissing {
-      animation: alertExit var(--cg-motion-duration-normal) var(--cg-motion-easing-exit) forwards;
+      animation: alertExit var(--cg-transition-duration-default) var(--cg-transition-easing-ease-in) forwards;
       pointer-events: none;
     }
 

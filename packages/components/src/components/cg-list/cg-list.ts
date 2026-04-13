@@ -51,7 +51,7 @@ export class CgList extends LitElement {
       padding: var(--cg-spacing-12) var(--cg-spacing-16);
       border-radius: var(--cg-border-radius-100);
       border: var(--cg-border-width-50) solid transparent;
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default), border-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default), border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       min-height: 44px;
     }
 
@@ -99,7 +99,7 @@ export class CgList extends LitElement {
       cursor: pointer;
     }
     :host([clickable]) .item:active {
-      background: var(--cg-overlay-dark-light);
+      background: var(--cg-overlay-accent-subtle);
     }
     :host([clickable]) .item:focus-visible {
       outline: none;
@@ -183,7 +183,7 @@ export class CgList extends LitElement {
       border-radius: var(--cg-border-radius-50);
       font-family: inherit;
       opacity: 0;
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .item:hover .action-btn { opacity: 1; }
     .action-btn:hover { background: var(--cg-overlay-accent-light); }
@@ -199,7 +199,7 @@ export class CgList extends LitElement {
       color: var(--cg-color-surface-container-outlined);
       flex-shrink: 0;
       opacity: 0.5;
-      transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .item:hover .chevron { opacity: 1; }
   `];

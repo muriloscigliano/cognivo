@@ -269,6 +269,22 @@
     "96": {
       "$type": "dimension",
       "$value": "96px"
+    },
+    "128": {
+      "$type": "dimension",
+      "$value": "128px"
+    },
+    "160": {
+      "$type": "dimension",
+      "$value": "160px"
+    },
+    "192": {
+      "$type": "dimension",
+      "$value": "192px"
+    },
+    "256": {
+      "$type": "dimension",
+      "$value": "256px"
     }
   },
   "font": {
@@ -841,6 +857,99 @@
     }
   },
   "layout": {
+    "breakpoint": {
+      "sm": {
+        "$type": "dimension",
+        "$value": "640px",
+        "$description": "Mobile landscape / small tablet"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "768px",
+        "$description": "Tablet portrait"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "1024px",
+        "$description": "Tablet landscape / small desktop"
+      },
+      "xl": {
+        "$type": "dimension",
+        "$value": "1280px",
+        "$description": "Desktop"
+      },
+      "2xl": {
+        "$type": "dimension",
+        "$value": "1536px",
+        "$description": "Large desktop"
+      }
+    },
+    "grid": {
+      "columns": {
+        "$type": "number",
+        "$value": 12,
+        "$description": "Default grid column count"
+      },
+      "gap": {
+        "xs": {
+          "$type": "dimension",
+          "$value": "{spacing.4}",
+          "$description": "Extra-small grid gap (4px)"
+        },
+        "sm": {
+          "$type": "dimension",
+          "$value": "{spacing.8}",
+          "$description": "Small grid gap (8px)"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "{spacing.16}",
+          "$description": "Medium grid gap (16px)"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "{spacing.24}",
+          "$description": "Large grid gap (24px)"
+        },
+        "xl": {
+          "$type": "dimension",
+          "$value": "{spacing.32}",
+          "$description": "Extra-large grid gap (32px)"
+        }
+      }
+    },
+    "aspect-ratio": {
+      "square": {
+        "$type": "string",
+        "$value": "1 / 1",
+        "$description": "Square aspect ratio (avatars, icons)"
+      },
+      "video": {
+        "$type": "string",
+        "$value": "16 / 9",
+        "$description": "Widescreen video aspect ratio"
+      },
+      "card": {
+        "$type": "string",
+        "$value": "4 / 3",
+        "$description": "Card / image preview ratio"
+      },
+      "portrait": {
+        "$type": "string",
+        "$value": "3 / 4",
+        "$description": "Portrait photo / card ratio"
+      },
+      "wide": {
+        "$type": "string",
+        "$value": "2 / 1",
+        "$description": "Wide banner / hero ratio"
+      },
+      "ultrawide": {
+        "$type": "string",
+        "$value": "21 / 9",
+        "$description": "Ultra-wide cinematic ratio"
+      }
+    },
     "drawer": {
       "sm": {
         "$type": "dimension",
@@ -885,6 +994,11 @@
       "xl": {
         "$type": "dimension",
         "$value": "1280px"
+      },
+      "2xl": {
+        "$type": "dimension",
+        "$value": "1536px",
+        "$description": "Max container for large screens"
       },
       "full": {
         "$type": "dimension",

@@ -31,14 +31,14 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class CgCard extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-color);
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .card {
       position: relative;
       border-radius: var(--cg-component-card-radius);
       overflow: hidden;
-      transition: border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-default), background var(--cg-motion-duration-normal) var(--cg-motion-easing-default), transform var(--cg-motion-duration-normal) var(--cg-motion-easing-default), box-shadow var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default), background var(--cg-transition-duration-default) var(--cg-transition-easing-default), transform var(--cg-transition-duration-default) var(--cg-transition-easing-default), box-shadow var(--cg-transition-duration-default) var(--cg-transition-easing-default);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       background: var(--cg-color-surface-cards-background);
     }

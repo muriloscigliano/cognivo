@@ -45,7 +45,7 @@ export class CgImageBlock extends LitElement {
       object-fit: cover;
       display: block;
       opacity: 0;
-      transition: opacity var(--cg-motion-duration-slower) var(--cg-motion-easing-color);
+      transition: opacity var(--cg-transition-duration-slower) var(--cg-transition-easing-default);
     }
     img.loaded { opacity: 1; }
 
@@ -83,7 +83,7 @@ export class CgImageBlock extends LitElement {
       color: var(--cg-color-surface-base-text);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
       cursor: pointer;
-      transition: background var(--cg-motion-duration-normal) var(--cg-motion-easing-default), border-color var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: background var(--cg-transition-duration-default) var(--cg-transition-easing-default), border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .retry-btn:hover {
       background: var(--cg-color-action-tertiary-background-hover);
@@ -111,7 +111,7 @@ export class CgImageBlock extends LitElement {
     :host([clickable]) figure { cursor: pointer; }
     :host([clickable]) figure:hover img { transform: scale(1.02); }
     :host([clickable]) figure:active img { transform: scale(0.99); }
-    :host([clickable]) img { transition: opacity var(--cg-motion-duration-slower) var(--cg-motion-easing-color), transform var(--cg-motion-duration-normal) var(--cg-motion-easing-default); }
+    :host([clickable]) img { transition: opacity var(--cg-transition-duration-slower) var(--cg-transition-easing-default), transform var(--cg-transition-duration-default) var(--cg-transition-easing-default); }
 
     :focus-visible {
       outline: none;

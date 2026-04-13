@@ -37,8 +37,8 @@ export class CgAvatarGroup extends LitElement {
       justify-content: center;
       flex-shrink: 0;
       cursor: pointer;
-      transition: transform var(--cg-motion-duration-slow) var(--cg-motion-easing-bounce), margin var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
-      animation: avatarIn var(--cg-motion-duration-slow) var(--cg-motion-easing-enter) both;
+      transition: transform var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out), margin var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
+      animation: avatarIn var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out) both;
       animation-delay: calc(var(--avatar-index, 0) * 50ms);
     }
 
@@ -117,7 +117,7 @@ export class CgAvatarGroup extends LitElement {
       font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       flex-shrink: 0;
-      transition: transform var(--cg-motion-duration-slow) var(--cg-motion-easing-default), background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: transform var(--cg-transition-duration-slow) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .overflow:hover {
       background: var(--cg-color-action-secondary-background-hover);

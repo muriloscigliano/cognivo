@@ -54,8 +54,8 @@ export class CgButton extends LitElement {
     /* Focus ring — dual-layer */
     button:focus-visible {
       box-shadow:
-        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
-        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
+        0 0 0 2px var(--cg-color-focus-ring-offset),
+        0 0 0 calc(2px + 2px) var(--cg-color-focus-ring);
       outline: none;
     }
 
@@ -152,7 +152,7 @@ export class CgButton extends LitElement {
       border: var(--cg-border-width-100) solid currentColor;
       border-right-color: transparent;
       border-radius: var(--cg-border-radius-full);
-      animation: spin var(--cg-motion-duration-slow) linear infinite;
+      animation: spin var(--cg-transition-duration-slow) linear infinite;
     }
     :host([loading]) .spinner { color: var(--cg-color-action-primary-text-default); }
     :host([loading][variant="secondary"]) .spinner { color: var(--cg-color-action-secondary-text-default); }

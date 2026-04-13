@@ -402,7 +402,7 @@ async function buildTokens() {
           const isTier2Semantic = false
           
           // Tier 1 prefixes (exact numeric matches)
-          const tier1Prefixes = ['gray-', 'blue-', 'green-', 'yellow-', 'red-', 'spacing-0', 'spacing-2', 'spacing-4', 'spacing-8', 'spacing-12', 'spacing-16', 'spacing-24', 'spacing-32', 'spacing-48', 'spacing-56', 'spacing-64', 'font-size-50', 'font-size-75', 'font-size-100', 'font-size-200', 'font-size-250', 'font-size-400', 'font-size-500', 'font-size-600', 'font-size-700', 'font-size-800', 'font-size-900', 'text-', 'line-', 'letter-', 'icon-size-100', 'icon-size-200', 'icon-size-300', 'icon-size-400', 'icon-size-500', 'border-radius-50', 'border-radius-100', 'border-radius-125', 'border-radius-150', 'border-radius-200', 'border-radius-250', 'border-radius-300', 'border-radius-none', 'border-radius-full', 'border-width-0', 'border-width-50', 'border-width-75', 'border-width-100', 'border-width-300', 'opacity-', 'shadow-sm-', 'shadow-md-', 'shadow-lg-', 'z-index-0', 'z-index-100', 'z-index-200', 'z-index-300', 'z-index-400', 'z-index-500', 'z-index-top', 'z-index-bottom', 'brand-', 'transition-', 'outline-', 'layout-']
+          const tier1Prefixes = ['gray-', 'blue-', 'green-', 'yellow-', 'red-', 'teal-', 'spacing-', 'font-family-', 'font-size-', 'font-weight-', 'text-', 'line-', 'letter-', 'icon-size-', 'border-radius-', 'border-width-', 'border-style-', 'opacity-', 'shadow-sm-', 'shadow-md-', 'shadow-lg-', 'z-index-', 'brand-', 'transition-', 'outline-', 'cursor-', 'layout-']
           const isTier1 = tier1Prefixes.some(prefix => varName.startsWith(prefix)) && !isTier2Semantic
           
           // Include Tier 2/3 tokens, exclude Tier 1 tokens

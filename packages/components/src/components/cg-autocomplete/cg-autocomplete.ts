@@ -48,8 +48,8 @@ export class CgAutocomplete extends LitElement {
       background: var(--cg-color-input-background-default);
       min-height: var(--cg-component-input-height-md);
       transition:
-        border-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default),
-        box-shadow var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .input-wrap:hover:not(.disabled) {
       border-color: var(--cg-color-input-border-hover);
@@ -71,7 +71,7 @@ export class CgAutocomplete extends LitElement {
     }
     :host([error]) .input-wrap.focused {
       border-color: var(--cg-color-status-error-text-default);
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
     }
 
     input {
@@ -101,7 +101,7 @@ export class CgAutocomplete extends LitElement {
       border-radius: var(--cg-border-radius-full);
       cursor: pointer;
       flex-shrink: 0;
-      transition: background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .clear:hover {
       background: var(--cg-color-action-secondary-background-hover);
@@ -111,7 +111,7 @@ export class CgAutocomplete extends LitElement {
     .chevron {
       flex-shrink: 0;
       color: var(--cg-color-input-icon-default);
-      transition: transform var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .chevron.open { transform: rotate(180deg); }
 
@@ -129,9 +129,9 @@ export class CgAutocomplete extends LitElement {
         0 var(--cg-shadow-sm-y) var(--cg-shadow-sm-blur) var(--cg-shadow-sm-spread) rgba(0, 0, 0, 0.06);
       max-height: 280px;
       overflow-y: auto;
-      z-index: 1000;
+      z-index: var(--cg-z-index-400);
       padding: var(--cg-spacing-6);
-      animation: dropIn var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+      animation: dropIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     @keyframes dropIn {
@@ -148,7 +148,7 @@ export class CgAutocomplete extends LitElement {
       font-size: var(--cg-font-size-sm);
       color: var(--cg-color-surface-container-text);
       cursor: pointer;
-      transition: background-color var(--cg-transition-duration-fast) var(--cg-motion-easing-default);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .option:hover, .option.active {
       background: var(--cg-color-action-tertiary-background-hover);

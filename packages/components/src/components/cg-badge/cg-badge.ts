@@ -58,9 +58,9 @@ export class CgBadge extends LitElement {
 
     /* Variants */
     :host([variant="neutral"]) .badge {
-      background: var(--cg-color-badge-background-default);
-      color: var(--cg-color-badge-text-default);
-      border-color: transparent;
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-surface-container-text);
+      border-color: var(--cg-color-surface-container-border);
     }
     :host([variant="info"]) .badge {
       background: var(--cg-color-badge-background-default);
@@ -83,9 +83,9 @@ export class CgBadge extends LitElement {
       border-color: var(--cg-color-status-error-border-default);
     }
     :host([variant="accent"]) .badge {
-      background: var(--cg-color-badge-background-default);
-      color: var(--cg-color-badge-text-default);
-      border-color: var(--cg-color-accent-border);
+      background: var(--cg-overlay-accent-light);
+      color: var(--cg-color-action-primary-background-default);
+      border-color: var(--cg-overlay-accent-strong);
     }
 
     /* Rounded variants */
@@ -124,7 +124,7 @@ export class CgBadge extends LitElement {
     }
     .remove:hover { opacity: 1; }
     .remove:focus-visible {
-      box-shadow: 0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset), 0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 2px var(--cg-color-focus-ring-offset), 0 0 0 calc(2px + 2px) var(--cg-color-focus-ring);
       outline: none;
     }
     .remove svg {

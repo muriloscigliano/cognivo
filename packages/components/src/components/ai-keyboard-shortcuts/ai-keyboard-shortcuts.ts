@@ -33,7 +33,7 @@ export interface ShortcutEntry {
 export class AiKeyboardShortcuts extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -45,7 +45,7 @@ export class AiKeyboardShortcuts extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 9999;
+      z-index: var(--cg-z-index-top);
     }
 
     .modal {
@@ -85,7 +85,7 @@ export class AiKeyboardShortcuts extends LitElement {
     }
     .close-btn:hover { color: var(--cg-color-surface-base-text); }
     .close-btn:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -105,7 +105,7 @@ export class AiKeyboardShortcuts extends LitElement {
       color: var(--cg-color-input-text-placeholder);
     }
     .search-input:focus-visible {
-      outline: 2px solid var(--cg-color-accent-border);
+      outline: 2px solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 

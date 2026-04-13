@@ -42,7 +42,7 @@ export class AiDetectionCanvas extends LitElement {
       border: var(--cg-border-width-100) solid var(--det-color, var(--cg-color-surface-base-text));
       border-radius: var(--cg-border-radius-50);
       cursor: pointer;
-      transition: background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       box-sizing: border-box;
     }
     .bbox:hover {

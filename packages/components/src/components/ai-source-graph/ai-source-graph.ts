@@ -35,7 +35,7 @@ const TYPE_BADGE = 'accent';
 export class AiSourceGraph extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn var(--cg-motion-duration-fast) var(--cg-motion-easing-enter) both;
+      animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out) both;
     }
 
     .panel {
@@ -78,7 +78,7 @@ export class AiSourceGraph extends LitElement {
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
       cursor: pointer;
       transition:
-        background var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+        background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .source:last-child { border-bottom: none; }
     .source:hover { background: var(--cg-overlay-dark-subtle); }
@@ -142,7 +142,7 @@ export class AiSourceGraph extends LitElement {
       height: 100%;
       border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-action-primary-background-default);
-      transition: width var(--cg-motion-duration-normal) var(--cg-motion-easing-default);
+      transition: width var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .weight-label {
       font-size: var(--cg-font-size-xs);
