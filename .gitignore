@@ -9,6 +9,9 @@ dist
 .nuxt
 .output
 
+# Vite temp config files
+*.timestamp-*.mjs
+
 # Environment
 .env
 .env.local

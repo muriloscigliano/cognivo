@@ -8,7 +8,7 @@
     "cognivo-mcp": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "pnpm build:catalog && tsc",
     "build:catalog": "node --import tsx src/scripts/build-catalog.ts",
     "start": "node dist/index.js",
     "dev": "tsc --watch",
