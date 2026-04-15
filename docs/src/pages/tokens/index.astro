@@ -41,15 +41,15 @@ const tiers = [
 ];
 
 const categories = [
-  { name: 'Colors', count: 777, desc: 'Action, status, surface, brand, and AI state colors across light and dark themes.' },
-  { name: 'Typography', count: 162, desc: '6 heading styles, 5 body, 3 label sizes, caption, code, and overline presets.' },
-  { name: 'Font Base', count: 66, desc: '3 font families, 10 sizes, 9 weights, 5 line heights, 6 letter spacings.' },
-  { name: 'Spacing', count: 37, desc: '17-step scale from 0 to 96px. Base unit: 8px.' },
-  { name: 'Borders', count: 37, desc: 'Radius (8 steps), width (4 steps), and style tokens.' },
   { name: 'AI States', count: 196, desc: 'Confidence levels, anomaly severity, thinking animation, insight types.' },
+  { name: 'Borders', count: 37, desc: 'Radius (8 steps), width (4 steps), and style tokens.' },
+  { name: 'Colors', count: 777, desc: 'Action, status, surface, brand, and AI state colors across light and dark themes.' },
   { name: 'Component', count: 102, desc: 'Button, input, card, modal, badge, table, and more — per-component sizing.' },
-  { name: 'Motion', count: 20, desc: '5 durations (0-350ms) and 5 easing curves.' },
   { name: 'Elevation', count: 10, desc: '5 shadow levels with light and dark variants.' },
+  { name: 'Font Base', count: 66, desc: '3 font families, 10 sizes, 9 weights, 5 line heights, 6 letter spacings.' },
+  { name: 'Motion', count: 20, desc: '5 durations (0-350ms) and 5 easing curves.' },
+  { name: 'Spacing', count: 37, desc: '17-step scale from 0 to 96px. Base unit: 8px.' },
+  { name: 'Typography', count: 162, desc: '6 heading styles, 5 body, 3 label sizes, caption, code, and overline presets.' },
 ];
 
 const spacingScale = [0, 1, 2, 4, 6, 8, 12, 16, 20, 24, 32, 40, 48, 56, 64, 80, 96];
@@ -485,26 +485,38 @@ Examples:
     .tokens-page { }
 
     .page-header h1 {
-      font-size: 2.25rem;
-      font-weight: 800;
+      font-size: 2rem;
+      font-weight: 700;
       letter-spacing: -0.03em;
-      margin-bottom: 0.5rem;
+      margin-bottom: 8px;
     }
     .subtitle {
-      color: var(--text-2);
-      font-size: 1.0625rem;
-      line-height: 1.6;
-      margin-bottom: 2rem;
+      color: var(--fg-2);
+      font-size: 16px;
+      line-height: 1.7;
+      margin-bottom: 40px;
+      max-width: 720px;
     }
 
-    .section { margin-bottom: 3rem; }
+    .section { margin-bottom: 48px; }
     .section h2 {
-      font-size: 1.375rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 40px 0 16px;
+      padding-bottom: 10px;
       border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+    }
+    .section h2::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 18px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin-right: 10px;
     }
 
     /* ── Category grid ── */

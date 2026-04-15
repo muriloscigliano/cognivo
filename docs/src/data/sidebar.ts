@@ -18,16 +18,32 @@ export interface SidebarGroup {
 export type SidebarItem = SidebarLink | SidebarGroup;
 
 // ── Components sidebar ──
-const componentGroups: SidebarGroup[] = categories
-  .map(cat => {
-    const items = registry.filter(c => c.category === cat.id);
-    if (items.length === 0) return null;
-    return {
-      label: cat.label,
-      items: items.map(c => ({ label: c.name, href: `/components/${c.tag}` })),
-    };
-  })
-  .filter((g): g is SidebarGroup => g !== null);
+// Two separate sidebars: /components lists foundation components only,
+// /ai lists AI-native components only. Each has its own routing so the
+// page splits are clean and sidebars stay focused.
+// Categories and items within are sorted alphabetically.
+const byLabel = (a: { label: string }, b: { label: string }) =>
+  a.label.localeCompare(b.label);
+
+const isAiCategory = (id: string) => id.startsWith('ai-');
+
+function buildGroups(basePath: string, filter: (id: string) => boolean): SidebarGroup[] {
+  return [...categories]
+    .filter(cat => filter(cat.id))
+    .sort(byLabel)
+    .map(cat => {
+      const items = registry
+        .filter(c => c.category === cat.id)
+        .map(c => ({ label: c.name, href: `${basePath}/${c.tag}` }))
+        .sort(byLabel);
+      if (items.length === 0) return null;
+      return { label: cat.label, items };
+    })
+    .filter((g): g is SidebarGroup => g !== null);
+}
+
+const foundationGroups: SidebarGroup[] = buildGroups('/components', id => !isAiCategory(id));
+const aiGroups: SidebarGroup[] = buildGroups('/ai', isAiCategory);
 
 // ── Per-section sidebars ──
 export const sidebars: Record<string, SidebarItem[]> = {
@@ -38,7 +54,8 @@ export const sidebars: Record<string, SidebarItem[]> = {
     { label: 'Dark Mode', href: '/getting-started#darkmode' },
     { label: 'Explore', href: '/getting-started#explore' },
   ],
-  '/components': componentGroups,
+  '/components': foundationGroups,
+  '/ai': aiGroups,
   '/tokens': [
     { label: 'Installation', href: '/tokens#installation' },
     { label: 'Dark Mode', href: '/tokens#darkmode' },
@@ -86,7 +103,13 @@ export const sidebars: Record<string, SidebarItem[]> = {
     { label: 'Svelte / Angular / Solid', href: '/frameworks#svelte' },
   ],
   '/accessibility': [
-    { label: 'Overview', href: '/accessibility' },
+    { label: 'Principles', href: '/accessibility#principles' },
+    { label: 'Built-in Features', href: '/accessibility#features' },
+    { label: 'Keyboard Patterns', href: '/accessibility#keyboard' },
+    { label: 'Focus Ring System', href: '/accessibility#focus' },
+    { label: 'Reduced Motion', href: '/accessibility#motion' },
+    { label: 'Dark Mode', href: '/accessibility#darkmode' },
+    { label: 'Testing', href: '/accessibility#testing' },
   ],
   '/design-advisor': [
     { label: 'Why Psychology?', href: '/design-advisor#why' },
@@ -100,4 +123,4 @@ export const sidebars: Record<string, SidebarItem[]> = {
   ],
 };
 
-export const sidebar = componentGroups;
+export const sidebar = foundationGroups;

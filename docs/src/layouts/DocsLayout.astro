@@ -17,6 +17,7 @@ function groupOpen(g: SidebarGroup): boolean {
 const navLinks = [
   { label: 'Getting Started', href: '/getting-started' },
   { label: 'Components', href: '/components' },
+  { label: 'AI', href: '/ai' },
   { label: 'Tokens', href: '/tokens' },
   { label: 'Core', href: '/core' },
   { label: 'Patterns', href: '/patterns' },
@@ -34,7 +35,7 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
 ---
 
 <BaseLayout title={title}>
-  <header class="hd">
+  <header class="hd" transition:persist="docs-header">
     <div class="hd-left">
       <a href="/" class="logo">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg>
@@ -58,7 +59,7 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
   </header>
 
   <div class="shell">
-    <aside class="sb">
+    <aside class="sb" transition:persist={`docs-sidebar-${section}`} data-section={section}>
       {sectionTitle && <div class="sb-header">{sectionTitle}</div>}
       <nav>
         {currentSidebar.map((item: SidebarItem, idx: number) => {
@@ -92,80 +93,127 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
       </nav>
     </aside>
 
-    <main class="mn"><article style="view-transition-name: main-content;"><slot /></article></main>
+    <main class="mn"><article><slot /></article></main>
   </div>
 
   <script>
-    // Copy buttons
-    document.querySelectorAll('pre').forEach(p => {
-      if (p.closest('.pg-codeblock') || p.closest('.ex-code-wrap')) return;
-      const b = document.createElement('button');
-      b.className = 'cp'; b.textContent = 'Copy';
-      b.onclick = () => { navigator.clipboard.writeText(p.querySelector('code')?.textContent||p.textContent||'').catch(()=>{}); b.textContent='Copied'; setTimeout(()=>b.textContent='Copy',1200); };
-      p.style.position = 'relative'; p.appendChild(b);
-    });
+    // All per-page setup runs on `astro:page-load` so it re-executes after
+    // each View Transition navigation. Persisted elements (header, sidebar)
+    // keep their state; only main content is re-initialized.
 
-    // Same-page anchor links — smooth scroll without reload
-    document.querySelectorAll<HTMLAnchorElement>('.sb a[href*="#"]').forEach(a => {
-      a.addEventListener('click', e => {
-        const href = a.getAttribute('href') || '';
-        const [path, hash] = href.split('#');
-        if (!hash) return;
-        const currentPath = window.location.pathname.replace(/\/$/, '');
-        const linkPath = (path || currentPath).replace(/\/$/, '');
-        if (linkPath !== currentPath) return; // different page, let browser navigate
-        const target = document.getElementById(hash);
-        if (target) {
-          e.preventDefault();
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          history.replaceState(null, '', `#${hash}`);
-          document.querySelectorAll('.sb .sl').forEach(l => l.classList.remove('on'));
-          a.classList.add('on');
-        }
+    function updateActiveSidebarLink() {
+      const path = window.location.pathname.replace(/\/$/, '') || '/';
+      // Clear all active states on sidebar links (sidebar is persisted, so
+      // stale .on classes survive across navigation)
+      document.querySelectorAll<HTMLAnchorElement>('.sb a.sl').forEach(a => {
+        const href = (a.getAttribute('href') || '').split('#')[0].replace(/\/$/, '') || '/';
+        a.classList.toggle('on', href === path);
       });
-    });
+      // Update header nav links too
+      document.querySelectorAll<HTMLAnchorElement>('.hd-link').forEach(a => {
+        const href = (a.getAttribute('href') || '').replace(/\/$/, '') || '/';
+        a.classList.toggle('on', path === href || path.startsWith(href + '/'));
+      });
+    }
 
-    // Theme toggle
-    const toggle = document.getElementById('theme-toggle');
-    if (toggle) {
-      const update = () => {
+    function initCopyButtons() {
+      document.querySelectorAll('pre').forEach(p => {
+        if (p.querySelector('.cp')) return; // already initialized
+        if (p.closest('.pg-codeblock') || p.closest('.ex-code-wrap')) return;
+        const b = document.createElement('button');
+        b.className = 'cp'; b.textContent = 'Copy';
+        b.onclick = () => {
+          navigator.clipboard.writeText(p.querySelector('code')?.textContent || p.textContent || '').catch(() => {});
+          b.textContent = 'Copied';
+          setTimeout(() => b.textContent = 'Copy', 1200);
+        };
+        (p as HTMLElement).style.position = 'relative';
+        p.appendChild(b);
+      });
+    }
+
+    function initSameAnchorLinks() {
+      document.querySelectorAll<HTMLAnchorElement>('.sb a[href*="#"]').forEach(a => {
+        if ((a as any)._cgBound) return;
+        (a as any)._cgBound = true;
+        a.addEventListener('click', e => {
+          const href = a.getAttribute('href') || '';
+          const [path, hash] = href.split('#');
+          if (!hash) return;
+          const currentPath = window.location.pathname.replace(/\/$/, '');
+          const linkPath = (path || currentPath).replace(/\/$/, '');
+          if (linkPath !== currentPath) return;
+          const target = document.getElementById(hash);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            history.replaceState(null, '', `#${hash}`);
+            document.querySelectorAll('.sb .sl').forEach(l => l.classList.remove('on'));
+            a.classList.add('on');
+          }
+        });
+      });
+    }
+
+    function initThemeToggle() {
+      const toggle = document.getElementById('theme-toggle');
+      if (!toggle || (toggle as any)._cgBound) return;
+      (toggle as any)._cgBound = true;
+      const sync = () => {
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
         toggle.classList.toggle('light', !isDark);
       };
-      update();
+      sync();
       toggle.addEventListener('click', () => {
         const html = document.documentElement;
         const isDark = html.getAttribute('data-theme') === 'dark';
-        html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-        update();
+        const next = isDark ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        try { localStorage.setItem('cognivo-theme', next); } catch {}
+        sync();
       });
     }
 
-    // Scroll spy — highlight active sidebar link as sections scroll into view
-    const sidebarLinks = document.querySelectorAll<HTMLAnchorElement>('.sb .sl[href*="#"]');
-    if (sidebarLinks.length > 0) {
+    let scrollSpyObserver: IntersectionObserver | null = null;
+    function initScrollSpy() {
+      // Disconnect previous observer from prior page
+      if (scrollSpyObserver) {
+        scrollSpyObserver.disconnect();
+        scrollSpyObserver = null;
+      }
+      const sidebarLinks = document.querySelectorAll<HTMLAnchorElement>('.sb .sl[href*="#"]');
+      if (sidebarLinks.length === 0) return;
       const ids = Array.from(sidebarLinks)
         .map(a => a.getAttribute('href')?.split('#')[1])
         .filter((id): id is string => !!id);
-
       const targets = ids
         .map(id => document.getElementById(id))
         .filter((el): el is HTMLElement => !!el);
-
-      if (targets.length > 0) {
-        const obs = new IntersectionObserver(entries => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              sidebarLinks.forEach(l => l.classList.remove('on'));
-              const active = document.querySelector<HTMLAnchorElement>(`.sb .sl[href$="#${entry.target.id}"]`);
-              if (active) active.classList.add('on');
-            }
+      if (targets.length === 0) return;
+      scrollSpyObserver = new IntersectionObserver(entries => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            sidebarLinks.forEach(l => l.classList.remove('on'));
+            const active = document.querySelector<HTMLAnchorElement>(`.sb .sl[href$="#${entry.target.id}"]`);
+            if (active) active.classList.add('on');
           }
-        }, { rootMargin: '-56px 0px -70% 0px' });
-
-        targets.forEach(t => obs.observe(t));
-      }
+        }
+      }, { rootMargin: '-56px 0px -70% 0px' });
+      targets.forEach(t => scrollSpyObserver!.observe(t));
     }
+
+    function initPage() {
+      updateActiveSidebarLink();
+      initCopyButtons();
+      initSameAnchorLinks();
+      initThemeToggle();
+      initScrollSpy();
+    }
+
+    // Initial load
+    initPage();
+    // After every View Transition navigation
+    document.addEventListener('astro:page-load', initPage);
   </script>
 
   <style>
@@ -301,8 +349,15 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
     .sub-items { padding-bottom: 8px; }
 
     /* ── Content ── */
-    .mn { padding: 48px 64px 96px; overflow-x: hidden; }
-    .mn article { max-width: 1800px; }
+    .mn {
+      padding: 48px 64px 96px;
+      overflow-x: hidden;
+      background: var(--bg);
+    }
+    .mn article {
+      max-width: 1800px;
+      background: var(--bg);
+    }
 
     /* ── Copy button ── */
     :global(.cp) {

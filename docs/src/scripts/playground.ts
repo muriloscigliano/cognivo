@@ -5,7 +5,7 @@
  */
 import '@cognivo/components';
 import '@cognivo/tokens/dist/index.css';
-import { registry } from '../../../apps/gen-ui-demo/src/pages/registry';
+import { registry } from '../data/components';
 
 // ─── Init: wrapped in function for clean early-return ────────────────────────
 function initPlayground() {
@@ -332,6 +332,178 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   if (tag === 'cg-image-block') { e.src = 'https://picsum.photos/400/250'; e.alt = 'Sample image'; e.caption = 'A beautiful landscape photo'; liveElement.style.maxWidth = '400px'; }
   if (tag === 'cg-image-gallery') { e.images = [{ src: 'https://picsum.photos/200/200?1', alt: 'Photo 1' }, { src: 'https://picsum.photos/200/200?2', alt: 'Photo 2' }, { src: 'https://picsum.photos/200/200?3', alt: 'Photo 3' }]; }
   if (tag === 'cg-stack') { for (let i = 1; i <= 3; i++) { const d = document.createElement('div'); d.style.cssText = 'padding:12px 16px;border-radius:8px;background:var(--bg-subtle);border:1px solid var(--border);font-size:13px;'; d.textContent = `Item ${i}`; liveElement.appendChild(d); } }
+
+  // ── Wave 7: Foundation Completion — Overlays ──
+  if (tag === 'cg-popover') {
+    const btn = document.createElement('cg-button'); btn.textContent = 'Open Popover'; liveElement.appendChild(btn);
+    const content = document.createElement('div'); content.setAttribute('slot', 'content'); content.innerHTML = '<strong>Popover content</strong><p style="margin:8px 0 0;color:var(--fg-3);font-size:13px;">Floating container with smart placement.</p>'; liveElement.appendChild(content);
+    e.placement = 'bottom-start';
+  }
+  if (tag === 'cg-hover-card') {
+    const trigger = document.createElement('a'); trigger.href = '#'; trigger.textContent = '@alice'; trigger.style.color = 'var(--cg-color-action-primary-background-default, #dfff61)';
+    liveElement.appendChild(trigger);
+    const content = document.createElement('div'); content.setAttribute('slot', 'content');
+    content.innerHTML = '<strong>Alice Johnson</strong><div style="color:var(--fg-3);font-size:13px;margin-top:4px;">Senior Engineer</div><p style="margin:8px 0 0;font-size:13px;">Building AI-native interfaces.</p>';
+    liveElement.appendChild(content);
+  }
+  if (tag === 'cg-context-menu') {
+    const zone = document.createElement('div');
+    zone.style.cssText = 'padding:32px 64px;border:2px dashed var(--border);border-radius:8px;color:var(--fg-3);text-align:center;';
+    zone.textContent = 'Right-click this area';
+    liveElement.appendChild(zone);
+    e.items = [
+      { id: 'copy', label: 'Copy', shortcut: '⌘C' },
+      { id: 'cut', label: 'Cut', shortcut: '⌘X' },
+      { id: 'paste', label: 'Paste', shortcut: '⌘V' },
+      { separator: true, id: 'sep1', label: '' },
+      { id: 'rename', label: 'Rename' },
+      { id: 'delete', label: 'Delete', danger: true },
+    ];
+  }
+  if (tag === 'cg-alert-dialog') {
+    e.title = 'Delete project?';
+    e.description = 'This will permanently delete the project and all its data. This action cannot be undone.';
+    e.destructive = true;
+    e.confirmLabel = 'Delete';
+    e.closable = true;
+  }
+  if (tag === 'cg-command') {
+    e.placeholder = 'Type a command or search...';
+    e.commands = [
+      { id: 'new-file', label: 'New File', group: 'File', shortcut: '⌘N' },
+      { id: 'open', label: 'Open File', group: 'File', shortcut: '⌘O' },
+      { id: 'save', label: 'Save', group: 'File', shortcut: '⌘S' },
+      { id: 'find', label: 'Find', group: 'Edit', shortcut: '⌘F' },
+      { id: 'theme', label: 'Toggle Dark Mode', group: 'View', shortcut: '⌘K ⌘T' },
+      { id: 'sidebar', label: 'Toggle Sidebar', group: 'View', shortcut: '⌘B' },
+    ];
+  }
+
+  // ── Wave 7: Foundation Completion — Forms ──
+  if (tag === 'cg-toggle') {
+    liveElement.innerHTML = '<strong>B</strong>';
+    e.pressed = true;
+    e.variant = 'outline';
+  }
+  if (tag === 'cg-toggle-group') {
+    e.type = 'single';
+    e.value = 'center';
+    e.variant = 'outline';
+    for (const val of ['left', 'center', 'right']) {
+      const t = document.createElement('cg-toggle');
+      t.setAttribute('value', val);
+      t.textContent = val.charAt(0).toUpperCase() + val.slice(1);
+      liveElement.appendChild(t);
+    }
+  }
+  if (tag === 'cg-segmented-control') {
+    e.value = 'week';
+    e.options = [
+      { label: 'Day', value: 'day' },
+      { label: 'Week', value: 'week' },
+      { label: 'Month', value: 'month' },
+      { label: 'Year', value: 'year' },
+    ];
+  }
+  if (tag === 'cg-password-input') {
+    e.label = 'Password';
+    e.placeholder = 'Enter your password';
+    e.showStrength = true;
+    e.helper = 'Use 8+ characters with mixed case and numbers';
+    liveElement.style.maxWidth = '360px';
+  }
+  if (tag === 'cg-rating') {
+    e.value = 4;
+    e.max = 5;
+  }
+  if (tag === 'cg-tag-input') {
+    e.label = 'Skills';
+    e.placeholder = 'Add a skill...';
+    e.helper = 'Press Enter to add';
+    e.value = ['TypeScript', 'Lit', 'Web Components'];
+    liveElement.style.maxWidth = '400px';
+  }
+  if (tag === 'cg-file-input') {
+    e.label = 'Upload documents';
+    e.accept = '.pdf,.doc,.docx';
+    e.multiple = true;
+    e.maxSize = 5242880;
+    e.helper = 'Max 5 MB per file';
+    liveElement.style.maxWidth = '480px';
+  }
+
+  // ── Wave 7: Foundation Completion — Structural ──
+  if (tag === 'cg-collapsible') {
+    const trigger = document.createElement('span');
+    trigger.setAttribute('slot', 'trigger');
+    trigger.textContent = 'Show advanced options';
+    liveElement.appendChild(trigger);
+    const body = document.createElement('div');
+    body.textContent = 'Additional configuration goes here. This content is revealed with a smooth animation when the trigger is clicked.';
+    liveElement.appendChild(body);
+    liveElement.style.maxWidth = '480px';
+  }
+  if (tag === 'cg-kbd') {
+    e.keys = '⌘,K';
+  }
+  if (tag === 'cg-aspect-ratio') {
+    e.ratio = '16/9';
+    const img = document.createElement('img');
+    img.src = 'https://picsum.photos/seed/aspect/480/270';
+    img.alt = 'Sample 16:9';
+    liveElement.appendChild(img);
+    liveElement.style.maxWidth = '480px';
+  }
+  if (tag === 'cg-scroll-area') {
+    liveElement.style.cssText = 'height:240px;width:360px;padding:16px;background:var(--cg-color-surface-cards-background);border:1px solid var(--cg-color-surface-cards-border);border-radius:10px;display:block;';
+    const inner = document.createElement('div');
+    inner.style.cssText = 'display:flex;flex-direction:column;gap:8px;';
+    for (let i = 1; i <= 25; i++) {
+      const item = document.createElement('div');
+      item.style.cssText = 'padding:10px;background:var(--cg-color-surface-container-background);border-radius:6px;font-size:13px;';
+      item.textContent = `Item ${i}`;
+      inner.appendChild(item);
+    }
+    liveElement.appendChild(inner);
+  }
+  if (tag === 'cg-navbar') {
+    e.variant = 'glass';
+    const brand = document.createElement('span');
+    brand.setAttribute('slot', 'brand');
+    brand.style.cssText = 'display:flex;align-items:center;gap:8px;';
+    brand.innerHTML = '<svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" style="color:var(--cg-color-action-primary-background-default,#dfff61);"><circle cx="8" cy="8" r="7"/></svg>Cognivo';
+    liveElement.appendChild(brand);
+    const links = [
+      { label: 'Docs', active: true },
+      { label: 'Components', active: false },
+      { label: 'Tokens', active: false },
+      { label: 'Pricing', active: false },
+    ];
+    for (const { label, active } of links) {
+      const a = document.createElement('a');
+      a.setAttribute('slot', 'start');
+      a.href = '#';
+      a.textContent = label;
+      if (active) a.className = 'active';
+      liveElement.appendChild(a);
+    }
+    const btn1 = document.createElement('cg-button');
+    btn1.setAttribute('slot', 'end');
+    btn1.setAttribute('variant', 'tertiary');
+    btn1.setAttribute('size', 'sm');
+    btn1.textContent = 'Log in';
+    liveElement.appendChild(btn1);
+    const btn2 = document.createElement('cg-button');
+    btn2.setAttribute('slot', 'end');
+    btn2.setAttribute('variant', 'primary');
+    btn2.setAttribute('size', 'sm');
+    btn2.textContent = 'Sign up';
+    liveElement.appendChild(btn2);
+    liveElement.style.cssText = 'max-width:100%;width:100%;';
+  }
+  if (tag === 'cg-calendar') {
+    e.value = new Date().toISOString().split('T')[0];
+  }
 }
 
 // ─── Re-render examples with live components ────────────────────────────────

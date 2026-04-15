@@ -1,4 +1,6 @@
 ---
+import { ViewTransitions } from 'astro:transitions';
+
 interface Props {
   title: string;
   description?: string;
@@ -14,16 +16,23 @@ const { title, description = 'AI-native component library with cognitive psychol
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
   <title>{title} | Cognivo</title>
+  <script is:inline>
+    // Set theme BEFORE any CSS loads to prevent flash between pages
+    (function() {
+      try {
+        var t = localStorage.getItem('cognivo-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
   <style>
-    @view-transition { navigation: auto; }
-    ::view-transition-old(root),
-    ::view-transition-new(root),
-    ::view-transition-old(main-content),
-    ::view-transition-new(main-content) { animation: none; }
+    /* Force solid backgrounds immediately to prevent flash on navigation */
+    html, body { background: var(--bg, #09090b); }
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+  <ViewTransitions />
   <style is:global>
     :root {
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;

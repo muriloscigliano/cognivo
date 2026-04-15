@@ -16,14 +16,14 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     <section class="section">
       <h2 id="vanilla">Vanilla HTML / Any Framework</h2>
       <p class="section-desc">Import once, use everywhere. No framework adapter needed.</p>
-      <pre><code>{`<script type="module">
+      <pre><code set:html={`&lt;script type="module"&gt;
   import '@cognivo/components';
-</script>
-<link rel="stylesheet" href="node_modules/@cognivo/tokens/dist/index.css">
+&lt;/script&gt;
+&lt;link rel="stylesheet" href="node_modules/@cognivo/tokens/dist/index.css"&gt;
 
-<cg-button variant="primary" size="md">Click me</cg-button>
-<ai-chat placeholder="Ask anything..."></ai-chat>
-<ai-thinking variant="dots" text="Analyzing..."></ai-thinking>`}</code></pre>
+&lt;cg-button variant="primary" size="md"&gt;Click me&lt;/cg-button&gt;
+&lt;ai-chat placeholder="Ask anything..."&gt;&lt;/ai-chat&gt;
+&lt;ai-thinking variant="dots" text="Analyzing..."&gt;&lt;/ai-thinking&gt;`} />
 
       <div class="note">
         Web Components work natively in Angular, Svelte, Astro, SolidJS, and any framework
@@ -108,27 +108,27 @@ const handleInput = (e: CustomEvent<{ value: string }>) => {
 import '@cognivo/tokens/dist/index.css';`}</code></pre>
 
       <h3>Usage</h3>
-      <pre><code>{`<script setup lang="ts">
+      <pre><code set:html={`&lt;script setup lang="ts"&gt;
 import { CgButton, CgInput, CgCard, AiChat } from '@cognivo/adapter-vue';
 import { ref } from 'vue';
 
 const query = ref('');
-</script>
+&lt;/script&gt;
 
-<template>
-  <CgCard variant="elevated">
-    <CgInput
+&lt;template&gt;
+  &lt;CgCard variant="elevated"&gt;
+    &lt;CgInput
       label="Search"
       :value="query"
       @cg-input="query = $event.detail.value"
-    />
-    <CgButton variant="primary" @cg-click="search(query)">
+    /&gt;
+    &lt;CgButton variant="primary" @cg-click="search(query)"&gt;
       Search
-    </CgButton>
-  </CgCard>
+    &lt;/CgButton&gt;
+  &lt;/CgCard&gt;
 
-  <AiChat placeholder="Ask a question..." />
-</template>`}</code></pre>
+  &lt;AiChat placeholder="Ask a question..." /&gt;
+&lt;/template&gt;`} />
 
       <h3>Event Handling</h3>
       <p style="color: var(--text-2); margin-bottom: 0.5rem; font-size: 0.9rem;">
@@ -142,14 +142,14 @@ const query = ref('');
       <p class="section-desc">No adapter needed — use Web Components directly.</p>
 
       <h3>Svelte</h3>
-      <pre><code>{`<script>
+      <pre><code set:html={`&lt;script&gt;
   import '@cognivo/components';
   import '@cognivo/tokens/dist/index.css';
-</script>
+&lt;/script&gt;
 
-<cg-button variant="primary" on:cg-click={handleClick}>
+&lt;cg-button variant="primary" on:cg-click={handleClick}&gt;
   Click me
-</cg-button>`}</code></pre>
+&lt;/cg-button&gt;`} />
 
       <h3>Angular</h3>
       <pre><code>{`// app.module.ts — enable custom elements
@@ -204,26 +204,38 @@ import { AiChat } from '@cognivo/components';`}</code></pre>
     .fw-page { }
 
     .page-header h1 {
-      font-size: 2.25rem;
-      font-weight: 800;
+      font-size: 2rem;
+      font-weight: 700;
       letter-spacing: -0.03em;
-      margin-bottom: 0.5rem;
+      margin-bottom: 8px;
     }
     .subtitle {
-      color: var(--text-2);
-      font-size: 1.0625rem;
-      line-height: 1.6;
-      margin-bottom: 2rem;
+      color: var(--fg-2);
+      font-size: 16px;
+      line-height: 1.7;
+      margin-bottom: 40px;
+      max-width: 720px;
     }
 
-    .section { margin-bottom: 3rem; }
+    .section { margin-bottom: 48px; }
     .section h2 {
-      font-size: 1.375rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.75rem;
-      padding-bottom: 0.5rem;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 40px 0 16px;
+      padding-bottom: 10px;
       border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+    }
+    .section h2::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 18px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin-right: 10px;
     }
     .section h3 {
       font-size: 1rem;

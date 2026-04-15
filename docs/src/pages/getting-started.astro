@@ -167,7 +167,18 @@ const recs = recommendBiases({
     h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.03em; }
     .subtitle { color: var(--fg-2); margin-bottom: 40px; font-size: 16px; line-height: 1.7; max-width: 640px; }
     section { margin-bottom: 48px; }
-    h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 16px; letter-spacing: -0.01em; }
+    h2 {
+      font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
+      margin: 40px 0 16px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+    }
+    h2::before {
+      content: ''; display: inline-block;
+      width: 3px; height: 18px;
+      background: var(--accent); border-radius: 2px;
+      margin-right: 10px;
+    }
     h3 { font-size: 15px; font-weight: 600; margin: 24px 0 8px; color: var(--fg); }
     p { margin-bottom: 12px; color: var(--fg-2); line-height: 1.7; }
     .hint { font-size: 14px; color: var(--fg-3); margin-top: 8px; }

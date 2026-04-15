@@ -1,0 +1,103 @@
+---
+/**
+ * Stats row — three (or more) large stat boxes displayed in a grid
+ * with a 1px dividing border. Optional `href` on each stat makes it
+ * a clickable link (e.g. cross-linking between /components and /ai).
+ *
+ * @example
+ * <StatsRow stats={[
+ *   { value: 71, label: 'Foundation' },
+ *   { value: 5, label: 'Categories' },
+ *   { value: 90, label: 'AI Components →', href: '/ai' },
+ * ]} />
+ */
+interface Stat {
+  value: string | number;
+  label: string;
+  detail?: string;
+  href?: string;
+}
+
+interface Props {
+  stats: Stat[];
+  /** Max container width (default: full width). Pass "900px" to match homepage stats. */
+  maxWidth?: string;
+}
+
+const { stats, maxWidth } = Astro.props;
+const style = maxWidth ? `max-width: ${maxWidth}; margin: 0 auto;` : '';
+---
+
+<div class="stats" style={style}>
+  {stats.map(s => {
+    const inner = (
+      <>
+        <span class="stat-val">{s.value}</span>
+        <span class="stat-label">{s.label}</span>
+        {s.detail && <span class="stat-detail">{s.detail}</span>}
+      </>
+    );
+    if (s.href) {
+      return <a class="stat stat-link" href={s.href}>{inner}</a>;
+    }
+    return <div class="stat">{inner}</div>;
+  })}
+</div>
+
+<style>
+  .stats {
+    display: flex;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+
+  .stat {
+    flex: 1;
+    background: var(--bg-subtle);
+    padding: 46px 20px;
+    text-align: center;
+  }
+
+  .stat-val {
+    display: block;
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--fg);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .stat-label {
+    display: block;
+    font: 500 11px/1 var(--font-mono);
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 8px;
+  }
+
+  .stat-detail {
+    display: block;
+    font-size: 12px;
+    color: var(--fg-4);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  .stat-link {
+    text-decoration: none;
+    color: inherit;
+    transition: background 120ms;
+    cursor: pointer;
+  }
+  .stat-link:hover { background: var(--accent-dim); }
+  .stat-link:hover .stat-val { color: var(--accent); }
+
+  @media (max-width: 640px) {
+    .stats { flex-direction: column; }
+  }
+</style>

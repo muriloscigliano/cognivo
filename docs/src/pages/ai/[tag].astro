@@ -3,10 +3,10 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 import { registry } from '../../data/components';
 import type { ComponentMeta } from '../../data/components';
 
-// Foundation components only — AI components live at /ai/[tag]
+// AI components only — foundation components live at /components/[tag]
 export function getStaticPaths() {
   return registry
-    .filter(comp => !comp.category.startsWith('ai-'))
+    .filter(comp => comp.category.startsWith('ai-'))
     .map(comp => ({ params: { tag: comp.tag }, props: { comp } }));
 }
 
@@ -24,7 +24,7 @@ function esc(s: string) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').re
 ---
 
 <DocsLayout title={comp.name}>
-  <p class="bc"><a href="/components">Components</a> <span>/</span> {comp.name}</p>
+  <p class="bc"><a href="/ai">AI Components</a> <span>/</span> {comp.name}</p>
 
   <h1>{comp.name}</h1>
   <p class="desc">{comp.description}</p>
@@ -100,8 +100,8 @@ function esc(s: string) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').re
   )}
 
   <nav class="pnav">
-    {prev ? <a href={`/components/${prev.tag}`} class="pc"><span class="pd">&larr; Previous</span><span class="pname">{prev.name}</span></a> : <div/>}
-    {next ? <a href={`/components/${next.tag}`} class="pc r"><span class="pd">Next &rarr;</span><span class="pname">{next.name}</span></a> : <div/>}
+    {prev ? <a href={`/ai/${prev.tag}`} class="pc"><span class="pd">&larr; Previous</span><span class="pname">{prev.name}</span></a> : <div/>}
+    {next ? <a href={`/ai/${next.tag}`} class="pc r"><span class="pd">Next &rarr;</span><span class="pname">{next.name}</span></a> : <div/>}
   </nav>
 
   <script src="../../scripts/playground.ts"></script>

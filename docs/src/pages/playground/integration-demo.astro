@@ -1,0 +1,481 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+---
+
+<DocsLayout title="Integration Demo">
+  <p class="bc"><a href="/components">Components</a> <span>/</span> Integration Demo</p>
+
+  <h1>Integration Demo</h1>
+  <p class="desc">
+    Cross-component smoke test wiring together 10+ newly released Cognivo
+    components: navbar, sheet, combobox, tag-input, tree-view, collapsible,
+    popover + command, context-menu, alert-dialog, calendar, toaster, and
+    keyboard chips. Use this page to verify z-index stacking, focus
+    management, and event coordination end-to-end.
+  </p>
+
+  <div class="badges">
+    <span class="badge">playground</span>
+    <span class="badge">integration</span>
+  </div>
+
+  <!-- ====================================================================== -->
+  <!-- Top navbar                                                              -->
+  <!-- ====================================================================== -->
+  <cg-navbar sticky variant="glass" bordered id="demo-navbar">
+    <span slot="brand">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg>
+      Cognivo Studio
+    </span>
+    <a slot="start" href="#" class="active" aria-current="page">Projects</a>
+    <a slot="start" href="#">Files</a>
+    <a slot="start" href="#">Insights</a>
+    <a slot="start" href="#">Settings</a>
+    <cg-button slot="end" variant="ghost" size="sm" id="demo-palette-btn" aria-label="Open command palette">
+      Search <cg-kbd keys="⌘,K"></cg-kbd>
+    </cg-button>
+    <cg-toggle slot="end" size="sm" variant="outline" id="demo-theme-toggle" aria-label="Toggle dark mode">Dark</cg-toggle>
+    <cg-button slot="end" variant="primary" size="sm" id="demo-settings-btn">Settings</cg-button>
+  </cg-navbar>
+
+  <!-- ====================================================================== -->
+  <!-- Search / filter bar                                                     -->
+  <!-- ====================================================================== -->
+  <section class="bar">
+    <div class="bar-field">
+      <label class="bar-label">Filter projects</label>
+      <cg-combobox
+        id="demo-combobox"
+        placeholder="Select owners..."
+        multiple
+        searchable
+        clearable
+      ></cg-combobox>
+    </div>
+    <div class="bar-field">
+      <label class="bar-label">Tags</label>
+      <cg-tag-input
+        id="demo-tag-input"
+        placeholder="Add tags..."
+        helper="Press Enter or comma to add"
+      ></cg-tag-input>
+    </div>
+    <div class="bar-field">
+      <label class="bar-label">Date</label>
+      <cg-button id="demo-date-btn" variant="secondary" size="md">
+        Pick a date
+      </cg-button>
+    </div>
+  </section>
+
+  <!-- ====================================================================== -->
+  <!-- Main grid: sidebar + content                                            -->
+  <!-- ====================================================================== -->
+  <section class="grid">
+    <!-- Sidebar with collapsible sections + tree view -->
+    <aside class="aside">
+      <cg-collapsible open>
+        <span slot="trigger">File Explorer <cg-kbd keys="⌘,E" size="sm"></cg-kbd></span>
+        <cg-tree-view id="demo-tree"></cg-tree-view>
+      </cg-collapsible>
+
+      <cg-collapsible>
+        <span slot="trigger">Shortcuts</span>
+        <div class="kbd-list">
+          <div class="kbd-row"><span>Palette</span><cg-kbd keys="⌘,K"></cg-kbd></div>
+          <div class="kbd-row"><span>Save</span><cg-kbd keys="⌘,S"></cg-kbd></div>
+          <div class="kbd-row"><span>Delete</span><cg-kbd keys="⌘,⌫"></cg-kbd></div>
+          <div class="kbd-row"><span>Toggle sidebar</span><cg-kbd keys="⌘,B"></cg-kbd></div>
+        </div>
+      </cg-collapsible>
+
+      <cg-collapsible>
+        <span slot="trigger">Recently viewed</span>
+        <ul class="list">
+          <li>Onboarding experiment</li>
+          <li>Pricing page redesign</li>
+          <li>Growth dashboard</li>
+        </ul>
+      </cg-collapsible>
+    </aside>
+
+    <!-- Content column -->
+    <div class="content">
+      <div class="toolbar">
+        <h2 class="mini">Projects</h2>
+        <div class="toolbar-end">
+          <cg-button variant="danger" size="sm" id="demo-delete-btn">Delete project</cg-button>
+        </div>
+      </div>
+
+      <!-- Context-menu wrapper around a list of items -->
+      <cg-context-menu id="demo-context">
+        <ul class="cards">
+          <li class="card">
+            <strong>Onboarding experiment</strong>
+            <span>Last edited 2 days ago — right-click for actions</span>
+          </li>
+          <li class="card">
+            <strong>Pricing page redesign</strong>
+            <span>Last edited yesterday — right-click for actions</span>
+          </li>
+          <li class="card">
+            <strong>Growth dashboard v2</strong>
+            <span>Last edited 5 min ago — right-click for actions</span>
+          </li>
+          <li class="card">
+            <strong>Cognitive bias audit</strong>
+            <span>Last edited 3 days ago — right-click for actions</span>
+          </li>
+        </ul>
+      </cg-context-menu>
+    </div>
+  </section>
+
+  <!-- ====================================================================== -->
+  <!-- Command palette popover — triggered by search button                    -->
+  <!-- ====================================================================== -->
+  <cg-command id="demo-command" placeholder="Type a command or search..."></cg-command>
+
+  <!-- ====================================================================== -->
+  <!-- Date picker popover                                                     -->
+  <!-- ====================================================================== -->
+  <cg-popover id="demo-date-popover" placement="bottom-start" trigger="manual">
+    <div slot="content">
+      <cg-calendar id="demo-calendar"></cg-calendar>
+    </div>
+  </cg-popover>
+
+  <!-- ====================================================================== -->
+  <!-- Settings sheet (right side)                                             -->
+  <!-- ====================================================================== -->
+  <cg-sheet id="demo-sheet" side="right" label="Settings" dismissible>
+    <div class="sheet-body">
+      <h3 class="sheet-title">Workspace settings</h3>
+      <p class="sheet-sub">Tune the editor experience.</p>
+
+      <div class="field">
+        <label class="field-label">View density</label>
+        <cg-segmented-control id="demo-density" value="comfy"></cg-segmented-control>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Text alignment</label>
+        <cg-toggle-group id="demo-align" type="single" value="left" variant="outline">
+          <cg-toggle value="left">Left</cg-toggle>
+          <cg-toggle value="center">Center</cg-toggle>
+          <cg-toggle value="right">Right</cg-toggle>
+          <cg-toggle value="justify">Justify</cg-toggle>
+        </cg-toggle-group>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Rate this experience</label>
+        <cg-rating id="demo-rating" value="4" max="5"></cg-rating>
+      </div>
+
+      <div class="field">
+        <cg-button variant="primary" size="md" id="demo-save-btn">Save settings</cg-button>
+      </div>
+    </div>
+  </cg-sheet>
+
+  <!-- ====================================================================== -->
+  <!-- Alert dialog for destructive delete                                     -->
+  <!-- ====================================================================== -->
+  <cg-alert-dialog
+    id="demo-alert"
+    title="Delete project?"
+    description="This permanently deletes the project and its history. This action cannot be undone."
+    confirm-label="Delete"
+    cancel-label="Cancel"
+    destructive
+    closable
+  ></cg-alert-dialog>
+
+  <!-- ====================================================================== -->
+  <!-- Toaster                                                                 -->
+  <!-- ====================================================================== -->
+  <cg-toaster id="demo-toaster" position="bottom-right"></cg-toaster>
+
+  <script>
+    // All setup runs on astro:page-load so View Transitions re-initialize.
+    function initDemo() {
+      const combobox = document.getElementById('demo-combobox') as any;
+      if (combobox && !combobox._cgBound) {
+        combobox._cgBound = true;
+        combobox.options = [
+          { label: 'Alice Chen', value: 'alice' },
+          { label: 'Bob Kumar', value: 'bob' },
+          { label: 'Carla Reyes', value: 'carla' },
+          { label: 'Diego Silva', value: 'diego' },
+          { label: 'Emma Novak', value: 'emma' },
+        ];
+        combobox.value = ['alice', 'carla'];
+      }
+
+      const tagInput = document.getElementById('demo-tag-input') as any;
+      if (tagInput && !tagInput._cgBound) {
+        tagInput._cgBound = true;
+        tagInput.value = ['pricing', 'conversion'];
+      }
+
+      const tree = document.getElementById('demo-tree') as any;
+      if (tree && !tree._cgBound) {
+        tree._cgBound = true;
+        tree.items = [
+          {
+            label: 'src', expanded: true, children: [
+              {
+                label: 'components', expanded: true, children: [
+                  { label: 'Navbar.tsx' },
+                  { label: 'Sheet.tsx' },
+                  { label: 'Tree.tsx' },
+                ],
+              },
+              { label: 'hooks', children: [{ label: 'useToast.ts' }] },
+              { label: 'index.ts' },
+            ],
+          },
+          {
+            label: 'tests', children: [
+              { label: 'navbar.test.ts' },
+              { label: 'sheet.test.ts' },
+            ],
+          },
+          { label: 'package.json' },
+          { label: 'tsconfig.json' },
+        ];
+      }
+
+      const density = document.getElementById('demo-density') as any;
+      if (density && !density._cgBound) {
+        density._cgBound = true;
+        density.options = [
+          { label: 'Compact', value: 'compact' },
+          { label: 'Comfortable', value: 'comfy' },
+          { label: 'Spacious', value: 'spacious' },
+        ];
+      }
+
+      const command = document.getElementById('demo-command') as any;
+      if (command && !command._cgBound) {
+        command._cgBound = true;
+        command.commands = [
+          { id: 'new', label: 'New project', group: 'Create', shortcut: '⌘N' },
+          { id: 'open', label: 'Open file', group: 'Create', shortcut: '⌘O' },
+          { id: 'save', label: 'Save workspace', group: 'Create', shortcut: '⌘S' },
+          { id: 'theme', label: 'Toggle theme', group: 'View', shortcut: '⌘T' },
+          { id: 'sidebar', label: 'Toggle sidebar', group: 'View', shortcut: '⌘B' },
+          { id: 'settings', label: 'Open settings', group: 'View' },
+          { id: 'docs', label: 'Read docs', group: 'Help' },
+          { id: 'shortcuts', label: 'Keyboard shortcuts', group: 'Help', shortcut: '⌘/' },
+        ];
+      }
+
+      const context = document.getElementById('demo-context') as any;
+      if (context && !context._cgBound) {
+        context._cgBound = true;
+        context.items = [
+          { id: 'open', label: 'Open', shortcut: '⏎' },
+          { id: 'rename', label: 'Rename', shortcut: 'F2' },
+          { id: 'duplicate', label: 'Duplicate', shortcut: '⌘D' },
+          { separator: true, id: 's1', label: '' },
+          { id: 'delete', label: 'Delete', shortcut: '⌘⌫', danger: true },
+        ];
+      }
+
+      const toaster = document.getElementById('demo-toaster') as any;
+
+      function toast(title: string, variant = 'default', description?: string) {
+        if (!toaster) return;
+        toaster.show({ title, description, variant, duration: 4000 });
+      }
+
+      // Search button opens command palette
+      document.getElementById('demo-palette-btn')?.addEventListener('click', () => {
+        if (command) command.open = true;
+      });
+
+      // Settings button opens sheet
+      document.getElementById('demo-settings-btn')?.addEventListener('click', () => {
+        const sheet = document.getElementById('demo-sheet') as any;
+        if (sheet) sheet.open = true;
+      });
+
+      // Delete button opens alert-dialog
+      document.getElementById('demo-delete-btn')?.addEventListener('click', () => {
+        const alert = document.getElementById('demo-alert') as any;
+        if (alert) alert.open = true;
+      });
+
+      // Date button toggles date popover
+      const dateBtn = document.getElementById('demo-date-btn');
+      const datePop = document.getElementById('demo-date-popover') as any;
+      dateBtn?.addEventListener('click', () => {
+        if (datePop) datePop.open = !datePop.open;
+      });
+
+      // Save button in sheet fires toast
+      document.getElementById('demo-save-btn')?.addEventListener('click', () => {
+        const sheet = document.getElementById('demo-sheet') as any;
+        if (sheet) sheet.open = false;
+        toast('Settings saved', 'success', 'Your workspace preferences were updated.');
+      });
+
+      // Alert confirm -> toast
+      document.getElementById('demo-alert')?.addEventListener('cg-alert-confirm', () => {
+        toast('Project deleted', 'error', 'The project has been removed.');
+      });
+
+      // Command palette select -> toast
+      document.getElementById('demo-command')?.addEventListener('cg-command-select', (e: any) => {
+        toast(`Command: ${e.detail?.command?.label ?? 'unknown'}`, 'info');
+      });
+
+      // Context menu select -> toast
+      document.getElementById('demo-context')?.addEventListener('cg-context-menu-select', (e: any) => {
+        const id = e.detail?.id;
+        const variant = id === 'delete' ? 'error' : 'default';
+        toast(`Action: ${e.detail?.item?.label ?? id}`, variant);
+      });
+
+      // Calendar change -> toast + close popover
+      document.getElementById('demo-calendar')?.addEventListener('cg-calendar-change', (e: any) => {
+        toast(`Date selected: ${e.detail?.value}`, 'info');
+        if (datePop) datePop.open = false;
+      });
+
+      // Theme toggle -> toggle data-theme
+      document.getElementById('demo-theme-toggle')?.addEventListener('cg-toggle-change', (e: any) => {
+        const dark = e.detail?.pressed;
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      });
+
+      // Global Cmd/Ctrl+K to open palette
+      if (!(document as any)._cgDemoKeyBound) {
+        (document as any)._cgDemoKeyBound = true;
+        document.addEventListener('keydown', (e) => {
+          if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+            e.preventDefault();
+            const c = document.getElementById('demo-command') as any;
+            if (c) c.open = true;
+          }
+        });
+      }
+    }
+
+    initDemo();
+    document.addEventListener('astro:page-load', initDemo);
+  </script>
+
+  <style>
+    .bc { font-size: 14px; color: var(--fg-3); margin-bottom: 24px; }
+    .bc a { color: var(--fg-3); } .bc a:hover { color: var(--accent); }
+    .bc span { margin: 0 6px; }
+    h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 12px; }
+    .desc { font-size: 16px; color: var(--fg-2); line-height: 1.7; margin-bottom: 12px; max-width: 780px; }
+    .badges { display: flex; gap: 8px; margin-bottom: 32px; }
+    .badge {
+      font: 600 11px/1 var(--font-mono);
+      padding: 5px 12px; border-radius: 6px;
+      text-transform: uppercase; letter-spacing: 0.04em;
+      background: var(--accent-dim); color: var(--accent);
+      border: 1px solid var(--accent-muted);
+    }
+
+    .bar {
+      display: grid;
+      grid-template-columns: 2fr 2fr 1fr;
+      gap: 16px;
+      margin: 32px 0 24px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-subtle);
+    }
+    .bar-field { display: flex; flex-direction: column; gap: 6px; }
+    .bar-label {
+      font: 600 11px/1 var(--font-mono);
+      color: var(--fg-3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      margin-top: 16px;
+    }
+    .aside {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .kbd-list { display: flex; flex-direction: column; gap: 8px; }
+    .kbd-row {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 13px; color: var(--fg-2);
+    }
+    .list {
+      list-style: none; margin: 0; padding: 0;
+      display: flex; flex-direction: column; gap: 6px;
+      font-size: 13px; color: var(--fg-2);
+    }
+
+    .content { display: flex; flex-direction: column; gap: 16px; }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .mini { font-size: 15px; font-weight: 600; margin: 0; }
+    .toolbar-end { display: flex; gap: 8px; }
+
+    .cards {
+      list-style: none;
+      margin: 0; padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-subtle);
+      transition: border-color 120ms, transform 120ms;
+      cursor: context-menu;
+    }
+    .card:hover { border-color: var(--border-hover); }
+    .card strong { font-size: 14px; color: var(--fg); font-weight: 600; }
+    .card span { font-size: 12px; color: var(--fg-3); }
+
+    .sheet-body {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      max-width: 420px;
+    }
+    .sheet-title { font-size: 18px; font-weight: 600; margin: 0; }
+    .sheet-sub { font-size: 13px; color: var(--fg-3); margin: 0 0 8px; }
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field-label {
+      font: 600 11px/1 var(--font-mono);
+      color: var(--fg-3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      .bar { grid-template-columns: 1fr; }
+    }
+  </style>
+</DocsLayout>

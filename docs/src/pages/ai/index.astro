@@ -3,7 +3,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 import StatsRow from '../../components/StatsRow.astro';
 import { registry, categories } from '../../data/components';
 
-// This page shows FOUNDATION components only. AI components live at /ai.
+// AI components only. Foundation components live at /components.
 const isAiCategory = (id: string) => id.startsWith('ai-');
 
 const byLabel = (a: { label: string }, b: { label: string }) =>
@@ -11,31 +11,32 @@ const byLabel = (a: { label: string }, b: { label: string }) =>
 const byName = (a: { name: string }, b: { name: string }) =>
   a.name.localeCompare(b.name);
 
-const foundationCategories = [...categories]
-  .filter(c => !isAiCategory(c.id))
+const aiCategories = [...categories]
+  .filter(c => isAiCategory(c.id))
   .sort(byLabel);
 
-const grouped = foundationCategories
+const grouped = aiCategories
   .map(cat => ({
     ...cat,
     items: registry.filter(c => c.category === cat.id).sort(byName),
   }))
   .filter(g => g.items.length > 0);
 
-const foundationCount = grouped.reduce((n, g) => n + g.items.length, 0);
+const aiCount = grouped.reduce((n, g) => n + g.items.length, 0);
+const foundationCount = registry.length - aiCount;
 ---
 
-<DocsLayout title="Components">
-  <h1>Components</h1>
-  <p class="sub">{foundationCount} foundation web components built with Lit 3 and Shadow DOM. Framework-agnostic and works everywhere.</p>
+<DocsLayout title="AI Components">
+  <h1>AI Components</h1>
+  <p class="sub">{aiCount} AI-native web components built for LLM interfaces — chat, streaming, reasoning, agents, insights, and more.</p>
 
   <StatsRow stats={[
-    { value: foundationCount, label: 'Foundation' },
+    { value: aiCount, label: 'AI Components' },
     { value: grouped.length, label: 'Categories' },
-    { value: registry.length - foundationCount, label: 'AI Components →', href: '/ai' },
+    { value: foundationCount, label: '← Foundation', href: '/components' },
   ]} />
 
-  <pre><code>pnpm add @cognivo/components @cognivo/tokens</code></pre>
+  <pre><code>pnpm add @cognivo/components @cognivo/core</code></pre>
 
   {grouped.map(g => (
     <section id={g.id}>
@@ -45,8 +46,8 @@ const foundationCount = grouped.reduce((n, g) => n + g.items.length, 0);
       </h2>
       <div class="grid">
         {g.items.map(comp => (
-          <a href={`/components/${comp.tag}`} class="card">
-            <span class="card-icon">○</span>
+          <a href={`/ai/${comp.tag}`} class="card">
+            <span class="card-icon">◆</span>
             <div class="card-info">
               <span class="card-name">{comp.name}</span>
               <span class="card-tag">&lt;{comp.tag}&gt;</span>
@@ -64,7 +65,6 @@ const foundationCount = grouped.reduce((n, g) => n + g.items.length, 0);
     }
     .sub { font-size: 15px; color: var(--fg-2); margin-bottom: 28px; }
 
-    /* Category headers — matches [tag].astro h2 style */
     h2 {
       font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
       margin: 40px 0 16px;
@@ -79,7 +79,6 @@ const foundationCount = grouped.reduce((n, g) => n + g.items.length, 0);
       margin-left: auto;
     }
 
-    /* Component grid */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -100,12 +99,11 @@ const foundationCount = grouped.reduce((n, g) => n + g.items.length, 0);
     }
     .card-icon {
       font-size: 10px;
-      color: var(--fg-4);
+      color: var(--accent);
       flex-shrink: 0;
       width: 16px; text-align: center;
       margin-top: 3px;
     }
-    .card:hover .card-icon { color: var(--accent); }
     .card-info { min-width: 0; }
     .card-name {
       display: block;
