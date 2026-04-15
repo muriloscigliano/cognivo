@@ -41,13 +41,20 @@ export class CgImageBlock extends LitElement {
 
     img {
       width: 100%;
-      height: 100%;
+      height: auto;
       object-fit: cover;
       display: block;
       opacity: 0;
       transition: opacity var(--cg-transition-duration-slower) var(--cg-transition-easing-default);
     }
     img.loaded { opacity: 1; }
+
+    /* When an aspect ratio is enforced, the image should fill the container
+       so object-fit can crop. Without a ratio, keep natural height to avoid
+       vertical squeezing inside flex/grid parents. */
+    :host([ratio]) img {
+      height: 100%;
+    }
 
     .skeleton {
       position: absolute;

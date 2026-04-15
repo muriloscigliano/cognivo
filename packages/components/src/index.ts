@@ -70,6 +70,30 @@ import { CgColorPicker } from './components/cg-color-picker/cg-color-picker.js';
 import { CgLink } from './components/cg-link/cg-link.js';
 import { CgAvatarGroup } from './components/cg-avatar-group/cg-avatar-group.js';
 
+// ── Wave 7: Foundation Completion — Overlays (5) ───────────────────────────
+import { CgPopover } from './components/cg-popover/cg-popover.js';
+import { CgHoverCard } from './components/cg-hover-card/cg-hover-card.js';
+import { CgContextMenu } from './components/cg-context-menu/cg-context-menu.js';
+import { CgAlertDialog } from './components/cg-alert-dialog/cg-alert-dialog.js';
+import { CgCommand } from './components/cg-command/cg-command.js';
+
+// ── Wave 7: Foundation Completion — Forms (7) ──────────────────────────────
+import { CgToggle } from './components/cg-toggle/cg-toggle.js';
+import { CgToggleGroup } from './components/cg-toggle-group/cg-toggle-group.js';
+import { CgSegmentedControl } from './components/cg-segmented-control/cg-segmented-control.js';
+import { CgPasswordInput } from './components/cg-password-input/cg-password-input.js';
+import { CgRating } from './components/cg-rating/cg-rating.js';
+import { CgTagInput } from './components/cg-tag-input/cg-tag-input.js';
+import { CgFileInput } from './components/cg-file-input/cg-file-input.js';
+
+// ── Wave 7: Foundation Completion — Structural (6) ─────────────────────────
+import { CgCollapsible } from './components/cg-collapsible/cg-collapsible.js';
+import { CgKbd } from './components/cg-kbd/cg-kbd.js';
+import { CgAspectRatio } from './components/cg-aspect-ratio/cg-aspect-ratio.js';
+import { CgScrollArea } from './components/cg-scroll-area/cg-scroll-area.js';
+import { CgNavbar } from './components/cg-navbar/cg-navbar.js';
+import { CgCalendar } from './components/cg-calendar/cg-calendar.js';
+
 // ── AI Components (19) ──────────────────────────────────────────────────────
 import { AiThinking } from './components/ai-thinking/ai-thinking.js';
 import { AiAgentSteps } from './components/ai-agent-steps/ai-agent-steps.js';
@@ -171,6 +195,18 @@ import { AiDataLineage } from './components/ai-data-lineage/ai-data-lineage.js';
 import { AiRewardSignal } from './components/ai-reward-signal/ai-reward-signal.js';
 import { AiAssistantWidget } from './components/ai-assistant-widget/ai-assistant-widget.js';
 
+// ── Wave 8: Advanced Foundation (10) ───────────────────────────────────────
+import { CgMenubar } from './components/cg-menubar/cg-menubar.js';
+import { CgNavigationMenu } from './components/cg-navigation-menu/cg-navigation-menu.js';
+import { CgSheet } from './components/cg-sheet/cg-sheet.js';
+import { CgToaster } from './components/cg-toaster/cg-toaster.js';
+import { CgResizable } from './components/cg-resizable/cg-resizable.js';
+import { CgTreeView } from './components/cg-tree-view/cg-tree-view.js';
+import { CgCombobox } from './components/cg-combobox/cg-combobox.js';
+import { CgVisuallyHidden } from './components/cg-visually-hidden/cg-visually-hidden.js';
+import { CgPortal } from './components/cg-portal/cg-portal.js';
+import { CgFocusScope } from './components/cg-focus-scope/cg-focus-scope.js';
+
 export {
   // Wave 1: Foundation
   CgStack, CgText, CgButton, CgCard, CgBadge, CgInput,
@@ -188,6 +224,12 @@ export {
   CgSkeleton, CgDrawer, CgBreadcrumbs, CgPagination, CgChip,
   // Wave 6: Final Foundation
   CgNumberInput, CgOtpInput, CgAutocomplete, CgColorPicker, CgLink, CgAvatarGroup,
+  // Wave 7: Foundation Completion — Overlays
+  CgPopover, CgHoverCard, CgContextMenu, CgAlertDialog, CgCommand,
+  // Wave 7: Foundation Completion — Forms
+  CgToggle, CgToggleGroup, CgSegmentedControl, CgPasswordInput, CgRating, CgTagInput, CgFileInput,
+  // Wave 7: Foundation Completion — Structural
+  CgCollapsible, CgKbd, CgAspectRatio, CgScrollArea, CgNavbar, CgCalendar,
   // AI Components
   AiThinking, AiAgentSteps, AiBadge, AiChat, AiResultPanel, AiChartSummary, AiInsightCard,
   AiStreamingText, AiCitation, AiToolIndicator,
@@ -226,6 +268,9 @@ export {
   // Phase 3 Tier 3: AI Interaction Atlas
   AiValidationChecklist, AiCacheIndicator, AiDataLineage,
   AiRewardSignal, AiAssistantWidget,
+  // Wave 8: Advanced Foundation
+  CgMenubar, CgNavigationMenu, CgSheet, CgToaster, CgResizable,
+  CgTreeView, CgCombobox, CgVisuallyHidden, CgPortal, CgFocusScope,
 };
 
 // Type exports

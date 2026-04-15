@@ -274,7 +274,7 @@ export class CgCheckbox extends LitElement {
         ${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : html`<span class="box ${state}">
           ${this.checked ? html`
             <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-              <path class="tick" d="M20 6L9 17l-5-5"></path>
+              <path class="tick" d="M4 12L9 17L20 6"></path>
             </svg>
           ` : nothing}
           ${this.indeterminate ? html`

@@ -42,8 +42,15 @@ export class CgImage extends LitElement {
 
     img {
       width: 100%;
-      height: 100%;
+      height: auto;
       display: block;
+    }
+
+    /* When an aspect ratio is enforced on the container, the image should
+       fill it exactly so object-fit can crop. Without a ratio, the image
+       keeps its natural height to avoid vertical squeezing inside flex/grid. */
+    :host([ratio]) img {
+      height: 100%;
     }
 
     :host([fit="cover"]) img { object-fit: cover; }

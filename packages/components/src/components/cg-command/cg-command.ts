@@ -1,0 +1,353 @@
+import { LitElement, html, css, nothing } from 'lit';
+import { customElement, property, state, query } from 'lit/decorators.js';
+import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { FocusTrap } from '../../utils/focus-trap.js';
+
+export interface CommandItem {
+  id: string;
+  label: string;
+  group?: string;
+  icon?: string;
+  shortcut?: string;
+  keywords?: string[];
+  disabled?: boolean;
+}
+
+/**
+ * @element cg-command
+ * Searchable command palette foundation. Combobox pattern with grouped items,
+ * keyboard navigation, and type-ahead filtering.
+ *
+ * @example
+ * ```html
+ * <cg-command
+ *   open
+ *   placeholder="Type a command..."
+ *   .commands=${[
+ *     { id: 'new', label: 'New file', group: 'File', shortcut: '⌘N' },
+ *     { id: 'open', label: 'Open file', group: 'File', shortcut: '⌘O' },
+ *   ]}
+ * ></cg-command>
+ * ```
+ *
+ * @slot header - Content above the input
+ * @slot footer - Content below the list
+ * @slot empty - Custom empty state
+ *
+ * @fires {CustomEvent<{id: string, command: CommandItem}>} cg-command-select
+ * @fires {CustomEvent<{value: string}>} cg-command-input
+ * @fires {CustomEvent} cg-command-open
+ * @fires {CustomEvent} cg-command-close
+ */
+@customElement('cg-command')
+export class CgCommand extends LitElement {
+  static override styles = [hostBlock, reducedMotion, css`
+    :host {
+      display: contents;
+    }
+
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: var(--cg-z-index-500);
+      background: var(--cg-color-modal-overlay-background);
+      backdrop-filter: blur(var(--cg-blur-backdrop, 4px));
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+    }
+    :host([open]) .backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .palette {
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      z-index: var(--cg-z-index-top);
+      width: calc(100% - var(--cg-spacing-32));
+      max-width: var(--cg-component-command-width);
+      max-height: var(--cg-component-command-max-height);
+      display: flex;
+      flex-direction: column;
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-command-radius);
+      box-shadow: var(--cg-shadow-elevation-xl);
+      opacity: 0;
+      transform: translateX(-50%) translateY(-8px) scale(0.96);
+      pointer-events: none;
+      overflow: hidden;
+      transition:
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
+    }
+    :host([open]) .palette {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-20) var(--cg-spacing-20);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+    }
+    .search-icon {
+      color: var(--cg-color-surface-container-outlined);
+      flex-shrink: 0;
+    }
+    input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: none;
+      color: var(--cg-color-surface-base-text);
+      font-family: inherit;
+      font-size: var(--cg-font-size-base);
+    }
+    input::placeholder { color: var(--cg-color-surface-container-outlined); }
+
+    .list {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--cg-spacing-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--cg-spacing-2);
+    }
+
+    .group-label {
+      padding: var(--cg-spacing-8) var(--cg-spacing-12) var(--cg-spacing-6);
+      font: 600 var(--cg-font-size-xs) var(--cg-font-family-mono);
+      color: var(--cg-color-surface-container-outlined);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-12);
+      width: 100%;
+      height: var(--cg-component-command-item-height);
+      padding: 0 var(--cg-spacing-12);
+      border: none;
+      background: none;
+      color: var(--cg-color-surface-base-text);
+      font-family: inherit;
+      font-size: var(--cg-font-size-sm);
+      line-height: var(--cg-line-height-snug);
+      text-align: left;
+      cursor: pointer;
+      border-radius: var(--cg-border-radius-100);
+      transition:
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+    }
+    .item[data-active] {
+      background: var(--cg-color-action-tertiary-background-hover);
+      color: var(--cg-color-surface-base-text);
+    }
+    .item:active:not([disabled]) {
+      transform: scale(var(--cg-interaction-press-scale));
+    }
+    .item[disabled] {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .item-label { flex: 1; }
+    .shortcut {
+      font: 500 var(--cg-font-size-xs) var(--cg-font-family-mono);
+      color: var(--cg-color-surface-container-outlined);
+      padding: var(--cg-spacing-2) var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-50);
+      background: var(--cg-color-surface-container-background);
+    }
+
+    .empty {
+      padding: var(--cg-spacing-40);
+      text-align: center;
+      color: var(--cg-color-surface-container-outlined);
+      font-size: var(--cg-font-size-sm);
+    }
+  `];
+
+  @property({ type: Boolean, reflect: true }) open = false;
+  @property() placeholder = 'Type a command or search...';
+  @property({ type: Array }) commands: CommandItem[] = [];
+  @property() value = '';
+  @property({ attribute: 'empty-text' }) emptyText = 'No results found.';
+  @property({ type: Boolean }) loading = false;
+
+  @state() private _activeIndex = 0;
+
+  @query('input') private _inputEl!: HTMLInputElement;
+  @query('.palette') private _paletteEl!: HTMLElement;
+
+  private _focusTrap = new FocusTrap();
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this._focusTrap.deactivate();
+  }
+
+  override updated(changed: Map<string, unknown>): void {
+    if (changed.has('open')) {
+      if (this.open) this._onOpen();
+      else this._onClose();
+    }
+  }
+
+  private _onOpen(): void {
+    this._activeIndex = 0;
+    this.dispatchEvent(new CustomEvent('cg-command-open', { bubbles: true, composed: true }));
+    requestAnimationFrame(() => {
+      if (this._paletteEl) {
+        this._focusTrap.activate(this._paletteEl, {
+          initialFocus: this._inputEl,
+          onEscape: () => { this.open = false; },
+        });
+      }
+    });
+  }
+
+  private _onClose(): void {
+    this._focusTrap.deactivate();
+    this.dispatchEvent(new CustomEvent('cg-command-close', { bubbles: true, composed: true }));
+  }
+
+  private get _filteredCommands(): CommandItem[] {
+    const query = this.value.toLowerCase().trim();
+    if (!query) return this.commands;
+    return this.commands.filter(c => {
+      if (c.disabled) return false;
+      const label = c.label.toLowerCase();
+      const keywords = (c.keywords || []).join(' ').toLowerCase();
+      return label.includes(query) || keywords.includes(query);
+    });
+  }
+
+  private get _groupedCommands(): Array<{ group: string; items: CommandItem[] }> {
+    const filtered = this._filteredCommands;
+    const groups = new Map<string, CommandItem[]>();
+    for (const cmd of filtered) {
+      const group = cmd.group || '';
+      if (!groups.has(group)) groups.set(group, []);
+      groups.get(group)!.push(cmd);
+    }
+    return Array.from(groups.entries()).map(([group, items]) => ({ group, items }));
+  }
+
+  private _handleInput(e: Event): void {
+    this.value = (e.target as HTMLInputElement).value;
+    this._activeIndex = 0;
+    this.dispatchEvent(new CustomEvent('cg-command-input', {
+      detail: { value: this.value },
+      bubbles: true,
+      composed: true,
+    }));
+  }
+
+  private _handleKeydown(e: KeyboardEvent): void {
+    const filtered = this._filteredCommands;
+    const count = filtered.length;
+    if (count === 0) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      this._activeIndex = (this._activeIndex + 1) % count;
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      this._activeIndex = (this._activeIndex - 1 + count) % count;
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const item = filtered[this._activeIndex];
+      if (item) this._select(item);
+    }
+  }
+
+  private _select(item: CommandItem): void {
+    if (item.disabled) return;
+    this.dispatchEvent(new CustomEvent('cg-command-select', {
+      detail: { id: item.id, command: item },
+      bubbles: true,
+      composed: true,
+    }));
+    this.open = false;
+    this.value = '';
+  }
+
+  override render() {
+    const groups = this._groupedCommands;
+    const filtered = this._filteredCommands;
+    let flatIndex = -1;
+
+    return html`
+      <div class="backdrop" @click=${() => this.open = false}></div>
+      <div
+        class="palette"
+        role="dialog"
+        aria-label="Command palette"
+        aria-modal="true"
+        ?hidden=${!this.open}
+      >
+        <slot name="header"></slot>
+        <div class="input-wrap">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input
+            type="text"
+            role="combobox"
+            aria-expanded=${this.open ? 'true' : 'false'}
+            aria-controls="command-list"
+            aria-autocomplete="list"
+            placeholder=${this.placeholder}
+            .value=${this.value}
+            @input=${this._handleInput}
+            @keydown=${this._handleKeydown}
+          />
+        </div>
+        <div class="list" id="command-list" role="listbox">
+          ${filtered.length === 0 ? html`
+            <slot name="empty">
+              <div class="empty">${this.emptyText}</div>
+            </slot>
+          ` : groups.map(({ group, items }) => html`
+            ${group ? html`<div class="group-label">${group}</div>` : nothing}
+            ${items.map(item => {
+              flatIndex++;
+              const isActive = flatIndex === this._activeIndex;
+              return html`
+                <button
+                  class="item"
+                  role="option"
+                  ?disabled=${item.disabled}
+                  aria-selected=${isActive ? 'true' : 'false'}
+                  data-active=${isActive ? 'true' : nothing}
+                  @click=${() => this._select(item)}
+                  @mouseenter=${() => { this._activeIndex = flatIndex; }}
+                >
+                  <span class="item-label">${item.label}</span>
+                  ${item.shortcut ? html`<span class="shortcut">${item.shortcut}</span>` : nothing}
+                </button>
+              `;
+            })}
+          `)}
+        </div>
+        <slot name="footer"></slot>
+      </div>
+    `;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'cg-command': CgCommand;
+  }
+}

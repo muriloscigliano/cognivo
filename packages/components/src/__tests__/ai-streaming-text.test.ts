@@ -30,7 +30,9 @@ describe('ai-streaming-text', () => {
     await el.updateComplete;
     const container = el.shadowRoot!.querySelector('.container');
     expect(container).not.toBeNull();
-    expect(container!.textContent).toContain('Hello world');
+    const md = container!.querySelector('cg-markdown') as HTMLElement & { text?: string };
+    expect(md).not.toBeNull();
+    expect(md.text).toBe('Hello world');
   });
 
   it('renders container when streaming', async () => {
@@ -39,7 +41,9 @@ describe('ai-streaming-text', () => {
     await el.updateComplete;
     const container = el.shadowRoot!.querySelector('.container');
     expect(container).not.toBeNull();
-    expect(container!.textContent).toContain('Hello');
+    const md = container!.querySelector('cg-markdown') as HTMLElement & { text?: string };
+    expect(md).not.toBeNull();
+    expect(md.text).toBe('Hello');
   });
 
   it('shows empty state when content is cleared and not streaming', async () => {
@@ -103,12 +107,21 @@ describe('ai-streaming-text', () => {
     expect(container!.getAttribute('aria-live')).toBe('polite');
   });
 
-  it('sanitizes javascript: URLs in markdown', async () => {
-    el.content = '[click](javascript:alert(1))';
+  it('delegates to cg-markdown for rendering', async () => {
+    el.content = 'Hello **bold**';
     el.markdown = true;
     await el.updateComplete;
-    const html = el.shadowRoot!.querySelector('.container span')?.innerHTML || '';
-    expect(html).not.toContain('javascript:');
-    expect(html).toContain('href="#"');
+    const md = el.shadowRoot!.querySelector('cg-markdown') as HTMLElement & { text?: string };
+    expect(md).not.toBeNull();
+    expect(md.text).toBe('Hello **bold**');
+  });
+
+  it('renders plain text span when markdown is disabled', async () => {
+    el.content = 'raw text';
+    el.markdown = false;
+    await el.updateComplete;
+    const plain = el.shadowRoot!.querySelector('.plain');
+    expect(plain).not.toBeNull();
+    expect(plain!.textContent).toBe('raw text');
   });
 });

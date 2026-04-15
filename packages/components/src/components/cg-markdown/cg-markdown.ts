@@ -25,6 +25,27 @@ const ALLOWED_ATTRS: Record<string, Set<string>> = {
 /** Safe URL protocols for href/src attributes */
 const SAFE_PROTOCOLS = /^(https?:|mailto:|#|\/)/i;
 
+/** Escape HTML-special characters in text content. */
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+/** Returns true if the line starts a block-level markdown element. */
+function isBlockStart(line: string): boolean {
+  return (
+    line.startsWith('```') ||
+    /^#{1,6} /.test(line) ||
+    /^-{3,}$/.test(line.trim()) ||
+    line.startsWith('> ') ||
+    line === '>' ||
+    /^[-*] /.test(line) ||
+    /^\d+\. /.test(line)
+  );
+}
+
 /**
  * DOM-based HTML sanitizer. Parses with the browser's HTML parser,
  * walks the tree, and strips anything not explicitly allowed.
@@ -202,23 +223,143 @@ export class CgMarkdown extends LitElement {
 
   @property() text = '';
 
+  /**
+   * Line-based markdown parser. Classifies each line into a block type,
+   * groups consecutive same-type lines, and renders each block with
+   * inline formatting applied to text content.
+   *
+   * Handles: headings (#), code fences (```), blockquotes (>), horizontal
+   * rules (---), unordered lists (-), ordered lists (1.), and paragraphs.
+   * Inline: bold (**), italic (*), inline code (`), links ([text](url)).
+   */
   private _render(md: string): string {
-    let h = md
-      .replace(/```[\s\S]*?```/g, m => `<pre><code>${m.slice(3, -3).replace(/^\w+\n/, '').replace(/</g, '&lt;')}</code></pre>`)
-      .replace(/`([^`]+)`/g, '<code>$1</code>')
-      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
-      .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
-      .replace(/^---$/gm, '<hr/>')
-      .replace(/^- (.+)$/gm, '<li>$1</li>')
-      .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>')
-      .replace(/(<li>.*<\/li>\n?)+/g, m => m.includes('1.') ? `<ol>${m}</ol>` : `<ul>${m}</ul>`)
-      .replace(/^(?!<[hupob]|<li|<hr|<blockquote|<pre|<ul|<ol)(.+)$/gm, '<p>$1</p>');
-    return h;
+    const lines = md.replace(/\r\n/g, '\n').split('\n');
+    const blocks: string[] = [];
+    let i = 0;
+
+    while (i < lines.length) {
+      const line = lines[i]!;
+
+      // Fenced code block
+      if (line.startsWith('```')) {
+        const lang = line.slice(3).trim();
+        const codeLines: string[] = [];
+        i++;
+        while (i < lines.length && !lines[i]!.startsWith('```')) {
+          codeLines.push(lines[i]!);
+          i++;
+        }
+        if (i < lines.length) i++; // skip closing fence
+        const code = escapeHtml(codeLines.join('\n'));
+        const langAttr = /^\w+$/.test(lang) ? ` class="language-${lang}"` : '';
+        blocks.push(`<pre><code${langAttr}>${code}</code></pre>`);
+        continue;
+      }
+
+      // Heading (# through ######)
+      const headingMatch = /^(#{1,6}) (.+)$/.exec(line);
+      if (headingMatch) {
+        const level = headingMatch[1]!.length;
+        blocks.push(`<h${level}>${this._inline(headingMatch[2]!)}</h${level}>`);
+        i++;
+        continue;
+      }
+
+      // Horizontal rule
+      if (/^-{3,}$/.test(line.trim())) {
+        blocks.push('<hr/>');
+        i++;
+        continue;
+      }
+
+      // Blockquote (consecutive > lines)
+      if (line.startsWith('> ') || line === '>') {
+        const quoteLines: string[] = [];
+        while (i < lines.length && (lines[i]!.startsWith('> ') || lines[i] === '>')) {
+          quoteLines.push(lines[i]!.replace(/^> ?/, ''));
+          i++;
+        }
+        blocks.push(`<blockquote>${this._inline(quoteLines.join(' '))}</blockquote>`);
+        continue;
+      }
+
+      // Unordered list (consecutive - items)
+      if (/^[-*] /.test(line)) {
+        const items: string[] = [];
+        while (i < lines.length && /^[-*] /.test(lines[i]!)) {
+          items.push(`<li>${this._inline(lines[i]!.slice(2))}</li>`);
+          i++;
+        }
+        blocks.push(`<ul>${items.join('')}</ul>`);
+        continue;
+      }
+
+      // Ordered list (consecutive 1. 2. 3. items)
+      if (/^\d+\. /.test(line)) {
+        const items: string[] = [];
+        while (i < lines.length && /^\d+\. /.test(lines[i]!)) {
+          items.push(`<li>${this._inline(lines[i]!.replace(/^\d+\. /, ''))}</li>`);
+          i++;
+        }
+        blocks.push(`<ol>${items.join('')}</ol>`);
+        continue;
+      }
+
+      // Blank line — paragraph separator
+      if (line.trim() === '') {
+        i++;
+        continue;
+      }
+
+      // Paragraph — consecutive non-blank, non-block lines joined with spaces
+      const paraLines: string[] = [];
+      while (i < lines.length && lines[i]!.trim() !== '' && !isBlockStart(lines[i]!)) {
+        paraLines.push(lines[i]!);
+        i++;
+      }
+      blocks.push(`<p>${this._inline(paraLines.join(' '))}</p>`);
+    }
+
+    return blocks.join('');
+  }
+
+  /**
+   * Applies inline formatting. Escapes HTML first, then processes
+   * inline code (via placeholder to avoid interference), bold, italic,
+   * and links with URL safety checks.
+   */
+  private _inline(text: string): string {
+    // Extract inline code as placeholders so bold/italic regex don't touch it
+    const codeStash: string[] = [];
+    let working = text.replace(/`([^`]+)`/g, (_, code: string) => {
+      codeStash.push(escapeHtml(code));
+      return `\x00CODE${codeStash.length - 1}\x00`;
+    });
+
+    // Escape remaining HTML
+    working = escapeHtml(working);
+
+    // Bold before italic so ** doesn't get half-eaten by *
+    working = working
+      .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+
+    // Links — handle URLs with balanced single-level parens
+    working = working.replace(
+      /\[([^\]]+)\]\(((?:[^()\s]|\([^)]*\))+)\)/g,
+      (_m, label: string, url: string) => {
+        const trimmed = url.trim();
+        const safe = SAFE_PROTOCOLS.test(trimmed) ? trimmed : 'about:blank';
+        return `<a href="${safe}" target="_blank" rel="noopener">${label}</a>`;
+      },
+    );
+
+    // Restore inline code
+    working = working.replace(/\x00CODE(\d+)\x00/g, (_m, idx: string) => {
+      return `<code>${codeStash[Number(idx)]}</code>`;
+    });
+
+    return working;
   }
 
   override render() {
