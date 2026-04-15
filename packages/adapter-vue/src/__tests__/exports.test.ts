@@ -1,51 +1,39 @@
 import { describe, it, expect } from 'vitest';
-import {
-  createVueWrapper,
-  AiThinking,
-  AiBadge,
-  AiChat,
-  AiResultPanel,
-  AiChartSummary,
-  AiInsightCard,
-} from '../index.js';
+import * as adapter from '../index.js';
+
+const { createVueWrapper, ...exports } = adapter as Record<string, unknown> & {
+  createVueWrapper: typeof import('../create-wrapper.js').createVueWrapper;
+};
+
+const wrapperEntries = Object.entries(exports).filter(
+  ([name]) => /^[A-Z]/.test(name) && !name.endsWith('Props'),
+);
 
 describe('@cognivo/adapter-vue exports', () => {
-  it('exports createVueWrapper factory function', () => {
+  it('exports createVueWrapper factory', () => {
     expect(createVueWrapper).toBeDefined();
     expect(typeof createVueWrapper).toBe('function');
   });
 
-  it('exports AiThinking component', () => {
-    expect(AiThinking).toBeDefined();
-    expect(AiThinking.name).toBe('AiThinking');
+  it('exports at least 50 wrapper components', () => {
+    expect(wrapperEntries.length).toBeGreaterThanOrEqual(50);
   });
 
-  it('exports AiBadge component', () => {
-    expect(AiBadge).toBeDefined();
-    expect(AiBadge.name).toBe('AiBadge');
+  it('every wrapper is a defined value', () => {
+    for (const [name, value] of wrapperEntries) {
+      expect(value, `${name} should be defined`).toBeDefined();
+    }
   });
 
-  it('exports AiChat component', () => {
-    expect(AiChat).toBeDefined();
-    expect(AiChat.name).toBe('AiChat');
+  it('every wrapper has a name matching its export name', () => {
+    for (const [name, value] of wrapperEntries) {
+      const componentName = (value as { name?: string }).name;
+      expect(componentName, `${name} should have name`).toBeDefined();
+      expect(componentName, `${name}.name mismatch`).toBe(name);
+    }
   });
 
-  it('exports AiResultPanel component', () => {
-    expect(AiResultPanel).toBeDefined();
-    expect(AiResultPanel.name).toBe('AiResultPanel');
-  });
-
-  it('exports AiChartSummary component', () => {
-    expect(AiChartSummary).toBeDefined();
-    expect(AiChartSummary.name).toBe('AiChartSummary');
-  });
-
-  it('exports AiInsightCard component', () => {
-    expect(AiInsightCard).toBeDefined();
-    expect(AiInsightCard.name).toBe('AiInsightCard');
-  });
-
-  it('createVueWrapper produces a component with correct name', () => {
+  it('createVueWrapper produces PascalCase name from kebab tag', () => {
     const TestComp = createVueWrapper('my-test-widget', {}, {});
     expect(TestComp.name).toBe('MyTestWidget');
   });

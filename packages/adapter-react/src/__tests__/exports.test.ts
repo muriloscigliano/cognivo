@@ -1,54 +1,39 @@
 import { describe, it, expect } from 'vitest';
-import {
-  createWrapper,
-  AiThinking,
-  AiBadge,
-  AiChat,
-  AiResultPanel,
-  AiChartSummary,
-  AiInsightCard,
-} from '../index.js';
+import * as adapter from '../index.js';
+
+const { createWrapper, ...exports } = adapter as Record<string, unknown> & {
+  createWrapper: typeof import('../create-wrapper.js').createWrapper;
+};
+
+const wrapperEntries = Object.entries(exports).filter(
+  ([name]) => /^[A-Z]/.test(name) && !name.endsWith('Props'),
+);
 
 describe('@cognivo/adapter-react exports', () => {
-  it('exports createWrapper factory function', () => {
+  it('exports createWrapper factory', () => {
     expect(createWrapper).toBeDefined();
     expect(typeof createWrapper).toBe('function');
   });
 
-  it('exports AiThinking component', () => {
-    expect(AiThinking).toBeDefined();
+  it('exports at least 50 wrapper components', () => {
+    expect(wrapperEntries.length).toBeGreaterThanOrEqual(50);
   });
 
-  it('exports AiBadge component', () => {
-    expect(AiBadge).toBeDefined();
+  it('every wrapper is a defined value', () => {
+    for (const [name, value] of wrapperEntries) {
+      expect(value, `${name} should be defined`).toBeDefined();
+    }
   });
 
-  it('exports AiChat component', () => {
-    expect(AiChat).toBeDefined();
+  it('every wrapper has a displayName matching its export name', () => {
+    for (const [name, value] of wrapperEntries) {
+      const dn = (value as { displayName?: string }).displayName;
+      expect(dn, `${name} should have displayName`).toBeDefined();
+      expect(dn, `${name}.displayName mismatch`).toBe(name);
+    }
   });
 
-  it('exports AiResultPanel component', () => {
-    expect(AiResultPanel).toBeDefined();
-  });
-
-  it('exports AiChartSummary component', () => {
-    expect(AiChartSummary).toBeDefined();
-  });
-
-  it('exports AiInsightCard component', () => {
-    expect(AiInsightCard).toBeDefined();
-  });
-
-  it('all wrapper components have displayName set', () => {
-    expect(AiThinking.displayName).toBe('AiThinking');
-    expect(AiBadge.displayName).toBe('AiBadge');
-    expect(AiChat.displayName).toBe('AiChat');
-    expect(AiResultPanel.displayName).toBe('AiResultPanel');
-    expect(AiChartSummary.displayName).toBe('AiChartSummary');
-    expect(AiInsightCard.displayName).toBe('AiInsightCard');
-  });
-
-  it('createWrapper produces a component with correct displayName', () => {
+  it('createWrapper produces a component with PascalCase displayName from kebab tag', () => {
     const TestComp = createWrapper<Record<string, unknown>>('my-test-widget', [], {});
     expect(TestComp.displayName).toBe('MyTestWidget');
   });
