@@ -1,5 +1,5 @@
 /**
- * Cognivo Component Library — All 143 components registered for gen-ui.
+ * Cognivo Component Library — All 161 components registered for gen-ui.
  *
  * Each component has a Zod schema matching its actual @property() interface,
  * a tagName for Web Component rendering, and biasHints for cognitive psychology integration.
@@ -1423,6 +1423,415 @@ export const ColorPickerDef = defineComponent({
   description: 'Color swatch grid picker with ring selection, optional hex input, and keyboard grid navigation',
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Wave 7: Foundation Completion (18 components)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const PopoverDef = defineComponent({
+  name: 'Popover', tagName: 'cg-popover',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    open: z.boolean().optional(),
+    placement: z.enum(['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left', 'left-start', 'left-end', 'right', 'right-start', 'right-end']).optional(),
+    offset: z.number().optional(),
+    arrow: z.boolean().optional(),
+    trigger: z.enum(['click', 'hover', 'manual']).optional(),
+    closable: z.boolean().optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    rounded: z.enum(['none', 'sm', 'md', 'lg', 'full']).optional(),
+  }),
+  description: 'Floating panel with arrow, placement, click/hover trigger, and viewport-aware positioning',
+});
+
+export const HoverCardDef = defineComponent({
+  name: 'HoverCard', tagName: 'cg-hover-card',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    open: z.boolean().optional(),
+    placement: z.enum(['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left', 'left-start', 'left-end', 'right', 'right-start', 'right-end']).optional(),
+    offset: z.number().optional(),
+    openDelay: z.number().optional(),
+    closeDelay: z.number().optional(),
+  }),
+  description: 'Rich hover preview card with configurable open/close delay for profile or link previews',
+});
+
+export const ContextMenuDef = defineComponent({
+  name: 'ContextMenu', tagName: 'cg-context-menu',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    items: z.array(z.object({
+      id: z.string(),
+      label: z.string(),
+      icon: z.string().optional(),
+      shortcut: z.string().optional(),
+      disabled: z.boolean().optional(),
+      danger: z.boolean().optional(),
+      separator: z.boolean().optional(),
+    })),
+    open: z.boolean().optional(),
+    disabled: z.boolean().optional(),
+  }),
+  description: 'Right-click context menu with keyboard navigation, shortcuts, separators, and danger variants',
+});
+
+export const AlertDialogDef = defineComponent({
+  name: 'AlertDialog', tagName: 'cg-alert-dialog',
+  props: z.object({
+    open: z.boolean().optional(),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    confirmLabel: z.string().optional(),
+    cancelLabel: z.string().optional(),
+    destructive: z.boolean().optional(),
+    loading: z.boolean().optional(),
+    closable: z.boolean().optional(),
+  }),
+  description: 'Confirmation dialog with destructive variant, loading state, and required user acknowledgement',
+});
+
+export const CommandDef = defineComponent({
+  name: 'Command', tagName: 'cg-command',
+  props: z.object({
+    open: z.boolean().optional(),
+    placeholder: z.string().optional(),
+    commands: z.array(z.object({
+      id: z.string(),
+      label: z.string(),
+      group: z.string().optional(),
+      icon: z.string().optional(),
+      shortcut: z.string().optional(),
+      keywords: z.array(z.string()).optional(),
+      disabled: z.boolean().optional(),
+    })),
+    value: z.string().optional(),
+    emptyText: z.string().optional(),
+    loading: z.boolean().optional(),
+  }),
+  description: 'Searchable command palette with grouped items, type-ahead filtering, and keyboard navigation',
+});
+
+export const ToggleDef = defineComponent({
+  name: 'Toggle', tagName: 'cg-toggle',
+  props: z.object({
+    pressed: z.boolean().optional(),
+    disabled: z.boolean().optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    variant: z.enum(['ghost', 'outline', 'solid']).optional(),
+    rounded: z.enum(['none', 'sm', 'md', 'lg', 'full']).optional(),
+    value: z.string().optional(),
+    name: z.string().optional(),
+  }),
+  description: 'Single press-state button (aria-pressed) for toolbar toggles with ghost/outline/solid variants',
+});
+
+export const ToggleGroupDef = defineComponent({
+  name: 'ToggleGroup', tagName: 'cg-toggle-group',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    type: z.enum(['single', 'multiple']).optional(),
+    value: z.union([z.string(), z.array(z.string())]).optional(),
+    disabled: z.boolean().optional(),
+    orientation: z.enum(['horizontal', 'vertical']).optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    variant: z.enum(['ghost', 'outline', 'solid']).optional(),
+  }),
+  description: 'Toggle button group with single/multiple selection and shared variant/size/orientation',
+});
+
+export const SegmentedControlDef = defineComponent({
+  name: 'SegmentedControl', tagName: 'cg-segmented-control',
+  props: z.object({
+    options: z.array(z.object({
+      label: z.string(),
+      value: z.string(),
+      icon: z.string().optional(),
+      disabled: z.boolean().optional(),
+    })),
+    value: z.string().optional(),
+    name: z.string().optional(),
+    disabled: z.boolean().optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    full: z.boolean().optional(),
+  }),
+  description: 'iOS-style pill selector with animated indicator for single-value selection',
+});
+
+export const PasswordInputDef = defineComponent({
+  name: 'PasswordInput', tagName: 'cg-password-input',
+  props: z.object({
+    value: z.string().optional(),
+    label: z.string().optional(),
+    placeholder: z.string().optional(),
+    helper: z.string().optional(),
+    name: z.string().optional(),
+    required: z.boolean().optional(),
+    disabled: z.boolean().optional(),
+    error: z.boolean().optional(),
+    success: z.boolean().optional(),
+    showStrength: z.boolean().optional(),
+    minLength: z.number().optional(),
+  }),
+  description: 'Password input with visibility toggle, optional strength meter, and validation states',
+});
+
+export const RatingDef = defineComponent({
+  name: 'Rating', tagName: 'cg-rating',
+  props: z.object({
+    value: z.number().optional(),
+    max: z.number().optional(),
+    precision: z.union([z.literal(0.5), z.literal(1)]).optional(),
+    readonly: z.boolean().optional(),
+    disabled: z.boolean().optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    name: z.string().optional(),
+  }),
+  description: 'Star rating input with half-step precision, hover preview, and keyboard navigation',
+});
+
+export const TagInputDef = defineComponent({
+  name: 'TagInput', tagName: 'cg-tag-input',
+  props: z.object({
+    value: z.array(z.string()).optional(),
+    label: z.string().optional(),
+    placeholder: z.string().optional(),
+    helper: z.string().optional(),
+    name: z.string().optional(),
+    delimiter: z.string().optional(),
+    max: z.number().optional(),
+    allowDuplicates: z.boolean().optional(),
+    disabled: z.boolean().optional(),
+    error: z.boolean().optional(),
+    success: z.boolean().optional(),
+  }),
+  description: 'Multi-tag input with delimiter parsing, max limit, and removable chips',
+});
+
+export const FileInputDef = defineComponent({
+  name: 'FileInput', tagName: 'cg-file-input',
+  props: z.object({
+    label: z.string().optional(),
+    placeholder: z.string().optional(),
+    helper: z.string().optional(),
+    accept: z.string().optional(),
+    name: z.string().optional(),
+    multiple: z.boolean().optional(),
+    maxSize: z.number().optional(),
+    maxFiles: z.number().optional(),
+    disabled: z.boolean().optional(),
+    error: z.boolean().optional(),
+    success: z.boolean().optional(),
+  }),
+  description: 'Drag-and-drop file input with multiple files, accept filter, and size/count limits',
+});
+
+export const CollapsibleDef = defineComponent({
+  name: 'Collapsible', tagName: 'cg-collapsible',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    open: z.boolean().optional(),
+    disabled: z.boolean().optional(),
+  }),
+  description: 'Single expand/collapse region with trigger and content slots, animated height transition',
+});
+
+export const KbdDef = defineComponent({
+  name: 'Kbd', tagName: 'cg-kbd',
+  props: z.object({
+    keys: z.string(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    variant: z.enum(['default', 'outline']).optional(),
+  }),
+  description: 'Keyboard shortcut display (e.g. "Cmd+K") with default and outline variants',
+});
+
+export const AspectRatioDef = defineComponent({
+  name: 'AspectRatio', tagName: 'cg-aspect-ratio',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    ratio: z.string().optional(),
+  }),
+  description: 'Maintains a fixed aspect ratio (e.g. "16/9", "1/1", "4/3") for wrapped content',
+});
+
+export const ScrollAreaDef = defineComponent({
+  name: 'ScrollArea', tagName: 'cg-scroll-area',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    orientation: z.enum(['vertical', 'horizontal', 'both']).optional(),
+    type: z.enum(['auto', 'always', 'hover']).optional(),
+  }),
+  description: 'Custom scroll container with styled scrollbars and vertical/horizontal/both orientations',
+});
+
+export const NavbarDef = defineComponent({
+  name: 'Navbar', tagName: 'cg-navbar',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    sticky: z.boolean().optional(),
+    bordered: z.boolean().optional(),
+    elevated: z.boolean().optional(),
+    responsive: z.boolean().optional(),
+    variant: z.enum(['default', 'transparent', 'glass', 'gradient', 'pill']).optional(),
+    navStyle: z.enum(['default', 'minimal', 'underline']).optional(),
+    mobileOpen: z.boolean().optional(),
+  }),
+  description: 'Top navigation bar with sticky, glass/gradient/pill variants, and responsive mobile menu',
+});
+
+export const CalendarDef = defineComponent({
+  name: 'Calendar', tagName: 'cg-calendar',
+  props: z.object({
+    value: z.string().optional(),
+    rangeEnd: z.string().optional(),
+    mode: z.enum(['single', 'range', 'multiple']).optional(),
+    min: z.string().optional(),
+    max: z.string().optional(),
+    weekStartsOn: z.union([z.literal(0), z.literal(1)]).optional(),
+    name: z.string().optional(),
+  }),
+  description: 'Month-grid calendar with single/range/multiple date selection and min/max bounds',
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Wave 8: Advanced Foundation (10 components)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const MenubarDef = defineComponent({
+  name: 'Menubar', tagName: 'cg-menubar',
+  props: z.object({
+    items: z.array(z.object({
+      label: z.string(),
+      id: z.string().optional(),
+      children: z.array(z.object({
+        label: z.string(),
+        shortcut: z.string().optional(),
+        disabled: z.boolean().optional(),
+        danger: z.boolean().optional(),
+        separator: z.boolean().optional(),
+        id: z.string().optional(),
+      })),
+    })),
+  }),
+  description: 'App-style horizontal menu bar (File/Edit/View) with dropdown submenus and keyboard navigation',
+});
+
+export const NavigationMenuDef = defineComponent({
+  name: 'NavigationMenu', tagName: 'cg-navigation-menu',
+  props: z.object({
+    items: z.array(z.object({
+      label: z.string(),
+      id: z.string().optional(),
+      sections: z.array(z.object({
+        heading: z.string().optional(),
+        links: z.array(z.object({
+          title: z.string(),
+          description: z.string().optional(),
+          icon: z.string().optional(),
+          href: z.string().optional(),
+        })),
+      })),
+    })),
+    openDelay: z.number().optional(),
+    closeDelay: z.number().optional(),
+  }),
+  description: 'Horizontal mega-menu with grouped link panels and hover-intent delay',
+});
+
+export const SheetDef = defineComponent({
+  name: 'Sheet', tagName: 'cg-sheet',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    open: z.boolean().optional(),
+    side: z.enum(['bottom', 'right', 'left', 'top']).optional(),
+    snapPoints: z.array(z.number()).optional(),
+    activeSnap: z.number().optional(),
+    dismissible: z.boolean().optional(),
+  }),
+  description: 'Mobile-first drawer with snap points, drag-to-dismiss, and 4 sides',
+});
+
+export const ToasterDef = defineComponent({
+  name: 'Toaster', tagName: 'cg-toaster',
+  props: z.object({
+    position: z.enum(['top-right', 'top-left', 'bottom-right', 'bottom-left', 'top-center', 'bottom-center']).optional(),
+    max: z.number().optional(),
+    gap: z.number().optional(),
+  }),
+  description: 'Stacked toast notification system with auto-dismiss, variants, and optional actions',
+});
+
+export const ResizableDef = defineComponent({
+  name: 'Resizable', tagName: 'cg-resizable',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    direction: z.enum(['horizontal', 'vertical']).optional(),
+    defaultSize: z.number().optional(),
+    min: z.number().optional(),
+    max: z.number().optional(),
+  }),
+  description: 'Two-pane split container with draggable handle and keyboard resize',
+});
+
+export const TreeViewDef = defineComponent({
+  name: 'TreeView', tagName: 'cg-tree-view',
+  props: z.object({
+    items: z.array(z.any()),
+    multiple: z.boolean().optional(),
+    selected: z.array(z.string()).optional(),
+  }),
+  description: 'Hierarchical tree with expand/collapse, multi-select, and full keyboard navigation',
+});
+
+export const ComboboxDef = defineComponent({
+  name: 'Combobox', tagName: 'cg-combobox',
+  props: z.object({
+    options: z.array(z.object({
+      label: z.string(),
+      value: z.string(),
+      disabled: z.boolean().optional(),
+    })),
+    value: z.union([z.string(), z.array(z.string())]).optional(),
+    multiple: z.boolean().optional(),
+    placeholder: z.string().optional(),
+    searchable: z.boolean().optional(),
+    clearable: z.boolean().optional(),
+    disabled: z.boolean().optional(),
+    loading: z.boolean().optional(),
+    name: z.string().optional(),
+  }),
+  description: 'Typeahead input with chips for multi-select, filtering, and keyboard navigation',
+});
+
+export const VisuallyHiddenDef = defineComponent({
+  name: 'VisuallyHidden', tagName: 'cg-visually-hidden',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+  }),
+  description: 'Accessibility helper that hides content visually but keeps it in the accessibility tree',
+});
+
+export const PortalDef = defineComponent({
+  name: 'Portal', tagName: 'cg-portal',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    target: z.string().optional(),
+    disabled: z.boolean().optional(),
+  }),
+  description: 'Renders slotted children into a different DOM location (default: document.body)',
+});
+
+export const FocusScopeDef = defineComponent({
+  name: 'FocusScope', tagName: 'cg-focus-scope',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    active: z.boolean().optional(),
+    loop: z.boolean().optional(),
+    returnFocus: z.boolean().optional(),
+  }),
+  description: 'Behavior primitive that traps Tab-focus within itself when active',
+});
+
 const ALL_COMPONENTS = [
   // Layout
   StackDef, TextContentDef, SeparatorDef, IconDef, CardDef,
@@ -1459,10 +1868,20 @@ const ALL_COMPONENTS = [
   AiStatusPageDef, AiStreamingTextDef, AiTestRunnerDef, AiTimelineDef, AiToastDef,
   AiTokenTrackerDef, AiToolCardResolverDef, AiToolIndicatorDef, AiUsageMeterDef, AiVersionSelectorDef,
   AiWebhookConfigDef, AiWorkflowBuilderDef,
+  // Wave 7: Foundation Completion
+  // Overlays
+  PopoverDef, HoverCardDef, ContextMenuDef, AlertDialogDef, CommandDef,
+  // Forms
+  ToggleDef, ToggleGroupDef, SegmentedControlDef, PasswordInputDef, RatingDef, TagInputDef, FileInputDef,
+  // Structural
+  CollapsibleDef, KbdDef, AspectRatioDef, ScrollAreaDef, NavbarDef, CalendarDef,
+  // Wave 8: Advanced Foundation
+  MenubarDef, NavigationMenuDef, SheetDef, ToasterDef, ResizableDef,
+  TreeViewDef, ComboboxDef, VisuallyHiddenDef, PortalDef, FocusScopeDef,
 ];
 
 /**
- * Full Cognivo library — 143 components registered for LLM generation.
+ * Full Cognivo library — 171 components registered for LLM generation.
  */
 export const cognivoLibrary: Library = createLibrary({
   root: 'Stack',
@@ -1483,7 +1902,7 @@ export const cognivoLibrary: Library = createLibrary({
     },
     {
       name: 'Forms',
-      components: ['Form', 'Label', 'Input', 'Select', 'Textarea', 'Checkbox', 'Radio', 'RadioGroup', 'Switch', 'Slider', 'DatePicker', 'Autocomplete', 'NumberInput', 'OtpInput', 'ColorPicker'],
+      components: ['Form', 'Label', 'Input', 'Select', 'Textarea', 'Checkbox', 'Radio', 'RadioGroup', 'Switch', 'Slider', 'DatePicker', 'Autocomplete', 'NumberInput', 'OtpInput', 'ColorPicker', 'Toggle', 'ToggleGroup', 'SegmentedControl', 'PasswordInput', 'Rating', 'TagInput', 'FileInput', 'Combobox'],
       notes: [
         '- Wrap fields in Form, use Label above each input',
         '- Input supports clear button, character count, prefix/suffix slots',
@@ -1494,16 +1913,40 @@ export const cognivoLibrary: Library = createLibrary({
         '- NumberInput has +/- buttons with long-press repeat and min/max clamping',
         '- OtpInput: configurable length, auto-advance, paste support, mask mode',
         '- ColorPicker: swatch grid with optional hex input and keyboard navigation',
+        '- Toggle: single press-state button (aria-pressed) for toolbar controls',
+        '- ToggleGroup: single/multiple selection wrapper with shared size/variant/orientation',
+        '- SegmentedControl: iOS-style pill selector with animated indicator and options array',
+        '- PasswordInput: visibility toggle and optional password strength meter',
+        '- Rating: star rating with 0.5 or 1 precision, hover preview, keyboard nav',
+        '- TagInput: multi-tag input with delimiter parsing, max limit, removable chips',
+        '- FileInput: drag-drop upload with accept filter and max size/count limits',
       ],
     },
     {
       name: 'Overlays',
-      components: ['Modal', 'Drawer', 'Dropdown', 'Tooltip'],
+      components: ['Modal', 'Drawer', 'Dropdown', 'Tooltip', 'Popover', 'HoverCard', 'ContextMenu', 'AlertDialog', 'Command', 'Sheet', 'Toaster', 'Menubar', 'NavigationMenu'],
       notes: [
         '- Modal: centered dialog with backdrop blur, focus trap, 4 sizes (sm/md/lg/xl)',
         '- Drawer: slide-in side panel (left/right), 4 sizes (sm/md/lg/full)',
         '- Dropdown: floating menu with items array, 4 position variants, keyboard nav',
         '- Tooltip: hover/focus with arrow, viewport-aware flip, configurable delay',
+        '- Popover: click/hover floating panel with 12 placements, arrow, and size/rounded variants',
+        '- HoverCard: rich hover preview with open/close delays for profiles and link previews',
+        '- ContextMenu: right-click menu with items array, shortcuts, separators, danger variant',
+        '- AlertDialog: blocking confirmation with destructive variant and loading state',
+        '- Command: searchable command palette with grouped commands, keywords, and type-ahead',
+      ],
+    },
+    {
+      name: 'Structural',
+      components: ['Collapsible', 'Kbd', 'AspectRatio', 'ScrollArea', 'Navbar', 'Calendar', 'Resizable', 'TreeView'],
+      notes: [
+        '- Collapsible: single expand/collapse region with animated height',
+        '- Kbd: keyboard shortcut display (e.g. "Cmd+K") with default and outline variants',
+        '- AspectRatio: locks wrapped content to a ratio like "16/9", "1/1", "4/3"',
+        '- ScrollArea: custom scrollbar container, vertical/horizontal/both, auto/always/hover visibility',
+        '- Navbar: top nav with sticky/bordered/elevated and glass/gradient/pill variants, responsive mobile menu',
+        '- Calendar: month-grid date picker with single/range/multiple modes and min/max bounds',
       ],
     },
     {
@@ -1526,6 +1969,15 @@ export const cognivoLibrary: Library = createLibrary({
         '- ProgressBar: gradient fill, striped pattern, indeterminate animation',
         '- Spinner: 5 sizes, 3 color variants with accessible label',
         '- Skeleton: shimmer loading placeholder with text/circular/rectangular variants',
+      ],
+    },
+    {
+      name: 'Utilities',
+      components: ['VisuallyHidden', 'Portal', 'FocusScope'],
+      notes: [
+        '- VisuallyHidden: hides content visually but keeps it in the a11y tree (sr-only)',
+        '- Portal: moves slotted children into a target element (default: document.body)',
+        '- FocusScope: traps Tab focus within the wrapped region when active',
       ],
     },
     {
@@ -1566,7 +2018,7 @@ export const cognivoLibrary: Library = createLibrary({
 });
 
 /**
- * Chat-optimized library — 124 components (excludes AiChat since chat IS the container).
+ * Chat-optimized library — 170 components (excludes AiChat since chat IS the container).
  */
 export const cognivoChatLibrary: Library = createLibrary({
   root: 'Stack',
