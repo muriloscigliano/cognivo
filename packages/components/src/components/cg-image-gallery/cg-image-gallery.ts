@@ -79,7 +79,7 @@ export class CgImageGallery extends LitElement {
       align-items: center;
       justify-content: center;
       background: var(--cg-overlay-dark-strong);
-      color: var(--cg-gray-white);
+      color: var(--cg-overlay-dark-text);
       font-size: var(--cg-font-size-lg);
       font-weight: var(--cg-font-weight-bold);
       z-index: 1;

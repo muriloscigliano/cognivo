@@ -140,7 +140,7 @@ export class AiGuardrail extends LitElement {
       background: var(--cg-color-status-error-background-default);
       color: var(--cg-color-status-error-text-default);
     }
-    .btn.danger:hover { background: var(--cg-color-status-error-text-default); color: var(--cg-gray-white); }
+    .btn.danger:hover { background: var(--cg-color-status-error-text-default); color: var(--cg-overlay-dark-text); }
 
     /* ── Rounded ── */
     :host([rounded="none"]) .panel { border-radius: 0; }

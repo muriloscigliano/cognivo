@@ -125,7 +125,7 @@ export class AiDetectionCanvas extends LitElement {
       padding: var(--cg-spacing-4) var(--cg-spacing-12);
       border-radius: var(--cg-border-radius-full);
       background: var(--cg-overlay-dark-strong);
-      color: var(--cg-gray-white);
+      color: var(--cg-overlay-dark-text);
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-semibold);
       pointer-events: none;

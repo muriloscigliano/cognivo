@@ -1967,6 +1967,10 @@
       "strong": {
         "$type": "color",
         "$value": "rgba(0, 0, 0, 0.6)"
+      },
+      "text": {
+        "$type": "color",
+        "$value": "{gray.white}"
       }
     },
     "white": {
