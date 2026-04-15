@@ -176,3 +176,35 @@ export { CgColorPicker } from "./components/CgColorPicker.js";
 export { CgLink } from "./components/CgLink.js";
 export { CgAvatarGroup } from "./components/CgAvatarGroup.js";
 export { CgGenerativeUi } from './components/CgGenerativeUi.js';
+
+// Wave 8: Overlays, Forms, Structural primitives
+export { CgPopover } from './components/CgPopover.js';
+export { CgHoverCard } from './components/CgHoverCard.js';
+export { CgContextMenu } from './components/CgContextMenu.js';
+export { CgAlertDialog } from './components/CgAlertDialog.js';
+export { CgCommand } from './components/CgCommand.js';
+export { CgToggle } from './components/CgToggle.js';
+export { CgToggleGroup } from './components/CgToggleGroup.js';
+export { CgSegmentedControl } from './components/CgSegmentedControl.js';
+export { CgPasswordInput } from './components/CgPasswordInput.js';
+export { CgRating } from './components/CgRating.js';
+export { CgTagInput } from './components/CgTagInput.js';
+export { CgFileInput } from './components/CgFileInput.js';
+export { CgCollapsible } from './components/CgCollapsible.js';
+export { CgKbd } from './components/CgKbd.js';
+export { CgAspectRatio } from './components/CgAspectRatio.js';
+export { CgScrollArea } from './components/CgScrollArea.js';
+export { CgNavbar } from './components/CgNavbar.js';
+export { CgCalendar } from './components/CgCalendar.js';
+
+// Wave 8: Advanced Foundation primitives
+export { CgMenubar } from './components/CgMenubar.js';
+export { CgNavigationMenu } from './components/CgNavigationMenu.js';
+export { CgSheet } from './components/CgSheet.js';
+export { CgToaster } from './components/CgToaster.js';
+export { CgResizable } from './components/CgResizable.js';
+export { CgTreeView } from './components/CgTreeView.js';
+export { CgCombobox } from './components/CgCombobox.js';
+export { CgVisuallyHidden } from './components/CgVisuallyHidden.js';
+export { CgPortal } from './components/CgPortal.js';
+export { CgFocusScope } from './components/CgFocusScope.js';
