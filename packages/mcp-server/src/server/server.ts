@@ -20,6 +20,7 @@ import { validateUsageSchema, validateUsage } from './tools/validate-usage.js';
 import { getPatternSchema, getPattern } from './tools/get-pattern.js';
 import { getBiasSchema, getBias } from './tools/get-bias.js';
 import { suggestBiasesSchema, suggestBiases } from './tools/suggest-biases.js';
+import { recommendComponentSchema, recommendComponent } from './tools/recommend-component.js';
 
 // ─── Catalog Loading ───────────────────────────────────────────────────────
 
@@ -142,6 +143,19 @@ export function createServer(): McpServer {
     async (input) => {
       const parsed = suggestBiasesSchema.parse(input);
       const result = suggestBiases(catalog, parsed);
+      return { content: [{ type: 'text', text: result }] };
+    },
+  );
+
+  // ── Tool 9: Recommend Component ──────────────────────────────────────────
+
+  server.tool(
+    'cognivo_recommend_component',
+    'Recommend the best Cognivo component to render a piece of content. Call this BEFORE picking a component when unsure whether to use markdown, a data card, an insight card, or a specialized component. Returns component choice, reasoning, and example code.',
+    recommendComponentSchema.shape,
+    async (input) => {
+      const parsed = recommendComponentSchema.parse(input);
+      const result = recommendComponent(catalog, parsed);
       return { content: [{ type: 'text', text: result }] };
     },
   );
