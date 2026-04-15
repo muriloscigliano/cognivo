@@ -9,6 +9,9 @@ dist
 .nuxt
 .output
 
+# TypeScript incremental build cache
+*.tsbuildinfo
+
 # Vite temp config files
 *.timestamp-*.mjs
 
