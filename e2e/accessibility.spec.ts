@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 const SHOWCASE = '/showcase.html';
 
@@ -36,4 +37,19 @@ test.describe('Accessibility — Component Pages', () => {
     const desc = page.locator('.page-desc');
     await expect(desc).toBeVisible();
   });
+});
+
+test.describe('Accessibility — axe-core scans', () => {
+  const PAGES = ['/', SHOWCASE, SHOWCASE + '#cg-button', SHOWCASE + '#cg-modal'];
+
+  for (const path of PAGES) {
+    test(`axe scan: ${path}`, async ({ page }) => {
+      await page.goto(path);
+      await page.waitForLoadState('networkidle');
+      const results = await new AxeBuilder({ page })
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+        .analyze();
+      expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([]);
+    });
+  }
 });
