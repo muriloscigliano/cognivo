@@ -8,15 +8,15 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./registry": {
       "import": "./dist/registry.js"
     },
     "./atlas": {
-      "import": "./dist/atlas.js",
-      "types": "./dist/atlas/index.d.ts"
+      "types": "./dist/atlas/index.d.ts",
+      "import": "./dist/atlas.js"
     },
     "./components": {
       "import": "./dist/components.js"

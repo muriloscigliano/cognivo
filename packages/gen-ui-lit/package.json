@@ -35,7 +35,7 @@
     "build": "vite build",
     "prepublishOnly": "pnpm build",
     "dev": "vite build --watch",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist"

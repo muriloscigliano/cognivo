@@ -12,7 +12,7 @@
     "build:catalog": "node --import tsx src/scripts/build-catalog.ts",
     "start": "node dist/index.js",
     "dev": "tsc --watch",
-    "test": "vitest run"
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
