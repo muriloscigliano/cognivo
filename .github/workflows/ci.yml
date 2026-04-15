@@ -50,3 +50,6 @@ jobs:
 
       - name: Type check
         run: pnpm -r type-check
+
+      - name: Bundle size budgets
+        run: pnpm size

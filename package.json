@@ -35,9 +35,11 @@
     "changeset": "changeset",
     "version": "changeset version",
     "publish-packages": "turbo run build && changeset publish",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "size": "node scripts/check-bundle-sizes.mjs"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.11.1",
     "@changesets/cli": "^2.27.1",
     "@eslint/js": "^9.15.0",
     "@playwright/test": "^1.50.0",
