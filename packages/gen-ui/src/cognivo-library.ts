@@ -2023,5 +2023,5 @@ export const cognivoLibrary: Library = createLibrary({
 export const cognivoChatLibrary: Library = createLibrary({
   root: 'Stack',
   components: ALL_COMPONENTS.filter(c => c.name !== 'AiChat'),
-  componentGroups: cognivoLibrary.componentGroups,
+  ...(cognivoLibrary.componentGroups ? { componentGroups: cognivoLibrary.componentGroups } : {}),
 });
