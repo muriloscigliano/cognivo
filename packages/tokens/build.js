@@ -307,11 +307,8 @@ async function buildTokens() {
       await lightSD.buildAllPlatforms()
       lightBuildSuccess = true
     } catch (error) {
-      if (error.message && (error.message.includes('Reference Errors') || error.message.includes('reference'))) {
-        console.warn('⚠️  Some token references could not be resolved for light theme, continuing anyway...')
-      } else {
-        console.warn('⚠️  Light theme build failed:', error.message)
-      }
+      console.error('❌ Light theme token build failed:', error.message)
+      throw error
     }
     
     // Build dark theme
@@ -323,11 +320,8 @@ async function buildTokens() {
       await darkSD.buildAllPlatforms()
       darkBuildSuccess = true
     } catch (error) {
-      if (error.message && (error.message.includes('Reference Errors') || error.message.includes('reference'))) {
-        console.warn('⚠️  Some token references could not be resolved for dark theme, continuing anyway...')
-      } else {
-        console.warn('⚠️  Dark theme build failed:', error.message)
-      }
+      console.error('❌ Dark theme token build failed:', error.message)
+      throw error
     }
     
     // If builds failed, manually generate CSS from tokens

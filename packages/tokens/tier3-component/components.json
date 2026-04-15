@@ -187,7 +187,7 @@
       "padding-x": { "$type": "dimension", "$value": "{spacing.24}" }
     },
     "scroll-area": {
-      "scrollbar-size": { "$type": "dimension", "$value": "{spacing.10}" },
+      "scrollbar-size": { "$type": "dimension", "$value": "{spacing.12}" },
       "scrollbar-radius": { "$type": "dimension", "$value": "{border.radius.full}" }
     },
     "kbd": {
