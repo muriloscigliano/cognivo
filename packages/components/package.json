@@ -25,6 +25,7 @@
   "scripts": {
     "build": "vite build",
     "prepublishOnly": "pnpm build",
+    "type-check": "tsc --noEmit",
     "dev": "vite build --watch",
     "test": "vitest run",
     "test:watch": "vitest"
