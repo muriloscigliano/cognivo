@@ -31,13 +31,13 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
 
-      # Build showcase as static site
-      - name: Build showcase
-        run: cd apps/gen-ui-demo && npx vite build --base=/cognivo/
+      # Build docs site for GitHub Pages
+      - name: Build docs
+        run: pnpm --filter @cognivo/docs build -- --base=/cognivo/
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: apps/gen-ui-demo/dist
+          path: docs/dist
 
   deploy:
     needs: build

@@ -1,6 +1,5 @@
 /**
  * Component data bridge — re-exports registry metadata for Astro docs pages.
- * Single source of truth lives in apps/gen-ui-demo/src/pages/registry.ts
  */
 export {
   registry,
@@ -9,4 +8,4 @@ export {
   type PropMeta,
   type EventMeta,
   type Example,
-} from '../../../apps/gen-ui-demo/src/pages/registry';
+} from './registry';

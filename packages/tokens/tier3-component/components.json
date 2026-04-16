@@ -199,6 +199,39 @@
     "calendar": {
       "cell-size": { "$type": "dimension", "$value": "36px" },
       "radius": { "$type": "dimension", "$value": "{border.radius.150}" }
+    },
+    "sidebar": {
+      "width": { "$type": "dimension", "$value": "280px" },
+      "collapsed-width": { "$type": "dimension", "$value": "64px" },
+      "padding-x": { "$type": "dimension", "$value": "{spacing.16}" },
+      "padding-y": { "$type": "dimension", "$value": "{spacing.20}" }
+    },
+    "avatar": {
+      "size": {
+        "xs": { "$type": "dimension", "$value": "{spacing.24}" },
+        "sm": { "$type": "dimension", "$value": "{spacing.32}" },
+        "md": { "$type": "dimension", "$value": "{spacing.40}" },
+        "lg": { "$type": "dimension", "$value": "{spacing.48}" },
+        "xl": { "$type": "dimension", "$value": "{spacing.64}" }
+      },
+      "status-dot-size": { "$type": "dimension", "$value": "{spacing.12}" }
+    },
+    "empty-state": {
+      "padding": { "$type": "dimension", "$value": "{spacing.40}" },
+      "icon-size": { "$type": "dimension", "$value": "{spacing.48}" }
+    },
+    "meter": {
+      "height": {
+        "sm": { "$type": "dimension", "$value": "{spacing.6}" },
+        "md": { "$type": "dimension", "$value": "{spacing.12}" },
+        "lg": { "$type": "dimension", "$value": "{spacing.16}" }
+      },
+      "radius": { "$type": "dimension", "$value": "{border.radius.full}" },
+      "circular-size": {
+        "sm": { "$type": "dimension", "$value": "{spacing.48}" },
+        "md": { "$type": "dimension", "$value": "{spacing.80}" },
+        "lg": { "$type": "dimension", "$value": "120px" }
+      }
     }
   }
 }

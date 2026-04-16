@@ -1,8 +1,9 @@
 import { LitElement, html, css, nothing } from 'lit';
+import { svg } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { reducedMotion } from '../../styles/index.js';
 
-export type ToastVariant = 'default' | 'success' | 'warning' | 'error' | 'info';
+export type ToastVariant = 'default' | 'success' | 'warning' | 'error' | 'info' | 'ai';
 
 export interface ToastOptions {
   title: string;
@@ -82,6 +83,17 @@ export class CgToaster extends LitElement {
     .toast.warning { border-color: var(--cg-color-status-warning-text-default); }
     .toast.error { border-color: var(--cg-color-status-error-border-default); }
     .toast.info { border-color: var(--cg-color-status-info-text-default); }
+    .toast.ai {
+      border-left: var(--cg-border-width-200) solid var(--cg-color-action-primary-background-default);
+    }
+
+    .toast-sparkle {
+      flex-shrink: 0;
+      width: var(--cg-spacing-16);
+      height: var(--cg-spacing-16);
+      color: var(--cg-color-action-primary-background-default);
+      margin-top: var(--cg-spacing-2);
+    }
 
     .toast-body {
       flex: 1;
@@ -174,6 +186,11 @@ export class CgToaster extends LitElement {
       <div role="region" aria-live="polite" aria-label="Notifications" style="display: contents;">
         ${this._toasts.map(toast => html`
           <div class="toast ${toast.variant ?? 'default'}" role="status">
+            ${toast.variant === 'ai' ? html`
+              <svg class="toast-sparkle" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                ${svg`<path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74L12 2z"/>`}
+              </svg>
+            ` : nothing}
             <div class="toast-body">
               <div class="toast-title">${toast.title}</div>
               ${toast.description ? html`<div class="toast-desc">${toast.description}</div>` : nothing}

@@ -9,7 +9,7 @@ export default defineConfig({
   reporter: 'html',
   snapshotDir: './e2e/snapshots',
   use: {
-    baseURL: 'http://localhost:3456',
+    baseURL: 'http://localhost:4321',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
@@ -20,9 +20,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm --filter @cognivo/gen-ui-demo dev',
-    port: 3456,
+    command: 'pnpm --filter @cognivo/docs dev',
+    port: 4321,
     reuseExistingServer: !process.env.CI,
-    timeout: 30000,
+    timeout: 60000,
   },
 });
