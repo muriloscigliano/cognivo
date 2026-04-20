@@ -16,7 +16,8 @@ test.describe('Accessibility — Page Structure', () => {
   test('interactive elements are keyboard accessible', async ({ page }) => {
     await page.goto('/');
     await page.keyboard.press('Tab');
-    const focused = page.locator(':focus');
+    // Use .first() because Web Components delegate focus (host + inner button both match :focus)
+    const focused = page.locator(':focus').first();
     await expect(focused).toBeVisible();
   });
 });

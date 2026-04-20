@@ -46,7 +46,7 @@ function esc(s: string) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').re
             <div class="ex-header">{ex.label}</div>
             <div class="ex-live" data-ex-idx={idx} set:html={ex.html} />
             <div class="ex-code-wrap">
-              <pre class="ex-code"><code set:html={esc(ex.html.trim())} /></pre>
+              <pre class="ex-code" tabindex="0"><code set:html={esc(ex.html.trim())} /></pre>
               <button class="ex-copy">Copy</button>
             </div>
           </div>

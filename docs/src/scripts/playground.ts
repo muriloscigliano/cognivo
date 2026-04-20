@@ -102,9 +102,12 @@ for (const prop of comp.props) {
   const row = document.createElement('div');
   row.className = 'pg-row';
 
+  const controlId = `pg-${prop.name}-${Math.random().toString(36).slice(2, 8)}`;
+
   const label = document.createElement('label');
   label.className = 'pg-label';
   label.textContent = prop.name;
+  label.htmlFor = controlId;
   row.appendChild(label);
 
   const update = (value: unknown) => {
@@ -121,12 +124,14 @@ for (const prop of comp.props) {
   if (t === 'boolean') {
     const cb = document.createElement('input');
     cb.type = 'checkbox';
+    cb.id = controlId;
     cb.checked = prop.default === 'true';
     cb.addEventListener('change', () => update(cb.checked));
     row.appendChild(cb);
   } else if (t.includes('|') && t.includes('"')) {
     const select = document.createElement('select');
     select.className = 'pg-select';
+    select.id = controlId;
     const opts = [...t.matchAll(/"([^"]+)"/g)].map(m => m[1]!);
     for (const o of opts) {
       const opt = document.createElement('option');
@@ -141,6 +146,7 @@ for (const prop of comp.props) {
     const num = document.createElement('input');
     num.type = 'number';
     num.className = 'pg-input';
+    num.id = controlId;
     num.value = prop.default ?? '0';
     num.addEventListener('input', () => update(Number(num.value)));
     row.appendChild(num);
@@ -148,6 +154,7 @@ for (const prop of comp.props) {
     const txt = document.createElement('input');
     txt.type = 'text';
     txt.className = 'pg-input';
+    txt.id = controlId;
     txt.value = prop.default?.replace(/"/g, '') ?? '';
     txt.placeholder = prop.name;
     txt.addEventListener('input', () => update(txt.value));
