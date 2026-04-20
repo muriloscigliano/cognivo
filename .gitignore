@@ -47,3 +47,6 @@ temp
 # MCP Server generated catalog
 packages/mcp-server/src/catalog/catalog.json
 packages/mcp-server/src/catalog/bias-full.json
+
+# Astro generated cache
+docs/.astro/
