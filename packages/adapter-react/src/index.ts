@@ -283,3 +283,42 @@ export { CgCombobox } from './components/CgCombobox.js';
 export { CgVisuallyHidden } from './components/CgVisuallyHidden.js';
 export { CgPortal } from './components/CgPortal.js';
 export { CgFocusScope } from './components/CgFocusScope.js';
+
+// Wave 9: Foundation
+export { CgSidebar } from './components/CgSidebar.js';
+export type { CgSidebarProps } from './components/CgSidebar.js';
+
+export { CgAvatar } from './components/CgAvatar.js';
+export type { CgAvatarProps } from './components/CgAvatar.js';
+
+export { CgEmptyState } from './components/CgEmptyState.js';
+export type { CgEmptyStateProps } from './components/CgEmptyState.js';
+
+export { CgMeter } from './components/CgMeter.js';
+export type { CgMeterProps } from './components/CgMeter.js';
+
+export { CgDateRangePicker } from './components/CgDateRangePicker.js';
+export type { CgDateRangePickerProps } from './components/CgDateRangePicker.js';
+
+// Wave 10: Coverage — Forms
+export { CgListbox } from './components/CgListbox.js';
+export { CgTimePicker } from './components/CgTimePicker.js';
+export { CgDateTimePicker } from './components/CgDateTimePicker.js';
+
+// Wave 10: Coverage — AI Atlas
+export { AiAgentSteps } from './components/AiAgentSteps.js';
+export { AiAssistantWidget } from './components/AiAssistantWidget.js';
+export { AiCacheIndicator } from './components/AiCacheIndicator.js';
+export { AiConsentManager } from './components/AiConsentManager.js';
+export { AiDataLineage } from './components/AiDataLineage.js';
+export { AiDetectionCanvas } from './components/AiDetectionCanvas.js';
+export { AiLabelingBoard } from './components/AiLabelingBoard.js';
+export { AiPersonalizationDash } from './components/AiPersonalizationDash.js';
+export { AiRewardSignal } from './components/AiRewardSignal.js';
+export { AiScenarioPanel } from './components/AiScenarioPanel.js';
+export { AiSegmentationViewer } from './components/AiSegmentationViewer.js';
+export { AiSimilarityCard } from './components/AiSimilarityCard.js';
+export { AiTransformSlider } from './components/AiTransformSlider.js';
+export { AiTranslationPanel } from './components/AiTranslationPanel.js';
+export { AiValidationChecklist } from './components/AiValidationChecklist.js';
+export { AiVoicePanel } from './components/AiVoicePanel.js';
