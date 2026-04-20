@@ -16,26 +16,26 @@ import type { AtlasPatternCard } from '../atlas/types.js';
 // ---------------------------------------------------------------------------
 
 const DIMENSION_COLORS: Record<string, { bg: string; fg: string }> = {
-  ai_tasks:       { bg: 'var(--cg-blue-100, #e3f2fd)',   fg: 'var(--cg-blue-500, #1976d2)' },
-  human_tasks:    { bg: 'var(--cg-green-100, #e8f5e9)',   fg: 'var(--cg-green-500, #388e3c)' },
-  system_tasks:   { bg: 'var(--cg-brand-primary-100, #f3e5f5)', fg: 'var(--cg-brand-primary-400, #7b1fa2)' },
-  data_artifacts: { bg: 'var(--cg-yellow-100, #fff3e0)',  fg: 'var(--cg-yellow-500, #f57c00)' },
-  constraints:    { bg: 'var(--cg-red-100, #fce4ec)',     fg: 'var(--cg-red-500, #c2185b)' },
-  touchpoints:    { bg: 'var(--cg-green-100, #e0f2f1)',   fg: 'var(--cg-green-500, #00796b)' },
+  ai_tasks:       { bg: 'var(--cg-color-status-info-background-default, #e3f2fd)',   fg: 'var(--cg-color-status-info-text-default, #1976d2)' },
+  human_tasks:    { bg: 'var(--cg-color-status-success-background-default, #e8f5e9)',   fg: 'var(--cg-color-status-success-text-default, #388e3c)' },
+  system_tasks:   { bg: 'var(--cg-color-action-primary-background-default, #f3e5f5)', fg: 'var(--cg-color-action-primary-text-default, #7b1fa2)' },
+  data_artifacts: { bg: 'var(--cg-color-status-warning-background-default, #fff3e0)',  fg: 'var(--cg-color-status-warning-text-default, #f57c00)' },
+  constraints:    { bg: 'var(--cg-color-status-error-background-default, #fce4ec)',     fg: 'var(--cg-color-status-error-text-default, #c2185b)' },
+  touchpoints:    { bg: 'var(--cg-color-status-success-background-default, #e0f2f1)',   fg: 'var(--cg-color-status-success-text-default, #00796b)' },
 };
 
 const LAYER_COLORS: Record<string, { bg: string; fg: string }> = {
-  inbound:     { bg: 'var(--cg-blue-100, #e3f2fd)',           fg: 'var(--cg-blue-500, #1565c0)' },
-  internal:    { bg: 'var(--cg-brand-primary-100, #f3e5f5)',  fg: 'var(--cg-brand-primary-400, #7b1fa2)' },
-  outbound:    { bg: 'var(--cg-green-100, #e8f5e9)',          fg: 'var(--cg-green-500, #2e7d32)' },
-  interactive: { bg: 'var(--cg-yellow-100, #fff3e0)',         fg: 'var(--cg-yellow-500, #e65100)' },
+  inbound:     { bg: 'var(--cg-color-status-info-background-default, #e3f2fd)',           fg: 'var(--cg-color-status-info-text-default, #1565c0)' },
+  internal:    { bg: 'var(--cg-color-action-primary-background-default, #f3e5f5)',  fg: 'var(--cg-color-action-primary-text-default, #7b1fa2)' },
+  outbound:    { bg: 'var(--cg-color-status-success-background-default, #e8f5e9)',          fg: 'var(--cg-color-status-success-text-default, #2e7d32)' },
+  interactive: { bg: 'var(--cg-color-status-warning-background-default, #fff3e0)',         fg: 'var(--cg-color-status-warning-text-default, #e65100)' },
 };
 
 const STATUS_COLORS: Record<string, { bg: string; fg: string }> = {
-  implemented:     { bg: 'var(--cg-green-100, #e8f5e9)',  fg: 'var(--cg-green-500, #2e7d32)' },
-  partial:         { bg: 'var(--cg-yellow-100, #fff3e0)', fg: 'var(--cg-yellow-500, #ef6c00)' },
-  planned:         { bg: 'var(--cg-blue-100, #e3f2fd)',   fg: 'var(--cg-blue-500, #1565c0)' },
-  'not-applicable': { bg: 'var(--cg-gray-100, #f5f5f5)',  fg: 'var(--cg-gray-500, #757575)' },
+  implemented:     { bg: 'var(--cg-color-status-success-background-default, #e8f5e9)',  fg: 'var(--cg-color-status-success-text-default, #2e7d32)' },
+  partial:         { bg: 'var(--cg-color-status-warning-background-default, #fff3e0)', fg: 'var(--cg-color-status-warning-text-default, #ef6c00)' },
+  planned:         { bg: 'var(--cg-color-status-info-background-default, #e3f2fd)',   fg: 'var(--cg-color-status-info-text-default, #1565c0)' },
+  'not-applicable': { bg: 'var(--cg-color-surface-base-text, #f5f5f5)',  fg: 'var(--cg-color-surface-cards-disable-text, #757575)' },
 };
 
 // ---------------------------------------------------------------------------
@@ -51,16 +51,16 @@ export class AtlasPatternCardElement extends LitElement {
     }
 
     .card {
-      border: var(--cg-Border-width-50, 1px) solid var(--cg-color-surface-container-border, #2a2a2a);
+      border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-container-border, #2a2a2a);
       border-radius: 16px;
       padding: var(--cg-spacing-24, 24px);
       background: var(--cg-color-surface-container-background, #1a1a1a);
-      color: var(--cg-gray-100, #f5f5f5);
+      color: var(--cg-color-surface-base-text, #f5f5f5);
       transition: border-color var(--cg-transition-duration-default, 200ms);
     }
 
     .card:hover {
-      border-color: var(--cg-brand-primary-400, #7c4dff);
+      border-color: var(--cg-color-action-primary-border-default, #7c4dff);
     }
 
     /* -- Header ----------------------------------------------------------- */
@@ -81,7 +81,7 @@ export class AtlasPatternCardElement extends LitElement {
     .title {
       font-size: var(--cg-font-size-lg, 20px);
       font-weight: var(--cg-font-weight-bold, 700);
-      color: var(--cg-gray-50, #fafafa);
+      color: var(--cg-color-surface-base-text, #fafafa);
       margin: 0 0 var(--cg-spacing-8, 8px) 0;
       line-height: 1.3;
     }
@@ -116,7 +116,7 @@ export class AtlasPatternCardElement extends LitElement {
 
     .elevator-pitch {
       font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-gray-400, #9e9e9e);
+      color: var(--cg-color-surface-cards-disable-text, #9e9e9e);
       line-height: 1.6;
       margin-bottom: var(--cg-spacing-16, 16px);
     }
@@ -124,7 +124,7 @@ export class AtlasPatternCardElement extends LitElement {
     /* -- Expandable sections ---------------------------------------------- */
 
     .section {
-      border-top: var(--cg-Border-width-50, 1px) solid var(--cg-color-surface-container-border, #2a2a2a);
+      border-top: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-container-border, #2a2a2a);
       padding-top: var(--cg-spacing-12, 12px);
       margin-top: var(--cg-spacing-12, 12px);
     }
@@ -139,16 +139,16 @@ export class AtlasPatternCardElement extends LitElement {
     }
 
     .section-header:focus-visible {
-      outline: 2px solid var(--cg-brand-primary-400, #7c4dff);
+      outline: 2px solid var(--cg-color-action-primary-border-default, #7c4dff);
       outline-offset: 2px;
-      border-radius: var(--cg-Border-radius-50, 4px);
+      border-radius: var(--cg-border-radius-50, 4px);
     }
 
     .section-arrow {
       font-size: var(--cg-font-size-xs, 12px);
       transition: transform 0.2s;
       display: inline-block;
-      color: var(--cg-gray-500, #757575);
+      color: var(--cg-color-surface-cards-disable-text, #757575);
     }
 
     .section-arrow.open {
@@ -158,7 +158,7 @@ export class AtlasPatternCardElement extends LitElement {
     .section-title {
       font-size: var(--cg-font-size-sm, 14px);
       font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-gray-300, #bdbdbd);
+      color: var(--cg-color-surface-cards-disable-text, #bdbdbd);
     }
 
     .section-body {
@@ -184,7 +184,7 @@ export class AtlasPatternCardElement extends LitElement {
     .ux-label {
       font-size: var(--cg-font-size-xs, 12px);
       font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-gray-400, #9e9e9e);
+      color: var(--cg-color-surface-cards-disable-text, #9e9e9e);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: var(--cg-spacing-4, 4px);
@@ -192,16 +192,16 @@ export class AtlasPatternCardElement extends LitElement {
 
     .ux-value {
       font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-gray-200, #e0e0e0);
+      color: var(--cg-color-surface-base-text, #e0e0e0);
       line-height: 1.6;
     }
 
     .anti-pattern {
       display: inline-block;
       padding: var(--cg-spacing-4, 4px) var(--cg-spacing-8, 8px);
-      background: var(--cg-red-100, #fce4ec);
-      color: var(--cg-red-500, #c2185b);
-      border-radius: var(--cg-Border-radius-50, 4px);
+      background: var(--cg-color-status-error-background-default, #fce4ec);
+      color: var(--cg-color-status-error-text-default, #c2185b);
+      border-radius: var(--cg-border-radius-50, 4px);
       font-size: var(--cg-font-size-xs, 12px);
       font-weight: var(--cg-font-weight-semibold, 600);
       margin: var(--cg-spacing-4, 4px) var(--cg-spacing-4, 4px) 0 0;
@@ -221,17 +221,17 @@ export class AtlasPatternCardElement extends LitElement {
       background: var(--cg-color-surface-inset-background, #2a2a2a);
       border-radius: 999px;
       font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-300, #bdbdbd);
+      color: var(--cg-color-surface-cards-disable-text, #bdbdbd);
     }
 
     .pill.component {
-      background: var(--cg-brand-primary-100, #ede7f6);
-      color: var(--cg-brand-primary-400, #7b1fa2);
+      background: var(--cg-color-action-primary-background-default, #ede7f6);
+      color: var(--cg-color-action-primary-text-default, #7b1fa2);
     }
 
     .pill.bias {
-      background: var(--cg-yellow-100, #fff3e0);
-      color: var(--cg-yellow-500, #e65100);
+      background: var(--cg-color-status-warning-background-default, #fff3e0);
+      color: var(--cg-color-status-warning-text-default, #e65100);
     }
 
     /* -- Implementation notes --------------------------------------------- */
@@ -245,20 +245,20 @@ export class AtlasPatternCardElement extends LitElement {
     .impl-label {
       font-size: var(--cg-font-size-xs, 12px);
       font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-gray-500, #757575);
+      color: var(--cg-color-surface-cards-disable-text, #757575);
       min-width: 120px;
     }
 
     .impl-value {
       font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-gray-200, #e0e0e0);
+      color: var(--cg-color-surface-base-text, #e0e0e0);
     }
 
     /* -- Empty ------------------------------------------------------------ */
 
     .empty-note {
       font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #757575);
+      color: var(--cg-color-surface-cards-disable-text, #757575);
       font-style: italic;
     }
   `;
@@ -308,7 +308,7 @@ export class AtlasPatternCardElement extends LitElement {
   }
 
   private renderStatusBadge(status: string) {
-    const fallback = { bg: 'var(--cg-gray-100, #f5f5f5)', fg: 'var(--cg-gray-500, #757575)' };
+    const fallback = { bg: 'var(--cg-color-surface-base-text, #f5f5f5)', fg: 'var(--cg-color-surface-cards-disable-text, #757575)' };
     const colors = STATUS_COLORS[status] ?? fallback;
     const label = status.replace(/-/g, ' ');
     return html`<span class="status-badge" style="background:${colors.bg};color:${colors.fg}">${label}</span>`;
@@ -345,7 +345,7 @@ export class AtlasPatternCardElement extends LitElement {
     }
 
     const p = this.pattern;
-    const defaultColor = { bg: 'var(--cg-gray-100, #f5f5f5)', fg: 'var(--cg-gray-500, #757575)' };
+    const defaultColor = { bg: 'var(--cg-color-surface-base-text, #f5f5f5)', fg: 'var(--cg-color-surface-cards-disable-text, #757575)' };
     const dimColors = DIMENSION_COLORS[p.dimension] ?? defaultColor;
     const layerColors = LAYER_COLORS[p.layer] ?? defaultColor;
     const dimLabel = p.dimension.replace(/_/g, ' ');

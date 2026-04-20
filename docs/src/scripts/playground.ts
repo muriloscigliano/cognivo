@@ -504,6 +504,20 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   if (tag === 'cg-calendar') {
     e.value = new Date().toISOString().split('T')[0];
   }
+  // ── Wave 9: Foundation ──
+  if (tag === 'cg-sidebar') {
+    e.collapsible = true;
+    liveElement.style.height = '300px';
+    const header = document.createElement('div'); header.setAttribute('slot', 'header'); header.style.fontWeight = '600'; header.textContent = 'Logo';
+    const nav = document.createElement('div'); nav.style.cssText = 'display:flex;flex-direction:column;gap:6px;font-size:14px;';
+    for (const t of ['Dashboard', 'Settings', 'Help']) { const s = document.createElement('span'); s.textContent = t; nav.appendChild(s); }
+    const footer = document.createElement('div'); footer.setAttribute('slot', 'footer'); footer.style.fontSize = '12px'; footer.textContent = 'v1.0';
+    liveElement.append(header, nav, footer);
+  }
+  if (tag === 'cg-avatar') { e.name = 'Ada Lovelace'; e.size = 'lg'; e.status = 'online'; }
+  if (tag === 'cg-empty-state') { e.variant = 'search'; e.title = 'No results found'; e.description = 'Try a different search query or adjust your filters.'; liveElement.style.maxWidth = '480px'; }
+  if (tag === 'cg-meter') { e.value = 72; e.low = 20; e.high = 80; e.optimum = 50; e.label = 'CPU usage'; e.showValue = true; liveElement.style.maxWidth = '320px'; }
+  if (tag === 'cg-date-range-picker') { e.label = 'Travel dates'; e.from = '2026-04-01'; e.to = '2026-04-10'; liveElement.style.maxWidth = '400px'; }
 }
 
 // ─── Re-render examples with live components ────────────────────────────────

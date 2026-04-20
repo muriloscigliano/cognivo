@@ -19,8 +19,8 @@ export class BiasCardElement extends LitElement {
     }
 
     .card {
-      border: var(--cg-Border-width-50, 1px) solid var(--cg-color-surface-container-border, #e0e0e0);
-      border-radius: var(--cg-Border-radius-100, 8px);
+      border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-container-border, #e0e0e0);
+      border-radius: var(--cg-border-radius-100, 8px);
       padding: var(--cg-spacing-24, 24px);
       background: var(--cg-color-surface-container-background, white);
       transition: box-shadow 0.2s;
@@ -40,27 +40,27 @@ export class BiasCardElement extends LitElement {
     .title {
       font-size: var(--cg-font-size-2xl, 24px);
       font-weight: var(--cg-font-weight-bold, 700);
-      color: var(--cg-gray-900, #1a1a1a);
+      color: var(--cg-color-surface-base-text, #1a1a1a);
       margin: 0 0 var(--cg-spacing-8, 8px) 0;
     }
 
     .category {
       display: inline-block;
       padding: var(--cg-spacing-4, 4px) var(--cg-spacing-12, 12px);
-      border-radius: var(--cg-Border-radius-50, 4px);
+      border-radius: var(--cg-border-radius-50, 4px);
       font-size: var(--cg-font-size-xs, 12px);
       font-weight: var(--cg-font-weight-semibold, 600);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
-    .category.perception { background: var(--cg-blue-100, #e3f2fd); color: var(--cg-blue-500, #1976d2); }
-    .category.decision-making { background: var(--cg-brand-primary-100, #f3e5f5); color: var(--cg-brand-primary-400, #7b1fa2); }
-    .category.memory { background: var(--cg-green-100, #e8f5e9); color: var(--cg-green-500, #388e3c); }
-    .category.social { background: var(--cg-yellow-100, #fff3e0); color: var(--cg-yellow-500, #f57c00); }
-    .category.attribution { background: var(--cg-red-100, #fce4ec); color: var(--cg-red-500, #c2185b); }
-    .category.emotional { background: var(--cg-red-100, #ffebee); color: var(--cg-red-500, #d32f2f); }
-    .category.cognitive { background: var(--cg-green-100, #e0f2f1); color: var(--cg-green-500, #00796b); }
+    .category.perception { background: var(--cg-color-status-info-background-default, #e3f2fd); color: var(--cg-color-status-info-text-default, #1976d2); }
+    .category.decision-making { background: var(--cg-color-action-primary-background-default, #f3e5f5); color: var(--cg-color-action-primary-text-default, #7b1fa2); }
+    .category.memory { background: var(--cg-color-status-success-background-default, #e8f5e9); color: var(--cg-color-status-success-text-default, #388e3c); }
+    .category.social { background: var(--cg-color-status-warning-background-default, #fff3e0); color: var(--cg-color-status-warning-text-default, #f57c00); }
+    .category.attribution { background: var(--cg-color-status-error-background-default, #fce4ec); color: var(--cg-color-status-error-text-default, #c2185b); }
+    .category.emotional { background: var(--cg-color-status-error-background-default, #ffebee); color: var(--cg-color-status-error-text-default, #d32f2f); }
+    .category.cognitive { background: var(--cg-color-status-success-background-default, #e0f2f1); color: var(--cg-color-status-success-text-default, #00796b); }
 
     .definition {
       margin-bottom: var(--cg-spacing-24, 24px);
@@ -68,7 +68,7 @@ export class BiasCardElement extends LitElement {
 
     .simple {
       font-size: var(--cg-font-size-base, 16px);
-      color: var(--cg-gray-700, #424242);
+      color: var(--cg-color-surface-base-text, #424242);
       line-height: 1.6;
       margin-bottom: var(--cg-spacing-12, 12px);
       font-style: italic;
@@ -76,7 +76,7 @@ export class BiasCardElement extends LitElement {
 
     .detailed {
       font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-gray-600, #616161);
+      color: var(--cg-color-surface-cards-disable-text, #616161);
       line-height: 1.7;
       margin-bottom: var(--cg-spacing-16, 16px);
     }
@@ -93,7 +93,7 @@ export class BiasCardElement extends LitElement {
       background: var(--cg-color-surface-inset-background, #f5f5f5);
       border-radius: 12px;
       font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #757575);
+      color: var(--cg-color-surface-cards-disable-text, #757575);
     }
 
     .section {
@@ -103,7 +103,7 @@ export class BiasCardElement extends LitElement {
     .section-title {
       font-size: var(--cg-font-size-md, 18px);
       font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-gray-900, #1a1a1a);
+      color: var(--cg-color-surface-base-text, #1a1a1a);
       margin: 0 0 var(--cg-spacing-12, 12px) 0;
       display: flex;
       align-items: center;
@@ -112,7 +112,7 @@ export class BiasCardElement extends LitElement {
 
     .section-content {
       font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-gray-600, #616161);
+      color: var(--cg-color-surface-cards-disable-text, #616161);
       line-height: 1.7;
     }
 
@@ -124,14 +124,14 @@ export class BiasCardElement extends LitElement {
 
     .impact-area {
       padding: var(--cg-spacing-12, 12px);
-      border: var(--cg-Border-width-50, 1px) solid var(--cg-color-surface-container-border, #e0e0e0);
-      border-radius: var(--cg-Border-radius-100, 6px);
+      border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-container-border, #e0e0e0);
+      border-radius: var(--cg-border-radius-100, 6px);
     }
 
     .impact-area-title {
       font-size: var(--cg-font-size-sm, 14px);
       font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-gray-900, #1a1a1a);
+      color: var(--cg-color-surface-base-text, #1a1a1a);
       margin-bottom: var(--cg-spacing-8, 8px);
       text-transform: capitalize;
     }
@@ -139,7 +139,7 @@ export class BiasCardElement extends LitElement {
     .impact-level {
       display: inline-block;
       padding: 2px var(--cg-spacing-8, 8px);
-      border-radius: var(--cg-Border-radius-50, 4px);
+      border-radius: var(--cg-border-radius-50, 4px);
       font-size: var(--cg-font-size-xs, 11px);
       font-weight: var(--cg-font-weight-semibold, 600);
       margin-bottom: var(--cg-spacing-8, 8px);
@@ -158,21 +158,21 @@ export class BiasCardElement extends LitElement {
 
     .example {
       padding: var(--cg-spacing-16, 16px);
-      border: var(--cg-Border-width-50, 1px) solid var(--cg-color-surface-container-border, #e0e0e0);
-      border-radius: var(--cg-Border-radius-100, 6px);
-      background: #fafafa;
+      border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-container-border, #e0e0e0);
+      border-radius: var(--cg-border-radius-100, 6px);
+      background: var(--cg-color-surface-inset-background, #fafafa);
     }
 
     .example-title {
       font-size: var(--cg-font-size-sm, 14px);
       font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-gray-900, #1a1a1a);
+      color: var(--cg-color-surface-base-text, #1a1a1a);
       margin-bottom: var(--cg-spacing-8, 8px);
     }
 
     .example-description {
       font-size: var(--cg-font-size-xs, 13px);
-      color: var(--cg-gray-600, #616161);
+      color: var(--cg-color-surface-cards-disable-text, #616161);
       line-height: 1.6;
       margin-bottom: var(--cg-spacing-8, 8px);
     }
@@ -207,7 +207,7 @@ export class BiasCardElement extends LitElement {
     .psychology {
       background: var(--cg-color-surface-inset-background, #f5f5f5);
       padding: var(--cg-spacing-16, 16px);
-      border-radius: var(--cg-Border-radius-100, 6px);
+      border-radius: var(--cg-border-radius-100, 6px);
       margin-top: var(--cg-spacing-12, 12px);
     }
 
@@ -217,20 +217,20 @@ export class BiasCardElement extends LitElement {
 
     .psychology-label {
       font-weight: var(--cg-font-weight-semibold, 600);
-      color: var(--cg-gray-900, #1a1a1a);
+      color: var(--cg-color-surface-base-text, #1a1a1a);
       margin-right: var(--cg-spacing-8, 8px);
     }
 
     .psychology-value {
-      color: var(--cg-gray-600, #616161);
+      color: var(--cg-color-surface-cards-disable-text, #616161);
     }
 
     button {
-      background: var(--cg-brand-primary-400, #1976d2);
-      color: white;
+      background: var(--cg-color-action-primary-background-default, #1976d2);
+      color: var(--cg-color-action-primary-text-default, white);
       border: none;
       padding: var(--cg-spacing-10, 10px) var(--cg-spacing-24, 20px);
-      border-radius: var(--cg-Border-radius-100, 6px);
+      border-radius: var(--cg-border-radius-100, 6px);
       font-size: var(--cg-font-size-sm, 14px);
       font-weight: var(--cg-font-weight-semibold, 600);
       cursor: pointer;
@@ -238,7 +238,7 @@ export class BiasCardElement extends LitElement {
     }
 
     button:hover {
-      background: var(--cg-brand-primary-500, #1565c0);
+      background: var(--cg-color-action-primary-background-hover, #1565c0);
     }
 
     .compact .detailed,
@@ -355,7 +355,7 @@ export class BiasCardElement extends LitElement {
                   <div class="impact-area">
                     <div class="impact-area-title">${area}</div>
                     ${this.renderImpactLevel(assessment.level)}
-                    <p style="font-size: var(--cg-font-size-xs, 13px); color: var(--cg-gray-600, #616161); margin-top: var(--cg-spacing-8, 8px);">
+                    <p style="font-size: var(--cg-font-size-xs, 13px); color: var(--cg-color-surface-cards-disable-text, #616161); margin-top: var(--cg-spacing-8, 8px);">
                       ${assessment.description}
                     </p>
                   </div>
@@ -378,7 +378,7 @@ export class BiasCardElement extends LitElement {
                   <div class="example">
                     <div class="example-title">${example.title}</div>
                     <p class="example-description">${example.description}</p>
-                    <p style="font-size: var(--cg-font-size-xs, 12px); color: var(--cg-gray-500, #757575); margin-top: var(--cg-spacing-8, 8px);">
+                    <p style="font-size: var(--cg-font-size-xs, 12px); color: var(--cg-color-surface-cards-disable-text, #757575); margin-top: var(--cg-spacing-8, 8px);">
                       ${example.explanation}
                     </p>
                   </div>

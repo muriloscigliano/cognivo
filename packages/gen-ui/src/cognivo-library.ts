@@ -1,5 +1,5 @@
 /**
- * Cognivo Component Library — All 161 components registered for gen-ui.
+ * Cognivo Component Library — All 166 components registered for gen-ui.
  *
  * Each component has a Zod schema matching its actual @property() interface,
  * a tagName for Web Component rendering, and biasHints for cognitive psychology integration.
@@ -93,6 +93,7 @@ export const InputDef = defineComponent({
     maxlength: z.number().optional(),
   }),
   description: 'Text input with prefix/suffix slots, clear button, character count, and validation states',
+  biasHints: ['priming-effect', 'framing-effect'],
 });
 
 export const SeparatorDef = defineComponent({
@@ -175,6 +176,7 @@ export const SelectDef = defineComponent({
     error: z.boolean().optional(),
   }),
   description: 'Dropdown select with search, keyboard navigation, and option groups',
+  biasHints: ['choice-overload', 'anchoring-bias', 'decoy-effect'],
 });
 
 export const TextareaDef = defineComponent({
@@ -188,6 +190,7 @@ export const TextareaDef = defineComponent({
     error: z.boolean().optional(),
   }),
   description: 'Multi-line text input with auto-resize and character count',
+  biasHints: ['framing-effect', 'priming-effect'],
 });
 
 export const CheckboxDef = defineComponent({
@@ -200,6 +203,7 @@ export const CheckboxDef = defineComponent({
     indeterminate: z.boolean().optional(),
   }),
   description: 'Checkbox with indeterminate state, description text, and proper ARIA',
+  biasHints: ['default-effect', 'choice-overload'],
 });
 
 export const RadioDef = defineComponent({
@@ -223,6 +227,7 @@ export const SwitchDef = defineComponent({
     checked: z.boolean().optional(),
   }),
   description: 'Toggle switch with label and description',
+  biasHints: ['default-effect', 'status-quo-bias'],
 });
 
 export const SliderDef = defineComponent({
@@ -259,6 +264,7 @@ export const DatePickerDef = defineComponent({
     max: z.string().optional(),
   }),
   description: 'Native date input with consistent styling and min/max date constraints',
+  biasHints: ['anchoring-bias'],
 });
 
 export const ButtonGroupDef = defineComponent({
@@ -1348,6 +1354,7 @@ export const AutocompleteDef = defineComponent({
     clearable: z.boolean().optional(),
   }),
   description: 'Combobox input with filtered dropdown, highlight matching text, arrow key navigation, and clear button',
+  biasHints: ['availability-heuristic', 'anchoring-bias', 'primacy-effect'],
 });
 
 export const AvatarGroupDef = defineComponent({
@@ -1409,6 +1416,7 @@ export const RadioGroupDef = defineComponent({
     orientation: z.enum(['vertical', 'horizontal']).optional(),
   }),
   description: 'Radio button group manager with WAI-ARIA keyboard navigation, vertical/horizontal layout',
+  biasHints: ['default-effect', 'framing-effect', 'anchoring-bias'],
 });
 
 export const ColorPickerDef = defineComponent({
@@ -1555,6 +1563,7 @@ export const SegmentedControlDef = defineComponent({
     full: z.boolean().optional(),
   }),
   description: 'iOS-style pill selector with animated indicator for single-value selection',
+  biasHints: ['default-effect', 'choice-overload'],
 });
 
 export const PasswordInputDef = defineComponent({
@@ -1587,6 +1596,7 @@ export const RatingDef = defineComponent({
     name: z.string().optional(),
   }),
   description: 'Star rating input with half-step precision, hover preview, and keyboard navigation',
+  biasHints: ['anchoring-bias', 'social-proof', 'halo-effect'],
 });
 
 export const TagInputDef = defineComponent({
@@ -1832,6 +1842,333 @@ export const FocusScopeDef = defineComponent({
   description: 'Behavior primitive that traps Tab-focus within itself when active',
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Wave 9: Foundation (5 components)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const SidebarDef = defineComponent({
+  name: 'Sidebar', tagName: 'cg-sidebar',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    collapsed: z.boolean().optional(),
+    collapsible: z.boolean().optional(),
+    side: z.enum(['left', 'right']).optional(),
+    sticky: z.boolean().optional(),
+    width: z.string().optional(),
+  }),
+  description: 'Side navigation panel with collapsible icon-only mode, header/footer slots, and sticky positioning',
+});
+
+export const AvatarDef = defineComponent({
+  name: 'Avatar', tagName: 'cg-avatar',
+  props: z.object({
+    src: z.string().optional(),
+    alt: z.string().optional(),
+    name: z.string().optional(),
+    size: z.enum(['xs', 'sm', 'md', 'lg', 'xl']).optional(),
+    shape: z.enum(['circle', 'square']).optional(),
+    status: z.enum(['online', 'offline', 'away', 'busy']).optional(),
+    fallbackIcon: z.string().optional(),
+  }),
+  description: 'User avatar with image, initials fallback, size/shape variants, and status indicator dot',
+});
+
+export const EmptyStateDef = defineComponent({
+  name: 'EmptyState', tagName: 'cg-empty-state',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    variant: z.enum(['default', 'search', 'error', 'success', 'info']).optional(),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    icon: z.string().optional(),
+  }),
+  description: 'Empty/no-results/error state with contextual icon, title, description, and actions slot',
+});
+
+export const MeterDef = defineComponent({
+  name: 'Meter', tagName: 'cg-meter',
+  props: z.object({
+    value: z.number().optional(),
+    min: z.number().optional(),
+    max: z.number().optional(),
+    low: z.number().optional(),
+    high: z.number().optional(),
+    optimum: z.number().optional(),
+    label: z.string().optional(),
+    variant: z.enum(['linear', 'circular']).optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    showValue: z.boolean().optional(),
+  }),
+  description: 'Measurement gauge (battery, disk, score) with threshold coloring, linear and circular variants',
+});
+
+export const DateRangePickerDef = defineComponent({
+  name: 'DateRangePicker', tagName: 'cg-date-range-picker',
+  props: z.object({
+    label: z.string().optional(),
+    from: z.string().optional(),
+    to: z.string().optional(),
+    min: z.string().optional(),
+    max: z.string().optional(),
+    placeholder: z.string().optional(),
+    format: z.string().optional(),
+    disabled: z.boolean().optional(),
+    open: z.boolean().optional(),
+    error: z.string().optional(),
+  }),
+  description: 'Dual-input date range picker with dropdown calendar in range mode',
+  biasHints: ['anchoring-bias', 'framing-effect'],
+});
+
+// ── Wave 10: Coverage — previously unregistered components ─────────────────
+
+export const ListboxDef = defineComponent({
+  name: 'Listbox', tagName: 'cg-listbox',
+  props: z.object({
+    options: z.array(z.any()).optional(),
+    value: z.union([z.string(), z.array(z.string())]).optional(),
+    multiple: z.boolean().optional(),
+    checkPosition: z.enum(['left', 'right']).optional(),
+    label: z.string().optional(),
+    emptyText: z.string().optional(),
+  }),
+  description: 'Single or multi-select listbox with keyboard navigation and check indicators',
+  biasHints: ['choice-overload', 'primacy-effect', 'recency-effect'],
+});
+
+export const TimePickerDef = defineComponent({
+  name: 'TimePicker', tagName: 'cg-time-picker',
+  props: z.object({
+    label: z.string().optional(),
+    value: z.string().optional(),
+    placeholder: z.string().optional(),
+    name: z.string().optional(),
+    helper: z.string().optional(),
+    size: z.enum(['md', 'lg']).optional(),
+    rounded: z.enum(['none', 'sm', 'md', 'lg']).optional(),
+    disabled: z.boolean().optional(),
+    error: z.boolean().optional(),
+    success: z.boolean().optional(),
+  }),
+  description: 'Time input with hour/minute selection and validation states',
+});
+
+export const DateTimePickerDef = defineComponent({
+  name: 'DateTimePicker', tagName: 'cg-date-time-picker',
+  props: z.object({
+    label: z.string().optional(),
+    value: z.string().optional(),
+    placeholder: z.string().optional(),
+    helper: z.string().optional(),
+    min: z.string().optional(),
+    max: z.string().optional(),
+    size: z.enum(['md', 'lg']).optional(),
+    rounded: z.enum(['none', 'sm', 'md', 'lg']).optional(),
+    disabled: z.boolean().optional(),
+    error: z.boolean().optional(),
+  }),
+  description: 'Combined date and time picker with calendar + time scroller',
+});
+
+export const AiAgentStepsDef = defineComponent({
+  name: 'AiAgentSteps', tagName: 'ai-agent-steps',
+  props: z.object({
+    steps: z.array(z.any()).optional(),
+    contained: z.boolean().optional(),
+  }),
+  description: 'Agent task breakdown with status-coloured step list and optional containment',
+});
+
+export const AiAssistantWidgetDef = defineComponent({
+  name: 'AiAssistantWidget', tagName: 'ai-assistant-widget',
+  props: z.object({
+    expanded: z.boolean().optional(),
+    position: z.enum(['bottom-right', 'bottom-left']).optional(),
+    welcomeMessage: z.string().optional(),
+    title: z.string().optional(),
+    messages: z.array(z.any()).optional(),
+  }),
+  description: 'Floating assistant widget with chat bubble, expandable panel, and welcome flow',
+});
+
+export const AiCacheIndicatorDef = defineComponent({
+  name: 'AiCacheIndicator', tagName: 'ai-cache-indicator',
+  props: z.object({
+    status: z.enum(['hit', 'miss', 'stale', 'disabled', 'loading']).optional(),
+    hitRate: z.number().optional(),
+    latencySaved: z.string().optional(),
+    cacheAge: z.string().optional(),
+    showDetails: z.boolean().optional(),
+  }),
+  description: 'Inline cache-status pill with hit/miss state, hit rate, and latency savings',
+});
+
+export const AiConsentManagerDef = defineComponent({
+  name: 'AiConsentManager', tagName: 'ai-consent-manager',
+  props: z.object({
+    consents: z.array(z.any()).optional(),
+    rounded: z.enum(['none', 'sm', 'md', 'lg']).optional(),
+    title: z.string().optional(),
+    acceptAllLabel: z.string().optional(),
+    rejectAllLabel: z.string().optional(),
+    saveLabel: z.string().optional(),
+  }),
+  description: 'Consent preferences manager with accept-all/reject-all/save controls',
+});
+
+export const AiDataLineageDef = defineComponent({
+  name: 'AiDataLineage', tagName: 'ai-data-lineage',
+  props: z.object({
+    rounded: z.enum(['none', 'sm', 'md', 'lg']).optional(),
+    nodes: z.array(z.any()).optional(),
+    edges: z.array(z.any()).optional(),
+    highlightPath: z.string().optional(),
+    direction: z.enum(['horizontal', 'vertical']).optional(),
+  }),
+  description: 'Data flow/provenance graph showing nodes, edges, and highlighted lineage path',
+});
+
+export const AiDetectionCanvasDef = defineComponent({
+  name: 'AiDetectionCanvas', tagName: 'ai-detection-canvas',
+  props: z.object({
+    rounded: z.enum(['none', 'sm', 'md', 'lg']).optional(),
+    src: z.string().optional(),
+    detections: z.array(z.any()).optional(),
+    showLabels: z.boolean().optional(),
+    showConfidence: z.boolean().optional(),
+    selectedId: z.string().optional(),
+    interactive: z.boolean().optional(),
+  }),
+  description: 'Image canvas with bounding-box detections, confidence overlays, and selection',
+});
+
+export const AiLabelingBoardDef = defineComponent({
+  name: 'AiLabelingBoard', tagName: 'ai-labeling-board',
+  props: z.object({
+    items: z.array(z.any()).optional(),
+    labels: z.array(z.any()).optional(),
+    allowCustomLabels: z.boolean().optional(),
+    mode: z.enum(['click', 'list']).optional(),
+  }),
+  description: 'Data labeling board for rapid annotation with predefined or custom labels',
+});
+
+export const AiPersonalizationDashDef = defineComponent({
+  name: 'AiPersonalizationDash', tagName: 'ai-personalization-dash',
+  props: z.object({
+    rounded: z.enum(['none', 'sm', 'md', 'lg']).optional(),
+    preferences: z.array(z.any()).optional(),
+    segments: z.array(z.any()).optional(),
+    userName: z.string().optional(),
+    lastUpdated: z.string().optional(),
+    showReset: z.boolean().optional(),
+  }),
+  description: 'Personalization dashboard showing user preferences, segments, and reset control',
+});
+
+export const AiRewardSignalDef = defineComponent({
+  name: 'AiRewardSignal', tagName: 'ai-reward-signal',
+  props: z.object({
+    rounded: z.enum(['none', 'sm', 'md', 'lg']).optional(),
+    score: z.number().optional(),
+    maxScore: z.number().optional(),
+    trend: z.enum(['up', 'down', 'stable']).optional(),
+    history: z.array(z.number()).optional(),
+    label: z.string().optional(),
+    description: z.string().optional(),
+  }),
+  description: 'Model reward/RLHF signal card with score, trend, and history sparkline',
+});
+
+export const AiScenarioPanelDef = defineComponent({
+  name: 'AiScenarioPanel', tagName: 'ai-scenario-panel',
+  props: z.object({
+    scenarios: z.array(z.any()).optional(),
+    activeScenario: z.string().optional(),
+    loading: z.boolean().optional(),
+  }),
+  description: 'What-if scenario panel with selectable hypothesis tabs and loading state',
+});
+
+export const AiSegmentationViewerDef = defineComponent({
+  name: 'AiSegmentationViewer', tagName: 'ai-segmentation-viewer',
+  props: z.object({
+    rounded: z.enum(['none', 'sm', 'md', 'lg']).optional(),
+    src: z.string().optional(),
+    masks: z.array(z.any()).optional(),
+    selectedMask: z.string().optional(),
+    opacity: z.number().optional(),
+    showLabels: z.boolean().optional(),
+    showLegend: z.boolean().optional(),
+  }),
+  description: 'Image segmentation viewer with mask overlays, opacity control, and legend',
+});
+
+export const AiSimilarityCardDef = defineComponent({
+  name: 'AiSimilarityCard', tagName: 'ai-similarity-card',
+  props: z.object({
+    rounded: z.enum(['none', 'sm', 'md', 'lg']).optional(),
+    itemA: z.any().optional(),
+    itemB: z.any().optional(),
+    score: z.number().optional(),
+    features: z.array(z.any()).optional(),
+    layout: z.enum(['side-by-side', 'stacked']).optional(),
+  }),
+  description: 'Side-by-side similarity comparison with score and contributing-feature breakdown',
+});
+
+export const AiTransformSliderDef = defineComponent({
+  name: 'AiTransformSlider', tagName: 'ai-transform-slider',
+  props: z.object({
+    rounded: z.enum(['none', 'sm', 'md', 'lg']).optional(),
+    beforeSrc: z.string().optional(),
+    afterSrc: z.string().optional(),
+    beforeLabel: z.string().optional(),
+    afterLabel: z.string().optional(),
+    position: z.number().optional(),
+    orientation: z.enum(['horizontal', 'vertical']).optional(),
+  }),
+  description: 'Before/after transformation slider with draggable split and labels',
+});
+
+export const AiTranslationPanelDef = defineComponent({
+  name: 'AiTranslationPanel', tagName: 'ai-translation-panel',
+  props: z.object({
+    rounded: z.enum(['none', 'sm', 'md', 'lg']).optional(),
+    sourceText: z.string().optional(),
+    targetText: z.string().optional(),
+    sourceLang: z.string().optional(),
+    targetLang: z.string().optional(),
+    loading: z.boolean().optional(),
+    confidence: z.number().optional(),
+    alternatives: z.array(z.any()).optional(),
+  }),
+  description: 'Dual-pane translation panel with source/target text, confidence, and alternatives',
+});
+
+export const AiValidationChecklistDef = defineComponent({
+  name: 'AiValidationChecklist', tagName: 'ai-validation-checklist',
+  props: z.object({
+    checks: z.array(z.any()).optional(),
+    title: z.string().optional(),
+    autoRun: z.boolean().optional(),
+    loading: z.boolean().optional(),
+  }),
+  description: 'Validation checklist with pass/fail/warning items, auto-run mode, and status summary',
+});
+
+export const AiVoicePanelDef = defineComponent({
+  name: 'AiVoicePanel', tagName: 'ai-voice-panel',
+  props: z.object({
+    rounded: z.enum(['none', 'sm', 'md', 'lg']).optional(),
+    language: z.string().optional(),
+    pushToTalk: z.boolean().optional(),
+    continuous: z.boolean().optional(),
+    timeout: z.number().optional(),
+  }),
+  description: 'Voice input panel with push-to-talk, continuous mode, language, and timeout controls',
+});
+
 const ALL_COMPONENTS = [
   // Layout
   StackDef, TextContentDef, SeparatorDef, IconDef, CardDef,
@@ -1878,10 +2215,19 @@ const ALL_COMPONENTS = [
   // Wave 8: Advanced Foundation
   MenubarDef, NavigationMenuDef, SheetDef, ToasterDef, ResizableDef,
   TreeViewDef, ComboboxDef, VisuallyHiddenDef, PortalDef, FocusScopeDef,
+  // Wave 9: Foundation
+  SidebarDef, AvatarDef, EmptyStateDef, MeterDef, DateRangePickerDef,
+  // Wave 10: Coverage — Forms
+  ListboxDef, TimePickerDef, DateTimePickerDef,
+  // Wave 10: Coverage — AI Atlas
+  AiAgentStepsDef, AiAssistantWidgetDef, AiCacheIndicatorDef, AiConsentManagerDef,
+  AiDataLineageDef, AiDetectionCanvasDef, AiLabelingBoardDef, AiPersonalizationDashDef,
+  AiRewardSignalDef, AiScenarioPanelDef, AiSegmentationViewerDef, AiSimilarityCardDef,
+  AiTransformSliderDef, AiTranslationPanelDef, AiValidationChecklistDef, AiVoicePanelDef,
 ];
 
 /**
- * Full Cognivo library — 171 components registered for LLM generation.
+ * Full Cognivo library — 176 components registered for LLM generation.
  */
 export const cognivoLibrary: Library = createLibrary({
   root: 'Stack',
@@ -1889,7 +2235,7 @@ export const cognivoLibrary: Library = createLibrary({
   componentGroups: [
     {
       name: 'Foundation',
-      components: ['Stack', 'TextContent', 'Separator', 'Icon', 'Label', 'Button', 'ButtonGroup', 'Chip', 'Link', 'Card', 'Badge', 'BadgeGroup', 'Callout', 'Image', 'ImageBlock'],
+      components: ['Stack', 'TextContent', 'Separator', 'Icon', 'Label', 'Button', 'ButtonGroup', 'Chip', 'Link', 'Card', 'Badge', 'BadgeGroup', 'Callout', 'Image', 'ImageBlock', 'Avatar'],
       notes: [
         '- Stack is the root container — use for all layouts (row/column/wrap)',
         '- Card has 3 variants: elevated (shadow), outlined (border), filled (subtle bg)',
@@ -1902,7 +2248,7 @@ export const cognivoLibrary: Library = createLibrary({
     },
     {
       name: 'Forms',
-      components: ['Form', 'Label', 'Input', 'Select', 'Textarea', 'Checkbox', 'Radio', 'RadioGroup', 'Switch', 'Slider', 'DatePicker', 'Autocomplete', 'NumberInput', 'OtpInput', 'ColorPicker', 'Toggle', 'ToggleGroup', 'SegmentedControl', 'PasswordInput', 'Rating', 'TagInput', 'FileInput', 'Combobox'],
+      components: ['Form', 'Label', 'Input', 'Select', 'Textarea', 'Checkbox', 'Radio', 'RadioGroup', 'Switch', 'Slider', 'DatePicker', 'Autocomplete', 'NumberInput', 'OtpInput', 'ColorPicker', 'Toggle', 'ToggleGroup', 'SegmentedControl', 'PasswordInput', 'Rating', 'TagInput', 'FileInput', 'Combobox', 'DateRangePicker'],
       notes: [
         '- Wrap fields in Form, use Label above each input',
         '- Input supports clear button, character count, prefix/suffix slots',
@@ -1939,7 +2285,7 @@ export const cognivoLibrary: Library = createLibrary({
     },
     {
       name: 'Structural',
-      components: ['Collapsible', 'Kbd', 'AspectRatio', 'ScrollArea', 'Navbar', 'Calendar', 'Resizable', 'TreeView'],
+      components: ['Collapsible', 'Kbd', 'AspectRatio', 'ScrollArea', 'Navbar', 'Calendar', 'Resizable', 'TreeView', 'Sidebar'],
       notes: [
         '- Collapsible: single expand/collapse region with animated height',
         '- Kbd: keyboard shortcut display (e.g. "Cmd+K") with default and outline variants',
@@ -1947,6 +2293,7 @@ export const cognivoLibrary: Library = createLibrary({
         '- ScrollArea: custom scrollbar container, vertical/horizontal/both, auto/always/hover visibility',
         '- Navbar: top nav with sticky/bordered/elevated and glass/gradient/pill variants, responsive mobile menu',
         '- Calendar: month-grid date picker with single/range/multiple modes and min/max bounds',
+        '- Sidebar: collapsible side navigation with left/right placement, sticky mode, and header/footer slots',
       ],
     },
     {
@@ -1964,11 +2311,13 @@ export const cognivoLibrary: Library = createLibrary({
     },
     {
       name: 'Feedback',
-      components: ['ProgressBar', 'Spinner', 'Skeleton'],
+      components: ['ProgressBar', 'Spinner', 'Skeleton', 'EmptyState', 'Meter'],
       notes: [
         '- ProgressBar: gradient fill, striped pattern, indeterminate animation',
         '- Spinner: 5 sizes, 3 color variants with accessible label',
         '- Skeleton: shimmer loading placeholder with text/circular/rectangular variants',
+        '- EmptyState: contextual empty/no-results/error state with icon, title, description, and actions slot',
+        '- Meter: measurement gauge with threshold coloring, linear and circular variants, and show-value option',
       ],
     },
     {
@@ -2018,7 +2367,7 @@ export const cognivoLibrary: Library = createLibrary({
 });
 
 /**
- * Chat-optimized library — 170 components (excludes AiChat since chat IS the container).
+ * Chat-optimized library — 175 components (excludes AiChat since chat IS the container).
  */
 export const cognivoChatLibrary: Library = createLibrary({
   root: 'Stack',

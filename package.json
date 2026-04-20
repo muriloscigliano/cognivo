@@ -2,6 +2,7 @@
   "name": "cognivo",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "description": "AI-Native Component Library - Transform dashboards into intelligent interfaces",
   "keywords": [
     "ai",

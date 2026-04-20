@@ -33,13 +33,13 @@ export class BiasLibraryElement extends LitElement {
     .title {
       font-size: var(--cg-font-size-3xl, 32px);
       font-weight: var(--cg-font-weight-bold, 700);
-      color: var(--cg-gray-900, #1a1a1a);
+      color: var(--cg-color-surface-base-text, #1a1a1a);
       margin: 0 0 var(--cg-spacing-8, 8px) 0;
     }
 
     .subtitle {
       font-size: var(--cg-font-size-base, 16px);
-      color: var(--cg-gray-600, #616161);
+      color: var(--cg-color-surface-cards-disable-text, #616161);
       margin: 0 0 var(--cg-spacing-24, 24px) 0;
     }
 
@@ -53,19 +53,19 @@ export class BiasLibraryElement extends LitElement {
     .stat {
       padding: var(--cg-spacing-12, 12px) var(--cg-spacing-24, 20px);
       background: var(--cg-color-surface-inset-background, #f5f5f5);
-      border-radius: var(--cg-Border-radius-100, 8px);
+      border-radius: var(--cg-border-radius-100, 8px);
       min-width: 120px;
     }
 
     .stat-value {
       font-size: var(--cg-font-size-2xl, 24px);
       font-weight: var(--cg-font-weight-bold, 700);
-      color: var(--cg-brand-primary-400, #1976d2);
+      color: var(--cg-color-action-primary-background-default, #1976d2);
     }
 
     .stat-label {
       font-size: var(--cg-font-size-xs, 12px);
-      color: var(--cg-gray-500, #757575);
+      color: var(--cg-color-surface-cards-disable-text, #757575);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-top: var(--cg-spacing-4, 4px);
@@ -78,8 +78,8 @@ export class BiasLibraryElement extends LitElement {
       margin-bottom: var(--cg-spacing-32, 32px);
       padding: var(--cg-spacing-24, 20px);
       background: var(--cg-color-surface-container-background, white);
-      border: var(--cg-Border-width-50, 1px) solid var(--cg-color-surface-container-border, #e0e0e0);
-      border-radius: var(--cg-Border-radius-100, 8px);
+      border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-container-border, #e0e0e0);
+      border-radius: var(--cg-border-radius-100, 8px);
     }
 
     .search {
@@ -90,15 +90,15 @@ export class BiasLibraryElement extends LitElement {
     .search input {
       width: 100%;
       padding: var(--cg-spacing-12, 12px) var(--cg-spacing-16, 16px);
-      border: var(--cg-Border-width-50, 1px) solid var(--cg-color-surface-field-border, #e0e0e0);
-      border-radius: var(--cg-Border-radius-100, 6px);
+      border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-field-border, #e0e0e0);
+      border-radius: var(--cg-border-radius-100, 6px);
       font-size: var(--cg-font-size-sm, 14px);
       font-family: inherit;
     }
 
     .search input:focus {
       outline: none;
-      border-color: var(--cg-brand-primary-400, #1976d2);
+      border-color: var(--cg-color-action-primary-border-focus, #1976d2);
     }
 
     .filter {
@@ -110,15 +110,15 @@ export class BiasLibraryElement extends LitElement {
     .filter-label {
       font-size: var(--cg-font-size-xs, 12px);
       font-weight: 600;
-      color: var(--cg-gray-500, #757575);
+      color: var(--cg-color-surface-cards-disable-text, #757575);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     select {
       padding: var(--cg-spacing-10, 10px) var(--cg-spacing-12, 12px);
-      border: var(--cg-Border-width-50, 1px) solid var(--cg-color-surface-field-border, #e0e0e0);
-      border-radius: var(--cg-Border-radius-100, 6px);
+      border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-field-border, #e0e0e0);
+      border-radius: var(--cg-border-radius-100, 6px);
       font-size: var(--cg-font-size-sm, 14px);
       font-family: inherit;
       background: var(--cg-color-surface-container-background, white);
@@ -127,7 +127,7 @@ export class BiasLibraryElement extends LitElement {
 
     select:focus {
       outline: none;
-      border-color: var(--cg-brand-primary-400, #1976d2);
+      border-color: var(--cg-color-action-primary-border-focus, #1976d2);
     }
 
     .view-toggle {
@@ -138,9 +138,9 @@ export class BiasLibraryElement extends LitElement {
 
     .view-button {
       padding: var(--cg-spacing-10, 10px) var(--cg-spacing-16, 16px);
-      border: var(--cg-Border-width-50, 1px) solid var(--cg-color-surface-container-border, #e0e0e0);
+      border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-container-border, #e0e0e0);
       background: var(--cg-color-surface-container-background, white);
-      border-radius: var(--cg-Border-radius-100, 6px);
+      border-radius: var(--cg-border-radius-100, 6px);
       font-size: var(--cg-font-size-sm, 14px);
       cursor: pointer;
       transition: all var(--cg-transition-duration-default, 200ms);
@@ -151,9 +151,9 @@ export class BiasLibraryElement extends LitElement {
     }
 
     .view-button.active {
-      background: var(--cg-brand-primary-400, #1976d2);
-      color: white;
-      border-color: var(--cg-brand-primary-400, #1976d2);
+      background: var(--cg-color-action-primary-background-default, #1976d2);
+      color: var(--cg-color-action-primary-text-default, white);
+      border-color: var(--cg-color-action-primary-border-default, #1976d2);
     }
 
     .results-header {
@@ -165,7 +165,7 @@ export class BiasLibraryElement extends LitElement {
 
     .results-count {
       font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-gray-500, #757575);
+      color: var(--cg-color-surface-cards-disable-text, #757575);
     }
 
     .grid {
@@ -188,7 +188,7 @@ export class BiasLibraryElement extends LitElement {
     .empty {
       text-align: center;
       padding: var(--cg-spacing-64, 64px) var(--cg-spacing-24, 24px);
-      color: var(--cg-gray-400, #9e9e9e);
+      color: var(--cg-color-surface-cards-disable-text, #9e9e9e);
     }
 
     .empty-icon {
@@ -203,7 +203,7 @@ export class BiasLibraryElement extends LitElement {
 
     .empty-hint {
       font-size: var(--cg-font-size-sm, 14px);
-      color: var(--cg-gray-300, #bdbdbd);
+      color: var(--cg-color-surface-cards-disable-text, #bdbdbd);
     }
   `;
 

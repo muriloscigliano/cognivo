@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { readFileSync, statSync } from 'node:fs';
+import { readFileSync, statSync, readdirSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
-import { resolve } from 'node:path';
+import { resolve, join, dirname } from 'node:path';
 
 const BUDGETS = [
   { name: '@cognivo/components',    file: 'packages/components/dist/index.js',     maxKbGz: 280 },
@@ -9,13 +9,36 @@ const BUDGETS = [
   { name: '@cognivo/core',          file: 'packages/core/dist/index.js',           maxKbGz: 14  },
   { name: '@cognivo/adapter-react', file: 'packages/adapter-react/dist/index.js',  maxKbGz: 8   },
   { name: '@cognivo/adapter-vue',   file: 'packages/adapter-vue/dist/index.js',    maxKbGz: 10  },
+  // design-advisor bias category chunks (hashed filenames, matched by prefix)
+  { name: 'design-advisor · biases-cognitive',       dir: 'packages/design-advisor/dist', prefix: 'biases-cognitive-',       maxKbGz: 920 },
+  { name: 'design-advisor · biases-decision-making', dir: 'packages/design-advisor/dist', prefix: 'biases-decision-making-', maxKbGz: 580 },
+  { name: 'design-advisor · biases-memory',          dir: 'packages/design-advisor/dist', prefix: 'biases-memory-',          maxKbGz: 560 },
+  { name: 'design-advisor · biases-social',          dir: 'packages/design-advisor/dist', prefix: 'biases-social-',          maxKbGz: 540 },
+  { name: 'design-advisor · biases-perception',      dir: 'packages/design-advisor/dist', prefix: 'biases-perception-',      maxKbGz: 20  },
+  { name: 'design-advisor · atlas-library',          dir: 'packages/design-advisor/dist', prefix: 'atlas-library-',          maxKbGz: 20  },
+  { name: 'design-advisor · atlas-registry',         dir: 'packages/design-advisor/dist', prefix: 'atlas-registry-',         maxKbGz: 12  },
+  { name: 'design-advisor · bias-registry',          dir: 'packages/design-advisor/dist', prefix: 'bias-registry-',          maxKbGz: 8   },
+  { name: 'design-advisor · index',                  file: 'packages/design-advisor/dist/index.js',                          maxKbGz: 6   },
 ];
 
 let failed = 0;
 const rows = [];
 
-for (const { name, file, maxKbGz } of BUDGETS) {
-  const path = resolve(process.cwd(), file);
+function resolveEntry(entry) {
+  if (entry.file) return resolve(process.cwd(), entry.file);
+  const dir = resolve(process.cwd(), entry.dir);
+  const match = readdirSync(dir).find((f) => f.startsWith(entry.prefix) && f.endsWith('.js'));
+  return match ? join(dir, match) : null;
+}
+
+for (const entry of BUDGETS) {
+  const { name, maxKbGz } = entry;
+  const path = resolveEntry(entry);
+  if (!path) {
+    rows.push([name, 'MISSING', `${maxKbGz} KB`, '❌']);
+    failed++;
+    continue;
+  }
   try {
     statSync(path);
   } catch {
