@@ -195,6 +195,13 @@ import { AiDataLineage } from './components/ai-data-lineage/ai-data-lineage.js';
 import { AiRewardSignal } from './components/ai-reward-signal/ai-reward-signal.js';
 import { AiAssistantWidget } from './components/ai-assistant-widget/ai-assistant-widget.js';
 
+// ── Wave 9: Final Foundation Gaps (5) ──────────────────────────────────────
+import { CgSidebar } from './components/cg-sidebar/cg-sidebar.js';
+import { CgAvatar } from './components/cg-avatar/cg-avatar.js';
+import { CgEmptyState } from './components/cg-empty-state/cg-empty-state.js';
+import { CgMeter } from './components/cg-meter/cg-meter.js';
+import { CgDateRangePicker } from './components/cg-date-range-picker/cg-date-range-picker.js';
+
 // ── Wave 8: Advanced Foundation (10) ───────────────────────────────────────
 import { CgMenubar } from './components/cg-menubar/cg-menubar.js';
 import { CgNavigationMenu } from './components/cg-navigation-menu/cg-navigation-menu.js';
@@ -271,6 +278,8 @@ export {
   // Wave 8: Advanced Foundation
   CgMenubar, CgNavigationMenu, CgSheet, CgToaster, CgResizable,
   CgTreeView, CgCombobox, CgVisuallyHidden, CgPortal, CgFocusScope,
+  // Wave 9: Final Foundation Gaps
+  CgSidebar, CgAvatar, CgEmptyState, CgMeter, CgDateRangePicker,
 };
 
 // Type exports

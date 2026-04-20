@@ -189,6 +189,8 @@ export class AiConfidenceSlider extends LitElement {
         <div class="presets">
           ${this._presets.map(p => html`
             <button class="preset-btn ${this.value === p.value ? 'active' : ''}"
+              aria-label=${`Set confidence to ${p.value}%`}
+              aria-pressed=${this.value === p.value ? 'true' : 'false'}
               @click=${() => this._setPreset(p.value)}>${p.label}</button>
           `)}
         </div>

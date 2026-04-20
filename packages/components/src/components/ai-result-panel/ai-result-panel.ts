@@ -353,7 +353,12 @@ export class AiResultPanel extends LitElement {
 
     return html`
       <div class="panel ${this._collapsed ? 'collapsed' : ''}" role="region" aria-label="${this.title}">
-        <div class="header" @click=${this._toggleCollapse}>
+        <div class="header"
+          role=${this.collapsible ? 'button' : 'heading'}
+          tabindex=${this.collapsible ? '0' : '-1'}
+          aria-expanded=${this.collapsible ? String(!this._collapsed) : nothing}
+          @click=${this._toggleCollapse}
+          @keydown=${(e: KeyboardEvent) => { if (this.collapsible && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); this._toggleCollapse(); } }}>
           <div class="header-left">
             ${this.collapsible ? html`<span class="collapse-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></span>` : nothing}
             <span class="title">${this.title}</span>

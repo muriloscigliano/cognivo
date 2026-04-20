@@ -291,7 +291,7 @@ export class AiAssistantWidget extends LitElement {
   override render() {
     return html`
       ${this.expanded ? html`
-        <div class="panel" role="dialog" aria-label="${this.title}">
+        <div class="panel" role="dialog" aria-modal="true" aria-label="${this.title}" @keydown=${(e: KeyboardEvent) => { if (e.key === 'Escape') this._close(); }}>
           <div class="panel-header">
             <span class="panel-title">${this.title}</span>
             <button class="close-btn" @click=${this._close} aria-label="Close assistant">&#10005;</button>

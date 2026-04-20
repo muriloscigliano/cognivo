@@ -221,7 +221,7 @@ export class AiHeatmap extends LitElement {
       <div class="container">
         ${this.title ? html`<div class="title">${this.title}</div>` : nothing}
 
-        <svg width="${svgW}" height="${svgH}" role="grid" aria-label="${this.title || 'Heatmap'}">
+        <svg width="${svgW}" height="${svgH}" role="grid" aria-label=${`${this.title || 'Heatmap'}: ${this.data.length} rows by ${this.data[0]?.length ?? 0} columns`}>
           <!-- Column labels -->
           ${this.colLabels.map((label, i) => svg`
             <text class="axis-label" x="${ml + i * cs + cs / 2}" y="${mt - 8}"
