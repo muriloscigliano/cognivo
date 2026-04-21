@@ -71,7 +71,7 @@ export class CgSwitch extends LitElement {
       top: var(--cg-spacing-2);
       left: var(--cg-spacing-2);
       transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out), width var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      box-shadow: var(--cg-elevation-1);
     }
 
     /* Thumb checked — slide right */
@@ -82,7 +82,7 @@ export class CgSwitch extends LitElement {
 
     /* ── Hover — thumb grows slightly ── */
     :host(:not([disabled])) label:hover .thumb {
-      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--cg-elevation-2);
       transform: scale(1.05);
     }
     :host(:not([disabled])) label:hover .track.checked .thumb {

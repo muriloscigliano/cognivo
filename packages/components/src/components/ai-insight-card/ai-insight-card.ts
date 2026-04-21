@@ -10,7 +10,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
-import { sanitizeHTML } from '../../utils/sanitize.js';
 
 interface Source {
   title: string;
@@ -277,6 +276,7 @@ export class AiInsightCard extends LitElement {
     return html`
       <div class="card ${this.expanded ? 'expanded' : ''} ${this.selected ? 'selected' : ''}"
         role="article" tabindex="0" aria-label="${this.type} insight"
+        aria-expanded=${this.expandable ? String(this.expanded) : nothing}
         @click=${this._handleClick} @keydown=${this._handleKeyDown}>
 
         ${this.status && this.status !== 'dismissed' ? html`<div class="status-dot ${this.status}" aria-hidden="true"></div>` : nothing}

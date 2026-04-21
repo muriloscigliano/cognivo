@@ -65,7 +65,7 @@ export class CgTagInput extends LitElement {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-medium);
       color: var(--cg-color-surface-base-text);
-      animation: tagIn var(--cg-transition-duration-default) cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: tagIn var(--cg-transition-duration-default) var(--cg-transition-easing-spring);
       transition:
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);

@@ -2,10 +2,10 @@ import { css } from 'lit';
 
 /**
  * Standard color/opacity transition for :host elements.
- * Maps to --cg-motion-duration-fast (150ms) + --cg-motion-easing-color.
+ * Maps to --cg-transition-duration-fast + --cg-transition-easing-default.
  */
 export const hostTransition = css`
-  transition: color var(--cg-motion-duration-fast, 150ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+  transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
 `;
 
 /**
@@ -14,17 +14,17 @@ export const hostTransition = css`
  */
 export const interactiveTransition = css`
   transition:
-    transform var(--cg-motion-duration-slow, 200ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
-    background-color var(--cg-motion-duration-fast, 150ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-    border-color var(--cg-motion-duration-fast, 150ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1)),
-    box-shadow var(--cg-motion-duration-fast, 150ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+    transform var(--cg-transition-duration-slow) var(--cg-transition-easing-default),
+    background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+    border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+    box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
 `;
 
 /**
  * Press scale feedback for :active state.
  */
 export const pressScale = css`
-  transform: scale(var(--cg-interaction-press-scale, 0.97));
+  transform: scale(var(--cg-interaction-press-scale));
 `;
 
 /** Reduced motion media query — disables transitions and animations for a11y. */
@@ -119,18 +119,18 @@ export const slideInRightKeyframes = css`
 
 /** Hover lift for interactive cards and surfaces. */
 export const hoverLift = css`
-  transform: translateY(var(--cg-interaction-hover-lift, -1px));
+  transform: translateY(var(--cg-interaction-hover-lift));
 `;
 
 /** Card hover pattern: lift + enhanced shadow on hover, settle on active. */
 export const cardHoverLift = css`
   transition:
-    transform var(--cg-motion-duration-normal, 150ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1)),
-    box-shadow var(--cg-motion-duration-normal, 150ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+    transform var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+    box-shadow var(--cg-transition-duration-default) var(--cg-transition-easing-default);
 
   &:hover {
-    transform: translateY(var(--cg-interaction-hover-lift, -1px));
-    box-shadow: var(--cg-elevation-2, 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2));
+    transform: translateY(var(--cg-interaction-hover-lift));
+    box-shadow: var(--cg-elevation-2);
   }
 
   &:active {

@@ -56,16 +56,16 @@ export class CgChart extends LitElement {
     .anim-line {
       stroke-dasharray: var(--dash);
       stroke-dashoffset: var(--dash);
-      animation: lineTrace 900ms cubic-bezier(0.4, 0, 1, 1) forwards;
+      animation: lineTrace 900ms var(--cg-transition-easing-ease-out) forwards;
     }
     .anim-dot {
-      animation: fadeIn 200ms cubic-bezier(0.4, 0, 1, 1) both;
+      animation: fadeIn 200ms var(--cg-transition-easing-ease-out) both;
     }
     .anim-slice {
-      animation: fadeIn 400ms cubic-bezier(0.4, 0, 1, 1) both;
+      animation: fadeIn 400ms var(--cg-transition-easing-ease-out) both;
     }
     .anim-legend {
-      animation: fadeIn 200ms cubic-bezier(0.4, 0, 1, 1) both;
+      animation: fadeIn 200ms var(--cg-transition-easing-ease-out) both;
     }
 
     /* Tooltip */

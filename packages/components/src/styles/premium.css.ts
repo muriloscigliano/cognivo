@@ -34,12 +34,12 @@ export const surfaceGradient = css`
  * noticeable enough to communicate interactivity.
  */
 export const hoverScale = css`
-  transition: transform var(--cg-motion-duration-normal, 150ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+  transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-default);
   &:hover:not(:disabled):not([disabled]):not(.disabled) {
     transform: scale(1.02);
   }
   &:active:not(:disabled):not([disabled]):not(.disabled) {
-    transform: scale(var(--cg-interaction-press-scale, 0.97));
+    transform: scale(var(--cg-interaction-press-scale));
   }
 `;
 
@@ -50,7 +50,7 @@ export const hoverScale = css`
  */
 export const colorMatchedHover = css`
   &:hover:not(:disabled):not([disabled]):not(.disabled) {
-    background-color: var(--cg-overlay-accent-subtle, rgba(223, 255, 97, 0.06));
+    background-color: var(--cg-overlay-accent-subtle);
   }
 `;
 
@@ -61,11 +61,11 @@ export const colorMatchedHover = css`
  */
 export const focusRingAnimated = css`
   box-shadow: 0 0 0 0px transparent, 0 0 0 0px transparent;
-  transition: box-shadow var(--cg-motion-duration-normal, 150ms) var(--cg-motion-easing-enter, cubic-bezier(0, 0, 0.2, 1));
+  transition: box-shadow var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
   &:focus-visible {
     box-shadow:
-      0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-      0 0 0 4px var(--cg-focus-ring-color, #dfff61);
+      0 0 0 2px var(--cg-color-surface-base-background),
+      0 0 0 4px var(--cg-focus-ring-color);
     outline: none;
   }
 `;
@@ -192,12 +192,12 @@ export const liquidFillHover = css`
     inset: 0;
     background: linear-gradient(
       180deg,
-      var(--cg-brand-ai-accent, #dfff61) 0%,
-      rgba(223, 255, 97, 0.03) 100%
+      var(--cg-color-accent-text) 0%,
+      var(--cg-overlay-accent-subtle) 100%
     );
     opacity: 0.06;
     transform: translateY(102%);
-    transition: transform var(--cg-motion-duration-slow, 250ms) var(--cg-motion-easing-default, cubic-bezier(0.4, 0, 0.2, 1));
+    transition: transform var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     z-index: -1;
     border-radius: inherit;
   }

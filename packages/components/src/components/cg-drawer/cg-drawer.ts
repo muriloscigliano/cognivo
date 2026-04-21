@@ -62,9 +62,7 @@ export class CgDrawer extends LitElement {
       flex-direction: column;
       background: var(--cg-color-modal-container-background);
       border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
-      box-shadow:
-        0 var(--cg-shadow-lg-y) var(--cg-shadow-lg-blur) var(--cg-shadow-lg-spread) rgba(0, 0, 0, 0.25),
-        0 var(--cg-shadow-sm-y) var(--cg-shadow-sm-blur) var(--cg-shadow-sm-spread) rgba(0, 0, 0, 0.1);
+      box-shadow: var(--cg-elevation-5);
       overflow: hidden;
       transition: transform var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }

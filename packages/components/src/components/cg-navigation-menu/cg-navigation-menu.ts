@@ -73,7 +73,7 @@ export class CgNavigationMenu extends LitElement {
       top: calc(100% + var(--cg-spacing-8));
       left: 0;
       z-index: var(--cg-z-index-500);
-      min-width: var(--cg-component-navigation-menu-panel-min-width, 480px);
+      min-width: var(--cg-component-navigation-menu-panel-min-width);
       padding: var(--cg-spacing-24);
       background: var(--cg-color-modal-container-background);
       border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);

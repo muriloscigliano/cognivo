@@ -152,17 +152,17 @@ export class CgColorPicker extends LitElement {
       inset: 0;
       border-radius: var(--cg-border-radius-50);
     }
-    .color-area-white { background: linear-gradient(to right, #fff, transparent); }
-    .color-area-black { background: linear-gradient(to top, #000, transparent); }
+    .color-area-white { background: linear-gradient(to right, var(--cg-component-color-picker-spectrum-white), transparent); }
+    .color-area-black { background: linear-gradient(to top, var(--cg-component-color-picker-spectrum-black), transparent); }
     .color-area-thumb {
       position: absolute;
       width: var(--cg-spacing-16);
       height: var(--cg-spacing-16);
-      border: var(--cg-border-width-100) solid #fff;
+      border: var(--cg-border-width-100) solid var(--cg-component-color-picker-thumb-border);
       border-radius: var(--cg-border-radius-full);
       transform: translate(-50%, -50%);
       pointer-events: none;
-      box-shadow: 0 0 0 1px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(0,0,0,0.15);
+      box-shadow: 0 0 0 1px var(--cg-overlay-dark-medium), inset 0 0 0 1px var(--cg-overlay-dark-light);
     }
 
     /* ── Sliders ── */
@@ -175,9 +175,20 @@ export class CgColorPicker extends LitElement {
       cursor: pointer;
       touch-action: none;
     }
-    .hue-track { background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00); }
+    .hue-track {
+      background: linear-gradient(
+        to right,
+        var(--cg-component-color-picker-hue-stop-0),
+        var(--cg-component-color-picker-hue-stop-60),
+        var(--cg-component-color-picker-hue-stop-120),
+        var(--cg-component-color-picker-hue-stop-180),
+        var(--cg-component-color-picker-hue-stop-240),
+        var(--cg-component-color-picker-hue-stop-300),
+        var(--cg-component-color-picker-hue-stop-0)
+      );
+    }
     .alpha-track {
-      background: repeating-conic-gradient(#ccc 0% 25%, transparent 0% 50%) 50% / 8px 8px;
+      background: repeating-conic-gradient(var(--cg-component-color-picker-checker-color) 0% 25%, transparent 0% 50%) 50% / 8px 8px;
       overflow: hidden;
       border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
     }
@@ -187,11 +198,11 @@ export class CgColorPicker extends LitElement {
       top: 50%;
       width: var(--cg-spacing-16);
       height: var(--cg-spacing-16);
-      border: var(--cg-border-width-100) solid #fff;
+      border: var(--cg-border-width-100) solid var(--cg-component-color-picker-thumb-border);
       border-radius: var(--cg-border-radius-full);
       transform: translate(-50%, -50%);
       pointer-events: none;
-      box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
+      box-shadow: 0 0 0 1px var(--cg-overlay-dark-medium);
     }
 
     /* ── Hex + copy row ── */

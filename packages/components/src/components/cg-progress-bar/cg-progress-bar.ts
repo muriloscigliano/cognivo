@@ -115,11 +115,11 @@ export class CgProgressBar extends LitElement {
       inset: 0;
       background-image: linear-gradient(
         45deg,
-        rgba(255, 255, 255, 0.15) 25%,
+        var(--cg-overlay-white-strong) 25%,
         transparent 25%,
         transparent 50%,
-        rgba(255, 255, 255, 0.15) 50%,
-        rgba(255, 255, 255, 0.15) 75%,
+        var(--cg-overlay-white-strong) 50%,
+        var(--cg-overlay-white-strong) 75%,
         transparent 75%,
         transparent
       );
@@ -139,7 +139,7 @@ export class CgProgressBar extends LitElement {
     /* ── Indeterminate ── */
     :host([indeterminate]) .fill {
       width: 40% !important;
-      animation: indeterminate-slide 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      animation: indeterminate-slide 1.5s var(--cg-transition-easing-ease-in-out) infinite;
     }
 
     @keyframes indeterminate-slide {

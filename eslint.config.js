@@ -1,6 +1,7 @@
 import js from '@eslint/js';
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
+import cognivoPlugin from '@cognivo/eslint-plugin';
 
 export default [
   js.configs.recommended,
@@ -74,6 +75,24 @@ export default [
       'no-useless-escape': 'warn',
       'no-empty': 'warn',
       'require-yield': 'warn',
+    },
+  },
+  // Cognivo token/CSS conventions — target component source only.
+  // Rules currently at `warn` have known pre-existing violations documented in
+  // packages/components/improvement-plans/. Promote to `error` as batches close.
+  {
+    files: ['packages/components/src/**/*.ts'],
+    ignores: ['packages/components/src/__tests__/**'],
+    plugins: {
+      '@cognivo': cognivoPlugin,
+    },
+    rules: {
+      '@cognivo/no-transition-all': 'error',
+      '@cognivo/cg-token-prefix': 'error',
+      '@cognivo/no-raw-hex': 'error',
+      '@cognivo/no-raw-rgba': 'error',
+      '@cognivo/no-fake-tokens': 'error',
+      '@cognivo/no-token-fallbacks': 'error',
     },
   },
   {

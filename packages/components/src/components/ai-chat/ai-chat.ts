@@ -189,7 +189,7 @@ export class AiChat extends LitElement {
       resize: none;
       padding: var(--cg-spacing-4) 0;
       min-height: var(--cg-spacing-24);
-      max-height: var(--cg-component-ai-chat-textarea-max-height, 10rem);
+      max-height: var(--cg-component-ai-chat-textarea-max-height);
     }
     .input-box textarea::placeholder {
       color: var(--cg-color-input-text-placeholder);
@@ -303,6 +303,7 @@ export class AiChat extends LitElement {
   private _msgCounter: number = 0;
   private _abortController: AbortController | null = null;
   private _recognition: SpeechRecognition | null = null;
+  private _copyResetTimer: ReturnType<typeof setTimeout> | undefined;
 
   private _genId(): string { return `msg-${++this._msgCounter}`; }
 
@@ -388,6 +389,15 @@ export class AiChat extends LitElement {
   override disconnectedCallback() {
     super.disconnectedCallback();
     this._stopVoice();
+    if (this._copyResetTimer) {
+      clearTimeout(this._copyResetTimer);
+      this._copyResetTimer = undefined;
+    }
+    // Abort any in-flight AI request on unmount
+    if (this._abortController) {
+      try { this._abortController.abort(); } catch { /* ignore */ }
+      this._abortController = null;
+    }
   }
 
   private _scrollToBottom() {
@@ -641,7 +651,8 @@ export class AiChat extends LitElement {
     const text = msg.versions[msg.activeVersion]!.content;
     navigator.clipboard?.writeText(text);
     this._copiedId = msg.id;
-    setTimeout(() => { this._copiedId = null; }, 2000);
+    if (this._copyResetTimer) clearTimeout(this._copyResetTimer);
+    this._copyResetTimer = setTimeout(() => { this._copiedId = null; this._copyResetTimer = undefined; }, 2000);
     this.dispatchEvent(new CustomEvent('ai-chat-copy', {
       bubbles: true, composed: true,
       detail: { content: text },

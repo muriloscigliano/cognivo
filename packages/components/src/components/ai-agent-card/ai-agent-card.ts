@@ -22,7 +22,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, fadeSlideInKeyframes, pulseKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 type AgentStatus = 'idle' | 'thinking' | 'acting' | 'done' | 'error';
 
@@ -36,7 +36,7 @@ const STATUS_BADGE_MAP: Record<AgentStatus, string> = {
 
 @customElement('ai-agent-card')
 export class AiAgentCard extends LitElement {
-  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, pulseKeyframes, css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
       animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out) both;
     }
@@ -59,13 +59,13 @@ export class AiAgentCard extends LitElement {
 
     /* Left accent per state */
     .card.active {
-      border-left: var(--cg-border-width-200) solid var(--cg-color-action-primary-background-default);
+      border-left: var(--cg-border-width-300) solid var(--cg-color-action-primary-background-default);
     }
     .card.error-state {
-      border-left: var(--cg-border-width-200) solid var(--cg-color-status-error-text-default);
+      border-left: var(--cg-border-width-300) solid var(--cg-color-status-error-text-default);
     }
     .card.done-state {
-      border-left: var(--cg-border-width-200) solid var(--cg-color-status-success-text-default);
+      border-left: var(--cg-border-width-300) solid var(--cg-color-status-success-text-default);
     }
 
     /* Shimmer on active */

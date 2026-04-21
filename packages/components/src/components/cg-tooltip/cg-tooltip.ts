@@ -58,7 +58,7 @@ export class CgTooltip extends LitElement {
       transform: scale(0.92);
       transition:
         opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        transform var(--cg-transition-duration-slow) cubic-bezier(0.34, 1.56, 0.64, 1);
+        transform var(--cg-transition-duration-slow) var(--cg-transition-easing-spring);
     }
 
     /* Rich content slot may contain block elements */

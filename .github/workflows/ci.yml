@@ -53,3 +53,49 @@ jobs:
 
       - name: Bundle size budgets
         run: pnpm size
+
+  e2e:
+    runs-on: ubuntu-latest
+    # Single Node version for E2E to keep CI time bounded
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Build packages (required by docs site + playground)
+        run: pnpm build
+
+      - name: Run E2E tests (a11y + component interactions + visual regression)
+        run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+      # On any failure, Playwright drops the actual + expected + diff PNGs
+      # into test-results/. Uploading them lets a reviewer see exactly which
+      # pixels changed for each visual-regression failure without rerunning.
+      - name: Upload visual regression diffs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-diffs
+          path: test-results/
+          retention-days: 14

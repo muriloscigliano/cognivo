@@ -50,3 +50,8 @@ packages/mcp-server/src/catalog/bias-full.json
 
 # Astro generated cache
 docs/.astro/
+
+# Playwright
+playwright-report/
+test-results/
+playwright/.cache/

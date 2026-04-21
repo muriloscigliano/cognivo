@@ -47,7 +47,7 @@ export class AiResultPanel extends LitElement {
       color: var(--cg-color-input-text-placeholder);
       transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .collapse-icon svg { width: 12px; height: 12px; display: block; }
+    .collapse-icon svg { width: var(--cg-spacing-12); height: var(--cg-spacing-12); display: block; }
     .panel.collapsed .collapse-icon { transform: rotate(-90deg); }
 
     .header-actions { display: flex; gap: var(--cg-spacing-4); }
@@ -94,7 +94,7 @@ export class AiResultPanel extends LitElement {
     .tab:hover { color: var(--cg-color-surface-base-text); }
     .tab.active {
       color: var(--cg-color-surface-base-text);
-      border-bottom-color: var(--cg-brand-ai-accent);
+      border-bottom-color: var(--cg-color-action-primary-background-default);
     }
     .tab:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
 
@@ -131,7 +131,7 @@ export class AiResultPanel extends LitElement {
       width: var(--cg-spacing-4);
       height: var(--cg-spacing-4);
       border-radius: var(--cg-border-radius-full);
-      background: var(--cg-brand-ai-accent);
+      background: var(--cg-color-action-primary-background-default);
       flex-shrink: 0;
       margin-top: var(--cg-spacing-8);
     }
@@ -162,7 +162,7 @@ export class AiResultPanel extends LitElement {
       gap: var(--cg-spacing-4);
     }
     .sort-btn:hover { color: var(--cg-color-surface-base-text); }
-    .sort-btn svg { width: 10px; height: 10px; }
+    .sort-btn svg { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
 
     .drivers {
       display: flex;

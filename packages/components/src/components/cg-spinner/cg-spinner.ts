@@ -69,8 +69,8 @@ export class CgSpinner extends LitElement {
       border-top-color: var(--cg-color-action-primary-background-default);
     }
     :host([color="white"]) .spinner {
-      border-color: rgba(255, 255, 255, 0.25);
-      border-top-color: rgba(255, 255, 255, 0.9);
+      border-color: var(--cg-overlay-white-intense);
+      border-top-color: var(--cg-overlay-white-solid);
     }
 
     .sr-only {

@@ -79,8 +79,7 @@ export class CgCarousel extends LitElement {
       padding: 0;
       opacity: 0;
       color: var(--cg-color-surface-container-outlined);
-      box-shadow:
-        0 var(--cg-shadow-sm-y) var(--cg-shadow-sm-blur) var(--cg-shadow-sm-spread) rgba(0, 0, 0, 0.08);
+      box-shadow: var(--cg-elevation-1);
       transition:
         opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
@@ -124,7 +123,7 @@ export class CgCarousel extends LitElement {
       padding: 0;
       transition:
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        width var(--cg-transition-duration-fast) cubic-bezier(0.34, 1.56, 0.64, 1);
+        width var(--cg-transition-duration-fast) var(--cg-transition-easing-spring);
     }
     .dot:hover { background: var(--cg-color-surface-container-outlined); }
     .dot.active {

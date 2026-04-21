@@ -36,7 +36,7 @@ export class CgRating extends LitElement {
       color: var(--cg-color-surface-container-border);
       transition:
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        transform var(--cg-transition-duration-fast) cubic-bezier(0.34, 1.56, 0.64, 1);
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-spring);
     }
     .star:hover { transform: scale(1.15); }
     .star:active { transform: scale(0.95); }

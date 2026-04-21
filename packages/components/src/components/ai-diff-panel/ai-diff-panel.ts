@@ -13,11 +13,9 @@
  * ```
  *
  * @fires {CustomEvent<{line: DiffLine}>} ai-diff-select - Diff line clicked
- *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Focus ring color
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, state, customElement } from 'lit/decorators.js';
+import { property, customElement } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 interface DiffLine {
@@ -77,7 +75,9 @@ export class AiDiffPanel extends LitElement {
       background: none;
       color: var(--cg-color-input-text-placeholder);
       font-family: inherit;
-      transition: background var(--cg-transition-duration-fast), color var(--cg-transition-duration-fast);
+      transition:
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .mode-btn.active {
       background: var(--cg-color-code-border);
@@ -102,7 +102,7 @@ export class AiDiffPanel extends LitElement {
       border-radius: var(--cg-border-radius-full);
       overflow: hidden;
       margin-left: auto;
-      width: 80px;
+      width: var(--cg-spacing-80);
     }
     .stats-bar-add { background: var(--cg-color-status-success-text-default); }
     .stats-bar-remove { background: var(--cg-color-status-error-text-default); }
@@ -129,7 +129,7 @@ export class AiDiffPanel extends LitElement {
     .side-by-side {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      max-height: 400px;
+      max-height: var(--cg-spacing-256);
       overflow-y: auto;
     }
     .side {
@@ -180,7 +180,7 @@ export class AiDiffPanel extends LitElement {
       font-family: var(--cg-font-family-mono);
       font-size: var(--cg-font-size-xs);
       line-height: var(--cg-line-height-relaxed);
-      max-height: 400px;
+      max-height: var(--cg-spacing-256);
       overflow-y: auto;
     }
     .diff-line:hover {
@@ -205,7 +205,7 @@ export class AiDiffPanel extends LitElement {
 
     :focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-overlay-accent-strong);
     }
   `];
   /** Text content before changes */
@@ -227,58 +227,92 @@ export class AiDiffPanel extends LitElement {
   private _cachedBeforeCode: string = '';
   private _cachedAfterCode: string = '';
 
+  /**
+   * Compute a line-level diff using the Longest Common Subsequence algorithm.
+   * This correctly handles duplicate lines (Set-based classification misclassifies them).
+   *
+   * Complexity: O(n*m) time and memory where n, m are the line counts of before/after.
+   * For realistic code diffs (< ~10k lines each side) this is fine. Pathological inputs
+   * (very large files with no shared structure) will grow quadratically — callers should
+   * chunk or pre-filter before reaching that regime.
+   */
   private _computeDiff(): DiffLine[] {
     if (this._cachedDiff && this._cachedBeforeCode === this.beforeCode && this._cachedAfterCode === this.afterCode) {
       return this._cachedDiff;
     }
     this._cachedBeforeCode = this.beforeCode;
     this._cachedAfterCode = this.afterCode;
-    const beforeLines = this.beforeCode.split('\n');
-    const afterLines = this.afterCode.split('\n');
-    const result: DiffLine[] = [];
-    const max = Math.max(beforeLines.length, afterLines.length);
 
-    // Simple line-by-line diff (not LCS — good enough for most cases)
-    const afterSet = new Set(afterLines);
-    const beforeSet = new Set(beforeLines);
+    // Empty-input fast paths — avoid allocating the LCS table when one side is empty.
+    // Note: ''.split('\n') === [''], so we treat a truly empty string as zero lines,
+    // matching what a user would expect from "no before / no after".
+    const beforeLines = this.beforeCode === '' ? [] : this.beforeCode.split('\n');
+    const afterLines = this.afterCode === '' ? [] : this.afterCode.split('\n');
 
-    let bi = 0, ai = 0;
-    while (bi < beforeLines.length || ai < afterLines.length) {
-      const bLine = bi < beforeLines.length ? beforeLines[bi] : undefined;
-      const aLine = ai < afterLines.length ? afterLines[ai] : undefined;
+    const n = beforeLines.length;
+    const m = afterLines.length;
 
-      if (bLine !== undefined && aLine !== undefined && bLine === aLine) {
-        result.push({ type: 'unchanged', content: bLine, lineNum: { before: bi + 1, after: ai + 1 } });
-        bi++; ai++;
-      } else if (bLine !== undefined && !afterSet.has(bLine)) {
-        result.push({ type: 'remove', content: bLine, lineNum: { before: bi + 1 } });
-        bi++;
-      } else if (aLine !== undefined && !beforeSet.has(aLine)) {
-        result.push({ type: 'add', content: aLine, lineNum: { after: ai + 1 } });
-        ai++;
-      } else {
-        // Changed line — show as remove + add
-        if (bLine !== undefined) {
-          result.push({ type: 'remove', content: bLine, lineNum: { before: bi + 1 } });
-          bi++;
-        }
-        if (aLine !== undefined) {
-          result.push({ type: 'add', content: aLine, lineNum: { after: ai + 1 } });
-          ai++;
+    if (n === 0 && m === 0) {
+      this._cachedDiff = [];
+      return this._cachedDiff;
+    }
+    if (n === 0) {
+      const result: DiffLine[] = afterLines.map((line, i) => ({
+        type: 'add', content: line, lineNum: { after: i + 1 },
+      }));
+      this._cachedDiff = result;
+      return result;
+    }
+    if (m === 0) {
+      const result: DiffLine[] = beforeLines.map((line, i) => ({
+        type: 'remove', content: line, lineNum: { before: i + 1 },
+      }));
+      this._cachedDiff = result;
+      return result;
+    }
+
+    // Build LCS table.
+    const lcs: number[][] = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0));
+    for (let i = 1; i <= n; i++) {
+      for (let j = 1; j <= m; j++) {
+        if (beforeLines[i - 1] === afterLines[j - 1]) {
+          lcs[i]![j] = lcs[i - 1]![j - 1]! + 1;
+        } else {
+          lcs[i]![j] = Math.max(lcs[i - 1]![j]!, lcs[i]![j - 1]!);
         }
       }
     }
-    this._cachedDiff = result;
-    return result;
+
+    // Backtrack to construct the diff.
+    const diff: DiffLine[] = [];
+    let i = n;
+    let j = m;
+    while (i > 0 || j > 0) {
+      if (i > 0 && j > 0 && beforeLines[i - 1] === afterLines[j - 1]) {
+        diff.unshift({ type: 'unchanged', content: beforeLines[i - 1]!, lineNum: { before: i, after: j } });
+        i--; j--;
+      } else if (j > 0 && (i === 0 || lcs[i]![j - 1]! >= lcs[i - 1]![j]!)) {
+        diff.unshift({ type: 'add', content: afterLines[j - 1]!, lineNum: { after: j } });
+        j--;
+      } else {
+        diff.unshift({ type: 'remove', content: beforeLines[i - 1]!, lineNum: { before: i } });
+        i--;
+      }
+    }
+
+    this._cachedDiff = diff;
+    return diff;
   }
 
   private get _stats() {
     const diff = this._computeDiff();
-    return {
-      additions: diff.filter(d => d.type === 'add').length,
-      removals: diff.filter(d => d.type === 'remove').length,
-      unchanged: diff.filter(d => d.type === 'unchanged').length,
-    };
+    let additions = 0, removals = 0, unchanged = 0;
+    for (const d of diff) {
+      if (d.type === 'add') additions++;
+      else if (d.type === 'remove') removals++;
+      else unchanged++;
+    }
+    return { additions, removals, unchanged };
   }
 
   private _handleLineClick(line: DiffLine) {
@@ -286,6 +320,19 @@ export class AiDiffPanel extends LitElement {
       bubbles: true, composed: true,
       detail: { type: line.type, content: line.content, lineNum: line.lineNum },
     }));
+  }
+
+  private _handleLineKey(e: KeyboardEvent, line: DiffLine) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      this._handleLineClick(line);
+    }
+  }
+
+  private _lineAriaLabel(line: DiffLine): string {
+    const prefix = line.type === 'add' ? 'Added' : line.type === 'remove' ? 'Removed' : 'Unchanged';
+    const num = line.lineNum.before ?? line.lineNum.after ?? '';
+    return `${prefix} line ${num}: ${line.content}`;
   }
 
   private _renderSideBySide() {
@@ -312,23 +359,33 @@ export class AiDiffPanel extends LitElement {
         <div class="label-item">${this.labels[1]}</div>
       </div>
       <div class="side-by-side">
-        <div class="side">
+        <div class="side" role="list" aria-label="${this.labels[0]}">
           ${left.map(l => l ? html`
-            <div class="diff-line ${l.type}" @click=${() => this._handleLineClick(l)}>
-              <span class="line-num">${l.lineNum.before ?? ''}</span>
-              <span class="line-sign">${l.type === 'remove' ? '-' : ' '}</span>
+            <div class="diff-line ${l.type}"
+              role="listitem"
+              tabindex="0"
+              aria-label=${this._lineAriaLabel(l)}
+              @click=${() => this._handleLineClick(l)}
+              @keydown=${(e: KeyboardEvent) => this._handleLineKey(e, l)}>
+              <span class="line-num" aria-hidden="true">${l.lineNum.before ?? ''}</span>
+              <span class="line-sign" aria-hidden="true">${l.type === 'remove' ? '-' : ' '}</span>
               <span class="line-content">${l.content}</span>
             </div>
-          ` : html`<div class="diff-line empty"><span class="line-num"></span><span class="line-sign"></span><span class="line-content"></span></div>`)}
+          ` : html`<div class="diff-line empty" aria-hidden="true"><span class="line-num"></span><span class="line-sign"></span><span class="line-content"></span></div>`)}
         </div>
-        <div class="side">
+        <div class="side" role="list" aria-label="${this.labels[1]}">
           ${right.map(r => r ? html`
-            <div class="diff-line ${r.type}" @click=${() => this._handleLineClick(r)}>
-              <span class="line-num">${r.lineNum.after ?? ''}</span>
-              <span class="line-sign">${r.type === 'add' ? '+' : ' '}</span>
+            <div class="diff-line ${r.type}"
+              role="listitem"
+              tabindex="0"
+              aria-label=${this._lineAriaLabel(r)}
+              @click=${() => this._handleLineClick(r)}
+              @keydown=${(e: KeyboardEvent) => this._handleLineKey(e, r)}>
+              <span class="line-num" aria-hidden="true">${r.lineNum.after ?? ''}</span>
+              <span class="line-sign" aria-hidden="true">${r.type === 'add' ? '+' : ' '}</span>
               <span class="line-content">${r.content}</span>
             </div>
-          ` : html`<div class="diff-line empty"><span class="line-num"></span><span class="line-sign"></span><span class="line-content"></span></div>`)}
+          ` : html`<div class="diff-line empty" aria-hidden="true"><span class="line-num"></span><span class="line-sign"></span><span class="line-content"></span></div>`)}
         </div>
       </div>
     `;
@@ -337,11 +394,16 @@ export class AiDiffPanel extends LitElement {
   private _renderInline() {
     const diff = this._computeDiff();
     return html`
-      <div class="inline-diff">
+      <div class="inline-diff" role="list" aria-label="${this.title}">
         ${diff.map(d => html`
-          <div class="diff-line ${d.type}" @click=${() => this._handleLineClick(d)}>
-            <span class="prefix">${d.type === 'add' ? '+' : d.type === 'remove' ? '-' : ' '}</span>
-            <span class="line-num">${d.lineNum.before ?? d.lineNum.after ?? ''}</span>
+          <div class="diff-line ${d.type}"
+            role="listitem"
+            tabindex="0"
+            aria-label=${this._lineAriaLabel(d)}
+            @click=${() => this._handleLineClick(d)}
+            @keydown=${(e: KeyboardEvent) => this._handleLineKey(e, d)}>
+            <span class="prefix" aria-hidden="true">${d.type === 'add' ? '+' : d.type === 'remove' ? '-' : ' '}</span>
+            <span class="line-num" aria-hidden="true">${d.lineNum.before ?? d.lineNum.after ?? ''}</span>
             <span class="line-content">${d.content}</span>
           </div>
         `)}

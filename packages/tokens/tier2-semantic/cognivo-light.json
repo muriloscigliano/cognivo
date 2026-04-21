@@ -1999,6 +1999,16 @@
         "$type": "color",
         "$value": "rgba(255, 255, 255, 0.15)",
         "$description": "Strong white overlay for ripple effects and highlights"
+      },
+      "intense": {
+        "$type": "color",
+        "$value": "rgba(255, 255, 255, 0.25)",
+        "$description": "Bright white overlay for track rings and decorative accents on colored surfaces"
+      },
+      "solid": {
+        "$type": "color",
+        "$value": "rgba(255, 255, 255, 0.9)",
+        "$description": "Near-opaque white used as foreground on colored surfaces (e.g. spinners on buttons)"
       }
     }
   },
@@ -2108,6 +2118,13 @@
         "$type": "color",
         "$value": "{brand.primary.500}"
       }
+    }
+  },
+  "blur": {
+    "backdrop": {
+      "$type": "dimension",
+      "$value": "8px",
+      "$description": "Default backdrop blur for modal and overlay dialogs"
     }
   },
   "motion": {

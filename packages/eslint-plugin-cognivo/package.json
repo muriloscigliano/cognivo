@@ -1,0 +1,55 @@
+{
+  "name": "@cognivo/eslint-plugin",
+  "version": "0.4.0",
+  "description": "ESLint plugin enforcing Cognivo's token and interaction conventions.",
+  "keywords": [
+    "cognivo",
+    "design-system",
+    "ui",
+    "components",
+    "eslint",
+    "lint"
+  ],
+  "license": "MIT",
+  "author": "Cognivo",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/murisd/cognivo.git",
+    "directory": "packages/eslint-plugin-cognivo"
+  },
+  "homepage": "https://cognivo.dev",
+  "bugs": "https://github.com/murisd/cognivo/issues",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "pnpm build",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "eslint": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/eslint": "^9.6.0",
+    "@types/estree": "^1.0.6",
+    "eslint": "^9.15.0",
+    "typescript": "^5.7.0"
+  }
+}

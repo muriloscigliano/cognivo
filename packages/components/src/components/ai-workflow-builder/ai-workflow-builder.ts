@@ -20,7 +20,7 @@
  * @fires {CustomEvent<{id: string, label: string, type: string, status: string}>} ai-workflow-step-click - When a step is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, state, customElement } from 'lit/decorators.js';
+import { property, state, customElement, queryAll } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 interface WorkflowStep {
@@ -65,7 +65,7 @@ export class AiWorkflowBuilder extends LitElement {
     }
     .step:hover { border-color: var(--cg-color-input-border-hover); }
     .step:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-spacing-2) var(--cg-overlay-accent-strong); outline-offset: var(--cg-outline-offset-default); }
-    .step:active { transform: scale(0.98); }
+    .step:active { transform: scale(var(--cg-interaction-press-scale)); }
     .step.active { border-color: var(--cg-color-surface-base-text); background: var(--cg-overlay-accent-subtle); }
     .step.complete { border-color: var(--cg-color-status-success-text-default); }
     .step.error { border-color: var(--cg-color-status-error-text-default); }
@@ -106,6 +106,11 @@ export class AiWorkflowBuilder extends LitElement {
   @property({ type: Array }) steps: WorkflowStep[] = [];
   @property({ type: String }) heading: string = 'Workflow';
 
+  @state() private _activeIndex = 0;
+  @state() private _shouldFocusActive = false;
+
+  @queryAll('.step') private _stepEls!: NodeListOf<HTMLElement>;
+
   private _getTypeIcon(type: string): unknown {
     if (type === 'start') return html`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
     if (type === 'agent') return html`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="18" height="12" rx="3"/><circle cx="9" cy="14" r="1.5"/><circle cx="15" cy="14" r="1.5"/><path d="M12 2v4M8 8V6a4 4 0 018 0v2"/></svg>`;
@@ -122,11 +127,61 @@ export class AiWorkflowBuilder extends LitElement {
     return html`<span>--</span>`;
   }
 
-  private _handleStepClick(step: WorkflowStep) {
+  private _handleStepClick(step: WorkflowStep, index: number) {
+    this._activeIndex = index;
     this.dispatchEvent(new CustomEvent('ai-workflow-step-click', {
       bubbles: true, composed: true,
       detail: { id: step.id, label: step.label, type: step.type, status: step.status },
     }));
+  }
+
+  private _handleStepKeyDown(e: KeyboardEvent, step: WorkflowStep, index: number) {
+    const total = this.steps.length;
+    if (total === 0) return;
+
+    switch (e.key) {
+      case 'ArrowRight':
+      case 'ArrowDown':
+        e.preventDefault();
+        this._activeIndex = (index + 1) % total;
+        this._shouldFocusActive = true;
+        break;
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        e.preventDefault();
+        this._activeIndex = (index - 1 + total) % total;
+        this._shouldFocusActive = true;
+        break;
+      case 'Home':
+        e.preventDefault();
+        this._activeIndex = 0;
+        this._shouldFocusActive = true;
+        break;
+      case 'End':
+        e.preventDefault();
+        this._activeIndex = total - 1;
+        this._shouldFocusActive = true;
+        break;
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        this._handleStepClick(step, index);
+        break;
+    }
+  }
+
+  override updated(changed: Map<string, unknown>) {
+    super.updated(changed);
+    // Clamp active index if steps array shrunk.
+    if (changed.has('steps') && this._activeIndex >= this.steps.length) {
+      this._activeIndex = Math.max(0, this.steps.length - 1);
+    }
+    if (this._shouldFocusActive) {
+      this._shouldFocusActive = false;
+      const els = this._stepEls;
+      const target = els?.[this._activeIndex];
+      if (target) target.focus();
+    }
   }
 
   override render() {
@@ -138,13 +193,16 @@ export class AiWorkflowBuilder extends LitElement {
           <span class="title">${this.heading}</span>
           <span class="step-count">${this.steps.length} steps</span>
         </div>
-        <div class="flow" role="list">
+        <div class="flow" role="toolbar" aria-label="${this.heading} workflow steps (vertical orientation)" aria-orientation="vertical">
           ${this.steps.map((step, i) => html`
             ${i > 0 ? html`<div class="connector ${step.status === 'active' || step.status === 'complete' ? 'active' : ''}"></div>` : nothing}
-            <div class="step ${step.status || 'pending'}" tabindex="0" role="listitem"
+            <div class="step ${step.status || 'pending'}"
+              tabindex=${i === this._activeIndex ? '0' : '-1'}
+              role="button"
+              aria-label="${step.label}"
               aria-current=${step.status === 'active' ? 'step' : nothing}
-              @click=${() => this._handleStepClick(step)}
-              @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleStepClick(step); } }}>
+              @click=${() => this._handleStepClick(step, i)}
+              @keydown=${(e: KeyboardEvent) => this._handleStepKeyDown(e, step, i)}>
               <div class="step-icon ${step.type}" aria-hidden="true">${this._getTypeIcon(step.type)}</div>
               <div class="step-info">
                 <div class="step-type">${step.type}</div>

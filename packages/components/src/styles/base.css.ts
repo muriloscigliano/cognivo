@@ -7,9 +7,9 @@ import { css } from 'lit';
 export const hostBase = css`
   :host {
     display: inline-flex;
-    font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-family: var(--cg-font-family-primary);
     box-sizing: border-box;
-    transition: color var(--cg-motion-duration-fast, 150ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+    transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
   }
 `;
 
@@ -19,9 +19,9 @@ export const hostBase = css`
 export const hostBlock = css`
   :host {
     display: block;
-    font-family: var(--cg-font-family-primary, 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-family: var(--cg-font-family-primary);
     box-sizing: border-box;
-    transition: color var(--cg-motion-duration-fast, 150ms) var(--cg-motion-easing-color, cubic-bezier(0, 0, 0.58, 1));
+    transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
   }
 `;
 

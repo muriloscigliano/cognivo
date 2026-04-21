@@ -86,15 +86,15 @@ export class AiStreamingText extends LitElement {
   }
 
   override render() {
-    if (!this.content && !this.streaming) {
-      return html`<div class="empty">Waiting for content...</div>`;
-    }
-
+    const isEmpty = !this.content && !this.streaming;
+    // Always render the live region so screen readers catch the first streamed chunk.
     return html`
-      <div class="container" role="status" aria-live="polite">
-        ${this.markdown
-          ? html`<cg-markdown .text=${this.content}></cg-markdown>`
-          : html`<span class="plain">${this.content}</span>`}
+      <div class="container" role="status" aria-live="polite" aria-busy=${this.streaming ? 'true' : 'false'}>
+        ${isEmpty
+          ? html`<span class="empty">Waiting for content...</span>`
+          : this.markdown
+            ? html`<cg-markdown .text=${this.content}></cg-markdown>`
+            : html`<span class="plain">${this.content}</span>`}
       </div>
     `;
   }

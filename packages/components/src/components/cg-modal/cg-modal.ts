@@ -76,9 +76,7 @@ export class CgModal extends LitElement {
       background: var(--cg-color-modal-container-background);
       border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
       border-radius: var(--cg-component-modal-radius);
-      box-shadow:
-        0 var(--cg-shadow-lg-y) var(--cg-shadow-lg-blur) var(--cg-shadow-lg-spread) rgba(0, 0, 0, 0.25),
-        0 var(--cg-shadow-sm-y) var(--cg-shadow-sm-blur) var(--cg-shadow-sm-spread) rgba(0, 0, 0, 0.1);
+      box-shadow: var(--cg-elevation-4);
       overflow: hidden;
 
       /* Animation */

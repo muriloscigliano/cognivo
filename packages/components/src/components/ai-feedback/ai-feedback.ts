@@ -125,14 +125,14 @@ export class AiFeedback extends LitElement {
       border-color: var(--cg-color-status-success-text-default);
       background: var(--cg-color-status-success-background-default);
       color: var(--cg-color-status-success-text-default);
-      animation: pop 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: pop 400ms var(--cg-transition-easing-spring);
       box-shadow: 0 0 12px var(--cg-color-status-success-background-default);
     }
     .thumb-btn.selected-down {
       border-color: var(--cg-color-status-error-text-default);
       background: var(--cg-color-status-error-background-default);
       color: var(--cg-color-status-error-text-default);
-      animation: pop 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: pop 400ms var(--cg-transition-easing-spring);
       box-shadow: 0 0 12px var(--cg-color-status-error-background-default);
     }
     .thumb-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); outline-offset: var(--cg-outline-offset-default); }
@@ -152,7 +152,7 @@ export class AiFeedback extends LitElement {
     .star-btn:hover { transform: scale(1.15); }
     .star-btn.active {
       color: var(--cg-color-status-warning-text-default);
-      animation: starCascade 350ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      animation: starCascade 350ms var(--cg-transition-easing-spring) both;
       animation-delay: calc(var(--star-index, 0) * 50ms);
     }
     .star-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
@@ -187,7 +187,7 @@ export class AiFeedback extends LitElement {
       opacity: 1;
       border-color: var(--cg-color-surface-base-text);
       background: var(--cg-overlay-accent-subtle);
-      animation: jelly 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: jelly 450ms var(--cg-transition-easing-spring);
     }
     .emoji-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); outline-offset: var(--cg-outline-offset-default); }
 
@@ -232,7 +232,7 @@ export class AiFeedback extends LitElement {
       color: var(--cg-color-surface-base-text);
       background: var(--cg-overlay-accent-subtle);
       box-shadow: 0 0 8px var(--cg-overlay-accent-medium);
-      animation: pop 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: pop 300ms var(--cg-transition-easing-spring);
     }
     .tag:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); outline-offset: var(--cg-outline-offset-default); }
 
@@ -294,7 +294,7 @@ export class AiFeedback extends LitElement {
       position: absolute;
       inset: 0;
       border-radius: inherit;
-      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.25) 0%, transparent 70%);
+      background: radial-gradient(circle at 50% 50%, var(--cg-overlay-white-strong) 0%, transparent 70%);
       opacity: 0;
       transform: scale(0);
       pointer-events: none;
@@ -314,7 +314,7 @@ export class AiFeedback extends LitElement {
     }
     .submitted-icon {
       font-size: var(--cg-font-size-base);
-      animation: pop 500ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      animation: pop 500ms var(--cg-transition-easing-spring) both;
     }
     .submitted-icon svg {
       stroke-dasharray: 24;

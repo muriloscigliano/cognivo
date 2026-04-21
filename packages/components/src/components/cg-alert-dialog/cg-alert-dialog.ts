@@ -40,7 +40,7 @@ export class CgAlertDialog extends LitElement {
       inset: 0;
       z-index: var(--cg-z-index-500);
       background: var(--cg-color-modal-overlay-background);
-      backdrop-filter: blur(var(--cg-blur-backdrop, 4px));
+      backdrop-filter: blur(var(--cg-blur-backdrop));
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);

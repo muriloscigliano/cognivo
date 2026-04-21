@@ -58,4 +58,159 @@ describe('cg-menubar', () => {
     expect(detail?.item).toBe('new');
     expect(detail?.menu).toBe('File');
   });
+
+  // ── Submenu state ──
+
+  it('clicking trigger toggles openIndex', async () => {
+    await create();
+    const trigger = el.shadowRoot!.querySelector<HTMLButtonElement>('.top-trigger')!;
+    trigger.click();
+    await el.updateComplete;
+    expect((el as any)._openIndex).toBe(0);
+    trigger.click();
+    await el.updateComplete;
+    expect((el as any)._openIndex).toBe(-1);
+  });
+
+  it('aria-expanded reflects open state on the trigger', async () => {
+    await create();
+    const triggers = el.shadowRoot!.querySelectorAll<HTMLButtonElement>('.top-trigger');
+    triggers[0]!.click();
+    await el.updateComplete;
+    expect(triggers[0]!.getAttribute('aria-expanded')).toBe('true');
+    expect(triggers[1]!.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('renders separator item as separator div', async () => {
+    await create();
+    const trigger = el.shadowRoot!.querySelector<HTMLButtonElement>('.top-trigger')!;
+    trigger.click();
+    await el.updateComplete;
+    const sep = el.shadowRoot!.querySelector('.separator');
+    expect(sep).not.toBeNull();
+    expect(sep!.getAttribute('role')).toBe('separator');
+  });
+
+  it('renders shortcut when provided', async () => {
+    await create();
+    const triggers = el.shadowRoot!.querySelectorAll<HTMLButtonElement>('.top-trigger');
+    triggers[1]!.click(); // Edit
+    await el.updateComplete;
+    const shortcut = el.shadowRoot!.querySelector('.shortcut');
+    expect(shortcut?.textContent).toBe('Cmd+C');
+  });
+
+  // ── Keyboard on top ──
+
+  it('ArrowRight moves to next trigger (cycles)', async () => {
+    await create();
+    const ev = new KeyboardEvent('keydown', { key: 'ArrowRight', cancelable: true });
+    (el as any)._onTopKeydown(ev, 0);
+    expect(ev.defaultPrevented).toBe(true);
+  });
+
+  it('ArrowLeft wraps to last trigger', async () => {
+    await create();
+    const ev = new KeyboardEvent('keydown', { key: 'ArrowLeft', cancelable: true });
+    (el as any)._onTopKeydown(ev, 0);
+    expect(ev.defaultPrevented).toBe(true);
+  });
+
+  it('ArrowDown on top trigger opens submenu', async () => {
+    await create();
+    const ev = new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true });
+    (el as any)._onTopKeydown(ev, 1);
+    expect((el as any)._openIndex).toBe(1);
+  });
+
+  it('Enter on top trigger opens submenu', async () => {
+    await create();
+    const ev = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true });
+    (el as any)._onTopKeydown(ev, 0);
+    expect((el as any)._openIndex).toBe(0);
+  });
+
+  it('Space on top trigger opens submenu', async () => {
+    await create();
+    const ev = new KeyboardEvent('keydown', { key: ' ', cancelable: true });
+    (el as any)._onTopKeydown(ev, 0);
+    expect((el as any)._openIndex).toBe(0);
+  });
+
+  it('Escape on top trigger closes any open menu', async () => {
+    await create();
+    (el as any)._openIndex = 0;
+    const ev = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true });
+    (el as any)._onTopKeydown(ev, 0);
+    expect((el as any)._openIndex).toBe(-1);
+  });
+
+  // ── Keyboard on submenu ──
+
+  it('Escape in submenu closes menu', async () => {
+    await create();
+    (el as any)._openIndex = 0;
+    const ev = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true });
+    (el as any)._onSubmenuKeydown(ev, 0);
+    expect((el as any)._openIndex).toBe(-1);
+  });
+
+  it('ArrowDown in submenu is handled', async () => {
+    await create();
+    (el as any)._openIndex = 0;
+    await el.updateComplete;
+    const ev = new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true });
+    (el as any)._onSubmenuKeydown(ev, 0);
+    expect(ev.defaultPrevented).toBe(true);
+  });
+
+  // ── Item selection ──
+
+  it('disabled child is not selected on click', async () => {
+    el = document.createElement('cg-menubar') as CgMenubar;
+    el.items = [{ label: 'M', children: [{ label: 'Nope', disabled: true }] }];
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    (el as any)._openIndex = 0;
+    await el.updateComplete;
+
+    let fired = false;
+    el.addEventListener('cg-menubar-select', () => (fired = true));
+    const items = el.shadowRoot!.querySelectorAll<HTMLButtonElement>('.submenu-item');
+    items[0]?.click();
+    expect(fired).toBe(false);
+  });
+
+  it('selection uses menu id when provided, else label', async () => {
+    el = document.createElement('cg-menubar') as CgMenubar;
+    el.items = [{ label: 'File', id: 'file-menu', children: [{ label: 'New', id: 'new-file' }] }];
+    document.body.appendChild(el);
+    await el.updateComplete;
+    (el as any)._openIndex = 0;
+    await el.updateComplete;
+
+    let detail: any;
+    el.addEventListener('cg-menubar-select', (e: any) => (detail = e.detail));
+    const item = el.shadowRoot!.querySelector<HTMLButtonElement>('.submenu-item')!;
+    item.click();
+    expect(detail).toEqual({ menu: 'file-menu', item: 'new-file' });
+  });
+
+  // ── Click outside ──
+
+  it('outside click closes any open menu', async () => {
+    await create();
+    (el as any)._openIndex = 0;
+    await el.updateComplete;
+    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await el.updateComplete;
+    expect((el as any)._openIndex).toBe(-1);
+  });
+
+  it('disconnect removes document click listener', async () => {
+    await create();
+    el.remove();
+    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  });
 });

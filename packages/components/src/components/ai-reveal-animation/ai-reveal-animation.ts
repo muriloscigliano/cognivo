@@ -55,13 +55,13 @@ export class AiRevealAnimation extends LitElement {
       animation: reveal-fade var(--_duration) var(--_delay) ease both;
     }
     .wrapper.visible.slide-up {
-      animation: reveal-slide-up var(--_duration) var(--_delay) cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation: reveal-slide-up var(--_duration) var(--_delay) var(--cg-transition-easing-materialize) both;
     }
     .wrapper.visible.scale {
-      animation: reveal-scale var(--_duration) var(--_delay) cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation: reveal-scale var(--_duration) var(--_delay) var(--cg-transition-easing-materialize) both;
     }
     .wrapper.visible.flip {
-      animation: reveal-flip var(--_duration) var(--_delay) cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation: reveal-flip var(--_duration) var(--_delay) var(--cg-transition-easing-materialize) both;
     }
 
     /* ── Completed ── */

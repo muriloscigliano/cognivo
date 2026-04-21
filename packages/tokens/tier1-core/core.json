@@ -285,6 +285,10 @@
     "256": {
       "$type": "dimension",
       "$value": "256px"
+    },
+    "480": {
+      "$type": "dimension",
+      "$value": "480px"
     }
   },
   "font": {
@@ -789,6 +793,26 @@
       "linear": {
         "$type": "string",
         "$value": "linear"
+      },
+      "spring": {
+        "$type": "cubicBezier",
+        "$value": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "$description": "Springy overshoot for playful micro-interactions (chip/tag enter, rating hover)"
+      },
+      "overshoot": {
+        "$type": "cubicBezier",
+        "$value": "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+        "$description": "Exaggerated overshoot for attention-grabbing entrances"
+      },
+      "bounce": {
+        "$type": "cubicBezier",
+        "$value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "$description": "Smooth decelerating bounce for reveals and materializations"
+      },
+      "materialize": {
+        "$type": "cubicBezier",
+        "$value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "$description": "Alias for bounce — ideal for thinking/materializing states"
       }
     }
   },

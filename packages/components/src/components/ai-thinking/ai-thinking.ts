@@ -31,7 +31,7 @@ export class AiThinking extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-component-card-radius);
       padding: var(--cg-spacing-16) var(--cg-spacing-20);
-      animation: materialize 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation: materialize 0.7s var(--cg-transition-easing-materialize) both;
     }
     :host([size="sm"]) .container {
       padding: var(--cg-spacing-12) var(--cg-spacing-16);
@@ -202,6 +202,16 @@ export class AiThinking extends LitElement {
     .tool.complete { color: var(--cg-color-status-success-text-default); border-color: var(--cg-color-status-success-border-default); }
     .tool.error { color: var(--cg-color-status-error-text-default); border-color: var(--cg-color-status-error-border-default); }
 
+    /* Inline loading ring inside tool-icon slot */
+    .tool-icon-ring {
+      width: 100%;
+      height: 100%;
+      border: var(--cg-border-width-75) solid currentColor;
+      border-top-color: transparent;
+      border-radius: var(--cg-border-radius-full);
+      display: block;
+    }
+
     /* ── Cancel button ── */
     .cancel {
       background: transparent;
@@ -311,7 +321,7 @@ export class AiThinking extends LitElement {
   private _renderToolIcon(status: string) {
     if (status === 'complete') return html`<cg-icon name="check" size="xs"></cg-icon>`;
     if (status === 'error') return html`<cg-icon name="x" size="xs"></cg-icon>`;
-    return html`<span style="width:100%;height:100%;border:1.5px solid currentColor;border-top-color:transparent;border-radius:50%;display:block;"></span>`;
+    return html`<span class="tool-icon-ring" aria-hidden="true"></span>`;
   }
 
   override render() {

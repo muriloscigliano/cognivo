@@ -36,7 +36,8 @@
       }
     },
     "table": {
-      "radius": { "$type": "dimension", "$value": "{border.radius.200}" }
+      "radius": { "$type": "dimension", "$value": "{border.radius.200}" },
+      "virtual-max-height": { "$type": "dimension", "$value": "400px" }
     },
     "modal": {
       "radius": { "$type": "dimension", "$value": "{border.radius.200}" },
@@ -81,7 +82,8 @@
     "ai-chat": {
       "radius": { "$type": "dimension", "$value": "{border.radius.150}" },
       "min-height": { "$type": "dimension", "$value": "400px" },
-      "max-height": { "$type": "dimension", "$value": "800px" }
+      "max-height": { "$type": "dimension", "$value": "800px" },
+      "textarea-max-height": { "$type": "dimension", "$value": "160px" }
     },
     "ai-badge": {
       "radius-sm": { "$type": "dimension", "$value": "{border.radius.50}" },
@@ -120,6 +122,9 @@
       "radius": { "$type": "dimension", "$value": "{border.radius.100}" },
       "min-width": { "$type": "dimension", "$value": "200px" },
       "item-height": { "$type": "dimension", "$value": "{spacing.40}" }
+    },
+    "navigation-menu": {
+      "panel-min-width": { "$type": "dimension", "$value": "480px" }
     },
     "combobox": {
       "radius": { "$type": "dimension", "$value": "{border.radius.125}" },
@@ -220,6 +225,18 @@
       "padding": { "$type": "dimension", "$value": "{spacing.40}" },
       "icon-size": { "$type": "dimension", "$value": "{spacing.48}" }
     },
+    "color-picker": {
+      "spectrum-white": { "$type": "color", "$value": "#ffffff", "$description": "Color picker saturation gradient end (pure white)" },
+      "spectrum-black": { "$type": "color", "$value": "#000000", "$description": "Color picker value gradient end (pure black)" },
+      "hue-stop-0": { "$type": "color", "$value": "#ff0000", "$description": "Color picker hue rail: 0deg red" },
+      "hue-stop-60": { "$type": "color", "$value": "#ffff00", "$description": "Color picker hue rail: 60deg yellow" },
+      "hue-stop-120": { "$type": "color", "$value": "#00ff00", "$description": "Color picker hue rail: 120deg green" },
+      "hue-stop-180": { "$type": "color", "$value": "#00ffff", "$description": "Color picker hue rail: 180deg cyan" },
+      "hue-stop-240": { "$type": "color", "$value": "#0000ff", "$description": "Color picker hue rail: 240deg blue" },
+      "hue-stop-300": { "$type": "color", "$value": "#ff00ff", "$description": "Color picker hue rail: 300deg magenta" },
+      "checker-color": { "$type": "color", "$value": "#cccccc", "$description": "Color picker alpha checker fill" },
+      "thumb-border": { "$type": "color", "$value": "#ffffff", "$description": "Color picker thumb border (white for contrast on any hue)" }
+    },
     "meter": {
       "height": {
         "sm": { "$type": "dimension", "$value": "{spacing.6}" },
@@ -232,6 +249,33 @@
         "md": { "$type": "dimension", "$value": "{spacing.80}" },
         "lg": { "$type": "dimension", "$value": "120px" }
       }
+    },
+    "bias-anchoring": {
+      "radius": { "$type": "dimension", "$value": "{border.radius.125}" },
+      "padding": { "$type": "dimension", "$value": "{spacing.12}" },
+      "gap": { "$type": "dimension", "$value": "{spacing.8}" }
+    },
+    "bias-scarcity": {
+      "radius": { "$type": "dimension", "$value": "{border.radius.full}" },
+      "padding": { "$type": "dimension", "$value": "{spacing.8}" },
+      "gap": { "$type": "dimension", "$value": "{spacing.8}" }
+    },
+    "bias-social-proof": {
+      "radius": { "$type": "dimension", "$value": "{border.radius.full}" },
+      "padding": { "$type": "dimension", "$value": "{spacing.8}" },
+      "avatar-size": { "$type": "dimension", "$value": "{spacing.24}" }
+    },
+    "bias-authority": {
+      "radius": { "$type": "dimension", "$value": "{border.radius.100}" },
+      "padding": { "$type": "dimension", "$value": "{spacing.8}" }
+    },
+    "bias-commitment": {
+      "gap": { "$type": "dimension", "$value": "{spacing.16}" },
+      "radius": { "$type": "dimension", "$value": "{border.radius.125}" }
+    },
+    "bias-reciprocity": {
+      "radius": { "$type": "dimension", "$value": "{border.radius.150}" },
+      "padding": { "$type": "dimension", "$value": "{spacing.12}" }
     }
   }
 }

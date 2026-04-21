@@ -80,19 +80,19 @@ export class CgSlider extends LitElement {
       border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-slider-thumb-background);
       border: var(--cg-border-width-100) solid var(--cg-color-surface-cards-border);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      box-shadow: var(--cg-elevation-1);
       transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out), box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       pointer-events: auto;
       cursor: grab;
     }
     .thumb:hover {
       transform: scale(1.15);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--cg-elevation-2);
     }
     .thumb.dragging {
       cursor: grabbing;
       transform: scale(1.2);
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+      box-shadow: var(--cg-elevation-3);
     }
 
     /* Focus ring */
@@ -117,7 +117,7 @@ export class CgSlider extends LitElement {
       white-space: nowrap;
       pointer-events: none;
       opacity: 0;
-      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-slow) cubic-bezier(0.22, 1.8, 0.36, 1);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-slow) var(--cg-transition-easing-spring);
     }
     .tooltip::after {
       content: '';
@@ -195,7 +195,7 @@ export class CgSlider extends LitElement {
       width: var(--cg-spacing-20);
       height: var(--cg-spacing-20);
       border: var(--cg-border-width-50) solid var(--cg-overlay-accent-subtle);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      box-shadow: var(--cg-elevation-1);
     }
     :host([variant="toggle"]) .thumb:hover {
       transform: scale(1.05);

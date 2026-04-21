@@ -63,9 +63,7 @@ export class CgDropdown extends LitElement {
       background: var(--cg-color-modal-container-background);
       border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
       border-radius: var(--cg-border-radius-100);
-      box-shadow:
-        0 var(--cg-shadow-md-y) var(--cg-shadow-md-blur) var(--cg-shadow-md-spread) rgba(0, 0, 0, 0.12),
-        0 var(--cg-shadow-sm-y) var(--cg-shadow-sm-blur) var(--cg-shadow-sm-spread) rgba(0, 0, 0, 0.06);
+      box-shadow: var(--cg-elevation-3);
       /* Animation — scale+fade entrance */
       opacity: 0;
       transform: scale(0.96);

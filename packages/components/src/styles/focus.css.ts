@@ -6,8 +6,8 @@ import { css } from 'lit';
  */
 export const focusRingDual = css`
   box-shadow:
-    0 0 0 2px var(--cg-color-surface-base-background, #09090b),
-    0 0 0 4px var(--cg-focus-ring-color, #dfff61);
+    0 0 0 2px var(--cg-color-surface-base-background),
+    0 0 0 4px var(--cg-focus-ring-color);
   outline: none;
 `;
 
@@ -16,6 +16,6 @@ export const focusRingDual = css`
  * Softer glow that works with existing borders.
  */
 export const focusRingSingle = css`
-  box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong, rgba(223, 255, 97, 0.25));
+  box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
   outline: none;
 `;

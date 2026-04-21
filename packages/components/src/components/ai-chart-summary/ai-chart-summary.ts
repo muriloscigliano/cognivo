@@ -38,7 +38,7 @@ export class AiChartSummary extends LitElement {
     .ai-dot {
       width: var(--cg-spacing-6);
       height: var(--cg-spacing-6);
-      background: var(--cg-brand-ai-accent);
+      background: var(--cg-color-accent-text);
       border-radius: var(--cg-border-radius-full);
       flex-shrink: 0;
     }

@@ -65,7 +65,7 @@ export class CgCombobox extends LitElement {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-medium);
       border-radius: var(--cg-border-radius-full);
-      animation: comboChipIn var(--cg-transition-duration-default) cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: comboChipIn var(--cg-transition-duration-default) var(--cg-transition-easing-spring);
     }
     @keyframes comboChipIn {
       from { opacity: 0; transform: scale(0.8); }

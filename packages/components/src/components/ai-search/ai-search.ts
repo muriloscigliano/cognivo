@@ -58,7 +58,7 @@ export class AiSearch extends LitElement {
         box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .input-row:hover { border-color: var(--cg-color-input-border-hover); }
-    .input-row:focus-within { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .input-row:focus-within { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-overlay-accent-strong); }
 
     /* Rounded */
     :host([rounded="full"]) .input-row { border-radius: var(--cg-border-radius-full); }
@@ -110,7 +110,7 @@ export class AiSearch extends LitElement {
     }
     .clear-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-overlay-accent-strong);
     }
     .clear-btn:hover { color: var(--cg-color-surface-base-text); }
 
@@ -124,13 +124,8 @@ export class AiSearch extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
       border-radius: var(--cg-border-radius-100);
       z-index: var(--cg-z-index-200);
-      max-height: 360px;
+      max-height: var(--cg-spacing-256);
       overflow-y: auto;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-4px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .section-label {
@@ -165,7 +160,7 @@ export class AiSearch extends LitElement {
         background-color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .filter-tag:hover { border-color: var(--cg-color-input-border-hover); color: var(--cg-color-surface-base-text); }
-    .filter-tag:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .filter-tag:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-overlay-accent-strong); }
     .filter-tag.active { border-color: var(--cg-color-surface-base-text); color: var(--cg-color-surface-base-text); background: var(--cg-overlay-accent-subtle); }
 
     /* Result items */
@@ -175,7 +170,7 @@ export class AiSearch extends LitElement {
       gap: var(--cg-spacing-8);
       padding: var(--cg-spacing-8) var(--cg-spacing-12);
       cursor: pointer;
-      transition: background var(--cg-transition-duration-fast);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .result-item:hover, .result-item.highlighted { background: var(--cg-overlay-dark-subtle); }
     .result-item:active { transform: scale(var(--cg-interaction-press-scale)); }
@@ -204,7 +199,7 @@ export class AiSearch extends LitElement {
       gap: var(--cg-spacing-8);
       padding: var(--cg-spacing-6) var(--cg-spacing-12);
       cursor: pointer;
-      transition: background var(--cg-transition-duration-fast);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .recent-item:hover { background: var(--cg-overlay-dark-subtle); }
     .recent-icon { color: var(--cg-color-input-border-hover); font-size: var(--cg-font-size-xs); }
@@ -216,13 +211,13 @@ export class AiSearch extends LitElement {
       cursor: pointer;
       font-size: var(--cg-font-size-xs);
       opacity: 0;
-      transition: opacity var(--cg-transition-duration-default);
+      transition: opacity var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .recent-item:hover .recent-delete { opacity: 1; }
     .recent-delete:focus-visible {
       opacity: 1;
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-overlay-accent-strong);
     }
 
     .divider { height: var(--cg-border-width-50); background: var(--cg-color-surface-cards-border); margin: var(--cg-spacing-4) 0; }
@@ -231,6 +226,7 @@ export class AiSearch extends LitElement {
   @property({ reflect: true }) size: 'md' | 'lg' = 'md';
   @property({ reflect: true }) rounded: 'default' | 'full' = 'default';
   @property({ type: String }) placeholder: string = 'Search...';
+  @property({ type: String }) value: string = '';
   @property({ type: Array }) suggestions: string[] = [];
   @property({ type: Array }) filters: string[] = [];
   @property({ type: Array }) recentSearches: string[] = [];
@@ -241,8 +237,36 @@ export class AiSearch extends LitElement {
   @state() private _highlightIndex: number = -1;
   @state() private _activeFilters: Set<string> = new Set();
 
+  private _blurTimer: number | undefined;
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this._blurTimer !== undefined) {
+      clearTimeout(this._blurTimer);
+      this._blurTimer = undefined;
+    }
+  }
+
+  override willUpdate(changed: Map<string, unknown>): void {
+    // Propagate external `value` prop writes into internal query state.
+    // Guarded by inequality to prevent infinite loop with write-back below.
+    if (changed.has('value') && this.value !== this._query) {
+      this._query = this.value ?? '';
+    }
+  }
+
+  private _setQuery(next: string) {
+    this._query = next;
+    // Write back to public `value` so external consumers stay in sync.
+    // Guarded by inequality — `willUpdate` also short-circuits on equality.
+    if (this.value !== next) {
+      this.value = next;
+    }
+  }
+
   private _handleInput(e: Event) {
-    this._query = (e.target as HTMLInputElement).value;
+    const next = (e.target as HTMLInputElement).value;
+    this._setQuery(next);
     this._open = true;
     this._highlightIndex = -1;
     this.dispatchEvent(new CustomEvent('ai-search-query', {
@@ -255,7 +279,8 @@ export class AiSearch extends LitElement {
 
   private _handleBlur() {
     // Delay to allow click events on dropdown
-    setTimeout(() => { this._open = false; }, 200);
+    if (this._blurTimer !== undefined) clearTimeout(this._blurTimer);
+    this._blurTimer = window.setTimeout(() => { this._open = false; this._blurTimer = undefined; }, 200);
   }
 
   private _handleKeyDown(e: KeyboardEvent) {
@@ -272,7 +297,7 @@ export class AiSearch extends LitElement {
     } else {
       const sIdx = this._highlightIndex - this.results.length;
       if (sIdx < this.suggestions.length) {
-        this._query = this.suggestions[sIdx]!;
+        this._setQuery(this.suggestions[sIdx]!);
         this.dispatchEvent(new CustomEvent('ai-search-query', { bubbles: true, composed: true, detail: { query: this._query, filters: [...this._activeFilters] } }));
       }
     }
@@ -296,21 +321,28 @@ export class AiSearch extends LitElement {
     }));
   }
 
-  private _handleClear() { this._query = ''; this._open = false; }
+  private _handleClear() { this._setQuery(''); this._open = false; }
 
   private _handleRecent(text: string) {
-    this._query = text;
+    this._setQuery(text);
     this.dispatchEvent(new CustomEvent('ai-search-query', { bubbles: true, composed: true, detail: { query: text, filters: [...this._activeFilters] } }));
   }
 
   override render() {
     const showDropdown = this._open && (this.results.length > 0 || this.suggestions.length > 0 || this.recentSearches.length > 0 || this.filters.length > 0);
+    const activeId = this._highlightIndex >= 0 ? `ai-search-opt-${this._highlightIndex}` : '';
 
     return html`
-      <div class="search-wrapper" role="combobox" aria-expanded="${showDropdown}" aria-haspopup="listbox">
+      <div class="search-wrapper">
         <div class="input-row">
           <span class="search-icon" aria-hidden="true"><cg-icon name="search" size="sm"></cg-icon></span>
           <input type="text"
+            role="combobox"
+            aria-expanded="${showDropdown}"
+            aria-haspopup="listbox"
+            aria-controls="ai-search-listbox"
+            aria-autocomplete="list"
+            aria-activedescendant=${activeId || nothing}
             .value=${this._query}
             .placeholder=${this.placeholder}
             aria-label="${this.placeholder}"
@@ -320,28 +352,35 @@ export class AiSearch extends LitElement {
             @keydown=${this._handleKeyDown} />
           ${this._query ? html`
             <button class="clear-btn" @click=${this._handleClear} aria-label="Clear search"><cg-icon name="x" size="xs"></cg-icon></button>
-          ` : html`<span class="shortcut"><kbd>Cmd</kbd>+<kbd>K</kbd></span>`}
+          ` : html`<span class="shortcut" aria-hidden="true"><kbd>Cmd</kbd>+<kbd>K</kbd></span>`}
         </div>
 
         ${showDropdown ? html`
-          <div class="dropdown" role="listbox" aria-live="polite" aria-label="Search results">
+          <div id="ai-search-listbox" class="dropdown" role="listbox" aria-label="Search results">
             ${this.filters.length > 0 ? html`
-              <div class="section-label">Filters</div>
-              <div class="filters">
-                ${this.filters.map(f => html`
-                  <button class="filter-tag ${this._activeFilters.has(f) ? 'active' : ''}"
-                    @mousedown=${(e: Event) => { e.preventDefault(); this._toggleFilter(f); }}>${f}</button>
-                `)}
+              <div class="section-label" id="ai-search-filters-label">Filters</div>
+              <div class="filters" role="group" aria-labelledby="ai-search-filters-label">
+                ${this.filters.map(f => {
+                  const isActive = this._activeFilters.has(f);
+                  return html`
+                    <button class="filter-tag ${isActive ? 'active' : ''}"
+                      role="switch"
+                      aria-checked=${isActive ? 'true' : 'false'}
+                      @mousedown=${(e: Event) => { e.preventDefault(); this._toggleFilter(f); }}>${f}</button>
+                  `;
+                })}
               </div>
-              <div class="divider"></div>
+              <div class="divider" role="separator"></div>
             ` : nothing}
 
             ${this.results.length > 0 ? html`
               <div class="section-label">Results</div>
               ${this.results.map((r, i) => html`
-                <div class="result-item ${i === this._highlightIndex ? 'highlighted' : ''}"
-                  role="option" @mousedown=${(e: Event) => { e.preventDefault(); this._selectResult(r); }}>
-                  ${r.icon ? html`<span class="result-icon">${r.icon}</span>` : nothing}
+                <div id="ai-search-opt-${i}" class="result-item ${i === this._highlightIndex ? 'highlighted' : ''}"
+                  role="option"
+                  aria-selected=${i === this._highlightIndex ? 'true' : 'false'}
+                  @mousedown=${(e: Event) => { e.preventDefault(); this._selectResult(r); }}>
+                  ${r.icon ? html`<span class="result-icon" aria-hidden="true">${r.icon}</span>` : nothing}
                   <div class="result-info">
                     <div class="result-title">${r.title}</div>
                     ${r.description ? html`<div class="result-desc">${r.description}</div>` : nothing}
@@ -351,23 +390,28 @@ export class AiSearch extends LitElement {
             ` : nothing}
 
             ${this.suggestions.length > 0 ? html`
-              ${this.results.length > 0 ? html`<div class="divider"></div>` : nothing}
+              ${this.results.length > 0 ? html`<div class="divider" role="separator"></div>` : nothing}
               <div class="section-label">Suggestions</div>
-              ${this.suggestions.map((s, i) => html`
-                <div class="result-item ${(i + this.results.length) === this._highlightIndex ? 'highlighted' : ''}"
-                  role="option" @mousedown=${(e: Event) => { e.preventDefault(); this._query = s; }}>
-                  <span class="result-icon" style="color: var(--cg-color-surface-base-text);"><cg-icon name="sparkle" size="xs"></cg-icon></span>
-                  <div class="result-info"><div class="result-title">${s}</div></div>
-                </div>
-              `)}
+              ${this.suggestions.map((s, i) => {
+                const idx = i + this.results.length;
+                return html`
+                  <div id="ai-search-opt-${idx}" class="result-item ${idx === this._highlightIndex ? 'highlighted' : ''}"
+                    role="option"
+                    aria-selected=${idx === this._highlightIndex ? 'true' : 'false'}
+                    @mousedown=${(e: Event) => { e.preventDefault(); this._setQuery(s); }}>
+                    <span class="result-icon" aria-hidden="true"><cg-icon name="sparkle" size="xs"></cg-icon></span>
+                    <div class="result-info"><div class="result-title">${s}</div></div>
+                  </div>
+                `;
+              })}
             ` : nothing}
 
             ${this.recentSearches.length > 0 && !this._query ? html`
-              <div class="divider"></div>
+              <div class="divider" role="separator"></div>
               <div class="section-label">Recent</div>
               ${this.recentSearches.slice(0, 10).map(r => html`
-                <div class="recent-item" @mousedown=${(e: Event) => { e.preventDefault(); this._handleRecent(r); }}>
-                  <span class="recent-icon">↺</span>
+                <div class="recent-item" role="option" aria-selected="false" @mousedown=${(e: Event) => { e.preventDefault(); this._handleRecent(r); }}>
+                  <span class="recent-icon" aria-hidden="true">↺</span>
                   <span class="recent-text">${r}</span>
                 </div>
               `)}

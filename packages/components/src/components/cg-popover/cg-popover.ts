@@ -69,10 +69,10 @@ export class CgPopover extends LitElement {
     /* Size variants */
     :host([size="sm"]) .popover { max-width: var(--cg-spacing-256); }
     :host([size="md"]) .popover { max-width: var(--cg-component-popover-max-width); }
-    :host([size="lg"]) .popover { max-width: var(--cg-spacing-480, 480px); }
+    :host([size="lg"]) .popover { max-width: var(--cg-spacing-480); }
 
     /* Rounded variants */
-    :host([rounded="none"]) .popover { border-radius: var(--cg-border-radius-0, 0); }
+    :host([rounded="none"]) .popover { border-radius: var(--cg-border-radius-none); }
     :host([rounded="sm"]) .popover { border-radius: var(--cg-border-radius-50); }
     :host([rounded="md"]) .popover { border-radius: var(--cg-border-radius-100); }
     :host([rounded="lg"]) .popover { border-radius: var(--cg-border-radius-150); }
