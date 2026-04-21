@@ -121,13 +121,3 @@ export * from './components/ai-cache-indicator/ai-cache-indicator.js';
 export * from './components/ai-data-lineage/ai-data-lineage.js';
 export * from './components/ai-reward-signal/ai-reward-signal.js';
 export * from './components/ai-assistant-widget/ai-assistant-widget.js';
-
-// ── Bias Wrappers — composable cognitive-bias primitives ───────────────────
-// Behavioral-science wrappers sit alongside AI-native components because
-// LLM-generated UI needs bias-aware scaffolds.
-export * from './components/bias-anchoring/bias-anchoring.js';
-export * from './components/bias-scarcity/bias-scarcity.js';
-export * from './components/bias-social-proof/bias-social-proof.js';
-export * from './components/bias-authority/bias-authority.js';
-export * from './components/bias-commitment/bias-commitment.js';
-export * from './components/bias-reciprocity/bias-reciprocity.js';

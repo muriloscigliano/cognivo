@@ -64,10 +64,12 @@ export default defineConfig(({ mode }) => {
       lib: {
         entry: {
           index: resolve(__dirname, 'src/index.ts'),
-          // Layered barrels so apps can opt into only the foundation (cg-*)
-          // or only the AI (ai-*) components instead of the full 176.
+          // Layered barrels so apps can opt into only the foundation (cg-*),
+          // only the AI layer (ai-*), or only the behavioral primitives (bias-*)
+          // instead of the full 182.
           foundation: resolve(__dirname, 'src/foundation.ts'),
           ai: resolve(__dirname, 'src/ai.ts'),
+          bias: resolve(__dirname, 'src/bias.ts'),
           // On-demand custom-element registration helper (tree-shakable).
           lazy: resolve(__dirname, 'src/lazy.ts'),
           ...componentEntries,
