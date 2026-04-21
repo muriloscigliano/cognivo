@@ -1,15 +1,31 @@
 {
   "name": "@cognivo/mcp-server",
-  "version": "0.1.0",
-  "description": "MCP server for the Cognivo design system — 143 components, 1800+ tokens, 180 cognitive biases",
+  "version": "0.4.0",
+  "description": "Model Context Protocol server — Cognivo tools for Claude / Cursor / Windsurf.",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
     "cognivo-mcp": "./dist/index.js"
   },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/murisd/cognivo.git",
+    "directory": "packages/mcp-server"
+  },
+  "homepage": "https://cognivo.dev",
+  "bugs": "https://github.com/murisd/cognivo/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "pnpm build:catalog && tsc",
     "build:catalog": "node --import tsx src/scripts/build-catalog.ts",
+    "prepublishOnly": "pnpm build",
     "type-check": "tsc --noEmit",
     "start": "node dist/index.js",
     "dev": "tsc --watch",
@@ -24,5 +40,15 @@
     "tsx": "^4.19.0",
     "vitest": "^2.1.0"
   },
-  "license": "MIT"
+  "keywords": [
+    "cognivo",
+    "design-system",
+    "ui",
+    "components",
+    "mcp",
+    "claude",
+    "cursor"
+  ],
+  "license": "MIT",
+  "author": "Cognivo"
 }

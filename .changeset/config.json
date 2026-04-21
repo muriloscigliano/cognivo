@@ -1,24 +1,28 @@
 {
-  "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
+  "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "fixed": [
+  "fixed": [],
+  "linked": [
     [
-      "@cognivo/core",
       "@cognivo/components",
       "@cognivo/tokens",
-      "@cognivo/design-advisor",
       "@cognivo/gen-ui",
       "@cognivo/gen-ui-lit",
+      "@cognivo/core",
       "@cognivo/adapter-react",
       "@cognivo/adapter-vue",
       "@cognivo/adapter-openai",
-      "@cognivo/adapter-anthropic"
+      "@cognivo/design-advisor",
+      "@cognivo/ssr",
+      "@cognivo/theme-generator",
+      "@cognivo/analytics",
+      "@cognivo/mcp-server",
+      "@cognivo/eslint-plugin"
     ]
   ],
-  "linked": [],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@cognivo/mcp-server"]
+  "ignore": []
 }

@@ -1,9 +1,17 @@
 {
   "name": "@cognivo/adapter-openai",
-  "version": "0.3.0",
-  "description": "OpenAI adapter for Cognivo AI components",
-  "keywords": ["openai", "gpt-4", "ai", "adapter", "cognivo"],
+  "version": "0.4.0",
+  "description": "OpenAI structured-output adapter for Cognivo generative UI.",
+  "keywords": [
+    "cognivo",
+    "design-system",
+    "ui",
+    "components",
+    "openai",
+    "generative-ui"
+  ],
   "license": "MIT",
+  "author": "Cognivo",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -14,12 +22,20 @@
       "default": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/muriloscigliano/cognivo-1.git",
+    "url": "https://github.com/murisd/cognivo.git",
     "directory": "packages/adapter-openai"
+  },
+  "homepage": "https://cognivo.dev",
+  "bugs": "https://github.com/murisd/cognivo/issues",
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "vite build && tsc --emitDeclarationOnly",

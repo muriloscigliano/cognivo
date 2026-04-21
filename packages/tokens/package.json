@@ -1,15 +1,17 @@
 {
   "name": "@cognivo/tokens",
-  "version": "0.3.0",
-  "description": "1,768 design tokens for Cognivo. CSS custom properties with dark/light themes. W3C DTCG format.",
+  "version": "0.4.0",
+  "description": "3-tier design token system (Style Dictionary v4) for Cognivo — 1,800+ tokens, theme-ready.",
   "keywords": [
-    "design-tokens",
-    "css-variables",
-    "dark-mode",
     "cognivo",
-    "theme"
+    "design-system",
+    "ui",
+    "components",
+    "design-tokens",
+    "style-dictionary"
   ],
   "license": "MIT",
+  "author": "Cognivo",
   "type": "module",
   "main": "./dist/index.css",
   "exports": {
@@ -19,14 +21,18 @@
   },
   "files": [
     "dist",
-    "index.css",
-    "README.md",
     "LICENSE"
   ],
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/muriloscigliano/cognivo-1"
+    "url": "https://github.com/murisd/cognivo.git",
+    "directory": "packages/tokens"
+  },
+  "homepage": "https://cognivo.dev",
+  "bugs": "https://github.com/murisd/cognivo/issues",
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "generate": "node generate-from-palette.cjs",

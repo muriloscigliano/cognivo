@@ -1,0 +1,22 @@
+{
+  "name": "@cognivo/claude-code-skill",
+  "version": "0.4.0",
+  "private": true,
+  "description": "Claude Code skill for Cognivo — activates design-system-aware UI generation.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/murisd/cognivo.git",
+    "directory": "packages/claude-code-skill"
+  },
+  "bin": {
+    "install-cognivo-skill": "./install.sh"
+  },
+  "files": [
+    "skill",
+    "install.sh"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

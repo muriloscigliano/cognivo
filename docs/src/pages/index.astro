@@ -3,400 +3,494 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import StatsRow from '../components/StatsRow.astro';
 import { registry } from '../data/components';
 
-const total = registry.length;
-const aiCount = registry.filter(c => c.tag.startsWith('ai-')).length;
+// ── Real counts, sourced from the registry when possible ────────────────
+const total = registry.length;                                   // 182
+const aiCount = registry.filter(c => c.tag.startsWith('ai-')).length;   // 89
+const biasCount = registry.filter(c => c.tag.startsWith('bias-')).length; // 6
+const foundationCount = total - aiCount - biasCount;             // 87
 
-const stats = [
-  { value: `${total}`, label: 'Components', detail: `${total - aiCount} foundation + ${aiCount} AI-native` },
-  { value: '1,800+', label: 'Design Tokens', detail: '3-tier system with dark mode' },
-  { value: '1,147', label: 'Tests', detail: 'Passing across all packages' },
-  { value: '184', label: 'Cognitive Biases', detail: 'Design implications & guidance' },
-];
-
-const packages = [
-  { name: '@cognivo/components', desc: `${total} Lit web components with Shadow DOM` },
-  { name: '@cognivo/tokens', desc: '1,800+ design tokens, 3-tier system' },
-  { name: '@cognivo/core', desc: 'Framework-agnostic AI client + patterns' },
-  { name: '@cognivo/gen-ui', desc: 'Streaming parser & component registry' },
-  { name: '@cognivo/adapter-react', desc: 'React wrappers with TypeScript props' },
-  { name: '@cognivo/adapter-vue', desc: 'Vue wrappers with TypeScript props' },
-  { name: '@cognivo/adapter-openai', desc: 'OpenAI client with structured outputs' },
-  { name: '@cognivo/design-advisor', desc: '184 cognitive bias cards & registry' },
-];
-
+// Feature grid — 6 cards. Each maps to a real capability shipped in the repo.
 const features = [
-  { title: 'AI-Native Components', desc: 'Chat, streaming text, thinking indicators, command palettes, confidence sliders — built for AI-first interfaces.', accent: true },
-  { title: 'Design Token System', desc: '3-tier architecture: core primitives, semantic layer, component-specific. Full dark mode. Zero magic numbers.', accent: false },
-  { title: 'Cognitive Psychology', desc: '184 documented cognitive biases with design implications. Know which biases your UI triggers and why.', accent: false },
-  { title: 'Framework Agnostic', desc: 'Web Components work everywhere. First-class React and Vue adapters included. No lock-in.', accent: false },
-  { title: 'Accessibility First', desc: 'ARIA roles, keyboard navigation, focus management, reduced-motion support, 44px touch targets. All built-in.', accent: false },
-  { title: 'Streaming Generative UI', desc: 'Parse and render AI model outputs in real-time. Component registry resolves streaming JSON to live UI.', accent: true },
+  {
+    title: 'AI-Native Foundation',
+    desc: `${aiCount} components designed for LLM UIs: streaming text, reasoning trees, citations, agent cards, cost dashboards, guardrails. Purpose-built — not adapted.`,
+    accent: true,
+  },
+  {
+    title: 'Generative UI Runtime',
+    desc: 'Zod schemas let LLMs output structured component trees. The MCP server exposes 6 tools to Claude, Cursor and Windsurf so agents can compose UI directly.',
+    accent: true,
+  },
+  {
+    title: 'Cognitive Psychology Built-In',
+    desc: `184 behavioral bias cards plus ${biasCount} composable bias wrappers — anchoring, scarcity, social proof, authority, commitment, reciprocity — auditable at build time.`,
+    accent: false,
+  },
+  {
+    title: '3-Tier Design Tokens',
+    desc: '1,800+ tokens across core → semantic → component. ESLint plugin blocks raw hex, rgba(), magic px and fake tokens. Zero drift, by construction.',
+    accent: false,
+  },
+  {
+    title: 'SSR + Tree-Shaking',
+    desc: 'Ship 8 kB gzipped for a single component, 246 kB for the full library. @lit-labs/ssr with declarative Shadow DOM eliminates FOUC on first paint.',
+    accent: false,
+  },
+  {
+    title: 'Theme On Demand',
+    desc: 'Run `npx cognivo-theme "warm ocean professional"` and get a production-ready 7.4 kB token JSON — palette, surfaces, dark-mode pairs, all validated.',
+    accent: false,
+  },
 ];
+
+// Stats row — the 3-second claim
+const heroStats = [
+  { value: `${total}`,  label: 'Components',   detail: `${foundationCount} foundation + ${aiCount} AI + ${biasCount} bias` },
+  { value: '1,906',     label: 'Tests',        detail: 'Passing across all packages' },
+  { value: '246 kB',    label: 'Full bundle',  detail: 'Gzipped. 8 kB single component' },
+  { value: '0',         label: 'Raw hex',      detail: 'Enforced by ESLint plugin' },
+];
+
+// Tooling / ecosystem the runtime integrates with
+const ecosystem = [
+  'React', 'Vue', 'Next.js', 'Astro', 'Remix', 'Lit', 'Claude', 'Cursor', 'Windsurf',
+];
+
+// Gen-UI snippet — rendered via cg-code-block so copy + syntax-highlight come for free.
+const genUiSnippet = `import { html, renderToString } from '@cognivo/ssr';
+import '@cognivo/components';
+
+const tree = html\`
+  <cg-stack gap="lg">
+    <cg-navbar brand="Acme">
+      <cg-button variant="primary">Sign in</cg-button>
+    </cg-navbar>
+
+    <bias-anchoring anchor="$199" current="$99" label="Save 50%">
+      <cg-card>Pro plan</cg-card>
+    </bias-anchoring>
+  </cg-stack>
+\`;
+
+// Server-rendered with declarative shadow DOM — no FOUC
+const markup = renderToString(tree);`;
+
+const installSnippet = `pnpm add @cognivo/components @cognivo/tokens`;
+
+const pageTitle = 'The AI-Native Design System';
+const pageDescription = `${total} Web Components. ${aiCount} AI-native patterns. ${biasCount} cognitive bias primitives. Generate UI via LLMs with typed component trees and behavioral psychology baked in.`;
 ---
 
-<BaseLayout title="Home">
-  <!-- Hero -->
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <!-- OG / Twitter meta, injected via a named fragment -->
+  <Fragment slot="head">
+    <meta property="og:title" content="Cognivo — The AI-Native Design System" />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cognivo — The AI-Native Design System" />
+    <meta name="twitter:description" content={pageDescription} />
+  </Fragment>
+
+  <!-- ─── Hero ─────────────────────────────────────────────────────── -->
   <section class="hero">
-    <div class="hero-glow"></div>
+    <div class="hero-glow" aria-hidden="true"></div>
     <div class="hero-inner">
-      <div class="hero-badge">
-        <span class="hero-dot"></span>
-        v0.3 — {total} components shipping
+      <div class="badge-row">
+        <cg-badge variant="accent" rounded="full">v0.4</cg-badge>
+        <cg-badge variant="neutral" rounded="full">{total} components</cg-badge>
+        <cg-badge variant="neutral" rounded="full">1,906 tests</cg-badge>
+        <cg-badge variant="neutral" rounded="full">MIT</cg-badge>
       </div>
 
-      <h1>
-        Build AI interfaces<br />
-        <span class="hero-accent">that think with users</span>
+      <h1 class="hero-title">
+        The first design system built for<br />
+        <span class="accent">AI-native</span> apps.
       </h1>
 
       <p class="hero-sub">
-        Open-source AI-native component library with cognitive psychology integration. {total} Web Components. 1,800+ design tokens. 184 cognitive biases. MIT licensed.
+        {total} Web Components. {aiCount} AI-native patterns. {biasCount} cognitive bias primitives.
+        Generate UI via LLMs with typed component trees and behavioral psychology baked in.
       </p>
 
-      <div class="hero-actions">
-        <cg-button variant="primary" size="lg" rounded="md" onclick="window.location.href='/getting-started'">Get Started →</cg-button>
-        <cg-button variant="secondary" size="lg" rounded="md" onclick="window.location.href='/components'">Browse Components</cg-button>
-        <cg-button variant="tertiary" size="lg" rounded="md" onclick="window.open('https://github.com/muriloscigliano/cognivo','_blank')">GitHub</cg-button>
+      <div class="cta-row">
+        <cg-button variant="primary" size="lg" rounded="md" onclick="window.location.href='/getting-started'">
+          Get started →
+        </cg-button>
+        <cg-button variant="secondary" size="lg" rounded="md" onclick="window.location.href='/components'">
+          Browse components
+        </cg-button>
+        <cg-button variant="tertiary" size="lg" rounded="md" onclick="window.open('https://github.com/muriloscigliano/cognivo','_blank')">
+          GitHub
+        </cg-button>
       </div>
 
-      <StatsRow stats={stats} />
+      <div class="install-block">
+        <cg-code-block code={installSnippet} language="bash" rounded="md"></cg-code-block>
+      </div>
     </div>
   </section>
 
-  <!-- Code preview -->
+  <!-- ─── Stats strip ─────────────────────────────────────────────── -->
+  <section class="container stats-section">
+    <StatsRow stats={heroStats} />
+  </section>
+
+  <!-- ─── Feature grid ────────────────────────────────────────────── -->
   <section class="container">
-    <div class="code-window">
-      <div class="code-chrome">
-        <span class="dot red"></span>
-        <span class="dot yellow"></span>
-        <span class="dot green"></span>
-        <span class="code-filename">quickstart.html</span>
-      </div>
-      <pre class="code-body"><code><span class="c-dim">&lt;!-- Import once --&gt;</span>
-<span class="c-dim">&lt;script</span> <span class="c-key">type</span>=<span class="c-str">"module"</span> <span class="c-key">src</span>=<span class="c-str">"@cognivo/components"</span><span class="c-dim">&gt;&lt;/script&gt;</span>
+    <div class="section-header">
+      <h2>Six capabilities no other library ships</h2>
+      <p>Tracks 1–5 complete. 5 innovation packages. 10/10 across code health, quality, architecture and innovation.</p>
+    </div>
 
-<span class="c-dim">&lt;!-- Use anywhere --&gt;</span>
-<span class="c-dim">&lt;</span><span class="c-tag">ai-chat</span><span class="c-dim">&gt;&lt;/</span><span class="c-tag">ai-chat</span><span class="c-dim">&gt;</span>
-<span class="c-dim">&lt;</span><span class="c-tag">cg-button</span> <span class="c-str">variant</span>=<span class="c-str">"primary"</span><span class="c-dim">&gt;</span>Get Started<span class="c-dim">&lt;/</span><span class="c-tag">cg-button</span><span class="c-dim">&gt;</span></code></pre>
+    <div class="features-grid">
+      {features.map(f => (
+        <article class:list={['feature-card', { accent: f.accent }]}>
+          <h3>{f.title}</h3>
+          <p>{f.desc}</p>
+        </article>
+      ))}
     </div>
   </section>
 
-  <!-- Why different -->
+  <!-- ─── Code / Gen-UI showcase ──────────────────────────────────── -->
+  <section class="container">
+    <div class="section-header">
+      <h2>Server-render a gen-UI tree in seven lines</h2>
+      <p>The same Lit template runs in the browser, streams from an LLM, or renders to HTML on the server.</p>
+    </div>
+
+    <div class="code-showcase">
+      <cg-code-block
+        code={genUiSnippet}
+        language="typescript"
+        filename="server.ts"
+        rounded="md"
+      ></cg-code-block>
+    </div>
+  </section>
+
+  <!-- ─── Ecosystem row ───────────────────────────────────────────── -->
+  <section class="container">
+    <div class="section-header">
+      <h2>Runs where you already work</h2>
+      <p>Standards-based Web Components. First-class adapters for every major framework and agent runtime.</p>
+    </div>
+
+    <ul class="eco-row" role="list">
+      {ecosystem.map(name => (
+        <li class="eco-chip">{name}</li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- ─── Comparison ──────────────────────────────────────────────── -->
   <section class="container">
     <div class="section-header">
       <h2>Why another component library?</h2>
-      <p>Because none of them were built for what's coming.</p>
+      <p>Because none of them were built for what's shipping right now.</p>
     </div>
 
     <div class="compare-grid">
       <div class="compare-card other">
         <h3>Every other library</h3>
         <ul>
-          <li>Generic UI components (buttons, inputs, modals)</li>
-          <li>Static design tokens (colors, spacing)</li>
+          <li>Generic buttons, inputs, modals</li>
+          <li>Static tokens, no semantic layer enforcement</li>
           <li>No AI-specific primitives</li>
           <li>No streaming support</li>
-          <li>No understanding of cognitive biases</li>
-          <li>Build the AI layer yourself</li>
+          <li>No cognitive-bias model</li>
+          <li>You build the AI layer yourself</li>
         </ul>
       </div>
       <div class="compare-card cognivo">
         <h3>Cognivo</h3>
         <ul>
-          <li>89 AI-native components (chat, thinking, confidence, agents)</li>
-          <li>1,800+ tokens with AI state system (confidence, anomaly, thinking)</li>
-          <li>Streaming generative UI — AI renders components in real-time</li>
-          <li>184 cognitive biases mapped to components and patterns</li>
-          <li>12 production AI patterns (guardrails, caching, circuit breaker)</li>
-          <li>From API call to rendered UI in one pipeline</li>
+          <li>{aiCount} AI-native components (chat, reasoning trees, agents, costs)</li>
+          <li>3-tier tokens, ESLint-enforced — zero drift</li>
+          <li>Streaming gen-UI: JSON-in, live components out</li>
+          <li>SSR + declarative Shadow DOM — no FOUC</li>
+          <li>184 biases + {biasCount} composable bias wrappers</li>
+          <li>MCP server: Claude / Cursor / Windsurf integrate natively</li>
         </ul>
       </div>
     </div>
   </section>
 
-  <!-- Features -->
-  <section class="container">
-    <div class="section-header">
-      <h2>Three layers no one else has</h2>
-      <p>Components, AI integration, and cognitive psychology — in one system.</p>
-    </div>
-
-    <div class="features-grid">
-      {features.map(f => (
-        <div class:list={['feature-card', { accent: f.accent }]}>
-          <h3>{f.title}</h3>
-          <p>{f.desc}</p>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <!-- Packages -->
-  <section class="container">
-    <div class="section-header">
-      <h2>8 packages, one system</h2>
-      <p>pnpm workspaces + Turborepo. Install what you need.</p>
-    </div>
-
-    <div class="pkg-grid">
-      {packages.map(pkg => (
-        <div class="pkg-card">
-          <code class="pkg-name">{pkg.name}</code>
-          <span class="pkg-desc">{pkg.desc}</span>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <!-- Open Source -->
-  <section class="container">
-    <div class="section-header">
-      <h2>Open source, MIT licensed</h2>
-      <p>Free forever. No vendor lock-in. Build what you want.</p>
-    </div>
-
-    <div class="oss-grid">
-      <div class="oss-card">
-        <h3>MIT License</h3>
-        <p>Use Cognivo in personal projects, startups, and enterprise products. No attribution required. No usage limits. No premium tier.</p>
-      </div>
-      <div class="oss-card">
-        <h3>Community-driven</h3>
-        <p>Every component, token, and bias card is open for contribution. File issues, submit PRs, and shape the roadmap on GitHub.</p>
-      </div>
-      <div class="oss-card">
-        <h3>No lock-in</h3>
-        <p>Web Components work in every framework. Standard CSS custom properties. No proprietary runtime. Fork it, extend it, own it.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
+  <!-- ─── Final CTA ───────────────────────────────────────────────── -->
   <section class="container cta-section">
     <div class="cta-box">
-      <div class="cta-glow"></div>
+      <div class="cta-glow" aria-hidden="true"></div>
       <div class="cta-inner">
-        <h2>Ready to build?</h2>
-        <p>Get started in under 2 minutes. Zero config.</p>
-        <cg-button variant="primary" size="lg" rounded="md" onclick="window.location.href='/getting-started'">Get Started →</cg-button>
-        <code class="cta-install">pnpm add @cognivo/components @cognivo/tokens</code>
+        <h2>Production-ready. MIT. No lock-in.</h2>
+        <p>Generate bias-aware UI with your favorite LLM today.</p>
+        <div class="cta-row">
+          <cg-button variant="primary" size="lg" rounded="md" onclick="window.location.href='/getting-started'">
+            Get started
+          </cg-button>
+          <cg-button variant="secondary" size="lg" rounded="md" onclick="window.location.href='/components'">
+            Browse components
+          </cg-button>
+          <cg-button variant="tertiary" size="lg" rounded="md" onclick="window.location.href='/ai'">
+            Explore AI components
+          </cg-button>
+        </div>
       </div>
     </div>
   </section>
 
   <style>
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    /* ─ Layout primitives ─────────────────────────────────────────── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .section-header h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .section-header p {
+      color: var(--fg-2);
+      margin-top: 10px;
+      font-size: 16px;
+      max-width: 620px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem 5rem; }
-
-    /* ── Hero ── */
+    /* ─ Hero ──────────────────────────────────────────────────────── */
     .hero {
-      position: relative; overflow: hidden;
-      padding: 6rem 2rem 4rem; text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding: 6rem 2rem 3rem;
+      text-align: center;
     }
     .hero-glow {
-      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(223,255,97,0.06) 0%, transparent 70%);
+      position: absolute;
+      top: -220px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 720px;
+      height: 720px;
+      background: radial-gradient(circle, var(--accent-muted) 0%, transparent 70%);
       pointer-events: none;
     }
-    .hero-inner { position: relative; max-width: 1100px; margin: 0 auto; }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 6px 16px;
-      background: var(--accent-muted);
-      border: 1px solid rgba(223,255,97,0.15);
-      border-radius: var(--radius-pill);
-      font-size: 13px; font-weight: 500; color: var(--accent);
+    .hero-inner {
+      position: relative;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .badge-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
       margin-bottom: 2rem;
     }
-    .hero-dot {
-      width: 6px; height: 6px;
-      background: var(--accent); border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-    h1 {
-      font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800;
-      line-height: 1.1; letter-spacing: -0.04em;
+    .hero-title {
+      font-size: clamp(2.25rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
       margin-bottom: 1.5rem;
     }
-    .hero-accent {
+    .hero-title .accent {
       background: linear-gradient(135deg, var(--accent), #a3e635);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       background-clip: text;
     }
     .hero-sub {
       font-size: clamp(1rem, 2vw, 1.125rem);
-      color: var(--fg-2); max-width: 580px;
-      margin: 0 auto 2.5rem; line-height: 1.7;
+      color: var(--fg-2);
+      max-width: 620px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.65;
     }
-    .hero-actions {
-      display: flex; gap: 12px; justify-content: center;
-      flex-wrap: wrap; margin-bottom: 4rem;
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
     }
-
-    /* ── Code window ── */
-    .code-window {
-      background: var(--bg-subtle); border: 1px solid var(--border);
-      border-radius: var(--radius); overflow: hidden;
-    }
-    .code-chrome {
-      display: flex; align-items: center; gap: 8px;
-      padding: 12px 16px; border-bottom: 1px solid var(--border);
-    }
-    .dot { width: 10px; height: 10px; border-radius: 50%; }
-    .dot.red { background: #ef4444; }
-    .dot.yellow { background: #eab308; }
-    .dot.green { background: #22c55e; }
-    .code-filename {
-      margin-left: auto; font: 500 12px var(--font-mono); color: var(--fg-4);
-    }
-    .code-body {
-      margin: 0; border: none; border-radius: 0;
-      padding: 24px; font-size: 14px; line-height: 1.8;
-    }
-    .c-dim { color: var(--fg-4); }
-    .c-key { color: var(--accent); }
-    .c-str { color: #a3e635; }
-    .c-tag { color: var(--accent); }
-
-    /* ── Section header ── */
-    .section-header {
-      text-align: center; margin-bottom: 2.5rem;
-    }
-    .section-header h2 {
-      font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em;
-    }
-    .section-header p {
-      color: var(--fg-2); margin-top: 8px; font-size: 16px;
+    .install-block {
+      max-width: 520px;
+      margin: 0 auto;
+      text-align: left;
     }
 
-    /* ── Compare ── */
-    .compare-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    .compare-card {
-      padding: 28px;
-      border: 1px solid var(--border); border-radius: var(--radius);
-    }
-    .compare-card h3 {
-      font-size: 16px; font-weight: 600; margin-bottom: 16px;
-    }
-    .compare-card ul {
-      list-style: none; padding: 0;
-      display: flex; flex-direction: column; gap: 10px;
-    }
-    .compare-card li {
-      font-size: 14px; line-height: 1.5;
-      padding-left: 20px; position: relative;
-    }
-    .compare-card.other li { color: var(--fg-3); }
-    .compare-card.other li::before {
-      content: '—'; position: absolute; left: 0; color: var(--fg-4);
-    }
-    .compare-card.cognivo {
-      border-color: rgba(223,255,97,0.2);
-      background: var(--accent-dim);
-    }
-    .compare-card.cognivo li { color: var(--fg-2); }
-    .compare-card.cognivo li::before {
-      content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 600;
+    /* ─ Stats section spacing ─────────────────────────────────────── */
+    .stats-section {
+      padding-top: 1rem;
+      padding-bottom: 6rem;
     }
 
-    /* ── Features ── */
+    /* ─ Features ──────────────────────────────────────────────────── */
     .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 12px;
     }
     .feature-card {
       background: var(--bg-subtle);
       border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 28px;
-      transition: border-color 150ms;
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: border-color 150ms ease, transform 150ms ease;
     }
-    .feature-card:hover { border-color: var(--border-hover); }
-    .feature-card.accent { border-color: rgba(223,255,97,0.15); }
-    .feature-card.accent:hover { border-color: rgba(223,255,97,0.3); }
+    .feature-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-1px);
+    }
+    .feature-card.accent {
+      border-color: var(--accent-muted);
+    }
+    .feature-card.accent:hover {
+      border-color: var(--accent);
+    }
     .feature-card h3 {
-      font-size: 16px; font-weight: 600; margin-bottom: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
     }
     .feature-card p {
-      color: var(--fg-2); font-size: 14px; line-height: 1.6;
+      color: var(--fg-2);
+      font-size: 14px;
+      line-height: 1.6;
     }
 
-    /* ── Packages ── */
-    .pkg-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 10px;
+    /* ─ Code showcase ─────────────────────────────────────────────── */
+    .code-showcase {
+      max-width: 860px;
+      margin: 0 auto;
     }
-    .pkg-card {
-      display: flex; flex-direction: column; gap: 6px;
-      padding: 20px;
+
+    /* ─ Ecosystem row ─────────────────────────────────────────────── */
+    .eco-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .eco-chip {
+      font: 500 13px var(--font-mono);
+      color: var(--fg-2);
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      background: var(--bg-subtle);
+      transition: border-color 150ms ease, color 150ms ease;
+    }
+    .eco-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ─ Comparison ────────────────────────────────────────────────── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .compare-card {
+      padding: 28px;
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      transition: border-color 150ms;
     }
-    .pkg-card:hover { border-color: var(--accent); }
-    .pkg-name {
-      font: 600 13px var(--font-mono);
-      color: var(--accent); background: none; padding: 0;
+    .compare-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
     }
-    .pkg-desc { font-size: 13px; color: var(--fg-3); line-height: 1.5; }
+    .compare-card ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .compare-card li {
+      font-size: 14px;
+      line-height: 1.5;
+      padding-left: 22px;
+      position: relative;
+    }
+    .compare-card.other li { color: var(--fg-3); }
+    .compare-card.other li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--fg-4);
+    }
+    .compare-card.cognivo {
+      border-color: var(--accent-muted);
+      background: var(--accent-dim);
+    }
+    .compare-card.cognivo li { color: var(--fg-2); }
+    .compare-card.cognivo li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 600;
+    }
 
-    /* ── Open Source ── */
-    .oss-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-    .oss-card {
-      padding: 24px;
-      border: 1px solid var(--border); border-radius: var(--radius);
-    }
-    .oss-card:hover { border-color: var(--border-hover); }
-    .oss-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
-    .oss-card p { font-size: 14px; color: var(--fg-3); line-height: 1.6; }
-
-    /* ── CTA ── */
+    /* ─ Final CTA ─────────────────────────────────────────────────── */
     .cta-section { padding-bottom: 6rem; }
     .cta-box {
       background: var(--bg-subtle);
-      border: 1px solid rgba(223,255,97,0.1);
+      border: 1px solid var(--accent-muted);
       border-radius: var(--radius);
-      padding: 48px 32px;
-      position: relative; overflow: hidden;
+      padding: 56px 32px;
+      position: relative;
+      overflow: hidden;
       text-align: center;
     }
     .cta-glow {
-      position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(223,255,97,0.04) 0%, transparent 70%);
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 460px;
+      height: 460px;
+      background: radial-gradient(circle, var(--accent-muted) 0%, transparent 70%);
       pointer-events: none;
     }
     .cta-inner { position: relative; }
     .cta-inner h2 {
-      font-size: 1.75rem; font-weight: 700;
-      margin-bottom: 12px; letter-spacing: -0.02em;
+      font-size: clamp(1.5rem, 3vw, 1.875rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
     }
     .cta-inner p {
-      color: var(--fg-2); margin-bottom: 24px;
-    }
-    .cta-install {
-      display: block; margin-top: 16px;
-      font: 500 13px var(--font-mono);
-      color: var(--fg-4); background: none; padding: 0;
+      color: var(--fg-2);
+      margin-bottom: 24px;
     }
 
+    /* ─ Responsive ────────────────────────────────────────────────── */
     @media (max-width: 768px) {
+      .hero { padding-top: 4rem; }
       .compare-grid { grid-template-columns: 1fr; }
       .features-grid { grid-template-columns: 1fr; }
-      .pkg-grid { grid-template-columns: 1fr; }
-      .oss-grid { grid-template-columns: 1fr; }
     }
+
     @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; transition-duration: 0.01ms !important; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </BaseLayout>

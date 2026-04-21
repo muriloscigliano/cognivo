@@ -1,8 +1,9 @@
 {
   "name": "@cognivo/adapter-react",
-  "version": "0.3.0",
-  "description": "55 React wrappers for Cognivo Web Components. Use AI-native components in React apps.",
+  "version": "0.4.0",
+  "description": "React wrappers for every Cognivo web component.",
   "license": "MIT",
+  "author": "Cognivo",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -16,13 +17,18 @@
   },
   "files": [
     "dist",
-    "README.md",
     "LICENSE"
   ],
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/muriloscigliano/cognivo-1"
+    "url": "https://github.com/murisd/cognivo.git",
+    "directory": "packages/adapter-react"
+  },
+  "homepage": "https://cognivo.dev",
+  "bugs": "https://github.com/murisd/cognivo/issues",
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "vite build && tsc --emitDeclarationOnly",
@@ -47,10 +53,11 @@
     "vitest": "^2.1.0"
   },
   "keywords": [
-    "react",
-    "web-components",
     "cognivo",
-    "ai",
-    "wrappers"
+    "design-system",
+    "ui",
+    "components",
+    "react",
+    "web-components"
   ]
 }

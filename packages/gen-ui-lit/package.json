@@ -1,15 +1,19 @@
 {
   "name": "@cognivo/gen-ui-lit",
-  "version": "0.3.0",
-  "description": "Lit renderer for Cognivo generative UI. Renders streaming component trees to Web Components.",
+  "version": "0.4.0",
+  "description": "Lit renderer for Cognivo generative UI trees.",
   "keywords": [
-    "lit",
+    "cognivo",
+    "design-system",
+    "ui",
+    "components",
     "generative-ui",
-    "renderer",
-    "web-components",
-    "cognivo"
+    "llm",
+    "zod",
+    "lit"
   ],
   "license": "MIT",
+  "author": "Cognivo",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -23,13 +27,18 @@
   },
   "files": [
     "dist",
-    "README.md",
     "LICENSE"
   ],
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/muriloscigliano/cognivo-1"
+    "url": "https://github.com/murisd/cognivo.git",
+    "directory": "packages/gen-ui-lit"
+  },
+  "homepage": "https://cognivo.dev",
+  "bugs": "https://github.com/murisd/cognivo/issues",
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "vite build",

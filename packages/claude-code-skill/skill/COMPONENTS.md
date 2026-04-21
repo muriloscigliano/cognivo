@@ -1,0 +1,196 @@
+# Cognivo Component Catalog
+
+182 components total. Tag-name catalog with one-liner per component. Use these tags instead of raw HTML whenever possible. Source: `packages/components/src/components/`.
+
+## Foundation (cg-*, 87)
+
+- `cg-accordion` — Expandable content sections with smooth CSS grid height animation.
+- `cg-alert-dialog` — Destructive confirmation dialog with `alertdialog` ARIA role and danger styling.
+- `cg-aspect-ratio` — Wrapper that maintains an aspect ratio for its child content.
+- `cg-autocomplete` — Input with filtered dropdown suggestions (combobox pattern).
+- `cg-avatar` — Image with initials fallback and optional status indicator.
+- `cg-avatar-group` — Overlapping avatar stack with truncation counter.
+- `cg-badge` — Semantic status badge with 6 color variants, optional dot, and remove button.
+- `cg-badge-group` — Row of related badges with consistent spacing.
+- `cg-breadcrumbs` — Navigation breadcrumb trail with responsive collapse and custom separators.
+- `cg-button` — Button with variants, sizes, loading state, and press feedback.
+- `cg-button-group` — Segmented cluster of related buttons.
+- `cg-calendar` — Full month calendar with single/range/multiple selection modes.
+- `cg-callout` — Highlighted inline message block (info/warning/success/danger).
+- `cg-card` — Container with header/body/footer slots and three visual variants.
+- `cg-carousel` — Swipeable item slider with navigation and indicators.
+- `cg-chart` — Data chart primitive (line/bar/area) with theming.
+- `cg-checkbox` — Checkbox with animated tick draw, spring bounce, and indeterminate state.
+- `cg-chip` — Pill-shaped tag with neutral default, color variants, optional icon.
+- `cg-code-block` — Syntax-highlighted code block with copy button.
+- `cg-collapsible` — Simple expand/collapse with smooth `grid-template-rows` animation.
+- `cg-color-picker` — Color picker with swatch trigger + spectrum panel.
+- `cg-combobox` — Typeahead input with optional chips for multi-select.
+- `cg-command` — Searchable command palette foundation with grouped items.
+- `cg-context-menu` — Right-click context menu with keyboard navigation and shortcuts.
+- `cg-date-picker` — Date picker with calendar dropdown, following cg-input/cg-select styling.
+- `cg-date-range-picker` — Dual-input date range picker that opens a range-mode cg-calendar.
+- `cg-date-time-picker` — Combined date+time picker in a single dropdown.
+- `cg-drawer` — Slide-in side panel with backdrop, focus trap, and scroll lock.
+- `cg-dropdown` — Floating dropdown menu with scale+fade animation and keyboard nav.
+- `cg-empty-state` — Empty / no-results / error state with icon, title, description, actions slot.
+- `cg-file-input` — File picker with drag-and-drop, size/type validation, and chip display.
+- `cg-focus-scope` — Behavior primitive that traps Tab-focus within itself when `active`.
+- `cg-follow-up` — Chip row surfacing suggested follow-up prompts for AI chat.
+- `cg-form` — Form shell with submit/validation orchestration.
+- `cg-hover-card` — Rich hover preview with configurable open/close delays.
+- `cg-icon` — Icon renderer (SVG sprite or inline).
+- `cg-image` — Image with loading, error fallback, and lazy behavior.
+- `cg-image-block` — Framed image block with caption and aspect control.
+- `cg-image-gallery` — Grid gallery with lightbox.
+- `cg-input` — Text input with floating label, prefix/suffix, clear button, validation states.
+- `cg-kbd` — Keyboard shortcut display chip (e.g. ⌘K).
+- `cg-label` — Form field label primitive with required-indicator.
+- `cg-link` — Text link with external-indicator and visited styling.
+- `cg-list` — Data list with bullet, number, image, or plain variants.
+- `cg-listbox` — Single/multi-select list with roving tabindex keyboard pattern.
+- `cg-markdown` — Markdown renderer with code highlighting and sanitization.
+- `cg-menubar` — App-style horizontal menu bar (File/Edit/View) with dropdown submenus.
+- `cg-meter` — Measurement gauge (battery, disk, score) with threshold coloring.
+- `cg-metric-card` — KPI card with value, label, delta, and optional sparkline.
+- `cg-modal` — Modal dialog with backdrop blur, scale animation, focus trap, scroll lock.
+- `cg-navbar` — Top navigation bar with glass morphism and animated hover states.
+- `cg-navigation-menu` — Horizontal mega-menu with grouped panels.
+- `cg-number-input` — Numeric input with increment/decrement and precision formatting.
+- `cg-otp-input` — One-time-password digit input with auto-advance and paste support.
+- `cg-pagination` — Page navigation with prev/next, ellipsis gaps, configurable siblings.
+- `cg-password-input` — Password input with visibility toggle and optional strength meter.
+- `cg-popover` — Floating container with click/hover triggers, smart placement, focus mgmt.
+- `cg-portal` — Renders slotted children into a different DOM location (default: `document.body`).
+- `cg-progress-bar` — Linear determinate/indeterminate progress indicator.
+- `cg-radio` — Radio button with dot or tick indicator and spring animation.
+- `cg-radio-group` — Manages a group of `<cg-radio>` with WAI-ARIA keyboard navigation.
+- `cg-rating` — Star rating input with keyboard nav, half-star precision, clear.
+- `cg-resizable` — Two-pane split container with a draggable handle.
+- `cg-scroll-area` — Custom-styled scroll container with themed scrollbars.
+- `cg-segmented-control` — iOS-style pill selector with animated indicator.
+- `cg-select` — Dropdown select with optional search filtering and keyboard navigation.
+- `cg-separator` — Horizontal/vertical divider (role="separator").
+- `cg-sheet` — Mobile-first drawer variant with optional snap points and drag-to-dismiss.
+- `cg-sidebar` — Top-level side navigation with collapsible icon-only mode.
+- `cg-skeleton` — Loading skeleton with shimmer.
+- `cg-slider` — Range slider with single and dual-thumb modes.
+- `cg-spinner` — Activity spinner with sizing variants.
+- `cg-stack` — Flex/grid layout primitive (direction, gap, align, justify, padding).
+- `cg-steps` — Numbered step indicator for linear flows.
+- `cg-switch` — Toggle switch with spring-animated thumb.
+- `cg-table` — Data table with sortable columns, sticky header, and row actions.
+- `cg-tabs` — Tabbed navigation with animated sliding indicator, count badges, keyboard nav.
+- `cg-tag-input` — Chip-based multi-value input — type + Enter/comma to add.
+- `cg-text` — Typographic primitive (variant maps to heading/body/muted/lead/etc.).
+- `cg-textarea` — Multi-line text input with floating label, auto-resize, character count.
+- `cg-time-picker` — Time picker with hour/minute grid dropdown.
+- `cg-toaster` — Manages a stack of auto-dismissing toast notifications.
+- `cg-toggle` — Single press-state button using `aria-pressed` for toggle semantics.
+- `cg-toggle-group` — Group of `cg-toggle` elements with single or multiple selection.
+- `cg-tooltip` — Hover/focus tooltip with arrow, viewport-aware positioning, fade+scale animation.
+- `cg-tree-view` — Hierarchical tree with keyboard navigation and multi-select.
+- `cg-visually-hidden` — Accessibility helper — rendered for AT, visually hidden.
+
+## AI-Native (ai-*, 89)
+
+- `ai-ab-test` — Side-by-side A/B comparison card with vote controls and swap.
+- `ai-accessibility-report` — WCAG compliance report with score circle and expandable issue list.
+- `ai-action-preview` — Confirmation card for dangerous AI actions with severity badge and countdown.
+- `ai-agent-card` — Status card for multi-agent orchestration (name, role, live status).
+- `ai-agent-steps` — Step-by-step agent execution trace.
+- `ai-alert-card` — Priority alert card with urgency-colored border, deadline badge, dismissal.
+- `ai-analytics-chart` — Multi-series SVG line chart with axis labels, legend, hover tooltips.
+- `ai-annotation` — Text annotation layer with colored highlights and label toolbar.
+- `ai-api-key-manager` — API key panel with masked display, copy, revoke, delete, create.
+- `ai-assistant-widget` — Floating embedded chat widget with FAB trigger and expandable panel.
+- `ai-audio-player` — Audio player with decorative waveform, progress seek, speed control.
+- `ai-avatar` — Avatar with image/initials, status dot, type-colored ring for agents.
+- `ai-badge` — AI confidence badge (3 sizes, color-coded levels, tooltip, optional sparkline).
+- `ai-batch-progress` — Batch job tracker with segmented success/fail bar and pause/cancel/retry.
+- `ai-cache-indicator` — Compact inline cache status with expanded detail card.
+- `ai-capture-flow` — Multi-step capture wizard (upload → preview → processing → result).
+- `ai-changelog` — Timeline-style version history with type badges and rollback.
+- `ai-chart-summary` — AI-generated chart insight card with summary, trends, metadata.
+- `ai-chat` — Full-featured AI chat with streaming, markdown, message actions, follow-ups.
+- `ai-citation` — Inline numbered citation badges or bibliography with expandable source cards.
+- `ai-collaborative-editor` — Text editor with multi-user cursor presence and live editing.
+- `ai-command-palette` — AI-flavored command palette wrapping `<cg-command>` with fuzzy search.
+- `ai-confidence-slider` — Gradient slider for confidence thresholds with presets and histogram.
+- `ai-consent-manager` — Consent panel with grouped toggles, required items, Accept/Reject/Save.
+- `ai-context-window` — Token budget bar for context usage with color segments and cache indicator.
+- `ai-copy-button` — One-click clipboard copy with animated confirmation state.
+- `ai-cost-dashboard` — AI cost dashboard with summary cards, budget bar, per-model breakdown, daily trend.
+- `ai-data-card` — Compact key-value card with typed formatting, header badge, footer actions.
+- `ai-data-lineage` — Minimal data provenance flow — monochrome nodes connected by arrows.
+- `ai-data-preview` — Structured data preview (JSON/CSV/table) with confirm/cancel.
+- `ai-data-table` — Data table with sortable columns, AI anomaly highlighting, striped rows.
+- `ai-debug-console` — Collapsible debug panel for AI requests/responses with expandable JSON.
+- `ai-detection-canvas` — Object detection overlay with positioned bounding boxes and labels.
+- `ai-diff-panel` — Side-by-side or inline text diff with additions/removals and stats bar.
+- `ai-embedding-viz` — 2D scatter for embeddings with color-coded clusters and hover tooltips.
+- `ai-empty-state` — Centered empty state with icon, title, description, optional action.
+- `ai-error-boundary` — Error card for AI failures with error code badge, details, retry, dismiss.
+- `ai-eval-scorecard` — LLM evaluation scorecard with metric rows, grade badge, deltas.
+- `ai-feature-flag` — Feature flag panel with toggles, environment badges, search.
+- `ai-feedback` — Feedback widget with thumbs/stars/emoji modes, issue tags, comment field.
+- `ai-file-upload` — AI-themed wrapper around `cg-file-input`.
+- `ai-form-generator` — Dynamic form from AI-generated JSON schema using Cognivo components.
+- `ai-guardrail` — Content safety display with policy checks, blur, override controls.
+- `ai-heatmap` — SVG matrix heatmap for confusion/correlation/feature-importance.
+- `ai-insight-card` — Actionable AI insight with type icons, expandable detail, sources.
+- `ai-json-viewer` — Interactive JSON tree with collapsible nodes and syntax highlighting.
+- `ai-keyboard-shortcuts` — Modal overlay displaying grouped keyboard shortcuts with search.
+- `ai-kpi-grid` — Dashboard card with multiple KPIs in a configurable grid.
+- `ai-labeling-board` — Data labeling board with label palette and per-label stats.
+- `ai-memory-panel` — Agent memory viewer (default/compact/inline variants).
+- `ai-model-comparison` — Side-by-side AI model comparison table.
+- `ai-model-selector` — Card grid for picking AI models with capability filters.
+- `ai-notification-center` — Grouped notification inbox for AI events.
+- `ai-onboarding` — Step-by-step onboarding card with progress dots and navigation.
+- `ai-permission-gate` — Role-based access panel showing which AI features are allowed.
+- `ai-personalization-dash` — User personalization dashboard with sliders, segments, reset.
+- `ai-presence` — Overlapping avatar stack showing online users with status dots.
+- `ai-progress-steps` — Horizontal step indicator for multi-phase AI pipelines.
+- `ai-prompt-editor` — Prompt version editor with view / edit / split modes.
+- `ai-prompt-template` — Prompt template editor with `{{variable}}` highlighting and inline vars.
+- `ai-rag-panel` — RAG results panel with retrieved docs, relevance scores, type badges.
+- `ai-reasoning-tree` — Collapsible chain-of-thought display with two variants.
+- `ai-result-panel` — Collapsible AI analysis panel with Summary/Data/Sources tabs.
+- `ai-reveal-animation` — Entrance animation wrapper (fade, slide, materialize) for slotted content.
+- `ai-reward-signal` — Reward/engagement card with score, trend, sparkline, progress bar.
+- `ai-rich-message` — Chat message bubble supporting user/assistant/system roles.
+- `ai-scenario-panel` — What-if scenario comparison with probability/outcome/status.
+- `ai-search` — AI search input with dropdown results, faceted filter chips.
+- `ai-segmentation-viewer` — Image segmentation viewer with mask overlays and visibility toggles.
+- `ai-sidebar` — Collapsible app sidebar with grouped sections.
+- `ai-similarity-card` — Side-by-side item comparison with similarity score and accept/reject.
+- `ai-source-graph` — Source attribution panel showing knowledge-source contributions.
+- `ai-status-page` — System health dashboard with color-coded service statuses.
+- `ai-streaming-text` — Token-by-token text renderer with markdown delegation.
+- `ai-test-runner` — AI evaluation test results panel with per-test status.
+- `ai-thinking` — AI loading indicator (dots, spinner, or skeleton variants).
+- `ai-timeline` — Vertical execution timeline for AI agents with status indicators.
+- `ai-toast` — AI-flavored toast stack wrapping `cg-toaster`.
+- `ai-token-tracker` — LLM token usage/cost display (compact inline badge or full card).
+- `ai-tool-card-resolver` — Dynamic card renderer mapping tool-call names to registered components.
+- `ai-tool-indicator` — LLM tool/function call progress with humanized names.
+- `ai-transform-slider` — Before/after image comparison slider with clip-path overlay.
+- `ai-translation-panel` — Split translation interface with language selectors and confidence badge.
+- `ai-usage-meter` — Circular SVG ring displaying API usage against a quota.
+- `ai-validation-checklist` — Data validation checklist with status icons, progress, run button.
+- `ai-version-selector` — Radio-group version picker for AI models with status badges.
+- `ai-voice-panel` — Voice command panel with Web Speech API, mic button with pulse.
+- `ai-webhook-config` — Webhook endpoint panel with URL, status, retry settings.
+- `ai-workflow-builder` — Visual agent workflow rendered as a vertical DAG.
+
+## Behavioral (bias-*, 6)
+
+- `bias-anchoring` — Reference-price anchoring wrapper (struck-through anchor + current).
+- `bias-authority` — Inline endorsement/trust badge ("Verified by X", "Featured in").
+- `bias-commitment` — Progressive multi-step reveal using `[data-step="N"]` children.
+- `bias-reciprocity` — Value-first framing around a CTA (gift before ask).
+- `bias-scarcity` — Urgency/scarcity indicator (time countdown, stock, popularity).
+- `bias-social-proof` — Social-proof badge (how many are viewing/purchased/rated).
+
+For the full source-of-truth and props, see `packages/components/src/components/`.

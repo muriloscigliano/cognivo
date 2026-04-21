@@ -1,15 +1,15 @@
 {
   "name": "@cognivo/core",
-  "version": "0.3.0",
-  "description": "Framework-agnostic AI integration core. Intents, clients, context building for AI applications.",
+  "version": "0.4.0",
+  "description": "Framework-agnostic AI client and streaming utilities for Cognivo.",
   "keywords": [
-    "ai",
-    "core",
     "cognivo",
-    "framework-agnostic",
-    "intents"
+    "design-system",
+    "ui",
+    "components"
   ],
   "license": "MIT",
+  "author": "Cognivo",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -23,13 +23,18 @@
   },
   "files": [
     "dist",
-    "README.md",
     "LICENSE"
   ],
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/muriloscigliano/cognivo-1"
+    "url": "https://github.com/murisd/cognivo.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://cognivo.dev",
+  "bugs": "https://github.com/murisd/cognivo/issues",
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "vite build",
