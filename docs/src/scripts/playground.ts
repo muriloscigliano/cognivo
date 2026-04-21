@@ -525,6 +525,34 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   if (tag === 'cg-empty-state') { e.variant = 'search'; e.title = 'No results found'; e.description = 'Try a different search query or adjust your filters.'; liveElement.style.maxWidth = '480px'; }
   if (tag === 'cg-meter') { e.value = 72; e.low = 20; e.high = 80; e.optimum = 50; e.label = 'CPU usage'; e.showValue = true; liveElement.style.maxWidth = '320px'; }
   if (tag === 'cg-date-range-picker') { e.label = 'Travel dates'; e.from = '2026-04-01'; e.to = '2026-04-10'; liveElement.style.maxWidth = '400px'; }
+
+  // ── Bias Wrappers (Cognivo-defining composable behavioral primitives) ──
+  if (tag === 'bias-anchoring') { e.anchor = '$199'; e.current = '$99'; e.label = 'Save 50%'; e.variant = 'emphasized'; }
+  if (tag === 'bias-scarcity') { e.type = 'stock'; e.remaining = 3; e.threshold = 10; e.pulse = true; }
+  if (tag === 'bias-social-proof') { e.count = 128; e.type = 'viewing'; e.interval = 'now'; e.format = 'full'; }
+  if (tag === 'bias-authority') { e.source = 'Wirecutter'; e.kind = 'featured'; }
+  if (tag === 'bias-commitment') {
+    e.step = 2; e.total = 3; e.showProgress = true;
+    for (const [i, text] of ['Pick a plan', 'Enter email', 'Payment'].entries()) {
+      const div = document.createElement('div');
+      div.setAttribute('data-step', String(i + 1));
+      div.textContent = `${i + 1}. ${text}`;
+      div.style.padding = '8px 12px';
+      div.style.background = 'var(--cg-color-surface-container-background)';
+      div.style.borderRadius = '8px';
+      liveElement.appendChild(div);
+    }
+    liveElement.style.maxWidth = '420px';
+  }
+  if (tag === 'bias-reciprocity') {
+    e.gift = 'Free shipping over $50';
+    e.prominence = 'standard';
+    const btn = document.createElement('cg-button');
+    btn.setAttribute('variant', 'primary');
+    btn.textContent = 'Add to cart';
+    liveElement.appendChild(btn);
+    liveElement.style.maxWidth = '360px';
+  }
 }
 
 // ─── Re-render examples with live components ────────────────────────────────

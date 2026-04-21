@@ -1,0 +1,52 @@
+{
+  "name": "@cognivo/analytics",
+  "version": "0.4.0",
+  "description": "Opt-in, privacy-first component interaction analytics for Cognivo.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/murisd/cognivo.git",
+    "directory": "packages/analytics"
+  },
+  "homepage": "https://cognivo.dev",
+  "bugs": "https://github.com/murisd/cognivo/issues",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": [
+    "cognivo",
+    "design-system",
+    "ui",
+    "components",
+    "analytics",
+    "telemetry"
+  ],
+  "license": "MIT",
+  "author": "Cognivo",
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0",
+    "happy-dom": "^15.0.0"
+  }
+}

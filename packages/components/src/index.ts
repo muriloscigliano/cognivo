@@ -202,6 +202,14 @@ import { CgEmptyState } from './components/cg-empty-state/cg-empty-state.js';
 import { CgMeter } from './components/cg-meter/cg-meter.js';
 import { CgDateRangePicker } from './components/cg-date-range-picker/cg-date-range-picker.js';
 
+// ── Bias Wrappers (6) — Composable cognitive-bias primitives ───────────────
+import { BiasAnchoring } from './components/bias-anchoring/bias-anchoring.js';
+import { BiasScarcity } from './components/bias-scarcity/bias-scarcity.js';
+import { BiasSocialProof } from './components/bias-social-proof/bias-social-proof.js';
+import { BiasAuthority } from './components/bias-authority/bias-authority.js';
+import { BiasCommitment } from './components/bias-commitment/bias-commitment.js';
+import { BiasReciprocity } from './components/bias-reciprocity/bias-reciprocity.js';
+
 // ── Wave 8: Advanced Foundation (10) ───────────────────────────────────────
 import { CgMenubar } from './components/cg-menubar/cg-menubar.js';
 import { CgNavigationMenu } from './components/cg-navigation-menu/cg-navigation-menu.js';
@@ -280,6 +288,9 @@ export {
   CgTreeView, CgCombobox, CgVisuallyHidden, CgPortal, CgFocusScope,
   // Wave 9: Final Foundation Gaps
   CgSidebar, CgAvatar, CgEmptyState, CgMeter, CgDateRangePicker,
+  // Bias Wrappers — composable behavioral primitives
+  BiasAnchoring, BiasScarcity, BiasSocialProof,
+  BiasAuthority, BiasCommitment, BiasReciprocity,
 };
 
 // Type exports

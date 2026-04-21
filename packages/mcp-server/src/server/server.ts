@@ -21,6 +21,9 @@ import { getPatternSchema, getPattern } from './tools/get-pattern.js';
 import { getBiasSchema, getBias } from './tools/get-bias.js';
 import { suggestBiasesSchema, suggestBiases } from './tools/suggest-biases.js';
 import { recommendComponentSchema, recommendComponent } from './tools/recommend-component.js';
+import { generatePageSchema, generatePage } from './tools/generate-page.js';
+import { auditPageSchema, auditPage } from './tools/audit-page.js';
+import { applyBiasSchema, applyBias } from './tools/apply-bias.js';
 
 // ─── Catalog Loading ───────────────────────────────────────────────────────
 
@@ -157,6 +160,45 @@ export function createServer(): McpServer {
       const parsed = recommendComponentSchema.parse(input);
       const result = recommendComponent(catalog, parsed);
       return { content: [{ type: 'text', text: result }] };
+    },
+  );
+
+  // ── Tool 10: Generate Page ───────────────────────────────────────────────
+
+  server.tool(
+    'cognivo_generate_page',
+    'Generate a full Cognivo page (HTML + typed component tree) from a natural-language description. Deterministic, rule-based template expansion — no LLM calls. Supports pricing, landing, dashboard, settings, chat, onboarding, plus a generic fallback.',
+    generatePageSchema.shape,
+    async (input) => {
+      const parsed = generatePageSchema.parse(input);
+      const result = generatePage(parsed);
+      return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+    },
+  );
+
+  // ── Tool 11: Audit Page ──────────────────────────────────────────────────
+
+  server.tool(
+    'cognivo_audit_page',
+    'Audit an HTML page against Cognivo rules: unknown components, missing required props, deprecated tags, accessibility (labels, alt, heading order), and structural issues (empty wrappers). Returns issues + stats.',
+    auditPageSchema.shape,
+    async (input) => {
+      const parsed = auditPageSchema.parse(input);
+      const result = auditPage(parsed);
+      return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+    },
+  );
+
+  // ── Tool 12: Apply Bias ──────────────────────────────────────────────────
+
+  server.tool(
+    'cognivo_apply_bias',
+    'Wrap a target component in a cognitive-bias wrapper (anchoring, scarcity, social-proof, authority, commitment, reciprocity). Finds the first occurrence of `targetTag` in the supplied HTML and nests it inside the appropriate `<bias-*>` component. Returns the modified HTML plus the canonical design-advisor bias ID.',
+    applyBiasSchema.shape,
+    async (input) => {
+      const parsed = applyBiasSchema.parse(input);
+      const result = applyBias(parsed);
+      return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
     },
   );
 
