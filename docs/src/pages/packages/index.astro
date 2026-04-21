@@ -1,0 +1,82 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+
+const packages = [
+  {
+    name: '@cognivo/ssr',
+    slug: 'ssr',
+    tag: 'SSR',
+    desc: 'Server-render Lit components to declarative shadow DOM. Thin wrapper over @lit-labs/ssr with Next.js and Astro integrations.',
+  },
+  {
+    name: '@cognivo/theme-generator',
+    slug: 'theme-generator',
+    tag: 'CLI + SDK',
+    desc: 'Turn descriptions like "warm ocean professional" into tier-2 token overrides. 40 curated palettes, zero dependencies.',
+  },
+  {
+    name: '@cognivo/analytics',
+    slug: 'analytics',
+    tag: 'Telemetry',
+    desc: 'Opt-in, privacy-first component event capture. 243 known Cognivo events, 4 sinks (console, fetch, batch, localStorage).',
+  },
+  {
+    name: '@cognivo/mcp-server',
+    slug: 'mcp-server',
+    tag: 'MCP',
+    desc: 'Model Context Protocol server exposing 12 Cognivo tools to Claude Desktop, Cursor, Windsurf, and Claude Code.',
+  },
+  {
+    name: '@cognivo/eslint-plugin',
+    slug: 'eslint-plugin',
+    tag: 'Linting',
+    desc: '6 rules that enforce the token system — block raw hex, rgba, transition: all, fake tokens, and bad fallbacks.',
+  },
+  {
+    name: '@cognivo/claude-code-skill',
+    slug: 'claude-code-skill',
+    tag: 'Agent',
+    desc: 'Claude Code skill bundle. Symlinks into ~/.claude/skills/cognivo so agents pick components and tokens correctly.',
+  },
+];
+---
+
+<DocsLayout title="Packages">
+  <h1>Packages</h1>
+  <p class="desc">
+    Beyond the core component set, Cognivo ships focused add-ons for SSR, theming,
+    telemetry, agent tooling, and lint enforcement. Each is optional, independently
+    versioned, and designed to slot into an existing stack.
+  </p>
+
+  <div class="grid">
+    {packages.map(p => (
+      <a href={`/packages/${p.slug}`} class="card">
+        <div class="card-hd">
+          <span class="name">{p.name}</span>
+          <span class="tag">{p.tag}</span>
+        </div>
+        <p class="card-desc">{p.desc}</p>
+      </a>
+    ))}
+  </div>
+
+  <style>
+    h1 { font-size: 36px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 16px; }
+    .desc { font-size: 16px; color: var(--fg-2); line-height: 1.7; margin-bottom: 48px; max-width: 720px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .card {
+      display: block;
+      padding: 20px 20px 22px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-subtle);
+      transition: border-color 150ms, transform 150ms;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .card-hd { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+    .name { font-size: 15px; font-weight: 600; color: var(--fg); letter-spacing: -0.01em; font-family: var(--font-mono); }
+    .tag { font: 500 11px var(--font-mono); color: var(--fg-3); }
+    .card-desc { font-size: 14px; color: var(--fg-2); line-height: 1.5; margin: 0; }
+  </style>
+</DocsLayout>

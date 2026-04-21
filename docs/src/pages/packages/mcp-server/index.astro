@@ -1,0 +1,140 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+---
+
+<DocsLayout title="@cognivo/mcp-server">
+  <h1>@cognivo/mcp-server</h1>
+  <p class="subtitle">Model Context Protocol server that exposes the Cognivo catalog — components, tokens, patterns, and biases — to Claude Desktop, Cursor, Windsurf, and Claude Code. 12 tools for component lookup, token search, usage validation, page generation, page auditing, and bias application.</p>
+
+  <section>
+    <h2 id="installation">Installation</h2>
+    <p>The server runs via <code>npx</code>, no global install required:</p>
+    <pre><code>npx -y @cognivo/mcp-server</code></pre>
+    <p>Or add to your project and use the local binary:</p>
+    <pre><code>pnpm add -D @cognivo/mcp-server</code></pre>
+  </section>
+
+  <section>
+    <h2 id="quickstart">Quick start</h2>
+    <p>Each MCP client reads a JSON config file. Add a <code>"cognivo"</code> server entry and restart the client.</p>
+  </section>
+
+  <section>
+    <h2 id="config">Client setup</h2>
+
+    <h3>Claude Desktop</h3>
+    <p>Edit <code>~/Library/Application Support/Claude/claude_desktop_config.json</code> (macOS) or <code>%APPDATA%/Claude/claude_desktop_config.json</code> (Windows):</p>
+    <pre><code>{`{
+  "mcpServers": {
+    "cognivo": {
+      "command": "npx",
+      "args": ["-y", "@cognivo/mcp-server"]
+    }
+  }
+}`}</code></pre>
+
+    <h3>Cursor</h3>
+    <p>Edit <code>~/.cursor/mcp.json</code> (or the project-local <code>.cursor/mcp.json</code>):</p>
+    <pre><code>{`{
+  "mcpServers": {
+    "cognivo": {
+      "command": "npx",
+      "args": ["-y", "@cognivo/mcp-server"]
+    }
+  }
+}`}</code></pre>
+
+    <h3>Windsurf</h3>
+    <p>Edit <code>~/.codeium/windsurf/mcp_config.json</code>:</p>
+    <pre><code>{`{
+  "mcpServers": {
+    "cognivo": {
+      "command": "npx",
+      "args": ["-y", "@cognivo/mcp-server"]
+    }
+  }
+}`}</code></pre>
+
+    <h3>Claude Code</h3>
+    <pre><code>claude mcp add cognivo -- npx -y @cognivo/mcp-server</code></pre>
+  </section>
+
+  <section>
+    <h2 id="api">Tools</h2>
+    <p>All 12 tools are registered on connect. Agents pick them based on your prompt — you don't need to invoke them explicitly.</p>
+    <div class="table-wrap">
+      <table class="ref-table">
+        <thead><tr><th>Tool</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code>cognivo_list_components</code></td><td>Browse 143 components by category, wave, or keyword.</td></tr>
+          <tr><td><code>cognivo_get_component</code></td><td>Full API for a component — props, events, slots, CSS custom props, examples.</td></tr>
+          <tr><td><code>cognivo_find_tokens</code></td><td>Search the 1,800+ token catalog by name, tier, category, or component.</td></tr>
+          <tr><td><code>cognivo_get_token_for</code></td><td>Recommended token for a CSS property with Tier 3 &rarr; 2 &rarr; 1 guidance.</td></tr>
+          <tr><td><code>cognivo_validate_usage</code></td><td>Lint HTML/CSS for raw hex, tier violations, unknown components, anti-patterns.</td></tr>
+          <tr><td><code>cognivo_get_pattern</code></td><td>Fetch composition patterns for common UI scenarios.</td></tr>
+          <tr><td><code>cognivo_get_bias</code></td><td>Look up one of 180 cognitive biases with design impact.</td></tr>
+          <tr><td><code>cognivo_suggest_biases</code></td><td>Recommend biases for a UI scenario (pricing, onboarding, retention).</td></tr>
+          <tr><td><code>cognivo_recommend_component</code></td><td>Pick the right component for a chunk of content.</td></tr>
+          <tr><td><code>cognivo_generate_page</code></td><td>Generate a full page (pricing / landing / dashboard / settings / chat / onboarding) deterministically.</td></tr>
+          <tr><td><code>cognivo_audit_page</code></td><td>Audit HTML for unknown components, missing props, a11y, and structural issues.</td></tr>
+          <tr><td><code>cognivo_apply_bias</code></td><td>Wrap a target element in a <code>&lt;bias-*&gt;</code> wrapper (anchoring, scarcity, social-proof, etc.).</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 id="examples">Example prompts</h2>
+    <pre><code>{`# component discovery
+"Which Cognivo component should I use to render a streaming LLM response?"
+
+# token lookup
+"What token should I use for a card background? Give me the tier-3 choice."
+
+# validation
+"Here's my CSS — is it compliant?\n\n.foo { background: #2d2d30; }"
+
+# page generation
+"Generate a pricing page with 3 tiers using Cognivo components."
+
+# bias application
+"Wrap the middle pricing tier in an anchoring bias."
+
+# audit
+"Audit this HTML for Cognivo issues: <cg-card><cg-buttton>Bad</cg-buttton></cg-card>"`}</code></pre>
+  </section>
+
+  <section>
+    <h2 id="caveats">Caveats</h2>
+    <ul class="caveats">
+      <li><strong>Restart required.</strong> MCP clients load config at launch. Add the server, restart the client.</li>
+      <li><strong>Stdio transport.</strong> The server communicates over stdin/stdout — no network ports, no auth surface.</li>
+      <li><strong>Catalog is embedded.</strong> Published builds ship a pre-compiled catalog snapshot, so tool responses are deterministic and offline-friendly.</li>
+      <li><strong>Page generators are rule-based.</strong> <code>cognivo_generate_page</code> is a template expander, not an LLM — output is deterministic and never hallucinates tag names.</li>
+      <li><strong>Requires Node 20+.</strong> The MCP SDK and catalog loader use modern ESM features.</li>
+    </ul>
+  </section>
+
+  <style>
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.03em; }
+    .subtitle { color: var(--fg-2); margin-bottom: 40px; font-size: 16px; line-height: 1.7; max-width: 720px; }
+    section { margin-bottom: 48px; }
+    h2 {
+      font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
+      margin: 40px 0 16px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+    }
+    h2::before { content: ''; display: inline-block; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; margin-right: 10px; }
+    h3 { font-size: 15px; font-weight: 600; margin: 24px 0 8px; color: var(--fg); }
+    p { margin-bottom: 12px; color: var(--fg-2); line-height: 1.7; }
+    .caveats { padding-left: 20px; margin: 0; color: var(--fg-2); line-height: 1.7; }
+    .caveats li { margin-bottom: 10px; }
+    .caveats strong { color: var(--fg); }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+    .ref-table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+    .ref-table th { text-align: left; padding: 10px 16px; font-size: 0.6875rem; font-weight: 600; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); background: var(--bg-subtle); }
+    .ref-table td { padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--fg-2); vertical-align: top; }
+    .ref-table tr:last-child td { border-bottom: none; }
+  </style>
+</DocsLayout>

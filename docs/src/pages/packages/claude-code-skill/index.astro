@@ -1,0 +1,102 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+---
+
+<DocsLayout title="@cognivo/claude-code-skill">
+  <h1>@cognivo/claude-code-skill</h1>
+  <p class="subtitle">A Claude Code skill bundle. Installs into <code>~/.claude/skills/cognivo</code> via symlink, giving Claude Code Cognivo-aware component selection, token enforcement, and cognitive-bias wrapper guidance. Activates with <code>/cognivo</code> or natural-language triggers.</p>
+
+  <section>
+    <h2 id="installation">Installation</h2>
+    <pre><code>pnpm add -D @cognivo/claude-code-skill</code></pre>
+    <p>Run the installer once — it symlinks the skill directory into <code>~/.claude/skills/cognivo</code>:</p>
+    <pre><code>npx install-cognivo-skill</code></pre>
+    <p>Alternatively, invoke the installer from inside a local checkout:</p>
+    <pre><code>bash node_modules/@cognivo/claude-code-skill/install.sh</code></pre>
+  </section>
+
+  <section>
+    <h2 id="quickstart">Quick start</h2>
+    <p>After install, restart Claude Code. The skill auto-activates when it detects Cognivo imports, or you can trigger it explicitly:</p>
+    <pre><code>{`/cognivo generate a pricing page with 3 tiers`}</code></pre>
+    <p>It will: pick the correct <code>cg-*</code> tags, use tier-3 then tier-2 tokens, apply appropriate <code>bias-*</code> wrappers (anchoring on the middle tier, social-proof on the popular one), and refuse dark-pattern nudges.</p>
+  </section>
+
+  <section>
+    <h2 id="api">What the skill provides</h2>
+    <p>When active, Claude Code operates with five extra instructions:</p>
+    <ol class="steps">
+      <li><strong>Component selection</strong> — prefers Cognivo tags (<code>&lt;cg-button&gt;</code>, <code>&lt;cg-stack&gt;</code>, <code>&lt;cg-card&gt;</code>) over generic HTML.</li>
+      <li><strong>Bias wrappers</strong> — recommends <code>bias-anchoring</code>, <code>bias-scarcity</code>, <code>bias-social-proof</code>, <code>bias-authority</code>, <code>bias-commitment</code>, <code>bias-reciprocity</code> where genuinely relevant; refuses fabricated urgency.</li>
+      <li><strong>Token discipline</strong> — never emits raw hex / rgba / magic numbers; always references <code>var(--cg-*)</code>. Tier 3 &rarr; 2 &rarr; 1 priority.</li>
+      <li><strong>Structured trees</strong> — composes pages with canonical Cognivo patterns (Stack &gt; Card &gt; Button, Navbar + Sidebar + Stack).</li>
+      <li><strong>Code validation</strong> — flags fake tokens, <code>transition: all</code>, missing ARIA, and SVGs rendered via <code>html</code> instead of Lit's <code>svg</code> template.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 id="examples">Skill files</h2>
+    <p>The skill ships five Markdown files in <code>skill/</code>. Claude Code loads <code>SKILL.md</code> on activation and the others on demand.</p>
+    <div class="table-wrap">
+      <table class="ref-table">
+        <thead><tr><th>File</th><th>Contents</th></tr></thead>
+        <tbody>
+          <tr><td><code>SKILL.md</code></td><td>Front-matter with triggers (<code>/cognivo</code>, "generate ui", "pricing page") plus the core instructions.</td></tr>
+          <tr><td><code>PATTERNS.md</code></td><td>Canonical UI patterns and the Cognivo tree structure for each (pricing, dashboard, settings, onboarding, chat).</td></tr>
+          <tr><td><code>BIASES.md</code></td><td>Quick reference to the 6 bias wrappers — when each is appropriate and what the underlying claim must look like.</td></tr>
+          <tr><td><code>TOKENS.md</code></td><td>Strict token rules with examples and the forbidden-pattern list (<code>--cg-gray-*</code>, <code>--cg-brand-*</code>, raw values).</td></tr>
+          <tr><td><code>COMPONENTS.md</code></td><td>Full tag catalog — one-liner per component, grouped by <code>cg-*</code> / <code>ai-*</code> / <code>bias-*</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 id="config">Invocation</h2>
+    <h3>Explicit</h3>
+    <pre><code>{`/cognivo  <your request>`}</code></pre>
+
+    <h3>Natural-language triggers</h3>
+    <pre><code>{`"generate ui for a pricing page"
+"which cognivo component for a streaming response?"
+"audit my cognivo tokens"
+"wrap this pricing card in bias-anchoring"`}</code></pre>
+    <p>Claude Code auto-loads the skill when it sees these phrases or an import from <code>@cognivo/components</code>, <code>@cognivo/gen-ui</code>, or any <code>bias-*</code> tag.</p>
+  </section>
+
+  <section>
+    <h2 id="caveats">Caveats</h2>
+    <ul class="caveats">
+      <li><strong>Symlink install.</strong> The installer errors if <code>~/.claude/skills/cognivo</code> already exists and is not a symlink — remove it manually and re-run.</li>
+      <li><strong>Requires a restart.</strong> Claude Code enumerates skills on launch. Install the skill, then restart the client.</li>
+      <li><strong>Keeps itself in sync.</strong> Because it symlinks into the skill directory, updates flow automatically when you bump the package.</li>
+      <li><strong>Not a lint replacement.</strong> The skill guides generation; use <code>@cognivo/eslint-plugin</code> to enforce the rules on existing code.</li>
+    </ul>
+  </section>
+
+  <style>
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.03em; }
+    .subtitle { color: var(--fg-2); margin-bottom: 40px; font-size: 16px; line-height: 1.7; max-width: 720px; }
+    section { margin-bottom: 48px; }
+    h2 {
+      font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
+      margin: 40px 0 16px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+    }
+    h2::before { content: ''; display: inline-block; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; margin-right: 10px; }
+    h3 { font-size: 15px; font-weight: 600; margin: 24px 0 8px; color: var(--fg); }
+    p { margin-bottom: 12px; color: var(--fg-2); line-height: 1.7; }
+    .steps { padding-left: 20px; margin: 0; color: var(--fg-2); line-height: 1.7; }
+    .steps li { margin-bottom: 10px; }
+    .steps strong { color: var(--fg); }
+    .caveats { padding-left: 20px; margin: 0; color: var(--fg-2); line-height: 1.7; }
+    .caveats li { margin-bottom: 10px; }
+    .caveats strong { color: var(--fg); }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+    .ref-table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+    .ref-table th { text-align: left; padding: 10px 16px; font-size: 0.6875rem; font-weight: 600; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); background: var(--bg-subtle); }
+    .ref-table td { padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--fg-2); vertical-align: top; }
+    .ref-table tr:last-child td { border-bottom: none; }
+  </style>
+</DocsLayout>

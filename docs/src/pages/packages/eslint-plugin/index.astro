@@ -1,0 +1,142 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+---
+
+<DocsLayout title="@cognivo/eslint-plugin">
+  <h1>@cognivo/eslint-plugin</h1>
+  <p class="subtitle">Six ESLint rules that enforce the Cognivo token system inside Lit <code>css</code> template literals. Blocks raw hex, <code>rgba()</code>, <code>transition: all</code>, references to nonexistent tokens, and token fallbacks. CI fails on violations.</p>
+
+  <section>
+    <h2 id="installation">Installation</h2>
+    <pre><code>pnpm add -D @cognivo/eslint-plugin</code></pre>
+    <p>Peer dependency: ESLint 9+ (flat config).</p>
+  </section>
+
+  <section>
+    <h2 id="quickstart">Quick start</h2>
+    <p>Enable the <code>recommended</code> preset in <code>eslint.config.js</code>:</p>
+    <pre><code>{`import cognivo from '@cognivo/eslint-plugin';
+
+export default [
+  cognivo.configs.recommended,
+  // …rest of your config
+];`}</code></pre>
+    <p>That turns on all six rules. Four run at <code>error</code> level and two at <code>warn</code> — override individually if needed.</p>
+  </section>
+
+  <section>
+    <h2 id="api">Rules</h2>
+    <div class="table-wrap">
+      <table class="ref-table">
+        <thead><tr><th>Rule</th><th>Level</th><th>Catches</th></tr></thead>
+        <tbody>
+          <tr><td><code>@cognivo/no-raw-hex</code></td><td>error</td><td>Raw hex literals like <code>#fff</code> / <code>#2d2d30</code> inside <code>css`…`</code>.</td></tr>
+          <tr><td><code>@cognivo/no-raw-rgba</code></td><td>error</td><td>Raw <code>rgba()</code> / <code>rgb()</code> calls — use surface or overlay tokens.</td></tr>
+          <tr><td><code>@cognivo/no-transition-all</code></td><td>error</td><td><code>transition: all</code> — always specify an explicit property list.</td></tr>
+          <tr><td><code>@cognivo/no-fake-tokens</code></td><td>error</td><td>References to <code>--cg-*</code> names that don't exist in <code>@cognivo/tokens</code>.</td></tr>
+          <tr><td><code>@cognivo/no-token-fallbacks</code></td><td>warn</td><td><code>var(--cg-x, fallback)</code> — tokens are guaranteed to resolve.</td></tr>
+          <tr><td><code>@cognivo/cg-token-prefix</code></td><td>warn</td><td>Author-defined tokens that don't use the <code>--cg-</code> prefix.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 id="examples">Rule examples</h2>
+
+    <h3>no-raw-hex</h3>
+    <pre><code>{[
+`// ✗ Fail`,
+`static styles = css` + '`' + `
+  :host { background: #2d2d30; }
+` + '`' + `;`,
+``,
+`// ✓ Pass`,
+`static styles = css` + '`' + `
+  :host { background: var(--cg-color-surface-cards-background); }
+` + '`' + `;`,
+].join('\n')}</code></pre>
+
+    <h3>no-raw-rgba</h3>
+    <pre><code>{[
+`// ✗ Fail`,
+`css` + '`' + `:host { background: rgba(255,255,255,0.04); }` + '`',
+``,
+`// ✓ Pass`,
+`css` + '`' + `:host { background: var(--cg-overlay-white-subtle); }` + '`',
+].join('\n')}</code></pre>
+
+    <h3>no-transition-all</h3>
+    <pre><code>{[
+`// ✗ Fail — paints every property, including unintended ones`,
+`css` + '`' + `.btn { transition: all 150ms ease; }` + '`',
+``,
+`// ✓ Pass — explicit, GPU-friendly`,
+`css` + '`' + `.btn {
+  transition:
+    background-color var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
+    transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+}` + '`',
+].join('\n')}</code></pre>
+
+    <h3>no-fake-tokens</h3>
+    <pre><code>{[
+`// ✗ Fail — this token does not exist`,
+`css` + '`' + `.card { background: var(--cg-brand-primary-background); }` + '`',
+``,
+`// ✓ Pass — real tier-2 semantic token`,
+`css` + '`' + `.card { background: var(--cg-color-action-primary-background-default); }` + '`',
+].join('\n')}</code></pre>
+
+    <h3>no-token-fallbacks</h3>
+    <pre><code>{[
+`// ✗ Fail — tokens always resolve; fallback masks drift`,
+`css` + '`' + `.card { color: var(--cg-color-text-primary, #fff); }` + '`',
+``,
+`// ✓ Pass`,
+`css` + '`' + `.card { color: var(--cg-color-text-primary); }` + '`',
+].join('\n')}</code></pre>
+
+    <h3>cg-token-prefix</h3>
+    <pre><code>{[
+`// ✗ Fail — non-standard prefix`,
+`css` + '`' + `:host { --my-padding: 16px; }` + '`',
+``,
+`// ✓ Pass — follow the --cg- convention`,
+`css` + '`' + `:host { --cg-component-mything-padding: 16px; }` + '`',
+].join('\n')}</code></pre>
+  </section>
+
+  <section>
+    <h2 id="caveats">Caveats</h2>
+    <ul class="caveats">
+      <li><strong>Scope is Lit <code>css</code> tagged templates.</strong> The rules only scan content inside <code>css`…`</code>. Plain <code>.css</code> / <code>.scss</code> files are out of scope.</li>
+      <li><strong>Requires the flat config.</strong> ESLint 9+ only; the legacy <code>.eslintrc</code> format is not supported.</li>
+      <li><strong>Token list is bundled.</strong> <code>no-fake-tokens</code> uses a snapshot of <code>@cognivo/tokens</code> at build time — bump the plugin after adding new tokens.</li>
+      <li><strong>Override any rule.</strong> Spread <code>cognivo.configs.recommended</code> and set an individual rule to <code>off</code> / <code>warn</code> if your codebase needs a different bar.</li>
+    </ul>
+  </section>
+
+  <style>
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.03em; }
+    .subtitle { color: var(--fg-2); margin-bottom: 40px; font-size: 16px; line-height: 1.7; max-width: 720px; }
+    section { margin-bottom: 48px; }
+    h2 {
+      font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
+      margin: 40px 0 16px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+    }
+    h2::before { content: ''; display: inline-block; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; margin-right: 10px; }
+    h3 { font-size: 15px; font-weight: 600; margin: 24px 0 8px; color: var(--fg); font-family: var(--font-mono); }
+    p { margin-bottom: 12px; color: var(--fg-2); line-height: 1.7; }
+    .caveats { padding-left: 20px; margin: 0; color: var(--fg-2); line-height: 1.7; }
+    .caveats li { margin-bottom: 10px; }
+    .caveats strong { color: var(--fg); }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+    .ref-table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+    .ref-table th { text-align: left; padding: 10px 16px; font-size: 0.6875rem; font-weight: 600; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); background: var(--bg-subtle); }
+    .ref-table td { padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--fg-2); vertical-align: top; }
+    .ref-table tr:last-child td { border-bottom: none; }
+  </style>
+</DocsLayout>

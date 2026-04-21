@@ -1,0 +1,160 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+
+const BT = '`';
+const quickstart = [
+  `import { renderToString, html } from '@cognivo/ssr';`,
+  `import '@cognivo/components';`,
+  ``,
+  `const rendered = renderToString(html${BT}`,
+  `  <cg-card>`,
+  `    <cg-button variant="primary">Hello SSR</cg-button>`,
+  `  </cg-card>`,
+  `${BT});`,
+  ``,
+  `// rendered contains <template shadowrootmode="open">…</template> blocks`,
+  `// that modern browsers attach automatically on parse.`,
+].join('\n');
+
+const nextSnippet = [
+  `// app/page.tsx — React Server Component`,
+  `import { renderToString, html } from '@cognivo/ssr/next';`,
+  `import '@cognivo/components';`,
+  ``,
+  `export default function Page() {`,
+  `  const rendered = renderToString(html${BT}`,
+  `    <cg-card>`,
+  `      <cg-button variant="primary">Hello from RSC</cg-button>`,
+  `    </cg-card>`,
+  `  ${BT});`,
+  `  return <div dangerouslySetInnerHTML={{ __html: rendered }} />;`,
+  `}`,
+].join('\n');
+
+const astroSnippet = [
+  `---`,
+  `import { renderToString, html } from '@cognivo/ssr/astro';`,
+  `import '@cognivo/components';`,
+  ``,
+  `const rendered = renderToString(html${BT}`,
+  `  <cg-card><cg-button>Hello Astro</cg-button></cg-card>`,
+  `${BT});`,
+  `---`,
+  `<Fragment set:html={rendered} />`,
+  `<script>import '@cognivo/components';</script>`,
+].join('\n');
+
+const remixSnippet = [
+  `// app/routes/_index.tsx`,
+  `import { renderToStream, html } from '@cognivo/ssr';`,
+  `import '@cognivo/components';`,
+  ``,
+  `export async function loader() {`,
+  `  const stream = renderToStream(html${BT}<cg-dashboard></cg-dashboard>${BT});`,
+  `  return new Response(stream, {`,
+  `    headers: { 'Content-Type': 'text/html' },`,
+  `  });`,
+  `}`,
+].join('\n');
+---
+
+<DocsLayout title="@cognivo/ssr">
+  <h1>@cognivo/ssr</h1>
+  <p class="subtitle">Server-side rendering for Cognivo Lit components. A thin wrapper over <code>@lit-labs/ssr</code> that emits declarative shadow DOM inline — eliminating FOUC in Next.js, Astro, and Remix.</p>
+
+  <section>
+    <h2 id="installation">Installation</h2>
+    <pre><code>pnpm add @cognivo/ssr @cognivo/components</code></pre>
+    <p>Peer deps (<code>lit</code>, <code>@lit-labs/ssr</code>) ship as direct dependencies of the package — you do not need to install them explicitly. Requires Node 20+.</p>
+  </section>
+
+  <section>
+    <h2 id="quickstart">Quick start</h2>
+    <pre><code>{quickstart}</code></pre>
+  </section>
+
+  <section>
+    <h2 id="api">API Reference</h2>
+    <div class="table-wrap">
+      <table class="ref-table">
+        <thead><tr><th>Export</th><th>Signature</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>renderToString</code></td>
+            <td class="muted">(t: TemplateResult) =&gt; string</td>
+            <td>Sync render to HTML. Throws if the template contains async directives.</td>
+          </tr>
+          <tr>
+            <td><code>renderToStringAsync</code></td>
+            <td class="muted">(t: TemplateResult) =&gt; Promise&lt;string&gt;</td>
+            <td>Async variant — supports Promises, <code>until</code>, streaming children.</td>
+          </tr>
+          <tr>
+            <td><code>renderToStream</code></td>
+            <td class="muted">(t: TemplateResult) =&gt; ReadableStream&lt;string&gt;</td>
+            <td>Stream HTML chunks. Pair with <code>new Response(stream)</code> for progressive delivery.</td>
+          </tr>
+          <tr>
+            <td><code>html</code></td>
+            <td class="muted">tagged template</td>
+            <td>Re-exported from <code>lit</code> so consumers do not need a direct Lit dependency.</td>
+          </tr>
+          <tr>
+            <td><code>TemplateResult</code></td>
+            <td class="muted">type</td>
+            <td>Re-exported Lit template type.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Subpath entries <code>@cognivo/ssr/next</code> and <code>@cognivo/ssr/astro</code> re-export the same helpers for convenience and discoverability.</p>
+  </section>
+
+  <section>
+    <h2 id="examples">Framework Examples</h2>
+
+    <h3>Next.js App Router</h3>
+    <pre><code>{nextSnippet}</code></pre>
+    <p>Import <code>@cognivo/components</code> once from a <code>'use client'</code> root layout so the custom elements register on the client and hydrate the declarative shadow roots.</p>
+
+    <h3>Astro</h3>
+    <pre><code>{astroSnippet}</code></pre>
+
+    <h3>Remix — streaming loader</h3>
+    <pre><code>{remixSnippet}</code></pre>
+  </section>
+
+  <section>
+    <h2 id="caveats">Caveats</h2>
+    <ul class="caveats">
+      <li><strong>Declarative shadow DOM</strong> is supported natively in Chromium 111+, Safari 16.4+, and Firefox 123+. Older browsers render the flat HTML but skip shadow boundaries — styles will leak until the client bundle defines the custom elements.</li>
+      <li>For legacy browser support, ship the <code>@webcomponents/template-shadowroot</code> polyfill before registering components on the client.</li>
+      <li><code>renderToString</code> throws on async directives (<code>until</code>, Promises in templates). Use <code>renderToStringAsync</code> or <code>renderToStream</code> in those cases.</li>
+      <li>You still need to import <code>@cognivo/components</code> on the client for interactivity — SSR gives you styled markup, not event handlers.</li>
+    </ul>
+  </section>
+
+  <style>
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.03em; }
+    .subtitle { color: var(--fg-2); margin-bottom: 40px; font-size: 16px; line-height: 1.7; max-width: 720px; }
+    section { margin-bottom: 48px; }
+    h2 {
+      font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
+      margin: 40px 0 16px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+    }
+    h2::before { content: ''; display: inline-block; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; margin-right: 10px; }
+    h3 { font-size: 15px; font-weight: 600; margin: 24px 0 8px; color: var(--fg); }
+    p { margin-bottom: 12px; color: var(--fg-2); line-height: 1.7; }
+    .caveats { padding-left: 20px; margin: 0; color: var(--fg-2); line-height: 1.7; }
+    .caveats li { margin-bottom: 10px; }
+    .caveats strong { color: var(--fg); }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+    .ref-table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+    .ref-table th { text-align: left; padding: 10px 16px; font-size: 0.6875rem; font-weight: 600; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); background: var(--bg-subtle); }
+    .ref-table td { padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--fg-2); vertical-align: top; }
+    .ref-table tr:last-child td { border-bottom: none; }
+    .muted { color: var(--fg-3); font-family: var(--font-mono); font-size: 0.75rem; }
+  </style>
+</DocsLayout>
