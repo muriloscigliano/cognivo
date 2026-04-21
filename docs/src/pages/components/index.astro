@@ -12,7 +12,7 @@ const byName = (a: { name: string }, b: { name: string }) =>
   a.name.localeCompare(b.name);
 
 const foundationCategories = [...categories]
-  .filter(c => !isAiCategory(c.id))
+  .filter(c => !isAiCategory(c.id) && c.id !== 'bias')
   .sort(byLabel);
 
 const grouped = foundationCategories

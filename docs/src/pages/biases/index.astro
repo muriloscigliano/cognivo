@@ -1,0 +1,70 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { registry } from '../../data/components';
+
+const biases = registry
+  .filter(c => c.category === 'bias')
+  .sort((a, b) => a.name.localeCompare(b.name));
+const slug = (tag: string) => tag.replace(/^bias-/, '');
+---
+
+<DocsLayout title="Cognitive Biases">
+  <h1>Cognitive Biases</h1>
+  <p class="desc">
+    Composable behavioral-science primitives. Each wrapper applies a
+    well-researched cognitive bias (anchoring, scarcity, social proof,
+    authority, commitment, reciprocity) to arbitrary content. Use them
+    thoughtfully — behavioral nudges compound fast.
+  </p>
+
+  <div class="grid">
+    {biases.map(b => (
+      <a href={`/biases/${slug(b.tag)}`} class="card">
+        <div class="card-hd">
+          <span class="name">{b.name}</span>
+          <span class="tag">{b.tag}</span>
+        </div>
+        <p class="card-desc">{b.description}</p>
+      </a>
+    ))}
+  </div>
+
+  <section class="ethics">
+    <h2>Ethical use</h2>
+    <p>
+      Every bias wrapper is a high-leverage tool. Use them when the underlying
+      claim is <em>real</em>: an actual discount, genuine stock count, real
+      certification, authentic social proof. Fabricated urgency, invented
+      viewer counts, or misleading authority badges cross into dark-pattern
+      territory — Cognivo's design-advisor will flag those uses in audits.
+    </p>
+    <p>
+      Check <a href="/design-advisor">Psychology</a> for the full bias catalog
+      and guidance on when each wrapper is appropriate.
+    </p>
+  </section>
+
+  <style>
+    h1 { font-size: 36px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 16px; }
+    .desc { font-size: 16px; color: var(--fg-2); line-height: 1.7; margin-bottom: 48px; max-width: 720px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .card {
+      display: block;
+      padding: 20px 20px 22px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-subtle);
+      transition: border-color 150ms, transform 150ms;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .card-hd { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+    .name { font-size: 17px; font-weight: 600; color: var(--fg); letter-spacing: -0.01em; }
+    .tag { font: 500 11px var(--font-mono); color: var(--fg-3); }
+    .card-desc { font-size: 14px; color: var(--fg-2); line-height: 1.5; margin: 0; }
+    .ethics { margin-top: 72px; padding: 24px 28px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-subtle); max-width: 780px; }
+    .ethics h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 12px; }
+    .ethics p { font-size: 14px; color: var(--fg-2); line-height: 1.7; margin: 0 0 10px; }
+    .ethics p:last-child { margin-bottom: 0; }
+    .ethics a { color: var(--accent); }
+  </style>
+</DocsLayout>

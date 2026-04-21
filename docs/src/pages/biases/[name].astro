@@ -3,35 +3,37 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 import { registry } from '../../data/components';
 import type { ComponentMeta } from '../../data/components';
 
-// Foundation components only — AI components live at /ai/[tag],
-// cognitive-bias wrappers live at /biases/[name].
+// Cognitive-bias wrappers — each routed under /biases/<name> without the
+// `bias-` prefix (so `/biases/anchoring` instead of `/biases/bias-anchoring`).
 export function getStaticPaths() {
   return registry
-    .filter(comp => !comp.category.startsWith('ai-') && comp.category !== 'bias')
-    .map(comp => ({ params: { tag: comp.tag }, props: { comp } }));
+    .filter(comp => comp.category === 'bias')
+    .map(comp => ({
+      params: { name: comp.tag.replace(/^bias-/, '') },
+      props: { comp },
+    }));
 }
 
 const { comp } = Astro.props as { comp: ComponentMeta };
 const cls = comp.tag.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join('');
-// Prev/next navigation within the same category, sorted alphabetically
-// to match the sidebar and index page order.
 const same = registry
-  .filter(c => c.category === comp.category)
+  .filter(c => c.category === 'bias')
   .sort((a, b) => a.name.localeCompare(b.name));
 const i = same.findIndex(c => c.tag === comp.tag);
 const prev = i > 0 ? same[i-1] : null;
 const next = i < same.length-1 ? same[i+1] : null;
+const slug = (tag: string) => tag.replace(/^bias-/, '');
 function esc(s: string) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 ---
 
 <DocsLayout title={comp.name}>
-  <p class="bc"><a href="/components">Components</a> <span>/</span> {comp.name}</p>
+  <p class="bc"><a href="/biases">Cognitive Biases</a> <span>/</span> {comp.name}</p>
 
   <h1>{comp.name}</h1>
   <p class="desc">{comp.description}</p>
 
   <div class="badges">
-    <span class="badge">{comp.category}</span>
+    <span class="badge">behavioral</span>
     {comp.since && <span class="badge">{comp.since}</span>}
   </div>
 
@@ -57,7 +59,7 @@ function esc(s: string) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').re
   )}
 
   <h2 id="import">Import</h2>
-  <pre><code>{`import { ${cls} } from '@cognivo/components';`}</code></pre>
+  <pre><code>{`import { ${cls} } from '@cognivo/components/bias';`}</code></pre>
 
   {comp.props.length > 0 && (
     <>
@@ -101,8 +103,8 @@ function esc(s: string) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').re
   )}
 
   <nav class="pnav">
-    {prev ? <a href={`/components/${prev.tag}`} class="pc"><span class="pd">&larr; Previous</span><span class="pname">{prev.name}</span></a> : <div/>}
-    {next ? <a href={`/components/${next.tag}`} class="pc r"><span class="pd">Next &rarr;</span><span class="pname">{next.name}</span></a> : <div/>}
+    {prev ? <a href={`/biases/${slug(prev.tag)}`} class="pc"><span class="pd">&larr; Previous</span><span class="pname">{prev.name}</span></a> : <div/>}
+    {next ? <a href={`/biases/${slug(next.tag)}`} class="pc r"><span class="pd">Next &rarr;</span><span class="pname">{next.name}</span></a> : <div/>}
   </nav>
 
   <script src="../../scripts/playground.ts"></script>
@@ -111,11 +113,8 @@ function esc(s: string) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').re
     .bc { font-size: 14px; color: var(--fg-3); margin-bottom: 24px; }
     .bc a { color: var(--fg-3); } .bc a:hover { color: var(--accent); }
     .bc span { margin: 0 6px; }
-
     h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 12px; }
-
     .desc { font-size: 16px; color: var(--fg-2); line-height: 1.7; margin-bottom: 12px; }
-
     .badges { display: flex; gap: 8px; margin-bottom: 40px; }
     .badge {
       font: 600 11px/1 var(--font-mono);
@@ -124,140 +123,49 @@ function esc(s: string) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').re
       background: var(--accent-dim); color: var(--accent);
       border: 1px solid var(--accent-muted);
     }
-
     h2 {
       font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
       margin: 40px 0 16px; padding-bottom: 10px;
       border-bottom: 1px solid var(--border);
     }
     h2::before {
-      content: '';
-      display: inline-block;
+      content: ''; display: inline-block;
       width: 3px; height: 18px;
-      background: var(--accent);
-      border-radius: 2px;
-      margin-right: 10px;
-      vertical-align: middle;
+      background: var(--accent); border-radius: 2px;
+      margin-right: 10px; vertical-align: middle;
     }
-
-    /* ── Playground ── */
-    :global(.pg-grid) {
-      display: grid;
-      grid-template-columns: 1fr 240px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-    }
+    :global(.pg-grid) { display: grid; grid-template-columns: 1fr 240px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
     :global(.pg-preview) { background: var(--bg); border-right: 1px solid var(--border); }
     :global(.pg-controls) { background: var(--bg-subtle); overflow-y: auto; max-height: 420px; }
-    :global(.pg-bar) {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 16px;
-      font: 600 10px/1 var(--font-sans);
-      text-transform: uppercase; letter-spacing: 0.08em;
-      color: var(--fg-3); border-bottom: 1px solid var(--border);
-    }
-    :global(.pg-area) {
-      display: flex; align-items: center; justify-content: center;
-      min-height: 200px; padding: 32px; overflow: visible;
-      background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 24px 24px;
-    }
-    :global(.pg-row) {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 8px 16px; gap: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-    }
+    :global(.pg-bar) { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; font: 600 10px/1 var(--font-sans); text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); border-bottom: 1px solid var(--border); }
+    :global(.pg-area) { display: flex; align-items: center; justify-content: center; min-height: 200px; padding: 32px; overflow: visible; background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 24px 24px; }
+    :global(.pg-row) { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.04); }
     :global(.pg-row:last-child) { border-bottom: none; }
     :global(.pg-label) { font-size: 12px; font-weight: 500; color: var(--fg-2); white-space: nowrap; min-width: 60px; }
-    :global(.pg-select), :global(.pg-input) {
-      flex: 1; max-width: 130px; padding: 5px 8px;
-      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
-      color: var(--fg); font: 12px var(--font-mono); outline: none;
-    }
+    :global(.pg-select), :global(.pg-input) { flex: 1; max-width: 130px; padding: 5px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--fg); font: 12px var(--font-mono); outline: none; }
     :global(.pg-select:focus), :global(.pg-input:focus) { border-color: var(--accent); }
     :global(.pg-codeblock) { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-top: 8px; }
-    :global(.pg-out) {
-      padding: 14px 16px; font: 12px/1.6 var(--font-mono); color: var(--accent);
-      overflow-x: auto; white-space: pre; margin: 0; border: none; border-radius: 0;
-    }
-    :global(.pg-copy) {
-      font: 500 10px var(--font-sans); background: transparent;
-      border: 1px solid var(--border); color: var(--fg-3);
-      padding: 2px 8px; border-radius: 4px; cursor: pointer;
-    }
+    :global(.pg-out) { padding: 14px 16px; font: 12px/1.6 var(--font-mono); color: var(--accent); overflow-x: auto; white-space: pre; margin: 0; border: none; border-radius: 0; }
+    :global(.pg-copy) { font: 500 10px var(--font-sans); background: transparent; border: 1px solid var(--border); color: var(--fg-3); padding: 2px 8px; border-radius: 4px; cursor: pointer; }
     :global(.pg-copy:hover) { color: var(--fg-2); border-color: var(--border-hover); }
-
-    @media (max-width: 640px) {
-      :global(.pg-grid) { grid-template-columns: 1fr; }
-      :global(.pg-preview) { border-right: none; border-bottom: 1px solid var(--border); }
-    }
-
-    /* ── Examples ── */
+    @media (max-width: 640px) { :global(.pg-grid) { grid-template-columns: 1fr; } :global(.pg-preview) { border-right: none; border-bottom: 1px solid var(--border); } }
     .examples { display: flex; flex-direction: column; gap: 16px; }
-
-    .ex-card {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .ex-header {
-      padding: 10px 16px;
-      font: 600 12px/1 var(--font-sans);
-      color: var(--fg-3);
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-subtle);
-    }
-    :global(.ex-live) {
-      padding: 32px 24px;
-      display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-      background: var(--bg);
-      background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 24px 24px;
-    }
-    .ex-code-wrap {
-      position: relative;
-      border-top: 1px solid var(--border);
-      background: var(--bg-subtle);
-    }
-    .ex-code {
-      margin: 0; border: none; border-radius: 0;
-      padding: 14px 16px;
-      font: 12px/1.7 var(--font-mono);
-      color: var(--fg-3);
-      overflow-x: auto; white-space: pre;
-    }
-    .ex-copy {
-      position: absolute; top: 8px; right: 8px;
-      font: 500 10px var(--font-sans);
-      padding: 3px 10px; border-radius: 4px;
-      border: 1px solid var(--border);
-      background: var(--bg-muted); color: var(--fg-3);
-      cursor: pointer; opacity: 0; transition: opacity 120ms;
-    }
+    .ex-card { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .ex-header { padding: 10px 16px; font: 600 12px/1 var(--font-sans); color: var(--fg-3); border-bottom: 1px solid var(--border); background: var(--bg-subtle); }
+    :global(.ex-live) { padding: 32px 24px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; background: var(--bg); background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 24px 24px; }
+    .ex-code-wrap { position: relative; border-top: 1px solid var(--border); background: var(--bg-subtle); }
+    .ex-code { margin: 0; border: none; border-radius: 0; padding: 14px 16px; font: 12px/1.7 var(--font-mono); color: var(--fg-3); overflow-x: auto; white-space: pre; }
+    .ex-copy { position: absolute; top: 8px; right: 8px; font: 500 10px var(--font-sans); padding: 3px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-muted); color: var(--fg-3); cursor: pointer; opacity: 0; transition: opacity 120ms; }
     .ex-code-wrap:hover .ex-copy { opacity: 1; }
     .ex-copy:hover { color: var(--fg-2); border-color: var(--border-hover); }
-
-    /* ── Tables ── */
     .tb { border: 1px solid var(--border); border-radius: 10px; overflow-x: auto; margin-bottom: 8px; }
     table { width: 100%; border-collapse: collapse; }
-    th {
-      text-align: left; padding: 10px 16px;
-      font: 600 10px/1 var(--font-sans);
-      color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em;
-      background: var(--bg-subtle); border-bottom: 1px solid var(--border);
-    }
-    td {
-      padding: 10px 16px; font-size: 14px;
-      border-bottom: 1px solid var(--border); color: var(--fg-2);
-      vertical-align: top; line-height: 1.5;
-    }
+    th { text-align: left; padding: 10px 16px; font: 600 10px/1 var(--font-sans); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; background: var(--bg-subtle); border-bottom: 1px solid var(--border); }
+    td { padding: 10px 16px; font-size: 14px; border-bottom: 1px solid var(--border); color: var(--fg-2); vertical-align: top; line-height: 1.5; }
     tr:last-child td { border-bottom: none; }
     .pn { background: none; padding: 0; color: var(--fg); font-weight: 500; font-size: 14px; }
     .ty { font-family: var(--font-mono); font-size: 13px; color: var(--fg-3); }
     .df { font-family: var(--font-mono); font-size: 13px; color: var(--fg-3); }
-
-    /* ── Prev/Next ── */
     .pnav { display: flex; justify-content: space-between; gap: 16px; margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--border); }
     .pc { display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; transition: border-color 120ms; }
     .pc:hover { border-color: var(--accent); background: var(--accent-dim); }

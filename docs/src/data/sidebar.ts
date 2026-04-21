@@ -26,15 +26,21 @@ const byLabel = (a: { label: string }, b: { label: string }) =>
   a.label.localeCompare(b.label);
 
 const isAiCategory = (id: string) => id.startsWith('ai-');
+const isBiasCategory = (id: string) => id === 'bias';
 
-function buildGroups(basePath: string, filter: (id: string) => boolean): SidebarGroup[] {
+function buildGroups(basePath: string, filter: (id: string) => boolean, stripTagPrefix?: string): SidebarGroup[] {
   return [...categories]
     .filter(cat => filter(cat.id))
     .sort(byLabel)
     .map(cat => {
       const items = registry
         .filter(c => c.category === cat.id)
-        .map(c => ({ label: c.name, href: `${basePath}/${c.tag}` }))
+        .map(c => {
+          const slug = stripTagPrefix && c.tag.startsWith(stripTagPrefix)
+            ? c.tag.slice(stripTagPrefix.length)
+            : c.tag;
+          return { label: c.name, href: `${basePath}/${slug}` };
+        })
         .sort(byLabel);
       if (items.length === 0) return null;
       return { label: cat.label, items };
@@ -42,8 +48,9 @@ function buildGroups(basePath: string, filter: (id: string) => boolean): Sidebar
     .filter((g): g is SidebarGroup => g !== null);
 }
 
-const foundationGroups: SidebarGroup[] = buildGroups('/components', id => !isAiCategory(id));
+const foundationGroups: SidebarGroup[] = buildGroups('/components', id => !isAiCategory(id) && !isBiasCategory(id));
 const aiGroups: SidebarGroup[] = buildGroups('/ai', isAiCategory);
+const biasGroups: SidebarGroup[] = buildGroups('/biases', isBiasCategory, 'bias-');
 
 // ── Per-section sidebars ──
 export const sidebars: Record<string, SidebarItem[]> = {
@@ -56,6 +63,7 @@ export const sidebars: Record<string, SidebarItem[]> = {
   ],
   '/components': foundationGroups,
   '/ai': aiGroups,
+  '/biases': biasGroups,
   '/tokens': [
     { label: 'Installation', href: '/tokens#installation' },
     { label: 'Dark Mode', href: '/tokens#darkmode' },
