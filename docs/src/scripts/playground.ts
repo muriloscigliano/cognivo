@@ -212,7 +212,7 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   if (tag === 'cg-callout') { e.title = 'Heads up'; e.description = 'This is an important message for the user.'; }
   if (tag === 'cg-progress-bar') { e.value = 68; e.label = 'Upload progress'; e.description = 'Uploading 3 files...'; e.showValue = true; e.buffer = 85; }
   if (tag === 'cg-code-block') { e.code = 'const greeting = "Hello, Cognivo!";\nconsole.log(greeting);'; e.language = 'javascript'; }
-  if (tag === 'cg-markdown') { e.text = '# Getting Started\n\nCognivo is an **AI-native component library** with 140+ web components built with *Lit 3*.\n\n## Installation\n\n```bash\npnpm add @cognivo/components\n```\n\n| Feature | Status |\n|---------|--------|\n| Components | 140+ |\n| Tokens | 1,800+ |'; liveElement.style.maxWidth = '640px'; }
+  if (tag === 'cg-markdown') { e.text = '# Getting Started\n\nCognivo is an **AI-native component library** with 180+ web components built with *Lit 3*.\n\n## Installation\n\n```bash\npnpm add @cognivo/components\n```\n\n| Feature | Status |\n|---------|--------|\n| Components | 180+ |\n| Tokens | 1,800+ |'; liveElement.style.maxWidth = '640px'; }
   if (tag === 'cg-pagination') {
     e.total = 20; e.current = 5;
     liveElement.addEventListener('cg-page-change', (ev: Event) => { e.current = (ev as CustomEvent).detail.page; });
@@ -223,9 +223,9 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   if (tag === 'cg-chart') { e.title = 'Revenue'; e.subtitle = 'Q1 2026'; e.contained = true; liveElement.style.maxWidth = '420px'; liveElement.style.width = '100%'; e.data = [{ label: 'Jan', value: 40 }, { label: 'Feb', value: 65 }, { label: 'Mar', value: 55 }, { label: 'Apr', value: 80 }, { label: 'May', value: 72 }, { label: 'Jun', value: 95 }]; }
   if (tag === 'cg-metric-card') { e.title = 'Revenue'; e.value = '$12,450'; e.delta = '+12.5%'; e.trend = 'up'; e.icon = 'trending-up'; e.comparison = 'vs last month'; e.sparkline = [30, 45, 38, 52, 48, 60, 55, 70, 65, 80]; liveElement.style.maxWidth = '280px'; }
   if (tag === 'cg-tabs') { e.tabs = [{ label: 'Overview', value: 'overview' }, { label: 'Analytics', value: 'analytics' }, { label: 'Settings', value: 'settings' }]; e.value = 'overview'; }
-  if (tag === 'cg-accordion') { e.items = [{ id: '1', trigger: 'What is Cognivo?', content: 'An AI-native component library with 140+ web components.' }, { id: '2', trigger: 'How do I install it?', content: 'Install via npm: npm install @cognivo/components' }, { id: '3', trigger: 'Dark mode?', content: 'Yes, all components adapt via design tokens.' }]; }
+  if (tag === 'cg-accordion') { e.items = [{ id: '1', trigger: 'What is Cognivo?', content: 'An AI-native component library with 180+ web components.' }, { id: '2', trigger: 'How do I install it?', content: 'Install via npm: npm install @cognivo/components' }, { id: '3', trigger: 'Dark mode?', content: 'Yes, all components adapt via design tokens.' }]; }
   if (tag === 'cg-steps') { e.items = [{ title: 'Create account', description: 'Sign up with email', status: 'done' }, { title: 'Verify email', description: 'Check your inbox', status: 'done' }, { title: 'Set up profile', description: 'Add your details', status: 'active' }, { title: 'Review', description: 'Confirm everything', status: 'pending' }]; e.clickable = true; }
-  if (tag === 'cg-list') { e.items = [{ title: 'Design tokens', subtitle: '1,800+ tokens across 3 tiers', meta: '1.2K' }, { title: 'Web components', subtitle: '140+ Lit-based components', actionLabel: 'Browse' }, { title: 'Framework adapters', subtitle: 'React, Vue, and vanilla JS' }]; liveElement.style.maxWidth = '400px'; }
+  if (tag === 'cg-list') { e.items = [{ title: 'Design tokens', subtitle: '1,800+ tokens across 3 tiers', meta: '1.2K' }, { title: 'Web components', subtitle: '180+ Lit-based components', actionLabel: 'Browse' }, { title: 'Framework adapters', subtitle: 'React, Vue, and vanilla JS' }]; liveElement.style.maxWidth = '400px'; }
   if (tag === 'cg-listbox') { e.label = 'Choose a framework'; e.options = [{ value: 'react', label: 'React' }, { value: 'vue', label: 'Vue' }, { value: 'svelte', label: 'Svelte' }, { value: 'lit', label: 'Lit' }]; e.value = 'react'; liveElement.style.maxWidth = '300px'; }
   if (tag === 'cg-table') { e.columns = [{ key: 'name', label: 'Name', sortable: true }, { key: 'role', label: 'Role', sortable: true }, { key: 'status', label: 'Status' }]; e.rows = [['Kate Moore', 'CEO', 'Active'], ['John Smith', 'CTO', 'Active'], ['Sara Johnson', 'CMO', 'On Leave']]; e.selectable = true; }
   if (tag === 'cg-tooltip') { const inner = document.createElement('cg-button'); inner.textContent = 'Hover me'; liveElement.appendChild(inner); e.content = 'Tooltip text'; }
@@ -319,7 +319,7 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   if (tag === 'ai-toast') { requestAnimationFrame(() => { setTimeout(() => e.show?.('Model updated!', { type: 'success', duration: 8000 }), 200); }); }
   if (tag === 'ai-voice-panel') { liveElement.style.maxWidth = '320px'; }
   // ── 20 previously missing components ──
-  if (tag === 'ai-assistant-widget') { e.messages = [{ role: 'assistant', content: 'Hi! How can I help?' }, { role: 'user', content: 'What are the top features?' }, { role: 'assistant', content: '1. 140+ components\n2. 1,800+ tokens\n3. Full a11y' }]; liveElement.style.maxWidth = '360px'; liveElement.style.height = '400px'; }
+  if (tag === 'ai-assistant-widget') { e.messages = [{ role: 'assistant', content: 'Hi! How can I help?' }, { role: 'user', content: 'What are the top features?' }, { role: 'assistant', content: '1. 180+ components\n2. 1,800+ tokens\n3. Full a11y' }]; liveElement.style.maxWidth = '360px'; liveElement.style.height = '400px'; }
   if (tag === 'ai-audio-player') { e.title = 'AI Generated Summary'; liveElement.style.maxWidth = '400px'; }
   if (tag === 'ai-avatar') { e.name = 'Alice'; e.status = 'online'; e.type = 'user'; }
   if (tag === 'ai-cache-indicator') { e.status = 'hit'; e.hitRate = 87; e.latencySaved = '240ms'; e.cacheAge = '2m ago'; e.showDetails = true; liveElement.style.maxWidth = '300px'; }
@@ -335,6 +335,7 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   if (tag === 'ai-transform-slider') { e.beforeSrc = 'https://picsum.photos/seed/origDemo/500/300'; e.afterSrc = 'https://picsum.photos/seed/enhDemo/500/300'; e.beforeLabel = 'Original'; e.afterLabel = 'Enhanced'; liveElement.style.maxWidth = '500px'; }
   if (tag === 'cg-badge-group') { for (const [l, v] of [['AI', 'accent'], ['Lit 3', 'info'], ['v0.3', 'success']] as const) { const b = document.createElement('cg-badge'); (b as any).label = l; b.setAttribute('variant', v); liveElement.appendChild(b); } }
   if (tag === 'cg-button-group') { for (const t of ['Left', 'Center', 'Right']) { const b = document.createElement('cg-button'); b.setAttribute('variant', 'secondary'); b.textContent = t; liveElement.appendChild(b); } }
+  if (tag === 'cg-split-button') { e.label = e.label || 'Save'; e.items = [{ id: 'save-as', label: 'Save as…', shortcut: '⌘⇧S' }, { id: 'copy', label: 'Save a copy' }, { separator: true, id: 's1', label: '' }, { id: 'delete', label: 'Delete', danger: true }]; }
   if (tag === 'cg-form') { liveElement.setAttribute('name', 'demo'); liveElement.style.maxWidth = '360px'; const ni = document.createElement('cg-input'); (ni as any).label = 'Full Name'; (ni as any).placeholder = 'John Doe'; const ei = document.createElement('cg-input'); (ei as any).label = 'Email'; (ei as any).placeholder = 'you@example.com'; const sb = document.createElement('cg-button'); sb.setAttribute('type', 'submit'); sb.textContent = 'Submit'; liveElement.append(ni, ei, sb); }
   if (tag === 'cg-image-block') { e.src = 'https://picsum.photos/400/250'; e.alt = 'Sample image'; e.caption = 'A beautiful landscape photo'; liveElement.style.maxWidth = '400px'; }
   if (tag === 'cg-image-gallery') { e.images = [{ src: 'https://picsum.photos/200/200?1', alt: 'Photo 1' }, { src: 'https://picsum.photos/200/200?2', alt: 'Photo 2' }, { src: 'https://picsum.photos/200/200?3', alt: 'Photo 3' }]; }
@@ -586,4 +587,9 @@ document.querySelectorAll('.ex-copy').forEach(btn => {
 
 } // end initPlayground
 
-initPlayground();
+// `astro:page-load` fires after the initial page load AND after every View
+// Transition navigation — so the playground re-initializes when the user
+// clicks a sidebar link without needing a full page refresh.
+if (typeof document !== 'undefined') {
+  document.addEventListener('astro:page-load', initPlayground);
+}

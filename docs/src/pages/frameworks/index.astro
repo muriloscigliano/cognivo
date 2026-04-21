@@ -191,12 +191,100 @@ function ThemeToggle() {
       <p style="color: var(--text-2); margin-bottom: 1rem; font-size: 0.9rem;">
         Import individual components to reduce bundle size:
       </p>
-      <pre><code>{`// Full library (registers all 143 components)
+      <pre><code>{`// Full library (registers all 182 components)
 import '@cognivo/components';
 
 // Individual imports (tree-shakeable)
 import { CgButton } from '@cognivo/components';
 import { AiChat } from '@cognivo/components';`}</code></pre>
+    </section>
+
+    <!-- SSR -->
+    <section class="section">
+      <h2 id="ssr">Server-Side Rendering</h2>
+      <p class="section-desc">
+        Cognivo components SSR cleanly via <code>@lit-labs/ssr</code>. The <code>@cognivo/ssr</code>
+        package provides ergonomic helpers that render Lit templates to a string with Declarative
+        Shadow DOM, so the markup is visible on first paint before hydration.
+      </p>
+
+      <h3>Installation</h3>
+      <pre><code>pnpm add @cognivo/ssr @cognivo/components lit</code></pre>
+
+      <h3>Core Usage</h3>
+      <pre><code>{`import { renderToString, html } from '@cognivo/ssr';
+import '@cognivo/components';
+
+const markup = renderToString(html\`
+  <cg-card>
+    <cg-button variant="primary">Click me</cg-button>
+  </cg-card>
+\`);`}</code></pre>
+
+      <h3>Next.js (App Router)</h3>
+      <p style="color: var(--text-2); margin-bottom: 0.5rem; font-size: 0.9rem;">
+        Render on the server, then import the client bundle to upgrade the custom elements
+        after hydration.
+      </p>
+      <pre><code>{`// app/page.tsx — Server Component
+import { renderToString, html } from '@cognivo/ssr';
+import '@cognivo/components'; // registers element classes for SSR
+
+export default function Page() {
+  const markup = renderToString(html\`
+    <cg-card>
+      <cg-button variant="primary">Get started</cg-button>
+    </cg-card>
+  \`);
+
+  return <div dangerouslySetInnerHTML={{ __html: markup }} />;
+}`}</code></pre>
+      <pre style="margin-top: 8px;"><code>{`// app/cognivo-client.tsx — Client Component
+'use client';
+import { useEffect } from 'react';
+
+export function CognivoClient() {
+  useEffect(() => {
+    // Upgrades the custom elements in the SSR'd markup
+    import('@cognivo/components');
+  }, []);
+  return null;
+}`}</code></pre>
+
+      <h3>Astro</h3>
+      <p style="color: var(--text-2); margin-bottom: 0.5rem; font-size: 0.9rem;">
+        Use <code>set:html</code> with the rendered markup, then ship a client script that registers
+        the elements for hydration.
+      </p>
+      <pre><code set:html={`---
+import { renderToString, html } from '@cognivo/ssr';
+import '@cognivo/components';
+
+const markup = renderToString(html\`
+  &lt;cg-card&gt;
+    &lt;cg-button variant="primary"&gt;Click me&lt;/cg-button&gt;
+  &lt;/cg-card&gt;
+\`);
+---
+
+&lt;div set:html={markup}&gt;&lt;/div&gt;
+
+&lt;script&gt;
+  import '@cognivo/components';
+&lt;/script&gt;`} />
+
+      <h3>Remix</h3>
+      <p style="color: var(--text-2); font-size: 0.9rem;">
+        The same pattern works in Remix: call <code>renderToString</code> inside your loader or route
+        module, emit the HTML in the response, and import <code>@cognivo/components</code> in the
+        client entry to upgrade the elements after hydration.
+      </p>
+
+      <div class="note" style="margin-top: 1rem;">
+        <strong>Caveat:</strong> Declarative Shadow DOM is supported natively in Chromium 111+,
+        Safari 16.4+, and Firefox 123+. For older browsers, ship the
+        <code>@webcomponents/template-shadowroot</code> polyfill alongside the client bundle.
+      </div>
     </section>
   </div>
 

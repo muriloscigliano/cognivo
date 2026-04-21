@@ -2,9 +2,9 @@
 import BaseLayout from './BaseLayout.astro';
 import { sidebars, type SidebarItem, type SidebarGroup, type SidebarLink } from '../data/sidebar';
 
-interface Props { title: string; }
+interface Props { title: string; hideSidebar?: boolean; description?: string; }
 
-const { title } = Astro.props;
+const { title, hideSidebar = false, description } = Astro.props;
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 
 function isLink(item: SidebarItem): item is SidebarLink { return !('items' in item); }
@@ -19,12 +19,15 @@ const navLinks = [
   { label: 'Components', href: '/components' },
   { label: 'AI', href: '/ai' },
   { label: 'Biases', href: '/biases' },
+  { label: 'Playground', href: '/playground' },
   { label: 'Tokens', href: '/tokens' },
   { label: 'Core', href: '/core' },
   { label: 'Patterns', href: '/patterns' },
   { label: 'Frameworks', href: '/frameworks' },
   { label: 'Accessibility', href: '/accessibility' },
   { label: 'Psychology', href: '/design-advisor' },
+  { label: 'Packages', href: '/packages' },
+  { label: 'Changelog', href: '/changelog' },
 ];
 
 // Pick sidebar based on current section
@@ -35,8 +38,9 @@ const currentSidebar = sidebars[section] || [];
 const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
 ---
 
-<BaseLayout title={title}>
-  <header class="hd" transition:persist="docs-header">
+<BaseLayout title={title} description={description}>
+  <Fragment slot="head"><slot name="head" /></Fragment>
+  <header class:list={['hd', { 'hd--no-sidebar': hideSidebar }]} transition:persist="docs-header">
     <div class="hd-left">
       <a href="/" class="logo">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg>
@@ -51,51 +55,119 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
         ))}
       </nav>
       <span class="hd-spacer" />
+      <a class="hd-icon-link" href="https://github.com/muriloscigliano/cognivo" target="_blank" rel="noopener" aria-label="GitHub repository">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12a11.5 11.5 0 0 0 7.86 10.92c.57.1.78-.25.78-.55v-2c-3.2.7-3.87-1.35-3.87-1.35-.52-1.33-1.27-1.68-1.27-1.68-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.56-.29-5.26-1.28-5.26-5.7 0-1.26.45-2.3 1.18-3.1-.12-.3-.51-1.48.11-3.08 0 0 .96-.31 3.14 1.18a10.9 10.9 0 0 1 5.72 0c2.18-1.49 3.13-1.18 3.13-1.18.63 1.6.24 2.78.12 3.07.74.81 1.18 1.85 1.18 3.11 0 4.43-2.7 5.4-5.28 5.69.42.36.78 1.06.78 2.14v3.18c0 .3.2.65.79.54A11.5 11.5 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"/></svg>
+      </a>
       <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">
       <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     </button>
-    <span class="hd-ver">v0.3</span>
+    <span class="hd-ver">v0.4</span>
+    <button class="hamburger" id="mobile-menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
     </div>
   </header>
 
-  <div class="shell">
-    <aside class="sb" transition:persist={`docs-sidebar-${section}`} data-section={section}>
-      {sectionTitle && <div class="sb-header">{sectionTitle}</div>}
-      <nav>
-        {currentSidebar.map((item: SidebarItem, idx: number) => {
-          if (isLink(item)) {
-            return <a href={item.href} class:list={['sl', { on: match(item.href) }]}>{item.label}</a>;
-          }
-          const g = item as SidebarGroup;
-          return (
-            <>
-              {idx > 0 && <hr class="divider" />}
-              <div class="group">
-                <span class="title">{g.label}</span>
-                {g.items.map(sub => {
-                  if (isLink(sub)) return <a href={sub.href} class:list={['sl', { on: match(sub.href) }]}>{sub.label}</a>;
-                  const sg = sub as SidebarGroup;
-                  return (
-                    <div class="sub">
-                      <details open={groupOpen(sg)}>
-                        <summary class="subtitle">{sg.label}</summary>
-                        <div class="sub-items">
-                          {sg.items.map(leaf => isLink(leaf) ? <a href={leaf.href} class:list={['sl', { on: match(leaf.href) }]}>{leaf.label}</a> : null)}
-                        </div>
-                      </details>
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          );
-        })}
-      </nav>
-    </aside>
+  <div class:list={['shell', { 'shell--no-sidebar': hideSidebar }]}>
+    {!hideSidebar && (
+      <aside class="sb" transition:persist={`docs-sidebar-${section}`} data-section={section}>
+        {sectionTitle && <div class="sb-header">{sectionTitle}</div>}
+        <nav>
+          {currentSidebar.map((item: SidebarItem, idx: number) => {
+            if (isLink(item)) {
+              return <a href={item.href} class:list={['sl', { on: match(item.href) }]}>{item.label}</a>;
+            }
+            const g = item as SidebarGroup;
+            return (
+              <>
+                {idx > 0 && <hr class="divider" />}
+                <div class="group">
+                  <span class="title">{g.label}</span>
+                  {g.items.map(sub => {
+                    if (isLink(sub)) return <a href={sub.href} class:list={['sl', { on: match(sub.href) }]}>{sub.label}</a>;
+                    const sg = sub as SidebarGroup;
+                    return (
+                      <div class="sub">
+                        <details open={groupOpen(sg)}>
+                          <summary class="subtitle">{sg.label}</summary>
+                          <div class="sub-items">
+                            {sg.items.map(leaf => isLink(leaf) ? <a href={leaf.href} class:list={['sl', { on: match(leaf.href) }]}>{leaf.label}</a> : null)}
+                          </div>
+                        </details>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            );
+          })}
+        </nav>
+      </aside>
+    )}
 
-    <main class="mn"><article><slot /></article></main>
+    <main class:list={['mn', { 'mn--full': hideSidebar }]}><article><slot /></article></main>
   </div>
+
+  <!-- Mobile drawer -->
+  <div class="drawer-backdrop" id="drawer-backdrop" aria-hidden="true"></div>
+  <aside class="drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-head">
+      <a href="/" class="logo">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg>
+        cognivo
+      </a>
+      <button class="drawer-close" id="drawer-close-btn" aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+      </button>
+    </div>
+    <nav class="drawer-nav">
+      <div class="drawer-section-title">Sections</div>
+      {navLinks.map(l => (
+        <a href={l.href} class:list={['drawer-link', { on: match(l.href) || path.startsWith(l.href) }]}>{l.label}</a>
+      ))}
+      {currentSidebar.length > 0 && sectionTitle && (
+        <>
+          <hr class="divider" />
+          <div class="drawer-section-title">{sectionTitle}</div>
+          {currentSidebar.map((item: SidebarItem) => {
+            if (isLink(item)) {
+              return <a href={item.href} class:list={['drawer-link', { on: match(item.href) }]}>{item.label}</a>;
+            }
+            const g = item as SidebarGroup;
+            return (
+              <div class="drawer-group">
+                <span class="drawer-group-title">{g.label}</span>
+                {g.items.map(sub => isLink(sub)
+                  ? <a href={sub.href} class:list={['drawer-link', { on: match(sub.href) }]}>{sub.label}</a>
+                  : null)}
+              </div>
+            );
+          })}
+        </>
+      )}
+    </nav>
+  </aside>
+
+  <!-- Footer -->
+  <footer class="ft">
+    <div class="ft-inner">
+      <div class="ft-brand">
+        <a href="/" class="logo">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg>
+          Cognivo
+        </a>
+        <p class="ft-tag">Built with Lit 3, cognitive science, and design tokens.</p>
+      </div>
+      <nav class="ft-links" aria-label="Footer">
+        <a href="https://github.com/muriloscigliano/cognivo" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://npmjs.com/org/cognivo" target="_blank" rel="noopener">npm</a>
+        <a href="https://github.com/muriloscigliano/cognivo/blob/main/LICENSE" target="_blank" rel="noopener">License (MIT)</a>
+        <a href="https://cognivo.dev" target="_blank" rel="noopener">Docs</a>
+      </nav>
+      <span class="ft-ver">v0.4</span>
+    </div>
+  </footer>
 
   <script>
     // All per-page setup runs on `astro:page-load` so it re-executes after
@@ -203,12 +275,45 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
       targets.forEach(t => scrollSpyObserver!.observe(t));
     }
 
+    function initMobileDrawer() {
+      const btn = document.getElementById('mobile-menu-btn');
+      const closeBtn = document.getElementById('drawer-close-btn');
+      const drawer = document.getElementById('mobile-drawer');
+      const backdrop = document.getElementById('drawer-backdrop');
+      if (!btn || !drawer || !backdrop) return;
+      if ((btn as any)._cgBound) return;
+      (btn as any)._cgBound = true;
+
+      const open = () => {
+        drawer.classList.add('open');
+        backdrop.classList.add('open');
+        drawer.setAttribute('aria-hidden', 'false');
+        btn.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      };
+      const close = () => {
+        drawer.classList.remove('open');
+        backdrop.classList.remove('open');
+        drawer.setAttribute('aria-hidden', 'true');
+        btn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      };
+
+      btn.addEventListener('click', open);
+      closeBtn?.addEventListener('click', close);
+      backdrop.addEventListener('click', close);
+      drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+      document.addEventListener('astro:before-preparation', close);
+    }
+
     function initPage() {
       updateActiveSidebarLink();
       initCopyButtons();
       initSameAnchorLinks();
       initThemeToggle();
       initScrollSpy();
+      initMobileDrawer();
     }
 
     // Initial load
@@ -372,11 +477,178 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
     :global(pre:hover .cp) { opacity: 1; }
     :global(.cp:hover) { color: var(--fg-2); border-color: var(--border-hover); }
 
+    /* ── GitHub icon link ── */
+    .hd-icon-link {
+      width: 32px; height: 32px;
+      display: grid; place-items: center;
+      border-radius: 6px;
+      color: var(--fg-3);
+      margin-right: 4px;
+      transition: color 100ms, background 100ms;
+    }
+    .hd-icon-link:hover { color: var(--fg); background: rgba(255,255,255,0.04); }
+
+    /* ── hideSidebar variant ── */
+    .hd--no-sidebar {
+      grid-template-columns: auto 1fr;
+    }
+    .hd--no-sidebar .hd-left {
+      border-right: none;
+    }
+    .shell--no-sidebar {
+      grid-template-columns: 1fr;
+    }
+    .mn--full {
+      padding: 0;
+    }
+    .mn--full article {
+      max-width: none;
+    }
+
+    /* ── Hamburger (mobile only) ── */
+    .hamburger {
+      display: none;
+      width: 32px; height: 32px;
+      place-items: center;
+      background: none; border: 1px solid transparent;
+      border-radius: 6px; cursor: pointer;
+      color: var(--fg-3);
+      margin-left: 8px;
+      transition: color 100ms, background 100ms;
+    }
+    .hamburger:hover { color: var(--fg); background: rgba(255,255,255,0.04); }
+
+    /* ── Mobile drawer ── */
+    .drawer-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 98;
+      transition: opacity 180ms ease;
+    }
+    .drawer-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .drawer {
+      position: fixed;
+      top: 0; left: 0;
+      width: min(320px, 85vw);
+      height: 100vh;
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      z-index: 99;
+      transform: translateX(-100%);
+      transition: transform 220ms ease;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer-head {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .drawer-close {
+      width: 32px; height: 32px;
+      display: grid; place-items: center;
+      background: none; border: 1px solid transparent;
+      border-radius: 6px; cursor: pointer;
+      color: var(--fg-3);
+      transition: color 100ms, background 100ms;
+    }
+    .drawer-close:hover { color: var(--fg); background: rgba(255,255,255,0.04); }
+    .drawer-nav {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .drawer-section-title {
+      font: 600 11px/1 var(--font-mono);
+      color: var(--fg);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+    .drawer-link {
+      display: block;
+      padding: 8px 0;
+      font-size: 14px;
+      color: var(--fg-3);
+    }
+    .drawer-link:hover { color: var(--fg); }
+    .drawer-link.on { color: var(--accent); }
+    .drawer-group { margin-top: 16px; }
+    .drawer-group-title {
+      display: block;
+      font: 600 11px/1 var(--font-mono);
+      color: var(--fg-4);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 4px 0 8px;
+    }
+
+    /* ── Footer ── */
+    .ft {
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .ft-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 64px;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 24px;
+      align-items: center;
+    }
+    .ft-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .ft-tag {
+      font-size: 13px;
+      color: var(--fg-3);
+      line-height: 1.5;
+    }
+    .ft-links {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .ft-links a {
+      font-size: 13px;
+      color: var(--fg-3);
+      transition: color 100ms;
+    }
+    .ft-links a:hover { color: var(--fg); }
+    .ft-ver {
+      font: 400 12px var(--font-mono);
+      color: var(--fg-4);
+    }
+
     @media (max-width: 768px) {
+      .hd { grid-template-columns: 1fr auto; }
+      .hd-left { border-right: none; padding: 0 20px; }
+      .hd-right { padding: 0 12px; }
       .hd-nav { display: none; }
+      .hd-icon-link { display: none; }
+      .hd-ver { display: none; }
+      .theme-btn { display: none; }
+      .hamburger { display: grid; }
       .shell { grid-template-columns: 1fr; }
       .sb { display: none; }
       .mn { padding: 24px 20px 60px; }
+      .ft-inner {
+        grid-template-columns: 1fr;
+        padding: 24px 20px;
+        text-align: left;
+      }
     }
   </style>
 </BaseLayout>

@@ -64,6 +64,9 @@ export const sidebars: Record<string, SidebarItem[]> = {
   '/components': foundationGroups,
   '/ai': aiGroups,
   '/biases': biasGroups,
+  '/playground': [
+    { label: 'Integration Demo', href: '/playground/integration-demo' },
+  ],
   '/tokens': [
     { label: 'Installation', href: '/tokens#installation' },
     { label: 'Dark Mode', href: '/tokens#darkmode' },
@@ -78,6 +81,7 @@ export const sidebars: Record<string, SidebarItem[]> = {
     { label: 'New Tokens', href: '/tokens#new-tokens' },
     { label: 'Usage Example', href: '/tokens#usage' },
     { label: 'Naming Convention', href: '/tokens#naming' },
+    { label: 'Enforcement', href: '/tokens#enforcement' },
   ],
   '/core': [
     { label: 'Installation', href: '/core#installation' },
@@ -87,6 +91,20 @@ export const sidebars: Record<string, SidebarItem[]> = {
     { label: 'Result Types', href: '/core#results' },
     { label: 'Decorator Pattern', href: '/core#decorators' },
     { label: 'Key Exports', href: '/core#exports' },
+  ],
+  '/packages': [
+    { label: 'Overview', href: '/packages' },
+    {
+      label: 'Packages',
+      items: [
+        { label: '@cognivo/ssr', href: '/packages/ssr' },
+        { label: '@cognivo/theme-generator', href: '/packages/theme-generator' },
+        { label: '@cognivo/analytics', href: '/packages/analytics' },
+        { label: '@cognivo/mcp-server', href: '/packages/mcp-server' },
+        { label: '@cognivo/eslint-plugin', href: '/packages/eslint-plugin' },
+        { label: '@cognivo/claude-code-skill', href: '/packages/claude-code-skill' },
+      ],
+    },
   ],
   '/patterns': [
     { label: 'Overview', href: '/patterns' },
@@ -109,6 +127,7 @@ export const sidebars: Record<string, SidebarItem[]> = {
     { label: 'React', href: '/frameworks#react' },
     { label: 'Vue', href: '/frameworks#vue' },
     { label: 'Svelte / Angular / Solid', href: '/frameworks#svelte' },
+    { label: 'SSR', href: '/frameworks#ssr' },
   ],
   '/accessibility': [
     { label: 'Principles', href: '/accessibility#principles' },
@@ -117,6 +136,7 @@ export const sidebars: Record<string, SidebarItem[]> = {
     { label: 'Focus Ring System', href: '/accessibility#focus' },
     { label: 'Reduced Motion', href: '/accessibility#motion' },
     { label: 'Dark Mode', href: '/accessibility#darkmode' },
+    { label: 'Test Coverage', href: '/accessibility#coverage' },
     { label: 'Testing', href: '/accessibility#testing' },
   ],
   '/design-advisor': [

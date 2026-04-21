@@ -1,5 +1,5 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import DocsLayout from '../layouts/DocsLayout.astro';
 import StatsRow from '../components/StatsRow.astro';
 import { registry } from '../data/components';
 
@@ -81,15 +81,17 @@ const pageTitle = 'The AI-Native Design System';
 const pageDescription = `${total} Web Components. ${aiCount} AI-native patterns. ${biasCount} cognitive bias primitives. Generate UI via LLMs with typed component trees and behavioral psychology baked in.`;
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription}>
+<DocsLayout title={pageTitle} description={pageDescription} hideSidebar>
   <!-- OG / Twitter meta, injected via a named fragment -->
   <Fragment slot="head">
     <meta property="og:title" content="Cognivo — The AI-Native Design System" />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-image.svg" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Cognivo — The AI-Native Design System" />
     <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content="/og-image.svg" />
   </Fragment>
 
   <!-- ─── Hero ─────────────────────────────────────────────────────── -->
@@ -493,4 +495,4 @@ const pageDescription = `${total} Web Components. ${aiCount} AI-native patterns.
       }
     }
   </style>
-</BaseLayout>
+</DocsLayout>

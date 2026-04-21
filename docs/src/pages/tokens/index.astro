@@ -83,7 +83,7 @@ const motionEasings = [
   <div class="tokens-page">
     <header class="page-header">
       <h1>Design Tokens</h1>
-      <p class="subtitle">1,853 CSS custom properties organized in a 3-tier architecture. All prefixed with <code>--cg-</code>.</p>
+      <p class="subtitle">1,800+ CSS custom properties organized in a 3-tier architecture. All prefixed with <code>--cg-</code>.</p>
     </header>
 
     <!-- Install -->
@@ -116,7 +116,7 @@ import '@cognivo/tokens/dist/index.css';`}</code></pre>
     <!-- Token Counts -->
     <section class="section">
       <h2 id="breakdown">Token Breakdown</h2>
-      <p style="margin-bottom: 1rem; color: var(--text-2);">1,853 tokens organized across 9 categories:</p>
+      <p style="margin-bottom: 1rem; color: var(--text-2);">1,800+ tokens organized across 9 categories:</p>
       <div class="cat-grid">
         {categories.map(cat => (
           <div class="cat-card">
@@ -270,6 +270,43 @@ import '@cognivo/tokens/dist/index.css';`}</code></pre>
                   <td>{e.use}</td>
                 </tr>
               ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="type-block">
+        <h3>Advanced Easing (Transition Tokens)</h3>
+        <p style="color: var(--text-2); font-size: 0.875rem; margin-bottom: 0.75rem;">
+          Use <code>--cg-transition-easing-spring</code> for UI feedback (button press, toggle flip),
+          <code>--cg-transition-easing-overshoot</code> for attention-grabbing entrances (badges, toasts, modals),
+          <code>--cg-transition-easing-bounce</code> for tasteful pop animations (accordion expand, popover reveal),
+          and <code>--cg-transition-easing-materialize</code> for content materialization (streaming text, skeleton-to-content swaps).
+        </p>
+        <div class="table-wrap">
+          <table class="ref-table">
+            <thead><tr><th>Token</th><th>Curve</th><th>Use</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><code>--cg-transition-easing-spring</code></td>
+                <td class="muted" style="font-size: 0.75rem;">cubic-bezier(0.34, 1.56, 0.64, 1)</td>
+                <td>UI feedback, springy snap</td>
+              </tr>
+              <tr>
+                <td><code>--cg-transition-easing-overshoot</code></td>
+                <td class="muted" style="font-size: 0.75rem;">cubic-bezier(0.68, -0.55, 0.265, 1.55)</td>
+                <td>Attention-grabbing entrances</td>
+              </tr>
+              <tr>
+                <td><code>--cg-transition-easing-bounce</code></td>
+                <td class="muted" style="font-size: 0.75rem;">cubic-bezier(0.16, 1, 0.3, 1)</td>
+                <td>Tasteful pop animations</td>
+              </tr>
+              <tr>
+                <td><code>--cg-transition-easing-materialize</code></td>
+                <td class="muted" style="font-size: 0.75rem;">cubic-bezier(0.16, 1, 0.3, 1)</td>
+                <td>Content materialization</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -478,6 +515,47 @@ Examples:
   --cg-component-button-height-md
   --cg-motion-duration-normal
   --cg-ai-confidence-high-color</code></pre>
+    </section>
+
+    <!-- Enforcement / Lint Rules -->
+    <section class="section">
+      <h2 id="enforcement">Enforcement</h2>
+      <p style="margin-bottom: 1rem; color: var(--text-2);">
+        The <code>@cognivo/eslint-plugin</code> package ships lint rules that enforce the token system.
+        All rules run at <code>error</code> level after v0.4 — CI fails on any raw hex, rgba, fake token,
+        or fallback in component CSS.
+      </p>
+
+      <h3>Install</h3>
+      <pre><code>pnpm add -D @cognivo/eslint-plugin</code></pre>
+
+      <h3>Rules</h3>
+      <div class="table-wrap">
+        <table class="ref-table">
+          <thead><tr><th>Rule</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>no-raw-hex</code></td><td>Reject raw hex values (<code>#fff</code>) in component CSS — use semantic tokens.</td></tr>
+            <tr><td><code>no-raw-rgba</code></td><td>Reject raw <code>rgba()</code> / <code>rgb()</code> literals — use surface and overlay tokens.</td></tr>
+            <tr><td><code>no-transition-all</code></td><td>Reject <code>transition: all</code> — always specify an explicit property list.</td></tr>
+            <tr><td><code>no-fake-tokens</code></td><td>Reject references to tokens that do not exist in <code>@cognivo/tokens</code>.</td></tr>
+            <tr><td><code>no-token-fallbacks</code></td><td>Reject <code>var(--cg-x, fallback)</code> — tokens are guaranteed to resolve.</td></tr>
+            <tr><td><code>cg-token-prefix</code></td><td>All design tokens authored by Cognivo must use the <code>--cg-</code> prefix.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Enable in eslint.config.js</h3>
+      <pre><code>{`import cognivo from '@cognivo/eslint-plugin';
+
+export default [
+  cognivo.configs.recommended,
+  // ...rest of your config
+];`}</code></pre>
+
+      <div class="rule-box">
+        <strong>Note:</strong> All rules are <code>error</code> level after v0.4. CI fails on any raw hex,
+        rgba, fake token, or fallback in component CSS.
+      </div>
     </section>
   </div>
 

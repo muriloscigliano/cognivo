@@ -1,0 +1,47 @@
+---
+import DocsLayout from '../layouts/DocsLayout.astro';
+---
+
+<DocsLayout title="Changelog">
+  <h1>Changelog</h1>
+  <p class="subtitle">Release notes for Cognivo. Dates in ISO format. Versions follow semver.</p>
+
+  <section class="ver">
+    <h2>v0.4.0 — 2026-04 — Production readiness</h2>
+    <ul>
+      <li><strong>182 components</strong> — 87 foundation + 89 AI-native + 6 cognitive-bias wrappers.</li>
+      <li><strong>Per-component tree-shaking</strong> — 8 kB gzip for a single component vs 246 kB for the full bundle.</li>
+      <li><strong>New packages</strong>: <code>@cognivo/ssr</code> (server rendering via <code>@lit-labs/ssr</code>), <code>@cognivo/theme-generator</code>, <code>@cognivo/analytics</code>, <code>@cognivo/mcp-server</code> (+3 new tools, 6 total), <code>@cognivo/claude-code-skill</code>, <code>@cognivo/eslint-plugin</code>.</li>
+      <li><strong>Testing</strong> — 1,906 unit tests + 83 Playwright e2e (60 visual regression).</li>
+      <li><strong>Cognitive biases</strong> — 184 bias cards + 6 composable wrappers (<code>bias-anchoring</code>, <code>bias-scarcity</code>, <code>bias-social-proof</code>, <code>bias-authority</code>, <code>bias-commitment</code>, <code>bias-reciprocity</code>).</li>
+      <li><strong>Token hygiene</strong> — zero raw hex, <code>rgba()</code>, or fake tokens in component CSS. Enforced by <code>@cognivo/eslint-plugin</code>.</li>
+      <li><strong>Licensing</strong> — MIT License. Published to npm.</li>
+    </ul>
+  </section>
+
+  <style>
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.03em; }
+    .subtitle { color: var(--fg-2); margin-bottom: 40px; font-size: 16px; line-height: 1.7; max-width: 640px; }
+    section { margin-bottom: 48px; }
+    h2 {
+      font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
+      margin: 40px 0 16px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+    }
+    h2::before {
+      content: ''; display: inline-block;
+      width: 3px; height: 18px;
+      background: var(--accent); border-radius: 2px;
+      margin-right: 10px;
+    }
+    ul { margin: 0 0 12px 20px; padding: 0; }
+    li { color: var(--fg-2); line-height: 1.8; font-size: 14px; margin-bottom: 6px; }
+    li code {
+      font: 500 12px var(--font-mono);
+      color: var(--accent);
+      background: var(--accent-dim);
+      padding: 1px 6px; border-radius: 4px;
+    }
+  </style>
+</DocsLayout>

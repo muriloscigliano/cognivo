@@ -69,6 +69,67 @@ const aiCount = registry.filter(c => c.tag.startsWith('ai-')).length;
 
     <h3>Streaming generative UI</h3>
     <pre><code>pnpm add @cognivo/gen-ui @cognivo/gen-ui-lit</code></pre>
+
+    <h3 id="advanced-packages" style="margin-top: 32px;">Advanced Packages</h3>
+    <p>Cognivo ships 15 packages. Beyond the core set above, these are optional add-ons for SSR, theming, telemetry, LLM tooling, and linting.</p>
+    <div class="tb">
+      <table>
+        <thead><tr><th>Package</th><th>Install</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code class="pn">@cognivo/ssr</code></td>
+            <td class="ty">pnpm add @cognivo/ssr</td>
+            <td>Server-side render Cognivo components via <code>@lit-labs/ssr</code>. Eliminates FOUC. <a href="/packages/ssr">Learn more</a></td>
+          </tr>
+          <tr>
+            <td><code class="pn">@cognivo/theme-generator</code></td>
+            <td class="ty">npx cognivo-theme "warm ocean professional"</td>
+            <td>CLI + SDK that turns descriptions into token overrides. <a href="/packages/theme-generator">Learn more</a></td>
+          </tr>
+          <tr>
+            <td><code class="pn">@cognivo/analytics</code></td>
+            <td class="ty">pnpm add @cognivo/analytics</td>
+            <td>Opt-in component telemetry. Captures events from 243 known Cognivo event types. Privacy-first defaults. <a href="/packages/analytics">Learn more</a></td>
+          </tr>
+          <tr>
+            <td><code class="pn">@cognivo/mcp-server</code></td>
+            <td class="ty">pnpm add @cognivo/mcp-server</td>
+            <td>Model Context Protocol server for Claude / Cursor / Windsurf. 12 tools for component, token, pattern, and bias lookup. <a href="/packages/mcp-server">Learn more</a></td>
+          </tr>
+          <tr>
+            <td><code class="pn">@cognivo/eslint-plugin</code></td>
+            <td class="ty">pnpm add -D @cognivo/eslint-plugin</td>
+            <td>Blocks raw hex, <code>rgba()</code>, fake tokens, and <code>transition: all</code> in component CSS. <a href="/packages/eslint-plugin">Learn more</a></td>
+          </tr>
+          <tr>
+            <td><code class="pn">@cognivo/adapter-openai</code></td>
+            <td class="ty">pnpm add @cognivo/adapter-openai</td>
+            <td>Structured-output adapter for generating UI via OpenAI.</td>
+          </tr>
+          <tr>
+            <td><code class="pn">@cognivo/claude-code-skill</code></td>
+            <td class="ty">pnpm add @cognivo/claude-code-skill</td>
+            <td>Installs a Cognivo-aware skill into <code>~/.claude/skills/</code>. Activates with <code>/cognivo</code>. <a href="/packages/claude-code-skill">Learn more</a></td>
+          </tr>
+          <tr>
+            <td><code class="pn">@cognivo/gen-ui</code></td>
+            <td class="ty">pnpm add @cognivo/gen-ui</td>
+            <td>Zod schemas + parser for LLM-generated UI trees.</td>
+          </tr>
+          <tr>
+            <td><code class="pn">@cognivo/gen-ui-lit</code></td>
+            <td class="ty">pnpm add @cognivo/gen-ui-lit</td>
+            <td>Lit renderer for generative UI trees.</td>
+          </tr>
+          <tr>
+            <td><code class="pn">@cognivo/core</code></td>
+            <td class="ty">pnpm add @cognivo/core</td>
+            <td>Framework-agnostic AI client interface. <a href="/core">Learn more</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="hint">See <a href="/packages">Packages</a> for detailed docs on each of the add-ons above.</p>
   </section>
 
   <section>
@@ -210,5 +271,22 @@ const recs = recommendBiases({
     .nav-card strong { display: block; margin-bottom: 4px; color: var(--fg); font-size: 15px; }
     .nav-card span { color: var(--fg-3); font-size: 14px; }
     .nav-card:hover strong { color: var(--accent); }
+
+    .tb { border: 1px solid var(--border); border-radius: 10px; overflow-x: auto; margin: 8px 0; }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left; padding: 10px 16px;
+      font: 600 10px/1 var(--font-sans);
+      color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em;
+      background: var(--bg-subtle); border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 10px 16px; font-size: 14px;
+      border-bottom: 1px solid var(--border); color: var(--fg-2);
+      vertical-align: top; line-height: 1.5;
+    }
+    tr:last-child td { border-bottom: none; }
+    .pn { background: none; padding: 0; color: var(--fg); font-weight: 500; font-size: 13px; font-family: var(--font-mono); }
+    .ty { font-family: var(--font-mono); font-size: 12px; color: var(--fg-3); white-space: nowrap; }
   </style>
 </DocsLayout>

@@ -78,6 +78,33 @@ const result = await client.run(context);`}</code></pre>
   </section>
 
   <section>
+    <h2 id="also-available">Also Available</h2>
+    <p>Two additional clients pair with any <code>AiClient</code> implementation for stateful conversations and fault tolerance.</p>
+
+    <h3>ConversationalClient</h3>
+    <p>Wraps any <code>AiClient</code> to maintain conversation history automatically — subsequent calls carry prior turns as context. Pairs with any <code>AiClient</code> implementation.</p>
+    <pre><code>{`import { ConversationalClient, AiIntent } from '@cognivo/core';
+import { OpenAiClient } from '@cognivo/adapter-openai';
+
+const base = new OpenAiClient({ apiKey: '...' });
+const chat = new ConversationalClient(base);
+
+await chat.send({ intent: AiIntent.Generate, input: 'Who are you?' });
+// Next call has context automatically
+await chat.send({ intent: AiIntent.Generate, input: 'What did I just ask?' });`}</code></pre>
+
+    <h3>CircuitBreaker</h3>
+    <p>Short-circuits calls to a failing client so the process fails fast instead of stacking timeouts. Pairs with any <code>AiClient</code> implementation.</p>
+    <pre><code>{`import { CircuitBreaker } from '@cognivo/core';
+
+const protectedClient = new CircuitBreaker(baseClient, {
+  failureThreshold: 3,
+  resetTimeoutMs: 60_000,
+});
+// After 3 consecutive failures, subsequent calls fail fast for 60s.`}</code></pre>
+  </section>
+
+  <section>
     <h2 id="exports">Key Exports</h2>
     <div class="export-grid">
       <cg-card>
@@ -111,6 +138,7 @@ const result = await client.run(context);`}</code></pre>
       background: var(--accent); border-radius: 2px;
       margin-right: 10px;
     }
+    h3 { font-size: 15px; font-weight: 600; margin: 24px 0 8px; color: var(--fg); }
     p { margin-bottom: 12px; color: var(--fg-2); line-height: 1.7; }
     .export-grid {
       display: grid;
