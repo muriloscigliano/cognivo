@@ -1,5 +1,5 @@
 /**
- * Component Registry — metadata for all 143 Cognivo components.
+ * Component Registry — metadata for all 182 Cognivo components.
  * Powers the showcase sidebar, component pages, props tables, and examples.
  */
 
@@ -165,6 +165,32 @@ export const registry: ComponentMeta[] = [
     events: [],
     examples: [{ label: 'Attached', html: `<cg-button-group attached><cg-button variant="secondary">Left</cg-button><cg-button variant="secondary">Center</cg-button><cg-button variant="secondary">Right</cg-button></cg-button-group>` }],
     since: 'v0.1.0',
+  },
+  {
+    tag: 'cg-split-button', name: 'Split Button', category: 'foundation',
+    description: 'Primary action plus an attached chevron that opens a dropdown of related actions (Save / Save as… / Save a copy). Shares variant/size/type with cg-button.',
+    props: [
+      { name: 'label', type: 'string', description: 'Primary button label' },
+      { name: 'items', type: 'SplitButtonItem[]', description: 'Menu items: { id, label, icon?, shortcut?, disabled?, danger?, separator? }' },
+      { name: 'variant', type: '"primary" | "secondary" | "tertiary"', default: '"primary"', description: 'Visual variant' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Button size' },
+      { name: 'type', type: '"normal" | "danger"', default: '"normal"', description: 'Destructive action styling' },
+      { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable both buttons' },
+      { name: 'loading', type: 'boolean', default: 'false', description: 'Show spinner on primary' },
+      { name: 'open', type: 'boolean', default: 'false', description: 'Menu open state (reflected)' },
+      { name: 'menu-placement', type: '"bottom-start" | "bottom-end" | "top-start" | "top-end"', default: '"bottom-end"', description: 'Dropdown placement' },
+    ],
+    events: [
+      { name: 'cg-split-button-click', detail: 'none', description: 'Primary action triggered' },
+      { name: 'cg-split-button-select', detail: '{ id, item }', description: 'Menu item selected' },
+      { name: 'cg-split-button-open', detail: 'none', description: 'Dropdown opened' },
+      { name: 'cg-split-button-close', detail: 'none', description: 'Dropdown closed' },
+    ],
+    examples: [
+      { label: 'Default', html: `<cg-split-button label="Save"></cg-split-button>` },
+      { label: 'Variants', html: `<cg-stack direction="row" gap="sm"><cg-split-button label="Primary" variant="primary"></cg-split-button><cg-split-button label="Secondary" variant="secondary"></cg-split-button><cg-split-button label="Tertiary" variant="tertiary"></cg-split-button></cg-stack>` },
+    ],
+    since: 'v0.4.0',
   },
   {
     tag: 'cg-callout', name: 'Callout', category: 'foundation',
@@ -748,7 +774,7 @@ export const registry: ComponentMeta[] = [
     description: 'Lightweight markdown renderer with sanitized HTML output. Headings, bold, italic, code blocks, inline code, links, lists, blockquotes, tables, horizontal rules. No external dependency.',
     props: [{ name: 'text', type: 'string', description: 'Markdown text to render' }],
     events: [],
-    examples: [{label:'Rich content',html:'<cg-markdown></cg-markdown>',setup:(el)=>{const m=el.querySelector('cg-markdown') as any;if(m)m.text='## Features\n\nCognivo provides **140+ components** built with *Lit 3*.\n\n### Highlights\n\n- Design tokens — 1,800+ tokens\n- Framework agnostic\n- `Shadow DOM` encapsulation\n\n> Built for production AI interfaces.\n\n```javascript\nimport \'@cognivo/components\';\nconsole.log(\'Ready!\');\n```\n\nVisit [cognivo.dev](https://cognivo.dev) to learn more.';el.style.maxWidth='560px';}},{label:'Table + HR',html:'<cg-markdown></cg-markdown>',setup:(el)=>{const m=el.querySelector('cg-markdown') as any;if(m)m.text='# Status Report\n\n| Component | Status |\n|-----------|--------|\n| Button | Done |\n| Modal | Done |\n| Table | In Progress |\n\n---\n\nLast updated: **April 2026**';el.style.maxWidth='400px';}}],
+    examples: [{label:'Rich content',html:'<cg-markdown></cg-markdown>',setup:(el)=>{const m=el.querySelector('cg-markdown') as any;if(m)m.text='## Features\n\nCognivo provides **180+ components** built with *Lit 3*.\n\n### Highlights\n\n- Design tokens — 1,800+ tokens\n- Framework agnostic\n- `Shadow DOM` encapsulation\n\n> Built for production AI interfaces.\n\n```javascript\nimport \'@cognivo/components\';\nconsole.log(\'Ready!\');\n```\n\nVisit [cognivo.dev](https://cognivo.dev) to learn more.';el.style.maxWidth='560px';}},{label:'Table + HR',html:'<cg-markdown></cg-markdown>',setup:(el)=>{const m=el.querySelector('cg-markdown') as any;if(m)m.text='# Status Report\n\n| Component | Status |\n|-----------|--------|\n| Button | Done |\n| Modal | Done |\n| Table | In Progress |\n\n---\n\nLast updated: **April 2026**';el.style.maxWidth='400px';}}],
     since: 'v0.1.0',
   },
   {

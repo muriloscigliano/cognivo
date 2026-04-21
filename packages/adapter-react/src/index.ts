@@ -305,6 +305,24 @@ export { CgListbox } from './components/CgListbox.js';
 export { CgTimePicker } from './components/CgTimePicker.js';
 export { CgDateTimePicker } from './components/CgDateTimePicker.js';
 
+// Wave 10: Coverage — Split action
+export { CgSplitButton } from './components/CgSplitButton.js';
+export type { CgSplitButtonProps, SplitButtonItem } from './components/CgSplitButton.js';
+
+// Bias wrappers (cognitive-pattern primitives)
+export { BiasAnchoring } from './components/BiasAnchoring.js';
+export type { BiasAnchoringProps } from './components/BiasAnchoring.js';
+export { BiasAuthority } from './components/BiasAuthority.js';
+export type { BiasAuthorityProps } from './components/BiasAuthority.js';
+export { BiasCommitment } from './components/BiasCommitment.js';
+export type { BiasCommitmentProps } from './components/BiasCommitment.js';
+export { BiasReciprocity } from './components/BiasReciprocity.js';
+export type { BiasReciprocityProps } from './components/BiasReciprocity.js';
+export { BiasScarcity } from './components/BiasScarcity.js';
+export type { BiasScarcityProps } from './components/BiasScarcity.js';
+export { BiasSocialProof } from './components/BiasSocialProof.js';
+export type { BiasSocialProofProps } from './components/BiasSocialProof.js';
+
 // Wave 10: Coverage — AI Atlas
 export { AiAgentSteps } from './components/AiAgentSteps.js';
 export { AiAssistantWidget } from './components/AiAssistantWidget.js';

@@ -38,6 +38,7 @@ export * from './components/cg-date-picker/cg-date-picker.js';
 export * from './components/cg-time-picker/cg-time-picker.js';
 export * from './components/cg-date-time-picker/cg-date-time-picker.js';
 export * from './components/cg-button-group/cg-button-group.js';
+export * from './components/cg-split-button/cg-split-button.js';
 
 // ── Navigation & content ────────────────────────────────────────────────────
 export * from './components/cg-tabs/cg-tabs.js';

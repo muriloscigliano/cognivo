@@ -32,6 +32,7 @@ import { CgDatePicker } from './components/cg-date-picker/cg-date-picker.js';
 import { CgTimePicker } from './components/cg-time-picker/cg-time-picker.js';
 import { CgDateTimePicker } from './components/cg-date-time-picker/cg-date-time-picker.js';
 import { CgButtonGroup } from './components/cg-button-group/cg-button-group.js';
+import { CgSplitButton } from './components/cg-split-button/cg-split-button.js';
 
 // ── Wave 3: Navigation & Content (9) ────────────────────────────────────────
 import { CgTabs } from './components/cg-tabs/cg-tabs.js';
@@ -228,7 +229,7 @@ export {
   CgSeparator, CgIcon, CgCallout, CgImage, CgLabel, CgMetricCard,
   // Wave 2: Data & Forms
   CgTable, CgSelect, CgTextarea, CgCheckbox, CgRadio, CgRadioGroup,
-  CgSwitch, CgSlider, CgForm, CgDatePicker, CgTimePicker, CgDateTimePicker, CgButtonGroup,
+  CgSwitch, CgSlider, CgForm, CgDatePicker, CgTimePicker, CgDateTimePicker, CgButtonGroup, CgSplitButton,
   // Wave 3: Navigation & Content
   CgTabs, CgAccordion, CgSteps, CgCarousel, CgCodeBlock,
   CgMarkdown, CgImageBlock, CgImageGallery, CgBadgeGroup,
