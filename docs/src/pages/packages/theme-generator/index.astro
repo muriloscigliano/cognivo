@@ -4,7 +4,7 @@ import DocsLayout from '../../../layouts/DocsLayout.astro';
 
 <DocsLayout title="@cognivo/theme-generator">
   <h1>@cognivo/theme-generator</h1>
-  <p class="subtitle">Deterministic theme generator. Takes a natural-language description, scores it against 40 curated palettes, and returns a tier-2 token override (or raw <code>Palette</code>). Zero runtime dependencies — no LLM calls.</p>
+  <p class="subtitle">Deterministic theme generator. Takes a natural-language description, scores it against <strong>82 curated palettes</strong>, and returns a tier-2 token override (or raw <code>Palette</code>). Zero runtime dependencies — no LLM calls.</p>
 
   <section>
     <h2 id="installation">Installation</h2>
@@ -54,7 +54,7 @@ const palette = generateTheme({
           <tr>
             <td><code>scoreDescription</code></td>
             <td class="muted">(desc: string) =&gt; ScoredPalette[]</td>
-            <td>Debug helper — returns all 40 palettes with their match scores.</td>
+            <td>Debug helper — returns all 82 palettes with their match scores.</td>
           </tr>
           <tr>
             <td><code>emitTokens</code></td>
@@ -64,12 +64,12 @@ const palette = generateTheme({
           <tr>
             <td><code>PALETTES</code></td>
             <td class="muted">Record&lt;string, Palette&gt;</td>
-            <td>The full curated palette map (40 entries). Keyed by slug.</td>
+            <td>The full curated palette map (82 entries). Keyed by slug.</td>
           </tr>
           <tr>
             <td><code>PALETTE_COUNT</code></td>
             <td class="muted">number</td>
-            <td>Current palette count. Equals <code>40</code>.</td>
+            <td>Current palette count. Equals <code>82</code>.</td>
           </tr>
         </tbody>
       </table>
@@ -116,10 +116,53 @@ console.log(ranked.slice(0, 5));
   </section>
 
   <section>
+    <h2 id="cli-examples">CLI examples</h2>
+    <p>Every invocation is deterministic — the same description always resolves to the same palette, so CI can snapshot the output.</p>
+    <div class="table-wrap">
+      <table class="ref-table">
+        <thead><tr><th>Command</th><th>Matched palette</th><th>Primary color</th><th>Matched keywords</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>npx cognivo-theme "warm sunset friendly"</code></td>
+            <td><code>sunset-warm</code></td>
+            <td class="muted">#e76f51</td>
+            <td class="muted">warm, sunset, friendly</td>
+          </tr>
+          <tr>
+            <td><code>npx cognivo-theme "cyberpunk neon" --dark</code></td>
+            <td><code>cyberpunk-neon</code></td>
+            <td class="muted">#ff00aa</td>
+            <td class="muted">cyberpunk, neon, dark</td>
+          </tr>
+          <tr>
+            <td><code>npx cognivo-theme "healthcare clean"</code></td>
+            <td><code>healthcare-clean</code></td>
+            <td class="muted">#0891b2</td>
+            <td class="muted">healthcare, clean</td>
+          </tr>
+          <tr>
+            <td><code>npx cognivo-theme "dracula code editor"</code></td>
+            <td><code>dracula-dark</code></td>
+            <td class="muted">#bd93f9</td>
+            <td class="muted">dracula, code, editor</td>
+          </tr>
+          <tr>
+            <td><code>npx cognivo-theme "high-contrast accessibility"</code></td>
+            <td><code>high-contrast-light</code></td>
+            <td class="muted">#000000</td>
+            <td class="muted">high-contrast, accessibility</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top: 12px;">Browse the full library in <a href="/tokens/palette">Palette Explorer</a> or list all slugs via <code>Object.keys(PALETTES)</code>.</p>
+  </section>
+
+  <section>
     <h2 id="caveats">Caveats</h2>
     <ul class="caveats">
       <li><strong>Deterministic.</strong> Same input always produces the same output — no seeds, no LLM calls. Safe to run at build time.</li>
-      <li><strong>Palette library is finite.</strong> 40 curated palettes; if your description does not match any keyword, the top-weighted default is returned.</li>
+      <li><strong>Palette library is finite.</strong> 82 curated palettes covering hue-driven, industry verticals, brand moods, editor themes, and accessibility-first combinations. If your description does not match any keyword, the top-weighted default is returned.</li>
       <li><strong>Tier-2 only.</strong> The returned <code>TokenOverride</code> covers semantic colors — it does not modify spacing, typography, or motion tokens.</li>
       <li><strong><code>--raw</code> skips token mapping.</strong> You get the 8-hex <code>Palette</code> object, which is useful when you want to drive a non-Cognivo surface or a custom emit pipeline.</li>
     </ul>

@@ -64,9 +64,6 @@ export const sidebars: Record<string, SidebarItem[]> = {
   '/components': foundationGroups,
   '/ai': aiGroups,
   '/biases': biasGroups,
-  '/playground': [
-    { label: 'Integration Demo', href: '/playground/integration-demo' },
-  ],
   '/tokens': [
     { label: 'Installation', href: '/tokens#installation' },
     { label: 'Dark Mode', href: '/tokens#darkmode' },
@@ -78,6 +75,7 @@ export const sidebars: Record<string, SidebarItem[]> = {
     { label: 'Motion', href: '/tokens#motion' },
     { label: 'AI State Tokens', href: '/tokens#ai-tokens' },
     { label: 'Color Palette', href: '/tokens#palette' },
+    { label: 'Palette Explorer', href: '/tokens/palette' },
     { label: 'New Tokens', href: '/tokens#new-tokens' },
     { label: 'Usage Example', href: '/tokens#usage' },
     { label: 'Naming Convention', href: '/tokens#naming' },

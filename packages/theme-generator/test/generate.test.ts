@@ -60,8 +60,8 @@ describe('theme-generator', () => {
     expect(theme.color.action.primary.background.default).toMatch(/^#/);
   });
 
-  it('has exactly 40 palettes in the library', () => {
-    expect(Object.keys(PALETTES).length).toBe(40);
+  it('has at least 80 palettes in the library', () => {
+    expect(Object.keys(PALETTES).length).toBeGreaterThanOrEqual(80);
   });
 
   it('every palette has all required fields', () => {

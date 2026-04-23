@@ -1,0 +1,324 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+
+// Tier 1 hues x 11 shades = 165 swatches.
+const HUES = ['gray', 'slate', 'zinc', 'stone', 'red', 'orange', 'amber', 'yellow', 'green', 'teal', 'cyan', 'blue', 'indigo', 'purple', 'pink'];
+const SHADES = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+
+const SEMANTIC_GROUPS = [
+  { id: 'action', name: 'Action', intro: 'Primary, secondary, and tertiary interactive surfaces — buttons, links, toggles.', tokens: [
+    { token: '--cg-color-action-primary-background-default', usage: 'Primary button fill.' },
+    { token: '--cg-color-action-primary-background-hover', usage: 'Primary button hover.' },
+    { token: '--cg-color-action-primary-text-default', usage: 'Text on primary surface.' },
+    { token: '--cg-color-action-secondary-background-default', usage: 'Secondary button fill.' },
+    { token: '--cg-color-action-secondary-text-default', usage: 'Text on secondary surface.' },
+    { token: '--cg-color-action-tertiary-background-hover', usage: 'Ghost button hover bg.' },
+  ]},
+  { id: 'surface', name: 'Surface', intro: 'Backgrounds, cards, containers, dividers — the elevation ladder.', tokens: [
+    { token: '--cg-color-surface-base-background', usage: 'Page background (level 0).' },
+    { token: '--cg-color-surface-container-background', usage: 'Elevated container (level 1).' },
+    { token: '--cg-color-surface-cards-background', usage: 'Card fill (level 2).' },
+    { token: '--cg-color-surface-base-border', usage: 'Base-surface divider.' },
+    { token: '--cg-color-surface-container-border', usage: 'Container border.' },
+  ]},
+  { id: 'status', name: 'Status', intro: 'Success / warning / error / info feedback.', tokens: [
+    { token: '--cg-color-status-success-background-default', usage: 'Success fill.' },
+    { token: '--cg-color-status-success-text-default', usage: 'Success text.' },
+    { token: '--cg-color-status-warning-background-default', usage: 'Warning fill.' },
+    { token: '--cg-color-status-warning-text-default', usage: 'Warning text.' },
+    { token: '--cg-color-status-error-background-default', usage: 'Error fill.' },
+    { token: '--cg-color-status-error-text-default', usage: 'Error text.' },
+    { token: '--cg-color-status-info-background-default', usage: 'Info fill.' },
+    { token: '--cg-color-status-info-text-default', usage: 'Info text.' },
+  ]},
+  { id: 'chart', name: 'Chart', intro: 'Categorical color ramp for data viz — adjacent slices stay distinct.', tokens: [
+    { token: '--cg-color-chart-1', usage: 'Data series 1.' },
+    { token: '--cg-color-chart-2', usage: 'Data series 2.' },
+    { token: '--cg-color-chart-3', usage: 'Data series 3.' },
+    { token: '--cg-color-chart-4', usage: 'Data series 4.' },
+    { token: '--cg-color-chart-5', usage: 'Data series 5.' },
+    { token: '--cg-color-chart-6', usage: 'Data series 6.' },
+    { token: '--cg-color-chart-7', usage: 'Data series 7.' },
+    { token: '--cg-color-chart-8', usage: 'Data series 8.' },
+  ]},
+  { id: 'ai', name: 'AI States', intro: 'Confidence, streaming, insight types — unique to Cognivo.', tokens: [
+    { token: '--cg-ai-confidence-high-color', usage: 'Score >= 80%.' },
+    { token: '--cg-ai-confidence-medium-color', usage: 'Score 50-79%.' },
+    { token: '--cg-ai-confidence-low-color', usage: 'Score < 50%.' },
+    { token: '--cg-color-ai-accent', usage: 'AI highlight / focus ring.' },
+    { token: '--cg-color-ai-streaming', usage: 'Streaming cursor / shimmer.' },
+  ]},
+  { id: 'bias', name: 'Bias (Design Advisor)', intro: 'Cognitive-bias category accents surfaced in bias cards.', tokens: [
+    { token: '--cg-color-bias-anchoring', usage: 'Anchoring bias.' },
+    { token: '--cg-color-bias-social', usage: 'Social proof.' },
+    { token: '--cg-color-bias-loss', usage: 'Loss aversion.' },
+    { token: '--cg-color-bias-framing', usage: 'Framing effect.' },
+    { token: '--cg-color-bias-scarcity', usage: 'Scarcity.' },
+  ]},
+  { id: 'on-color', name: 'On-Color Pairs', intro: 'Foreground/background pairs with WCAG-validated contrast ratios.', tokens: [
+    { token: '--cg-color-on-primary', paired: '--cg-color-action-primary-background-default', usage: 'Text/icon on primary surface.' },
+    { token: '--cg-color-on-secondary', paired: '--cg-color-action-secondary-background-default', usage: 'Text/icon on secondary surface.' },
+    { token: '--cg-color-on-success', paired: '--cg-color-status-success-background-default', usage: 'Text/icon on success surface.' },
+    { token: '--cg-color-on-warning', paired: '--cg-color-status-warning-background-default', usage: 'Text/icon on warning surface.' },
+    { token: '--cg-color-on-error', paired: '--cg-color-status-error-background-default', usage: 'Text/icon on error surface.' },
+    { token: '--cg-color-on-info', paired: '--cg-color-status-info-background-default', usage: 'Text/icon on info surface.' },
+    { token: '--cg-color-on-surface', paired: '--cg-color-surface-base-background', usage: 'Body text on base surface.' },
+  ]},
+];
+
+const totalSwatches = HUES.length * SHADES.length;
+---
+
+<DocsLayout title="Palette">
+  <div class="palette-page">
+    <header class="page-header">
+      <h1>Palette</h1>
+      <p class="subtitle">
+        {HUES.length} hues &times; {SHADES.length} shades = <strong>{totalSwatches} tier-1 swatches</strong>,
+        plus every tier-2 semantic group. Click any swatch to copy its CSS variable. All values resolve live
+        via <code>getComputedStyle</code>, so the page reflects the current theme.
+      </p>
+    </header>
+
+    <section class="section">
+      <h2 id="legend">Legend</h2>
+      <ul class="legend">
+        <li><strong>Click</strong> a swatch to copy <code>var(--cg-&lt;hue&gt;-&lt;shade&gt;)</code>.</li>
+        <li><strong>Hover</strong> to see the resolved hex value.</li>
+        <li>Dark mode swaps tier-2 semantics only; tier-1 hues remain stable.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 id="core">Core palette</h2>
+      <p class="muted-intro">Every tier-1 hue across the 50-950 ramp. Never reference tier-1 tokens directly from component CSS.</p>
+      <div class="palette-grid">
+        {HUES.map(hue => (
+          <div class="hue-row">
+            <div class="hue-label">
+              <span class="hue-dot" style={`background: var(--cg-${hue}-500);`}></span>
+              <span>{hue}</span>
+            </div>
+            <div class="shade-track">
+              {SHADES.map(shade => (
+                <button type="button" class="swatch-btn" data-token={`--cg-${hue}-${shade}`}
+                  style={`--bg: var(--cg-${hue}-${shade});`} aria-label={`Copy --cg-${hue}-${shade}`}>
+                  <span class="swatch-fill"></span>
+                  <span class="swatch-meta">
+                    <span class="swatch-shade">{shade}</span>
+                    <span class="swatch-hex" data-role="hex">—</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {SEMANTIC_GROUPS.map(group => (
+      <section class="section">
+        <h2 id={group.id}>{group.name}</h2>
+        <p class="muted-intro">{group.intro}</p>
+        <div class="semantic-grid">
+          {group.tokens.map(entry => (
+            <button type="button" class="semantic-card" data-token={entry.token}
+              data-paired={entry.paired ?? ''} aria-label={`Copy ${entry.token}`}>
+              <span class="semantic-swatch" style={entry.paired
+                ? `background: var(${entry.paired}); color: var(${entry.token});`
+                : `background: var(${entry.token});`}>{entry.paired ? 'Aa' : ''}</span>
+              <span class="semantic-meta">
+                <code class="semantic-token">{entry.token}</code>
+                <span class="semantic-usage">{entry.usage}</span>
+                <span class="semantic-values">
+                  <span data-role="hex">—</span>
+                  {entry.paired ? <span class="contrast" data-role="contrast">—</span> : null}
+                </span>
+              </span>
+            </button>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    <section class="section">
+      <h2 id="theme-note">Theme behavior</h2>
+      <p class="muted-intro">
+        Tier-1 hue values are stable across themes. Tier-2 tokens swap to dark overrides when
+        <code>data-theme="dark"</code> is set on <code>&lt;html&gt;</code>. Toggle the theme in the
+        header — swatches recompute automatically via a <code>MutationObserver</code>.
+      </p>
+    </section>
+  </div>
+
+  <div class="copy-toast" data-role="toast" role="status" aria-live="polite"></div>
+
+  <script is:inline>
+    (function () {
+      const root = document.documentElement;
+
+      function parseRgb(raw) {
+        if (!raw) return null;
+        const m = raw.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+        if (m) return [parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10)];
+        if (raw.startsWith('#')) {
+          let hex = raw.slice(1);
+          if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+          if (hex.length !== 6) return null;
+          const n = parseInt(hex, 16);
+          if (Number.isNaN(n)) return null;
+          return [(n >> 16) & 0xff, (n >> 8) & 0xff, n & 0xff];
+        }
+        return null;
+      }
+      const toHex = rgb => rgb ? '#' + rgb.map(v => v.toString(16).padStart(2, '0')).join('').toLowerCase() : '';
+      function luminance([r, g, b]) {
+        const s = [r, g, b].map(v => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); });
+        return 0.2126 * s[0] + 0.7152 * s[1] + 0.0722 * s[2];
+      }
+      function contrastRatio(fg, bg) {
+        const l1 = luminance(fg), l2 = luminance(bg);
+        return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+      }
+      function contrastLabel(r) {
+        if (r >= 7) return `${r.toFixed(1)}:1 AAA`;
+        if (r >= 4.5) return `${r.toFixed(1)}:1 AA`;
+        if (r >= 3) return `${r.toFixed(1)}:1 AA-lg`;
+        return `${r.toFixed(1)}:1 fail`;
+      }
+      function resolveVar(name) {
+        const probe = document.createElement('span');
+        probe.style.color = `var(${name})`;
+        probe.style.display = 'none';
+        document.body.appendChild(probe);
+        const c = getComputedStyle(probe).color;
+        probe.remove();
+        return parseRgb(c);
+      }
+      function refresh() {
+        document.querySelectorAll('[data-token]').forEach(el => {
+          const token = el.getAttribute('data-token');
+          if (!token) return;
+          const rgb = resolveVar(token);
+          const hexEl = el.querySelector('[data-role="hex"]');
+          if (hexEl) hexEl.textContent = rgb ? toHex(rgb) : '—';
+          const paired = el.getAttribute('data-paired');
+          if (paired) {
+            const bgRgb = resolveVar(paired);
+            const cEl = el.querySelector('[data-role="contrast"]');
+            if (cEl) cEl.textContent = (rgb && bgRgb) ? contrastLabel(contrastRatio(rgb, bgRgb)) : '—';
+          }
+        });
+      }
+      let toastTimer;
+      function showToast(msg) {
+        const t = document.querySelector('[data-role="toast"]');
+        if (!t) return;
+        t.textContent = msg;
+        t.classList.add('is-visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove('is-visible'), 1800);
+      }
+      document.querySelectorAll('.swatch-btn, .semantic-card').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const token = btn.getAttribute('data-token');
+          if (!token) return;
+          const text = `var(${token})`;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => showToast(`Copied ${text}`), () => showToast('Could not copy'));
+          } else {
+            showToast(text);
+          }
+        });
+      });
+      refresh();
+      new MutationObserver(refresh).observe(root, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+    })();
+  </script>
+
+  <style>
+    .page-header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 8px; }
+    .subtitle { color: var(--fg-2); font-size: 16px; line-height: 1.7; margin-bottom: 40px; max-width: 720px; }
+    .section { margin-bottom: 48px; }
+    .section h2 {
+      font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
+      margin: 40px 0 16px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+    }
+    .section h2::before {
+      content: ''; display: inline-block; width: 3px; height: 18px;
+      background: var(--accent); border-radius: 2px; margin-right: 10px;
+    }
+    .muted-intro { color: var(--fg-2); font-size: 14px; line-height: 1.7; margin-bottom: 16px; max-width: 720px; }
+    .legend { padding-left: 20px; color: var(--fg-2); line-height: 1.8; font-size: 14px; }
+    .legend strong { color: var(--fg); }
+
+    .palette-grid { display: flex; flex-direction: column; gap: 8px; }
+    .hue-row { display: grid; grid-template-columns: 120px 1fr; gap: 12px; align-items: stretch; }
+    .hue-label {
+      display: flex; align-items: center; gap: 8px;
+      font: 600 13px/1 var(--font-mono); color: var(--fg); text-transform: capitalize;
+    }
+    .hue-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--border); }
+    .shade-track { display: grid; grid-template-columns: repeat(11, 1fr); gap: 4px; }
+    .swatch-btn {
+      appearance: none; background: transparent;
+      border: 1px solid var(--border); border-radius: 8px; padding: 0;
+      display: flex; flex-direction: column; cursor: copy; overflow: hidden;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+    .swatch-btn:hover { transform: translateY(-2px); box-shadow: var(--cg-elevation-2, 0 4px 6px rgba(0,0,0,0.2)); }
+    .swatch-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .swatch-fill { display: block; height: 44px; background: var(--bg); }
+    .swatch-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 4px 6px; font: 500 10px/1 var(--font-mono);
+      background: var(--bg-subtle); border-top: 1px solid var(--border);
+    }
+    .swatch-shade { color: var(--fg-2); }
+    .swatch-hex { color: var(--fg-3); opacity: 0.85; }
+
+    .semantic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+    .semantic-card {
+      appearance: none; text-align: left;
+      background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px; display: grid; grid-template-columns: 56px 1fr; gap: 12px;
+      align-items: center; cursor: copy;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+    .semantic-card:hover { transform: translateY(-1px); box-shadow: var(--cg-elevation-1, 0 1px 3px rgba(0,0,0,0.15)); }
+    .semantic-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .semantic-swatch {
+      width: 56px; height: 56px; border-radius: 8px; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font: 700 18px/1 var(--font-mono);
+    }
+    .semantic-meta { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .semantic-token { font: 600 11px/1.3 var(--font-mono); color: var(--accent); word-break: break-all; }
+    .semantic-usage { font-size: 12px; color: var(--fg-2); line-height: 1.5; }
+    .semantic-values { display: flex; gap: 8px; font: 500 10px/1 var(--font-mono); color: var(--fg-3); }
+    .contrast { padding: 2px 6px; border-radius: 999px; background: var(--bg); border: 1px solid var(--border); color: var(--fg-2); }
+
+    .copy-toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      padding: 10px 16px; background: var(--fg); color: var(--bg);
+      border-radius: 999px; font: 500 12px/1 var(--font-mono);
+      opacity: 0; pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease; z-index: 999;
+    }
+    .copy-toast.is-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 900px) {
+      .hue-row { grid-template-columns: 80px 1fr; }
+      .shade-track { gap: 2px; }
+      .swatch-fill { height: 32px; }
+      .swatch-meta { padding: 2px 4px; font-size: 9px; }
+      .swatch-hex { display: none; }
+    }
+    @media (max-width: 640px) {
+      .semantic-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</DocsLayout>
