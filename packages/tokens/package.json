@@ -36,7 +36,9 @@
   },
   "scripts": {
     "generate": "node generate-from-palette.cjs",
-    "build": "node build.js",
+    "build": "node build.js && node scripts/validate-contrast.mjs",
+    "build:only": "node build.js",
+    "validate:contrast": "node scripts/validate-contrast.mjs",
     "prepublishOnly": "pnpm build",
     "dev": "node build.js --watch",
     "clean": "rm -rf dist"

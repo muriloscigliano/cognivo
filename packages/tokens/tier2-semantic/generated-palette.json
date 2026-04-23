@@ -90,38 +90,6 @@
   },
   "color": {
     "chart": {
-      "1": {
-        "$type": "color",
-        "$value": "#DFFF61"
-      },
-      "2": {
-        "$type": "color",
-        "$value": "#14B8A6"
-      },
-      "3": {
-        "$type": "color",
-        "$value": "#22C55E"
-      },
-      "4": {
-        "$type": "color",
-        "$value": "#F59E0B"
-      },
-      "5": {
-        "$type": "color",
-        "$value": "#F97316"
-      },
-      "6": {
-        "$type": "color",
-        "$value": "#EC4899"
-      },
-      "7": {
-        "$type": "color",
-        "$value": "#22C55E"
-      },
-      "8": {
-        "$type": "color",
-        "$value": "#EF4444"
-      },
       "grid": {
         "$type": "color",
         "$value": "#E4E4E7"
