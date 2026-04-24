@@ -19,7 +19,6 @@ const navLinks = [
   { label: 'Components', href: '/components' },
   { label: 'AI', href: '/ai' },
   { label: 'Biases', href: '/biases' },
-  { label: 'Playground', href: '/playground' },
   { label: 'Tokens', href: '/tokens' },
   { label: 'Core', href: '/core' },
   { label: 'Patterns', href: '/patterns' },
@@ -40,7 +39,8 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
 
 <BaseLayout title={title} description={description}>
   <Fragment slot="head"><slot name="head" /></Fragment>
-  <header class:list={['hd', { 'hd--no-sidebar': hideSidebar }]} transition:persist="docs-header">
+  {!hideSidebar && (
+  <header class="hd" transition:persist="docs-header">
     <div class="hd-left">
       <a href="/" class="logo">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg>
@@ -68,6 +68,7 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
     </button>
     </div>
   </header>
+  )}
 
   <div class:list={['shell', { 'shell--no-sidebar': hideSidebar }]}>
     {!hideSidebar && (
@@ -456,13 +457,22 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
 
     /* ── Content ── */
     .mn {
-      padding: 48px 64px 96px;
+      padding: 40px 56px 96px;
       overflow-x: hidden;
       background: var(--bg);
     }
     .mn article {
-      max-width: 1800px;
+      max-width: 1480px;          /* readable default for docs + playgrounds */
       background: var(--bg);
+      margin: 0 auto;             /* center once sidebar is wider than article */
+    }
+    /* Wide escape hatch for palette / component index / dashboards
+       that legitimately need full-bleed space. Add class="mn--wide"
+       on the <main> or pass a prop through the layout. */
+    .mn--wide article { max-width: none; }
+
+    @media (max-width: 1023px) {
+      .mn { padding: 32px 32px 64px; }
     }
 
     /* ── Copy button ── */

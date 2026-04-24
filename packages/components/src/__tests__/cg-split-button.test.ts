@@ -97,15 +97,15 @@ describe('cg-split-button', () => {
     await create({ open: true });
     await el.updateComplete;
     const menu = el.shadowRoot!.querySelector('.menu')!;
-    expect(menu.querySelectorAll('.item').length).toBe(3);
-    expect(menu.querySelector('.separator')).not.toBeNull();
+    expect(menu.querySelectorAll('.menu-item').length).toBe(3);
+    expect(menu.querySelector('.divider')).not.toBeNull();
   });
 
   it('fires cg-split-button-select with item detail', async () => {
     await create({ open: true });
     let payload: any = null;
     el.addEventListener('cg-split-button-select', ((e: CustomEvent) => { payload = e.detail; }) as EventListener);
-    (el.shadowRoot!.querySelector('.item') as HTMLButtonElement).click();
+    (el.shadowRoot!.querySelector('.menu-item') as HTMLButtonElement).click();
     expect(payload).toBeTruthy();
     expect(payload.id).toBe('save-as');
     expect(payload.item.label).toBe('Save as…');
@@ -113,7 +113,7 @@ describe('cg-split-button', () => {
 
   it('danger items get the danger class', async () => {
     await create({ open: true });
-    const dangerItem = el.shadowRoot!.querySelector('.item.danger')!;
+    const dangerItem = el.shadowRoot!.querySelector('.menu-item.danger')!;
     expect(dangerItem).not.toBeNull();
     expect(dangerItem.textContent).toContain('Delete');
   });

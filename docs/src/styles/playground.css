@@ -1,0 +1,70 @@
+/* ── Playground chrome (shared across /components, /ai, /biases detail pages) ──
+   No overflow:hidden on .pg-grid — dropdowns/popovers/tooltips must escape the box.
+   Inner panels carry matching corner radii so the rounded edge still reads. */
+
+.pg-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.pg-preview {
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.pg-controls {
+  background: var(--bg-subtle);
+  overflow-y: auto;
+  max-height: 420px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.pg-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  font: 600 10px/1 var(--font-sans);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--fg-3); border-bottom: 1px solid var(--border);
+}
+.pg-area {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 600px; padding: 48px 32px; overflow: visible;
+  background-image: radial-gradient(circle, var(--dot-color) 0.75px, transparent 1px);
+  background-size: 16px 16px;
+}
+.pg-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px; gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.pg-row:last-child { border-bottom: none; }
+.pg-label { font-size: 12px; font-weight: 500; color: var(--fg-2); white-space: nowrap; min-width: 60px; }
+.pg-select, .pg-input {
+  flex: 1; max-width: 130px; padding: 5px 8px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+  color: var(--fg); font: 12px var(--font-mono); outline: none;
+}
+.pg-select:focus, .pg-input:focus { border-color: var(--accent); }
+.pg-codeblock { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-top: 8px; }
+.pg-out {
+  padding: 14px 16px; font: 12px/1.6 var(--font-mono); color: var(--accent);
+  overflow-x: auto; white-space: pre; margin: 0; border: none; border-radius: 0;
+}
+.pg-copy {
+  font: 500 10px var(--font-sans); background: transparent;
+  border: 1px solid var(--border); color: var(--fg-3);
+  padding: 2px 8px; border-radius: 4px; cursor: pointer;
+}
+.pg-copy:hover { color: var(--fg-2); border-color: var(--border-hover); }
+
+@media (max-width: 860px) {
+  .pg-grid { grid-template-columns: 1fr; }
+  .pg-preview {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    border-radius: 10px 10px 0 0;
+  }
+  .pg-controls { border-radius: 0 0 10px 10px; max-height: 320px; }
+}

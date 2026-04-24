@@ -1,7 +1,9 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
-import { computePosition } from '../../utils/floating.js';
+import { applyFloatingPosition } from '../../utils/floating.js';
+import { bindOutsideClick } from '../../utils/outside-click.js';
+import { handleRovingKey } from '../../utils/roving-index.js';
 
 export interface ContextMenuItem {
   id: string;
@@ -141,7 +143,7 @@ export class CgContextMenu extends LitElement {
 
   @query('.menu') private _menuEl!: HTMLElement;
 
-  private _outsideClickHandler = (e: MouseEvent) => this._onOutsideClick(e);
+  private _disposeOutsideClick: (() => void) | null = null;
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -151,7 +153,8 @@ export class CgContextMenu extends LitElement {
   override disconnectedCallback(): void {
     super.disconnectedCallback();
     this.removeEventListener('contextmenu', this._onContextMenu);
-    document.removeEventListener('click', this._outsideClickHandler);
+    this._disposeOutsideClick?.();
+    this._disposeOutsideClick = null;
   }
 
   private _onContextMenu = (e: Event): void => {
@@ -163,33 +166,32 @@ export class CgContextMenu extends LitElement {
     this._activeIndex = -1;
     this.dispatchEvent(new CustomEvent('cg-context-menu-open', { bubbles: true, composed: true }));
 
-    // Position at mouse coords
+    // Position at mouse coords — use a synthetic "reference" element positioned at the pointer.
     requestAnimationFrame(() => {
       if (!this._menuEl) return;
-      const rect = this._menuEl.getBoundingClientRect();
-      const result = computePosition(
-        { top: mouseEvent.clientY, left: mouseEvent.clientX, width: 1, height: 1 },
-        { width: rect.width, height: rect.height },
-        { placement: 'bottom-start', offset: 0, flip: true, shift: true }
-      );
-      this._menuEl.style.top = `${result.y}px`;
-      this._menuEl.style.left = `${result.x}px`;
+      const pointRef = {
+        getBoundingClientRect: () => ({
+          top: mouseEvent.clientY, left: mouseEvent.clientX,
+          width: 1, height: 1,
+          bottom: mouseEvent.clientY + 1, right: mouseEvent.clientX + 1,
+          x: mouseEvent.clientX, y: mouseEvent.clientY,
+          toJSON() { return this; },
+        }) as DOMRect,
+      } as Element;
+      applyFloatingPosition(pointRef, this._menuEl, {
+        placement: 'bottom-start', offset: 0, flip: true, shift: true,
+      });
     });
 
-    setTimeout(() => document.addEventListener('click', this._outsideClickHandler), 0);
+    this._disposeOutsideClick?.();
+    this._disposeOutsideClick = bindOutsideClick(this, () => this._close());
   };
-
-  private _onOutsideClick(e: MouseEvent): void {
-    const path = e.composedPath();
-    if (!path.includes(this)) {
-      this._close();
-    }
-  }
 
   private _close(): void {
     this.open = false;
     this._activeIndex = -1;
-    document.removeEventListener('click', this._outsideClickHandler);
+    this._disposeOutsideClick?.();
+    this._disposeOutsideClick = null;
     this.dispatchEvent(new CustomEvent('cg-context-menu-close', { bubbles: true, composed: true }));
   }
 
@@ -205,27 +207,16 @@ export class CgContextMenu extends LitElement {
 
   private _handleKeydown = (e: KeyboardEvent): void => {
     if (!this.open) return;
-    const selectableItems = this.items.filter(i => !i.separator && !i.disabled);
-    const count = selectableItems.length;
-    if (count === 0) return;
-
-    if (e.key === 'Escape') { e.preventDefault(); this._close(); return; }
-    if (e.key === 'ArrowDown') {
+    const { index, handled } = handleRovingKey(e, {
+      items: this.items,
+      activeIndex: this._activeIndex,
+      isSkippable: i => Boolean(i.separator || i.disabled),
+      onSelect: item => this._handleItemClick(item),
+      onEscape: () => this._close(),
+    });
+    if (handled) {
       e.preventDefault();
-      this._activeIndex = (this._activeIndex + 1) % count;
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      this._activeIndex = (this._activeIndex - 1 + count) % count;
-    } else if (e.key === 'Home') {
-      e.preventDefault();
-      this._activeIndex = 0;
-    } else if (e.key === 'End') {
-      e.preventDefault();
-      this._activeIndex = count - 1;
-    } else if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      const item = selectableItems[this._activeIndex];
-      if (item) this._handleItemClick(item);
+      this._activeIndex = index;
     }
   };
 

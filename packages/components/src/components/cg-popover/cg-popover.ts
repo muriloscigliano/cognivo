@@ -1,7 +1,8 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
-import { computePosition, autoUpdate, type Placement } from '../../utils/floating.js';
+import { applyFloatingPosition, autoUpdate, type Placement } from '../../utils/floating.js';
+import { bindOutsideClick } from '../../utils/outside-click.js';
 import { FocusTrap } from '../../utils/focus-trap.js';
 
 /**
@@ -127,12 +128,13 @@ export class CgPopover extends LitElement {
 
   private _focusTrap = new FocusTrap();
   private _cleanupAutoUpdate: (() => void) | null = null;
-  private _outsideClickHandler = (e: MouseEvent) => this._onOutsideClick(e);
+  private _disposeOutsideClick: (() => void) | null = null;
 
   override disconnectedCallback(): void {
     super.disconnectedCallback();
     this._cleanupAutoUpdate?.();
-    document.removeEventListener('click', this._outsideClickHandler);
+    this._disposeOutsideClick?.();
+    this._disposeOutsideClick = null;
     this._focusTrap.deactivate();
   }
 
@@ -154,7 +156,8 @@ export class CgPopover extends LitElement {
 
     // Outside click to close
     if (this.closable) {
-      setTimeout(() => document.addEventListener('click', this._outsideClickHandler), 0);
+      this._disposeOutsideClick?.();
+      this._disposeOutsideClick = bindOutsideClick(this, () => { this.open = false; });
     }
 
     // Focus trap
@@ -171,21 +174,17 @@ export class CgPopover extends LitElement {
     this.dispatchEvent(new CustomEvent('cg-popover-close', { bubbles: true, composed: true }));
     this._cleanupAutoUpdate?.();
     this._cleanupAutoUpdate = null;
-    document.removeEventListener('click', this._outsideClickHandler);
+    this._disposeOutsideClick?.();
+    this._disposeOutsideClick = null;
     this._focusTrap.deactivate();
   }
 
   private _updatePosition(): void {
     if (!this._triggerEl || !this._popoverEl) return;
     const triggerRect = this._triggerEl.getBoundingClientRect();
-    const popoverRect = this._popoverEl.getBoundingClientRect();
-    const result = computePosition(
-      { top: triggerRect.top, left: triggerRect.left, width: triggerRect.width, height: triggerRect.height },
-      { width: popoverRect.width, height: popoverRect.height },
-      { placement: this.placement, offset: this.offset, flip: true, shift: true }
-    );
-    this._popoverEl.style.top = `${result.y}px`;
-    this._popoverEl.style.left = `${result.x}px`;
+    const result = applyFloatingPosition(this._triggerEl, this._popoverEl, {
+      placement: this.placement, offset: this.offset, flip: true, shift: true,
+    });
     this._actualSide = result.placement.split('-')[0] as 'top' | 'bottom' | 'left' | 'right';
 
     // Compute arrow offset
@@ -196,13 +195,6 @@ export class CgPopover extends LitElement {
     } else {
       const triggerCenter = triggerRect.top + triggerRect.height / 2;
       this._arrowOffset = triggerCenter - result.y;
-    }
-  }
-
-  private _onOutsideClick(e: MouseEvent): void {
-    const path = e.composedPath();
-    if (!path.includes(this)) {
-      this.open = false;
     }
   }
 

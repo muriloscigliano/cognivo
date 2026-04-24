@@ -44,19 +44,19 @@ const copyBtn = document.getElementById('pg-copy')!;
 
 // ─── Create live element ─────────────────────────────────────────────────────
 const el = document.createElement(comp.tag);
+const propState = new Map<string, unknown>();
 
-// Apply defaults from registry
+// Apply registry defaults to element + prop state in one pass.
 for (const p of comp.props) {
-  if (p.default && p.default !== '—') {
-    const val = p.default.replace(/"/g, '');
-    if (p.type === 'boolean') {
-      if (val === 'true') (el as any)[p.name] = true;
-    } else if (p.type === 'number') {
-      (el as any)[p.name] = Number(val);
-    } else {
-      (el as any)[p.name] = val;
-    }
-  }
+  if (!p.default || p.default === '—') continue;
+  const val = p.default.replace(/"/g, '');
+  const coerced: unknown =
+    p.type === 'boolean' ? val === 'true' :
+    p.type === 'number'  ? Number(val) :
+    val;
+  if (p.type === 'boolean' && coerced === false) continue; // don't seed false
+  (el as any)[p.name] = coerced;
+  propState.set(p.name, coerced);
 }
 
 // ─── Component-specific setup ──────────────────────────────────────────────
@@ -64,23 +64,6 @@ for (const p of comp.props) {
 setupComponentDefaults(el, comp.tag, area, comp.name);
 
 area.appendChild(el);
-
-// ─── Prop state + code output ────────────────────────────────────────────────
-const propState = new Map<string, unknown>();
-
-// Initialize propState with defaults from registry
-for (const p of comp.props) {
-  if (p.default && p.default !== '—') {
-    const val = p.default.replace(/"/g, '');
-    if (p.type === 'boolean') {
-      if (val === 'true') propState.set(p.name, true);
-    } else if (p.type === 'number') {
-      propState.set(p.name, Number(val));
-    } else {
-      propState.set(p.name, val);
-    }
-  }
-}
 
 const updateCode = () => {
   let attrs = '';
@@ -122,12 +105,14 @@ for (const prop of comp.props) {
   };
 
   if (t === 'boolean') {
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.id = controlId;
-    cb.checked = prop.default === 'true';
-    cb.addEventListener('change', () => update(cb.checked));
-    row.appendChild(cb);
+    const sw = document.createElement('cg-switch') as HTMLElement & { checked: boolean };
+    sw.id = controlId;
+    sw.checked = prop.default === 'true';
+    sw.addEventListener('cg-change', (e) => {
+      const detail = (e as CustomEvent<{ checked: boolean }>).detail;
+      update(detail.checked);
+    });
+    row.appendChild(sw);
   } else if (t.includes('|') && t.includes('"')) {
     const select = document.createElement('select');
     select.className = 'pg-select';

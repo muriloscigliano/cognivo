@@ -2,6 +2,7 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { FocusTrap } from '../../utils/focus-trap.js';
+import { handleRovingKey } from '../../utils/roving-index.js';
 
 export interface CommandItem {
   id: string;
@@ -253,20 +254,16 @@ export class CgCommand extends LitElement {
   }
 
   private _handleKeydown(e: KeyboardEvent): void {
-    const filtered = this._filteredCommands;
-    const count = filtered.length;
-    if (count === 0) return;
-
-    if (e.key === 'ArrowDown') {
+    // Enter-only select — Space is reserved for typing the query.
+    if (e.key === ' ') return;
+    const { index, handled } = handleRovingKey(e, {
+      items: this._filteredCommands,
+      activeIndex: this._activeIndex,
+      onSelect: item => this._select(item),
+    });
+    if (handled) {
       e.preventDefault();
-      this._activeIndex = (this._activeIndex + 1) % count;
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      this._activeIndex = (this._activeIndex - 1 + count) % count;
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      const item = filtered[this._activeIndex];
-      if (item) this._select(item);
+      this._activeIndex = index;
     }
   }
 

@@ -46,16 +46,14 @@ export class AiCopyButton extends LitElement {
     }
 
     /* Default variant */
-    :host([variant="default"]) .copy-btn,
-    :host(:not([variant])) .copy-btn {
+    :host([variant="default"]) .copy-btn {
       padding: var(--cg-spacing-6) var(--cg-spacing-12);
       font-size: var(--cg-font-size-sm);
       background: var(--cg-overlay-dark-subtle);
       color: var(--cg-color-input-text-placeholder);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
-    :host([variant="default"]) .copy-btn:hover,
-    :host(:not([variant])) .copy-btn:hover {
+    :host([variant="default"]) .copy-btn:hover {
       background: var(--cg-overlay-dark-strong);
       color: var(--cg-color-surface-base-text);
     }

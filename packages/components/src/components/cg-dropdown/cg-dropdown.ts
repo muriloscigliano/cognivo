@@ -1,6 +1,8 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
-import { entranceStagger } from '../../styles/index.js';
+import { entranceStagger, menuListStyles } from '../../styles/index.js';
+import { bindOutsideClick } from '../../utils/outside-click.js';
+import { handleRovingKey } from '../../utils/roving-index.js';
 
 /** Menu item for cg-dropdown, with id, label, optional icon, keyboard shortcut, disabled state, and divider flag. */
 export interface DropdownItem {
@@ -38,7 +40,7 @@ export interface DropdownItem {
  */
 @customElement('cg-dropdown')
 export class CgDropdown extends LitElement {
-  static override styles = [entranceStagger, css`
+  static override styles = [entranceStagger, menuListStyles, css`
     :host {
       transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       display: inline-block;
@@ -52,42 +54,11 @@ export class CgDropdown extends LitElement {
       align-items: center;
     }
 
+    /* Positioning — unique to cg-dropdown (absolute to host, not fixed) */
     .menu {
       position: absolute;
       z-index: var(--cg-z-index-400);
-      display: flex;
-      flex-direction: column;
-      min-width: 200px;
-      max-width: 320px;
-      padding: var(--cg-spacing-6);
-      background: var(--cg-color-modal-container-background);
-      border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
-      border-radius: var(--cg-border-radius-100);
-      box-shadow: var(--cg-elevation-3);
-      /* Animation — scale+fade entrance */
-      opacity: 0;
-      transform: scale(0.96);
-      transform-origin: top left;
-      pointer-events: none;
-      transition:
-        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        transform var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
-
-    @keyframes dropdown-enter {
-      0% { transform: scale(0.96); }
-      60% { transform: scale(1.03); }
-      100% { transform: scale(1); }
-    }
-
-    :host([open]) .menu {
-      opacity: 1;
-      transform: scale(1);
-      pointer-events: auto;
-      animation: dropdown-enter var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
-    }
-
-    /* Position variants */
     :host([position="bottom-start"]) .menu {
       top: 100%;
       left: 0;
@@ -111,95 +82,6 @@ export class CgDropdown extends LitElement {
       right: 0;
       margin-bottom: var(--cg-spacing-4);
       transform-origin: bottom right;
-    }
-
-    /* ── Closing animation ── */
-    @keyframes dropdown-exit {
-      from { opacity: 1; transform: scale(1); }
-      to { opacity: 0; transform: scale(0.95); }
-    }
-    .menu.closing {
-      animation: dropdown-exit var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-in) forwards;
-    }
-
-    /* Reduced motion */
-    @media (prefers-reduced-motion: reduce) {
-      .menu {
-        transition: opacity var(--cg-transition-duration-fast) ease;
-        transform: scale(1) !important;
-      }
-    }
-
-    .menu-item {
-      display: flex;
-      align-items: center;
-      gap: var(--cg-spacing-8);
-      padding: var(--cg-spacing-8) var(--cg-spacing-12);
-      border-radius: var(--cg-border-radius-50);
-      font-size: var(--cg-font-size-sm);
-      color: var(--cg-color-surface-container-text);
-      background: transparent;
-      border: none;
-      width: 100%;
-      box-sizing: border-box;
-      text-align: left;
-      cursor: pointer;
-      font-family: inherit;
-      line-height: var(--cg-line-height-snug);
-      white-space: nowrap;
-      transition: background-color var(--cg-transition-duration-fast) ease, color var(--cg-transition-duration-fast) ease;
-      -webkit-font-smoothing: antialiased;
-      animation: staggerFadeIn var(--cg-transition-duration-fast) ease-out both;
-      animation-delay: calc(var(--stagger-index, 0) * 40ms);
-    }
-
-    .menu-item:hover:not(.disabled) {
-      background: var(--cg-color-action-tertiary-background-hover);
-    }
-
-    .menu-item:active:not(.disabled) {
-      background: var(--cg-color-action-tertiary-background-active);
-    }
-
-    .menu-item:focus-visible {
-      box-shadow:
-        0 0 0 2px var(--cg-color-focus-ring-offset),
-        0 0 0 calc(2px + 2px) var(--cg-color-focus-ring);
-      outline: none;
-    }
-
-    .menu-item.active {
-      background: var(--cg-color-action-tertiary-background-hover);
-      font-weight: var(--cg-font-weight-medium);
-    }
-
-    .menu-item.disabled {
-      color: var(--cg-color-surface-container-outlined);
-      cursor: not-allowed;
-      opacity: 0.5;
-    }
-
-    .menu-item-icon {
-      flex-shrink: 0;
-      opacity: 0.7;
-    }
-    .menu-item:hover:not(.disabled) .menu-item-icon {
-      opacity: 1;
-    }
-
-    .menu-item-shortcut {
-      margin-left: auto;
-      padding-left: var(--cg-spacing-16);
-      font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-surface-container-outlined);
-      font-family: inherit;
-      pointer-events: none;
-    }
-
-    .divider {
-      height: var(--cg-border-width-50);
-      margin: var(--cg-spacing-4) 0;
-      background: var(--cg-color-modal-container-border);
     }
 
     /* ── Loading state ── */
@@ -232,15 +114,7 @@ export class CgDropdown extends LitElement {
       font-size: var(--cg-font-size-sm);
     }
 
-    /* Rounded variants */
-    :host([rounded="none"]) .menu { border-radius: 0; }
-    :host([rounded="none"]) .menu-item { border-radius: 0; }
-    :host([rounded="sm"]) .menu { border-radius: var(--cg-border-radius-50); }
-    :host([rounded="sm"]) .menu-item { border-radius: var(--cg-border-radius-50); }
-    :host([rounded="md"]) .menu { border-radius: var(--cg-border-radius-100); }
-    :host([rounded="md"]) .menu-item { border-radius: var(--cg-border-radius-50); }
-    :host([rounded="lg"]) .menu { border-radius: var(--cg-border-radius-150); }
-    :host([rounded="lg"]) .menu-item { border-radius: var(--cg-border-radius-100); }
+    /* Rounded variants — inherited from menuListStyles */
   `];
 
   @property({ type: Boolean, reflect: true }) open = false;
@@ -253,29 +127,26 @@ export class CgDropdown extends LitElement {
   @state() private _closing = false;
   @query('.menu') private _menu!: HTMLElement;
 
-  private _outsideClickHandler = this._handleOutsideClick.bind(this);
+  private _disposeOutsideClick: (() => void) | null = null;
 
   override updated(changed: Map<string, unknown>) {
     if (changed.has('open') && !this.open && changed.get('open') === true) {
       this._closing = true;
       setTimeout(() => { this._closing = false; }, 100);
     }
-  }
-
-  override connectedCallback() {
-    super.connectedCallback();
-    document.addEventListener('click', this._outsideClickHandler);
+    if (changed.has('open')) {
+      this._disposeOutsideClick?.();
+      this._disposeOutsideClick = null;
+      if (this.open) {
+        this._disposeOutsideClick = bindOutsideClick(this, () => this._close());
+      }
+    }
   }
 
   override disconnectedCallback() {
     super.disconnectedCallback();
-    document.removeEventListener('click', this._outsideClickHandler);
-  }
-
-  private _handleOutsideClick(e: MouseEvent) {
-    if (this.open && !this.contains(e.target as Node)) {
-      this._close();
-    }
+    this._disposeOutsideClick?.();
+    this._disposeOutsideClick = null;
   }
 
   private _toggle() {
@@ -326,46 +197,30 @@ export class CgDropdown extends LitElement {
       return;
     }
 
-    const enabled = this._enabledItems;
+    if (e.key === 'Tab') {
+      this._close();
+      return;
+    }
 
-    switch (e.key) {
-      case 'Escape':
-        e.preventDefault();
+    const { index, handled } = handleRovingKey(e, {
+      items: this.items,
+      activeIndex: this._activeIndex,
+      isSkippable: i => Boolean(i.divider || i.disabled),
+      onSelect: item => {
+        this._selectItem(item);
+        this._focusTrigger();
+      },
+      onEscape: () => {
         this._close();
         this._focusTrigger();
-        break;
-      case 'ArrowDown':
-        e.preventDefault();
-        this._activeIndex = this._activeIndex < enabled.length - 1 ? this._activeIndex + 1 : 0;
+      },
+    });
+    if (handled) {
+      e.preventDefault();
+      if (this._activeIndex !== index) {
+        this._activeIndex = index;
         this._focusActiveItem();
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        this._activeIndex = this._activeIndex > 0 ? this._activeIndex - 1 : enabled.length - 1;
-        this._focusActiveItem();
-        break;
-      case 'Enter':
-      case ' ':
-        e.preventDefault();
-        if (this._activeIndex >= 0 && this._activeIndex < enabled.length) {
-          const item = enabled[this._activeIndex];
-          if (item) this._selectItem(item);
-          this._focusTrigger();
-        }
-        break;
-      case 'Home':
-        e.preventDefault();
-        this._activeIndex = 0;
-        this._focusActiveItem();
-        break;
-      case 'End':
-        e.preventDefault();
-        this._activeIndex = enabled.length - 1;
-        this._focusActiveItem();
-        break;
-      case 'Tab':
-        this._close();
-        break;
+      }
     }
   }
 

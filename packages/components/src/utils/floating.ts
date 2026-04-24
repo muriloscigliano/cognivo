@@ -187,6 +187,31 @@ function checkFits(
 }
 
 /**
+ * Convenience wrapper: compute the position of `floating` relative to `reference`,
+ * then apply `top`/`left` styles to the floating element. Returns the raw result
+ * so callers can still read back the final placement (e.g. for arrow alignment).
+ *
+ * Call from within a `requestAnimationFrame` if the floating element was just
+ * shown, so `getBoundingClientRect()` sees its rendered size.
+ */
+export function applyFloatingPosition(
+  reference: Element,
+  floating: HTMLElement,
+  options: ComputePositionOptions = {},
+): ComputePositionResult {
+  const refRect = reference.getBoundingClientRect();
+  const floatRect = floating.getBoundingClientRect();
+  const result = computePosition(
+    { top: refRect.top, left: refRect.left, width: refRect.width, height: refRect.height },
+    { width: floatRect.width, height: floatRect.height },
+    options,
+  );
+  floating.style.top = `${result.y}px`;
+  floating.style.left = `${result.x}px`;
+  return result;
+}
+
+/**
  * Automatically update the position of a floating element when the reference or viewport changes.
  * Returns a cleanup function.
  */

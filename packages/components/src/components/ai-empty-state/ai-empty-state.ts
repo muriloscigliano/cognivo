@@ -57,8 +57,7 @@ export class AiEmptyState extends LitElement {
     }
 
     /* ── Variant: default ── */
-    :host([variant="default"]) .icon-wrapper,
-    :host(:not([variant])) .icon-wrapper {
+    :host([variant="default"]) .icon-wrapper {
       background: var(--cg-color-surface-container-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
@@ -114,8 +113,7 @@ export class AiEmptyState extends LitElement {
     }
 
     /* Default action style */
-    :host([variant="default"]) .action-btn,
-    :host(:not([variant])) .action-btn {
+    :host([variant="default"]) .action-btn {
       background: var(--cg-color-action-primary-background-default);
       color: var(--cg-color-surface-container-background);
     }

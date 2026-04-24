@@ -1,4 +1,5 @@
 export { focusRingDual, focusRingSingle } from './focus.css.js';
+export { menuListStyles } from './menu.css.js';
 export {
   hostTransition,
   interactiveTransition,
