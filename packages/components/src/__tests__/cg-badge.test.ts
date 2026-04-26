@@ -82,33 +82,6 @@ describe('cg-badge', () => {
     expect(dot).toBeNull();
   });
 
-  it('shows remove button when removable=true', async () => {
-    el = await createElement('cg-badge', { removable: true, label: 'Tag' });
-    const btn = el.shadowRoot!.querySelector('.remove');
-    expect(btn).not.toBeNull();
-    expect(btn!.getAttribute('aria-label')).toBe('Remove Tag');
-  });
-
-  it('hides remove button when removable=false', async () => {
-    el = await createElement('cg-badge', { removable: false });
-    const btn = el.shadowRoot!.querySelector('.remove');
-    expect(btn).toBeNull();
-  });
-
-  it('dispatches cg-badge-remove on remove click', async () => {
-    el = await createElement('cg-badge', { removable: true, label: 'Remove me' });
-    let detail: unknown = null;
-    el.addEventListener('cg-badge-remove', ((e: CustomEvent) => {
-      detail = e.detail;
-    }) as EventListener);
-
-    const btn = el.shadowRoot!.querySelector('.remove') as HTMLButtonElement;
-    btn.click();
-
-    expect(detail).not.toBeNull();
-    expect((detail as { label: string }).label).toBe('Remove me');
-  });
-
   it('has role="presentation" when dot is false', async () => {
     el = await createElement('cg-badge', { label: 'Status' });
     const badge = el.shadowRoot!.querySelector('.badge');

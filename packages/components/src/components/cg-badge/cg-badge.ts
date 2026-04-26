@@ -4,18 +4,19 @@ import { hostBase, reducedMotion, entranceStagger, dotPulseKeyframes } from '../
 
 /**
  * @element cg-badge
- * Semantic status badge with 6 color variants, optional dot indicator, and remove button.
+ * Static semantic status label — display only, no interaction.
+ *
+ * If you need a clickable / removable / selectable pill, use `cg-chip` instead.
+ * If you need a toolbar press-state button, use `cg-toggle`.
  *
  * @example
  * ```html
  * <cg-badge variant="success" label="Active" dot></cg-badge>
- * <cg-badge variant="danger" label="Error" removable></cg-badge>
+ * <cg-badge variant="danger" label="Error"></cg-badge>
  * <cg-badge variant="accent" size="lg">Custom</cg-badge>
  * ```
  *
  * @slot - Additional content after the label text
- *
- * @fires {CustomEvent<{label: string}>} cg-badge-remove - When the remove button is clicked
  *
  * @cssprop --cg-color-badge-background-default - Neutral badge background
  * @cssprop --cg-color-badge-text-default - Neutral badge text color
@@ -105,32 +106,6 @@ export class CgBadge extends LitElement {
       animation: dotPulse 2s ease-in-out infinite;
     }
 
-    /* Remove button */
-    .remove {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: var(--cg-icon-size-100);
-      height: var(--cg-icon-size-100);
-      border: none;
-      background: none;
-      color: currentColor;
-      opacity: 0.6;
-      cursor: pointer;
-      padding: 0;
-      border-radius: var(--cg-border-radius-full);
-      transition: opacity var(--cg-transition-duration-fast) ease;
-      flex-shrink: 0;
-    }
-    .remove:hover { opacity: 1; }
-    .remove:focus-visible {
-      box-shadow: 0 0 0 2px var(--cg-color-focus-ring-offset), 0 0 0 calc(2px + 2px) var(--cg-color-focus-ring);
-      outline: none;
-    }
-    .remove svg {
-      width: var(--cg-spacing-12);
-      height: var(--cg-spacing-12);
-    }
   `];
 
   @property({ reflect: true }) variant: 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'accent' = 'neutral';
@@ -138,28 +113,12 @@ export class CgBadge extends LitElement {
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
   @property() label = '';
   @property({ type: Boolean }) dot = false;
-  @property({ type: Boolean }) removable = false;
-
-  private _handleRemove() {
-    this.dispatchEvent(new CustomEvent('cg-badge-remove', {
-      detail: { label: this.label },
-      bubbles: true,
-      composed: true,
-    }));
-  }
 
   override render() {
     return html`
       <span class="badge" role=${this.dot ? 'status' : 'presentation'}>
         ${this.dot ? html`<span class="dot"></span>` : nothing}
         <span class="text">${this.label}<slot></slot></span>
-        ${this.removable ? html`
-          <button class="remove" @click=${this._handleRemove} aria-label="Remove ${this.label}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
-              <path d="M18 6L6 18M6 6l12 12"></path>
-            </svg>
-          </button>
-        ` : nothing}
       </span>
     `;
   }

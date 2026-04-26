@@ -71,10 +71,13 @@ describe('cg-collapsible', () => {
     expect(el.hasAttribute('disabled')).toBe(true);
   });
 
-  it('body has role="region"', async () => {
+  it('uses disclosure pattern (aria-expanded + aria-controls), no unnamed region', async () => {
     await create();
-    const b = el.shadowRoot!.querySelector('.body')!;
-    expect(b.getAttribute('role')).toBe('region');
+    const trigger = el.shadowRoot!.querySelector('.trigger')!;
+    const body = el.shadowRoot!.querySelector('.body')!;
+    expect(trigger.getAttribute('aria-controls')).toBe('body');
+    expect(body.id).toBe('body');
+    expect(body.getAttribute('role')).toBeNull();
   });
 
   it('renders trigger slot', async () => {

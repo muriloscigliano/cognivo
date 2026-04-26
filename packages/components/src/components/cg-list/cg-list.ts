@@ -52,22 +52,36 @@ export class CgList extends LitElement {
       border-radius: var(--cg-border-radius-100);
       border: var(--cg-border-width-50) solid transparent;
       transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default), border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
-      min-height: 44px;
+      min-height: var(--cg-spacing-48);
     }
 
-    /* ── Contained variant — card wrapper ── */
+    /* ── Contained variant — list shell.
+       Concentric corners: outer radius = inner item radius + padding
+       (20 = 12 + 8). Card-radius (28) was too big for a list shell;
+       radius-150 fits items snugly without visible corner offset. */
     :host([contained]) {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      border-radius: var(--cg-component-card-radius);
-      padding: var(--cg-spacing-4);
+      border-radius: var(--cg-border-radius-150);
+      padding: var(--cg-spacing-8);
       background: var(--cg-color-surface-cards-background);
     }
 
-    /* ── Dividers — inset past leading element ── */
+    /* role=list wrapper — flush by default. Only [contained] mode adds
+       a small gap so items read as separated pills inside the shell
+       (which makes the container padding visible). [dividers] mode
+       collapses the gap so the lines themselves are the separator. */
+    [role="list"] {
+      display: flex;
+      flex-direction: column;
+    }
+    :host([contained]) [role="list"] { gap: var(--cg-spacing-2); }
+    :host([contained][dividers]) [role="list"] { gap: 0; }
+
+    /* ── Dividers — items keep their own horizontal padding; the divider
+       is absolutely positioned so it spans the item's full width
+       regardless of item padding. */
     :host([dividers]) .item {
       border-radius: 0;
-      padding-left: 0;
-      padding-right: 0;
       position: relative;
     }
     :host([dividers]) .item::after {
@@ -81,6 +95,14 @@ export class CgList extends LitElement {
     }
     :host([dividers]) .item:last-child::after { display: none; }
 
+    /* Inside a [contained] shell, the divider's base-divider colour
+       (gray-800 in dark) sits too close to the card-bg (gray-900) to be
+       visible. surface-cards-border is the high-contrast option meant
+       for hairlines on card surfaces. */
+    :host([contained][dividers]) .item::after {
+      background: var(--cg-color-surface-cards-border);
+    }
+
     /* Inset dividers when leading element present */
     :host([dividers][variant="image"]) .item::after,
     :host([dividers][variant="number"]) .item::after,
@@ -88,10 +110,21 @@ export class CgList extends LitElement {
       left: var(--cg-spacing-48);
     }
 
-    /* ── Hover ── */
+    /* ── Contained without dividers — items get a visible thin border
+       so they read as separate tiles inside the shell. Bg can't help
+       here: surface-cards-background and surface-container-background
+       resolve to the same color, so a bg change is invisible. The
+       border + the role=list gap (2px) make the shell padding obvious. */
+    :host([contained]:not([dividers])) .item {
+      border-color: var(--cg-color-surface-cards-border);
+    }
+
+    /* ── Hover — uses theme-aware tertiary hover token (lightens in dark,
+       darkens in light). overlay-dark-subtle was wrong in dark mode where
+       a darken-overlay on already-dark surfaces makes hover less visible. */
     :host([hoverable]) .item:hover,
     :host([clickable]) .item:hover {
-      background: var(--cg-overlay-dark-subtle);
+      background: var(--cg-color-action-tertiary-background-hover);
       border-color: var(--cg-color-surface-cards-border);
     }
 
@@ -103,7 +136,9 @@ export class CgList extends LitElement {
     }
     :host([clickable]) .item:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 2px var(--cg-color-focus-ring-offset), inset 0 0 0 4px var(--cg-color-focus-ring);
+      box-shadow:
+        inset 0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        inset 0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
       border-radius: var(--cg-border-radius-100);
     }
 
@@ -173,7 +208,7 @@ export class CgList extends LitElement {
 
     .action-btn {
       font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
       font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
       white-space: nowrap;
@@ -182,15 +217,22 @@ export class CgList extends LitElement {
       padding: var(--cg-spacing-4) var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-50);
       font-family: inherit;
-      opacity: 0;
       transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .item:hover .action-btn { opacity: 1; }
+    /* Reveal-on-hover only on devices that support hover. Touch devices
+       always show the action button — without this guard the action would
+       be invisible on phones/tablets (no hover event fires). */
+    @media (hover: hover) {
+      .action-btn { opacity: 0; }
+      .item:hover .action-btn { opacity: 1; }
+    }
     .action-btn:hover { background: var(--cg-overlay-accent-light); }
     .action-btn:focus-visible {
       opacity: 1;
       outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-focus-ring-offset), 0 0 0 4px var(--cg-color-focus-ring);
+      box-shadow:
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
 
     .chevron {

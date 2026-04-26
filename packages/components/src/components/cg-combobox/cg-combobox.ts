@@ -33,7 +33,7 @@ export class CgCombobox extends LitElement {
       flex-wrap: wrap;
       gap: var(--cg-spacing-6);
       min-height: var(--cg-component-input-height-md);
-      padding: var(--cg-spacing-10) var(--cg-spacing-12);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
       background: var(--cg-color-surface-container-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
       border-radius: var(--cg-component-input-radius);
@@ -58,7 +58,7 @@ export class CgCombobox extends LitElement {
       display: inline-flex;
       align-items: center;
       gap: var(--cg-spacing-4);
-      padding: var(--cg-spacing-4) var(--cg-spacing-4) var(--cg-spacing-4) var(--cg-spacing-10);
+      padding: var(--cg-spacing-4) var(--cg-spacing-4) var(--cg-spacing-4) var(--cg-spacing-8);
       background: var(--cg-color-action-tertiary-background-hover);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       color: var(--cg-color-surface-base-text);
@@ -115,11 +115,11 @@ export class CgCombobox extends LitElement {
       padding: var(--cg-spacing-6);
       background: var(--cg-color-modal-container-background);
       border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
-      border-radius: var(--cg-border-radius-150);
+      border-radius: var(--cg-component-card-radius);
       box-shadow: var(--cg-shadow-elevation-xl);
       display: none;
       opacity: 0;
-      transform: translateY(-4px);
+      transform: translateY(calc(var(--cg-spacing-4) * -1));
       transition:
         opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
@@ -135,7 +135,7 @@ export class CgCombobox extends LitElement {
       align-items: center;
       justify-content: space-between;
       gap: var(--cg-spacing-12);
-      padding: var(--cg-spacing-10) var(--cg-spacing-12);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
       border-radius: var(--cg-border-radius-50);
       font-size: var(--cg-font-size-sm);
       color: var(--cg-color-surface-container-text);
@@ -150,7 +150,7 @@ export class CgCombobox extends LitElement {
     .option.selected { font-weight: var(--cg-font-weight-medium); }
     .option.selected::after {
       content: '✓';
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
       font-weight: var(--cg-font-weight-semibold);
     }
 

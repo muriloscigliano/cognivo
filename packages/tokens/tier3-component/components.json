@@ -185,7 +185,27 @@
       "gap": { "$type": "dimension", "$value": "{spacing.4}" }
     },
     "collapsible": {
-      "radius": { "$type": "dimension", "$value": "{border.radius.100}" }
+      "radius": { "$type": "dimension", "$value": "{border.radius.200}" },
+      "trigger-padding-y": {
+        "sm": { "$type": "dimension", "$value": "{spacing.8}" },
+        "md": { "$type": "dimension", "$value": "{spacing.12}" },
+        "lg": { "$type": "dimension", "$value": "{spacing.16}" }
+      },
+      "trigger-padding-x": {
+        "sm": { "$type": "dimension", "$value": "{spacing.12}" },
+        "md": { "$type": "dimension", "$value": "{spacing.16}" },
+        "lg": { "$type": "dimension", "$value": "{spacing.20}" }
+      },
+      "body-padding": {
+        "sm": { "$type": "dimension", "$value": "{spacing.12}" },
+        "md": { "$type": "dimension", "$value": "{spacing.16}" },
+        "lg": { "$type": "dimension", "$value": "{spacing.20}" }
+      },
+      "font-size": {
+        "sm": { "$type": "dimension", "$value": "{font.size.xs}" },
+        "md": { "$type": "dimension", "$value": "{font.size.sm}" },
+        "lg": { "$type": "dimension", "$value": "{font.size.base}" }
+      }
     },
     "navbar": {
       "height": { "$type": "dimension", "$value": "64px" },

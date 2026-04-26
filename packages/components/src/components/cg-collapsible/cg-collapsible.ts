@@ -23,36 +23,66 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
 @customElement('cg-collapsible')
 export class CgCollapsible extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
-    :host { display: block; }
+    :host {
+      display: block;
+      overflow: hidden;
+    }
+
+    /* ── Variant: card (default) — bordered surface ── */
+    :host([variant="card"]) {
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-collapsible-radius);
+    }
+
+    /* ── Variant: flush — no chrome, just hover affordance ── */
+    :host([variant="flush"]) .trigger {
+      border-bottom: var(--cg-border-width-50) solid transparent;
+      transition:
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
+    }
+    :host([variant="flush"][open]) .trigger {
+      border-bottom-color: var(--cg-color-surface-cards-divider);
+    }
 
     .trigger {
       display: flex;
       align-items: center;
       gap: var(--cg-spacing-12);
       width: 100%;
-      padding: var(--cg-spacing-12) var(--cg-spacing-16);
-      background: var(--cg-color-surface-cards-background);
-      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      border-radius: var(--cg-component-collapsible-radius);
+      background: transparent;
+      border: none;
       color: var(--cg-color-surface-base-text);
       font-family: inherit;
-      font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-medium);
       text-align: left;
       cursor: pointer;
-      transition:
-        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
+
+    /* ── Sizes ── */
+    :host([size="sm"]) .trigger {
+      padding: var(--cg-component-collapsible-trigger-padding-y-sm) var(--cg-component-collapsible-trigger-padding-x-sm);
+      font-size: var(--cg-component-collapsible-font-size-sm);
+    }
+    :host([size="md"]) .trigger {
+      padding: var(--cg-component-collapsible-trigger-padding-y-md) var(--cg-component-collapsible-trigger-padding-x-md);
+      font-size: var(--cg-component-collapsible-font-size-md);
+    }
+    :host([size="lg"]) .trigger {
+      padding: var(--cg-component-collapsible-trigger-padding-y-lg) var(--cg-component-collapsible-trigger-padding-x-lg);
+      font-size: var(--cg-component-collapsible-font-size-lg);
+    }
+
     .trigger:hover:not(:disabled) {
       background: var(--cg-color-action-tertiary-background-hover);
-      border-color: var(--cg-color-input-border-hover);
     }
     .trigger:focus-visible {
       outline: none;
       box-shadow:
-        0 0 0 2px var(--cg-color-focus-ring-offset),
-        0 0 0 4px var(--cg-color-focus-ring);
+        inset 0 0 0 var(--cg-spacing-2) var(--cg-color-focus-ring-offset),
+        inset 0 0 0 var(--cg-spacing-4) var(--cg-color-focus-ring);
     }
     .trigger:disabled {
       opacity: 0.5;
@@ -63,35 +93,39 @@ export class CgCollapsible extends LitElement {
       margin-left: auto;
       color: var(--cg-color-surface-container-outlined);
       transition:
-        transform var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-spring),
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .trigger:hover .chevron { color: var(--cg-color-surface-base-text); }
-    :host([open]) .chevron { color: var(--cg-color-action-primary-background-default); }
     .trigger:active:not(:disabled) { transform: scale(0.995); }
     :host([open]) .chevron {
+      color: var(--cg-color-accent-text);
       transform: rotate(180deg);
     }
 
     .body-wrap {
       display: grid;
       grid-template-rows: 0fr;
-      transition: grid-template-rows var(--cg-transition-duration-default) var(--cg-transition-easing-default);
+      transition: grid-template-rows var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
     }
     :host([open]) .body-wrap {
       grid-template-rows: 1fr;
     }
     .body {
       overflow: hidden;
-      padding: 0 var(--cg-spacing-16);
     }
-    :host([open]) .body {
-      padding: var(--cg-spacing-16);
-    }
+    :host([size="sm"]) .body { padding: 0 var(--cg-component-collapsible-body-padding-sm); }
+    :host([size="md"]) .body { padding: 0 var(--cg-component-collapsible-body-padding-md); }
+    :host([size="lg"]) .body { padding: 0 var(--cg-component-collapsible-body-padding-lg); }
+    :host([open][size="sm"]) .body { padding: var(--cg-component-collapsible-body-padding-sm); }
+    :host([open][size="md"]) .body { padding: var(--cg-component-collapsible-body-padding-md); }
+    :host([open][size="lg"]) .body { padding: var(--cg-component-collapsible-body-padding-lg); }
   `];
 
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
+  @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
+  @property({ reflect: true }) variant: 'card' | 'flush' = 'card';
 
   private _toggle(): void {
     if (this.disabled) return;
@@ -119,7 +153,7 @@ export class CgCollapsible extends LitElement {
         </svg>
       </button>
       <div class="body-wrap">
-        <div class="body" id="body" role="region">
+        <div class="body" id="body">
           <slot></slot>
         </div>
       </div>

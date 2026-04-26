@@ -130,13 +130,20 @@ export class CgEmptyState extends LitElement {
 
   override render() {
     const role = this.variant === 'error' ? 'alert' : 'status';
+    const titleId = this.title ? 'es-title' : undefined;
+    const descId = this.description ? 'es-desc' : undefined;
     return html`
-      <div class="root" role=${role}>
+      <div
+        class="root"
+        role=${role}
+        aria-labelledby=${titleId ?? nothing}
+        aria-describedby=${descId ?? nothing}
+      >
         <div class="icon-wrap" aria-hidden="true">
           <slot name="icon">${this._defaultIcon()}</slot>
         </div>
-        ${this.title ? html`<h3 class="title">${this.title}</h3>` : nothing}
-        ${this.description ? html`<p class="description">${this.description}</p>` : nothing}
+        ${this.title ? html`<h3 id=${titleId!} class="title">${this.title}</h3>` : nothing}
+        ${this.description ? html`<p id=${descId!} class="description">${this.description}</p>` : nothing}
         <slot></slot>
         <div class="actions">
           <slot name="actions"></slot>

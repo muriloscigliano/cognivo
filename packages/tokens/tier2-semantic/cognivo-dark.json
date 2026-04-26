@@ -38,11 +38,12 @@
           },
           "hover": {
             "$type": "color",
-            "$value": "{brand.primary.600}"
+            "$value": "{brand.primary.700}",
+            "$description": "Dark-mode primary hover — steps two shades brighter (600 was too close to 500 to be visible)."
           },
           "active": {
             "$type": "color",
-            "$value": "{brand.primary.500}"
+            "$value": "{brand.primary.600}"
           },
           "disable": {
             "$type": "color",

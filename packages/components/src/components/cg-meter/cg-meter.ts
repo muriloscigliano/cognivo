@@ -59,9 +59,9 @@ export class CgMeter extends LitElement {
       transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
-    .fill.ok { background: var(--cg-color-status-success-background-default); }
-    .fill.warn { background: var(--cg-color-status-warning-background-default); }
-    .fill.bad { background: var(--cg-color-status-error-background-default); }
+    .fill.ok { background: var(--cg-color-status-success-text-default); }
+    .fill.warn { background: var(--cg-color-status-warning-text-default); }
+    .fill.bad { background: var(--cg-color-status-error-text-default); }
 
     /* ── Circular ── */
     .circular {
@@ -86,9 +86,9 @@ export class CgMeter extends LitElement {
       transition: stroke-dashoffset var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
       stroke-linecap: round;
     }
-    .circular .fg.ok { stroke: var(--cg-color-status-success-background-default); }
-    .circular .fg.warn { stroke: var(--cg-color-status-warning-background-default); }
-    .circular .fg.bad { stroke: var(--cg-color-status-error-background-default); }
+    .circular .fg.ok { stroke: var(--cg-color-status-success-text-default); }
+    .circular .fg.warn { stroke: var(--cg-color-status-warning-text-default); }
+    .circular .fg.bad { stroke: var(--cg-color-status-error-text-default); }
 
     .circular .center {
       position: absolute;
@@ -199,6 +199,7 @@ export class CgMeter extends LitElement {
         aria-valuemax=${this.max}
         aria-labelledby=${labelId ?? nothing}
         aria-label=${labelId ? nothing : (this.label || 'Meter')}
+        aria-disabled=${this.disabled ? 'true' : nothing}
       >
         <div class="fill ${level}" style="width: ${pct}%"></div>
       </div>

@@ -75,9 +75,8 @@ export const BadgeDef = defineComponent({
     variant: z.enum(['neutral', 'info', 'success', 'warning', 'danger', 'accent']).optional(),
     size: z.enum(['sm', 'md', 'lg']).optional(),
     dot: z.boolean().optional(),
-    removable: z.boolean().optional(),
   }),
-  description: 'Semantic status badge with 6 color variants, dot indicator, and removable option',
+  description: 'Static semantic status label — display only. For removable / clickable pills use Chip. For press-state actions use Toggle.',
 });
 
 export const InputDef = defineComponent({

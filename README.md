@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  143 Web Components &bull; 1,800+ Design Tokens &bull; 180 Cognitive Biases &bull; React & Vue Adapters
+  183 Web Components &bull; 2,630 Design Tokens &bull; 181 Cognitive Biases &bull; React & Vue Adapters
 </p>
 
 <p align="center">
@@ -19,31 +19,31 @@
 
 ---
 
-143 Web Components built with Lit 3 — framework-agnostic, dark-first, accessible, powered by 1,800+ design tokens and 180 cognitive bias cards.
+183 Lit 3 Web Components (88 foundation + 89 AI-native + 6 bias wrappers), backed by a 3-tier design token system (2,630 CSS variables) and a cognitive-psychology design advisor (181 bias cards). Framework-agnostic, dark-first, accessible, with first-party React and Vue adapters, SSR support, streaming generative-UI, and an MCP server for AI-assisted design.
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                   Your Application                   │
-├──────────┬──────────┬──────────┬────────────────────┤
-│  React   │   Vue    │  Vanilla │    AI Streaming     │
-│ Adapter  │ Adapter  │  HTML    │     gen-ui-lit      │
-├──────────┴──────────┴──────────┴────────────────────┤
-│              @cognivo/components (143)                │
-│         54 Foundation  +  89 AI-Native               │
-├─────────────────────┬───────────────────────────────┤
-│  @cognivo/tokens    │      @cognivo/core             │
-│  1,800+ CSS vars    │  Guardrails, Agents, Caching   │
-├─────────────────────┼───────────────────────────────┤
-│  @cognivo/gen-ui    │   @cognivo/design-advisor      │
-│  Streaming Parser   │   180 Cognitive Biases         │
-│  Component Registry │   Psychology-based Analysis    │
-│  Bias Engine        │                               │
-├─────────────────────┴───────────────────────────────┤
-│           @cognivo/adapter-openai                    │
-│        OpenAI + Anthropic Integration                │
-└─────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────┐
+│                       Your Application                         │
+├──────────┬──────────┬──────────┬────────────┬─────────────────┤
+│  React   │   Vue    │ Vanilla  │ Next/Astro │  AI Streaming   │
+│ adapter  │ adapter  │   HTML   │    SSR     │  gen-ui-lit     │
+├──────────┴──────────┴──────────┴────────────┴─────────────────┤
+│                   @cognivo/components (183)                    │
+│           88 Foundation · 89 AI-Native · 6 Bias                │
+├────────────────────────────┬──────────────────────────────────┤
+│     @cognivo/tokens        │          @cognivo/core           │
+│  3-tier · 2,630 CSS vars   │  Guardrails · Agents · Caching   │
+├────────────────────────────┼──────────────────────────────────┤
+│     @cognivo/gen-ui        │     @cognivo/design-advisor      │
+│   Streaming parser         │       181 cognitive biases       │
+│   Component registry       │        Atlas integration         │
+│   Bias engine              │                                  │
+├────────────────────────────┴──────────────────────────────────┤
+│  adapter-openai · adapter-anthropic · analytics · ssr          │
+│  theme-generator · mcp-server · eslint-plugin · claude-skill   │
+└───────────────────────────────────────────────────────────────┘
 ```
 
 ## Installation
@@ -52,17 +52,22 @@
 # Core (any framework)
 npm install @cognivo/components @cognivo/tokens
 
-# React
+# Framework adapters
 npm install @cognivo/adapter-react
-
-# Vue
 npm install @cognivo/adapter-vue
 
 # AI integration
 npm install @cognivo/core @cognivo/adapter-openai
+npm install @cognivo/adapter-anthropic
+
+# Generative UI
+npm install @cognivo/gen-ui @cognivo/gen-ui-lit
 
 # Cognitive design advisor
 npm install @cognivo/design-advisor
+
+# SSR (Next.js / Astro)
+npm install @cognivo/ssr
 ```
 
 ### CDN (no build step)
@@ -113,7 +118,7 @@ import '@cognivo/tokens/dist/index.css';
 </template>
 ```
 
-### Path 2: AI Streaming UI
+### AI streaming UI
 
 ```bash
 pnpm add @cognivo/components @cognivo/tokens @cognivo/gen-ui @cognivo/gen-ui-lit
@@ -126,67 +131,81 @@ import { LitRenderer } from '@cognivo/gen-ui-lit';
 const renderer = new LitRenderer(cognivoLibrary);
 const parser = createStreamingParser(cognivoLibrary.toJSONSchema());
 
-// Feed LLM tokens as they stream in
 for await (const token of llmStream) {
   const result = parser.push(token);
   if (result.root) renderer.render(result, container);
 }
 ```
 
-### Path 3: Full Cognitive Stack
-
-```bash
-pnpm add @cognivo/components @cognivo/tokens @cognivo/core @cognivo/gen-ui @cognivo/gen-ui-lit @cognivo/adapter-openai @cognivo/design-advisor
-```
+### Full cognitive stack
 
 ```typescript
 import { OpenAiClient } from '@cognivo/adapter-openai';
 import { GenerativeUiClient, suggestBiasesForTree, cognivoLibrary } from '@cognivo/gen-ui';
 
-// Generate UI with bias analysis
 const result = await genUiClient.generate('Show a revenue dashboard');
 const biases = suggestBiasesForTree(result, cognivoLibrary);
-// → [{biasName: "Anchoring", severity: "high", recommendation: "..."}]
+// → [{ biasName: 'Anchoring', severity: 'high', recommendation: '...' }]
 ```
 
 ## Packages
 
 | Package | Description | Version |
-|---------|------------|---------|
-| [@cognivo/components](packages/components/) | 143 Lit Web Components (54 foundation + 89 AI-native) | 0.3.0 |
-| [@cognivo/tokens](packages/tokens/) | 1,800+ design tokens, 3-tier system, palette generator | 0.3.0 |
-| [@cognivo/core](packages/core/) | AI integration: guardrails, agents, caching, routing, conversation | 0.3.0 |
-| [@cognivo/gen-ui](packages/gen-ui/) | Streaming parser, component registry, bias engine | 0.3.0 |
-| [@cognivo/gen-ui-lit](packages/gen-ui-lit/) | Lit renderer for generative UI | 0.3.0 |
-| [@cognivo/adapter-openai](packages/adapter-openai/) | OpenAI client with structured outputs | 0.3.0 |
-| [@cognivo/adapter-react](packages/adapter-react/) | React wrappers with TypeScript props | 0.3.0 |
-| [@cognivo/adapter-vue](packages/adapter-vue/) | Vue wrappers with TypeScript props | 0.3.0 |
-| [@cognivo/design-advisor](packages/design-advisor/) | 184 cognitive biases, psychology-based design analysis | 0.0.1 |
+|---------|-------------|---------|
+| [@cognivo/components](packages/components/) | 183 Lit Web Components (88 foundation · 89 AI-native · 6 bias) | 0.4.0 |
+| [@cognivo/tokens](packages/tokens/) | 3-tier design tokens · 2,630 CSS vars · palette generator · WCAG validator | 0.4.0 |
+| [@cognivo/core](packages/core/) | AI client: streaming, guardrails, caching, resilience, routing, observability | 0.4.0 |
+| [@cognivo/gen-ui](packages/gen-ui/) | Streaming parser, component registry, bias engine (zero framework deps) | 0.4.0 |
+| [@cognivo/gen-ui-lit](packages/gen-ui-lit/) | Lit renderer for generative UI trees | 0.4.0 |
+| [@cognivo/adapter-openai](packages/adapter-openai/) | OpenAI client with structured outputs | 0.4.0 |
+| [@cognivo/adapter-anthropic](packages/adapter-anthropic/) | Anthropic Claude adapter | 0.3.0 |
+| [@cognivo/adapter-react](packages/adapter-react/) | React wrappers with TypeScript props | 0.4.0 |
+| [@cognivo/adapter-vue](packages/adapter-vue/) | Vue 3 wrappers with TypeScript props | 0.4.0 |
+| [@cognivo/design-advisor](packages/design-advisor/) | 181 cognitive bias cards · Atlas integration · registry | 0.4.0 |
+| [@cognivo/ssr](packages/ssr/) | @lit-labs/ssr integration for Next.js and Astro | 0.4.0 |
+| [@cognivo/analytics](packages/analytics/) | Opt-in, privacy-first component interaction analytics | 0.4.0 |
+| [@cognivo/theme-generator](packages/theme-generator/) | CLI + SDK: prompts → tier-2 token overrides (`cognivo-theme`) | 0.4.0 |
+| [@cognivo/mcp-server](packages/mcp-server/) | MCP server exposing Cognivo tools to Claude / Cursor / Windsurf | 0.4.0 |
+| [@cognivo/eslint-plugin](packages/eslint-plugin-cognivo/) | ESLint rules enforcing token + interaction conventions | 0.4.0 |
+| [@cognivo/claude-code-skill](packages/claude-code-skill/) | Claude Code skill for design-system-aware UI generation | private |
 
 ## Key Features
 
 - **Dark-first design** — every component designed for dark mode with light mode support
-- **Premium interactions** — glassmorphism, ripple effects, spring animations, glow effects
-- **5-level elevation system** — consistent shadow depth across the entire library
-- **Floating labels** — inputs with labels that shrink and float on focus
-- **AI-native components** — streaming text, thinking indicators, chat, reasoning trees
-- **Cognitive bias analysis** — 180 biases detected and reported during UI generation
-- **Framework adapters** — React and Vue wrappers with full TypeScript support
-- **1,107 tests** — comprehensive test coverage across foundation and AI components
-- **Accessible** — ARIA, keyboard navigation, focus traps, reduced motion support
+- **3-tier token system** — core primitives → semantic → component, 2,630 CSS variables
+- **5-level elevation** — consistent shadow depth across the library
+- **AI-native components** — streaming text, thinking indicators, chat, reasoning trees, agent steps
+- **Cognitive bias analysis** — 181 biases with a `suggestBiasesForTree()` engine
+- **Generative UI** — streaming JSON parser + Lit renderer, works with any LLM
+- **SSR-ready** — declarative Shadow DOM for Next.js and Astro
+- **Framework adapters** — React + Vue wrappers with full TypeScript support
+- **2,235 tests** across 156 files — comprehensive coverage
+- **Accessible** — ARIA, keyboard navigation, focus traps, reduced motion
 
 ## Development
 
 ```bash
 pnpm install           # Install all dependencies
-pnpm build             # Build all packages
+pnpm build             # Build all packages (Turborepo cached)
 pnpm test              # Run all tests
-pnpm dev               # Start all dev servers
+pnpm dev               # Start all dev servers (parallel)
+pnpm type-check        # TypeScript validation
+pnpm lint              # ESLint
+pnpm test:e2e          # Playwright e2e tests
+pnpm test:visual       # Playwright visual regression
+```
+
+### Per-package builds
+
+```bash
+pnpm --filter @cognivo/core build
+pnpm --filter @cognivo/components build
+pnpm --filter @cognivo/design-advisor build
 ```
 
 ## Contributing
 
-We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 ```bash
 git clone https://github.com/muriloscigliano/cognivo.git
@@ -198,4 +217,4 @@ pnpm test
 
 ## License
 
-[MIT](./LICENSE) - Murilo Scigliano
+[MIT](./LICENSE) · Murilo Scigliano
