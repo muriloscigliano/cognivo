@@ -168,7 +168,11 @@
       "padding": { "$type": "dimension", "$value": "{spacing.4}" }
     },
     "file-input": {
-      "min-height": { "$type": "dimension", "$value": "120px" },
+      "min-height": {
+        "sm": { "$type": "dimension", "$value": "88px" },
+        "md": { "$type": "dimension", "$value": "120px" },
+        "lg": { "$type": "dimension", "$value": "168px" }
+      },
       "radius": { "$type": "dimension", "$value": "{border.radius.125}" }
     },
     "tag-input": {

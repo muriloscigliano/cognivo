@@ -20,7 +20,6 @@ export class CgResizable extends LitElement {
       height: 100%;
       min-height: var(--cg-spacing-160);
       overflow: hidden;
-      font-family: var(--cg-font-family-primary);
     }
     :host([direction="vertical"]) { flex-direction: column; }
 
@@ -32,7 +31,6 @@ export class CgResizable extends LitElement {
     .handle {
       flex-shrink: 0;
       position: relative;
-      background: var(--cg-color-surface-container-border);
       transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([direction="horizontal"]) .handle {
@@ -49,33 +47,92 @@ export class CgResizable extends LitElement {
       border-top: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
     }
+
+    /* Invisible hit area — extends the handle on the perpendicular axis to
+       hit the WCAG 2.5.5 / Cognivo 44px minimum touch-target requirement. */
     .handle::after {
       content: '';
       position: absolute;
       inset: 0;
     }
     :host([direction="horizontal"]) .handle::after {
-      left: calc(var(--cg-spacing-4) * -1);
-      right: calc(var(--cg-spacing-4) * -1);
+      left: calc(var(--cg-spacing-20) * -1);
+      right: calc(var(--cg-spacing-20) * -1);
     }
     :host([direction="vertical"]) .handle::after {
-      top: calc(var(--cg-spacing-4) * -1);
-      bottom: calc(var(--cg-spacing-4) * -1);
+      top: calc(var(--cg-spacing-20) * -1);
+      bottom: calc(var(--cg-spacing-20) * -1);
     }
+
+    /* Visible grip glyph — three small bars centered on the handle so users
+       see it's draggable. */
+    .handle::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background:
+        var(--cg-color-surface-container-outlined),
+        var(--cg-color-surface-container-outlined),
+        var(--cg-color-surface-container-outlined);
+      pointer-events: none;
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+    }
+    :host([direction="horizontal"]) .handle::before {
+      width: var(--cg-border-width-50);
+      height: var(--cg-spacing-24);
+      background: var(--cg-color-surface-container-outlined);
+      box-shadow:
+        calc(var(--cg-spacing-4) * -1) 0 0 0 var(--cg-color-surface-container-outlined),
+        var(--cg-spacing-4) 0 0 0 var(--cg-color-surface-container-outlined);
+    }
+    :host([direction="vertical"]) .handle::before {
+      width: var(--cg-spacing-24);
+      height: var(--cg-border-width-50);
+      background: var(--cg-color-surface-container-outlined);
+      box-shadow:
+        0 calc(var(--cg-spacing-4) * -1) 0 0 var(--cg-color-surface-container-outlined),
+        0 var(--cg-spacing-4) 0 0 var(--cg-color-surface-container-outlined);
+    }
+
+    /* Hover + focus-visible — brand-accent borders + tinted fill. */
     :host([direction="horizontal"]) .handle:hover,
     :host([direction="horizontal"]) .handle:focus-visible {
-      border-left-color: var(--cg-color-action-primary-background-default);
-      border-right-color: var(--cg-color-action-primary-background-default);
+      border-left-color: var(--cg-color-action-primary-border-default);
+      border-right-color: var(--cg-color-action-primary-border-default);
       background: color-mix(in srgb, var(--cg-color-action-primary-background-default) 20%, transparent);
       outline: none;
     }
     :host([direction="vertical"]) .handle:hover,
     :host([direction="vertical"]) .handle:focus-visible {
-      border-top-color: var(--cg-color-action-primary-background-default);
-      border-bottom-color: var(--cg-color-action-primary-background-default);
+      border-top-color: var(--cg-color-action-primary-border-default);
+      border-bottom-color: var(--cg-color-action-primary-border-default);
       background: color-mix(in srgb, var(--cg-color-action-primary-background-default) 20%, transparent);
       outline: none;
     }
+    .handle:hover::before,
+    .handle:focus-visible::before {
+      background: var(--cg-color-action-primary-text-default);
+    }
+    :host([direction="horizontal"]) .handle:hover::before,
+    :host([direction="horizontal"]) .handle:focus-visible::before {
+      box-shadow:
+        calc(var(--cg-spacing-4) * -1) 0 0 0 var(--cg-color-action-primary-text-default),
+        var(--cg-spacing-4) 0 0 0 var(--cg-color-action-primary-text-default);
+    }
+    :host([direction="vertical"]) .handle:hover::before,
+    :host([direction="vertical"]) .handle:focus-visible::before {
+      box-shadow:
+        0 calc(var(--cg-spacing-4) * -1) 0 0 var(--cg-color-action-primary-text-default),
+        0 var(--cg-spacing-4) 0 0 var(--cg-color-action-primary-text-default);
+    }
+
+    /* Active drag — stronger tint while pointer is down. */
+    .handle[data-dragging] {
+      background: color-mix(in srgb, var(--cg-color-action-primary-background-default) 35%, transparent);
+    }
+
     .handle:focus-visible {
       box-shadow:
         0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
@@ -127,6 +184,7 @@ export class CgResizable extends LitElement {
     const handle = e.currentTarget as HTMLElement;
     const pointerId = e.pointerId;
     handle.setPointerCapture?.(pointerId);
+    handle.setAttribute('data-dragging', '');
     const rect = this.getBoundingClientRect();
     const move = (ev: PointerEvent) => {
       const fraction =
@@ -140,6 +198,7 @@ export class CgResizable extends LitElement {
       window.removeEventListener('pointerup', up);
       window.removeEventListener('pointercancel', up);
       try { handle.releasePointerCapture?.(pointerId); } catch { /* already released */ }
+      handle.removeAttribute('data-dragging');
       this._activeMove = null;
       this._activeUp = null;
     };
@@ -151,22 +210,28 @@ export class CgResizable extends LitElement {
   }
 
   private _onKeydown(e: KeyboardEvent): void {
-    const step = 0.05;
+    // 5% per arrow press, 10% with Shift, 10% on PageUp/PageDown.
+    const baseStep = 0.05;
+    const step = e.shiftKey ? baseStep * 2 : baseStep;
     const horizontal = this.direction === 'horizontal';
+    const decreaseKey = horizontal ? 'ArrowLeft' : 'ArrowUp';
+    const increaseKey = horizontal ? 'ArrowRight' : 'ArrowDown';
     switch (e.key) {
-      case 'ArrowLeft':
-      case 'ArrowUp':
-        if ((horizontal && e.key === 'ArrowLeft') || (!horizontal && e.key === 'ArrowUp')) {
-          e.preventDefault();
-          this._setSize(this._size - step);
-        }
+      case decreaseKey:
+        e.preventDefault();
+        this._setSize(this._size - step);
         break;
-      case 'ArrowRight':
-      case 'ArrowDown':
-        if ((horizontal && e.key === 'ArrowRight') || (!horizontal && e.key === 'ArrowDown')) {
-          e.preventDefault();
-          this._setSize(this._size + step);
-        }
+      case increaseKey:
+        e.preventDefault();
+        this._setSize(this._size + step);
+        break;
+      case 'PageUp':
+        e.preventDefault();
+        this._setSize(this._size - 0.1);
+        break;
+      case 'PageDown':
+        e.preventDefault();
+        this._setSize(this._size + 0.1);
         break;
       case 'Home':
         e.preventDefault();

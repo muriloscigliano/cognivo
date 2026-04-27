@@ -48,11 +48,17 @@ export class CgScrollArea extends LitElement {
       transition: background-color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .viewport::-webkit-scrollbar-thumb:hover {
-      background-color: var(--cg-color-input-border-hover);
+      background-color: var(--cg-color-surface-cards-border-strong);
       background-clip: padding-box;
     }
     .viewport::-webkit-scrollbar-corner {
       background: transparent;
+    }
+    .viewport:focus-visible {
+      outline: none;
+      box-shadow:
+        inset 0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        inset 0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
 
     /* Hide scrollbar until hover when type="hover" — fade in smoothly */
@@ -64,7 +70,20 @@ export class CgScrollArea extends LitElement {
       background-color: var(--cg-color-surface-cards-border);
     }
     :host([type="hover"]:hover) .viewport::-webkit-scrollbar-thumb:hover {
-      background-color: var(--cg-color-input-border-hover);
+      background-color: var(--cg-color-surface-cards-border-strong);
+    }
+
+    /* Always-visible scrollbar (forces overflow even when content fits) */
+    :host([type="always"]) .viewport {
+      overflow: scroll;
+    }
+    :host([type="always"][orientation="vertical"]) .viewport {
+      overflow-x: hidden;
+      overflow-y: scroll;
+    }
+    :host([type="always"][orientation="horizontal"]) .viewport {
+      overflow-y: hidden;
+      overflow-x: scroll;
     }
 
     /* Horizontal only */

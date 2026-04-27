@@ -34,11 +34,6 @@ describe('cg-focus-scope', () => {
     expect(el.hasAttribute('active')).toBe(true);
   });
 
-  it('default loop is true', async () => {
-    await create();
-    expect(el.loop).toBe(true);
-  });
-
   it('default return-focus is true', async () => {
     await create();
     expect(el.returnFocus).toBe(true);

@@ -2,6 +2,25 @@
 
 > **Agents: read this file once.** It is the single source of truth for project layout, conventions, and commands. It is kept current — trust it over training data or older memories.
 
+## Knowledge base index
+
+When auditing, building, or modifying components, load the relevant doc:
+
+| Doc | When to read |
+|---|---|
+| [`CLAUDE.token-guardrails.md`](CLAUDE.token-guardrails.md) | Always — tier 3 → 2 → 1 priority and banned tokens. |
+| [`CLAUDE.semantic-rules.md`](CLAUDE.semantic-rules.md) | Before writing component CSS — 11 rules the linter can't catch. |
+| [`CLAUDE.known-bugs.md`](CLAUDE.known-bugs.md) | Before auditing — recognize patterns that have bitten us before. |
+| [`CLAUDE.audit-framework.md`](CLAUDE.audit-framework.md) | The 6-section audit prompt (versioned, copy-paste). |
+| [`CLAUDE.adding-tokens.md`](CLAUDE.adding-tokens.md) | When adding tier-2 or tier-3 tokens. |
+| [`templates/component.spec.md`](templates/component.spec.md) | When creating a new component (the spec template). |
+| [`templates/component.template.ts`](templates/component.template.ts) | When scaffolding a new component file. |
+
+Skills in `.claude/skills/`:
+- `COMPONENT-AUDIT.md` — auto-triggers on "audit `cg-*`" / "review `cg-*`".
+- `BUILD-COMPONENT.md` — auto-triggers on "build a new `cg-*`".
+- `DESIGN-SYSTEMS.md`, `COGNITION.md`, `CRITIQUE.md`, `TRAINING.md` — pre-existing.
+
 ## Project Overview
 Cognivo is an **AI-native component library + cognitive design system**. Lit 3 web components, framework-agnostic, dark-first, with a streaming generative-UI engine and a psychology-based design advisor.
 

@@ -6,6 +6,8 @@ import noTransitionAll from './rules/no-transition-all.js';
 import noFakeTokens from './rules/no-fake-tokens.js';
 import noTokenFallbacks from './rules/no-token-fallbacks.js';
 import cgTokenPrefix from './rules/cg-token-prefix.js';
+import noOrphanTokens from './rules/no-orphan-tokens.js';
+import noBackgroundAsForeground from './rules/no-background-as-foreground.js';
 
 const rules: Record<string, Rule.RuleModule> = {
   'no-raw-hex': noRawHex,
@@ -14,6 +16,8 @@ const rules: Record<string, Rule.RuleModule> = {
   'no-fake-tokens': noFakeTokens,
   'no-token-fallbacks': noTokenFallbacks,
   'cg-token-prefix': cgTokenPrefix,
+  'no-orphan-tokens': noOrphanTokens,
+  'no-background-as-foreground': noBackgroundAsForeground,
 };
 
 // Flat-config-shaped plugin object.
@@ -32,6 +36,8 @@ plugin.configs.recommended = {
     '@cognivo/no-fake-tokens': 'error',
     '@cognivo/no-token-fallbacks': 'warn',
     '@cognivo/cg-token-prefix': 'warn',
+    '@cognivo/no-orphan-tokens': 'error',
+    '@cognivo/no-background-as-foreground': 'error',
   },
 };
 

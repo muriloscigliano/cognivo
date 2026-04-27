@@ -80,20 +80,26 @@ export class CgToaster extends LitElement {
     }
 
     .toast.success { border-color: var(--cg-color-status-success-border-default); }
-    .toast.warning { border-color: var(--cg-color-status-warning-text-default); }
+    .toast.warning { border-color: var(--cg-color-status-warning-border-default); }
     .toast.error { border-color: var(--cg-color-status-error-border-default); }
-    .toast.info { border-color: var(--cg-color-status-info-text-default); }
+    .toast.info { border-color: var(--cg-color-status-info-border-default); }
     .toast.ai {
       border-left: var(--cg-border-width-200) solid var(--cg-color-action-primary-background-default);
     }
 
-    .toast-sparkle {
+    /* Status icon — colored per variant to match the border + give the toast
+       a glanceable status indicator (success, warning, error, info, ai). */
+    .toast-icon {
       flex-shrink: 0;
       width: var(--cg-spacing-16);
       height: var(--cg-spacing-16);
-      color: var(--cg-color-action-primary-background-default);
       margin-top: var(--cg-spacing-2);
     }
+    .toast.success .toast-icon { color: var(--cg-color-status-success-text-default); }
+    .toast.warning .toast-icon { color: var(--cg-color-status-warning-text-default); }
+    .toast.error .toast-icon { color: var(--cg-color-status-error-text-default); }
+    .toast.info .toast-icon { color: var(--cg-color-status-info-text-default); }
+    .toast.ai .toast-icon { color: var(--cg-color-action-primary-background-default); }
 
     .toast-body {
       flex: 1;
@@ -181,15 +187,49 @@ export class CgToaster extends LitElement {
     this.dismiss(toast.id);
   }
 
+  /**
+   * Per-variant icon paths. `default` gets no icon (renders without one).
+   * `ai` keeps its sparkle (uses `fill` instead of `stroke`).
+   * info/success/warning/error use the same paths as cg-callout for visual
+   * consistency across the design system.
+   */
+  private _iconFor(variant: ToastVariant | undefined) {
+    switch (variant) {
+      case 'success':
+        return svg`<path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-2 10l2 2 4-4" />`;
+      case 'warning':
+        return svg`<path d="M12 2L2 22h20L12 2zm0 7v4m0 4h.01" />`;
+      case 'error':
+        return svg`<path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-1 5h2v6h-2zm0 8h2v2h-2z" />`;
+      case 'info':
+        return svg`<path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 5a1 1 0 011 1v4a1 1 0 01-2 0V8a1 1 0 011-1zm0 8a1 1 0 110 2 1 1 0 010-2z" />`;
+      case 'ai':
+        return svg`<path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74L12 2z" />`;
+      default:
+        return null;
+    }
+  }
+
   override render() {
     return html`
       <div role="region" aria-live="polite" aria-label="Notifications" style="display: contents;">
-        ${this._toasts.map(toast => html`
+        ${this._toasts.map(toast => {
+          const iconPath = this._iconFor(toast.variant);
+          // `ai` is the only variant using fill; the rest use stroke.
+          const useFill = toast.variant === 'ai';
+          return html`
           <div class="toast ${toast.variant ?? 'default'}" role="status">
-            ${toast.variant === 'ai' ? html`
-              <svg class="toast-sparkle" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                ${svg`<path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74L12 2z"/>`}
-              </svg>
+            ${iconPath ? html`
+              <svg
+                class="toast-icon"
+                viewBox="0 0 24 24"
+                fill=${useFill ? 'currentColor' : 'none'}
+                stroke=${useFill ? 'none' : 'currentColor'}
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >${iconPath}</svg>
             ` : nothing}
             <div class="toast-body">
               <div class="toast-title">${toast.title}</div>
@@ -200,7 +240,8 @@ export class CgToaster extends LitElement {
             ` : nothing}
             <button class="toast-close" aria-label="Dismiss" @click=${() => this.dismiss(toast.id)}>×</button>
           </div>
-        `)}
+        `;
+        })}
       </div>
     `;
   }

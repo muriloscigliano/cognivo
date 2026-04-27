@@ -34,18 +34,18 @@ describe('cg-aspect-ratio', () => {
     expect(el.shadowRoot!.querySelector('slot')).not.toBeNull();
   });
 
-  it('sets --ratio CSS custom prop from ratio prop', async () => {
+  it('sets --cg-component-aspect-ratio-value from ratio prop', async () => {
     await create({ ratio: '4/3' });
     const wrap = el.shadowRoot!.querySelector('.wrap') as HTMLElement;
     const style = wrap.getAttribute('style') || '';
-    expect(style).toContain('--ratio: 4 / 3');
+    expect(style).toContain('--cg-component-aspect-ratio-value: 4 / 3');
   });
 
   it('normalizes ratio with spaces', async () => {
     await create({ ratio: '1/1' });
     const wrap = el.shadowRoot!.querySelector('.wrap') as HTMLElement;
     const style = wrap.getAttribute('style') || '';
-    expect(style).toContain('--ratio: 1 / 1');
+    expect(style).toContain('--cg-component-aspect-ratio-value: 1 / 1');
   });
 
   it('updates wrap when ratio changes', async () => {

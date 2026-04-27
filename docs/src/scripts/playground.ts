@@ -215,6 +215,111 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   if (tag === 'cg-table') { e.columns = [{ key: 'name', label: 'Name', sortable: true }, { key: 'role', label: 'Role', sortable: true }, { key: 'status', label: 'Status' }]; e.rows = [['Kate Moore', 'CEO', 'Active'], ['John Smith', 'CTO', 'Active'], ['Sara Johnson', 'CMO', 'On Leave']]; e.selectable = true; }
   if (tag === 'cg-tooltip') { const inner = document.createElement('cg-button'); inner.textContent = 'Hover me'; liveElement.appendChild(inner); e.content = 'Tooltip text'; }
 
+  // cg-toaster — pins to viewport by default (position:fixed), which puts
+  // toasts off-screen relative to the preview box. Override to absolute so
+  // they live inside .pg-area, then queue demo toasts + a "Show toast" button
+  // so the imperative show() API is discoverable.
+  if (tag === 'cg-toaster') {
+    liveElement.style.position = 'absolute';
+    const variants = ['default', 'success', 'warning', 'error', 'info', 'ai'] as const;
+    customElements.whenDefined('cg-toaster').then(() => {
+      const t = liveElement as unknown as { show?: (opts: Record<string, unknown>) => void };
+      t.show?.({ title: 'Saved successfully', description: 'Your changes are live.', variant: 'success', duration: 0 });
+      t.show?.({ title: 'Heads up', description: 'Background sync completed.', variant: 'info', duration: 0 });
+      t.show?.({ title: 'Action required', description: 'Confirm to continue.', variant: 'warning', duration: 0 });
+    });
+    const trigger = document.createElement('cg-button');
+    (trigger as unknown as { variant?: string }).variant = 'primary';
+    trigger.textContent = 'Show random toast';
+    trigger.style.alignSelf = 'flex-start';
+    trigger.addEventListener('click', () => {
+      const v = variants[Math.floor(Math.random() * variants.length)]!;
+      const t = liveElement as unknown as { show?: (opts: Record<string, unknown>) => void };
+      t.show?.({ title: `${v[0]!.toUpperCase()}${v.slice(1)} toast`, description: 'Pushed via the imperative show() API.', variant: v, duration: 4000 });
+    });
+    _previewArea.appendChild(trigger);
+  }
+
+  // Layout primitive — empty element renders blank, so seed an image.
+  if (tag === 'cg-aspect-ratio') {
+    liveElement.style.maxWidth = '480px';
+    liveElement.style.width = '100%';
+    liveElement.innerHTML = '<img src="https://picsum.photos/480/270" alt="Aspect ratio demo" />';
+  }
+
+  // Headless behavior primitives — the element itself has display:contents so we
+  // populate it with real Cognivo chrome (cg-card + cg-stack + cg-button) so the
+  // trap has something visible + focusable to demonstrate.
+  if (tag === 'cg-focus-scope') {
+    e.active = true;
+    liveElement.innerHTML = `
+      <cg-card padding="lg" style="max-width: 480px; width: 100%;">
+        <cg-stack direction="column" gap="md">
+          <cg-text size="sm" muted>Tab cycles between these buttons while <code>active</code> is on. Toggle it off and Tab will leave freely.</cg-text>
+          <cg-stack direction="row" gap="sm">
+            <cg-button variant="primary">First</cg-button>
+            <cg-button variant="secondary">Middle</cg-button>
+            <cg-button variant="tertiary">Last</cg-button>
+          </cg-stack>
+        </cg-stack>
+      </cg-card>
+    `;
+  }
+  if (tag === 'cg-portal') {
+    // Default `target=""` teleports to document.body — which would render the
+    // children OUTSIDE the preview area (invisible to the user). Seed with
+    // `disabled` so children render in place, and let the user toggle the
+    // switch to watch them teleport to the body (and disappear from preview).
+    e.disabled = true;
+    liveElement.innerHTML = `
+      <cg-card padding="lg" style="max-width: 360px; width: 100%;">
+        <cg-stack direction="column" gap="md">
+          <cg-text size="sm" weight="semibold">Portal payload</cg-text>
+          <cg-text size="sm" muted>While <code>disabled</code> is on, this card renders inline. Toggle <code>disabled</code> off and watch it teleport to <code>document.body</code> — it'll vanish from the preview.</cg-text>
+          <cg-stack direction="row" gap="sm">
+            <cg-badge label="Teleported" variant="accent"></cg-badge>
+            <cg-badge label="Outside scope" variant="muted"></cg-badge>
+          </cg-stack>
+        </cg-stack>
+      </cg-card>
+    `;
+  }
+  if (tag === 'cg-visually-hidden') {
+    // Component is invisible by design. Seed the live element with a
+    // screen-reader label and render it inside an icon-only button so the
+    // preview shows the canonical pattern. To the eye: just an icon. To AT:
+    // "Delete item, button". Outlining a magnified preview of the live
+    // element on the right so the user can see WHERE the hidden text lives.
+    liveElement.innerHTML = 'Delete item';
+    const demo = document.createElement('cg-card');
+    (demo as unknown as { padding?: string }).padding = 'lg';
+    demo.style.maxWidth = '520px';
+    demo.style.width = '100%';
+    demo.innerHTML = `
+      <cg-stack direction="column" gap="md">
+        <cg-text size="sm" muted>The trash button on the left has a visible icon and a <code>cg-visually-hidden</code> child holding the accessible name. Sighted users see only the icon; screen readers announce <strong>"Delete item"</strong>. Tab to it and listen, or inspect the button's shadow DOM.</cg-text>
+        <cg-stack direction="row" gap="lg" align="center">
+          <cg-stack direction="column" gap="xs" align="center">
+            <cg-button variant="tertiary" id="vh-demo-btn">
+              <cg-icon name="trash" size="sm"></cg-icon>
+            </cg-button>
+            <cg-text size="xs" muted>What sighted users see</cg-text>
+          </cg-stack>
+          <cg-icon name="alt-arrow-right-linear" size="sm"></cg-icon>
+          <cg-stack direction="column" gap="xs" align="start" style="flex:1;">
+            <cg-text size="sm" weight="semibold" style="font-family:var(--cg-font-family-mono);">"Delete item, button"</cg-text>
+            <cg-text size="xs" muted>What screen readers announce</cg-text>
+          </cg-stack>
+        </cg-stack>
+      </cg-stack>
+    `;
+    _previewArea.appendChild(demo);
+    customElements.whenDefined('cg-button').then(() => {
+      const btn = demo.querySelector('#vh-demo-btn');
+      btn?.appendChild(liveElement);
+    });
+  }
+
   // AI Components
   if (tag === 'ai-thinking') { e.text = 'Analyzing your data...'; e.delay = 0; }
   if (tag === 'ai-streaming-text') { liveElement.style.maxWidth = '520px'; e.streaming = true; const text = 'Cognivo provides **140 web components** built with Lit 3.\n\nAll tokens work in both `light` and `dark` themes.'; let i = 0; const iv = setInterval(() => { if (i < text.length) { e.appendText?.(text[i]); i++; } else { e.complete?.(); clearInterval(iv); } }, 20); }
@@ -449,11 +554,15 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   }
   if (tag === 'cg-scroll-area') {
     liveElement.style.cssText = 'height:240px;width:360px;padding:16px;background:var(--cg-color-surface-cards-background);border:1px solid var(--cg-color-surface-cards-border);border-radius:10px;display:block;';
+    // Wide grid so both vertical AND horizontal scroll have something to show.
+    // 8 cols × 12 rows of cards exceeds the 360×240 viewport in both axes,
+    // letting `orientation` (vertical / horizontal / both) and `type`
+    // (auto / always / hover) all visibly change behavior in the playground.
     const inner = document.createElement('div');
-    inner.style.cssText = 'display:flex;flex-direction:column;gap:8px;';
-    for (let i = 1; i <= 25; i++) {
+    inner.style.cssText = 'display:grid;grid-template-columns:repeat(8,minmax(120px,1fr));gap:8px;';
+    for (let i = 1; i <= 96; i++) {
       const item = document.createElement('div');
-      item.style.cssText = 'padding:10px;background:var(--cg-color-surface-container-background);border-radius:6px;font-size:13px;';
+      item.style.cssText = 'padding:10px 14px;background:var(--cg-color-surface-container-background);border-radius:6px;font-size:13px;white-space:nowrap;';
       item.textContent = `Item ${i}`;
       inner.appendChild(item);
     }
