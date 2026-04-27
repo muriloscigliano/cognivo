@@ -52,8 +52,8 @@ export class CgCalendar extends LitElement {
     .nav-btn:focus-visible {
       outline: none;
       box-shadow:
-        0 0 0 2px var(--cg-color-focus-ring-offset),
-        0 0 0 4px var(--cg-color-focus-ring);
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
 
     .month-year {
@@ -105,14 +105,14 @@ export class CgCalendar extends LitElement {
       background: var(--cg-color-action-tertiary-background-hover);
     }
     .day:active:not(:disabled) {
-      transform: scale(0.92);
+      transform: scale(var(--cg-interaction-press-scale));
     }
-    .nav-btn:active { transform: scale(0.92); }
+    .nav-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .day:focus-visible {
       outline: none;
       box-shadow:
-        0 0 0 2px var(--cg-color-focus-ring-offset),
-        0 0 0 4px var(--cg-color-focus-ring);
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
     .day.outside {
       color: var(--cg-color-surface-container-outlined);

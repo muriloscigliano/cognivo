@@ -1,5 +1,5 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import '../cg-calendar/cg-calendar.js';
 
@@ -40,9 +40,9 @@ export class CgDateRangePicker extends LitElement {
     .trigger {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8);
+      gap: 0;
       height: var(--cg-component-input-height-md);
-      padding: 0 var(--cg-spacing-12);
+      padding: 0 var(--cg-spacing-4);
       border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
       border-radius: var(--cg-component-input-radius);
       background: var(--cg-color-input-background-default);
@@ -54,6 +54,23 @@ export class CgDateRangePicker extends LitElement {
         border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
+    .trigger-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--cg-color-input-icon-default);
+      flex-shrink: 0;
+      width: var(--cg-spacing-40);
+      align-self: stretch;
+      background: var(--cg-overlay-dark-subtle);
+      border-right: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
+      border-radius: var(--cg-component-input-radius) 0 0 var(--cg-component-input-radius);
+      margin-left: calc(-1 * var(--cg-spacing-4));
+    }
+    .trigger-icon svg {
+      width: var(--cg-icon-size-100);
+      height: var(--cg-icon-size-100);
+    }
 
     .trigger:hover:not(.disabled) {
       border-color: var(--cg-color-input-border-hover);
@@ -62,9 +79,7 @@ export class CgDateRangePicker extends LitElement {
     .trigger.open,
     .trigger:focus-visible {
       border-color: var(--cg-color-input-border-focus);
-      box-shadow:
-        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
-        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
 
     .trigger.disabled {
@@ -78,10 +93,8 @@ export class CgDateRangePicker extends LitElement {
     }
     .trigger.invalid:focus-visible,
     .trigger.invalid.open {
-      border-color: var(--cg-color-status-error-border-default);
-      box-shadow:
-        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
-        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-status-error-border-default);
+      border-color: var(--cg-color-status-error-text-default);
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
     }
 
     .error-message {
@@ -97,14 +110,16 @@ export class CgDateRangePicker extends LitElement {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      padding: 0 var(--cg-spacing-12);
     }
     .segment.empty { color: var(--cg-color-input-text-placeholder); }
 
     .arrow {
       flex-shrink: 0;
-      color: var(--cg-color-input-icon-default);
+      color: var(--cg-color-input-text-placeholder);
       display: flex;
       align-items: center;
+      padding: 0 var(--cg-spacing-2);
     }
     .arrow svg {
       width: var(--cg-icon-size-100);
@@ -117,10 +132,8 @@ export class CgDateRangePicker extends LitElement {
       left: 0;
       z-index: var(--cg-z-index-200);
       margin-top: var(--cg-spacing-4);
-      padding: var(--cg-spacing-12);
-      background: var(--cg-color-modal-container-background);
-      border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
-      border-radius: var(--cg-component-input-radius);
+      border-radius: var(--cg-component-calendar-radius);
+      box-shadow: var(--cg-shadow-elevation-xl);
       opacity: 0;
       transform: translateY(calc(-1 * var(--cg-spacing-4))) scale(0.98);
       pointer-events: none;
@@ -145,8 +158,6 @@ export class CgDateRangePicker extends LitElement {
   @property({ type: Boolean }) disabled = false;
   @property({ type: Boolean, reflect: true }) open = false;
   @property() error = '';
-
-  @state() private _pendingTo = '';
 
   override updated(changed: Map<string, unknown>) {
     if (changed.has('from') || changed.has('to')) {
@@ -234,11 +245,18 @@ export class CgDateRangePicker extends LitElement {
         @click=${this._toggle}
         @keydown=${this._handleKeydown}
       >
+        <span class="trigger-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </span>
         <span class="segment ${fromText ? '' : 'empty'}">${fromText || this.placeholder}</span>
         <span class="arrow" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 6l6 6-6 6"/>
           </svg>
         </span>
         <span class="segment ${toText ? '' : 'empty'}">${toText || 'End date'}</span>
@@ -255,7 +273,6 @@ export class CgDateRangePicker extends LitElement {
         ></cg-calendar>
       </div>
       ${this.error ? html`<span id="cg-drp-error" class="error-message" role="alert">${this.error}</span>` : nothing}
-      ${this._pendingTo ? nothing : nothing}
     `;
   }
 }

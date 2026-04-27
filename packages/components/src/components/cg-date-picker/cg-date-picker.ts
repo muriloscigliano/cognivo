@@ -1,10 +1,11 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import '../cg-calendar/cg-calendar.js';
 
 /**
  * @element cg-date-picker
- * Custom date picker with calendar dropdown, following cg-input/cg-select styling.
+ * Date picker trigger that opens a single-mode cg-calendar in a floating popover.
  *
  * @example
  * ```html
@@ -39,8 +40,11 @@ export class CgDatePicker extends LitElement {
         box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .trigger:hover:not(.disabled) { border-color: var(--cg-color-input-border-hover); }
-    .trigger:focus-visible { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
-    .trigger.open { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .trigger:focus-visible,
+    .trigger.open {
+      border-color: var(--cg-color-input-border-focus);
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+    }
     .trigger.disabled { opacity: 0.5; pointer-events: none; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
 
     :host([error]) .trigger { border-color: var(--cg-color-input-border-error); }
@@ -93,18 +97,15 @@ export class CgDatePicker extends LitElement {
       font-weight: var(--cg-font-weight-medium);
     }
 
-    /* ── Dropdown ── */
-    .dropdown {
+    /* ── Popover (positioning + animation only — cg-calendar owns the visual chrome) ── */
+    .popover {
       position: absolute;
       top: 100%;
       left: 0;
       z-index: var(--cg-z-index-200);
-      min-width: 280px;
       margin-top: var(--cg-spacing-4);
-      padding: var(--cg-spacing-16);
-      background: var(--cg-color-modal-container-background);
-      border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
-      border-radius: var(--cg-component-input-radius);
+      border-radius: var(--cg-component-calendar-radius);
+      box-shadow: var(--cg-shadow-elevation-xl);
       opacity: 0;
       transform: translateY(calc(-1 * var(--cg-spacing-4))) scale(0.98);
       pointer-events: none;
@@ -112,112 +113,10 @@ export class CgDatePicker extends LitElement {
         opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .dropdown.open {
+    .popover.open {
       opacity: 1;
       transform: translateY(0) scale(1);
       pointer-events: auto;
-    }
-
-    /* ── Calendar header ── */
-    .cal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: var(--cg-spacing-12);
-    }
-    .cal-title {
-      font-size: var(--cg-font-size-sm);
-      font-weight: var(--cg-font-weight-semibold);
-      color: var(--cg-color-surface-base-text);
-    }
-    .cal-nav {
-      display: flex;
-      align-items: center;
-      gap: var(--cg-spacing-4);
-    }
-    .cal-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: var(--cg-spacing-32);
-      height: var(--cg-spacing-32);
-      border: none;
-      background: transparent;
-      color: var(--cg-color-surface-container-text);
-      border-radius: var(--cg-border-radius-50);
-      cursor: pointer;
-      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
-    }
-    .cal-btn:hover { background: var(--cg-color-action-secondary-background-hover); }
-    .cal-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
-    .cal-btn svg {
-      width: var(--cg-icon-size-100);
-      height: var(--cg-icon-size-100);
-    }
-
-    /* ── Weekday headers ── */
-    .cal-weekdays {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      margin-bottom: var(--cg-spacing-4);
-    }
-    .cal-weekday {
-      font-size: var(--cg-font-size-xs);
-      font-weight: var(--cg-font-weight-medium);
-      color: var(--cg-color-input-text-placeholder);
-      text-align: center;
-      padding: var(--cg-spacing-4) 0;
-    }
-
-    /* ── Day grid ── */
-    .cal-days {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: var(--cg-spacing-2);
-    }
-    .cal-day {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: var(--cg-spacing-32);
-      height: var(--cg-spacing-32);
-      margin: 0 auto;
-      border: none;
-      background: transparent;
-      color: var(--cg-color-surface-base-text);
-      font-size: var(--cg-font-size-xs);
-      font-family: inherit;
-      border-radius: var(--cg-border-radius-50);
-      cursor: pointer;
-      transition:
-        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
-    }
-    .cal-day:hover { background: var(--cg-color-action-secondary-background-hover); }
-    .cal-day:active { transform: scale(var(--cg-interaction-press-scale)); }
-    .cal-day.today {
-      border: var(--cg-border-width-50) solid var(--cg-color-input-border-focus);
-      font-weight: var(--cg-font-weight-semibold);
-    }
-    .cal-day.selected {
-      background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-action-primary-text-default);
-      font-weight: var(--cg-font-weight-semibold);
-    }
-    .cal-day.selected:hover {
-      background: var(--cg-color-action-primary-background-default);
-    }
-    .cal-day.outside {
-      color: var(--cg-color-input-text-placeholder);
-      opacity: 0.5;
-    }
-    .cal-day.disabled-day {
-      opacity: 0.3;
-      pointer-events: none;
-    }
-    .cal-day:focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--cg-overlay-accent-strong);
     }
 
     /* ── Helper ── */
@@ -244,93 +143,28 @@ export class CgDatePicker extends LitElement {
   @property({ type: Boolean, reflect: true }) success = false;
 
   @state() private _open = false;
-  @state() private _viewYear = new Date().getFullYear();
-  @state() private _viewMonth = new Date().getMonth();
-
-  private _weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
   private _toggle() {
     if (this.disabled) return;
     this._open = !this._open;
-    if (this._open && this.value) {
-      const d = new Date(this.value + 'T00:00:00');
-      this._viewYear = d.getFullYear();
-      this._viewMonth = d.getMonth();
-    }
   }
 
   private _close() { this._open = false; }
 
-  private _prevMonth() {
-    if (this._viewMonth === 0) { this._viewMonth = 11; this._viewYear--; }
-    else { this._viewMonth--; }
-  }
-
-  private _nextMonth() {
-    if (this._viewMonth === 11) { this._viewMonth = 0; this._viewYear++; }
-    else { this._viewMonth++; }
-  }
-
-  private _selectDay(year: number, month: number, day: number) {
-    const m = String(month + 1).padStart(2, '0');
-    const d = String(day).padStart(2, '0');
-    this.value = `${year}-${m}-${d}`;
+  private _onCalendarChange(e: Event) {
+    const ev = e as CustomEvent<{ value: string }>;
+    e.stopPropagation();
+    this.value = ev.detail.value || '';
     this._close();
     this.dispatchEvent(new CustomEvent('cg-change', { detail: { value: this.value }, bubbles: true, composed: true }));
-  }
-
-  private _isDisabledDate(y: number, m: number, d: number): boolean {
-    const dateStr = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    if (this.min && dateStr < this.min) return true;
-    if (this.max && dateStr > this.max) return true;
-    return false;
-  }
-
-  private _getDays() {
-    const year = this._viewYear;
-    const month = this._viewMonth;
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const daysInPrev = new Date(year, month, 0).getDate();
-    const today = new Date();
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-
-    const days: { day: number; month: number; year: number; outside: boolean; today: boolean; selected: boolean; disabled: boolean }[] = [];
-
-    // Previous month fill
-    for (let i = firstDay - 1; i >= 0; i--) {
-      const d = daysInPrev - i;
-      const pm = month === 0 ? 11 : month - 1;
-      const py = month === 0 ? year - 1 : year;
-      const dateStr = `${py}-${String(pm + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-      days.push({ day: d, month: pm, year: py, outside: true, today: dateStr === todayStr, selected: this.value === dateStr, disabled: this._isDisabledDate(py, pm, d) });
-    }
-
-    // Current month
-    for (let d = 1; d <= daysInMonth; d++) {
-      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-      days.push({ day: d, month, year, outside: false, today: dateStr === todayStr, selected: this.value === dateStr, disabled: this._isDisabledDate(year, month, d) });
-    }
-
-    // Next month fill
-    const remaining = 42 - days.length;
-    for (let d = 1; d <= remaining; d++) {
-      const nm = month === 11 ? 0 : month + 1;
-      const ny = month === 11 ? year + 1 : year;
-      const dateStr = `${ny}-${String(nm + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-      days.push({ day: d, month: nm, year: ny, outside: true, today: dateStr === todayStr, selected: this.value === dateStr, disabled: this._isDisabledDate(ny, nm, d) });
-    }
-
-    return days;
   }
 
   private _formatDisplay(): string {
     if (!this.value) return '';
     const d = new Date(this.value + 'T00:00:00');
+    if (isNaN(d.getTime())) return '';
     return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
   }
-
-  private _monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
   private _handleClickOutside = (e: Event) => {
     if (!e.composedPath().includes(this)) this._close();
@@ -343,12 +177,17 @@ export class CgDatePicker extends LitElement {
     }
   }
 
-  override connectedCallback() { super.connectedCallback(); document.removeEventListener('click', this._handleClickOutside); document.addEventListener('click', this._handleClickOutside); }
-  override disconnectedCallback() { super.disconnectedCallback(); document.removeEventListener('click', this._handleClickOutside); }
+  override connectedCallback() {
+    super.connectedCallback();
+    document.addEventListener('click', this._handleClickOutside);
+  }
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    document.removeEventListener('click', this._handleClickOutside);
+  }
 
   override render() {
     const display = this._formatDisplay();
-    const days = this._getDays();
 
     return html`
       ${this.label ? html`<div class="label">${this.label}</div>` : nothing}
@@ -375,32 +214,14 @@ export class CgDatePicker extends LitElement {
         </span>
       </div>
 
-      <div class="dropdown ${this._open ? 'open' : ''}" role="dialog" aria-label="Calendar">
-        <div class="cal-header">
-          <button class="cal-btn" @click=${this._prevMonth} aria-label="Previous month">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"></path></svg>
-          </button>
-          <span class="cal-title">${this._monthNames[this._viewMonth]} ${this._viewYear}</span>
-          <button class="cal-btn" @click=${this._nextMonth} aria-label="Next month">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"></path></svg>
-          </button>
-        </div>
-
-        <div class="cal-weekdays">
-          ${this._weekdays.map(d => html`<span class="cal-weekday">${d}</span>`)}
-        </div>
-
-        <div class="cal-days">
-          ${days.map(d => html`
-            <button
-              class="cal-day ${d.today ? 'today' : ''} ${d.selected ? 'selected' : ''} ${d.outside ? 'outside' : ''} ${d.disabled ? 'disabled-day' : ''}"
-              @click=${(e: Event) => { e.stopPropagation(); this._selectDay(d.year, d.month, d.day); }}
-              ?disabled=${d.disabled}
-              aria-label="${d.day} ${this._monthNames[d.month]} ${d.year}"
-              aria-selected=${d.selected ? 'true' : 'false'}
-            >${d.day}</button>
-          `)}
-        </div>
+      <div class="popover ${this._open ? 'open' : ''}" role="dialog" aria-label="Calendar">
+        <cg-calendar
+          mode="single"
+          .value=${this.value}
+          .min=${this.min}
+          .max=${this.max}
+          @cg-calendar-change=${this._onCalendarChange}
+        ></cg-calendar>
       </div>
       ${this.helper ? html`<div class="helper">${this.helper}</div>` : nothing}
     `;

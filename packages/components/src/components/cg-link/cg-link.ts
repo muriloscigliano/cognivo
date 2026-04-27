@@ -60,9 +60,10 @@ export class CgLink extends LitElement {
     :host([variant="default"]) a { color: var(--cg-color-surface-base-text); }
     :host([variant="default"]) a:hover { color: var(--cg-color-surface-base-text); }
 
-    /* Variant: accent */
-    :host([variant="accent"]) a { color: var(--cg-color-surface-base-text); }
-    :host([variant="accent"]) a:hover { color: var(--cg-color-surface-base-text); }
+    /* Variant: accent — uses the brand accent color */
+    :host([variant="accent"]) a { color: var(--cg-color-accent-text); }
+    :host([variant="accent"]) a:hover { color: var(--cg-color-accent-text); }
+    :host([variant="accent"]) a::after { background: var(--cg-color-accent-text); }
 
     /* Variant: muted */
     :host([variant="muted"]) a { color: var(--cg-color-input-text-placeholder); }

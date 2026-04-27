@@ -34,24 +34,55 @@ export class CgCombobox extends LitElement {
       gap: var(--cg-spacing-6);
       min-height: var(--cg-component-input-height-md);
       padding: var(--cg-spacing-8) var(--cg-spacing-12);
-      background: var(--cg-color-surface-container-background);
-      border: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
+      background: var(--cg-color-input-background-default);
+      border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
       border-radius: var(--cg-component-input-radius);
-      color: var(--cg-color-surface-container-text);
+      color: var(--cg-color-input-text-default);
       cursor: text;
       transition:
         border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
+
+    /* Size variants — match cg-input */
+    :host([size="lg"]) .wrapper { min-height: var(--cg-component-input-height-lg); }
+
+    /* Rounded variants — match cg-input */
+    :host([rounded="none"]) .wrapper { border-radius: 0; }
+    :host([rounded="sm"]) .wrapper { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .wrapper { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .wrapper { border-radius: var(--cg-component-input-radius); }
+
     .wrapper:hover { border-color: var(--cg-color-input-border-hover); }
     .wrapper:focus-within {
       border-color: var(--cg-color-input-border-focus);
-      box-shadow: 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
+
+    /* Error state — match cg-input */
+    :host([error]) .wrapper {
+      border-color: var(--cg-color-input-border-error);
+    }
+    :host([error]) .wrapper:focus-within {
+      border-color: var(--cg-color-status-error-text-default);
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
+    }
+
+    /* Success state — match cg-input */
+    :host([success]) .wrapper {
+      border-color: var(--cg-color-input-icon-success);
+    }
+    :host([success]) .wrapper:focus-within {
+      border-color: var(--cg-color-status-success-text-default);
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-success);
+    }
+
     :host([disabled]) .wrapper {
       opacity: 0.5;
       cursor: not-allowed;
       pointer-events: none;
+      background: var(--cg-color-input-background-disabled);
+      border-color: var(--cg-color-input-border-disabled);
     }
 
     .chip {
@@ -92,7 +123,7 @@ export class CgCombobox extends LitElement {
       font: inherit;
       font-size: var(--cg-font-size-sm);
     }
-    input::placeholder { color: var(--cg-color-surface-container-outlined); }
+    input::placeholder { color: var(--cg-color-input-text-placeholder); }
 
     .clear-btn {
       background: none;
@@ -172,6 +203,10 @@ export class CgCombobox extends LitElement {
   @property({ type: Boolean }) loading = false;
   @property() name = '';
   @property({ type: Boolean, reflect: true }) open = false;
+  @property({ type: Boolean, reflect: true }) error = false;
+  @property({ type: Boolean, reflect: true }) success = false;
+  @property({ reflect: true }) size: 'md' | 'lg' = 'md';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
 
   @state() private _query = '';
   @state() private _activeIndex = -1;

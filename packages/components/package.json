@@ -37,11 +37,7 @@
     "dist",
     "LICENSE"
   ],
-  "sideEffects": [
-    "**/*.css",
-    "**/*.css.js",
-    "**/components/**/*.js"
-  ],
+  "sideEffects": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/murisd/cognivo.git",
