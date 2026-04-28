@@ -48,6 +48,8 @@ export interface SceneNode {
   id: string;
   /** Lowercase tag name. */
   tag: string;
+  /** All HTML attributes (lowercase keys) except `role`, which lives at top level. */
+  attributes: Record<string, string>;
   /** Resolved ARIA role, if any. */
   role?: string;
   /** Visible text content (truncated to 1024 chars). */

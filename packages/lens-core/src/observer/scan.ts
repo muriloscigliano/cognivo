@@ -115,7 +115,9 @@ function walkElement(
     textHash: hashText(text),
   });
 
-  const role = el.getAttribute('role') ?? undefined;
+  const attributes = readAttributes(el);
+  const role = attributes['role'];
+  if (role !== undefined) delete attributes['role'];
   const rect = readRect(el);
   const computedStyle = readComputedStyle(el, opts.computedStyleProperties);
   const visible = isVisible(el, computedStyle);
@@ -123,6 +125,7 @@ function walkElement(
   const node: SceneNode = {
     id,
     tag,
+    attributes,
     rect,
     computedStyle,
     tokenUsage: [], // Token detection lands in a later phase.
@@ -193,6 +196,17 @@ function getOpenShadowRoot(el: Element): ShadowRoot | null {
     return sr ?? null;
   }
   return null;
+}
+
+function readAttributes(el: Element): Record<string, string> {
+  const out: Record<string, string> = {};
+  const attrs = el.attributes;
+  // attrs is a NamedNodeMap; iterate by index for cross-env compatibility.
+  for (let i = 0; i < attrs.length; i++) {
+    const attr = attrs.item(i);
+    if (attr) out[attr.name.toLowerCase()] = attr.value;
+  }
+  return out;
 }
 
 function extractText(el: Element, maxLength: number): string | undefined {
