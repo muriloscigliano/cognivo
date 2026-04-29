@@ -121,4 +121,17 @@ describe('scene-query', () => {
     const q = createSceneQuery(graph);
     expect(q.raw).toBe(graph);
   });
+
+  it('find() resolves [role=...] by reading the lifted node.role property', () => {
+    // scan() lifts `role` out of attributes onto node.role, so without a
+    // fallback the selector grammar would silently match zero. This test
+    // pins the contract that callers can write `*[role=button]` naturally.
+    document.body.innerHTML =
+      '<div role="button">a</div><div role="dialog">b</div><div>c</div>';
+    const graph = scan(document.body.firstElementChild!.parentElement as Element);
+    const q = createSceneQuery(graph);
+    expect(q.find('*[role=button]')).toHaveLength(1);
+    expect(q.find('*[role=dialog]')).toHaveLength(1);
+    expect(q.find('*[role]')).toHaveLength(2);
+  });
 });

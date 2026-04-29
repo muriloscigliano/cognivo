@@ -33,6 +33,8 @@ const DEFAULT_RELEVANT_PROPERTIES = [
   'outline',
   'outline-color',
   'outline-width',
+  'transition',
+  'transition-property',
 ] as const;
 
 const DEFAULT_MAX_TEXT_LENGTH = 1024;

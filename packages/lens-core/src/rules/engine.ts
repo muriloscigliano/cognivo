@@ -6,6 +6,7 @@ import type { SceneGraph } from '../types/scene-graph.js';
 import { createSceneQuery } from '../helpers/scene-query.js';
 import { createRuleHelpers } from '../helpers/index.js';
 import { clamp01to100 } from '../helpers/math.js';
+import { withSpan } from '../instrumentation/spans.js';
 import { computeFindingHash } from './finding-hash.js';
 
 export interface RuleEngineConfig {
@@ -58,8 +59,17 @@ export class RuleEngine {
   /**
    * Evaluate all registered rules against a scene + intent. Returns Findings
    * sorted by severity (blockers first), then by confidence.
+   *
+   * Emits two layers of `performance.measure` entries (Spec §7.8, Pattern 53):
+   *   - `lens:rules:evaluate` — full engine pass
+   *   - `lens:rules:rule:<ruleId>` — one per rule's detect() call
+   * These are no-ops in environments without `performance` (e.g. some Workers).
    */
   evaluate(scene: SceneGraph, intent: PageIntent): Finding[] {
+    return withSpan('rules:evaluate', () => this.evaluateInner(scene, intent)).value;
+  }
+
+  private evaluateInner(scene: SceneGraph, intent: PageIntent): Finding[] {
     const sceneQuery = createSceneQuery(scene);
     const helpers = createRuleHelpers();
     const detectedAt = new Date().toISOString();
@@ -79,7 +89,8 @@ export class RuleEngine {
 
       let detections;
       try {
-        detections = rule.detect(ctx);
+        // Per-rule span so operators can pinpoint which rule got slow.
+        detections = withSpan(`rules:rule:${rule.id}`, () => rule.detect(ctx)).value;
       } catch {
         continue;
       }

@@ -362,4 +362,39 @@ describe('RuleEngine', () => {
 
     expect(a[0]!.id).toBe(b[0]!.id);
   });
+
+  it('emits performance measures for the engine pass and per rule (Spec §7.8)', () => {
+    const rule = defineRule({
+      id: 'span/test',
+      title: 'span test',
+      category: 'system-health',
+      severity: 'consider',
+      intentScope: [],
+      cost: 'cheap',
+      citations: [],
+      defaultEnabled: true,
+      fixCategory: 'judgment',
+      applies: () => true,
+      detect: ({ scene }) => [
+        { targetNodeId: scene.raw.root.id, confidence: 50, message: 'm', why: 'w' },
+      ],
+      fixtures: [{ name: 'a', expect: 'finding' }],
+    });
+
+    const engine = new RuleEngine();
+    engine.registerSync([rule]);
+
+    if (typeof performance !== 'undefined' && typeof performance.clearMeasures === 'function') {
+      performance.clearMeasures();
+    }
+
+    document.body.innerHTML = '<div></div>';
+    engine.evaluate(scan(document), 'unknown');
+
+    if (typeof performance !== 'undefined' && typeof performance.getEntriesByType === 'function') {
+      const names = performance.getEntriesByType('measure').map((m) => m.name);
+      expect(names).toContain('lens:rules:evaluate');
+      expect(names).toContain('lens:rules:rule:span/test');
+    }
+  });
 });

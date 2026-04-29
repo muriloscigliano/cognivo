@@ -58,11 +58,23 @@ function parseSelector(selector: string): SelectorClause[] {
 function nodeMatchesClause(node: SceneNode, clause: SelectorClause): boolean {
   if (clause.tag !== '*' && node.tag !== clause.tag) return false;
   for (const attr of clause.attributes) {
-    const nodeValue = node.attributes[attr.name];
+    const nodeValue = readQueryableAttribute(node, attr.name);
     if (nodeValue === undefined) return false;
     if (attr.value !== undefined && nodeValue !== attr.value) return false;
   }
   return true;
+}
+
+/**
+ * `scan()` lifts `role` out of `attributes` to `node.role` so it has a typed
+ * resolution path. Scene-query callers naturally write `[role=button]`, so we
+ * transparently look up the lifted property when they do — otherwise selectors
+ * like `*[role=dialog]` would silently match nothing. Add other lifted attrs
+ * here if scan() ever lifts more fields to top-level.
+ */
+function readQueryableAttribute(node: SceneNode, name: string): string | undefined {
+  if (name === 'role') return node.role;
+  return node.attributes[name];
 }
 
 /**

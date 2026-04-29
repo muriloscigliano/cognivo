@@ -138,4 +138,15 @@ describe('scan() — basic DOM walk', () => {
   it('throws clearly when given a malformed input', () => {
     expect(() => scan({} as unknown as Document)).toThrow(/lens-core/);
   });
+
+  it('captures transition in computedStyle by default', () => {
+    // The transition-all rule (lens-pack-core) reads the `transition` shorthand
+    // to detect `all`. Without this in DEFAULT_RELEVANT_PROPERTIES the rule
+    // could never fire on a normal page.
+    document.body.innerHTML =
+      '<div id="t" style="transition: all 200ms ease;"></div>';
+    const root = document.body.firstElementChild as Element;
+    const graph = scan(root);
+    expect(graph.root.computedStyle['transition']).toMatch(/all/);
+  });
 });
