@@ -19,13 +19,20 @@ export interface SceneQuery {
   raw: SceneGraph;
   find(selector: string): SceneNode[];
   first(selector: string): SceneNode | undefined;
-  tokenViolations(opts: { tier: 1; exclude?: string[] }): Array<{
+  /**
+   * Find all (node, usage) pairs whose `usage.tier === opts.tier`.
+   * Tier 0 = "off-grid" (value matches no known token).
+   * `exclude` is a list of property name prefixes to skip; pattern is plain
+   * prefix match, NOT glob — `'padding'` matches `padding-top`, `padding-left`,
+   * etc. Case sensitive, matches the property name string Observer captured.
+   */
+  tokenViolations(opts: { tier: 0 | 1 | 2 | 3; exclude?: readonly string[] }): Array<{
     node: SceneNode;
     usage: SceneNode['tokenUsage'][number];
   }>;
   contrast(
     node: SceneNode,
-    opts: { against: 'background'; wcag: 'AA' | 'AA-large' | 'AAA' }
+    opts: { against: 'background'; wcag: 'AA' | 'AA-large' | 'AAA' | 'AAA-large' }
   ): { ratio: number; passes: boolean };
 }
 

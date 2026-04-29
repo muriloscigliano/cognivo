@@ -13,7 +13,9 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: ['@cognivo/core', 'zod'],
+      // Externalize the @cognivo/* peer deps so lens-core's bundle stays
+      // independent of token-pack updates (consumers pin tokens separately).
+      external: (id) => id === '@cognivo/core' || id === 'zod' || id.startsWith('@cognivo/tokens'),
       output: { preserveModules: false },
     },
     sourcemap: true,

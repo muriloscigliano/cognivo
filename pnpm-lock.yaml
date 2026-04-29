@@ -346,6 +346,9 @@ importers:
       '@cognivo/core':
         specifier: workspace:*
         version: link:../core
+      '@cognivo/tokens':
+        specifier: workspace:*
+        version: link:../tokens
       '@types/jsdom':
         specifier: ^21.1.7
         version: 21.1.7

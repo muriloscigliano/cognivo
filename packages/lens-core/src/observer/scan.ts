@@ -1,5 +1,6 @@
 import type { SceneGraph, SceneNode, PageRect } from '../types/scene-graph.js';
 import { computeNodeId, hashText } from './node-id.js';
+import { resolveTokenUsage } from './token-resolution.js';
 
 /**
  * Computed CSS properties the Observer extracts by default. Rules can request more
@@ -130,7 +131,7 @@ function walkElement(
     attributes,
     rect,
     computedStyle,
-    tokenUsage: [], // Token detection lands in a later phase.
+    tokenUsage: resolveTokenUsage(computedStyle),
     children: [],
     visible,
     ...(role !== undefined && { role }),

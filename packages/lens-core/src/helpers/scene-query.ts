@@ -1,6 +1,7 @@
 import type { SceneGraph, SceneNode } from '../types/scene-graph.js';
 import type { SceneQuery } from '../types/rule.js';
 import { walkAll } from './walk.js';
+import { computeContrast, type WcagLevel } from './contrast.js';
 
 /**
  * A subset of CSS selector grammar supported by scene-query in v1.
@@ -102,20 +103,40 @@ export function createSceneQuery(graph: SceneGraph): SceneQuery {
       }
       return undefined;
     },
-    tokenViolations: (_opts) => {
-      // Returning [] would falsely tell rules "no violations" — worse than a clear error.
-      // Wired in when @cognivo/tokens integration adds token-resolution to the scan pass.
-      throw new Error(
-        'lens-core: scene.tokenViolations() is not yet implemented. ' +
-          'Gate your rule on capability detection or query node.tokenUsage directly.'
-      );
+    tokenViolations: (opts) => {
+      const exclude = opts.exclude ?? [];
+      const out: Array<{ node: SceneNode; usage: SceneNode['tokenUsage'][number] }> = [];
+      for (const node of walkAll(graph)) {
+        for (const usage of node.tokenUsage) {
+          if (usage.tier !== opts.tier) continue;
+          if (exclude.some((p) => usage.property.startsWith(p))) continue;
+          out.push({ node, usage });
+        }
+      }
+      return out;
     },
-    contrast: (_node, _opts) => {
-      // Returning {ratio:0, passes:false} would falsely fail every contrast check.
-      throw new Error(
-        'lens-core: scene.contrast() is not yet implemented. ' +
-          'Compute contrast from node.computedStyle directly until the helper lands.'
-      );
+    contrast: (node, opts) => {
+      const ancestors = ancestorChainOf(graph, node);
+      const result = computeContrast(node, ancestors, opts.wcag as WcagLevel);
+      return { ratio: result.ratio, passes: result.passes };
     },
   };
+}
+
+/**
+ * Walk parent ids back to the graph root. Built lazily per `contrast()` call;
+ * if many rules end up calling contrast(), we'll cache the parent map at the
+ * scene-query level.
+ */
+function ancestorChainOf(graph: SceneGraph, node: SceneNode): SceneNode[] {
+  const byId = new Map(graph.nodes.map((n) => [n.id, n]));
+  const out: SceneNode[] = [];
+  let parentId = node.parent;
+  while (parentId !== undefined) {
+    const parent = byId.get(parentId);
+    if (!parent) break;
+    out.push(parent);
+    parentId = parent.parent;
+  }
+  return out;
 }

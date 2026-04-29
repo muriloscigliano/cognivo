@@ -1,16 +1,23 @@
 /**
- * Token usage detected on a node — produced by the Observer when reading computed styles.
- * The tier reflects which Cognivo token tier the value resolves to.
+ * Token usage detected on a node — produced by the Observer when reading
+ * computed styles and reverse-mapping them against `@cognivo/tokens/manifest/runtime`.
+ *
+ * Tiers:
+ *  - 0 = "off-grid" — value matches no known Cognivo token
+ *  - 1 = primitive / palette / brand
+ *  - 2 = semantic
+ *  - 3 = component-scoped
  */
 export interface TokenUsage {
-  /** Cognivo token tier (1 = core palette, 2 = semantic, 3 = component). */
-  tier: 1 | 2 | 3;
+  tier: 0 | 1 | 2 | 3;
   /** CSS property name (e.g. `color`, `padding-top`). */
   property: string;
-  /** Raw computed CSS value (e.g. `rgb(120 120 120)`, `8px`). */
+  /** Computed value normalized to canonical form (e.g. `rgb(113, 113, 122)`, `8px`). */
   rawValue: string;
-  /** Resolved Cognivo token name if any (e.g. `--cg-color-text-secondary`). */
+  /** Best-matching token name (lowest tier, longest name). Undefined when tier is 0. */
   resolvedToken?: string;
+  /** All matching token names — lowest tier first within the bucket. Empty when tier is 0. */
+  candidates: string[];
 }
 
 /**

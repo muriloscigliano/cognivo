@@ -44,10 +44,12 @@
     "clean": "rm -rf dist"
   },
   "peerDependencies": {
-    "@cognivo/core": "workspace:*"
+    "@cognivo/core": "workspace:*",
+    "@cognivo/tokens": "workspace:*"
   },
   "devDependencies": {
     "@cognivo/core": "workspace:*",
+    "@cognivo/tokens": "workspace:*",
     "@types/node": "^22.0.0",
     "happy-dom": "^15.7.0",
     "jsdom": "^25.0.0",
