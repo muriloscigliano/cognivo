@@ -25,8 +25,8 @@ export class CgSheet extends LitElement {
       inset: 0;
       z-index: var(--cg-z-index-500);
       background: var(--cg-color-modal-overlay-background);
-      backdrop-filter: blur(var(--cg-spacing-8)) saturate(140%);
-      -webkit-backdrop-filter: blur(var(--cg-spacing-8)) saturate(140%);
+      backdrop-filter: blur(var(--cg-blur-backdrop)) saturate(140%);
+      -webkit-backdrop-filter: blur(var(--cg-blur-backdrop)) saturate(140%);
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
@@ -61,8 +61,8 @@ export class CgSheet extends LitElement {
 
     :host([side="top"]) .panel {
       left: 0; right: 0; top: 0;
-      border-bottom-left-radius: var(--cg-border-radius-200);
-      border-bottom-right-radius: var(--cg-border-radius-200);
+      border-bottom-left-radius: var(--cg-component-sheet-radius);
+      border-bottom-right-radius: var(--cg-component-sheet-radius);
       transform: translateY(-100%);
       max-height: 95vh;
     }
@@ -101,7 +101,7 @@ export class CgSheet extends LitElement {
       background: var(--cg-color-surface-container-border);
       transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .handle:hover .handle-bar { background: var(--cg-color-input-border-hover); }
+    .handle:hover .handle-bar { background: var(--cg-color-surface-cards-border-strong); }
 
     .body {
       flex: 1;

@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
@@ -38,10 +38,11 @@ export class CgText extends LitElement {
     :host([weight="semibold"]) { font-weight: var(--cg-font-weight-semibold); }
     :host([weight="bold"]) { font-weight: var(--cg-font-weight-bold); }
 
-    /* Colors */
+    /* Colors — 3-level text hierarchy: default → secondary → muted */
     :host([color="default"]) { color: var(--cg-color-surface-base-text); }
-    :host([color="muted"]) { color: var(--cg-color-surface-cards-disable-text); }
-    :host([color="accent"]) { color: var(--cg-color-surface-base-text); }
+    :host([color="secondary"]) { color: var(--cg-color-surface-container-text); }
+    :host([color="muted"]) { color: var(--cg-color-surface-container-outlined); }
+    :host([color="accent"]) { color: var(--cg-color-accent-text); }
     :host([color="success"]) { color: var(--cg-color-status-success-text-default); }
     :host([color="warning"]) { color: var(--cg-color-status-warning-text-default); }
     :host([color="danger"]) { color: var(--cg-color-status-error-text-default); }
@@ -71,7 +72,7 @@ export class CgText extends LitElement {
   @property() text = '';
   @property({ reflect: true }) size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' = 'md';
   @property({ reflect: true }) weight: 'normal' | 'medium' | 'semibold' | 'bold' = 'normal';
-  @property({ reflect: true }) color: 'default' | 'muted' | 'accent' | 'success' | 'warning' | 'danger' | 'inherit' = 'default';
+  @property({ reflect: true }) color: 'default' | 'secondary' | 'muted' | 'accent' | 'success' | 'warning' | 'danger' | 'inherit' = 'default';
   @property({ reflect: true }) align: 'left' | 'center' | 'right' = 'left';
   @property({ reflect: true }) as: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' = 'p';
   @property({ type: Boolean, reflect: true }) truncate = false;

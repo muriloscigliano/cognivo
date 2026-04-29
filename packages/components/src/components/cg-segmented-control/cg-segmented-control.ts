@@ -39,6 +39,7 @@ export class CgSegmentedControl extends LitElement {
       position: relative;
       padding: var(--cg-component-segmented-control-padding);
       background: var(--cg-color-action-secondary-background-default);
+      border: var(--cg-border-width-50) solid var(--cg-color-action-secondary-border-default);
       border-radius: var(--cg-component-segmented-control-radius);
       gap: var(--cg-spacing-2);
     }
@@ -52,13 +53,13 @@ export class CgSegmentedControl extends LitElement {
       top: var(--cg-component-segmented-control-padding);
       left: 0;
       height: calc(100% - 2 * var(--cg-component-segmented-control-padding));
-      background: var(--cg-color-surface-cards-background);
+      box-sizing: border-box;
+      background: var(--cg-color-surface-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-action-secondary-border-default);
       border-radius: calc(var(--cg-component-segmented-control-radius) - var(--cg-component-segmented-control-padding));
-      box-shadow: var(--cg-shadow-elevation-sm);
       transition:
         transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-in-out),
-        width var(--cg-transition-duration-default) var(--cg-transition-easing-ease-in-out),
-        box-shadow var(--cg-transition-duration-default) var(--cg-transition-easing-default);
+        width var(--cg-transition-duration-default) var(--cg-transition-easing-ease-in-out);
       pointer-events: none;
     }
 
@@ -91,8 +92,8 @@ export class CgSegmentedControl extends LitElement {
     .segment:focus-visible {
       outline: none;
       box-shadow:
-        0 0 0 2px var(--cg-color-focus-ring-offset),
-        0 0 0 4px var(--cg-color-focus-ring);
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
     .segment:disabled {
       opacity: 0.45;
@@ -202,7 +203,14 @@ export class CgSegmentedControl extends LitElement {
     }
     if (next !== current) {
       const option = this.options[next];
-      if (option && !option.disabled) this._select(option);
+      if (option && !option.disabled) {
+        this._select(option);
+        // Roving tabindex: focus the newly-selected segment so Tab tracking stays consistent.
+        this.updateComplete.then(() => {
+          const segments = this.shadowRoot?.querySelectorAll<HTMLElement>('.segment');
+          segments?.[next]?.focus();
+        });
+      }
     }
   }
 
@@ -216,6 +224,7 @@ export class CgSegmentedControl extends LitElement {
             class="segment"
             role="radio"
             aria-checked=${option.value === this.value ? 'true' : 'false'}
+            tabindex=${option.value === this.value ? '0' : '-1'}
             ?disabled=${option.disabled || this.disabled}
             @click=${() => this._select(option)}
           >${option.label}</button>

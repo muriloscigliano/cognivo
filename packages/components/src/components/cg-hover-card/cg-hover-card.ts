@@ -42,17 +42,20 @@ export class CgHoverCard extends LitElement {
       z-index: var(--cg-z-index-500);
       width: var(--cg-component-hover-card-width);
       padding: var(--cg-component-hover-card-padding);
-      background: var(--cg-color-surface-popover-background);
-      border: var(--cg-border-width-50) solid var(--cg-color-surface-popover-border);
+      background: var(--cg-color-modal-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-action-secondary-border-default);
       border-radius: var(--cg-component-hover-card-radius);
-      color: var(--cg-color-surface-popover-text);
-      box-shadow: var(--cg-shadow-elevation-xl);
+      color: var(--cg-color-surface-container-text);
+      /* Hover-card sits between popover (sm) and modal (xl) on the elevation scale.
+         Lg gives it presence without feeling weighty — matches GitHub/Linear/Vercel norms. */
+      box-shadow: var(--cg-shadow-elevation-lg);
       opacity: 0;
-      transform: scale(0.96) translateY(4px);
+      transform: scale(0.94) translateY(var(--cg-spacing-6));
       pointer-events: none;
+      will-change: transform, opacity;
       transition:
         opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-spring);
     }
 
     :host([open]) .card {
@@ -60,11 +63,32 @@ export class CgHoverCard extends LitElement {
       transform: scale(1) translateY(0);
       pointer-events: auto;
     }
+
+    /* Stagger the inner content slightly behind the card chrome so the entrance
+       reads as "card lands, then content settles in" — feels premium without
+       being slow. */
+    .card ::slotted(*) {
+      opacity: 0;
+      transform: translateY(var(--cg-spacing-2));
+      transition:
+        opacity var(--cg-transition-duration-default) var(--cg-transition-easing-default) 60ms,
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) 60ms;
+    }
+    :host([open]) .card ::slotted(*) {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Subtle border highlight on hover of the trigger — telegraphs that the
+       trigger has a richer interaction beyond a normal link. */
+    .trigger:hover ::slotted(*) {
+      filter: brightness(1.05);
+    }
   `];
 
   @property({ type: Boolean, reflect: true }) open = false;
   @property() placement: Placement = 'top';
-  @property({ type: Number }) offset = 8;
+  @property({ type: Number }) offset = 12;
   @property({ type: Number, attribute: 'open-delay' }) openDelay = 700;
   @property({ type: Number, attribute: 'close-delay' }) closeDelay = 300;
 
@@ -138,7 +162,7 @@ export class CgHoverCard extends LitElement {
       <div
         class="card"
         role="tooltip"
-        ?hidden=${!this.open}
+        ?inert=${!this.open}
         @mouseenter=${this._scheduleOpen}
         @mouseleave=${this._scheduleClose}
       >

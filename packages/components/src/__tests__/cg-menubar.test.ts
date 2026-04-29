@@ -43,7 +43,7 @@ describe('cg-menubar', () => {
     const trigger = el.shadowRoot!.querySelector<HTMLButtonElement>('.top-trigger')!;
     trigger.click();
     await el.updateComplete;
-    expect(el.shadowRoot!.querySelector('.submenu')).not.toBeNull();
+    expect(el.shadowRoot!.querySelector('.menu')).not.toBeNull();
   });
 
   it('dispatches cg-menubar-select on item click', async () => {
@@ -53,7 +53,7 @@ describe('cg-menubar', () => {
     const trigger = el.shadowRoot!.querySelector<HTMLButtonElement>('.top-trigger')!;
     trigger.click();
     await el.updateComplete;
-    const item = el.shadowRoot!.querySelector<HTMLButtonElement>('.submenu-item')!;
+    const item = el.shadowRoot!.querySelector<HTMLButtonElement>('.menu-item')!;
     item.click();
     expect(detail?.item).toBe('new');
     expect(detail?.menu).toBe('File');
@@ -86,7 +86,7 @@ describe('cg-menubar', () => {
     const trigger = el.shadowRoot!.querySelector<HTMLButtonElement>('.top-trigger')!;
     trigger.click();
     await el.updateComplete;
-    const sep = el.shadowRoot!.querySelector('.separator');
+    const sep = el.shadowRoot!.querySelector('.divider');
     expect(sep).not.toBeNull();
     expect(sep!.getAttribute('role')).toBe('separator');
   });
@@ -96,7 +96,7 @@ describe('cg-menubar', () => {
     const triggers = el.shadowRoot!.querySelectorAll<HTMLButtonElement>('.top-trigger');
     triggers[1]!.click(); // Edit
     await el.updateComplete;
-    const shortcut = el.shadowRoot!.querySelector('.shortcut');
+    const shortcut = el.shadowRoot!.querySelector('.menu-item-shortcut');
     expect(shortcut?.textContent).toBe('Cmd+C');
   });
 
@@ -177,7 +177,7 @@ describe('cg-menubar', () => {
 
     let fired = false;
     el.addEventListener('cg-menubar-select', () => (fired = true));
-    const items = el.shadowRoot!.querySelectorAll<HTMLButtonElement>('.submenu-item');
+    const items = el.shadowRoot!.querySelectorAll<HTMLButtonElement>('.menu-item');
     items[0]?.click();
     expect(fired).toBe(false);
   });
@@ -192,7 +192,7 @@ describe('cg-menubar', () => {
 
     let detail: any;
     el.addEventListener('cg-menubar-select', (e: any) => (detail = e.detail));
-    const item = el.shadowRoot!.querySelector<HTMLButtonElement>('.submenu-item')!;
+    const item = el.shadowRoot!.querySelector<HTMLButtonElement>('.menu-item')!;
     item.click();
     expect(detail).toEqual({ menu: 'file-menu', item: 'new-file' });
   });

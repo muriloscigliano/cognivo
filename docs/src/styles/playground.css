@@ -15,11 +15,22 @@
   border-bottom-left-radius: 10px;
 }
 .pg-controls {
+  display: flex;
+  flex-direction: column;
   background: var(--bg-subtle);
-  overflow-y: auto;
-  max-height: 420px;
+  /* min-height: 0 lets the grid cell shrink to row height (set by .pg-area's
+     min-height) instead of inflating the row to its intrinsic content. */
+  min-height: 0;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
+  height: auto;
+}
+/* The rows container inside .pg-controls — fills the remaining vertical space
+   below the .pg-bar header and scrolls internally when there are many props. */
+.pg-controls > #pg-ctrl {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
 .pg-bar {
   display: flex; align-items: center; justify-content: space-between;
@@ -66,5 +77,5 @@
     border-bottom: 1px solid var(--border);
     border-radius: 10px 10px 0 0;
   }
-  .pg-controls { border-radius: 0 0 10px 10px; max-height: 320px; }
+  .pg-controls { border-radius: 0 0 10px 10px; }
 }

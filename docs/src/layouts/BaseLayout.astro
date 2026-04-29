@@ -10,7 +10,11 @@ const { title, description = 'AI-native component library with cognitive psychol
 ---
 
 <!DOCTYPE html>
-<html lang="en" data-theme="dark" style="scroll-behavior: smooth;">
+<!-- No hardcoded data-theme — the inline script below + the
+     astro:before-swap listener apply the saved theme so navigations don't
+     reset it. Keeping it hardcoded would let Astro's view-transition swap
+     overwrite the user's saved theme on every navigation. -->
+<html lang="en" style="scroll-behavior: smooth;">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -18,13 +22,28 @@ const { title, description = 'AI-native component library with cognitive psychol
   <title>{title} | Cognivo</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <script is:inline>
-    // Set theme BEFORE any CSS loads to prevent flash between pages
+    // Apply saved theme BEFORE any CSS loads — prevents a flash on first
+    // load. For subsequent client-side navigations, the astro:before-swap
+    // listener (registered later) reapplies the theme to the incoming
+    // <html> element so user choice survives view transitions.
     (function() {
       try {
         var t = localStorage.getItem('cognivo-theme') || 'dark';
         document.documentElement.setAttribute('data-theme', t);
       } catch (e) {}
     })();
+    // Survive Astro view transitions — the incoming document's <html>
+    // attribute is empty (we removed the hardcoded data-theme), so we
+    // re-apply from localStorage on every page swap.
+    document.addEventListener('astro:before-swap', function(e) {
+      try {
+        var t = localStorage.getItem('cognivo-theme') || 'dark';
+        // @ts-ignore — newDocument is the about-to-be-swapped-in document
+        if (e.newDocument && e.newDocument.documentElement) {
+          e.newDocument.documentElement.setAttribute('data-theme', t);
+        }
+      } catch (err) {}
+    });
   </script>
   <style>
     /* Force solid backgrounds immediately to prevent flash on navigation */

@@ -31,12 +31,12 @@ export class CgNavigationMenu extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
     :host {
       display: block;
-      position: relative;
       font-family: var(--cg-font-family-primary);
       color: var(--cg-color-surface-container-text);
     }
 
     [role="navigation"] {
+      position: relative;
       display: flex;
       align-items: center;
       gap: var(--cg-spacing-6);
@@ -61,12 +61,27 @@ export class CgNavigationMenu extends LitElement {
     .trigger.open {
       background: var(--cg-color-action-tertiary-background-hover);
     }
+    .trigger:active { transform: scale(var(--cg-interaction-press-scale)); }
     .trigger:focus-visible {
       outline: none;
       box-shadow:
         0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
         0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
+
+    /* Caret indicator on triggers — rotates 180° when open. */
+    .trigger-caret {
+      display: inline-flex;
+      width: var(--cg-icon-size-100);
+      height: var(--cg-icon-size-100);
+      color: var(--cg-color-surface-container-outlined);
+      transition:
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+    }
+    .trigger:hover .trigger-caret,
+    .trigger.open .trigger-caret { color: var(--cg-color-surface-base-text); }
+    .trigger.open .trigger-caret { transform: rotate(180deg); }
 
     .panel {
       position: absolute;
@@ -80,13 +95,13 @@ export class CgNavigationMenu extends LitElement {
       border-radius: var(--cg-border-radius-200);
       box-shadow: var(--cg-shadow-elevation-xl);
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(var(--cg-nm-columns), minmax(0, 1fr));
       gap: var(--cg-spacing-20);
       transform-origin: top;
       animation: navMenuPanelIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
     }
     @keyframes navMenuPanelIn {
-      from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+      from { opacity: 0; transform: translateY(calc(-1 * var(--cg-spacing-6))) scale(0.98); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
@@ -102,6 +117,7 @@ export class CgNavigationMenu extends LitElement {
     .link {
       display: flex;
       flex-direction: column;
+      align-items: flex-start;
       gap: var(--cg-spacing-4);
       padding: var(--cg-spacing-12);
       background: transparent;
@@ -119,20 +135,39 @@ export class CgNavigationMenu extends LitElement {
       width: 100%;
       box-sizing: border-box;
     }
+    /* Optional leading icon — stacks above the title (vertical rhythm). */
+    .link-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--cg-spacing-32);
+      height: var(--cg-spacing-32);
+      margin-bottom: var(--cg-spacing-4);
+      background: var(--cg-color-action-tertiary-background-hover);
+      border-radius: var(--cg-border-radius-100);
+      color: var(--cg-color-accent-text);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+    }
+    .link-icon svg { width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); }
+    .link:hover .link-icon { background: var(--cg-color-surface-container-background); }
     .link:hover {
       background: var(--cg-color-action-tertiary-background-hover);
     }
     .link:active {
       transform: scale(var(--cg-interaction-press-scale));
     }
-    .link-desc {
-      line-height: var(--cg-line-height-relaxed);
+    .link:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
     .link-title {
       font-weight: var(--cg-font-weight-medium);
     }
     .link-desc {
       font-size: var(--cg-font-size-xs);
+      line-height: var(--cg-line-height-relaxed);
       color: var(--cg-color-surface-container-outlined);
     }
   `];
@@ -140,6 +175,8 @@ export class CgNavigationMenu extends LitElement {
   @property({ type: Array }) items: NavMenuItem[] = [];
   @property({ type: Number }) openDelay = 80;
   @property({ type: Number }) closeDelay = 120;
+  /** Panel grid column count. Default 2. */
+  @property({ type: Number }) columns: 1 | 2 | 3 | 4 = 2;
 
   @state() private _openIndex = -1;
   private _openTimer: number | null = null;
@@ -188,17 +225,25 @@ export class CgNavigationMenu extends LitElement {
             class="trigger ${this._openIndex === i ? 'open' : ''}"
             aria-haspopup="menu"
             aria-expanded=${this._openIndex === i ? 'true' : 'false'}
+            aria-controls="cg-navigation-menu-panel"
             @mouseenter=${() => this._scheduleOpen(i)}
             @focus=${() => { this._openIndex = i; }}
             @click=${() => { this._openIndex = this._openIndex === i ? -1 : i; }}
           >
-            ${menu.label}
+            <span>${menu.label}</span>
+            <span class="trigger-caret" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </span>
           </button>
         `)}
         ${this._openIndex >= 0 && this.items[this._openIndex] ? html`
           <div
+            id="cg-navigation-menu-panel"
             class="panel"
             role="menu"
+            style=${`--cg-nm-columns: ${this.columns};`}
             @mouseenter=${() => { this._clearTimers(); }}
             @mouseleave=${this._scheduleClose}
           >
@@ -207,6 +252,7 @@ export class CgNavigationMenu extends LitElement {
                 ${section.heading ? html`<h4 class="section-heading">${section.heading}</h4>` : nothing}
                 ${section.links.map(link => html`
                   <button class="link" role="menuitem" @click=${() => this._selectLink(this.items[this._openIndex]!, link)}>
+                    ${link.icon ? html`<span class="link-icon" aria-hidden="true" .innerHTML=${link.icon}></span>` : nothing}
                     <span class="link-title">${link.title}</span>
                     ${link.description ? html`<span class="link-desc">${link.description}</span>` : nothing}
                   </button>

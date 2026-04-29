@@ -12,6 +12,7 @@ export type { WrapperPropDef } from './create-wrapper.js';
 export { AiThinking } from './components/AiThinking.js';
 export type { AiThinkingProps } from './components/AiThinking.js';
 export { AiBadge } from './components/AiBadge.js';
+export { AiConfidenceBadge } from './components/AiConfidenceBadge.js';
 export { AiChat } from './components/AiChat.js';
 export type { AiChatProps } from './components/AiChat.js';
 export { AiResultPanel } from './components/AiResultPanel.js';
@@ -77,6 +78,7 @@ export { AiDebugConsole } from "./components/AiDebugConsole.js";
 export { AiAccessibilityReport } from "./components/AiAccessibilityReport.js";
 // Final 6
 export { AiSidebar } from "./components/AiSidebar.js";
+export { AiAppSidebar } from "./components/AiAppSidebar.js";
 export { AiCommandPalette } from "./components/AiCommandPalette.js";
 export { AiAvatar } from "./components/AiAvatar.js";
 export { AiProgressSteps } from "./components/AiProgressSteps.js";

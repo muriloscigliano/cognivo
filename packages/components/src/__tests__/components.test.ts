@@ -312,8 +312,14 @@ describe('AI Components — all 19 exported and renderable', () => {
     cleanup(el);
   });
 
-  it('ai-badge renders with score', async () => {
+  it('ai-badge renders with score (legacy shim)', async () => {
     const el = await createElement('ai-badge', { score: 0.9 });
+    expect(el.shadowRoot?.querySelector('ai-confidence-badge')).not.toBeNull();
+    cleanup(el);
+  });
+
+  it('ai-confidence-badge renders with score', async () => {
+    const el = await createElement('ai-confidence-badge', { score: 0.9 });
     expect(el.shadowRoot?.querySelector('.badge')).not.toBeNull();
     cleanup(el);
   });

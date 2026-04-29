@@ -17,7 +17,7 @@
  *
  * @cssprop [--cg-brand-ai-accent=#dfff61] - Play button, waveform progress, and seek fill color
  */
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
@@ -42,13 +42,12 @@ export class AiAudioPlayer extends LitElement {
     .play-btn {
       width: var(--cg-spacing-40);
       height: var(--cg-spacing-40);
-      border-radius: 50%;
+      border-radius: var(--cg-border-radius-full);
       border: none;
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-container-background);
-      font-size: var(--cg-font-size-base);
+      color: var(--cg-color-action-primary-text-default);
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
@@ -59,7 +58,7 @@ export class AiAudioPlayer extends LitElement {
     .play-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .play-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
     }
 
     .content {
@@ -86,7 +85,7 @@ export class AiAudioPlayer extends LitElement {
     }
 
     .time {
-      color: var(--cg-color-input-text-placeholder);
+      color: var(--cg-color-surface-container-outlined);
       font-size: var(--cg-font-size-xs);
       font-variant-numeric: tabular-nums;
       flex-shrink: 0;
@@ -103,7 +102,7 @@ export class AiAudioPlayer extends LitElement {
       flex: 1;
       min-width: var(--cg-spacing-2);
       max-width: var(--cg-spacing-4);
-      border-radius: var(--cg-border-radius-25);
+      border-radius: var(--cg-border-radius-full);
       transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .wave-bar.past {
@@ -117,21 +116,21 @@ export class AiAudioPlayer extends LitElement {
       width: 100%;
       height: var(--cg-spacing-4);
       background: var(--cg-color-surface-cards-border);
-      border-radius: var(--cg-border-radius-25);
+      border-radius: var(--cg-border-radius-full);
       cursor: pointer;
       position: relative;
     }
     .progress-fill {
       height: 100%;
       background: var(--cg-color-action-primary-background-default);
-      border-radius: var(--cg-border-radius-25);
-      transition: width var(--cg-transition-duration-fast) linear;
+      border-radius: var(--cg-border-radius-full);
+      transition: width var(--cg-transition-duration-fast) var(--cg-transition-easing-linear);
     }
 
     .speed-btn {
       background: none;
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      color: var(--cg-color-input-text-placeholder);
+      color: var(--cg-color-surface-container-outlined);
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-bold);
       padding: var(--cg-spacing-4) var(--cg-spacing-8);
@@ -139,11 +138,17 @@ export class AiAudioPlayer extends LitElement {
       cursor: pointer;
       flex-shrink: 0;
       font-family: inherit;
+      transition:
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .speed-btn:hover { color: var(--cg-color-surface-base-text); }
+    .speed-btn:hover {
+      color: var(--cg-color-surface-base-text);
+      background: var(--cg-color-action-tertiary-background-hover);
+    }
     .speed-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
     }
     @media (prefers-reduced-motion: reduce) {
       .wave-bar { transition: none; }
@@ -270,7 +275,9 @@ export class AiAudioPlayer extends LitElement {
           class="play-btn"
           aria-label=${this._playing ? 'Pause' : 'Play'}
           @click=${this._togglePlay}
-        >${this._playing ? html`<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>` : html`<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`}</button>
+        >
+          <cg-icon name="${this._playing ? 'pause' : 'play'}" size="sm"></cg-icon>
+        </button>
 
         <div class="content">
           <div class="title-row">

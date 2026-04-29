@@ -110,6 +110,7 @@ export class CgAlertDialog extends LitElement {
       margin: 0;
       line-height: var(--cg-line-height-relaxed);
     }
+    .header-text { flex: 1; }
 
     .body {
       margin: var(--cg-spacing-16) 0;
@@ -195,7 +196,7 @@ export class CgAlertDialog extends LitElement {
         aria-modal="true"
         aria-labelledby="alert-title"
         aria-describedby="alert-description"
-        ?hidden=${!this.open}
+        ?inert=${!this.open}
       >
         <div class="header">
           <slot name="icon">
@@ -208,7 +209,7 @@ export class CgAlertDialog extends LitElement {
               </div>
             ` : nothing}
           </slot>
-          <div style="flex: 1;">
+          <div class="header-text">
             ${this.title ? html`<h2 id="alert-title" class="title">${this.title}</h2>` : nothing}
             ${this.description ? html`<p id="alert-description" class="description">${this.description}</p>` : nothing}
           </div>
@@ -217,14 +218,15 @@ export class CgAlertDialog extends LitElement {
         <div class="actions">
           <slot name="actions">
             <cg-button
-              variant="secondary"
+              variant="tertiary"
               size="md"
               data-cancel
               @click=${this._cancel}
               ?disabled=${this.loading}
             >${this.cancelLabel}</cg-button>
             <cg-button
-              variant="${this.destructive ? 'danger' : 'primary'}"
+              variant="primary"
+              type="${this.destructive ? 'danger' : 'normal'}"
               size="md"
               data-confirm
               @click=${this._confirm}

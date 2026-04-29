@@ -1,15 +1,15 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { AiBadge } from '../components/ai-badge/ai-badge.js';
+import { AiConfidenceBadge } from '../components/ai-confidence-badge/ai-confidence-badge.js';
 
 if (!customElements.get('ai-badge-ext')) {
-  customElements.define('ai-badge-ext', class extends AiBadge {});
+  customElements.define('ai-badge-ext', class extends AiConfidenceBadge {});
 }
 
 describe('ai-badge extended features', () => {
-  let el: AiBadge;
+  let el: AiConfidenceBadge;
 
   beforeEach(async () => {
-    el = document.createElement('ai-badge-ext') as AiBadge;
+    el = document.createElement('ai-badge-ext') as AiConfidenceBadge;
     document.body.appendChild(el);
     await el.updateComplete;
   });
@@ -84,7 +84,7 @@ describe('ai-badge extended features', () => {
     el.score = 0.95;
     await el.updateComplete;
     let detail: any = null;
-    el.addEventListener('ai-badge-click', ((e: CustomEvent) => { detail = e.detail; }) as EventListener);
+    el.addEventListener('ai-confidence-badge-click', ((e: CustomEvent) => { detail = e.detail; }) as EventListener);
     (el.shadowRoot!.querySelector('.badge') as HTMLElement).click();
     expect(detail).not.toBeNull();
     expect(detail.score).toBe(0.95);
@@ -93,7 +93,7 @@ describe('ai-badge extended features', () => {
 
   it('handles keyboard Enter', async () => {
     let clicked = false;
-    el.addEventListener('ai-badge-click', () => { clicked = true; });
+    el.addEventListener('ai-confidence-badge-click', () => { clicked = true; });
     const badge = el.shadowRoot!.querySelector('.badge') as HTMLElement;
     badge.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     expect(clicked).toBe(true);

@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, menuListStyles } from '../../styles/index.js';
 import { applyFloatingPosition } from '../../utils/floating.js';
 import { bindOutsideClick } from '../../utils/outside-click.js';
 import { handleRovingKey } from '../../utils/roving-index.js';
@@ -39,7 +39,7 @@ export interface ContextMenuItem {
  */
 @customElement('cg-context-menu')
 export class CgContextMenu extends LitElement {
-  static override styles = [hostBlock, reducedMotion, css`
+  static override styles = [hostBlock, reducedMotion, menuListStyles, css`
     :host {
       display: inline-block;
       position: relative;
@@ -47,91 +47,14 @@ export class CgContextMenu extends LitElement {
 
     .trigger { display: inline-flex; }
 
+    /* Context-menu-specific positioning. Visual styling (surface, items,
+       icons, shortcut, divider, animation, rounded variants) inherited
+       from menuListStyles for consistency with cg-dropdown / cg-menubar /
+       cg-split-button. */
     .menu {
       position: fixed;
       z-index: var(--cg-z-index-500);
-      min-width: var(--cg-component-context-menu-min-width);
-      padding: var(--cg-spacing-6);
-      background: var(--cg-color-surface-popover-background);
-      border: var(--cg-border-width-50) solid var(--cg-color-surface-popover-border);
-      border-radius: var(--cg-component-context-menu-radius);
-      box-shadow: var(--cg-shadow-elevation-xl);
-      opacity: 0;
-      transform: scale(0.96) translateY(4px);
-      transform-origin: top left;
-      pointer-events: none;
-      transition:
-        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
       list-style: none;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: var(--cg-spacing-2);
-    }
-    :host([open]) .menu {
-      opacity: 1;
-      transform: scale(1);
-      pointer-events: auto;
-    }
-
-    .item {
-      display: flex;
-      align-items: center;
-      gap: var(--cg-spacing-8);
-      width: 100%;
-      height: var(--cg-component-context-menu-item-height);
-      padding: 0 var(--cg-spacing-12);
-      border: none;
-      background: none;
-      color: var(--cg-color-surface-popover-text);
-      font-family: inherit;
-      font-size: var(--cg-font-size-sm);
-      line-height: var(--cg-line-height-snug);
-      text-align: left;
-      cursor: pointer;
-      border-radius: var(--cg-border-radius-50);
-      transition:
-        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
-    }
-    .item:hover:not([disabled]),
-    .item[data-active]:not([disabled]) {
-      background: var(--cg-color-action-tertiary-background-hover);
-    }
-    .item:active:not([disabled]) {
-      transform: scale(var(--cg-interaction-press-scale));
-    }
-    .item:focus-visible {
-      outline: none;
-      box-shadow:
-        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
-        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
-    }
-    .item[disabled] {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-    .item.danger { color: var(--cg-color-status-error-text-default); }
-    .item.danger:hover:not([disabled]),
-    .item.danger[data-active]:not([disabled]) {
-      background: var(--cg-color-status-error-background-default);
-    }
-
-    .shortcut {
-      margin-left: auto;
-      font: 500 var(--cg-font-size-xs) var(--cg-font-family-mono);
-      color: var(--cg-color-surface-popover-text);
-      opacity: 0.5;
-    }
-
-    .separator {
-      height: var(--cg-border-width-50);
-      margin: var(--cg-spacing-6) var(--cg-spacing-6);
-      background: var(--cg-color-surface-popover-border);
-      opacity: 0.6;
-      border: none;
     }
   `];
 
@@ -145,17 +68,70 @@ export class CgContextMenu extends LitElement {
 
   private _disposeOutsideClick: (() => void) | null = null;
 
+  /** Long-press support — touch equivalent of right-click. Opens the menu
+   * after 500ms of stationary press. Auto-cancels if the pointer moves more
+   * than a few pixels (a drag, not a press). */
+  private _pressTimer: number | null = null;
+  private _pressStartX = 0;
+  private _pressStartY = 0;
+  private static readonly LONG_PRESS_MS = 500;
+  private static readonly LONG_PRESS_TOLERANCE_PX = 8;
+
   override connectedCallback(): void {
     super.connectedCallback();
     this.addEventListener('contextmenu', this._onContextMenu);
+    this.addEventListener('pointerdown', this._onPointerDown);
+    this.addEventListener('pointermove', this._onPointerMove);
+    this.addEventListener('pointerup', this._cancelLongPress);
+    this.addEventListener('pointercancel', this._cancelLongPress);
+    this.addEventListener('pointerleave', this._cancelLongPress);
   }
 
   override disconnectedCallback(): void {
     super.disconnectedCallback();
     this.removeEventListener('contextmenu', this._onContextMenu);
+    this.removeEventListener('pointerdown', this._onPointerDown);
+    this.removeEventListener('pointermove', this._onPointerMove);
+    this.removeEventListener('pointerup', this._cancelLongPress);
+    this.removeEventListener('pointercancel', this._cancelLongPress);
+    this.removeEventListener('pointerleave', this._cancelLongPress);
+    this._cancelLongPress();
     this._disposeOutsideClick?.();
     this._disposeOutsideClick = null;
   }
+
+  private _onPointerDown = (e: PointerEvent): void => {
+    // Only touch / pen — mouse uses contextmenu.
+    if (e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
+    if (this.disabled) return;
+    this._pressStartX = e.clientX;
+    this._pressStartY = e.clientY;
+    this._pressTimer = window.setTimeout(() => {
+      // Synthesize a contextmenu-equivalent event at the press location.
+      const synthetic = new MouseEvent('contextmenu', {
+        clientX: this._pressStartX,
+        clientY: this._pressStartY,
+        bubbles: true,
+      });
+      this._onContextMenu(synthetic);
+    }, CgContextMenu.LONG_PRESS_MS);
+  };
+
+  private _onPointerMove = (e: PointerEvent): void => {
+    if (this._pressTimer === null) return;
+    const dx = Math.abs(e.clientX - this._pressStartX);
+    const dy = Math.abs(e.clientY - this._pressStartY);
+    if (dx > CgContextMenu.LONG_PRESS_TOLERANCE_PX || dy > CgContextMenu.LONG_PRESS_TOLERANCE_PX) {
+      this._cancelLongPress();
+    }
+  };
+
+  private _cancelLongPress = (): void => {
+    if (this._pressTimer !== null) {
+      window.clearTimeout(this._pressTimer);
+      this._pressTimer = null;
+    }
+  };
 
   private _onContextMenu = (e: Event): void => {
     if (this.disabled) return;
@@ -242,23 +218,25 @@ export class CgContextMenu extends LitElement {
         aria-orientation="vertical"
         ?hidden=${!this.open}
       >
-        ${this.items.map(item => {
+        ${this.items.map((item, idx) => {
           if (item.separator) {
-            return html`<li role="separator" class="separator"></li>`;
+            return html`<li role="separator" class="divider"></li>`;
           }
           selectableIdx++;
           const isActive = selectableIdx === this._activeIndex;
           return html`
             <li role="none">
               <button
-                class="item ${item.danger ? 'danger' : ''}"
+                class="menu-item ${item.danger ? 'danger' : ''}"
                 role="menuitem"
                 ?disabled=${item.disabled}
                 data-active=${isActive ? 'true' : nothing}
+                style="--stagger-index: ${idx}"
                 @click=${() => this._handleItemClick(item)}
               >
+                ${item.icon ? html`<cg-icon class="menu-item-icon" name=${item.icon} size="sm"></cg-icon>` : nothing}
                 <span>${item.label}</span>
-                ${item.shortcut ? html`<span class="shortcut">${item.shortcut}</span>` : nothing}
+                ${item.shortcut ? html`<span class="menu-item-shortcut">${item.shortcut}</span>` : nothing}
               </button>
             </li>
           `;

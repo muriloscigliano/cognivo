@@ -42,13 +42,13 @@ export class CgPopover extends LitElement {
       min-width: var(--cg-spacing-160);
       max-width: var(--cg-component-popover-max-width);
       padding: var(--cg-component-popover-padding);
-      background: var(--cg-color-surface-popover-background);
-      border: var(--cg-border-width-50) solid var(--cg-color-surface-popover-border);
+      background: var(--cg-color-modal-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
       border-radius: var(--cg-component-popover-radius);
-      color: var(--cg-color-surface-popover-text);
-      box-shadow: var(--cg-shadow-elevation-xl);
+      color: var(--cg-color-surface-container-text);
+      box-shadow: var(--cg-elevation-3);
       opacity: 0;
-      transform: scale(0.96) translateY(4px);
+      transform: scale(0.96) translateY(var(--cg-spacing-4));
       pointer-events: none;
       transition:
         opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
@@ -84,8 +84,8 @@ export class CgPopover extends LitElement {
       position: absolute;
       width: var(--cg-component-popover-arrow-size);
       height: var(--cg-component-popover-arrow-size);
-      background: var(--cg-color-surface-popover-background);
-      border: var(--cg-border-width-50) solid var(--cg-color-surface-popover-border);
+      background: var(--cg-color-modal-container-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
       transform: rotate(45deg);
       pointer-events: none;
     }

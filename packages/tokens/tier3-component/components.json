@@ -213,7 +213,12 @@
     },
     "navbar": {
       "height": { "$type": "dimension", "$value": "64px" },
-      "padding-x": { "$type": "dimension", "$value": "{spacing.24}" }
+      "height-compact": { "$type": "dimension", "$value": "56px" },
+      "padding-x": { "$type": "dimension", "$value": "{spacing.24}" },
+      "item-padding-x": { "$type": "dimension", "$value": "{spacing.16}" },
+      "item-padding-y": { "$type": "dimension", "$value": "{spacing.8}" },
+      "item-gap": { "$type": "dimension", "$value": "{spacing.4}" },
+      "floating-margin": { "$type": "dimension", "$value": "{spacing.12}" }
     },
     "scroll-area": {
       "scrollbar-size": { "$type": "dimension", "$value": "{spacing.12}" },
@@ -221,9 +226,29 @@
     },
     "kbd": {
       "radius": { "$type": "dimension", "$value": "{border.radius.50}" },
-      "padding-x": { "$type": "dimension", "$value": "{spacing.6}" },
-      "padding-y": { "$type": "dimension", "$value": "{spacing.2}" },
-      "min-width": { "$type": "dimension", "$value": "{spacing.20}" }
+      "min-width": {
+        "sm": { "$type": "dimension", "$value": "{spacing.16}" },
+        "md": { "$type": "dimension", "$value": "{spacing.20}" },
+        "lg": { "$type": "dimension", "$value": "{spacing.24}" }
+      },
+      "padding-x": {
+        "sm": { "$type": "dimension", "$value": "{spacing.4}" },
+        "md": { "$type": "dimension", "$value": "{spacing.6}" },
+        "lg": { "$type": "dimension", "$value": "{spacing.12}" }
+      },
+      "padding-y": {
+        "sm": { "$type": "dimension", "$value": "{spacing.1}" },
+        "md": { "$type": "dimension", "$value": "{spacing.2}" },
+        "lg": { "$type": "dimension", "$value": "{spacing.6}" }
+      },
+      "font-size": {
+        "sm": { "$type": "dimension", "$value": "{font.size.xs}" },
+        "md": { "$type": "dimension", "$value": "{font.size.xs}" },
+        "lg": { "$type": "dimension", "$value": "{font.size.sm}" }
+      }
+    },
+    "markdown": {
+      "scroll-margin": { "$type": "dimension", "$value": "{spacing.80}" }
     },
     "calendar": {
       "cell-size": { "$type": "dimension", "$value": "36px" },

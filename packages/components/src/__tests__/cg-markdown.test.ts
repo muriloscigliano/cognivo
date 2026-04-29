@@ -39,11 +39,15 @@ describe('cg-markdown', () => {
     expect(md.innerHTML).toContain('<p>Hello world</p>');
   });
 
-  it('renders h1 headings', async () => {
+  it('renders h1 headings with auto-anchor id + permalink', async () => {
     await create({ text: '# Heading One' });
     const md = el.shadowRoot!.querySelector('.md')!;
-    expect(md.querySelector('h1')).not.toBeNull();
-    expect(md.querySelector('h1')!.textContent).toBe('Heading One');
+    const h1 = md.querySelector('h1')!;
+    expect(h1).not.toBeNull();
+    // Auto-anchored headings have an id slug + a `#` permalink anchor child.
+    expect(h1.id).toBe('heading-one');
+    expect(h1.firstChild?.textContent?.trim()).toBe('Heading One');
+    expect(h1.querySelector('a.anchor')?.getAttribute('href')).toBe('#heading-one');
   });
 
   it('renders h2 headings', async () => {
@@ -203,5 +207,35 @@ describe('cg-markdown', () => {
     expect(code!.textContent).toBe('**not bold**');
     // And there should be NO <strong> inside the code
     expect(code!.querySelector('strong')).toBeNull();
+  });
+
+  it('renders GitHub-style alert variants', async () => {
+    await create({ text: '> [!WARNING]\n> Be careful here.' });
+    const md = el.shadowRoot!.querySelector('.md')!;
+    const alert = md.querySelector('blockquote.alert.alert-warning');
+    expect(alert).not.toBeNull();
+    expect(alert!.querySelector('.alert-label')?.textContent).toBe('Warning');
+    expect(alert!.querySelector('.alert-body')?.textContent).toContain('Be careful here.');
+  });
+
+  it('renders task list checkboxes', async () => {
+    await create({ text: '- [ ] todo\n- [x] done' });
+    const md = el.shadowRoot!.querySelector('.md')!;
+    const list = md.querySelector('ul.task-list');
+    expect(list).not.toBeNull();
+    const checks = list!.querySelectorAll('.task-check');
+    expect(checks.length).toBe(2);
+    expect(checks[0]?.classList.contains('task-check-on')).toBe(false);
+    expect(checks[1]?.classList.contains('task-check-on')).toBe(true);
+  });
+
+  it('renders code block with language label + copy button', async () => {
+    await create({ text: '```typescript\nconst x = 1;\n```' });
+    const md = el.shadowRoot!.querySelector('.md')!;
+    const block = md.querySelector('.code-block');
+    expect(block).not.toBeNull();
+    expect(block!.querySelector('.code-lang')?.textContent).toBe('typescript');
+    expect(block!.querySelector('.code-copy')).not.toBeNull();
+    expect(block!.querySelector('pre code')?.classList.contains('language-typescript')).toBe(true);
   });
 });

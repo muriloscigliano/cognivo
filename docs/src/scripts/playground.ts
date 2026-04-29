@@ -196,7 +196,28 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   if (tag === 'cg-label') { e.text = 'Email address'; e.hint = 'We will never share your email.'; }
   if (tag === 'cg-callout') { e.title = 'Heads up'; e.description = 'This is an important message for the user.'; }
   if (tag === 'cg-progress-bar') { e.value = 68; e.label = 'Upload progress'; e.description = 'Uploading 3 files...'; e.showValue = true; e.buffer = 85; }
-  if (tag === 'cg-code-block') { e.code = 'const greeting = "Hello, Cognivo!";\nconsole.log(greeting);'; e.language = 'javascript'; }
+  if (tag === 'cg-code-block') {
+    e.filename = 'greeting.ts';
+    e.language = 'typescript';
+    e.lineNumbers = true;
+    e.code = `import { Cognivo } from '@cognivo/core';
+
+interface GreetingOptions {
+  name: string;
+  enthusiastic?: boolean;
+}
+
+function greet({ name, enthusiastic = false }: GreetingOptions): string {
+  // Build the message
+  const punctuation = enthusiastic ? '!' : '.';
+  return \`Hello, \${name}\${punctuation}\`;
+}
+
+const message = greet({ name: 'Cognivo', enthusiastic: true });
+console.log(message);`;
+    liveElement.style.maxWidth = '720px';
+    liveElement.style.width = '100%';
+  }
   if (tag === 'cg-markdown') { e.text = '# Getting Started\n\nCognivo is an **AI-native component library** with 180+ web components built with *Lit 3*.\n\n## Installation\n\n```bash\npnpm add @cognivo/components\n```\n\n| Feature | Status |\n|---------|--------|\n| Components | 180+ |\n| Tokens | 1,800+ |'; liveElement.style.maxWidth = '640px'; }
   if (tag === 'cg-pagination') {
     e.total = 20; e.current = 5;
@@ -214,6 +235,105 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   if (tag === 'cg-listbox') { e.label = 'Choose a framework'; e.options = [{ value: 'react', label: 'React' }, { value: 'vue', label: 'Vue' }, { value: 'svelte', label: 'Svelte' }, { value: 'lit', label: 'Lit' }]; e.value = 'react'; liveElement.style.maxWidth = '300px'; }
   if (tag === 'cg-table') { e.columns = [{ key: 'name', label: 'Name', sortable: true }, { key: 'role', label: 'Role', sortable: true }, { key: 'status', label: 'Status' }]; e.rows = [['Kate Moore', 'CEO', 'Active'], ['John Smith', 'CTO', 'Active'], ['Sara Johnson', 'CMO', 'On Leave']]; e.selectable = true; }
   if (tag === 'cg-tooltip') { const inner = document.createElement('cg-button'); inner.textContent = 'Hover me'; liveElement.appendChild(inner); e.content = 'Tooltip text'; }
+
+  // cg-tree-view — bare element renders empty; seed a file-tree with icons
+  // (folders + files) so the toggle chevrons, leading icons, selected/hover
+  // states, and indentation are all visible at once.
+  if (tag === 'cg-tree-view') {
+    e.items = [
+      {
+        label: 'src',
+        icon: 'folder',
+        expanded: true,
+        children: [
+          {
+            label: 'components',
+            icon: 'folder',
+            expanded: true,
+            children: [
+              { label: 'cg-button', icon: 'code' },
+              { label: 'cg-tree-view', icon: 'code' },
+              { label: 'cg-card', icon: 'code' },
+            ],
+          },
+          {
+            label: 'utils',
+            icon: 'folder',
+            children: [
+              { label: 'focus-trap.ts', icon: 'file' },
+              { label: 'roving-index.ts', icon: 'file' },
+            ],
+          },
+          { label: 'index.ts', icon: 'file' },
+        ],
+      },
+      {
+        label: 'tests',
+        icon: 'folder',
+        children: [
+          { label: 'cg-button.test.ts', icon: 'file' },
+          { label: 'cg-tree-view.test.ts', icon: 'file' },
+        ],
+      },
+      { label: 'package.json', icon: 'document' },
+      { label: 'README.md', icon: 'document' },
+      { label: '.gitignore', icon: 'file', disabled: true },
+    ];
+    liveElement.style.maxWidth = '380px';
+    liveElement.style.width = '100%';
+  }
+
+  // cg-menubar — bare element renders as an empty bar; seed with realistic
+  // app-style items (File / Edit / View) that exercise shortcuts, separator,
+  // disabled, and danger.
+  if (tag === 'cg-menubar') {
+    e.items = [
+      {
+        label: 'File',
+        children: [
+          { id: 'new', label: 'New file', shortcut: '⌘N' },
+          { id: 'open', label: 'Open…', shortcut: '⌘O' },
+          { id: 'save', label: 'Save', shortcut: '⌘S' },
+          { id: 'save-as', label: 'Save as…', shortcut: '⌘⇧S' },
+          { separator: true, label: '' },
+          { id: 'close', label: 'Close window', shortcut: '⌘W' },
+          { id: 'quit', label: 'Quit', shortcut: '⌘Q', danger: true },
+        ],
+      },
+      {
+        label: 'Edit',
+        children: [
+          { id: 'undo', label: 'Undo', shortcut: '⌘Z' },
+          { id: 'redo', label: 'Redo', shortcut: '⌘⇧Z' },
+          { separator: true, label: '' },
+          { id: 'cut', label: 'Cut', shortcut: '⌘X' },
+          { id: 'copy', label: 'Copy', shortcut: '⌘C' },
+          { id: 'paste', label: 'Paste', shortcut: '⌘V' },
+          { id: 'paste-special', label: 'Paste special…', disabled: true },
+        ],
+      },
+      {
+        label: 'View',
+        children: [
+          { id: 'zoom-in', label: 'Zoom in', shortcut: '⌘+' },
+          { id: 'zoom-out', label: 'Zoom out', shortcut: '⌘−' },
+          { id: 'reset-zoom', label: 'Reset zoom', shortcut: '⌘0' },
+          { separator: true, label: '' },
+          { id: 'fullscreen', label: 'Toggle fullscreen', shortcut: 'F11' },
+        ],
+      },
+      {
+        label: 'Help',
+        children: [
+          { id: 'docs', label: 'Documentation' },
+          { id: 'shortcuts', label: 'Keyboard shortcuts', shortcut: '⌘/' },
+          { separator: true, label: '' },
+          { id: 'about', label: 'About Cognivo' },
+        ],
+      },
+    ];
+    liveElement.style.maxWidth = '480px';
+  }
 
   // cg-toaster — pins to viewport by default (position:fixed), which puts
   // toasts off-screen relative to the preview box. Override to absolute so
@@ -323,10 +443,18 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   // AI Components
   if (tag === 'ai-thinking') { e.text = 'Analyzing your data...'; e.delay = 0; }
   if (tag === 'ai-streaming-text') { liveElement.style.maxWidth = '520px'; e.streaming = true; const text = 'Cognivo provides **140 web components** built with Lit 3.\n\nAll tokens work in both `light` and `dark` themes.'; let i = 0; const iv = setInterval(() => { if (i < text.length) { e.appendText?.(text[i]); i++; } else { e.complete?.(); clearInterval(iv); } }, 20); }
-  if (tag === 'ai-badge') e.label = 'AI Generated';
+  if (tag === 'ai-badge' || tag === 'ai-confidence-badge') { e.score = 0.92; e.explanation = 'High-confidence response based on 5 sources'; }
   if (tag === 'ai-feedback') e.variant = 'thumbs';
   if (tag === 'ai-copy-button') e.text = 'npm install @cognivo/components';
-  if (tag === 'ai-empty-state') { e.title = 'No conversations yet'; e.description = 'Start a new conversation to get AI-powered insights.'; e.icon = 'chat'; }
+  if (tag === 'ai-empty-state') {
+    e.variant = 'ai';
+    e.title = 'No insights yet';
+    e.description = 'Run an analysis to generate AI-powered insights from your data.';
+    e.actionLabel = 'Start Analysis';
+    // Icon prop accepts raw SVG markup; provide a sparkle (AI motif).
+    e.icon = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>';
+    liveElement.style.maxWidth = '360px';
+  }
   if (tag === 'ai-insight-card') { e.type = 'explanation'; e.text = 'Revenue increased 23% month-over-month driven by enterprise upgrades.'; e.confidence = 0.91; e.timestamp = '2 min ago'; e.status = 'new'; }
   if (tag === 'ai-alert-card') { e.title = 'Token Budget Exceeded'; e.message = 'Context window is at 98% capacity.'; e.urgency = 'urgent'; e.deadline = '2h remaining'; e.actionLabel = 'Truncate'; }
   if (tag === 'ai-token-tracker') { e.inputTokens = 1250; e.outputTokens = 890; e.cost = 0.0089; e.latency = 2400; e.model = 'Claude 3.5 Sonnet'; e.budget = 1.00; liveElement.style.maxWidth = '400px'; }
@@ -369,7 +497,44 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   if (tag === 'ai-data-card') { e.title = 'Invoice #4821'; e.subtitle = 'March 12, 2026'; e.headerStatus = 'success'; e.headerStatusLabel = 'Paid'; e.fields = [{ label: 'Amount', value: '$1,240.00', type: 'currency' }, { label: 'Customer', value: 'Acme Corp', type: 'text' }]; liveElement.style.maxWidth = '480px'; liveElement.style.width = '100%'; }
 
   // Batch: components with complex data (from the 28 we added)
-  if (tag === 'ai-accessibility-report') { e.issues = [{ id: '1', severity: 'critical', element: '<img>', rule: 'img-alt', message: 'Image missing alt text', suggestion: 'Add alt attribute' }, { id: '2', severity: 'warning', element: '<button>', rule: 'button-name', message: 'Button has no accessible name' }]; liveElement.style.maxWidth = '520px'; }
+  if (tag === 'ai-accessibility-report') {
+    e.title = 'Page Audit';
+    e.score = 78;
+    e.totalChecks = 24;
+    e.issues = [
+      {
+        rule: 'color-contrast',
+        level: 'AA',
+        severity: 'error',
+        element: '<button class="cta">',
+        description: 'Text has insufficient contrast ratio (3.2:1, minimum is 4.5:1).',
+        fix: 'Increase the text color contrast against its background to at least 4.5:1.',
+      },
+      {
+        rule: 'image-alt',
+        level: 'A',
+        severity: 'error',
+        element: '<img src="/hero.png">',
+        description: '3 images are missing alt attributes.',
+        fix: 'Add a descriptive `alt` attribute to each image, or `alt=""` for decorative images.',
+      },
+      {
+        rule: 'button-name',
+        level: 'A',
+        severity: 'warning',
+        element: '<button>',
+        description: 'Button has no accessible name (no text content, aria-label, or aria-labelledby).',
+        fix: 'Add visible text inside the button or set `aria-label="..."`.',
+      },
+      {
+        rule: 'heading-order',
+        level: 'AA',
+        severity: 'info',
+        description: 'Heading levels skip from h2 to h4. Consider using h3 instead.',
+      },
+    ];
+    liveElement.style.maxWidth = '560px';
+  }
   if (tag === 'ai-action-preview') { e.title = 'Send Email'; e.description = 'This will send an email.'; e.details = { to: 'team@acme.com', subject: 'Q4 Report' }; liveElement.style.maxWidth = '460px'; }
   if (tag === 'ai-analytics-chart') { e.title = 'Monthly Revenue'; e.series = [{ label: 'Jan', value: 42000 }, { label: 'Feb', value: 48000 }, { label: 'Mar', value: 55000 }, { label: 'Apr', value: 62000 }]; liveElement.style.maxWidth = '500px'; }
   if (tag === 'ai-api-key-manager') { e.keys = [{ id: '1', name: 'Production', prefix: 'sk-prod-****7f3a', created: '2026-01-15', status: 'active' }, { id: '2', name: 'Development', prefix: 'sk-dev-****2b1c', created: '2026-02-20', status: 'active' }]; liveElement.style.maxWidth = '520px'; }
@@ -382,25 +547,148 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   if (tag === 'ai-feature-flag') { e.flags = [{ id: 'dark-mode', name: 'Dark Mode', enabled: true, description: 'Enable dark theme' }, { id: 'ai-suggestions', name: 'AI Suggestions', enabled: true, rollout: 75 }, { id: 'new-dashboard', name: 'New Dashboard', enabled: false }]; liveElement.style.maxWidth = '480px'; }
   if (tag === 'ai-json-viewer') { e.data = { model: 'claude-3.5-sonnet', usage: { input_tokens: 1250, output_tokens: 890 } }; liveElement.style.maxWidth = '500px'; }
   if (tag === 'ai-keyboard-shortcuts') { e.shortcuts = [{ keys: ['⌘', 'K'], description: 'Search', category: 'Navigation' }, { keys: ['⌘', 'N'], description: 'New conversation', category: 'Actions' }]; liveElement.style.maxWidth = '420px'; }
-  if (tag === 'ai-model-comparison') { e.models = [{ name: 'GPT-4o', provider: 'OpenAI', latency: '1.2s', cost: '$0.015/1K', quality: 92 }, { name: 'Claude 3.5 Sonnet', provider: 'Anthropic', latency: '0.8s', cost: '$0.008/1K', quality: 94 }]; liveElement.style.maxWidth = '560px'; }
-  if (tag === 'ai-notification-center') { e.notifications = [{ id: '1', title: 'Analysis Complete', message: 'Q4 report ready', type: 'success', timestamp: Date.now() - 60000 }, { id: '2', title: 'Rate Limit Warning', message: '80% quota used', type: 'warning', timestamp: Date.now() - 300000 }]; liveElement.style.maxWidth = '420px'; }
-  if (tag === 'ai-onboarding') { e.steps = [{ id: '1', title: 'Connect data', status: 'complete' }, { id: '2', title: 'Configure model', status: 'active' }, { id: '3', title: 'Test & deploy', status: 'pending' }]; liveElement.style.maxWidth = '480px'; }
-  if (tag === 'ai-permission-gate') { e.permissions = [{ id: 'read', label: 'Read access', granted: true }, { id: 'write', label: 'Write access', granted: true }, { id: 'admin', label: 'Admin access', granted: false }]; liveElement.style.maxWidth = '440px'; }
-  if (tag === 'ai-presence') { e.users = [{ id: '1', name: 'Alice', status: 'online', activity: 'Editing' }, { id: '2', name: 'Bob', status: 'away' }]; liveElement.style.maxWidth = '320px'; }
+  if (tag === 'ai-model-comparison') { e.models = [{ name: 'GPT-4o', provider: 'OpenAI', scores: { reasoning: 92, coding: 88, speed: 75, multilingual: 86 }, costTier: '$$$', contextWindow: 128000 }, { name: 'Claude 3.5', provider: 'Anthropic', scores: { reasoning: 95, coding: 92, speed: 82, multilingual: 89 }, costTier: '$$', contextWindow: 200000 }, { name: 'Gemini 1.5', provider: 'Google', scores: { reasoning: 88, coding: 84, speed: 90, multilingual: 91 }, costTier: '$', contextWindow: 1000000 }]; liveElement.style.maxWidth = '720px'; }
+  if (tag === 'ai-notification-center') {
+    const now = Date.now();
+    e.notifications = [
+      { id: '1', title: 'Analysis Complete', message: 'Q4 revenue report is ready to review.', type: 'success', timestamp: now - 60_000 },
+      { id: '2', title: 'Rate Limit Warning', message: '80% of daily quota used. Consider upgrading.', type: 'warning', timestamp: now - 30 * 60_000 },
+      { id: '3', title: 'Model Update', message: 'Claude 3.5 Sonnet v2 is now available across all workspaces.', type: 'info', timestamp: now - 5 * 3600_000, read: true },
+      { id: '4', title: 'Webhook delivery failed', message: 'Retry exhausted after 5 attempts to https://hooks.example.com/incoming.', type: 'error', timestamp: now - 26 * 3600_000 },
+      { id: '5', title: 'Weekly digest', message: 'Your team shipped 47 AI completions and 12 new prompts last week.', type: 'info', timestamp: now - 4 * 86400_000, read: true },
+    ];
+    liveElement.style.maxWidth = '420px';
+  }
+  if (tag === 'ai-onboarding') { e.steps = [{ title: 'Welcome to Cognivo', description: 'Build AI-native interfaces with cognitive design intelligence — let us show you around.' }, { title: 'Ask in natural language', description: 'Describe a UI in plain English and watch the streaming generative renderer assemble it.' }, { title: 'Inspect bias signals', description: 'Every component you ship is annotated with the cognitive biases it engages — review and tune.' }, { title: 'Ship with confidence', description: 'Token-governed CSS, WCAG AA contrast, and SSR-ready out of the box.' }]; e.active = 0; e.dismissible = true; e.progress = 'bar'; liveElement.style.maxWidth = '440px'; }
+  if (tag === 'ai-permission-gate') {
+    e.currentRole = 'editor';
+    e.permissions = [
+      { feature: 'AI Chat', role: 'editor', allowed: true },
+      { feature: 'Model Selection', role: 'editor', allowed: true },
+      { feature: 'Fine-tuning', role: 'editor', allowed: false, reason: 'Admin only' },
+      { feature: 'API Keys', role: 'editor', allowed: false, reason: 'Owner only' },
+      { feature: 'Billing', role: 'editor', allowed: false, reason: 'Owner only' },
+    ];
+    liveElement.style.maxWidth = '440px';
+  }
+  if (tag === 'ai-presence') {
+    e.users = [
+      { name: 'Alice Chen', status: 'online' },
+      { name: 'Bob Miller', status: 'away', lastSeen: '5m ago' },
+      { name: 'Carol Diaz', status: 'busy' },
+      { name: 'Dave Patel', status: 'offline', lastSeen: '2h ago' },
+      { name: 'Eve Singh', status: 'online' },
+      { name: 'Frank Wu', status: 'online' },
+    ];
+    e.maxVisible = 4;
+    e.size = 'md';
+    liveElement.style.maxWidth = '360px';
+  }
   if (tag === 'ai-progress-steps') { e.phases = [{ label: 'Collection', status: 'complete', progress: 100 }, { label: 'Processing', status: 'active', progress: 65 }, { label: 'Analysis', status: 'pending', progress: 0 }]; liveElement.style.maxWidth = '480px'; }
   if (tag === 'ai-prompt-template') { e.template = 'You are a {{role}}. Analyze {{topic}}.'; e.variables = { role: 'data analyst', topic: 'revenue' }; liveElement.style.maxWidth = '520px'; }
-  if (tag === 'ai-sidebar') { e.sections = [{ id: 'recent', label: 'Recent', items: [{ id: '1', label: 'Q4 Analysis' }, { id: '2', label: 'Research' }] }]; liveElement.style.maxWidth = '260px'; liveElement.style.height = '300px'; }
-  if (tag === 'ai-status-page') { e.services = [{ name: 'API Gateway', status: 'operational', uptime: 99.99 }, { name: 'Inference', status: 'degraded', uptime: 99.7, message: 'Elevated latency' }, { name: 'Vector DB', status: 'operational', uptime: 99.95 }]; liveElement.style.maxWidth = '480px'; }
-  if (tag === 'ai-test-runner') { e.tests = [{ id: '1', name: 'Relevance check', status: 'pass', duration: 120 }, { id: '2', name: 'Hallucination', status: 'fail', duration: 340, error: 'Factual error' }, { id: '3', name: 'Format check', status: 'running' }]; liveElement.style.maxWidth = '480px'; }
+  if (tag === 'ai-sidebar' || tag === 'ai-app-sidebar') { e.sections = [{ title: 'Recent', items: [{ id: '1', label: 'Q4 Analysis' }, { id: '2', label: 'Research' }] }]; liveElement.style.maxWidth = '260px'; liveElement.style.height = '300px'; }
+  if (tag === 'ai-status-page') {
+    const today = Date.now();
+    const mkHistory = (failOn: number[] = []) => Array.from({ length: 90 }, (_, i) => {
+      const dayIdx = 89 - i;
+      const date = new Date(today - dayIdx * 86400000).toISOString().slice(0, 10);
+      const status = failOn.includes(dayIdx) ? (dayIdx % 2 === 0 ? 'down' : 'degraded') : 'operational';
+      return { date, status, incidents: failOn.includes(dayIdx) ? 1 : 0 };
+    });
+    e.services = [
+      { name: 'AI Chat API', status: 'operational', latency: 120, uptime: 99.98, history: mkHistory([45]) },
+      { name: 'Embedding Service', status: 'operational', latency: 45, uptime: 99.99, history: mkHistory() },
+      { name: 'Image Generation', status: 'degraded', latency: 2400, uptime: 98.5, history: mkHistory([2, 12, 28]) },
+      { name: 'Vector Database', status: 'operational', latency: 8, uptime: 99.95, history: mkHistory([67]) },
+      { name: 'Webhooks', status: 'maintenance', latency: 95, uptime: 99.7, history: mkHistory([0]) },
+    ];
+    e.lastUpdated = new Date(today - 12000);
+    liveElement.style.maxWidth = '640px';
+  }
+  if (tag === 'ai-test-runner') {
+    e.title = 'Eval Suite';
+    e.tests = [
+      { name: 'Relevance check', status: 'pass', duration: 120, score: 92 },
+      { name: 'Coherence', status: 'pass', duration: 85, score: 88 },
+      { name: 'Hallucination check', status: 'fail', duration: 340, score: 45, expected: 'No fabricated facts', actual: 'Found 2 unverifiable claims' },
+      { name: 'Safety filter', status: 'pass', duration: 50, score: 98 },
+      { name: 'Format compliance', status: 'running' },
+      { name: 'Multilingual robustness', status: 'pending' },
+    ];
+    liveElement.style.maxWidth = '520px';
+  }
   if (tag === 'ai-validation-checklist') { e.checks = [{ id: '1', label: 'Factually accurate', status: 'pass' }, { id: '2', label: 'No PII', status: 'pass' }, { id: '3', label: 'Under token limit', status: 'fail', note: 'Exceeded by 120 tokens' }]; liveElement.style.maxWidth = '440px'; }
   if (tag === 'ai-version-selector') { e.versions = [{ id: 'v3', label: 'v3 — Current', date: '2026-04-01', active: true }, { id: 'v2', label: 'v2 — Previous', date: '2026-03-15' }]; liveElement.style.maxWidth = '360px'; }
   if (tag === 'ai-webhook-config') { e.webhooks = [{ id: '1', url: 'https://api.acme.com/hooks', events: ['completion', 'error'], active: true }]; e.availableEvents = ['completion', 'error', 'rate-limit']; liveElement.style.maxWidth = '520px'; }
-  if (tag === 'ai-usage-meter') { e.current = 72; e.limit = 100; e.unit = 'requests'; liveElement.style.maxWidth = '320px'; }
+  if (tag === 'ai-usage-meter') {
+    // Default state: warning tier (85%) with sub-24h reset (shows live countdown)
+    const resetIn = new Date(Date.now() + 3 * 60 * 60 * 1000 + 12 * 60 * 1000);
+    e.used = 8500;
+    e.limit = 10000;
+    e.label = 'API Requests';
+    e.unit = 'requests';
+    e.resetDate = resetIn.toISOString();
+    liveElement.style.maxWidth = '280px';
+  }
   // Missing components — add slot content
   if (tag === 'cg-card') { liveElement.innerHTML = '<span slot="header" style="font-weight:600;font-size:16px;">Card Title</span><p style="color:var(--fg-2);font-size:14px;line-height:1.5;margin:0;">Card body content with header and footer slots.</p>'; liveElement.style.maxWidth = '400px'; }
-  if (tag === 'cg-modal') { e.title = 'Confirm Action'; e.open = false; liveElement.innerHTML = '<p>Are you sure you want to proceed?</p>'; }
-  if (tag === 'cg-drawer') { e.title = 'Settings'; liveElement.innerHTML = '<p>Configure your preferences here.</p>'; }
-  if (tag === 'cg-dropdown') { e.open = false; const btn = document.createElement('cg-button'); btn.setAttribute('slot', 'trigger'); btn.textContent = 'Open Menu'; liveElement.appendChild(btn); e.items = [{ id: 'edit', label: 'Edit', icon: 'edit' }, { id: 'copy', label: 'Copy', icon: 'copy' }, { id: 'delete', label: 'Delete', icon: 'trash' }]; }
+  // Overlays — provide a clearly-labeled trigger button so the live preview is interactive.
+  // The component itself opens via fixed/portal positioning when triggered.
+  if (tag === 'cg-modal') {
+    e.title = 'Confirm Action';
+    e.open = false;
+    liveElement.innerHTML = '<p style="margin:0;color:var(--fg-2);font-size:14px;line-height:1.6;">Are you sure you want to proceed? This action cannot be undone.</p>';
+    const trigger = document.createElement('cg-button');
+    (trigger as unknown as { variant?: string }).variant = 'primary';
+    trigger.textContent = 'Open Modal';
+    trigger.addEventListener('click', () => { (liveElement as unknown as { open: boolean }).open = true; });
+    _previewArea.appendChild(trigger);
+  }
+  if (tag === 'cg-drawer') {
+    e.title = 'Settings';
+    e.open = false;
+    liveElement.innerHTML = '<p style="margin:0;color:var(--fg-2);font-size:14px;line-height:1.6;">Configure your preferences here. The drawer slides in with a smooth ease.</p>';
+    const trigger = document.createElement('cg-button');
+    (trigger as unknown as { variant?: string }).variant = 'primary';
+    trigger.textContent = 'Open Drawer';
+    trigger.addEventListener('click', () => { (liveElement as unknown as { open: boolean }).open = true; });
+    _previewArea.appendChild(trigger);
+  }
+  if (tag === 'cg-sheet') {
+    e.label = 'Quick actions';
+    e.side = 'bottom';
+    e.open = false;
+    // Content sits directly in the slot — the component's `.body` already
+    // provides 20/24/24 padding. Compose with system primitives only.
+    liveElement.innerHTML = `
+      <cg-stack direction="column" gap="md">
+        <cg-text size="md" weight="semibold">Quick actions</cg-text>
+        <cg-text size="sm" muted>Bottom sheets work great on mobile for action lists. Use the <code>side</code> prop to slide from any edge.</cg-text>
+        <cg-stack direction="column" gap="xs">
+          <cg-button variant="tertiary">Share</cg-button>
+          <cg-button variant="tertiary">Edit</cg-button>
+          <cg-button variant="tertiary">Move</cg-button>
+        </cg-stack>
+      </cg-stack>
+    `;
+    const trigger = document.createElement('cg-button');
+    (trigger as unknown as { variant?: string }).variant = 'primary';
+    trigger.textContent = 'Open Sheet';
+    trigger.addEventListener('click', () => { (liveElement as unknown as { open: boolean }).open = true; });
+    _previewArea.appendChild(trigger);
+  }
+  if (tag === 'cg-dropdown') {
+    e.open = true;
+    const btn = document.createElement('cg-button');
+    btn.setAttribute('slot', 'trigger');
+    btn.textContent = 'Open Menu';
+    liveElement.appendChild(btn);
+    e.items = [
+      { id: 'edit', label: 'Edit', icon: 'edit' },
+      { id: 'copy', label: 'Copy', icon: 'copy' },
+      { id: 'delete', label: 'Delete', icon: 'trash' },
+    ];
+  }
   if (tag === 'cg-follow-up') { e.items = [{ text: 'Show breakdown', icon: 'chart' }, { text: 'Compare quarters', icon: 'trending-up' }, { text: 'Export CSV', icon: 'download' }]; }
   if (tag === 'cg-avatar-group') { e.avatars = [{ name: 'Alice', status: 'online' }, { name: 'Bob', status: 'away' }, { name: 'Carol' }]; }
   if (tag === 'cg-radio-group') { e.name = 'demo'; e.value = 'b'; e.label = 'Choose option'; for (const o of [{l:'Option A',v:'a'},{l:'Option B',v:'b'},{l:'Option C',v:'c'}]) { const r = document.createElement('cg-radio'); r.setAttribute('label', o.l); r.setAttribute('value', o.v); liveElement.appendChild(r); } }
@@ -409,14 +697,30 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   if (tag === 'ai-toast') { requestAnimationFrame(() => { setTimeout(() => e.show?.('Model updated!', { type: 'success', duration: 8000 }), 200); }); }
   if (tag === 'ai-voice-panel') { liveElement.style.maxWidth = '320px'; }
   // ── 20 previously missing components ──
-  if (tag === 'ai-assistant-widget') { e.messages = [{ role: 'assistant', content: 'Hi! How can I help?' }, { role: 'user', content: 'What are the top features?' }, { role: 'assistant', content: '1. 180+ components\n2. 1,800+ tokens\n3. Full a11y' }]; liveElement.style.maxWidth = '360px'; liveElement.style.height = '400px'; }
+  if (tag === 'ai-assistant-widget') {
+    e.title = 'AI Help';
+    e.welcomeMessage = 'How can I help you today?';
+    e.expanded = true;
+    e.messages = [
+      { role: 'ai', content: 'Hi! I can help you find components, explain tokens, or generate code snippets.' },
+      { role: 'user', content: 'What are the top features?' },
+      { role: 'ai', content: '1. 180+ Lit web components\n2. 2,600+ design tokens (3-tier)\n3. WCAG AA accessibility\n4. Streaming generative UI engine' },
+    ];
+    // The widget is `position: fixed`. Override so it renders inside the playground, not pinned to viewport.
+    e.style.position = 'absolute';
+    e.style.bottom = '16px';
+    e.style.right = '16px';
+    liveElement.style.position = 'relative';
+    liveElement.style.minHeight = '560px';
+    liveElement.style.width = '100%';
+  }
   if (tag === 'ai-audio-player') { e.title = 'AI Generated Summary'; liveElement.style.maxWidth = '400px'; }
   if (tag === 'ai-avatar') { e.name = 'Alice'; e.status = 'online'; e.type = 'user'; }
   if (tag === 'ai-cache-indicator') { e.status = 'hit'; e.hitRate = 87; e.latencySaved = '240ms'; e.cacheAge = '2m ago'; e.showDetails = true; liveElement.style.maxWidth = '300px'; }
   if (tag === 'ai-capture-flow') { e.step = 'upload'; e.title = 'Scan Receipt'; e.accept = '.jpg,.png,.pdf'; liveElement.style.maxWidth = '400px'; }
   if (tag === 'ai-collaborative-editor') { e.content = 'Analyze Q4 revenue data focusing on enterprise segment growth.'; e.placeholder = 'Start typing...'; e.editable = true; liveElement.style.maxWidth = '500px'; }
   if (tag === 'ai-detection-canvas') { e.src = 'https://picsum.photos/seed/detect/600/400'; e.detections = [{ id: '1', label: 'Person', confidence: 0.95, bbox: [50, 60, 180, 280] }, { id: '2', label: 'Car', confidence: 0.87, bbox: [300, 180, 200, 140] }]; e.showLabels = true; liveElement.style.maxWidth = '600px'; }
-  if (tag === 'ai-error-boundary') { e.error = 'Rate limit exceeded. Please wait 30 seconds.'; e.code = 'RATE_LIMIT'; e.retryable = true; liveElement.style.maxWidth = '400px'; }
+  if (tag === 'ai-error-boundary') { e.error = 'Rate limit exceeded. Please wait 30 seconds.'; e.code = 'RATE_LIMIT'; e.retryable = true; e.details = 'Request ID: req_abc123\nModel: gpt-4o\nTokens used: 4,200 / 4,096\nLatency: 3,847ms'; liveElement.style.maxWidth = '420px'; }
   if (tag === 'ai-file-upload') { e.accept = '.pdf,.csv,.json'; e.label = 'Drop files here or click to browse'; e.multiple = true; liveElement.style.maxWidth = '400px'; }
   if (tag === 'ai-reveal-animation') { e.type = 'scale'; e.visible = true; const inner = document.createElement('div'); inner.style.cssText = 'padding:24px;border:1px solid var(--border);border-radius:8px;'; inner.textContent = 'Revealed with scale animation'; liveElement.appendChild(inner); }
   if (tag === 'ai-rich-message') { e.role = 'assistant'; e.text = 'Revenue grew 18% driven by enterprise expansion.\n\nKey findings:\n- Enterprise: +32%\n- SMB: +8%'; e.avatar = 'AI'; e.timestamp = '2 min ago'; liveElement.style.maxWidth = '480px'; }
@@ -433,16 +737,56 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
 
   // ── Wave 7: Foundation Completion — Overlays ──
   if (tag === 'cg-popover') {
-    const btn = document.createElement('cg-button'); btn.textContent = 'Open Popover'; liveElement.appendChild(btn);
-    const content = document.createElement('div'); content.setAttribute('slot', 'content'); content.innerHTML = '<strong>Popover content</strong><p style="margin:8px 0 0;color:var(--fg-3);font-size:13px;">Floating container with smart placement.</p>'; liveElement.appendChild(content);
     e.placement = 'bottom-start';
+    e.open = true;
+    const btn = document.createElement('cg-button');
+    btn.textContent = 'Toggle Popover';
+    liveElement.appendChild(btn);
+    const content = document.createElement('div');
+    content.setAttribute('slot', 'content');
+    content.innerHTML = '<strong>Popover content</strong><p style="margin:8px 0 0;color:var(--fg-3);font-size:13px;">Floating container with smart placement. Click outside or press Escape to close.</p>';
+    liveElement.appendChild(content);
   }
   if (tag === 'cg-hover-card') {
-    const trigger = document.createElement('a'); trigger.href = '#'; trigger.textContent = '@alice'; trigger.style.color = 'var(--cg-color-action-primary-background-default, #dfff61)';
+    // Trigger — use cg-link (accent variant) for system-consistent styling.
+    const trigger = document.createElement('cg-link');
+    trigger.setAttribute('href', '#');
+    trigger.setAttribute('variant', 'accent');
+    trigger.textContent = '@cognivo';
     liveElement.appendChild(trigger);
-    const content = document.createElement('div'); content.setAttribute('slot', 'content');
-    content.innerHTML = '<strong>Alice Johnson</strong><div style="color:var(--fg-3);font-size:13px;margin-top:4px;">Senior Engineer</div><p style="margin:8px 0 0;font-size:13px;">Building AI-native interfaces.</p>';
+
+    // Content — GitHub-style organization-card composition: avatar + identity +
+    // bio + stats + action. All assembled from Cognivo system primitives.
+    const content = document.createElement('div');
+    content.setAttribute('slot', 'content');
+    content.innerHTML = `
+      <cg-stack direction="row" gap="sm" align="center">
+        <cg-avatar name="Cognivo" size="lg" status="online"></cg-avatar>
+        <cg-stack direction="column" gap="xs" style="min-width:0;flex:1;">
+          <cg-text size="md" weight="semibold">Cognivo</cg-text>
+          <cg-text size="xs" muted>@cognivo · Design system</cg-text>
+        </cg-stack>
+      </cg-stack>
+      <cg-text size="sm" style="display:block;margin-top:12px;line-height:1.5;">
+        AI-native component library with cognitive bias analysis built in. Lit 3 · dark-first · fully tokenized.
+      </cg-text>
+      <cg-stack direction="row" gap="md" align="center" style="margin-top:12px;">
+        <cg-text size="xs" muted><strong style="color:var(--cg-color-surface-base-text);font-weight:600;">183</strong> components</cg-text>
+        <cg-text size="xs" muted><strong style="color:var(--cg-color-surface-base-text);font-weight:600;">2.6k</strong> tokens</cg-text>
+        <cg-text size="xs" muted><strong style="color:var(--cg-color-surface-base-text);font-weight:600;">181</strong> biases</cg-text>
+      </cg-stack>
+      <cg-button variant="primary" size="sm" style="margin-top:12px;width:100%;">Follow</cg-button>
+    `;
     liveElement.appendChild(content);
+
+    // Pre-open after first paint so the floating positioning has trigger
+    // dimensions to measure.
+    customElements.whenDefined('cg-hover-card').then(() => {
+      requestAnimationFrame(() => { (liveElement as unknown as { open: boolean }).open = true; });
+    });
+    // Reserve vertical room above the trigger so the popover (placement="top")
+    // has space to render inside the playground viewport.
+    liveElement.style.cssText = 'padding-top:240px;';
   }
   if (tag === 'cg-context-menu') {
     const zone = document.createElement('div');
@@ -464,17 +808,51 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
     e.destructive = true;
     e.confirmLabel = 'Delete';
     e.closable = true;
+    e.open = false;
+    const trigger = document.createElement('cg-button');
+    (trigger as unknown as { variant?: string }).variant = 'danger';
+    trigger.textContent = 'Delete project';
+    trigger.addEventListener('click', () => { (liveElement as unknown as { open: boolean }).open = true; });
+    _previewArea.appendChild(trigger);
   }
   if (tag === 'cg-command') {
-    e.placeholder = 'Type a command or search...';
+    // cg-command is a modal overlay (position:fixed, covers the whole page).
+    // Don't auto-open — the modal would hide the playground controls. Instead
+    // seed it with rich commands (icons, groups, shortcuts, disabled, keywords)
+    // and add a trigger button + ⌘K shortcut so the user can show/hide it.
+    e.placeholder = 'Type a command or search…';
     e.commands = [
-      { id: 'new-file', label: 'New File', group: 'File', shortcut: '⌘N' },
-      { id: 'open', label: 'Open File', group: 'File', shortcut: '⌘O' },
-      { id: 'save', label: 'Save', group: 'File', shortcut: '⌘S' },
-      { id: 'find', label: 'Find', group: 'Edit', shortcut: '⌘F' },
-      { id: 'theme', label: 'Toggle Dark Mode', group: 'View', shortcut: '⌘K ⌘T' },
-      { id: 'sidebar', label: 'Toggle Sidebar', group: 'View', shortcut: '⌘B' },
+      { id: 'new-file', label: 'New file', group: 'File', icon: 'document', shortcut: '⌘N', keywords: ['create', 'add'] },
+      { id: 'open', label: 'Open file…', group: 'File', icon: 'folder', shortcut: '⌘O' },
+      { id: 'save', label: 'Save', group: 'File', icon: 'download', shortcut: '⌘S' },
+      { id: 'save-as', label: 'Save as…', group: 'File', shortcut: '⌘⇧S', disabled: true },
+      { id: 'undo', label: 'Undo', group: 'Edit', shortcut: '⌘Z' },
+      { id: 'redo', label: 'Redo', group: 'Edit', shortcut: '⌘⇧Z' },
+      { id: 'find', label: 'Find', group: 'Edit', icon: 'minimalistic-magnifer-linear', shortcut: '⌘F', keywords: ['search'] },
+      { id: 'replace', label: 'Replace', group: 'Edit', shortcut: '⌘⇧F' },
+      { id: 'theme', label: 'Toggle dark mode', group: 'View', icon: 'eye', shortcut: '⌘K ⌘T' },
+      { id: 'sidebar', label: 'Toggle sidebar', group: 'View', shortcut: '⌘B' },
+      { id: 'fullscreen', label: 'Toggle fullscreen', group: 'View', shortcut: 'F11' },
+      { id: 'docs', label: 'Open documentation', group: 'Help', icon: 'document', keywords: ['read', 'guide'] },
+      { id: 'shortcuts', label: 'Keyboard shortcuts', group: 'Help', icon: 'key', shortcut: '⌘/' },
     ];
+    // Trigger button to show the palette (closes by Escape or backdrop click).
+    const trigger = document.createElement('cg-button');
+    (trigger as unknown as { variant?: string }).variant = 'primary';
+    trigger.textContent = 'Open command palette (⌘K)';
+    trigger.style.alignSelf = 'flex-start';
+    trigger.addEventListener('click', () => { e.open = true; });
+    _previewArea.appendChild(trigger);
+    // Global ⌘K / Ctrl+K shortcut for the canonical command-palette UX.
+    const onKeydown = (ev: KeyboardEvent) => {
+      if ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === 'k') {
+        ev.preventDefault();
+        e.open = !e.open;
+      }
+    };
+    document.addEventListener('keydown', onKeydown);
+    // Cleanup is best-effort; the playground re-mounts components on each
+    // page navigation so the listener gets garbage collected.
   }
 
   // ── Wave 7: Foundation Completion — Forms ──
@@ -569,26 +947,24 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
     liveElement.appendChild(inner);
   }
   if (tag === 'cg-navbar') {
-    e.variant = 'glass';
+    e.variant = 'solid';
+    e.bordered = true;
+    e.items = [
+      { value: 'docs', label: 'Docs', href: '#' },
+      { value: 'components', label: 'Components', href: '#' },
+      { value: 'tokens', label: 'Tokens', href: '#', badge: 'New' },
+      { value: 'pricing', label: 'Pricing', href: '#' },
+    ];
+    e.active = 'docs';
+    e.addEventListener('cg-navbar-select', (ev: Event) => {
+      const detail = (ev as CustomEvent<{ value: string }>).detail;
+      e.active = detail.value;
+    });
     const brand = document.createElement('span');
     brand.setAttribute('slot', 'brand');
     brand.style.cssText = 'display:flex;align-items:center;gap:8px;';
-    brand.innerHTML = '<svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" style="color:var(--cg-color-action-primary-background-default,#dfff61);"><circle cx="8" cy="8" r="7"/></svg>Cognivo';
+    brand.innerHTML = '<svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" style="color:var(--cg-color-accent-text);"><circle cx="8" cy="8" r="7"/></svg>Cognivo';
     liveElement.appendChild(brand);
-    const links = [
-      { label: 'Docs', active: true },
-      { label: 'Components', active: false },
-      { label: 'Tokens', active: false },
-      { label: 'Pricing', active: false },
-    ];
-    for (const { label, active } of links) {
-      const a = document.createElement('a');
-      a.setAttribute('slot', 'start');
-      a.href = '#';
-      a.textContent = label;
-      if (active) a.className = 'active';
-      liveElement.appendChild(a);
-    }
     const btn1 = document.createElement('cg-button');
     btn1.setAttribute('slot', 'end');
     btn1.setAttribute('variant', 'tertiary');
@@ -606,15 +982,89 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   if (tag === 'cg-calendar') {
     e.value = new Date().toISOString().split('T')[0];
   }
+  if (tag === 'cg-navigation-menu') {
+    e.items = [
+      {
+        label: 'Products',
+        sections: [
+          {
+            heading: 'Build',
+            links: [
+              { title: 'Components', description: '183 ready-to-ship Lit web components.', href: '#' },
+              { title: 'Tokens', description: 'Tier-3 design tokens with WCAG-validated palettes.', href: '#' },
+              { title: 'Templates', description: 'Production-ready page scaffolds.', href: '#' },
+            ],
+          },
+          {
+            heading: 'AI',
+            links: [
+              { title: 'Generative UI', description: 'Streaming JSON parser + Lit renderer.', href: '#' },
+              { title: 'Bias engine', description: '181 cognitive bias cards.', href: '#' },
+            ],
+          },
+        ],
+      },
+      {
+        label: 'Resources',
+        sections: [
+          {
+            links: [
+              { title: 'Documentation', description: 'Comprehensive guides for every feature.', href: '#' },
+              { title: 'Changelog', description: 'Release notes and migration guides.', href: '#' },
+              { title: 'GitHub', description: 'Source on GitHub — star us!', href: '#' },
+            ],
+          },
+        ],
+      },
+    ];
+    // Reserve room below the triggers so the panel doesn't get clipped by the playground viewport.
+    liveElement.style.cssText = 'padding-bottom:340px;width:100%;';
+  }
   // ── Wave 9: Foundation ──
   if (tag === 'cg-sidebar') {
     e.collapsible = true;
-    liveElement.style.height = '300px';
-    const header = document.createElement('div'); header.setAttribute('slot', 'header'); header.style.fontWeight = '600'; header.textContent = 'Logo';
-    const nav = document.createElement('div'); nav.style.cssText = 'display:flex;flex-direction:column;gap:6px;font-size:14px;';
-    for (const t of ['Dashboard', 'Settings', 'Help']) { const s = document.createElement('span'); s.textContent = t; nav.appendChild(s); }
-    const footer = document.createElement('div'); footer.setAttribute('slot', 'footer'); footer.style.fontSize = '12px'; footer.textContent = 'v1.0';
-    liveElement.append(header, nav, footer);
+    liveElement.style.height = '480px';
+    liveElement.style.maxWidth = '300px';
+
+    const header = document.createElement('div');
+    header.setAttribute('slot', 'header');
+    header.style.cssText = 'display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;';
+    header.innerHTML = '<span aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:var(--cg-color-accent-text);color:var(--cg-color-surface-base-background);font-size:14px;flex-shrink:0;">◆</span><span data-label>Cognivo</span>';
+
+    const sectionTitle = (text: string) => {
+      const el2 = document.createElement('div');
+      el2.className = 'section-title';
+      el2.textContent = text;
+      return el2;
+    };
+    const makeLink = (icon: string, label: string, current = false) => {
+      const a = document.createElement('a');
+      a.href = '#';
+      a.title = label;
+      if (current) a.setAttribute('aria-current', 'page');
+      a.innerHTML = `<span aria-hidden="true" style="width:16px;flex-shrink:0;text-align:center;font-size:14px;">${icon}</span><span data-label>${label}</span>`;
+      return a;
+    };
+
+    const footer = document.createElement('div');
+    footer.setAttribute('slot', 'footer');
+    footer.style.cssText = 'display:flex;align-items:center;gap:10px;font-size:13px;';
+    footer.innerHTML = '<span aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--cg-color-action-tertiary-background-hover);font-size:12px;font-weight:600;flex-shrink:0;">MS</span><span data-label>Murilo S.</span>';
+
+    liveElement.append(
+      header,
+      sectionTitle('Workspace'),
+      makeLink('⊞', 'Dashboard', true),
+      makeLink('◧', 'Projects'),
+      makeLink('◉', 'Tasks'),
+      sectionTitle('Tools'),
+      makeLink('✎', 'Editor'),
+      makeLink('◔', 'Analytics'),
+      sectionTitle('Account'),
+      makeLink('⚙', 'Settings'),
+      makeLink('?', 'Help'),
+      footer,
+    );
   }
   if (tag === 'cg-avatar') { e.name = 'Ada Lovelace'; e.size = 'lg'; e.status = 'online'; }
   if (tag === 'cg-empty-state') { e.variant = 'search'; e.title = 'No results found'; e.description = 'Try a different search query or adjust your filters.'; liveElement.style.maxWidth = '480px'; }

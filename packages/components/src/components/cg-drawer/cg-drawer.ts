@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { spinKeyframes, reducedMotion } from '../../styles/index.js';
+import { FocusTrap } from '../../utils/focus-trap.js';
 
 /**
  * @element cg-drawer
@@ -40,8 +41,8 @@ export class CgDrawer extends LitElement {
       inset: 0;
       z-index: var(--cg-z-index-500);
       background: var(--cg-color-modal-overlay-background);
-      backdrop-filter: blur(16px) saturate(150%);
-      -webkit-backdrop-filter: blur(16px) saturate(150%);
+      backdrop-filter: blur(var(--cg-blur-backdrop)) saturate(150%);
+      -webkit-backdrop-filter: blur(var(--cg-blur-backdrop)) saturate(150%);
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
@@ -52,7 +53,11 @@ export class CgDrawer extends LitElement {
       pointer-events: auto;
     }
 
-    /* ── Panel ── */
+    /* ── Panel ──
+       The shadow is intentionally directional (set per side below) so it
+       only casts inward toward the page content, not into the viewport edge
+       it's flush against. Casting onto the off-edge side produces visible
+       compositing artifacts at certain zoom levels and burns paint cycles. */
     .panel {
       position: fixed;
       top: 0;
@@ -62,7 +67,6 @@ export class CgDrawer extends LitElement {
       flex-direction: column;
       background: var(--cg-color-modal-container-background);
       border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
-      box-shadow: var(--cg-elevation-5);
       overflow: hidden;
       transition: transform var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
@@ -78,6 +82,7 @@ export class CgDrawer extends LitElement {
       border-left: none;
       border-radius: 0 var(--cg-component-drawer-radius) var(--cg-component-drawer-radius) 0;
       transform: translateX(-100%);
+      box-shadow: var(--cg-shadow-elevation-xl);
     }
     :host([side="left"][open]) .panel {
       transform: translateX(0);
@@ -89,6 +94,7 @@ export class CgDrawer extends LitElement {
       border-right: none;
       border-radius: var(--cg-component-drawer-radius) 0 0 var(--cg-component-drawer-radius);
       transform: translateX(100%);
+      box-shadow: var(--cg-shadow-elevation-xl);
     }
     :host([side="right"][open]) .panel {
       transform: translateX(0);
@@ -150,7 +156,7 @@ export class CgDrawer extends LitElement {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
     }
 
     .drawer-title {
@@ -164,44 +170,9 @@ export class CgDrawer extends LitElement {
       white-space: nowrap;
     }
 
-    .close-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: var(--cg-spacing-32);
-      height: var(--cg-spacing-32);
-      border: none;
-      border-radius: var(--cg-border-radius-full);
-      background: var(--cg-color-action-tertiary-background-hover);
-      color: var(--cg-color-surface-container-outlined);
-      cursor: pointer;
-      font-size: var(--cg-font-size-sm);
-      line-height: 1;
-      padding: 0;
-      flex-shrink: 0;
-      transition:
-        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
-    }
-
-    .close-btn:hover {
-      background: var(--cg-color-action-secondary-background-hover);
-      color: var(--cg-color-surface-container-text);
-    }
-
-    .close-btn:active {
-      transform: scale(var(--cg-interaction-press-scale));
-    }
-
-    .close-btn:focus-visible {
-      box-shadow:
-        0 0 0 2px var(--cg-color-focus-ring-offset),
-        0 0 0 calc(2px + 2px) var(--cg-color-focus-ring);
-      outline: none;
-    }
-
-    /* Back button — same style as close btn */
+    /* Header icon buttons (close + back) share the same chrome — round,
+       muted at rest, outlined-text on hover, press-scale on active. */
+    .close-btn,
     .back-btn {
       display: inline-flex;
       align-items: center;
@@ -215,18 +186,23 @@ export class CgDrawer extends LitElement {
       cursor: pointer;
       padding: 0;
       flex-shrink: 0;
+      font-size: var(--cg-font-size-sm);
+      line-height: 1;
       transition:
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
+    .close-btn:hover,
     .back-btn:hover {
       background: var(--cg-color-action-secondary-background-hover);
       color: var(--cg-color-surface-container-text);
     }
+    .close-btn:active,
     .back-btn:active {
       transform: scale(var(--cg-interaction-press-scale));
     }
+    .close-btn:focus-visible,
     .back-btn:focus-visible {
       box-shadow:
         0 0 0 2px var(--cg-color-focus-ring-offset),
@@ -334,8 +310,7 @@ export class CgDrawer extends LitElement {
   @state() private _closing = false;
 
   private _previousOverflow = '';
-  private _previousFocus: HTMLElement | null = null;
-  private _keydownHandler = this._handleKeydown.bind(this);
+  private _focusTrap = new FocusTrap();
 
   override updated(changed: Map<string, unknown>) {
     if (changed.has('open')) {
@@ -352,86 +327,36 @@ export class CgDrawer extends LitElement {
   }
 
   private _onOpen() {
-    this._previousFocus = document.activeElement as HTMLElement;
     this._previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    document.addEventListener('keydown', this._keydownHandler);
     this.dispatchEvent(new CustomEvent('cg-drawer-open', { bubbles: true, composed: true }));
 
-    // Focus the first focusable element inside the panel (close button as fallback)
-    this.updateComplete.then(() => {
-      const root = this.shadowRoot;
-      if (!root) return;
-      const selectors = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-      const shadowFocusable = [...(root.querySelectorAll<HTMLElement>(selectors) || [])];
-      const lightFocusable = [...this.querySelectorAll<HTMLElement>(selectors)];
-      const focusable = [...shadowFocusable, ...lightFocusable].filter(el => !el.closest('[hidden]') && el.offsetParent !== null);
-      if (focusable.length > 0) {
-        focusable[0]!.focus();
-      } else {
-        const panel = root.querySelector('.panel') as HTMLElement;
-        panel?.focus();
-      }
-    });
+    // Activate the shared focus trap synchronously — by the time `updated()`
+    // fires, the panel is already in the shadow DOM. (Wrapping in
+    // `updateComplete.then` would defer past the caller's `await` and miss
+    // events fired immediately after the open flip.)
+    const panel = this.shadowRoot?.querySelector<HTMLElement>('.panel');
+    if (panel) {
+      this._focusTrap.activate(panel, {
+        returnFocus: true,
+        handleEscape: this.closable,
+        onEscape: () => this._requestClose(),
+      });
+    }
   }
 
   private _onClose() {
     document.body.style.overflow = this._previousOverflow;
-    document.removeEventListener('keydown', this._keydownHandler);
-    this._previousFocus?.focus();
-    this._previousFocus = null;
+    this._focusTrap.deactivate();
     this.dispatchEvent(new CustomEvent('cg-drawer-close', { bubbles: true, composed: true }));
   }
 
   override disconnectedCallback() {
     super.disconnectedCallback();
-    document.removeEventListener('keydown', this._keydownHandler);
-    // Only restore if we actually locked it
+    this._focusTrap.deactivate();
+    // Only restore body overflow if we actually locked it
     if (this.open) {
       document.body.style.overflow = this._previousOverflow || '';
-    }
-  }
-
-  private _handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape' && this.closable) {
-      e.preventDefault();
-      this._requestClose();
-      return;
-    }
-
-    if (e.key === 'Tab') {
-      this._trapFocus(e);
-    }
-  }
-
-  private _trapFocus(e: KeyboardEvent) {
-    const root = this.shadowRoot;
-    if (!root) return;
-
-    const selectors = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-    const shadowFocusable = [...(root.querySelectorAll<HTMLElement>(selectors) || [])];
-    const lightFocusable = [...this.querySelectorAll<HTMLElement>(selectors)];
-    const focusable = [...shadowFocusable, ...lightFocusable].filter(el => !el.closest('[hidden]') && el.offsetParent !== null);
-    if (focusable.length === 0) {
-      e.preventDefault();
-      return;
-    }
-
-    const first = focusable[0]!;
-    const last = focusable[focusable.length - 1]!;
-
-    const active = root.activeElement ?? document.activeElement;
-
-    if (e.shiftKey) {
-      if (active === first) {
-        e.preventDefault();
-        last.focus();
-      }
-    } else {
-      if (active === last) {
-        e.preventDefault();
-        first.focus();
-      }
     }
   }
 

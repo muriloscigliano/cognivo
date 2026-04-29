@@ -78,39 +78,40 @@ export class AiErrorBoundary extends LitElement {
     }
 
     .message {
-      color: var(--cg-color-input-text-placeholder);
+      color: var(--cg-color-surface-container-outlined);
       font-size: var(--cg-font-size-sm);
-      line-height: 1.5;
+      line-height: var(--cg-line-height-relaxed);
       margin-top: var(--cg-spacing-6);
     }
 
     .details-toggle {
       background: none;
       border: none;
-      color: var(--cg-color-input-text-placeholder);
+      color: var(--cg-color-surface-container-outlined);
       font-size: var(--cg-font-size-xs);
       cursor: pointer;
       padding: var(--cg-spacing-4) 0;
       margin-top: var(--cg-spacing-8);
       font-family: inherit;
       text-decoration: underline;
-      text-underline-offset: 2px;
+      text-underline-offset: var(--cg-spacing-2);
     }
     .details-toggle:hover { color: var(--cg-color-surface-base-text); }
     .details-toggle:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
-      outline-offset: var(--cg-outline-offset-default);
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      border-radius: var(--cg-border-radius-50);
     }
 
     .details {
       margin-top: var(--cg-spacing-8);
       padding: var(--cg-spacing-12);
-      background: var(--cg-color-surface-container-background);
+      background: var(--cg-color-code-background);
       border-radius: var(--cg-border-radius-100);
-      color: var(--cg-color-input-text-placeholder);
+      color: var(--cg-color-surface-container-outlined);
       font-size: var(--cg-font-size-xs);
       font-family: var(--cg-font-family-mono);
-      line-height: 1.6;
+      line-height: var(--cg-line-height-relaxed);
       white-space: pre-wrap;
       word-break: break-word;
     }
@@ -145,7 +146,7 @@ export class AiErrorBoundary extends LitElement {
 
     .retry-btn {
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-container-background);
+      color: var(--cg-color-action-primary-text-default);
     }
     .retry-btn:hover:not(:disabled) { filter: brightness(1.1); }
 

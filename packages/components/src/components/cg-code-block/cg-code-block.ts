@@ -61,15 +61,18 @@ export class CgCodeBlock extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: var(--cg-spacing-12) var(--cg-spacing-20);
-      gap: var(--cg-spacing-12);
+      gap: var(--cg-spacing-16);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
+      min-height: var(--cg-spacing-48);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-code-border);
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-12);
+      gap: var(--cg-spacing-16);
       min-width: 0;
+      flex: 1;
     }
 
     .dots {
@@ -78,32 +81,23 @@ export class CgCodeBlock extends LitElement {
       flex-shrink: 0;
     }
     .dot {
-      width: var(--cg-spacing-8);
-      height: var(--cg-spacing-8);
+      width: var(--cg-spacing-12);
+      height: var(--cg-spacing-12);
       border-radius: var(--cg-border-radius-full);
-      opacity: 0.6;
     }
-    .dot-red { background: var(--cg-color-chart-4); }
-    .dot-yellow { background: var(--cg-color-chart-3); }
-    .dot-green { background: var(--cg-color-chart-2); }
+    .dot-red { background: var(--cg-color-chart-8-background); }
+    .dot-yellow { background: var(--cg-color-chart-7-background); }
+    .dot-green { background: var(--cg-color-chart-3-background); }
 
     .filename {
-      font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-code-muted);
       font-family: var(--cg-font-family-mono);
+      font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-code-text);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-    }
-
-    .language {
-      font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-code-muted);
-      font-weight: var(--cg-font-weight-medium);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      flex-shrink: 0;
+      min-width: 0;
     }
 
     .actions {
@@ -113,11 +107,26 @@ export class CgCodeBlock extends LitElement {
       flex-shrink: 0;
     }
 
-    .copy-btn {
-      display: flex;
+    .language {
+      display: inline-flex;
       align-items: center;
-      gap: var(--cg-spacing-4);
-      padding: var(--cg-spacing-4) var(--cg-spacing-8);
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-50);
+      background: var(--cg-color-action-tertiary-background-hover);
+      color: var(--cg-color-code-muted);
+      font-family: var(--cg-font-family-mono);
+      font-size: var(--cg-font-size-xs);
+      font-weight: var(--cg-font-weight-medium);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--cg-spacing-6);
+      height: var(--cg-spacing-32);
+      padding: 0 var(--cg-spacing-12);
       border-radius: var(--cg-border-radius-50);
       background: transparent;
       border: none;
@@ -128,25 +137,22 @@ export class CgCodeBlock extends LitElement {
       font-family: inherit;
       transition:
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .copy-btn:hover {
-      background: var(--cg-overlay-dark-subtle);
+      background: var(--cg-color-action-tertiary-background-hover);
       color: var(--cg-color-code-text);
+    }
+    .copy-btn:active {
+      transform: scale(var(--cg-interaction-press-scale));
     }
     .copy-btn.copied {
       color: var(--cg-color-status-success-text-default);
     }
     .copy-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
-    }
-
-    /* ── Divider between header and code ── */
-    .divider {
-      height: var(--cg-border-width-50);
-      background: var(--cg-color-code-border);
-      margin: 0 var(--cg-spacing-20);
+      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
     }
 
     /* ── Code area ── */
@@ -154,7 +160,7 @@ export class CgCodeBlock extends LitElement {
       overflow-x: auto;
       overflow-y: auto;
     }
-    .code-area.collapsed { max-height: 300px; }
+    .code-area.collapsed { max-height: var(--cg-spacing-256); }
 
     pre {
       margin: 0;
@@ -165,6 +171,7 @@ export class CgCodeBlock extends LitElement {
       color: var(--cg-color-code-text);
       tab-size: 2;
       counter-reset: line;
+      font-variant-numeric: tabular-nums;
     }
 
     :host([wrap]) pre { white-space: pre-wrap; word-break: break-all; }
@@ -178,11 +185,13 @@ export class CgCodeBlock extends LitElement {
       content: counter(line);
       display: inline-block;
       width: 3ch;
-      margin-right: var(--cg-spacing-20);
+      padding-right: var(--cg-spacing-16);
+      margin-right: var(--cg-spacing-16);
+      border-right: var(--cg-border-width-50) solid var(--cg-color-code-border);
       color: var(--cg-color-code-muted);
       text-align: right;
       user-select: none;
-      opacity: 0.5;
+      opacity: 0.6;
     }
 
     /* ── Syntax highlighting ── */
@@ -198,32 +207,40 @@ export class CgCodeBlock extends LitElement {
     .expand-bar {
       display: flex;
       justify-content: center;
-      padding: var(--cg-spacing-12);
-      background: linear-gradient(transparent, var(--cg-color-code-background));
-      margin-top: calc(var(--cg-spacing-40) * -1);
+      padding: var(--cg-spacing-16) var(--cg-spacing-12) var(--cg-spacing-12);
+      background: linear-gradient(transparent, var(--cg-color-code-background) 60%);
+      margin-top: calc(var(--cg-spacing-48) * -1);
       position: relative;
     }
     .expand-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--cg-spacing-6);
+      height: var(--cg-spacing-32);
+      padding: 0 var(--cg-spacing-16);
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-code-muted);
       background: var(--cg-color-code-surface);
       border: var(--cg-border-width-50) solid var(--cg-color-code-border);
-      padding: var(--cg-spacing-6) var(--cg-spacing-16);
       border-radius: var(--cg-border-radius-full);
       cursor: pointer;
       font-family: inherit;
       font-weight: var(--cg-font-weight-medium);
       transition:
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .expand-btn:hover {
       color: var(--cg-color-code-text);
-      background: var(--cg-color-code-border);
+      background: var(--cg-color-action-tertiary-background-hover);
+    }
+    .expand-btn:active {
+      transform: scale(var(--cg-interaction-press-scale));
     }
     .expand-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
     }
 
     .sr-only {
@@ -268,41 +285,20 @@ export class CgCodeBlock extends LitElement {
     const lines = this.code.split('\n');
     const isLong = this.collapsible && lines.length > 15;
     const highlighted = highlight(this.code);
-    const showHeader = this.filename || this.language;
 
     return html`
       <div class="wrapper">
-        ${showHeader ? html`
-          <div class="header">
-            <div class="header-left">
-              <div class="dots">
-                <span class="dot dot-red"></span>
-                <span class="dot dot-yellow"></span>
-                <span class="dot dot-green"></span>
-              </div>
-              ${this.filename ? html`<span class="filename">${this.filename}</span>` : nothing}
+        <div class="header">
+          <div class="header-left">
+            <div class="dots">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
             </div>
-            <div class="actions">
-              ${this.language ? html`<span class="language">${this.language}</span>` : nothing}
-              <button class="copy-btn ${this._copied ? 'copied' : ''}" @click=${this._copy} aria-label="Copy code">
-                ${this._copied
-                  ? html`<cg-icon name="check" size="xs"></cg-icon> Copied`
-                  : html`<cg-icon name="copy" size="xs"></cg-icon> Copy`
-                }
-              </button>
-              <span class="sr-only" role="status" aria-live="polite">${this._copied ? 'Copied!' : ''}</span>
-            </div>
+            ${this.filename ? html`<span class="filename">${this.filename}</span>` : nothing}
           </div>
-          <div class="divider"></div>
-        ` : html`
-          <div class="header" style="border-bottom:none;">
-            <div class="header-left">
-              <div class="dots">
-                <span class="dot dot-red"></span>
-                <span class="dot dot-yellow"></span>
-                <span class="dot dot-green"></span>
-              </div>
-            </div>
+          <div class="actions">
+            ${this.language ? html`<span class="language">${this.language}</span>` : nothing}
             <button class="copy-btn ${this._copied ? 'copied' : ''}" @click=${this._copy} aria-label="Copy code">
               ${this._copied
                 ? html`<cg-icon name="check" size="xs"></cg-icon> Copied`
@@ -311,7 +307,7 @@ export class CgCodeBlock extends LitElement {
             </button>
             <span class="sr-only" role="status" aria-live="polite">${this._copied ? 'Copied!' : ''}</span>
           </div>
-        `}
+        </div>
 
         <div class="code-area ${isLong && this._collapsed ? 'collapsed' : ''}">
           <pre>${this.lineNumbers
@@ -323,6 +319,7 @@ export class CgCodeBlock extends LitElement {
         ${isLong && this._collapsed ? html`
           <div class="expand-bar">
             <button class="expand-btn" aria-expanded="false" @click=${() => { this._collapsed = false; }}>
+              <cg-icon name="chevron-down" size="xs"></cg-icon>
               Show all ${lines.length} lines
             </button>
           </div>

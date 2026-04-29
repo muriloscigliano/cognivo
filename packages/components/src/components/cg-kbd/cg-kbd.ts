@@ -28,15 +28,12 @@ export class CgKbd extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: var(--cg-component-kbd-min-width);
-      padding: var(--cg-component-kbd-padding-y) var(--cg-component-kbd-padding-x);
       background: var(--cg-color-action-tertiary-background-hover);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-bottom-width: var(--cg-border-width-100);
       border-radius: var(--cg-component-kbd-radius);
       color: var(--cg-color-surface-base-text);
       font-family: var(--cg-font-family-mono);
-      font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-medium);
       line-height: var(--cg-line-height-tight);
       box-shadow:
@@ -44,15 +41,21 @@ export class CgKbd extends LitElement {
         0 var(--cg-border-width-50) 0 var(--cg-color-surface-cards-border);
     }
 
+    /* Sizes — driven entirely by Tier-3 tokens for system-wide consistency. */
     :host([size="sm"]) kbd {
-      min-width: var(--cg-spacing-16);
-      padding: var(--cg-spacing-2) var(--cg-spacing-6);
-      font-size: var(--cg-font-size-xs);
+      min-width: var(--cg-component-kbd-min-width-sm);
+      padding: var(--cg-component-kbd-padding-y-sm) var(--cg-component-kbd-padding-x-sm);
+      font-size: var(--cg-component-kbd-font-size-sm);
+    }
+    :host([size="md"]) kbd {
+      min-width: var(--cg-component-kbd-min-width-md);
+      padding: var(--cg-component-kbd-padding-y-md) var(--cg-component-kbd-padding-x-md);
+      font-size: var(--cg-component-kbd-font-size-md);
     }
     :host([size="lg"]) kbd {
-      min-width: var(--cg-spacing-24);
-      padding: var(--cg-spacing-6) var(--cg-spacing-12);
-      font-size: var(--cg-font-size-sm);
+      min-width: var(--cg-component-kbd-min-width-lg);
+      padding: var(--cg-component-kbd-padding-y-lg) var(--cg-component-kbd-padding-x-lg);
+      font-size: var(--cg-component-kbd-font-size-lg);
     }
 
     :host([variant="outline"]) kbd {

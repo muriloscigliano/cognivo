@@ -77,7 +77,7 @@ export class CgCommand extends LitElement {
       border-radius: var(--cg-component-command-radius);
       box-shadow: var(--cg-shadow-elevation-xl);
       opacity: 0;
-      transform: translateX(-50%) translateY(-8px) scale(0.96);
+      transform: translateX(-50%) translateY(calc(-1 * var(--cg-spacing-8))) scale(0.96);
       pointer-events: none;
       overflow: hidden;
       transition:
@@ -94,7 +94,7 @@ export class CgCommand extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--cg-spacing-12);
-      padding: var(--cg-spacing-20) var(--cg-spacing-20);
+      padding: var(--cg-spacing-20);
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
     .search-icon {
@@ -115,27 +115,33 @@ export class CgCommand extends LitElement {
     .list {
       flex: 1;
       overflow-y: auto;
-      padding: var(--cg-spacing-6);
+      padding: var(--cg-spacing-8);
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-2);
+      gap: var(--cg-spacing-4);
     }
 
+    /* Group label — uppercase mono. Extra top margin separates groups
+       visually so the eye groups items by section. First group hugs the top. */
     .group-label {
-      padding: var(--cg-spacing-8) var(--cg-spacing-12) var(--cg-spacing-6);
+      padding: var(--cg-spacing-6) var(--cg-spacing-12);
+      margin-top: var(--cg-spacing-12);
       font: 600 var(--cg-font-size-xs) var(--cg-font-family-mono);
       color: var(--cg-color-surface-container-outlined);
       text-transform: uppercase;
       letter-spacing: 0.06em;
     }
+    .group-label:first-child { margin-top: 0; }
 
     .item {
       display: flex;
       align-items: center;
       gap: var(--cg-spacing-12);
       width: 100%;
-      height: var(--cg-component-command-item-height);
-      padding: 0 var(--cg-spacing-12);
+      /* min-height + real padding instead of fixed height — gives labels room
+         to breathe and lets items grow if content wraps. */
+      min-height: var(--cg-component-command-item-height);
+      padding: var(--cg-spacing-8) var(--cg-spacing-12);
       border: none;
       background: none;
       color: var(--cg-color-surface-base-text);
@@ -149,7 +155,10 @@ export class CgCommand extends LitElement {
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .item[data-active] {
+    /* Hover (mouse) AND data-active (keyboard) get the same treatment so both
+       input methods feel instant — no waiting for a state-driven re-render. */
+    .item:hover:not([disabled]),
+    .item[data-active]:not([disabled]) {
       background: var(--cg-color-action-tertiary-background-hover);
       color: var(--cg-color-surface-base-text);
     }
@@ -157,10 +166,33 @@ export class CgCommand extends LitElement {
       transform: scale(var(--cg-interaction-press-scale));
     }
     .item[disabled] {
-      opacity: 0.45;
+      opacity: 0.5;
       cursor: not-allowed;
     }
+    .item-icon {
+      flex-shrink: 0;
+      color: var(--cg-color-surface-container-outlined);
+      opacity: 0.85;
+      transition:
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+    }
+    .item[data-active] .item-icon {
+      color: var(--cg-color-action-primary-background-default);
+      opacity: 1;
+    }
     .item-label { flex: 1; }
+
+    /* Loading state — small spinner + label, replaces empty/list when loading. */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--cg-spacing-8);
+      padding: var(--cg-spacing-32);
+      color: var(--cg-color-surface-container-outlined);
+      font-size: var(--cg-font-size-sm);
+    }
     .shortcut {
       font: 500 var(--cg-font-size-xs) var(--cg-font-family-mono);
       color: var(--cg-color-surface-container-outlined);
@@ -294,10 +326,7 @@ export class CgCommand extends LitElement {
       >
         <slot name="header"></slot>
         <div class="input-wrap">
-          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"/>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
+          <cg-icon class="search-icon" name="minimalistic-magnifer-linear" size="sm" aria-hidden="true"></cg-icon>
           <input
             type="text"
             role="combobox"
@@ -311,7 +340,12 @@ export class CgCommand extends LitElement {
           />
         </div>
         <div class="list" id="command-list" role="listbox">
-          ${filtered.length === 0 ? html`
+          ${this.loading ? html`
+            <div class="loading" aria-busy="true">
+              <cg-spinner size="sm"></cg-spinner>
+              <span>Loading…</span>
+            </div>
+          ` : filtered.length === 0 ? html`
             <slot name="empty">
               <div class="empty">${this.emptyText}</div>
             </slot>
@@ -330,6 +364,7 @@ export class CgCommand extends LitElement {
                   @click=${() => this._select(item)}
                   @mouseenter=${() => { this._activeIndex = flatIndex; }}
                 >
+                  ${item.icon ? html`<cg-icon class="item-icon" name=${item.icon} size="sm" aria-hidden="true"></cg-icon>` : nothing}
                   <span class="item-label">${item.label}</span>
                   ${item.shortcut ? html`<span class="shortcut">${item.shortcut}</span>` : nothing}
                 </button>

@@ -54,6 +54,16 @@ export class CgEmptyState extends LitElement {
     :host([variant="success"]) .icon-wrap { color: var(--cg-color-status-success-text-default); }
     :host([variant="info"]) .icon-wrap { color: var(--cg-color-status-info-text-default); }
 
+    /* AI variant — accent bubble around the icon, AI brand color */
+    :host([variant="ai"]) .icon-wrap {
+      background: var(--cg-overlay-accent-subtle);
+      border: var(--cg-border-width-50) solid var(--cg-overlay-accent-strong);
+      border-radius: var(--cg-border-radius-full);
+      color: var(--cg-color-accent-text);
+      padding: var(--cg-spacing-12);
+      box-sizing: border-box;
+    }
+
     .title {
       font-size: var(--cg-font-size-md);
       font-weight: var(--cg-font-weight-semibold);
@@ -81,7 +91,7 @@ export class CgEmptyState extends LitElement {
     .actions:empty { display: none; }
   `];
 
-  @property({ reflect: true }) variant: 'default' | 'search' | 'error' | 'success' | 'info' = 'default';
+  @property({ reflect: true }) variant: 'default' | 'search' | 'error' | 'success' | 'info' | 'ai' = 'default';
   @property() override title = '';
   @property() description = '';
   @property() icon = '';
@@ -116,6 +126,13 @@ export class CgEmptyState extends LitElement {
             <circle cx="12" cy="12" r="10"></circle>
             <line x1="12" y1="16" x2="12" y2="12"></line>
             <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+        `;
+      case 'ai':
+        return svg`
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"></path>
+            <path d="M19 14l.9 2.2L22 17l-2.1.8L19 20l-.9-2.2L16 17l2.1-.8z"></path>
           </svg>
         `;
       default:

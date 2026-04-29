@@ -33,7 +33,6 @@ export class CgTreeView extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
     :host {
       display: block;
-      font-family: var(--cg-font-family-primary);
       color: var(--cg-color-surface-container-text);
       font-size: var(--cg-font-size-sm);
     }
@@ -45,26 +44,35 @@ export class CgTreeView extends LitElement {
     }
 
     .node {
+      position: relative;
       display: flex;
       align-items: center;
       gap: var(--cg-spacing-8);
-      padding: var(--cg-spacing-8) var(--cg-spacing-8);
-      margin: 0 calc(-1 * var(--cg-spacing-4));
-      border-radius: var(--cg-border-radius-50);
+      padding: var(--cg-spacing-6) var(--cg-spacing-8);
+      /* Indentation per nesting level — read from the inline custom property
+         set by the renderer. Keeps the calc out of the markup. */
+      padding-left: calc(var(--cg-spacing-8) + var(--cg-spacing-20) * var(--cg-tree-level));
+      min-height: var(--cg-spacing-32);
+      border: var(--cg-border-width-50) solid transparent;
+      border-radius: var(--cg-border-radius-100);
       cursor: pointer;
       user-select: none;
+      color: var(--cg-color-surface-container-text);
       transition:
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .node:hover:not(.disabled) {
-      background: var(--cg-color-action-tertiary-background-hover);
-    }
+
+    /* Hover and selected share the same chrome for now — list-row bg shift
+       (theme-aware via surface-cards tokens) plus a 1px container outline.
+       The transparent border at rest prevents any layout shift. */
+    .node:hover:not(.disabled),
     .node.selected {
-      background: var(--cg-color-action-tertiary-background-active);
-      color: var(--cg-color-surface-base-text);
-      font-weight: var(--cg-font-weight-medium);
+      background: var(--cg-color-surface-cards-active-background);
+      border-color: var(--cg-color-surface-container-border);
     }
+
     .node.disabled {
       opacity: 0.5;
       cursor: not-allowed;
@@ -84,11 +92,34 @@ export class CgTreeView extends LitElement {
       height: var(--cg-spacing-16);
       flex-shrink: 0;
       color: var(--cg-color-surface-container-outlined);
-      transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-default);
+      opacity: 0.7;
+      transition:
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .toggle.expanded { transform: rotate(90deg); }
-    .node:hover .toggle { color: var(--cg-color-surface-base-text); }
+    .node:hover .toggle,
+    .node.selected .toggle { opacity: 1; color: var(--cg-color-surface-base-text); }
     .toggle.placeholder { visibility: hidden; }
+
+    /* Optional leading icon next to the label. Muted at rest, full color on
+       hover/selected so the row feels alive but doesn't compete with text. */
+    .leading-icon {
+      flex-shrink: 0;
+      color: var(--cg-color-surface-container-outlined);
+      width: var(--cg-spacing-16);
+      height: var(--cg-spacing-16);
+      opacity: 0.85;
+      transition:
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+    }
+    .node:hover .leading-icon,
+    .node.selected .leading-icon {
+      color: var(--cg-color-action-primary-background-default);
+      opacity: 1;
+    }
 
     .label {
       flex: 1;
@@ -244,7 +275,7 @@ export class CgTreeView extends LitElement {
               role="treeitem"
               data-path=${node.path}
               tabindex=${this._focusedPath === node.path || (this._focusedPath === null && node === flat[0]) ? '0' : '-1'}
-              style="padding-left: calc(var(--cg-spacing-8) + var(--cg-spacing-20) * ${node.level})"
+              style="--cg-tree-level: ${node.level};"
               aria-level=${node.level + 1}
               aria-expanded=${node.hasChildren ? (node.expanded ? 'true' : 'false') : nothing}
               aria-selected=${this._isSelected(node) ? 'true' : 'false'}
@@ -252,9 +283,10 @@ export class CgTreeView extends LitElement {
               @click=${() => this._onNodeClick(node)}
               @keydown=${(e: KeyboardEvent) => this._onKeydown(e, node)}
             >
-              <span class="toggle ${node.hasChildren ? '' : 'placeholder'} ${node.expanded ? 'expanded' : ''}">
-                ${node.hasChildren ? '▶' : nothing}
+              <span class="toggle ${node.hasChildren ? '' : 'placeholder'} ${node.expanded ? 'expanded' : ''}" aria-hidden="true">
+                ${node.hasChildren ? html`<cg-icon name="alt-arrow-right-linear" size="sm"></cg-icon>` : nothing}
               </span>
+              ${node.item.icon ? html`<cg-icon class="leading-icon" name=${node.item.icon} size="sm" aria-hidden="true"></cg-icon>` : nothing}
               <span class="label">${node.item.label}</span>
             </div>
           </li>

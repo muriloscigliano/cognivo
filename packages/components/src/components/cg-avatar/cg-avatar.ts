@@ -98,6 +98,17 @@ export class CgAvatar extends LitElement {
     }
     .status.away { background: var(--cg-color-status-warning-text-default); }
     .status.busy { background: var(--cg-color-status-error-text-default); }
+
+    /* ── Type ring (AI-app variant) ── */
+    :host([type="agent"]) .avatar {
+      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-accent-text);
+    }
+    :host([type="user"]) .avatar {
+      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-status-info-text-default);
+    }
+    :host([type="system"]) .avatar {
+      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-surface-container-outlined);
+    }
   `];
 
   @property() src = '';
@@ -106,6 +117,7 @@ export class CgAvatar extends LitElement {
   @property({ reflect: true }) size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
   @property({ reflect: true }) shape: 'circle' | 'square' = 'circle';
   @property({ reflect: true }) status: 'online' | 'offline' | 'away' | 'busy' | null = null;
+  @property({ reflect: true }) type: 'user' | 'agent' | 'system' | null = null;
   @property({ attribute: 'fallback-icon' }) fallbackIcon = '';
 
   @state() private _imgFailed = false;

@@ -68,8 +68,10 @@ describe('cg-drawer', () => {
     el.open = true;
     await el.updateComplete;
 
-    // The drawer listens on document keydown
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    // The shared FocusTrap binds keydown on the panel (W3C modal pattern —
+    // Escape is handled when focus is inside the dialog, not page-wide).
+    const panel = el.shadowRoot!.querySelector('.panel') as HTMLElement;
+    panel.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     await el.updateComplete;
 
     expect(el.open).toBe(false);

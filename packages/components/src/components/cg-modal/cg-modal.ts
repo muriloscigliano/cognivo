@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { spinKeyframes, reducedMotion } from '../../styles/index.js';
+import { FocusTrap } from '../../utils/focus-trap.js';
 
 /**
  * @element cg-modal
@@ -40,8 +41,8 @@ export class CgModal extends LitElement {
       inset: 0;
       z-index: var(--cg-z-index-500);
       background: var(--cg-color-modal-overlay-background);
-      backdrop-filter: blur(16px) saturate(150%);
-      -webkit-backdrop-filter: blur(16px) saturate(150%);
+      backdrop-filter: blur(var(--cg-blur-backdrop)) saturate(150%);
+      -webkit-backdrop-filter: blur(var(--cg-blur-backdrop)) saturate(150%);
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
@@ -150,7 +151,7 @@ export class CgModal extends LitElement {
       height: var(--cg-spacing-40);
       border-radius: var(--cg-border-radius-100);
       background: var(--cg-color-action-tertiary-background-hover);
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
       font-size: var(--cg-icon-size-200);
     }
 
@@ -306,8 +307,7 @@ export class CgModal extends LitElement {
   @state() private _closing = false;
 
   private _previousOverflow = '';
-  private _focusableElements: HTMLElement[] = [];
-  private _previousFocus: HTMLElement | null = null;
+  private _focusTrap = new FocusTrap();
 
   override disconnectedCallback() {
     super.disconnectedCallback();
@@ -315,7 +315,7 @@ export class CgModal extends LitElement {
     if (this.open) {
       document.body.style.overflow = this._previousOverflow || '';
     }
-    this._focusableElements = [];
+    this._focusTrap.deactivate();
   }
 
   override updated(changed: Map<string, unknown>) {
@@ -333,73 +333,25 @@ export class CgModal extends LitElement {
   }
 
   private _onOpen() {
-    this._previousFocus = document.activeElement as HTMLElement;
     this._previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
     this.dispatchEvent(new CustomEvent('cg-modal-open', { bubbles: true, composed: true }));
 
-    // Focus first focusable element
-    this.updateComplete.then(() => {
-      this._updateFocusableElements();
-      if (this._focusableElements.length > 0) {
-        this._focusableElements[0]!.focus();
-      } else {
-        const modal = this.shadowRoot?.querySelector('.modal') as HTMLElement;
-        modal?.focus();
-      }
-    });
+    const container = this.shadowRoot?.querySelector<HTMLElement>('.modal-container');
+    if (container) {
+      this._focusTrap.activate(container, {
+        returnFocus: true,
+        handleEscape: this.closable,
+        onEscape: () => this._requestClose(),
+      });
+    }
   }
 
   private _onClose() {
     document.body.style.overflow = this._previousOverflow;
+    this._focusTrap.deactivate();
     this.dispatchEvent(new CustomEvent('cg-modal-close', { bubbles: true, composed: true }));
-
-    if (this._previousFocus) {
-      this._previousFocus.focus();
-      this._previousFocus = null;
-    }
-  }
-
-  private _updateFocusableElements() {
-    const root = this.shadowRoot;
-    if (!root) return;
-    const selectors = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-    const shadowFocusable = [...root.querySelectorAll<HTMLElement>(selectors)];
-    const lightFocusable = [...this.querySelectorAll<HTMLElement>(selectors)];
-    this._focusableElements = [...shadowFocusable, ...lightFocusable].filter(el => !el.closest('[hidden]') && el.offsetParent !== null);
-  }
-
-  private _handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape' && this.closable) {
-      e.preventDefault();
-      this._requestClose();
-      return;
-    }
-
-    if (e.key === 'Tab') {
-      this._updateFocusableElements();
-      const focusable = this._focusableElements;
-      if (focusable.length === 0) {
-        e.preventDefault();
-        return;
-      }
-
-      const first = focusable[0]!;
-      const last = focusable[focusable.length - 1]!;
-
-      if (e.shiftKey) {
-        if (document.activeElement === first || this.shadowRoot?.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        }
-      } else {
-        if (document.activeElement === last || this.shadowRoot?.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
-    }
   }
 
   private _handleBackdropClick() {
@@ -424,10 +376,7 @@ export class CgModal extends LitElement {
         @click="${this._handleBackdropClick}"
         aria-hidden="true"
       ></div>
-      <div
-        class="modal-container"
-        @keydown="${this._handleKeydown}"
-      >
+      <div class="modal-container">
         <div
           class="modal ${this._closing ? 'closing' : ''}"
           role="dialog"

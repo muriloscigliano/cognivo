@@ -42,7 +42,7 @@ describe('cg-context-menu', () => {
         { id: 'b', label: 'Delete', danger: true },
       ],
     });
-    const items = el.shadowRoot!.querySelectorAll('.item');
+    const items = el.shadowRoot!.querySelectorAll('.menu-item');
     expect(items.length).toBe(2);
   });
 
@@ -74,7 +74,7 @@ describe('cg-context-menu', () => {
     await el.updateComplete;
     let closed = false;
     el.addEventListener('cg-context-menu-close', () => { closed = true; });
-    const btn = el.shadowRoot!.querySelector<HTMLButtonElement>('.item')!;
+    const btn = el.shadowRoot!.querySelector<HTMLButtonElement>('.menu-item')!;
     btn.click();
     await el.updateComplete;
     expect(closed).toBe(true);
@@ -87,7 +87,7 @@ describe('cg-context-menu', () => {
     });
     let detail: any = null;
     el.addEventListener('cg-context-menu-select', ((e: CustomEvent) => { detail = e.detail; }) as EventListener);
-    const btn = el.shadowRoot!.querySelector<HTMLButtonElement>('.item')!;
+    const btn = el.shadowRoot!.querySelector<HTMLButtonElement>('.menu-item')!;
     btn.click();
     await el.updateComplete;
     expect(detail).not.toBeNull();
@@ -103,7 +103,7 @@ describe('cg-context-menu', () => {
     await create({
       items: [{ id: 'd', label: 'Delete', danger: true }],
     });
-    const btn = el.shadowRoot!.querySelector('.item')!;
+    const btn = el.shadowRoot!.querySelector('.menu-item')!;
     expect(btn.classList.contains('danger')).toBe(true);
   });
 });

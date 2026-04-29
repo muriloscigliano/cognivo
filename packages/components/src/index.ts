@@ -99,6 +99,7 @@ import { CgCalendar } from './components/cg-calendar/cg-calendar.js';
 import { AiThinking } from './components/ai-thinking/ai-thinking.js';
 import { AiAgentSteps } from './components/ai-agent-steps/ai-agent-steps.js';
 import { AiBadge } from './components/ai-badge/ai-badge.js';
+import { AiConfidenceBadge } from './components/ai-confidence-badge/ai-confidence-badge.js';
 import { AiChat } from './components/ai-chat/ai-chat.js';
 import { AiResultPanel } from './components/ai-result-panel/ai-result-panel.js';
 import { AiChartSummary } from './components/ai-chart-summary/ai-chart-summary.js';
@@ -163,6 +164,7 @@ import { AiDebugConsole } from './components/ai-debug-console/ai-debug-console.j
 import { AiAccessibilityReport } from './components/ai-accessibility-report/ai-accessibility-report.js';
 // Final 6: Reaching 100
 import { AiSidebar } from './components/ai-sidebar/ai-sidebar.js';
+import { AiAppSidebar } from './components/ai-app-sidebar/ai-app-sidebar.js';
 import { AiCommandPalette } from './components/ai-command-palette/ai-command-palette.js';
 import { AiAvatar } from './components/ai-avatar/ai-avatar.js';
 import { AiProgressSteps } from './components/ai-progress-steps/ai-progress-steps.js';
@@ -247,7 +249,7 @@ export {
   // Wave 7: Foundation Completion — Structural
   CgCollapsible, CgKbd, CgAspectRatio, CgScrollArea, CgNavbar, CgCalendar,
   // AI Components
-  AiThinking, AiAgentSteps, AiBadge, AiChat, AiResultPanel, AiChartSummary, AiInsightCard,
+  AiThinking, AiAgentSteps, AiBadge, AiConfidenceBadge, AiChat, AiResultPanel, AiChartSummary, AiInsightCard,
   AiStreamingText, AiCitation, AiToolIndicator,
   // AI Wave 2: Workflow + Viz
   AiDiffPanel, AiTimeline, AiFeedback, AiToast,
@@ -270,7 +272,7 @@ export {
   AiTestRunner, AiWebhookConfig, AiDataPreview,
   AiVersionSelector, AiFeatureFlag, AiDebugConsole, AiAccessibilityReport,
   // Final 6: 100 Components
-  AiSidebar, AiCommandPalette, AiAvatar, AiProgressSteps, AiJsonViewer, AiCopyButton,
+  AiSidebar, AiAppSidebar, AiCommandPalette, AiAvatar, AiProgressSteps, AiJsonViewer, AiCopyButton,
   // Wave 7: Freely-inspired production patterns
   AiToolCardResolver, AiActionPreview, AiCaptureFlow, AiKpiGrid,
   AiAlertCard, AiRevealAnimation, AiRichMessage,

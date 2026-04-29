@@ -1,8 +1,8 @@
 /**
  * @element ai-permission-gate
- * Role-based access control panel showing which AI features are allowed
- * or denied for the current role. Denied features show a "Request Access"
- * button. Includes an allowed/denied summary footer.
+ * RBAC permission panel built from design-system primitives (cg-card, cg-text, cg-button, cg-badge).
+ * Shows allowed/denied features for a role, with a "Request Access" CTA on denied items
+ * and an allowed/denied summary footer.
  *
  * @example
  * ```html
@@ -15,14 +15,18 @@
  * ></ai-permission-gate>
  * ```
  *
- * @prop {Permission[]} permissions - Array of permission entries
- * @prop {string} currentRole - Active role to filter permissions by
+ * @prop {Permission[]} permissions - Permission entries
+ * @prop {string} currentRole - Active role to filter by
  *
- * @fires {CustomEvent<{feature: string, role: string}>} ai-permission-request - When "Request Access" is clicked
+ * @fires {CustomEvent<{feature: string, role: string}>} ai-permission-request - Request Access clicked
  */
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css, nothing, svg } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
+import '../cg-card/cg-card.js';
+import '../cg-text/cg-text.js';
+import '../cg-button/cg-button.js';
+import '../cg-badge/cg-badge.js';
 
 interface Permission {
   feature: string;
@@ -36,120 +40,62 @@ export class AiPermissionGate extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
       animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      display: block;
     }
     :host([hidden]) { display: none; }
 
-    .container {
-      background: var(--cg-color-surface-container-background);
-      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      border-radius: var(--cg-border-radius-150);
-      padding: var(--cg-spacing-16);
-      color: var(--cg-color-surface-base-text);
-    }
+    cg-card { display: block; }
 
-    .header {
+    .header-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: var(--cg-spacing-16);
-    }
-
-    .title {
-      font-size: var(--cg-font-size-sm);
-      font-weight: var(--cg-font-weight-semibold);
-    }
-
-    .role-badge {
-      font-size: var(--cg-font-size-xs);
-      font-weight: var(--cg-font-weight-bold);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      background: var(--cg-color-surface-cards-border);
-      color: var(--cg-color-input-text-placeholder);
-      padding: var(--cg-spacing-4) var(--cg-spacing-8);
-      border-radius: var(--cg-border-radius-100);
+      gap: var(--cg-spacing-12);
+      width: 100%;
     }
 
     .feature-list {
       display: flex;
       flex-direction: column;
-      gap: var(--cg-spacing-4);
+      gap: 0;
     }
 
     .feature-row {
       display: flex;
       align-items: center;
-      gap: var(--cg-spacing-8);
-      padding: var(--cg-spacing-8) var(--cg-spacing-12);
-      border-radius: var(--cg-border-radius-100);
-      background: var(--cg-color-surface-base-background);
-      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      gap: var(--cg-spacing-12);
+      padding: var(--cg-spacing-12) var(--cg-spacing-8);
+      min-height: var(--cg-spacing-48);
     }
-    .feature-row:hover { border-color: var(--cg-color-surface-cards-border); }
+    .feature-row + .feature-row {
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+    }
 
     .status-icon {
       width: var(--cg-spacing-20);
       height: var(--cg-spacing-20);
-      border-radius: 50%;
-      display: flex;
+      border-radius: var(--cg-border-radius-full);
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: var(--cg-font-size-xs);
       flex-shrink: 0;
     }
+    .status-icon svg { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
     .status-icon.allowed {
       background: var(--cg-color-status-success-background-default);
-      color: var(--cg-color-status-success-text);
+      color: var(--cg-color-status-success-text-default);
     }
     .status-icon.denied {
       background: var(--cg-color-status-error-background-default);
       color: var(--cg-color-status-error-text-default);
     }
 
-    .feature-info { flex: 1; min-width: 0; }
-
-    .feature-name {
-      font-size: var(--cg-font-size-sm);
-      font-weight: var(--cg-font-weight-semibold);
-      color: var(--cg-color-surface-base-text);
-    }
-
-    .feature-role {
-      font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-input-text-placeholder);
-      margin-top: var(--cg-spacing-2);
-    }
-
-    .feature-reason {
-      font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-input-text-placeholder);
-      margin-top: var(--cg-spacing-2);
-      font-style: italic;
-    }
-
-    .request-btn {
-      background: transparent;
-      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      color: var(--cg-color-input-text-placeholder);
-      font-size: var(--cg-font-size-xs);
-      font-weight: var(--cg-font-weight-semibold);
-      padding: var(--cg-spacing-6) var(--cg-spacing-12);
-      border-radius: var(--cg-border-radius-100);
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
-    }
-    .request-btn:hover {
-      border-color: var(--cg-color-surface-base-text);
-      color: var(--cg-color-surface-base-text);
-    }
-    .request-btn:active {
-      transform: scale(var(--cg-interaction-press-scale));
-    }
-    .request-btn:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
-      outline-offset: var(--cg-outline-offset-default);
+    .feature-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--cg-spacing-2);
     }
 
     .summary {
@@ -158,37 +104,30 @@ export class AiPermissionGate extends LitElement {
       border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       display: flex;
       gap: var(--cg-spacing-16);
-      font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-input-text-placeholder);
     }
-
     .summary-item {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: var(--cg-spacing-4);
+      gap: var(--cg-spacing-6);
     }
+    .dot {
+      width: var(--cg-spacing-8);
+      height: var(--cg-spacing-8);
+      border-radius: var(--cg-border-radius-full);
+      flex-shrink: 0;
+    }
+    .dot-green { background: var(--cg-color-status-success-text-default); }
+    .dot-red { background: var(--cg-color-status-error-text-default); }
 
-    .dot-green { color: var(--cg-color-status-success-text); }
-    .dot-red { color: var(--cg-color-status-error-text-default); }
-
-    .empty-state {
+    .empty {
       text-align: center;
-      color: var(--cg-color-input-text-placeholder);
-      font-size: var(--cg-font-size-sm);
       padding: var(--cg-spacing-24) 0;
     }
-
-    /* ── Rounded variants ── */
-    :host([rounded="none"]) .container { border-radius: 0; }
-    :host([rounded="sm"]) .container { border-radius: var(--cg-border-radius-50); }
-    :host([rounded="md"]) .container { border-radius: var(--cg-border-radius-100); }
-    :host([rounded="lg"]) .container { border-radius: var(--cg-border-radius-150); }
-    :host([rounded="full"]) .container { border-radius: var(--cg-border-radius-full); }
   `];
 
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) permissions: Permission[] = [];
-  @property({ type: String }) currentRole = '';
+  @property({ type: String, attribute: 'current-role' }) currentRole = '';
 
   private get _relevantPermissions(): Permission[] {
     if (!this.currentRole) return this.permissions;
@@ -206,44 +145,52 @@ export class AiPermissionGate extends LitElement {
   private _requestAccess(permission: Permission) {
     this.dispatchEvent(new CustomEvent('ai-permission-request', {
       detail: { feature: permission.feature, role: permission.role },
-      bubbles: true,
-      composed: true,
+      bubbles: true, composed: true,
     }));
+  }
+
+  private _checkIcon() {
+    return svg`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+  }
+  private _xIcon() {
+    return svg`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`;
   }
 
   override render() {
     const perms = this._relevantPermissions;
 
     return html`
-      <div class="container" role="region" aria-label="Permission gate">
-        <div class="header">
-          <span class="title">Feature Permissions</span>
-          ${this.currentRole ? html`
-            <span class="role-badge" aria-label="Current role: ${this.currentRole}">${this.currentRole}</span>
-          ` : nothing}
+      <cg-card variant="outlined" padding="md" rounded=${this.rounded} role="region" aria-label="Permission gate">
+        <div slot="header" class="header-row">
+          <cg-text size="sm" weight="semibold">Feature Permissions</cg-text>
+          ${this.currentRole
+            ? html`<cg-badge variant="neutral" size="sm" rounded="full">${this.currentRole}</cg-badge>`
+            : nothing}
         </div>
 
         ${perms.length === 0 ? html`
-          <div class="empty-state" role="status">No permissions configured</div>
+          <div class="empty">
+            <cg-text size="sm" color="muted">No permissions configured</cg-text>
+          </div>
         ` : html`
           <div class="feature-list" role="list" aria-label="Feature permissions list">
             ${perms.map(p => html`
               <div class="feature-row" role="listitem">
-                <div class="status-icon ${p.allowed ? 'allowed' : 'denied'}" aria-hidden="true">
-                  ${p.allowed ? '\u2713' : '\u2717'}
-                </div>
+                <span class="status-icon ${p.allowed ? 'allowed' : 'denied'}" aria-hidden="true">
+                  ${p.allowed ? this._checkIcon() : this._xIcon()}
+                </span>
                 <div class="feature-info">
-                  <div class="feature-name">${p.feature}</div>
-                  <div class="feature-role">Role: ${p.role}</div>
-                  ${p.reason ? html`<div class="feature-reason">${p.reason}</div>` : nothing}
+                  <cg-text size="sm" weight="semibold">${p.feature}</cg-text>
+                  <cg-text size="xs" color="muted">Role: ${p.role}</cg-text>
+                  ${p.reason ? html`<cg-text size="xs" color="muted" style="font-style:italic;">${p.reason}</cg-text>` : nothing}
                 </div>
                 ${!p.allowed ? html`
-                  <button
-                    class="request-btn"
-                    @click=${() => this._requestAccess(p)}
+                  <cg-button
+                    variant="secondary"
+                    size="sm"
                     aria-label="Request access to ${p.feature}"
-                    tabindex="0"
-                  >Request Access</button>
+                    @click=${() => this._requestAccess(p)}
+                  >Request Access</cg-button>
                 ` : nothing}
               </div>
             `)}
@@ -251,14 +198,16 @@ export class AiPermissionGate extends LitElement {
 
           <div class="summary">
             <span class="summary-item">
-              <span class="dot-green">\u25CF</span> ${this._allowedCount} allowed
+              <span class="dot dot-green" aria-hidden="true"></span>
+              <cg-text size="xs" color="muted">${this._allowedCount} allowed</cg-text>
             </span>
             <span class="summary-item">
-              <span class="dot-red">\u25CF</span> ${this._deniedCount} denied
+              <span class="dot dot-red" aria-hidden="true"></span>
+              <cg-text size="xs" color="muted">${this._deniedCount} denied</cg-text>
             </span>
           </div>
         `}
-      </div>
+      </cg-card>
     `;
   }
 }

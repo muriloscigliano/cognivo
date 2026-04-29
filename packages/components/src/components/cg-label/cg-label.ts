@@ -15,19 +15,17 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
 export class CgLabel extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
     :host {
-      margin-bottom: var(--cg-spacing-4);
-    }
-
-    .label-row {
-      display: flex;
-      align-items: baseline;
-      gap: var(--cg-spacing-4);
+      margin-bottom: var(--cg-spacing-6);
     }
 
     label {
       font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-medium);
       color: var(--cg-color-surface-base-text);
+      cursor: default;
+    }
+
+    :host([for]) label {
       cursor: pointer;
     }
 
@@ -43,7 +41,7 @@ export class CgLabel extends LitElement {
 
     .hint {
       font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-input-text-placeholder);
+      color: var(--cg-color-surface-container-outlined);
       margin-top: var(--cg-spacing-2);
       line-height: var(--cg-line-height-snug);
       transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
@@ -67,12 +65,10 @@ export class CgLabel extends LitElement {
 
   override render() {
     return html`
-      <div class="label-row">
-        <label for=${this.htmlFor || nothing}>
-          ${this.text}<slot></slot>
-          ${this.required ? html`<span class="required" aria-hidden="true"> *</span>` : nothing}
-        </label>
-      </div>
+      <label for=${this.htmlFor || nothing}>
+        ${this.text}<slot></slot>
+        ${this.required ? html`<span class="required" aria-hidden="true"> *</span>` : nothing}
+      </label>
       ${this.error
         ? html`<div class="error-text" role="alert">${this.error}</div>`
         : this.hint
