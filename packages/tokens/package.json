@@ -17,7 +17,16 @@
   "exports": {
     ".": "./dist/index.css",
     "./css": "./dist/index.css",
-    "./dist/index.css": "./dist/index.css"
+    "./dist/index.css": "./dist/index.css",
+    "./manifest": {
+      "types": "./dist/manifest.d.ts",
+      "import": "./dist/manifest-full.js"
+    },
+    "./manifest/runtime": {
+      "types": "./dist/manifest.d.ts",
+      "import": "./dist/manifest-runtime.js"
+    },
+    "./manifest.json": "./dist/manifest.json"
   },
   "files": [
     "dist",
@@ -36,8 +45,11 @@
   },
   "scripts": {
     "generate": "node generate-from-palette.cjs",
-    "build": "node build.js && node scripts/validate-contrast.mjs",
+    "build": "node build.js && node scripts/build-manifest.mjs && node scripts/validate-contrast.mjs",
     "build:only": "node build.js",
+    "build:manifest": "node scripts/build-manifest.mjs",
+    "check:manifest": "node scripts/check-manifest-drift.mjs",
+    "test": "node --test __tests__/manifest-lib.test.mjs",
     "validate:contrast": "node scripts/validate-contrast.mjs",
     "prepublishOnly": "pnpm build",
     "dev": "node build.js --watch",
