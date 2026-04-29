@@ -11,10 +11,10 @@ describe('@cognivo/lens-pack-core end-to-end', () => {
     document.body.innerHTML = '';
   });
 
-  it('registers all 14 rules', async () => {
+  it('registers all 20 rules', async () => {
     const engine = new RuleEngine();
     await engine.register(corePack);
-    expect(engine.size()).toBe(14);
+    expect(engine.size()).toBe(20);
   });
 
   it('reports findings on a multi-violation page', async () => {

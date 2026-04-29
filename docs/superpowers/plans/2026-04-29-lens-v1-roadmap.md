@@ -263,10 +263,11 @@ New pack: `@cognivo/lens-pack-conversion` (~17 rules per spec §4.3) — anchori
 
 | Checkpoint | What's committed | Why this is a coherent unit |
 |---|---|---|
-| **C0** | Phase 0 — current pack-core + lens-core fixes | Where we are now |
-| **C1** | Phase 1 demo | Validates integration; tiny standalone change |
-| **C2** | Phase 2 token resolution | Standalone lens-core enhancement; tests gated |
-| **C3** | Phase 3 token rules in pack-core | New rules + bump pack-core to 0.2.0 |
+| **C0** ✓ | Phase 0 — current pack-core + lens-core fixes | Where we are now |
+| **C1** ✓ | Phase 1 demo | Validates integration; tiny standalone change |
+| **C2.1** ✓ | Tokens manifest with determinism gate | Build-time typed manifest at `@cognivo/tokens/manifest{,/runtime}` |
+| **C2.2** ✓ | Observer token resolution + WCAG 2.1 contrast helper | `tokenUsage` populated; `scene.tokenViolations()`, `scene.contrast()` wired |
+| **C2.3** ✓ | Six new pack-core rules — pack-core 0.2.0 | tier-1-palette/brand, raw-color, background-as-foreground, missing-tier3, contrast-AA |
 | **C4** | Phase 4 lens-ui v0.1 | New package; first visible product surface |
 | **C5** | Phase 5 lens-pack-ethics v0.1 | New package; multi-pack proof |
 | **C6** | Phase 6 lens-core agent runtime | Lens-core 0.2.0 with streaming agent |

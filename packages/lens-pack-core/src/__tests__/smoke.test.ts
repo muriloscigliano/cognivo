@@ -6,7 +6,7 @@ describe('@cognivo/lens-pack-core smoke', () => {
     expect(corePack.id).toBe('@cognivo/lens-pack-core');
     expect(corePack.version).toMatch(/^\d+\.\d+\.\d+/);
     expect(Array.isArray(corePack.rules)).toBe(true);
-    expect(corePack.rules).toHaveLength(14);
+    expect(corePack.rules).toHaveLength(20);
     expect(corePack.rules.every((r) => typeof r === 'function')).toBe(true);
   });
 
@@ -46,6 +46,12 @@ describe('@cognivo/lens-pack-core smoke', () => {
       'transitionAll',
       'closedShadowRootUnauditable',
       'cgComponentNoManifest',
+      'textContrastBelowAa',
+      'tier1PaletteColor',
+      'tier1BrandColor',
+      'rawColorNoToken',
+      'backgroundAsForeground',
+      'missingComponentTier3Token',
     ];
     for (const n of expectedNames) {
       expect(named, `missing named export: ${n}`).toHaveProperty(n);

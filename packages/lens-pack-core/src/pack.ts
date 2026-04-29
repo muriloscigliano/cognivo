@@ -8,10 +8,10 @@ import { definePack } from '@cognivo/lens-core';
  */
 export default definePack({
   id: '@cognivo/lens-pack-core',
-  version: '0.1.0',
+  version: '0.2.0',
   title: 'Cognivo Lens \u2014 Core Pack',
   description:
-    'Foundational accessibility, focus, and system-health rules. Enabled by default.',
+    'Foundational accessibility, focus, system-health, and token-tier rules. Enabled by default.',
   intents: [],
   rules: [
     // a11y
@@ -25,11 +25,18 @@ export default definePack({
     () => import('./rules/a11y/positive-tabindex.js'),
     () => import('./rules/a11y/aria-hidden-focusable.js'),
     () => import('./rules/a11y/duplicate-id.js'),
+    () => import('./rules/a11y/text-contrast-below-aa.js'),
     // focus
     () => import('./rules/focus/disabled-with-tabindex.js'),
     // system-health
     () => import('./rules/system-health/transition-all.js'),
     () => import('./rules/system-health/closed-shadow-root-unauditable.js'),
     () => import('./rules/system-health/cg-component-no-manifest.js'),
+    // tokens
+    () => import('./rules/tokens/tier1-palette-color.js'),
+    () => import('./rules/tokens/tier1-brand-color.js'),
+    () => import('./rules/tokens/raw-color-no-token.js'),
+    () => import('./rules/tokens/background-as-foreground.js'),
+    () => import('./rules/tokens/missing-component-tier3-token.js'),
   ],
 });
