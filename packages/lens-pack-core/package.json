@@ -1,0 +1,49 @@
+{
+  "name": "@cognivo/lens-pack-core",
+  "version": "0.1.0",
+  "description": "Foundational a11y + system-health rule pack for Cognivo Lens. On by default.",
+  "keywords": ["cognivo", "lens", "a11y", "design-system", "ui-audit"],
+  "license": "MIT",
+  "author": "Cognivo",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "LICENSE", "README.md"],
+  "sideEffects": false,
+  "publishConfig": { "access": "public" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muriloscigliano/cognivo.git",
+    "directory": "packages/lens-pack-core"
+  },
+  "homepage": "https://cognivo.dev",
+  "bugs": "https://github.com/muriloscigliano/cognivo/issues",
+  "scripts": {
+    "build": "vite build",
+    "prepublishOnly": "pnpm build",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "@cognivo/lens-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@cognivo/lens-core": "workspace:*",
+    "@types/node": "^22.0.0",
+    "happy-dom": "^15.7.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "vite-plugin-dts": "^4.0.0",
+    "vitest": "^2.1.0"
+  }
+}
