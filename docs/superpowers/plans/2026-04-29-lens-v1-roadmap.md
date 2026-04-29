@@ -268,7 +268,7 @@ New pack: `@cognivo/lens-pack-conversion` (~17 rules per spec §4.3) — anchori
 | **C2.1** ✓ | Tokens manifest with determinism gate | Build-time typed manifest at `@cognivo/tokens/manifest{,/runtime}` |
 | **C2.2** ✓ | Observer token resolution + WCAG 2.1 contrast helper | `tokenUsage` populated; `scene.tokenViolations()`, `scene.contrast()` wired |
 | **C2.3** ✓ | Six new pack-core rules — pack-core 0.2.0 | tier-1-palette/brand, raw-color, background-as-foreground, missing-tier3, contrast-AA |
-| **C4** | Phase 4 lens-ui v0.1 | New package; first visible product surface |
+| **C4** ✓ | lens-ui v0.1.0 — `<cg-lens>` overlay | First visible product surface; demo page consumes it |
 | **C5** | Phase 5 lens-pack-ethics v0.1 | New package; multi-pack proof |
 | **C6** | Phase 6 lens-core agent runtime | Lens-core 0.2.0 with streaming agent |
 | **C7** | Phase 7 LLM ethics + lens-pack-conversion | Two packs at LLM level |
