@@ -1,0 +1,366 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+---
+
+<DocsLayout title="Lens Demo">
+  <p class="bc"><a href="/">Home</a> <span>/</span> Lens <span>/</span> Demo</p>
+
+  <h1>Cognivo Lens — Live Demo</h1>
+  <p class="desc">
+    Below: a sample DOM seeded with intentional accessibility, focus, and
+    system-health violations. The Lens engine + <code>@cognivo/lens-pack-core</code>
+    scan it on page load and report findings on the right. Click <strong>Toggle
+    violations</strong> to switch the sample to a clean version and watch the
+    findings disappear.
+  </p>
+
+  <div class="badges">
+    <span class="badge">lens-core 0.1.0</span>
+    <span class="badge">lens-pack-core 0.1.0</span>
+    <span class="badge">14 rules</span>
+  </div>
+
+  <div class="lens-demo-toolbar">
+    <button id="lens-rescan" type="button" class="lens-btn">Re-scan</button>
+    <button id="lens-toggle" type="button" class="lens-btn">Toggle violations</button>
+    <span id="lens-summary" class="lens-summary" aria-live="polite">Scanning…</span>
+  </div>
+
+  <div class="lens-demo-grid">
+    <!-- Audit target — the engine scans this subtree, not the whole page -->
+    <section
+      id="lens-audit-target"
+      class="lens-audit-target"
+      aria-label="Sample DOM under audit"
+    >
+      <!-- This subtree is rewritten by the toggle button. Initial = violating. -->
+      <h1>Welcome to Acme</h1>
+      <h3>Buried section</h3>
+      <p>An intro paragraph.</p>
+
+      <p>
+        <img src="/favicon.svg" />
+        <a href="/somewhere"><img src="/favicon.svg" /></a>
+      </p>
+
+      <p>
+        <button type="button"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="currentColor"/></svg></button>
+        <button type="button" aria-label="Save"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="currentColor"/></svg></button>
+        <a href="/x"></a>
+      </p>
+
+      <form>
+        <input type="email" placeholder="Email" />
+        <input type="password" placeholder="Password" />
+      </form>
+
+      <div tabindex="3">positive tabindex</div>
+      <span id="dup-id">A</span>
+      <span id="dup-id">B</span>
+      <button type="button" disabled tabindex="0">Disabled but tabbable</button>
+      <button type="button" aria-hidden="true">Silent tab stop</button>
+
+      <div role="navigation"><a href="/x">link</a></div>
+      <dialog open><p>Confirm?</p></dialog>
+
+      <div style="transition: all 200ms ease; padding: 8px;">animated</div>
+    </section>
+
+    <aside class="lens-findings-panel" aria-label="Lens findings">
+      <h2 class="lens-findings-h">Findings</h2>
+      <ol id="lens-findings" class="lens-findings"></ol>
+      <p id="lens-empty" class="lens-empty" hidden>No findings — clean page.</p>
+    </aside>
+  </div>
+
+  <script>
+    import { RuleEngine, scan } from '@cognivo/lens-core';
+    import corePack from '@cognivo/lens-pack-core';
+
+    const SEVERITY_RANK: Record<string, number> = {
+      blocker: 0,
+      strong: 1,
+      consider: 2,
+      positive: 3,
+    };
+
+    const VIOLATING_HTML = `
+      <h1>Welcome to Acme</h1>
+      <h3>Buried section</h3>
+      <p>An intro paragraph.</p>
+      <p>
+        <img src="/favicon.svg" />
+        <a href="/somewhere"><img src="/favicon.svg" /></a>
+      </p>
+      <p>
+        <button type="button"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="currentColor"/></svg></button>
+        <button type="button" aria-label="Save"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="currentColor"/></svg></button>
+        <a href="/x"></a>
+      </p>
+      <form>
+        <input type="email" placeholder="Email" />
+        <input type="password" placeholder="Password" />
+      </form>
+      <div tabindex="3">positive tabindex</div>
+      <span id="dup-id">A</span>
+      <span id="dup-id">B</span>
+      <button type="button" disabled tabindex="0">Disabled but tabbable</button>
+      <button type="button" aria-hidden="true">Silent tab stop</button>
+      <div role="navigation"><a href="/x">link</a></div>
+      <dialog open><p>Confirm?</p></dialog>
+      <div style="transition: all 200ms ease; padding: 8px;">animated</div>
+    `;
+
+    const CLEAN_HTML = `
+      <h1>Welcome to Acme</h1>
+      <h2>Featured section</h2>
+      <p>An intro paragraph.</p>
+      <p>
+        <img src="/favicon.svg" alt="Acme logo" />
+        <a href="/somewhere"><img src="/favicon.svg" alt="Open profile" /></a>
+      </p>
+      <p>
+        <button type="button" aria-label="Add"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="currentColor"/></svg></button>
+        <button type="button" aria-label="Save"><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="6" fill="currentColor"/></svg></button>
+        <a href="/x">Read more</a>
+      </p>
+      <form>
+        <label for="demo-email">Email</label>
+        <input id="demo-email" type="email" placeholder="Email" />
+        <label for="demo-pw">Password</label>
+        <input id="demo-pw" type="password" placeholder="Password" />
+      </form>
+      <button type="button" disabled>Disabled (correctly)</button>
+      <div role="navigation" aria-label="Primary"><a href="/x">link</a></div>
+      <dialog open aria-label="Confirm action"><p>Confirm?</p></dialog>
+      <div style="transition: background-color 200ms ease; padding: 8px;">animated</div>
+    `;
+
+    let usingViolations = true;
+
+    async function main() {
+      const target = document.getElementById('lens-audit-target');
+      const findingsList = document.getElementById('lens-findings');
+      const emptyMsg = document.getElementById('lens-empty');
+      const summary = document.getElementById('lens-summary');
+      const rescanBtn = document.getElementById('lens-rescan');
+      const toggleBtn = document.getElementById('lens-toggle');
+      if (!target || !findingsList || !emptyMsg || !summary || !rescanBtn || !toggleBtn) {
+        return;
+      }
+
+      const engine = new RuleEngine();
+      await engine.register(corePack);
+
+      function audit() {
+        const t0 = performance.now();
+        const graph = scan(target!);
+        const findings = engine.evaluate(graph, 'unknown');
+        const elapsed = (performance.now() - t0).toFixed(1);
+
+        findingsList!.innerHTML = '';
+        if (findings.length === 0) {
+          emptyMsg!.hidden = false;
+          summary!.textContent = `0 findings · ${elapsed}ms`;
+          return;
+        }
+        emptyMsg!.hidden = true;
+
+        const counts = { blocker: 0, strong: 0, consider: 0, positive: 0 };
+        for (const f of findings) counts[f.severity]++;
+        summary!.textContent =
+          `${findings.length} findings · ` +
+          `${counts.blocker} blocker · ${counts.strong} strong · ${counts.consider} consider · ${elapsed}ms`;
+
+        for (const f of findings) {
+          const li = document.createElement('li');
+          li.className = `lens-finding lens-finding--${f.severity}`;
+          li.innerHTML = `
+            <div class="lens-finding__head">
+              <span class="lens-sev lens-sev--${f.severity}">${f.severity}</span>
+              <code class="lens-rid">${f.ruleId}</code>
+              <span class="lens-conf">${f.confidence}%</span>
+            </div>
+            <p class="lens-msg"></p>
+            <details class="lens-why">
+              <summary>Why</summary>
+              <p class="lens-why-body"></p>
+              ${f.citations.length ? `<p class="lens-cites">Citations: ${f.citations.map((c) => `<code>${c}</code>`).join(', ')}</p>` : ''}
+            </details>
+          `;
+          // Use textContent for user-rendered fields to avoid HTML injection
+          li.querySelector('.lens-msg')!.textContent = f.message;
+          li.querySelector('.lens-why-body')!.textContent = f.why;
+          findingsList!.appendChild(li);
+        }
+      }
+
+      rescanBtn.addEventListener('click', audit);
+      toggleBtn.addEventListener('click', () => {
+        usingViolations = !usingViolations;
+        target!.innerHTML = usingViolations ? VIOLATING_HTML : CLEAN_HTML;
+        toggleBtn.textContent = usingViolations ? 'Show clean version' : 'Show violations';
+        audit();
+      });
+
+      audit();
+
+      // Re-export for ad-hoc tinkering in DevTools
+      (window as unknown as { __lens?: unknown }).__lens = { engine, scan, audit, corePack };
+      void SEVERITY_RANK;
+    }
+
+    main();
+  </script>
+
+  <style>
+    .lens-demo-toolbar {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-12, 12px);
+      margin: var(--cg-spacing-16, 16px) 0;
+      flex-wrap: wrap;
+    }
+    .lens-btn {
+      font: inherit;
+      padding: var(--cg-spacing-8, 8px) var(--cg-spacing-12, 12px);
+      background: var(--cg-color-action-secondary-background-default);
+      color: var(--cg-color-action-secondary-text-default);
+      border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-container-border);
+      border-radius: var(--cg-component-button-radius-sm, 6px);
+      cursor: pointer;
+      transition: background-color var(--cg-transition-duration-fast, 100ms) ease;
+    }
+    .lens-btn:hover {
+      background: var(--cg-color-action-secondary-background-hover);
+    }
+    .lens-summary {
+      color: var(--cg-color-surface-base-text-muted, #a1a1aa);
+      font-size: var(--cg-font-size-sm, 14px);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .lens-demo-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: var(--cg-spacing-24, 24px);
+      align-items: start;
+      margin-top: var(--cg-spacing-16, 16px);
+    }
+    @media (max-width: 900px) {
+      .lens-demo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .lens-audit-target {
+      padding: var(--cg-spacing-16, 16px);
+      border: var(--cg-border-width-50, 1px) dashed var(--cg-color-surface-container-border);
+      border-radius: var(--cg-border-radius-100, 8px);
+      background: var(--cg-color-surface-container-background);
+    }
+    .lens-audit-target h1,
+    .lens-audit-target h3,
+    .lens-audit-target h2 {
+      margin-top: 0;
+    }
+    .lens-audit-target form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--cg-spacing-8, 8px);
+      margin: var(--cg-spacing-12, 12px) 0;
+    }
+    .lens-audit-target input {
+      padding: var(--cg-spacing-8, 8px);
+      border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-container-border);
+      border-radius: var(--cg-component-input-radius, 8px);
+      background: var(--cg-color-surface-base-background);
+      color: var(--cg-color-surface-base-text);
+    }
+
+    .lens-findings-panel {
+      position: sticky;
+      top: var(--cg-spacing-16, 16px);
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
+      padding: var(--cg-spacing-16, 16px);
+      border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-container-border);
+      border-radius: var(--cg-border-radius-100, 8px);
+      background: var(--cg-color-surface-container-background);
+    }
+    .lens-findings-h {
+      margin: 0 0 var(--cg-spacing-12, 12px) 0;
+      font-size: var(--cg-font-size-md, 16px);
+    }
+    .lens-findings {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--cg-spacing-8, 8px);
+    }
+    .lens-empty {
+      color: var(--cg-color-status-success-text-default);
+      font-size: var(--cg-font-size-sm, 14px);
+    }
+
+    .lens-finding {
+      padding: var(--cg-spacing-12, 12px);
+      border: var(--cg-border-width-50, 1px) solid var(--cg-color-surface-container-border);
+      border-left-width: 3px;
+      border-radius: var(--cg-border-radius-100, 8px);
+      background: var(--cg-color-surface-base-background);
+    }
+    .lens-finding--blocker { border-left-color: var(--cg-color-status-error-text-default); }
+    .lens-finding--strong { border-left-color: var(--cg-color-status-warning-text-default); }
+    .lens-finding--consider { border-left-color: var(--cg-color-status-info-text-default); }
+    .lens-finding--positive { border-left-color: var(--cg-color-status-success-text-default); }
+
+    .lens-finding__head {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-8, 8px);
+      flex-wrap: wrap;
+      margin-bottom: var(--cg-spacing-4, 4px);
+    }
+    .lens-sev {
+      font-size: var(--cg-font-size-xs, 12px);
+      font-weight: var(--cg-font-weight-medium, 500);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 2px var(--cg-spacing-8, 8px);
+      border-radius: var(--cg-border-radius-50, 4px);
+      background: var(--cg-color-surface-container-background);
+    }
+    .lens-sev--blocker { color: var(--cg-color-status-error-text-default); }
+    .lens-sev--strong { color: var(--cg-color-status-warning-text-default); }
+    .lens-sev--consider { color: var(--cg-color-status-info-text-default); }
+    .lens-sev--positive { color: var(--cg-color-status-success-text-default); }
+    .lens-rid {
+      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-surface-base-text-muted, #a1a1aa);
+    }
+    .lens-conf {
+      margin-left: auto;
+      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-surface-base-text-muted, #a1a1aa);
+      font-variant-numeric: tabular-nums;
+    }
+    .lens-msg {
+      margin: 0;
+      font-size: var(--cg-font-size-sm, 14px);
+    }
+    .lens-why summary {
+      cursor: pointer;
+      font-size: var(--cg-font-size-xs, 12px);
+      color: var(--cg-color-surface-base-text-muted, #a1a1aa);
+      margin-top: var(--cg-spacing-4, 4px);
+    }
+    .lens-why-body,
+    .lens-cites {
+      font-size: var(--cg-font-size-xs, 12px);
+      margin: var(--cg-spacing-4, 4px) 0 0 0;
+    }
+  </style>
+</DocsLayout>

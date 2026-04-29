@@ -68,6 +68,12 @@ importers:
       '@cognivo/design-advisor':
         specifier: workspace:*
         version: link:../packages/design-advisor
+      '@cognivo/lens-core':
+        specifier: workspace:*
+        version: link:../packages/lens-core
+      '@cognivo/lens-pack-core':
+        specifier: workspace:*
+        version: link:../packages/lens-pack-core
       '@cognivo/tokens':
         specifier: workspace:*
         version: link:../packages/tokens
@@ -367,6 +373,30 @@ importers:
       zod:
         specifier: ^3.23.0
         version: 3.25.76
+
+  packages/lens-pack-core:
+    devDependencies:
+      '@cognivo/lens-core':
+        specifier: workspace:*
+        version: link:../lens-core
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.1
+      happy-dom:
+        specifier: ^15.7.0
+        version: 15.11.7
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+      vite:
+        specifier: ^6.0.0
+        version: 6.4.1(@types/node@22.19.1)(tsx@4.21.0)(yaml@2.8.1)
+      vite-plugin-dts:
+        specifier: ^4.0.0
+        version: 4.5.4(@types/node@22.19.1)(rollup@4.53.2)(typescript@5.9.3)(vite@6.4.1(@types/node@22.19.1)(tsx@4.21.0)(yaml@2.8.1))
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.19.1)(happy-dom@15.11.7)(jsdom@25.0.1)
 
   packages/mcp-server:
     dependencies:

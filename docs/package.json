@@ -11,6 +11,8 @@
   "dependencies": {
     "@cognivo/components": "workspace:*",
     "@cognivo/design-advisor": "workspace:*",
+    "@cognivo/lens-core": "workspace:*",
+    "@cognivo/lens-pack-core": "workspace:*",
     "@cognivo/tokens": "workspace:*",
     "@lit/reactive-element": "^2.1.2",
     "astro": "^4.16.0",
