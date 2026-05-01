@@ -1,6 +1,6 @@
 import { LitElement, html, css, type PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import type { Finding, LensScore, SceneGraph } from '@cognivo/lens-core';
+import type { Finding, LensScore, RulePack, SceneGraph } from '@cognivo/lens-core';
 import { ScanController, type ScanResult } from './internal/scan-controller.js';
 import './components/cg-lens-toolbar.js';
 import './components/cg-lens-overlay.js';
@@ -42,6 +42,15 @@ export class CgLens extends LitElement {
 
   /** When true, skip the initial scan in connectedCallback. */
   @property({ type: Boolean, reflect: true }) paused = false;
+
+  /**
+   * Rule packs to register. Set programmatically before connectedCallback
+   * to override the default (`@cognivo/lens-pack-core` only).
+   *
+   *     const lens = document.querySelector('cg-lens');
+   *     lens.packs = [corePack, ethicsPack];
+   */
+  @property({ attribute: false }) packs: RulePack[] | undefined;
 
   @state() private _findings: Finding[] = [];
   @state() private _graph: SceneGraph | null = null;
@@ -155,7 +164,11 @@ export class CgLens extends LitElement {
   }
 
   protected override updated(changed: PropertyValues): void {
-    if (changed.has('disabledRules') || changed.has('target')) {
+    if (
+      changed.has('disabledRules') ||
+      changed.has('target') ||
+      changed.has('packs')
+    ) {
       // Engine config baked into the controller — recreate.
       this._controller = undefined;
     }
@@ -178,7 +191,10 @@ export class CgLens extends LitElement {
         .split(',')
         .map((s) => s.trim())
         .filter(Boolean);
-      this._controller = new ScanController({ disabledRules: disabled });
+      this._controller = new ScanController({
+        disabledRules: disabled,
+        ...(this.packs !== undefined && { packs: this.packs }),
+      });
     }
     return this._controller;
   }

@@ -4,6 +4,7 @@ import {
   scan,
   type Finding,
   type LensScore,
+  type RulePack,
   type SceneGraph,
   type SceneNode,
 } from '@cognivo/lens-core';
@@ -19,16 +20,22 @@ export interface ScanResult {
 export interface ScanControllerOptions {
   /** Rule IDs to disable. Passed through to the engine's ruleOverrides. */
   disabledRules?: readonly string[];
+  /**
+   * Rule packs to register. When omitted, the engine registers
+   * `@cognivo/lens-pack-core` only — the v0.1 default. Pass an explicit
+   * array to add additional packs (e.g. `[corePack, ethicsPack]`).
+   */
+  packs?: readonly RulePack[];
 }
 
 /**
- * Coordinator between the lens engine and the UI. Lazy-registers the core
- * pack on first use; subsequent runs reuse the same engine.
+ * Coordinator between the lens engine and the UI. Lazy-registers the
+ * configured packs on first use; subsequent runs reuse the same engine.
  *
  * Findings whose target node is a descendant of any `<cg-lens>` element on
  * the page are filtered out — we don't audit our own UI as if it were the
- * page being audited. (The dogfood meta-test in Phase F audits the chrome
- * separately, scoped to the lens's own shadow root.)
+ * page being audited. (The dogfood meta-test audits the chrome separately,
+ * scoped to the lens's own shadow root.)
  */
 export class ScanController {
   private readonly engine: RuleEngine;
@@ -38,7 +45,10 @@ export class ScanController {
     const ruleOverrides: Record<string, { enabled: false }> = {};
     for (const id of options.disabledRules ?? []) ruleOverrides[id] = { enabled: false };
     this.engine = new RuleEngine({ ruleOverrides });
-    this.registration = this.engine.register(corePack);
+    const packs = options.packs ?? [corePack];
+    this.registration = (async () => {
+      for (const pack of packs) await this.engine.register(pack);
+    })();
   }
 
   async run(target: Element): Promise<ScanResult> {

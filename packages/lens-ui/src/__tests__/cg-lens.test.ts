@@ -154,6 +154,47 @@ describe('<cg-lens> mount + scan', () => {
   });
 });
 
+describe('<cg-lens> multi-pack support', () => {
+  beforeEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  it('default packs = lens-pack-core only (one pack)', async () => {
+    document.body.innerHTML = `
+      <div><img src="x.jpg"></div>
+      <cg-lens></cg-lens>
+    `;
+    const lens = document.querySelector('cg-lens') as CgLens;
+    await waitForScan(lens);
+    // Core pack flags img-without-alt; ethics pack rule ids should not appear.
+    const ids = new Set(lens.findings.map((f) => f.ruleId));
+    expect(Array.from(ids).some((id) => id.startsWith('core/'))).toBe(true);
+    expect(Array.from(ids).some((id) => id.startsWith('ethics/'))).toBe(false);
+  });
+
+  it('custom packs property registers additional packs', async () => {
+    const corePack = (await import('@cognivo/lens-pack-core')).default;
+    const ethicsPack = (await import('@cognivo/lens-pack-ethics')).default;
+    document.body.innerHTML = `
+      <div>
+        <p>Only 3 left in stock!</p>
+        <img src="x.jpg">
+      </div>
+      <cg-lens paused></cg-lens>
+    `;
+    const lens = document.querySelector('cg-lens') as CgLens;
+    lens.packs = [corePack, ethicsPack];
+    await lens.rescan();
+    const ids = new Set(lens.findings.map((f) => f.ruleId));
+    expect(Array.from(ids).some((id) => id.startsWith('core/'))).toBe(true);
+    expect(Array.from(ids).some((id) => id.startsWith('ethics/'))).toBe(true);
+  });
+});
+
 describe('ScanController integration', () => {
   beforeEach(() => {
     document.body.innerHTML = '';

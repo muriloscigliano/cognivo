@@ -1,8 +1,8 @@
 {
-  "name": "@cognivo/lens-ui",
+  "name": "@cognivo/lens-pack-ethics",
   "version": "0.1.0",
-  "description": "Visible product surface for Cognivo Lens — <cg-lens> web component with toolbar, pin overlay, and finding drawer.",
-  "keywords": ["cognivo", "lens", "lit", "web-component", "ui-audit"],
+  "description": "Dark-pattern + transparency rules for Cognivo Lens. Cheap pattern-matching rules; LLM-judgment rules ship in a later release.",
+  "keywords": ["cognivo", "lens", "dark-patterns", "ethics", "transparency"],
   "license": "MIT",
   "author": "Cognivo",
   "type": "module",
@@ -13,19 +13,15 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./cg-lens": {
-      "types": "./dist/cg-lens.d.ts",
-      "import": "./dist/cg-lens.js"
     }
   },
   "files": ["dist", "LICENSE", "README.md"],
-  "sideEffects": ["**/index.js", "**/cg-lens.js"],
+  "sideEffects": false,
   "publishConfig": { "access": "public" },
   "repository": {
     "type": "git",
     "url": "https://github.com/muriloscigliano/cognivo.git",
-    "directory": "packages/lens-ui"
+    "directory": "packages/lens-pack-ethics"
   },
   "homepage": "https://cognivo.dev",
   "bugs": "https://github.com/muriloscigliano/cognivo/issues",
@@ -39,19 +35,13 @@
     "clean": "rm -rf dist"
   },
   "peerDependencies": {
-    "@cognivo/lens-core": "workspace:*",
-    "@cognivo/lens-pack-core": "workspace:*",
-    "@cognivo/tokens": "workspace:*",
-    "lit": "^3.0.0"
+    "@cognivo/lens-core": "workspace:*"
   },
   "devDependencies": {
     "@cognivo/lens-core": "workspace:*",
     "@cognivo/lens-pack-core": "workspace:*",
-    "@cognivo/lens-pack-ethics": "workspace:*",
-    "@cognivo/tokens": "workspace:*",
     "@types/node": "^22.0.0",
     "happy-dom": "^15.7.0",
-    "lit": "^3.1.0",
     "typescript": "^5.7.0",
     "vite": "^6.0.0",
     "vite-plugin-dts": "^4.0.0",

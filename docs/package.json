@@ -13,6 +13,7 @@
     "@cognivo/design-advisor": "workspace:*",
     "@cognivo/lens-core": "workspace:*",
     "@cognivo/lens-pack-core": "workspace:*",
+    "@cognivo/lens-pack-ethics": "workspace:*",
     "@cognivo/lens-ui": "workspace:*",
     "@cognivo/tokens": "workspace:*",
     "@lit/reactive-element": "^2.1.2",

@@ -8,18 +8,20 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
   <h1>Cognivo Lens — Live Demo</h1>
   <p class="desc">
     Below: a sample DOM seeded with intentional accessibility, focus,
-    system-health, and token-tier violations. The
-    <code>&lt;cg-lens&gt;</code> web component scans it on page load and
-    overlays findings as pins. The toolbar in the bottom-right shows the
-    Lens Score and severity counts; clicking it opens the drawer.
+    system-health, token-tier, and dark-pattern violations. The
+    <code>&lt;cg-lens&gt;</code> web component registers both the
+    <strong>core</strong> and <strong>ethics</strong> rule packs, scans on
+    page load, and overlays findings as pins. The toolbar in the bottom-right
+    shows the Lens Score and severity counts; clicking it opens the drawer.
     Toggle the violations off to see the no-findings path.
   </p>
 
   <div class="badges">
     <span class="badge">lens-core 0.1.0</span>
     <span class="badge">lens-pack-core 0.2.0</span>
+    <span class="badge">lens-pack-ethics 0.1.0</span>
     <span class="badge">lens-ui 0.1.0</span>
-    <span class="badge">20 rules</span>
+    <span class="badge">25 rules</span>
   </div>
 
   <div class="lens-demo-toolbar">
@@ -65,12 +67,43 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 
     <div style="transition: all 200ms ease; padding: 8px;">animated</div>
     <p style="color: #abcdef;">Off-grid color value</p>
+
+    <!-- ethics violations -->
+    <h2>Get our newsletter</h2>
+    <form>
+      <label><input type="checkbox" checked /> Subscribe to our marketing newsletter</label>
+    </form>
+
+    <p>Only 2 left in stock — selling fast!</p>
+    <div>Sale ends in 02:14:33</div>
+
+    <div role="dialog" aria-label="Cookie consent">
+      <p>This site uses cookies.</p>
+      <button style="color: rgb(255, 255, 255); background: rgb(34, 197, 94); padding: 8px 16px;">
+        Accept all
+      </button>
+      <button style="color: rgb(160, 160, 160); padding: 8px 16px;">Decline</button>
+    </div>
+
+    <article class="sponsored-card">
+      <h3>Brand X is amazing</h3>
+      <p>Try our partner's product today.</p>
+    </article>
   </section>
 
   <cg-lens target="#lens-audit-target"></cg-lens>
 
   <script>
     import '@cognivo/lens-ui';
+    import corePack from '@cognivo/lens-pack-core';
+    import ethicsPack from '@cognivo/lens-pack-ethics';
+
+    // Register both packs so the demo surfaces ethics findings too.
+    const lensEl = document.querySelector('cg-lens') as HTMLElement & {
+      packs?: unknown;
+      rescan: () => Promise<void>;
+    };
+    lensEl.packs = [corePack, ethicsPack];
 
     const VIOLATING_HTML = document.getElementById('lens-audit-target')!.innerHTML;
 
