@@ -402,7 +402,7 @@ export class AiOnboarding extends LitElement {
     const total = this.steps.length;
 
     return html`
-      <cg-card variant="outlined" padding="lg" rounded=${this.rounded} role="dialog" aria-modal="true" aria-label="Onboarding step ${this.active + 1} of ${total}">
+      <cg-card variant="elevated" padding="lg" rounded=${this.rounded} role="dialog" aria-modal="true" aria-label="Onboarding step ${this.active + 1} of ${total}">
         <div class="sr-only" aria-live="polite" aria-atomic="true">Step ${this.active + 1} of ${total}: ${step.title}</div>
 
         <div slot="header" class="header-row">

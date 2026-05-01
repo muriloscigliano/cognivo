@@ -289,7 +289,7 @@ export class AiStatusPage extends LitElement {
     const updated = this._relativeTime(this.lastUpdated);
 
     return html`
-      <cg-card variant="outlined" padding="lg" rounded="lg" role="region" aria-label="System status">
+      <cg-card variant="elevated" padding="lg" rounded="lg" role="region" aria-label="System status">
         <div class="sr-only" aria-live="polite" aria-atomic="true">${overallText}</div>
 
         <div slot="header" class="header-row">
