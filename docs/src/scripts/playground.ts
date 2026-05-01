@@ -543,7 +543,19 @@ console.log(message);`;
     liveElement.style.maxWidth = '560px';
   }
   if (tag === 'ai-action-preview') { e.title = 'Send Email'; e.description = 'This will send an email.'; e.details = { to: 'team@acme.com', subject: 'Q4 Report' }; liveElement.style.maxWidth = '460px'; }
-  if (tag === 'ai-analytics-chart') { e.title = 'Monthly Revenue'; e.series = [{ label: 'Jan', value: 42000 }, { label: 'Feb', value: 48000 }, { label: 'Mar', value: 55000 }, { label: 'Apr', value: 62000 }]; liveElement.style.maxWidth = '500px'; }
+  if (tag === 'ai-analytics-chart') {
+    e.title = 'Latency by model (ms)';
+    e.yLabel = 'ms';
+    e.height = 220;
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    e.series = [
+      { name: 'GPT-4o', color: '#7dd3fc', data: days.map((d, i) => ({ x: d, y: 120 + Math.round(Math.sin(i / 1.4) * 18 + i * 2) })) },
+      { name: 'Claude 3.5', color: '#dfff61', data: days.map((d, i) => ({ x: d, y: 95 + Math.round(Math.cos(i / 1.6) * 14 + i * 1.5) })) },
+      { name: 'Gemini 1.5', color: '#f0abfc', data: days.map((d, i) => ({ x: d, y: 150 + Math.round(Math.sin(i / 0.9) * 22 - i) })) },
+    ];
+    liveElement.style.maxWidth = '560px';
+    liveElement.style.width = '100%';
+  }
   if (tag === 'ai-api-key-manager') { e.keys = [{ id: '1', name: 'Production', prefix: 'sk-prod-****7f3a', created: '2026-01-15', status: 'active' }, { id: '2', name: 'Development', prefix: 'sk-dev-****2b1c', created: '2026-02-20', status: 'active' }]; liveElement.style.maxWidth = '520px'; }
   if (tag === 'ai-changelog') { e.entries = [{ version: 'v0.6.0', date: '2026-04-01', type: 'feature', title: 'AI Workflow Builder' }, { version: 'v0.5.0', date: '2026-03-01', type: 'feature', title: 'Wave 5 — AI Collaboration' }]; liveElement.style.maxWidth = '520px'; }
   if (tag === 'ai-command-palette') { e.commands = [{ id: 'new', label: 'New conversation', shortcut: '⌘N', group: 'Actions' }, { id: 'search', label: 'Search', shortcut: '⌘K', group: 'Actions' }]; e.open = true; liveElement.style.maxWidth = '480px'; }

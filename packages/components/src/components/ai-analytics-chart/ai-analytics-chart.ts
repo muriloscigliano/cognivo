@@ -13,8 +13,8 @@
  *
  * @fires {CustomEvent<{series: string, x: string, y: number}>} ai-analytics-point-hover - Data point hovered
  *
- * @cssprop [--cg-color-surface-base=#18181b] - Chart background
- * @cssprop [--cg-color-border-default=#27272a] - Grid line and border color
+ * @cssprop [--cg-color-surface-cards-background] - Chart card background
+ * @cssprop [--cg-color-surface-cards-border] - Card border + grid line color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
@@ -39,11 +39,13 @@ interface HoverPoint {
 export class AiAnalyticsChart extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      background: var(--cg-color-surface-base);
+      display: block;
+      background: var(--cg-color-surface-cards-background);
       color: var(--cg-color-surface-base-text);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);
-      padding: var(--cg-spacing-16);
+      padding: var(--cg-spacing-20);
+      box-shadow: var(--cg-elevation-1);
       animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
@@ -81,7 +83,7 @@ export class AiAnalyticsChart extends LitElement {
     .legend-dot {
       width: var(--cg-spacing-8);
       height: var(--cg-spacing-8);
-      border-radius: 50%;
+      border-radius: var(--cg-border-radius-full);
       flex-shrink: 0;
     }
 
@@ -113,6 +115,10 @@ export class AiAnalyticsChart extends LitElement {
       stroke-linejoin: round;
     }
 
+    .data-point {
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+    }
+
     .hit-area {
       fill: transparent;
       stroke: transparent;
@@ -122,16 +128,17 @@ export class AiAnalyticsChart extends LitElement {
 
     .tooltip {
       position: absolute;
-      background: var(--cg-color-surface-overlay);
+      background: var(--cg-color-surface-cards-emphasis);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-100);
+      box-shadow: var(--cg-elevation-2);
       padding: var(--cg-spacing-6) var(--cg-spacing-8);
       font-size: var(--cg-font-size-xs);
       pointer-events: none;
       z-index: 10;
       white-space: nowrap;
       transform: translate(-50%, -100%);
-      margin-top: calc(-1 * var(--cg-spacing-8);
+      margin-top: calc(-1 * var(--cg-spacing-8));
     }
 
     .tooltip-label {
@@ -167,7 +174,8 @@ export class AiAnalyticsChart extends LitElement {
     super.connectedCallback();
     this._ro = new ResizeObserver((entries) => {
       for (const e of entries) {
-        this._width = e.contentRect.width - 32;
+        // contentRect already excludes the host's padding, so we use it directly.
+        this._width = e.contentRect.width;
       }
     });
     this._ro.observe(this);
@@ -294,7 +302,7 @@ export class AiAnalyticsChart extends LitElement {
             <path class="data-line" d="${this._buildPath(s.data)}" stroke="${s.color}" />
             <path class="hit-area" d="${this._buildPath(s.data)}" />
             ${s.data.map((d, idx) => html`
-              <circle cx="${this._scaleX(d.x)}" cy="${this._scaleY(d.y)}" r="3"
+              <circle class="data-point" cx="${this._scaleX(d.x)}" cy="${this._scaleY(d.y)}" r="3"
                       fill="${s.color}" opacity="${this._hover?.x === d.x && this._hover?.seriesName === s.name ? 1 : 0}"
                       @mouseenter=${(e: MouseEvent) => this._onPointHover(s, idx, e)} />
               <circle cx="${this._scaleX(d.x)}" cy="${this._scaleY(d.y)}" r="10"
