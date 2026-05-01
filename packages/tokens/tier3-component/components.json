@@ -130,6 +130,14 @@
       "radius": { "$type": "dimension", "$value": "{border.radius.125}" },
       "listbox-max-height": { "$type": "dimension", "$value": "240px" }
     },
+    "phone-input": {
+      "radius": { "$type": "dimension", "$value": "{component.input.radius}" },
+      "trigger-padding-x": { "$type": "dimension", "$value": "{spacing.12}" },
+      "trigger-gap": { "$type": "dimension", "$value": "{spacing.6}" },
+      "popover-width": { "$type": "dimension", "$value": "320px" },
+      "popover-max-height": { "$type": "dimension", "$value": "320px" },
+      "option-height": { "$type": "dimension", "$value": "{spacing.40}" }
+    },
     "sheet": {
       "radius": { "$type": "dimension", "$value": "{border.radius.200}" },
       "side-width": { "$type": "dimension", "$value": "480px" }

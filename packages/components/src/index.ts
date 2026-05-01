@@ -86,6 +86,7 @@ import { CgPasswordInput } from './components/cg-password-input/cg-password-inpu
 import { CgRating } from './components/cg-rating/cg-rating.js';
 import { CgTagInput } from './components/cg-tag-input/cg-tag-input.js';
 import { CgFileInput } from './components/cg-file-input/cg-file-input.js';
+import { CgPhoneInput } from './components/cg-phone-input/cg-phone-input.js';
 
 // ── Wave 7: Foundation Completion — Structural (6) ─────────────────────────
 import { CgCollapsible } from './components/cg-collapsible/cg-collapsible.js';
@@ -245,7 +246,7 @@ export {
   // Wave 7: Foundation Completion — Overlays
   CgPopover, CgHoverCard, CgContextMenu, CgAlertDialog, CgCommand,
   // Wave 7: Foundation Completion — Forms
-  CgToggle, CgToggleGroup, CgSegmentedControl, CgPasswordInput, CgRating, CgTagInput, CgFileInput,
+  CgToggle, CgToggleGroup, CgSegmentedControl, CgPasswordInput, CgRating, CgTagInput, CgFileInput, CgPhoneInput,
   // Wave 7: Foundation Completion — Structural
   CgCollapsible, CgKbd, CgAspectRatio, CgScrollArea, CgNavbar, CgCalendar,
   // AI Components

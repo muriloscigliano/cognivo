@@ -179,6 +179,13 @@ function setupComponentDefaults(liveElement: HTMLElement, tag: string, _previewA
   if (tag === 'cg-slider') { e.label = 'Volume'; e.value = 65; e.unit = '%'; e.showRange = true; liveElement.style.maxWidth = '400px'; liveElement.style.width = '100%'; }
   if (tag === 'cg-number-input') { e.label = 'Quantity'; e.value = 5; e.min = 0; e.max = 100; liveElement.style.maxWidth = '200px'; }
   if (tag === 'cg-otp-input') e.length = 6;
+  if (tag === 'cg-phone-input') {
+    e.label = 'Phone';
+    e.helper = "We'll text a verification code";
+    e.country = 'US';
+    liveElement.style.maxWidth = '420px';
+    liveElement.style.width = '100%';
+  }
   if (tag === 'cg-color-picker') e.label = 'Brand Color';
   if (tag === 'cg-date-picker') { e.label = 'Start date'; e.placeholder = 'Pick a date'; liveElement.style.maxWidth = '280px'; }
   if (tag === 'cg-time-picker') { e.label = 'Start time'; e.placeholder = 'Pick a time'; liveElement.style.maxWidth = '250px'; }
