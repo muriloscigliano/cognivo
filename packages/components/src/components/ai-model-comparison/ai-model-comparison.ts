@@ -40,7 +40,8 @@ export class AiModelComparison extends LitElement {
       overflow-x: auto;
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);
-      background: var(--cg-color-surface-base-background);
+      background: var(--cg-color-surface-cards-background);
+      box-shadow: var(--cg-elevation-1);
     }
 
     /* ── Rounded variants ── */
@@ -82,7 +83,7 @@ export class AiModelComparison extends LitElement {
     td.sticky-col {
       position: sticky;
       left: 0;
-      background: var(--cg-color-surface-base-background);
+      background: var(--cg-color-surface-cards-background);
       z-index: 2;
     }
     thead th.sticky-col {
