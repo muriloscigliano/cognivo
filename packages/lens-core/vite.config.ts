@@ -9,6 +9,7 @@ export default defineConfig({
         index: resolve(__dirname, 'src/index.ts'),
         'worker/worker-entry': resolve(__dirname, 'src/worker/worker-entry.ts'),
         'fixtures/index': resolve(__dirname, 'src/fixtures/index.ts'),
+        'agent/index': resolve(__dirname, 'src/agent/index.ts'),
       },
       formats: ['es'],
     },

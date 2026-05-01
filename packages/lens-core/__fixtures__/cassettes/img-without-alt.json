@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "notes": "Reference cassette: img-without-alt finding. Streaming explain (3 chunks) + structured fix.",
+  "recordedAt": "2026-04-29T00:00:00.000Z",
+  "responses": {
+    "explain:f-img-1": {
+      "kind": "text",
+      "chunks": [
+        "This image element has no alt attribute, so screen readers will announce its filename instead. ",
+        "That leaves users without sight unable to know what the image shows. ",
+        "Add alt=\"Brief description\" for meaningful images, or alt=\"\" for purely decorative ones."
+      ]
+    },
+    "suggestFix:f-img-1": {
+      "kind": "fix",
+      "manifest": {
+        "findingId": "f-img-1",
+        "change": {
+          "kind": "set-attribute",
+          "selector": "img[src=\"cat.jpg\"]",
+          "attribute": "alt",
+          "value": "A grey tabby cat sitting on a windowsill"
+        },
+        "summary": "Set alt=\"A grey tabby cat sitting on a windowsill\" on the img element.",
+        "rationale": "The image source suggests it shows a cat. A short descriptive alt text helps screen-reader users understand the image without overwhelming them.",
+        "confidence": 75,
+        "generatedAt": "2026-04-29T00:00:00.000Z"
+      }
+    }
+  }
+}

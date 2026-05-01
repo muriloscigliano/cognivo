@@ -270,7 +270,7 @@ New pack: `@cognivo/lens-pack-conversion` (~17 rules per spec §4.3) — anchori
 | **C2.3** ✓ | Six new pack-core rules — pack-core 0.2.0 | tier-1-palette/brand, raw-color, background-as-foreground, missing-tier3, contrast-AA |
 | **C4** ✓ | lens-ui v0.1.0 — `<cg-lens>` overlay | First visible product surface; demo page consumes it |
 | **C5** ✓ | lens-pack-ethics v0.1.0 + multi-pack `<cg-lens>` | 5 ethics rules; demo registers both packs |
-| **C6** | Phase 6 lens-core agent runtime | Lens-core 0.2.0 with streaming agent |
+| **C6** ✓ | lens-core agent runtime | LensAgent + AiClientAgent + CassetteAgent at `@cognivo/lens-core/agent`; cassette test infra |
 | **C7** | Phase 7 LLM ethics + lens-pack-conversion | Two packs at LLM level |
 | **C8** | Phase 8 MCP integration | mcp-server gains 4 lens tools |
 | **C9** | Phase 9 lens-vite + lens-cli | v1 distribution complete |

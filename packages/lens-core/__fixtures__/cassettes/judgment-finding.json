@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "notes": "Heading-skipped-level finding has fixHint kind=restructure (judgment). The agent does NOT call the LLM for suggestFix — it returns null directly. We only record explain.",
+  "responses": {
+    "explain:f-heading-1": {
+      "kind": "text",
+      "chunks": [
+        "The heading hierarchy jumps from h1 to h3, skipping h2. ",
+        "Screen readers expose headings as a navigable outline; skipped levels imply a missing section that confuses users. ",
+        "Either change the h3 to an h2, or add the missing intermediate heading."
+      ]
+    }
+  }
+}

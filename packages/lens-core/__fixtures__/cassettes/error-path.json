@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "notes": "Both endpoints return errors. Used by tests that verify the agent surfaces LLM failures to the consumer instead of swallowing them.",
+  "responses": {
+    "explain:f-err-1": {
+      "kind": "error",
+      "message": "rate-limited"
+    },
+    "suggestFix:f-err-1": {
+      "kind": "error",
+      "message": "model unavailable"
+    }
+  }
+}

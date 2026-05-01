@@ -10,3 +10,4 @@ export * from './scorer/index.js';
 export * from './verifier/index.js';
 export * from './instrumentation/index.js';
 export * from './fixtures/index.js';
+export * from './agent/index.js';
