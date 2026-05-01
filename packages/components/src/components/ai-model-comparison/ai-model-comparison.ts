@@ -74,7 +74,11 @@ export class AiModelComparison extends LitElement {
       letter-spacing: var(--cg-letter-spacing-wide);
       position: sticky;
       top: 0;
-      background: var(--cg-color-surface-cards-emphasis);
+      /* Slightly darker than the body — overlay token composited over the
+         solid cards-background so the sticky header stays opaque on scroll. */
+      background:
+        linear-gradient(var(--cg-overlay-dark-subtle), var(--cg-overlay-dark-subtle)),
+        var(--cg-color-surface-cards-background);
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       z-index: 1;
     }
@@ -88,7 +92,9 @@ export class AiModelComparison extends LitElement {
       z-index: 2;
     }
     thead th.sticky-col {
-      background: var(--cg-color-surface-cards-emphasis);
+      background:
+        linear-gradient(var(--cg-overlay-dark-subtle), var(--cg-overlay-dark-subtle)),
+        var(--cg-color-surface-cards-background);
       z-index: 3;
     }
     tbody tr.data-row:hover td.sticky-col {
