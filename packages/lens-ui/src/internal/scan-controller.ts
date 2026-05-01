@@ -44,10 +44,11 @@ export class ScanController {
   constructor(options: ScanControllerOptions = {}) {
     const ruleOverrides: Record<string, { enabled: false }> = {};
     for (const id of options.disabledRules ?? []) ruleOverrides[id] = { enabled: false };
-    this.engine = new RuleEngine({ ruleOverrides });
+    const engine = new RuleEngine({ ruleOverrides });
+    this.engine = engine;
     const packs = options.packs ?? [corePack];
     this.registration = (async () => {
-      for (const pack of packs) await this.engine.register(pack);
+      for (const pack of packs) await engine.register(pack);
     })();
   }
 
