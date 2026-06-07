@@ -32,7 +32,7 @@ export interface FeatureFlag {
 export class AiFeatureFlag extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      background: var(--cg-color-surface-base);
+      background: var(--cg-color-surface-base-background);
       color: var(--cg-color-surface-base-text);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);
@@ -176,7 +176,7 @@ export class AiFeatureFlag extends LitElement {
     .toggle-track {
       position: absolute;
       inset: 0;
-      background: var(--cg-color-surface-base);
+      background: var(--cg-color-surface-base-background);
       border-radius: var(--cg-border-radius-full);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       cursor: pointer;

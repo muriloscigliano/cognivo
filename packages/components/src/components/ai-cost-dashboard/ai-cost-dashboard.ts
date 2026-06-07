@@ -87,7 +87,7 @@ export class AiCostDashboard extends LitElement {
       color: var(--cg-color-surface-base-text);
     }
 
-    .stat-value.warn { color: var(--cg-color-status-warning-text); }
+    .stat-value.warn { color: var(--cg-color-status-warning-text-default); }
     .stat-value.danger { color: var(--cg-color-status-error-text-default); }
 
     /* ── Budget bar ── */
@@ -116,7 +116,7 @@ export class AiCostDashboard extends LitElement {
       background: var(--cg-color-action-primary-background-default);
       transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
-    .budget-fill.warn { background: var(--cg-color-status-warning-text); }
+    .budget-fill.warn { background: var(--cg-color-status-warning-text-default); }
     .budget-fill.danger { background: var(--cg-color-status-error-text-default); }
 
     /* ── Model breakdown ── */

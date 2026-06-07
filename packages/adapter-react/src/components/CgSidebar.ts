@@ -19,5 +19,5 @@ export interface CgSidebarProps {
 export const CgSidebar = createWrapper<CgSidebarProps>(
   'cg-sidebar',
   ['collapsed', 'collapsible', 'side', 'sticky', 'width'],
-  {}
+  { onCgSidebarToggle: 'cg-sidebar-toggle' }
 );

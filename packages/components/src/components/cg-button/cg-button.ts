@@ -147,8 +147,8 @@ export class CgButton extends LitElement {
     }
     .spinner {
       position: absolute;
-      width: var(--cg-icon-size-md);
-      height: var(--cg-icon-size-md);
+      width: var(--cg-icon-size-100);
+      height: var(--cg-icon-size-100);
       border: var(--cg-border-width-100) solid currentColor;
       border-right-color: transparent;
       border-radius: var(--cg-border-radius-full);

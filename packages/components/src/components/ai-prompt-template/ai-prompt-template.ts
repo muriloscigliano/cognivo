@@ -124,7 +124,7 @@ export class AiPromptTemplate extends LitElement {
     }
 
     .var-value {
-      color: var(--cg-color-status-success-text);
+      color: var(--cg-color-status-success-text-default);
       font-weight: var(--cg-font-weight-semibold);
     }
 

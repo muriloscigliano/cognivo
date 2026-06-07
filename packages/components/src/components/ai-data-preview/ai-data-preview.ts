@@ -25,7 +25,7 @@ import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/ind
 export class AiDataPreview extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      background: var(--cg-color-surface-base);
+      background: var(--cg-color-surface-base-background);
       color: var(--cg-color-surface-base-text);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);

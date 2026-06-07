@@ -189,6 +189,8 @@ export { CgToggle } from './components/CgToggle.js';
 export { CgToggleGroup } from './components/CgToggleGroup.js';
 export { CgSegmentedControl } from './components/CgSegmentedControl.js';
 export { CgPasswordInput } from './components/CgPasswordInput.js';
+export { CgPhoneInput } from './components/CgPhoneInput.js';
+export type { CgPhoneInputProps } from './components/CgPhoneInput.js';
 export { CgRating } from './components/CgRating.js';
 export { CgTagInput } from './components/CgTagInput.js';
 export { CgFileInput } from './components/CgFileInput.js';

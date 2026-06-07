@@ -36,7 +36,7 @@ export interface WebhookEntry {
 export class AiWebhookConfig extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      background: var(--cg-color-surface-base);
+      background: var(--cg-color-surface-base-background);
       color: var(--cg-color-surface-base-text);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);
@@ -99,7 +99,7 @@ export class AiWebhookConfig extends LitElement {
 
     input[type="url"] {
       flex: 1;
-      background: var(--cg-color-surface-base);
+      background: var(--cg-color-surface-base-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-50);
       padding: var(--cg-spacing-6) var(--cg-spacing-8);
@@ -230,7 +230,7 @@ export class AiWebhookConfig extends LitElement {
     .toggle-track {
       position: absolute;
       inset: 0;
-      background: var(--cg-color-surface-base);
+      background: var(--cg-color-surface-base-background);
       border-radius: var(--cg-border-radius-full);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       cursor: pointer;
@@ -296,8 +296,8 @@ export class AiWebhookConfig extends LitElement {
     }
 
     .btn-sm.danger {
-      color: var(--cg-color-status-error-text);
-      border-color: var(--cg-color-status-error-text);
+      color: var(--cg-color-status-error-text-default);
+      border-color: var(--cg-color-status-error-text-default);
     }
     .btn-sm.danger:hover {
       background: var(--cg-color-status-error-background-default);

@@ -200,8 +200,8 @@ export class AiChangelog extends LitElement {
     }
     .rollback-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .rollback-btn:hover {
-      border-color: var(--cg-color-status-warning-text);
-      color: var(--cg-color-status-warning-text);
+      border-color: var(--cg-color-status-warning-text-default);
+      color: var(--cg-color-status-warning-text-default);
     }
     .rollback-btn:focus-visible {
       outline: 2px solid var(--cg-overlay-accent-strong);

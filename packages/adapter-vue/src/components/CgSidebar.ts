@@ -17,5 +17,7 @@ export const CgSidebar = createVueWrapper(
     sticky: { type: Boolean, default: false },
     width: { type: String, default: '' },
   },
-  {}
+  {
+    'toggle': 'cg-sidebar-toggle',
+  }
 );

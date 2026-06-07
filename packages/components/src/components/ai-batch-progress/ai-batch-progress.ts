@@ -71,7 +71,7 @@ export class AiBatchProgress extends LitElement {
     }
     .status-badge.paused {
       background: var(--cg-color-status-warning-background-default);
-      color: var(--cg-color-status-warning-text);
+      color: var(--cg-color-status-warning-text-default);
     }
 
     /* ── Stats row ── */
@@ -184,7 +184,7 @@ export class AiBatchProgress extends LitElement {
       outline-offset: var(--cg-outline-offset-default);
     }
 
-    .action-btn.pause:hover { border-color: var(--cg-color-status-warning-text); color: var(--cg-color-status-warning-text); }
+    .action-btn.pause:hover { border-color: var(--cg-color-status-warning-text-default); color: var(--cg-color-status-warning-text-default); }
     .action-btn.cancel:hover { border-color: var(--cg-color-status-error-text-default); color: var(--cg-color-status-error-text-default); }
     .action-btn.retry {
       background: var(--cg-color-action-primary-background-default);

@@ -34,7 +34,7 @@ export interface VersionEntry {
 export class AiVersionSelector extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      background: var(--cg-color-surface-base);
+      background: var(--cg-color-surface-base-background);
       color: var(--cg-color-surface-base-text);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);
@@ -142,12 +142,12 @@ export class AiVersionSelector extends LitElement {
 
     .status-canary {
       background: var(--cg-color-status-warning-background-default);
-      color: var(--cg-color-status-warning-text);
+      color: var(--cg-color-status-warning-text-default);
     }
 
     .status-deprecated {
       background: var(--cg-color-status-error-background-default);
-      color: var(--cg-color-status-error-text);
+      color: var(--cg-color-status-error-text-default);
     }
 
     .deprecation-warning {
@@ -155,7 +155,7 @@ export class AiVersionSelector extends LitElement {
       align-items: center;
       gap: var(--cg-spacing-6);
       font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-status-error-text);
+      color: var(--cg-color-status-error-text-default);
       padding: var(--cg-spacing-4) var(--cg-spacing-8);
       background: var(--cg-color-status-error-background-default);
       border-radius: var(--cg-border-radius-50);
@@ -178,7 +178,7 @@ export class AiVersionSelector extends LitElement {
       -webkit-appearance: none;
       appearance: none;
       height: var(--cg-spacing-4);
-      background: var(--cg-color-surface-base);
+      background: var(--cg-color-surface-base-background);
       border-radius: var(--cg-spacing-2);
       outline: none;
     }

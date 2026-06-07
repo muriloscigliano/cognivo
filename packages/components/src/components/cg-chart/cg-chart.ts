@@ -143,7 +143,7 @@ export class CgChart extends LitElement {
     this._grid = s.getPropertyValue('--cg-color-chart-grid').trim() || s.getPropertyValue('--cg-color-border-default').trim();
     this._axis = s.getPropertyValue('--cg-color-chart-axis').trim() || s.getPropertyValue('--cg-color-text-muted').trim();
     this._text = s.getPropertyValue('--cg-color-surface-base-text').trim() || s.getPropertyValue('--cg-color-text-default').trim();
-    this._bg = s.getPropertyValue('--cg-color-surface-container-background').trim() || s.getPropertyValue('--cg-color-surface-base').trim();
+    this._bg = s.getPropertyValue('--cg-color-surface-container-background').trim() || s.getPropertyValue('--cg-color-surface-base-background').trim();
     for (let i = 0; i < 8; i++) {
       const v = s.getPropertyValue(`--cg-color-chart-${i + 1}`).trim();
       if (v) PALETTE[i] = v;

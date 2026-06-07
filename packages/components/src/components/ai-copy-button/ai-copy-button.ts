@@ -86,12 +86,12 @@ export class AiCopyButton extends LitElement {
 
     /* Copied (success) state */
     .copy-btn[data-copied="true"] {
-      color: var(--cg-color-status-success-text) !important;
+      color: var(--cg-color-status-success-text-default) !important;
     }
 
     /* Error state */
     .copy-btn[data-error="true"] {
-      color: var(--cg-color-status-error-text) !important;
+      color: var(--cg-color-status-error-text-default) !important;
       animation: error-shake var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     @keyframes error-shake {

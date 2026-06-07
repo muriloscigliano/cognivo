@@ -25,5 +25,7 @@ export const CgDateRangePicker = createVueWrapper(
     disabled: { type: Boolean, default: false },
     open: { type: Boolean, default: false },
   },
-  {}
+  {
+    'change': 'cg-date-range-change',
+  }
 );

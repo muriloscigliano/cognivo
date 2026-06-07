@@ -84,29 +84,39 @@ export class GuardedClient implements AiClient {
    * 5. Run output rules — if block violations found and onViolation === 'block', throw
    * 6. Return result
    */
+  /**
+   * Validate the request context against the configured input guardrails.
+   * Throws GuardrailError when a block-severity violation is found in
+   * `block` mode. Runs on the fully-available context, so it applies
+   * equally to streaming and non-streaming calls.
+   */
+  private checkInputGuardrails<T>(context: AiContext<T>): void {
+    if (!this.config.input) return;
+
+    const serializedInput = JSON.stringify(context);
+    const inputViolations = runRules(this.config.input.rules, serializedInput);
+
+    if (inputViolations.length > 0) {
+      const hasBlockViolation = inputViolations.some((v) => v.severity === 'block');
+
+      if (hasBlockViolation && this.config.input.onViolation === 'block') {
+        throw new GuardrailError(
+          `Input guardrail violated: ${inputViolations.map((v) => v.message).join('; ')}`,
+          inputViolations
+        );
+      }
+      // In warn mode, we log but continue
+      // Consumers could hook into this via config extensions in the future
+    }
+  }
+
   async runIntent<T = unknown>(
     intent: AiIntent,
     context: AiContext<T>,
     options?: AiRequestOptions
   ): Promise<AiResult> {
     // --- Input guardrails ---
-    if (this.config.input) {
-      const serializedInput = JSON.stringify(context);
-      const inputViolations = runRules(this.config.input.rules, serializedInput);
-
-      if (inputViolations.length > 0) {
-        const hasBlockViolation = inputViolations.some((v) => v.severity === 'block');
-
-        if (hasBlockViolation && this.config.input.onViolation === 'block') {
-          throw new GuardrailError(
-            `Input guardrail violated: ${inputViolations.map((v) => v.message).join('; ')}`,
-            inputViolations
-          );
-        }
-        // In warn mode, we log but continue
-        // Consumers could hook into this via config extensions in the future
-      }
-    }
+    this.checkInputGuardrails(context);
 
     // --- Call inner client ---
     const result = await this.inner.runIntent(intent, context, options);
@@ -135,9 +145,13 @@ export class GuardedClient implements AiClient {
   /**
    * Stream an AI intent.
    *
-   * Delegates directly to the inner client's streamIntent if available.
-   * Guardrails are not applied to streaming for simplicity — streaming
-   * responses are partial and would require buffering to validate.
+   * Input guardrails ARE enforced: they validate the request context, which
+   * is fully available before the first chunk, so there's no buffering cost
+   * and no reason to skip them. Skipping input rules here would let a caller
+   * bypass prompt-injection / PII blocks simply by choosing the streaming
+   * path. Output guardrails are still not applied to the stream — validating
+   * partial chunks would require buffering the whole response, defeating the
+   * point of streaming.
    */
   streamIntent?<T = unknown>(
     intent: AiIntent,
@@ -147,6 +161,10 @@ export class GuardedClient implements AiClient {
     if (!this.inner.streamIntent) {
       throw new Error('Inner client does not support streaming');
     }
+
+    // --- Input guardrails (throws eagerly on block, before any inner call) ---
+    this.checkInputGuardrails(context);
+
     return this.inner.streamIntent(intent, context, options);
   }
 }

@@ -22,7 +22,7 @@ export class CgBadgeGroup extends LitElement {
     .label {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-semibold);
-      color: var(--cg-color-surface-tertiary-text);
+      color: var(--cg-color-input-text-placeholder);
       text-transform: uppercase;
       letter-spacing: 0.04em;
       margin-bottom: var(--cg-spacing-8);
@@ -42,7 +42,7 @@ export class CgBadgeGroup extends LitElement {
     .overflow {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-semibold);
-      color: var(--cg-color-surface-tertiary-text);
+      color: var(--cg-color-input-text-placeholder);
       padding: var(--cg-spacing-2) var(--cg-spacing-8);
       background: var(--cg-color-action-secondary-background-default);
       border-radius: var(--cg-border-radius-100);

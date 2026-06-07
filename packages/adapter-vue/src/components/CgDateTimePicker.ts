@@ -10,4 +10,6 @@ export const CgDateTimePicker = createVueWrapper('cg-date-time-picker', {
   rounded: { type: String, default: 'lg' },
   disabled: { type: Boolean, default: false },
   error: { type: Boolean, default: false },
-}, {});
+}, {
+  'change': 'cg-change',
+});

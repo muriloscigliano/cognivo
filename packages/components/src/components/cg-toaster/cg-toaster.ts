@@ -84,7 +84,7 @@ export class CgToaster extends LitElement {
     .toast.error { border-color: var(--cg-color-status-error-border-default); }
     .toast.info { border-color: var(--cg-color-status-info-border-default); }
     .toast.ai {
-      border-left: var(--cg-border-width-200) solid var(--cg-color-action-primary-background-default);
+      border-left: var(--cg-border-width-300) solid var(--cg-color-action-primary-border-default);
     }
 
     /* Status icon — colored per variant to match the border + give the toast
@@ -124,7 +124,7 @@ export class CgToaster extends LitElement {
       font: inherit;
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-medium);
-      padding: var(--cg-spacing-6) var(--cg-spacing-10);
+      padding: var(--cg-spacing-6) var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-50);
       cursor: pointer;
       transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);

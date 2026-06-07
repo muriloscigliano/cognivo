@@ -48,7 +48,7 @@ export class AiJsonViewer extends LitElement {
     }
 
     .key {
-      color: var(--cg-color-status-info-text);
+      color: var(--cg-color-status-info-text-default);
       cursor: pointer;
     }
     .key:hover {
