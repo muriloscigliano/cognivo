@@ -199,8 +199,15 @@ export class CgTable extends LitElement {
     }
 
     /* ── Empty state ── */
+    /* The empty-state cell controls its own spacing — strip the row's td
+       padding so it doesn't stack on top, which made the vertical gap read
+       larger than the left/right. Even padding keeps it centered in the
+       inner container on all four sides. */
+    td.empty-cell {
+      padding: 0;
+    }
     .empty-state {
-      padding: var(--cg-spacing-32) var(--cg-spacing-24);
+      padding: var(--cg-spacing-32);
       text-align: center;
       font-size: var(--cg-font-size-sm);
       color: var(--cg-color-surface-container-outlined);
@@ -372,7 +379,7 @@ export class CgTable extends LitElement {
               </tr>
             `) : sortedRows.length === 0 ? html`
               <tr>
-                <td colspan=${this.columns.length + (this.selectable ? 1 : 0)}>
+                <td class="empty-cell" colspan=${this.columns.length + (this.selectable ? 1 : 0)}>
                   <div class="empty-state">${this.emptyText}</div>
                 </td>
               </tr>
