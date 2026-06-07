@@ -5,6 +5,7 @@ import {
   extendEventRegistry,
   getSessionId,
   sanitizeDetail,
+  REDACTED,
 } from '../src/index.js';
 
 // happy-dom doesn't auto-reset between tests; clear handlers ourselves.
@@ -228,6 +229,102 @@ describe('enableAnalytics — privacy & sanitization', () => {
     );
 
     expect(sink.mock.calls[0][0].detail.raw).toBe(longString);
+  });
+});
+
+describe('sanitizeDetail — secret redaction', () => {
+  it('redacts fields whose name looks like a secret, regardless of length', () => {
+    const result = sanitizeDetail({
+      password: 'hunter2',
+      newPassword: 'short',
+      apiKey: 'sk-abc',
+      access_token: 'xyz',
+      cardNumber: '4111111111111111',
+      cvv: '123',
+      ssn: '123-45-6789',
+      authHeader: 'Bearer t',
+      username: 'alice', // benign — kept
+    });
+
+    expect(result.password).toBe(REDACTED);
+    expect(result.newPassword).toBe(REDACTED);
+    expect(result.apiKey).toBe(REDACTED);
+    expect(result.access_token).toBe(REDACTED);
+    expect(result.cardNumber).toBe(REDACTED);
+    expect(result.cvv).toBe(REDACTED);
+    expect(result.ssn).toBe(REDACTED);
+    expect(result.authHeader).toBe(REDACTED);
+    expect(result.username).toBe('alice');
+  });
+
+  it('redacts event-specific generic keys (OTP/password value, search query)', () => {
+    expect(sanitizeDetail({ value: '482913' }, 0, 'cg-otp-change').value).toBe(REDACTED);
+    expect(sanitizeDetail({ value: '482913' }, 0, 'cg-otp-complete').value).toBe(REDACTED);
+    expect(sanitizeDetail({ value: 'p@ss' }, 0, 'cg-password-change').value).toBe(REDACTED);
+    expect(sanitizeDetail({ query: 'john doe cancer' }, 0, 'ai-search-query').query).toBe(REDACTED);
+    expect(sanitizeDetail({ query: 'x' }, 0, 'ai-memory-search').query).toBe(REDACTED);
+  });
+
+  it('does NOT over-redact benign keys that merely contain a substring', () => {
+    // `tokens` is an LLM token COUNT, not a credential; `author`/`pinned`
+    // are not secrets. These must survive so useful telemetry isn't lost.
+    const result = sanitizeDetail({
+      tokens: 1280,
+      tokenCount: 42,
+      author: 'alice',
+      pinned: true,
+      label: 'intro',
+    });
+    expect(result.tokens).toBe(1280);
+    expect(result.tokenCount).toBe(42);
+    expect(result.author).toBe('alice');
+    expect(result.pinned).toBe(true);
+    expect(result.label).toBe('intro');
+  });
+
+  it('does NOT redact a generic `value` key for unrelated events', () => {
+    // A slider/select `value` is not a secret — only the OTP/password
+    // events register `value` as sensitive.
+    expect(sanitizeDetail({ value: 'medium' }, 0, 'cg-button-click').value).toBe('medium');
+    expect(sanitizeDetail({ value: 42 }).value).toBe(42);
+  });
+
+  it('redacts password verbatim through the full capture path', () => {
+    const sink = vi.fn();
+    enableAnalytics({ sink });
+    extendEventRegistry(['cg-password-change']);
+
+    const input = document.createElement('cg-password-input');
+    document.body.appendChild(input);
+    input.dispatchEvent(
+      new CustomEvent('cg-password-change', {
+        bubbles: true,
+        composed: true,
+        detail: { value: 'hunter2', strength: 3 },
+      })
+    );
+
+    const detail = sink.mock.calls[0][0].detail;
+    expect(detail.value).toBe(REDACTED);
+    expect(detail.strength).toBe(3); // non-secret sibling kept
+  });
+
+  it('redacts OTP code through the full capture path', () => {
+    const sink = vi.fn();
+    enableAnalytics({ sink });
+    extendEventRegistry(['cg-otp-complete']);
+
+    const input = document.createElement('cg-otp-input');
+    document.body.appendChild(input);
+    input.dispatchEvent(
+      new CustomEvent('cg-otp-complete', {
+        bubbles: true,
+        composed: true,
+        detail: { value: '482913' },
+      })
+    );
+
+    expect(sink.mock.calls[0][0].detail.value).toBe(REDACTED);
   });
 });
 

@@ -32,9 +32,12 @@ export interface AnalyticsConfig {
   /** Sample rate in `[0, 1]`. Default `1`. */
   sampleRate?: number;
   /**
-   * When true (default) strings longer than 40 chars are truncated and
-   * nested objects beyond depth 2 are dropped. Set to `false` only if the
-   * sink is trusted (e.g. in-memory test capture).
+   * When true (default) the detail payload is sanitized before it reaches
+   * the sink: sensitive fields (passwords, OTP codes, tokens, search text,
+   * card/SSN numbers, …) are replaced with `'[redacted]'`, strings longer
+   * than 40 chars are truncated, and nested objects beyond depth 2 are
+   * dropped. Set to `false` ONLY if the sink is trusted (e.g. in-memory test
+   * capture) — disabling it forwards raw detail, including any secrets.
    */
   anonymizeDetail?: boolean;
 }
@@ -70,25 +73,111 @@ export function extendEventRegistry(events: string[]): void {
   }
 }
 
+/** Replacement value emitted in place of any sensitive payload field. */
+export const REDACTED = '[redacted]';
+
+/**
+ * Field names that carry secrets regardless of which event fired. Matched
+ * case-insensitively, so `password`, `newPassword`, `apiKey`,
+ * `access_token`, `cardNumber`, `cvv2`, etc. are all caught. Length
+ * truncation is NOT a defense — a 12-char password is under the 40-char cap
+ * — so these keys are dropped to `[redacted]`.
+ *
+ * Care is taken NOT to over-redact benign telemetry: `token` matches only
+ * as a credential (standalone, or with an auth-ish prefix), so an LLM
+ * `tokens` COUNT or `tokenCount` is preserved; `auth` matches the auth
+ * word/credential forms but not `author`; `pin` is word-bounded so `pinned`
+ * is kept.
+ */
+const SENSITIVE_KEY_PATTERN = new RegExp(
+  [
+    'pass(word|code|phrase)?',
+    'secret',
+    'credential',
+    'api[-_]?key',
+    'private[-_]?key',
+    // credential-style tokens only — not a plural "tokens" count
+    '(access|auth|refresh|bearer|id|session|csrf)[-_]?token',
+    '\\btoken\\b',
+    'authorization',
+    '\\bauth\\b',
+    // auth as a credential compound: separator form (auth_key, auth-header)
+    // or the common camelCase header/key fields. Deliberately avoids a
+    // case-insensitive [A-Z] lookahead, which would also match "author".
+    'auth[-_]',
+    'auth(header|key|secret|token)',
+    '\\botp\\b',
+    'passcode',
+    '\\bpin\\b',
+    '\\bcvv\\b',
+    '\\bcvc\\b',
+    '\\bssn\\b',
+    'card[-_]?number',
+    'account[-_]?number',
+  ].join('|'),
+  'i'
+);
+
+/**
+ * Events whose payload carries a secret under a GENERIC key (`value`,
+ * `query`, …) that we can't blanket-redact by name without nuking benign
+ * events. Keyed by event name → the specific payload fields to redact.
+ *
+ *   - OTP inputs emit the code under `value`.
+ *   - Password inputs emit the password under `value`.
+ *   - Search/memory inputs emit the typed query under `query`.
+ *
+ * Search text is user-entered free text and often PII (names, emails,
+ * health terms), so it is redacted by default just like credentials.
+ */
+const SENSITIVE_EVENT_FIELDS: Record<string, readonly string[]> = {
+  'cg-otp-change': ['value'],
+  'cg-otp-complete': ['value'],
+  'cg-password-change': ['value'],
+  'ai-search-query': ['query'],
+  'ai-search-filter': ['query'],
+  'ai-memory-search': ['query'],
+};
+
+/** True when a field name looks like it carries a secret. */
+function isSensitiveKey(key: string): boolean {
+  return SENSITIVE_KEY_PATTERN.test(key);
+}
+
 /**
  * Strip a custom-event `detail` into a privacy-safe shallow object.
  *
- *   - `null`/`undefined` → `{}`
- *   - strings > 40 chars → truncated with `…`
- *   - numbers/booleans  → kept as-is
- *   - nested objects    → recursed up to `depth < 2`
- *   - functions/symbols → dropped
- *   - arrays            → shallowly copied of primitive members, else dropped
+ *   - `null`/`undefined`     → `{}`
+ *   - sensitive field names  → `'[redacted]'` (never length-based)
+ *   - strings > 40 chars     → truncated with `…`
+ *   - numbers/booleans       → kept as-is
+ *   - nested objects         → recursed up to `depth < 2`
+ *   - functions/symbols      → dropped
+ *   - arrays                 → shallowly copied of primitive members, else dropped
+ *
+ * Pass `eventName` so event-specific secret fields stored under generic keys
+ * (an OTP code under `value`, a search string under `query`) are also
+ * redacted — see {@link SENSITIVE_EVENT_FIELDS}.
  */
 export function sanitizeDetail(
   detail: unknown,
-  depth = 0
+  depth = 0,
+  eventName?: string
 ): Record<string, unknown> {
   if (detail == null || typeof detail !== 'object') return {};
+
+  const eventFields = eventName ? SENSITIVE_EVENT_FIELDS[eventName] : undefined;
 
   const out: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(detail as Record<string, unknown>)) {
     if (v == null) continue;
+
+    // Redact secrets by field name OR by event-specific generic key, before
+    // any other handling — this wins over truncation, which is not a defense.
+    if (isSensitiveKey(k) || eventFields?.includes(k)) {
+      out[k] = REDACTED;
+      continue;
+    }
 
     if (typeof v === 'string') {
       out[k] = v.length > 40 ? `${v.slice(0, 40)}…` : v;
@@ -106,6 +195,8 @@ export function sanitizeDetail(
           typeof x === 'string' && x.length > 40 ? `${x.slice(0, 40)}…` : x
         );
     } else if (typeof v === 'object' && depth < 2) {
+      // Nested objects inherit field-name redaction (eventFields apply only at
+      // the top level, where the documented generic keys live).
       out[k] = sanitizeDetail(v, depth + 1);
     }
     // functions, symbols, bigints, and deeper objects are intentionally dropped
@@ -185,7 +276,7 @@ export function enable(config: AnalyticsConfig): () => void {
 
     const rawDetail = (e as CustomEvent).detail;
     const detail = anonymize
-      ? sanitizeDetail(rawDetail)
+      ? sanitizeDetail(rawDetail, 0, e.type)
       : rawDetail && typeof rawDetail === 'object'
         ? (rawDetail as Record<string, unknown>)
         : {};

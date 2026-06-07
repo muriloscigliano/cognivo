@@ -27,6 +27,7 @@ export {
   extendEventRegistry,
   getSessionId,
   sanitizeDetail,
+  REDACTED,
 } from './capture.js';
 export { KNOWN_EVENTS } from './known-events.js';
 export { createMatcher } from './matchers.js';
