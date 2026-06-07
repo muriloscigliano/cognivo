@@ -175,12 +175,47 @@ export class CgSidebar extends LitElement {
       background: var(--cg-color-action-tertiary-background-hover);
       color: var(--cg-color-surface-base-text);
     }
+    /* Icon sizing contract: the leading icon (aria-hidden span or [data-icon])
+       gets a fixed square box so every row's label starts at the same x —
+       consumers no longer have to hand-fix alignment with inline widths. */
+    ::slotted(a) > [aria-hidden="true"],
+    ::slotted(button) > [aria-hidden="true"],
+    ::slotted(a) > [data-icon],
+    ::slotted(button) > [data-icon] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--cg-icon-size-100);
+      flex-shrink: 0;
+      text-align: center;
+    }
     ::slotted(a[aria-current]),
     ::slotted(button[aria-current]),
     ::slotted(a.active),
     ::slotted(button.active) {
       background: var(--cg-color-surface-cards-active-background);
-      color: var(--cg-color-surface-base-text);
+      /* Accent the active item with the brand: a crisp left bar + accent
+         text. The bar is a square-cornered left border (the rounding is
+         removed on the left edge so it reads as a clean vertical rule, the
+         Linear/Notion convention) — not an inset shadow, which would curve
+         along the corner radius. This is the "where am I?" signal the bare
+         fill was missing, and the one place the brand should surface in chrome. */
+      color: var(--cg-color-accent-text);
+      border-left: var(--cg-spacing-2) solid var(--cg-color-action-primary-border-default);
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      /* Compensate the left border so the icon doesn't shift vs. inactive rows. */
+      padding-left: calc(var(--cg-spacing-12) - var(--cg-spacing-2));
+    }
+    /* Collapsed rail: a left bar would clip on a centered icon button, so
+       signal active with an accent ring instead. */
+    :host([collapsed]) ::slotted(a[aria-current]),
+    :host([collapsed]) ::slotted(button[aria-current]),
+    :host([collapsed]) ::slotted(a.active),
+    :host([collapsed]) ::slotted(button.active) {
+      border-left: none;
+      padding: 0;
+      box-shadow: inset 0 0 0 var(--cg-border-width-100) var(--cg-color-action-primary-border-default);
     }
     ::slotted(a:focus-visible),
     ::slotted(button:focus-visible) {
@@ -188,30 +223,58 @@ export class CgSidebar extends LitElement {
       outline-offset: calc(-1 * var(--cg-border-width-100));
     }
 
-    /* ── Section labels ── */
+    /* ── Section labels ──
+       Scaffolding, not content — kept quiet (medium weight, muted color) so
+       they group the nav without competing with the items for attention. */
     ::slotted(.section-title),
     ::slotted([data-section-title]) {
       display: block;
       padding: var(--cg-spacing-12) var(--cg-spacing-12) var(--cg-spacing-4);
       font-size: var(--cg-font-size-xs);
-      font-weight: var(--cg-font-weight-semibold);
-      color: var(--cg-color-surface-container-outlined);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-input-text-placeholder);
       text-transform: uppercase;
       letter-spacing: var(--cg-letter-spacing-wide);
     }
+    /* The first section title shouldn't add a big gap under the header. */
+    ::slotted(.section-title:first-child),
+    ::slotted([data-section-title]:first-child) {
+      padding-top: var(--cg-spacing-4);
+    }
 
-    /* ── Collapsed: hide labels & section titles, center icons ── */
+    /* ── Collapsed: collapse to an icon-only rail ──
+       Robust by default: we do NOT depend on the consumer wrapping every
+       label in <span data-label>. In collapsed mode the slotted item is
+       clipped to icon width and its text is zeroed out, so plain
+       <a href>Dashboard</a> markup collapses cleanly instead of bleeding
+       half-clipped text into the rail. The icon (first child, or an explicit
+       [data-icon] / aria-hidden span) is restored to a fixed size. */
+    :host([collapsed]) ::slotted(a),
+    :host([collapsed]) ::slotted(button) {
+      justify-content: center;
+      width: var(--cg-spacing-40);
+      height: var(--cg-spacing-40);
+      margin: 0 auto;
+      padding: 0;
+      gap: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      font-size: 0; /* zero out bare text nodes / unwrapped labels */
+    }
+    /* Restore the icon glyph at a real size, centered in the rail. */
+    :host([collapsed]) ::slotted(a) > [aria-hidden="true"],
+    :host([collapsed]) ::slotted(button) > [aria-hidden="true"],
+    :host([collapsed]) ::slotted(a) > [data-icon],
+    :host([collapsed]) ::slotted(button) > [data-icon] {
+      font-size: var(--cg-font-size-md);
+      width: auto;
+    }
+    /* Explicit labels and section titles are still hidden outright. */
     :host([collapsed]) ::slotted([data-label]),
     :host([collapsed]) ::slotted(.label),
     :host([collapsed]) ::slotted(.section-title),
     :host([collapsed]) ::slotted([data-section-title]) {
       display: none;
-    }
-    :host([collapsed]) ::slotted(a),
-    :host([collapsed]) ::slotted(button) {
-      justify-content: center;
-      padding: var(--cg-spacing-8);
-      gap: 0;
     }
   `];
 
