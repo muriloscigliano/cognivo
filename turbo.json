@@ -6,6 +6,7 @@
       "dependsOn": ["^build"],
       "outputs": [
         "dist/**",
+        "dist/catalog/catalog.json",
         ".next/**",
         "!.next/cache/**",
         "src/catalog/catalog.json",

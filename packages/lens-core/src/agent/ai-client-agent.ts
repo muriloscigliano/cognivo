@@ -6,7 +6,7 @@ import {
   buildSuggestFixPrompt,
 } from './prompts.js';
 import { parseFixManifest, ParseFixManifestError } from './parse-fix-manifest.js';
-import type { FixManifest, LensAgent } from './types.js';
+import type { AgentFixProposal, LensAgent } from './types.js';
 
 /**
  * The minimal surface this agent needs from `@cognivo/core`'s AiClient.
@@ -107,7 +107,7 @@ export class AiClientAgent implements LensAgent {
     for (const chunk of chunkBySentence(full)) yield chunk;
   }
 
-  async suggestFix(finding: Finding): Promise<FixManifest | null> {
+  async suggestFix(finding: Finding): Promise<AgentFixProposal | null> {
     if (isJudgmentShaped(finding)) return null;
     const { value } = await withSpanAsync('agent:suggest-fix', async () => {
       const userPrompt = buildSuggestFixPrompt(finding);
@@ -124,12 +124,12 @@ export class AiClientAgent implements LensAgent {
 }
 
 /**
- * Pull a FixManifest out of an AgentResult. The LLM may emit:
+ * Pull an AgentFixProposal out of an AgentResult. The LLM may emit:
  *   1. The JSON in `metadata` (preferred — structured outputs)
  *   2. The JSON in `explanation` (string — parse it)
  *   3. A "judgment-call" sentinel where change is null (return null)
  */
-function parseManifestFromResult(result: AgentResult, expectedFindingId: string): FixManifest | null {
+function parseManifestFromResult(result: AgentResult, expectedFindingId: string): AgentFixProposal | null {
   // Prefer structured output if the adapter delivered it.
   if (result.metadata && typeof result.metadata === 'object') {
     const candidate = result.metadata['fixManifest'] ?? result.metadata;
@@ -155,7 +155,7 @@ function parseManifestFromResult(result: AgentResult, expectedFindingId: string)
   throw new ParseFixManifestError('AgentResult had no parseable manifest', result);
 }
 
-function tryParseManifest(input: unknown, expectedFindingId: string): FixManifest | null | undefined {
+function tryParseManifest(input: unknown, expectedFindingId: string): AgentFixProposal | null | undefined {
   if (input === null || typeof input !== 'object') return undefined;
   const obj = input as Record<string, unknown>;
   // Judgment sentinel: explicit null change = no fix available.

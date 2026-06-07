@@ -1,4 +1,4 @@
-import type { FixChange, FixManifest } from './types.js';
+import type { FixChange, AgentFixProposal } from './types.js';
 
 const FIX_CHANGE_KINDS = ['set-attribute', 'replace-text', 'set-style', 'replace-token'] as const;
 
@@ -10,14 +10,14 @@ export class ParseFixManifestError extends Error {
 }
 
 /**
- * Parse a candidate FixManifest (typically from an LLM's structured output)
- * into a typed FixManifest. Throws on any structural mismatch — we never
+ * Parse a candidate AgentFixProposal (typically from an LLM's structured
+ * output) into a typed proposal. Throws on any structural mismatch — we never
  * silently produce a half-valid manifest.
  *
  * Required fields: findingId, change, summary, rationale, confidence,
  * generatedAt. confidence must be 0–100 inclusive.
  */
-export function parseFixManifest(input: unknown, expectedFindingId?: string): FixManifest {
+export function parseFixManifest(input: unknown, expectedFindingId?: string): AgentFixProposal {
   if (input === null || typeof input !== 'object') {
     throw new ParseFixManifestError('input is not an object', input);
   }

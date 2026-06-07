@@ -23,8 +23,9 @@
     "access": "public"
   },
   "scripts": {
-    "build": "pnpm build:catalog && tsc",
+    "build": "pnpm build:catalog && tsc && pnpm copy:catalog",
     "build:catalog": "node --import tsx src/scripts/build-catalog.ts",
+    "copy:catalog": "node -e \"const{mkdirSync,copyFileSync}=require('node:fs');mkdirSync('dist/catalog',{recursive:true});copyFileSync('src/catalog/catalog.json','dist/catalog/catalog.json')\"",
     "prepublishOnly": "pnpm build",
     "type-check": "tsc --noEmit",
     "start": "node dist/index.js",

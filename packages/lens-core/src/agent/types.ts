@@ -15,7 +15,7 @@ import type { Finding } from '../types/findings.js';
  */
 export interface LensAgent {
   explain(finding: Finding): AsyncIterable<string>;
-  suggestFix(finding: Finding): Promise<FixManifest | null>;
+  suggestFix(finding: Finding): Promise<AgentFixProposal | null>;
 }
 
 /**
@@ -25,8 +25,13 @@ export interface LensAgent {
  * The lens engine itself does NOT apply fixes — it only proposes them. The
  * permission ladder + verifier (Phase 8 / MCP) are responsible for the apply
  * step.
+ *
+ * NOTE: distinct from the serializable file-diff `FixManifest` in
+ * `../types/fix.ts` (Spec §9.3). This is the agent's *LLM proposal* (a single
+ * `change`); the verifier consumes the file-diff manifest. They were two
+ * never-reconciled designs that collided in the barrel — kept separate by name.
  */
-export interface FixManifest {
+export interface AgentFixProposal {
   /** Hash id of the finding this fix addresses. */
   findingId: string;
   /** The proposed change. */
@@ -81,7 +86,7 @@ export type CassetteResponse =
   /** explain — yields each chunk in order */
   | { kind: 'text'; chunks: readonly string[] }
   /** suggestFix — returns the manifest verbatim */
-  | { kind: 'fix'; manifest: FixManifest }
+  | { kind: 'fix'; manifest: AgentFixProposal }
   /** suggestFix — explicitly null (judgment-category fix) */
   | { kind: 'null' }
   /** simulate an LLM error */

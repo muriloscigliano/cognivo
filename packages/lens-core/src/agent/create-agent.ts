@@ -4,7 +4,7 @@ import { CassetteAgent } from './cassette-agent.js';
 import {
   NoAgentConfiguredError,
   type Cassette,
-  type FixManifest,
+  type AgentFixProposal,
   type LensAgent,
 } from './types.js';
 
@@ -53,13 +53,12 @@ export function createAgent(options: CreateAgentOptions = {}): LensAgent {
  * default — consumers must explicitly opt in to LLM calls.
  */
 class NoOpAgent implements LensAgent {
+  // eslint-disable-next-line require-yield -- async generator shape is preserved by `async *`; the throw is the contract
   async *explain(_finding: Finding): AsyncIterable<string> {
     throw new NoAgentConfiguredError();
-    // unreachable, keeps the AsyncIterable shape
-    yield '';
   }
 
-  async suggestFix(_finding: Finding): Promise<FixManifest | null> {
+  async suggestFix(_finding: Finding): Promise<AgentFixProposal | null> {
     throw new NoAgentConfiguredError();
   }
 }

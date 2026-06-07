@@ -3,7 +3,7 @@ import {
   cassetteKey,
   type Cassette,
   type CassetteResponse,
-  type FixManifest,
+  type AgentFixProposal,
   type LensAgent,
 } from './types.js';
 
@@ -41,7 +41,7 @@ export class CassetteAgent implements LensAgent {
     }
   }
 
-  async suggestFix(finding: Finding): Promise<FixManifest | null> {
+  async suggestFix(finding: Finding): Promise<AgentFixProposal | null> {
     if (isJudgmentShaped(finding)) return null;
     const response = this._lookup('suggestFix', finding);
     switch (response.kind) {

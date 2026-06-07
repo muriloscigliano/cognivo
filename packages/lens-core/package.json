@@ -38,7 +38,7 @@
   "homepage": "https://cognivo.dev",
   "bugs": "https://github.com/muriloscigliano/cognivo/issues",
   "scripts": {
-    "build": "vite build",
+    "build": "tsc --noEmit && vite build",
     "prepublishOnly": "pnpm build",
     "dev": "vite build --watch",
     "test": "vitest run",

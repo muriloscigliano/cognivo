@@ -10,7 +10,7 @@
 
 export type {
   LensAgent,
-  FixManifest,
+  AgentFixProposal,
   FixChange,
   Cassette,
   CassetteResponse,
