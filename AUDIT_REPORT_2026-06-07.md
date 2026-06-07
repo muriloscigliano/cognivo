@@ -28,7 +28,14 @@ Bonus fixed during P0-2 work: 1 hard `no-unreachable` ESLint error in
 
 ---
 
-## P1 — Real defects — NOT YET FIXED (recommended next)
+## P1 — Real defects
+
+### ✅ FIXED (commit a0ad6e2)
+- Adapters: added `CgPhoneInput` wrapper to React + Vue (cleared the last failing test); wired the empty event maps on `CgDateRangePicker` / `CgSidebar` / `CgDateTimePicker` in both adapters.
+- Undefined-token rendering bugs: 21 orphan `status-*-text` → `-text-default`; 9 orphan `surface-base` → `-background` (+ cg-chart runtime read); `cg-button` spinner `--cg-icon-size-md` → `-icon-size-100`; `cg-toaster` `--cg-border-width-200`/`--cg-spacing-10` → valid scale + accent stripe to `-border-default`; `cg-badge-group` `surface-tertiary-text` → `input-text-placeholder`.
+- Core: `GuardedClient.streamIntent` now enforces input guardrails (was a prompt-injection/PII bypass).
+
+### Still open (recommended next)
 
 ### Core AI client
 - Circuit-breaker half-open limit is dead code — `core/src/resilience/circuit-breaker.ts:24,65` (`halfOpenAttempts` never incremented). `halfOpenMaxAttempts` has zero effect.
