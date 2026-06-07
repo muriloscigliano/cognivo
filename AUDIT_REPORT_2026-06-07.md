@@ -37,11 +37,11 @@ Bonus fixed during P0-2 work: 1 hard `no-unreachable` ESLint error in
 
 ### Still open (recommended next)
 
-### Core AI client
-- Circuit-breaker half-open limit is dead code — `core/src/resilience/circuit-breaker.ts:24,65` (`halfOpenAttempts` never incremented). `halfOpenMaxAttempts` has zero effect.
-- Cache keys omit request options (model, temperature, systemPrompt, maxTokens) — `caching/cached-client.ts:105-111`, `semantic-cached-client.ts:35-37`. Different model/prompt → wrong cached result returned.
-- FallbackClient replays stream from scratch after mid-stream failure — `resilience/fallback-client.ts:88-102`. Partial primary chunks + full fallback chunks concatenated → garbled stream.
-- GuardedClient applies NO guardrails to `streamIntent` — `guardrails/guarded-client.ts:142-151`. Trivial prompt-injection/PII bypass via the stream path.
+### Core AI client — ✅ ALL FIXED (commit 6bdb7c1, except guardrail in a0ad6e2)
+- ✅ Circuit-breaker half-open limit was dead code (`halfOpenAttempts` never incremented) — now consumes a trial slot per grant; `halfOpenMaxAttempts` enforced.
+- ✅ Cache keys omitted request options (model/temperature/systemPrompt/maxTokens) — now part of the key in both `cached-client` and `semantic-cached-client`; operational options (cache/timeout) excluded.
+- ✅ FallbackClient replayed stream from scratch after mid-stream failure — now only fails over before the first chunk; mid-stream errors surface instead of corrupting output.
+- ✅ GuardedClient applied NO guardrails to `streamIntent` (fixed in P1 batch a0ad6e2) — input guardrails now enforced on the stream path.
 
 ### Adapters
 - React `CgDateRangePicker` / `CgSidebar` pass empty eventMap → `onCgDateRangeChange`/`onCgSidebarToggle` never fire.
