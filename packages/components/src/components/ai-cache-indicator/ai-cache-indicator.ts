@@ -51,7 +51,7 @@ export class AiCacheIndicator extends LitElement {
       border-radius: var(--cg-border-radius-full);
       flex-shrink: 0;
     }
-    .dot.hit { background: var(--cg-color-status-success-text-default); }
+    .dot.hit { background: var(--cg-color-ai-cached-text); }
     .dot.miss { background: var(--cg-color-status-error-text-default); }
     .dot.stale { background: var(--cg-color-status-warning-text-default); }
     .dot.disabled { background: var(--cg-color-input-text-placeholder); }
@@ -70,8 +70,8 @@ export class AiCacheIndicator extends LitElement {
       border-radius: var(--cg-border-radius-200);
       padding: var(--cg-spacing-16);
       color: var(--cg-color-surface-base-text);
-      animation: fadeSlideIn 200ms var(--cg-transition-easing-ease-out) both;
-      min-width: 240px;
+      animation: fadeSlideIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
+      min-width: var(--cg-spacing-256);
     }
 
     .detail-row {
@@ -102,13 +102,13 @@ export class AiCacheIndicator extends LitElement {
 
     .rate-bar-fill {
       height: 100%;
-      background: var(--cg-color-action-primary-background-default);
+      background: var(--cg-color-ai-cached-text);
       border-radius: var(--cg-border-radius-50);
       transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 
     .divider {
-      height: 1px;
+      height: var(--cg-border-width-50);
       background: var(--cg-color-surface-cards-divider);
       margin: var(--cg-spacing-12) 0;
     }

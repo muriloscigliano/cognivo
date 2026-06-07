@@ -111,10 +111,17 @@ export class AiRichMessage extends LitElement {
     }
     .message.system .bubble-body {
       background: var(--cg-color-surface-base-background);
-      border: 1px dashed var(--cg-color-surface-cards-border);
+      border: var(--cg-border-width-50) dashed var(--cg-color-surface-cards-border);
       font-size: var(--cg-font-size-sm);
       color: var(--cg-color-input-text-placeholder);
       font-style: italic;
+    }
+
+    /* ── Card fallback (unknown/blocked card type) ── */
+    .card-fallback {
+      padding: var(--cg-spacing-8);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     /* ── Text ── */
@@ -168,7 +175,7 @@ export class AiRichMessage extends LitElement {
       border-color: var(--cg-color-surface-base-text);
     }
     .action-btn:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -259,7 +266,7 @@ export class AiRichMessage extends LitElement {
           try {
             if (!this._isValidCardType(card.type)) {
               console.warn(`[ai-rich-message] Blocked unknown card type: "${card.type}"`);
-              return html`<div style="padding:8px;font-size:12px;color:var(--cg-color-input-text-placeholder,#71717a);">Card unavailable</div>`;
+              return html`<div class="card-fallback">Card unavailable</div>`;
             }
             const el = document.createElement(card.type);
             (el as unknown as Record<string, unknown>)['data'] = card.data;
@@ -271,7 +278,7 @@ export class AiRichMessage extends LitElement {
             }) as EventListener, { signal });
             return el;
           } catch {
-            return html`<div style="padding:8px;font-size:12px;color:var(--cg-color-input-text-placeholder,#71717a);">Card unavailable</div>`;
+            return html`<div class="card-fallback">Card unavailable</div>`;
           }
         })}
       </div>

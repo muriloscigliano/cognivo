@@ -132,11 +132,11 @@ export class AiDataTable extends LitElement {
 
     /* Row states */
     tbody tr { transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default); }
-    tbody tr:hover td { background: var(--cg-color-action-tertiary-background-hover); }
+    tbody tr:hover td { background: var(--cg-color-surface-table-row-hover-background); }
 
     /* Striped */
     :host([striped]) tbody tr:nth-child(even) td {
-      background: var(--cg-color-action-tertiary-background-hover);
+      background: var(--cg-color-surface-table-row-alt-background);
     }
 
     /* ── Anomaly cells — left accent border ── */
@@ -153,7 +153,7 @@ export class AiDataTable extends LitElement {
     .anomaly-icon {
       display: inline-flex;
       margin-left: var(--cg-spacing-6);
-      color: var(--cg-color-input-text-placeholder);
+      color: var(--cg-color-surface-table-icon);
       vertical-align: middle;
     }
 
@@ -163,12 +163,12 @@ export class AiDataTable extends LitElement {
       bottom: calc(100% + var(--cg-spacing-4));
       left: 50%;
       transform: translateX(-50%);
-      background: var(--cg-color-surface-base-background);
-      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      color: var(--cg-color-surface-base-text);
+      background: var(--cg-color-surface-tooltip-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-tooltip-border);
+      color: var(--cg-color-surface-tooltip-text);
       font-size: var(--cg-font-size-xs);
       padding: var(--cg-spacing-6) var(--cg-spacing-8);
-      border-radius: var(--cg-border-radius-100);
+      border-radius: var(--cg-component-tooltip-radius);
       white-space: nowrap;
       pointer-events: none;
       z-index: 10;
@@ -178,7 +178,7 @@ export class AiDataTable extends LitElement {
     .empty-state {
       padding: var(--cg-spacing-24);
       text-align: center;
-      color: var(--cg-color-input-text-placeholder);
+      color: var(--cg-color-empty-state-text-secondary);
       font-size: var(--cg-font-size-sm);
     }
 
