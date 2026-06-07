@@ -242,6 +242,34 @@ describe('CachedClient', () => {
     expect(inner.runIntent).toHaveBeenCalledTimes(2);
   });
 
+  it('produces different cache keys for different result-affecting options', async () => {
+    const inner = makeClient({ explanation: 'data' });
+    const cached = new CachedClient(inner, { ttl: 60_000 });
+    const ctx = makeContext();
+
+    // Same intent + dataset, but each option that changes the result must
+    // miss the cache rather than collide with the first response.
+    await cached.runIntent(AiIntent.EXPLAIN, ctx, { model: 'gpt-4' });
+    await cached.runIntent(AiIntent.EXPLAIN, ctx, { model: 'claude-3-opus' });
+    await cached.runIntent(AiIntent.EXPLAIN, ctx, { model: 'gpt-4', temperature: 0.2 });
+    await cached.runIntent(AiIntent.EXPLAIN, ctx, { model: 'gpt-4', temperature: 0.9 });
+    await cached.runIntent(AiIntent.EXPLAIN, ctx, { model: 'gpt-4', systemPrompt: 'be terse' });
+
+    expect(inner.runIntent).toHaveBeenCalledTimes(5);
+  });
+
+  it('hits the cache when only operational options (timeout) differ', async () => {
+    const inner = makeClient({ explanation: 'data' });
+    const cached = new CachedClient(inner, { ttl: 60_000 });
+    const ctx = makeContext();
+
+    // timeout does not change the result, so it must not fragment the cache.
+    await cached.runIntent(AiIntent.EXPLAIN, ctx, { model: 'gpt-4', timeout: 1000 });
+    await cached.runIntent(AiIntent.EXPLAIN, ctx, { model: 'gpt-4', timeout: 9000 });
+
+    expect(inner.runIntent).toHaveBeenCalledTimes(1);
+  });
+
   it('streamIntent delegates to inner client without caching', async () => {
     const inner = makeStreamClient([{ explanation: 'chunk1' }, { explanation: 'chunk2' }]);
     const cached = new CachedClient(inner, { ttl: 60_000 });

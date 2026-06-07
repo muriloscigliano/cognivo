@@ -55,15 +55,32 @@ export class CircuitBreaker {
       case 'open': {
         const elapsed = Date.now() - this.lastFailureTime;
         if (elapsed >= this.resetTimeout) {
+          // Recovery window opens. Transition, then fall through to the
+          // half-open accounting below so this call consumes the first
+          // trial slot rather than being a free pass.
           this.transition('half-open');
-          return true;
+          return this.grantHalfOpenSlot();
         }
         return false;
       }
 
       case 'half-open':
-        return this.halfOpenAttempts < this.halfOpenMaxAttempts;
+        return this.grantHalfOpenSlot();
     }
+  }
+
+  /**
+   * Grant a half-open trial slot if any remain. Each grant consumes one
+   * slot so a burst of concurrent callers can't all stampede a recovering
+   * backend; recordSuccess/recordFailure release the slots by leaving
+   * half-open.
+   */
+  private grantHalfOpenSlot(): boolean {
+    if (this.halfOpenAttempts < this.halfOpenMaxAttempts) {
+      this.halfOpenAttempts += 1;
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -116,14 +133,10 @@ export class CircuitBreaker {
     const from = this.state;
     this.state = to;
 
-    // Reset half-open attempts when entering half-open
+    // Reset half-open attempts when entering half-open so a fresh recovery
+    // window starts with the full trial-call budget.
     if (to === 'half-open') {
       this.halfOpenAttempts = 0;
-    }
-
-    // Track attempts in half-open
-    if (from === 'half-open' || to === 'half-open') {
-      // When entering half-open, the next canExecute will allow the first attempt
     }
 
     this.onStateChange?.(from, to);

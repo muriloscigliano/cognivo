@@ -45,6 +45,22 @@ function makeFailingStreamClient(error: Error): AiClient {
   };
 }
 
+/** Yields the given chunks, then throws — simulates a mid-stream failure. */
+function makePartialThenFailStreamClient(
+  chunks: Partial<AiResult>[],
+  error: Error,
+): AiClient {
+  return {
+    runIntent: vi.fn().mockResolvedValue({ explanation: 'unused' }),
+    async *streamIntent() {
+      for (const chunk of chunks) {
+        yield chunk;
+      }
+      throw error;
+    },
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -192,6 +208,33 @@ describe('FallbackClient', () => {
 
     expect(collected).toEqual([{ explanation: 'recovered' }]);
     expect(onFallback).toHaveBeenCalledTimes(1);
+  });
+
+  it('does NOT replay another client after a mid-stream failure', async () => {
+    // Primary emits two chunks, then fails. Because those chunks are already
+    // downstream, the secondary's stream must NOT be spliced in after them —
+    // that would corrupt the output with a duplicated/garbled sequence.
+    const primary = makePartialThenFailStreamClient(
+      [{ explanation: 'p1' }, { explanation: 'p2' }],
+      new Error('mid-stream boom'),
+    );
+    const secondary = makeStreamClient([{ explanation: 's1' }, { explanation: 's2' }]);
+    const onFallback = vi.fn();
+
+    const client = new FallbackClient({ clients: [primary, secondary], onFallback });
+
+    const collected: Partial<AiResult>[] = [];
+    await expect(
+      (async () => {
+        for await (const chunk of client.streamIntent!(AiIntent.SUMMARIZE, makeContext())) {
+          collected.push(chunk);
+        }
+      })(),
+    ).rejects.toThrow('mid-stream boom');
+
+    // Only the primary's partial output — no secondary chunks appended.
+    expect(collected).toEqual([{ explanation: 'p1' }, { explanation: 'p2' }]);
+    expect(onFallback).not.toHaveBeenCalled();
   });
 
   it('skips clients without streamIntent and falls back', async () => {

@@ -178,7 +178,7 @@ describe('CircuitBreaker', () => {
     expect(onChange).toHaveBeenCalledTimes(2);
   });
 
-  it('half-open limits attempts via halfOpenMaxAttempts', () => {
+  it('half-open allows only halfOpenMaxAttempts trial calls (default 1)', () => {
     const breaker = new CircuitBreaker({
       failureThreshold: 2,
       resetTimeout: 5_000,
@@ -190,21 +190,36 @@ describe('CircuitBreaker', () => {
 
     vi.advanceTimersByTime(5_000);
 
-    // First call in half-open — allowed
+    // First call in half-open — allowed, consumes the single trial slot.
     expect(breaker.canExecute()).toBe(true);
     expect(breaker.currentState).toBe('half-open');
 
-    // canExecute was called once, which counts as the first attempt slot
-    // but halfOpenAttempts is only incremented on actual execution tracking
-    // The breaker tracks via canExecute allowance — 1 max attempt allowed
-    // After transitioning, halfOpenAttempts = 0, max = 1, so first call returns true
-    // But subsequent canExecute should return false since halfOpenAttempts would still be 0
-    // Actually the breaker just checks halfOpenAttempts < max on canExecute
-    // Since we haven't recorded anything, halfOpenAttempts is still 0
-    // This means canExecute will keep returning true until a success/failure is recorded
-    // Let's verify by recording a success
+    // A second concurrent trial (before the first resolves) must be rejected,
+    // otherwise a burst of callers all stampede a recovering backend.
+    expect(breaker.canExecute()).toBe(false);
+    expect(breaker.canExecute()).toBe(false);
+
+    // Recording the trial's outcome leaves half-open and frees the slot.
     breaker.recordSuccess();
     expect(breaker.currentState).toBe('closed');
+  });
+
+  it('half-open honors a halfOpenMaxAttempts greater than 1', () => {
+    const breaker = new CircuitBreaker({
+      failureThreshold: 2,
+      resetTimeout: 5_000,
+      halfOpenMaxAttempts: 2,
+    });
+
+    breaker.recordFailure();
+    breaker.recordFailure();
+    vi.advanceTimersByTime(5_000);
+
+    // Two trial calls allowed, third rejected.
+    expect(breaker.canExecute()).toBe(true); // transitions to half-open + slot 1
+    expect(breaker.canExecute()).toBe(true); // slot 2
+    expect(breaker.canExecute()).toBe(false); // exhausted
+    expect(breaker.currentState).toBe('half-open');
   });
 });
 

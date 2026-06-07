@@ -32,8 +32,25 @@ export class SemanticCachedClient implements AiClient {
     );
   }
 
-  private buildCacheKey(intent: AiIntent, context: AiContext): string {
-    return JSON.stringify({ intent, dataset: context.dataset, meta: context.meta });
+  private buildCacheKey(
+    intent: AiIntent,
+    context: AiContext,
+    options?: AiRequestOptions,
+  ): string {
+    // Result-affecting options must be part of the exact-match key, else a
+    // call with the same data but a different model/prompt collides with a
+    // prior result. (Operational options like cache/timeout are excluded.)
+    return JSON.stringify({
+      intent,
+      dataset: context.dataset,
+      meta: context.meta,
+      options: {
+        model: options?.model,
+        temperature: options?.temperature,
+        maxTokens: options?.maxTokens,
+        systemPrompt: options?.systemPrompt,
+      },
+    });
   }
 
   async runIntent<T = unknown>(
@@ -41,7 +58,7 @@ export class SemanticCachedClient implements AiClient {
     context: AiContext<T>,
     options?: AiRequestOptions,
   ): Promise<AiResult> {
-    const key = this.buildCacheKey(intent, context as AiContext);
+    const key = this.buildCacheKey(intent, context as AiContext, options);
 
     // Tier 1: Exact match
     const exact = this.store.getExact(key);

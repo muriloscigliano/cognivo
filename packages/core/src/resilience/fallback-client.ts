@@ -85,11 +85,26 @@ export class FallbackClient implements AiClient {
         throw new Error('No client supports streaming');
       }
 
+      // Track whether this client emitted any chunk. Once a chunk has been
+      // yielded downstream we can't take it back, so failing over to another
+      // client would splice its full stream after the partial one and corrupt
+      // the output. Fallback is therefore only safe BEFORE the first chunk.
+      let emitted = false;
       try {
-        yield* client.streamIntent(intent, context, options);
+        for await (const chunk of client.streamIntent(intent, context, options)) {
+          emitted = true;
+          yield chunk;
+        }
         return;
       } catch (err) {
         lastError = err instanceof Error ? err : new Error(String(err));
+
+        if (emitted) {
+          // Mid-stream failure after partial output — surfacing the error is
+          // the only correct option; silently replaying another client would
+          // duplicate the already-emitted prefix.
+          throw lastError;
+        }
 
         const hasMoreClients = i < this.clients.length - 1;
 

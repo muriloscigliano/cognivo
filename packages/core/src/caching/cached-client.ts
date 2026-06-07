@@ -56,7 +56,7 @@ export class CachedClient implements AiClient {
       return this.inner.runIntent(intent, context, options);
     }
 
-    const key = this.buildKey(intent, context);
+    const key = this.buildKey(intent, context, options);
 
     // Check cache for a valid entry
     const entry = this.store.get(key);
@@ -100,13 +100,31 @@ export class CachedClient implements AiClient {
   }
 
   /**
-   * Build a deterministic cache key from the intent and context.
+   * Build a deterministic cache key from the intent, context, and the
+   * result-affecting request options.
+   *
+   * The model, temperature, system prompt, and max-token budget all change
+   * what the inner client returns, so they MUST be part of the key — without
+   * them, two calls over the same dataset but different models/prompts would
+   * collide and the second caller would silently get the first's result.
+   * Operational options (`cache`, `timeout`) don't affect the result and are
+   * deliberately excluded so they don't fragment the cache.
    */
-  private buildKey<T>(intent: AiIntent, context: AiContext<T>): string {
+  private buildKey<T>(
+    intent: AiIntent,
+    context: AiContext<T>,
+    options?: AiRequestOptions,
+  ): string {
     return JSON.stringify({
       intent,
       dataset: context.dataset,
       meta: context.meta,
+      options: {
+        model: options?.model,
+        temperature: options?.temperature,
+        maxTokens: options?.maxTokens,
+        systemPrompt: options?.systemPrompt,
+      },
     });
   }
 }
