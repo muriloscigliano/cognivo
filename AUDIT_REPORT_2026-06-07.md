@@ -55,15 +55,11 @@ Bonus fixed during P0-2 work: 1 hard `no-unreachable` ESLint error in
 - Manifest silently drops 30 dark-only tokens — `tokens/scripts/manifest-lib.mjs:286` (iterates `:root` only). `--cg-color-focus-ring`, `accent-background/border` etc. absent from manifest.
 
 ### Components — undefined tokens that break rendering (user-visible)
-- Orphan `--cg-color-status-{error,warning,success,info}-text` (missing `-default`) — ~21 refs / 9 files (e.g. `ai-debug-console.ts:168-170`, `ai-cost-dashboard.ts:119`). Status colors render transparent.
-- Orphan `--cg-color-surface-base` (missing `-background`) — 9 refs / 5 files (e.g. `ai-api-key-manager.ts:36`, `ai-webhook-config.ts:39,102,233`). Panels transparent.
-- `cg-button` spinner uses undefined `--cg-icon-size-md` (no fallback) — `cg-button.ts:150-151`. Loading spinner collapses to ~2px dot.
-- `cg-toaster` uses undefined `--cg-border-width-200` + `--cg-spacing-10` — `cg-toaster.ts:87,127`.
-- `cg-badge-group` uses undefined `--cg-color-surface-tertiary-text` (no fallback) — `cg-badge-group.ts:25,45`.
+- ✅ ALL FIXED in P1 batch (commit a0ad6e2): status-*-text orphans, surface-base orphans, cg-button spinner, cg-toaster, cg-badge-group.
 
 ### a11y / privacy
-- `cg-navigation-menu` `<nav role="navigation">` has no accessible name — `cg-navigation-menu.ts:222`. Violates project's own rule.
-- "Privacy-first" analytics captures passwords/OTP/search verbatim — `analytics/src/capture.ts:94` (length-truncate only, no field redaction; registry includes `cg-password-change`, `cg-otp-change`, `ai-search-query`).
+- `cg-navigation-menu` `<nav role="navigation">` has no accessible name — `cg-navigation-menu.ts:222`. Violates project's own rule. **(still open)**
+- ✅ FIXED (commit 9d26a7e): "privacy-first" analytics captured passwords/OTP/search verbatim — `sanitizeDetail` now redacts secrets by field name + event context before they reach the sink.
 
 ---
 
