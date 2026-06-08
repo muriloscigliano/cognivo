@@ -60,7 +60,7 @@ export class AiVersionSelector extends LitElement {
       flex-direction: column;
       gap: var(--cg-spacing-8);
       padding: var(--cg-spacing-12);
-      background: var(--cg-color-surface-overlay);
+      background: var(--cg-color-surface-cards-background);
       border-radius: var(--cg-border-radius-100);
       border: var(--cg-border-width-100) solid transparent;
       cursor: pointer;
@@ -76,7 +76,7 @@ export class AiVersionSelector extends LitElement {
     }
 
     .version-item:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-outline-width-default) solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -193,7 +193,7 @@ export class AiVersionSelector extends LitElement {
     }
 
     input[type="range"]:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-outline-width-default) solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-spacing-4);
       border-radius: var(--cg-spacing-2);
     }
@@ -211,7 +211,7 @@ export class AiVersionSelector extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-overlay-accent-strong);
       color: var(--cg-color-surface-base-text);
       border-radius: var(--cg-border-radius-50);
-      padding: var(--cg-spacing-3) var(--cg-spacing-8);
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
@@ -220,7 +220,7 @@ export class AiVersionSelector extends LitElement {
     }
 
     .promote-btn:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-outline-width-default) solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 

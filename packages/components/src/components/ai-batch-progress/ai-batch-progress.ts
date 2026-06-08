@@ -54,7 +54,7 @@ export class AiBatchProgress extends LitElement {
       font-weight: var(--cg-font-weight-bold);
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      padding: var(--cg-spacing-3) var(--cg-spacing-8);
+      padding: var(--cg-spacing-2) var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-100);
     }
     .status-badge.running {

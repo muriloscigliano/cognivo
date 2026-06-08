@@ -97,7 +97,7 @@ export class AiToolCardResolver extends LitElement {
       overflow-x: auto;
       white-space: pre-wrap;
       word-break: break-all;
-      max-height: var(300px);
+      max-height: var(--cg-spacing-256);
       overflow-y: auto;
     }
 
@@ -109,13 +109,13 @@ export class AiToolCardResolver extends LitElement {
       gap: var(--cg-spacing-8);
     }
     .error-icon {
-      color: var(--cg-color-status-error-text-default);
+      color: var(--cg-color-ai-error-text);
       font-size: var(--cg-font-size-base);
       flex-shrink: 0;
     }
     .error-text {
       font-size: var(--cg-font-size-sm);
-      color: var(--cg-color-status-error-text-default);
+      color: var(--cg-color-ai-error-text);
     }
 
     /* ── Resolved component host ── */

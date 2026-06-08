@@ -157,7 +157,7 @@ export class AiTranslationPanel extends LitElement {
     }
     .alt-item:hover {
       border-color: var(--cg-color-input-border-hover);
-      background: var(--cg-overlay-dark-subtle);
+      background: var(--cg-color-surface-cards-hover-background);
     }
     .alt-item:active { transform: scale(var(--cg-interaction-press-scale)); }
     .alt-item:focus-visible {

@@ -41,7 +41,7 @@ export class AiTokenTracker extends LitElement {
       border-radius: var(--cg-border-radius-100);
       background: var(--cg-color-surface-container-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      font-size: var(--cg-font-size-xs);
+      font-size: var(--cg-font-size-sm);
       font-family: var(--cg-font-family-mono);
       color: var(--cg-color-input-text-placeholder);
       cursor: pointer;
@@ -142,7 +142,7 @@ export class AiTokenTracker extends LitElement {
 
     :focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-focus-ring-width) var(--cg-overlay-accent-strong);
     }
   `];
 

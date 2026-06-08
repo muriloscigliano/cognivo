@@ -165,7 +165,7 @@ export class AiValidationChecklist extends LitElement {
 
     /* ── Divider ── */
     .divider {
-      height: 1px;
+      height: var(--cg-border-width-50);
       background: var(--cg-color-surface-cards-divider);
       margin: var(--cg-spacing-16) 0;
     }

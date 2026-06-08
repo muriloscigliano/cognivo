@@ -95,7 +95,33 @@
 | 75 | ai-source-graph | 🔧 | 1 applied | 🔬 | proposed |
 | 76 | ai-status-page | 🔧 | 2 applied (+sweep) | 🔬 | proposed |
 | 77 | ai-streaming-text | ✅ | none (clean) | 🔬 | proposed |
-| ... | (remaining 14) | ⬜ | | | |
+| 78 | ai-test-runner | ✅ | none | 🔬 | proposed |
+| 79 | ai-timeline | 🔧 | 1 applied | 🔬 | proposed |
+| 80 | ai-toast | ✅ | none (clean) | 🔬 | proposed |
+| 81 | ai-token-tracker | 🔧 | 2 applied | 🔬 | proposed |
+| 82 | ai-tool-card-resolver | 🔧 | 3 applied (var(300px)) | 🔬 | proposed |
+| 83 | ai-tool-indicator | 🔧 | 2 applied | 🔬 | proposed |
+| 84 | ai-transform-slider | ✅ | none (clean) | 🔬 | proposed |
+| 85 | ai-translation-panel | 🔧 | 1 applied | 🔬 | proposed |
+| 86 | ai-usage-meter | ✅ | none (clean) | 🔬 | proposed |
+| 87 | ai-validation-checklist | 🔧 | 1 applied | 🔬 | proposed |
+| 88 | ai-version-selector | 🔧 | 5 applied (surface-overlay) | 🔬 | proposed |
+| 89 | ai-voice-panel | 🔧 | 5 applied (ai-state family) | 🔬 | proposed |
+| 90 | ai-webhook-config | 🔧 | 11 applied (3 syntax errs!) | 🔬 | proposed |
+| 91 | ai-workflow-builder | 🔧 | 1 applied | 🔬 | proposed |
+
+**Batch 8 complete (split 8a+8b):** 14 components, ~34 fixes. ai-webhook-config alone had **3 CSS syntax errors** (unclosed translateX/Y) + surface-overlay + spacing-3 broken tokens. ai-voice-panel adopted the full --cg-color-ai-* lifecycle family. Last 2 stray `--cg-spacing-3` broken tokens (ai-batch-progress, ai-cost-dashboard) swept retroactively.
+
+## ✅ ALL 91 AI COMPONENTS AUDITED — final global sweep confirms ZERO broken tokens / syntax errors remain. type-check green.
+
+### Total CSS syntax errors found & fixed: 6
+- ai-changelog (calc unclosed), ai-embedding-viz (calc unclosed), ai-capture-flow (var(240px)), ai-reveal-animation (translateY ×2), ai-webhook-config (translateX/Y ×3), ai-data-preview (var(300px)), ai-tool-card-resolver (var(300px))
+
+### Broken/nonexistent tokens fixed: --cg-color-surface-overlay, bare --cg-color-chart-5/-7, --cg-border-radius-25, --cg-border-width-200, --cg-spacing-3, --cg-letter-spacing-wide (false alarm — reverted)
+
+### Remaining work:
+1. Playground refresh (apply meaningful playgroundProposal entries to docs/src/data/registry.ts)
+2. Deferred design decisions (touch targets, orphaned role="menuitem", magic widths/opacities with no token)
 
 **Batch 7 complete (split 7a+7b after a 12-wide StructuredOutput timeout):** 12 components, ~11 fixes. **3rd CSS syntax error** fixed (ai-reveal-animation `translateY(var(...);` unbalanced parens, broke slide-up ×2). ai-reasoning-tree adopted `--cg-color-ai-reasoning-text`. Flagged: status-page sparkline geometry (1px/2px), decorative opacities 0.35/0.4/0.7/0.85 (no exact token; opacity scale is 0/25/50/60/75/100).
 

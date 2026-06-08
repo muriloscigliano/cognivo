@@ -32,7 +32,7 @@ export class AiToolIndicator extends LitElement {
       border-radius: var(--cg-border-radius-100);
       background: var(--cg-color-surface-cards-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      font-size: var(--cg-font-size-xs);
+      font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-medium);
       color: var(--cg-color-surface-container-outlined);
       cursor: pointer;
@@ -104,7 +104,7 @@ export class AiToolIndicator extends LitElement {
       background: var(--cg-color-surface-base-background);
       border-radius: var(--cg-border-radius-100);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      font-size: var(--cg-font-size-xs);
+      font-size: var(--cg-font-size-sm);
       font-family: var(--cg-font-family-mono);
       color: var(--cg-color-surface-container-outlined);
       line-height: var(--cg-line-height-relaxed);

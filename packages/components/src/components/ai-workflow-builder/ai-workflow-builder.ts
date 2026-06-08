@@ -64,7 +64,7 @@ export class AiWorkflowBuilder extends LitElement {
       min-width: var(--cg-spacing-96); cursor: pointer; transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .step:hover { border-color: var(--cg-color-input-border-hover); }
-    .step:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-spacing-2) var(--cg-overlay-accent-strong); outline-offset: var(--cg-outline-offset-default); }
+    .step:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-spacing-2) var(--cg-color-focus-ring); outline-offset: var(--cg-outline-offset-default); }
     .step:active { transform: scale(var(--cg-interaction-press-scale)); }
     .step.active { border-color: var(--cg-color-surface-base-text); background: var(--cg-overlay-accent-subtle); }
     .step.complete { border-color: var(--cg-color-status-success-text-default); }

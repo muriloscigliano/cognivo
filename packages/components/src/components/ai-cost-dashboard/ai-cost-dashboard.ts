@@ -200,7 +200,7 @@ export class AiCostDashboard extends LitElement {
     .trend-chart {
       display: flex;
       align-items: flex-end;
-      gap: var(--cg-spacing-3);
+      gap: var(--cg-spacing-2);
       height: var(--cg-spacing-48);
     }
 

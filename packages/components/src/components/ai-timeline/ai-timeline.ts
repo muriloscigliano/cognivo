@@ -93,7 +93,7 @@ export class AiTimeline extends LitElement {
       border: var(--cg-border-width-100) solid var(--cg-color-action-primary-background-default);
       color: var(--cg-color-action-primary-background-default);
       box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
-      animation: ringPulse 2s ease-in-out infinite;
+      animation: ringPulse 2s var(--cg-transition-easing-ease-in-out) infinite;
     }
     .dot.complete {
       background: var(--cg-color-status-success-background-default);

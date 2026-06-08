@@ -61,8 +61,8 @@ export class AiVoicePanel extends LitElement {
       color: var(--cg-color-input-text-placeholder);
     }
     .state-label.listening { color: var(--cg-color-surface-base-text); }
-    .state-label.processing { color: var(--cg-color-status-warning-text-default); }
-    .state-label.error { color: var(--cg-color-status-error-text-default); }
+    .state-label.processing { color: var(--cg-color-ai-thinking-text); }
+    .state-label.error { color: var(--cg-color-ai-error-text); }
 
     /* ── Mic button area ── */
     .mic-area {
@@ -131,13 +131,13 @@ export class AiVoicePanel extends LitElement {
       background: var(--cg-overlay-accent-subtle);
     }
     .mic-btn.processing {
-      border-color: var(--cg-color-status-warning-text-default);
-      color: var(--cg-color-status-warning-text-default);
+      border-color: var(--cg-color-ai-thinking-text);
+      color: var(--cg-color-ai-thinking-text);
       cursor: wait;
     }
     .mic-btn.error {
-      border-color: var(--cg-color-status-error-text-default);
-      color: var(--cg-color-status-error-text-default);
+      border-color: var(--cg-color-ai-error-text);
+      color: var(--cg-color-ai-error-text);
     }
     .mic-btn:disabled {
       opacity: 0.4;
@@ -171,7 +171,7 @@ export class AiVoicePanel extends LitElement {
     }
     .error-msg {
       font-size: var(--cg-font-size-sm);
-      color: var(--cg-color-status-error-text-default);
+      color: var(--cg-color-ai-error-text);
       line-height: var(--cg-line-height-normal);
     }
     .unsupported-msg {
