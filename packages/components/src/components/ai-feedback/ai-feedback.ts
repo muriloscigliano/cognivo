@@ -209,6 +209,7 @@ export class AiFeedback extends LitElement {
       background: none;
       color: var(--cg-color-input-text-placeholder);
       font-size: var(--cg-font-size-xs);
+      font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       transition:
@@ -250,7 +251,7 @@ export class AiFeedback extends LitElement {
       background: var(--cg-color-input-background-default);
       color: var(--cg-color-surface-base-text);
       font: inherit;
-      font-size: var(--cg-font-size-xs);
+      font-size: var(--cg-font-size-sm);
       resize: vertical;
       outline: none;
       transition: border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
@@ -275,7 +276,7 @@ export class AiFeedback extends LitElement {
       background: var(--cg-color-action-primary-background-default);
       color: var(--cg-color-action-primary-text-default);
       font: inherit;
-      font-size: var(--cg-font-size-xs);
+      font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-bold);
       cursor: pointer;
       transition:

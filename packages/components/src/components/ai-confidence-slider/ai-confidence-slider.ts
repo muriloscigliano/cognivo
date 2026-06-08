@@ -39,7 +39,7 @@ export class AiConfidenceSlider extends LitElement {
     }
     .label {
       font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-bold); color: var(--cg-color-input-text-placeholder);
-      text-transform: uppercase;
+      text-transform: uppercase; letter-spacing: var(--cg-letter-spacing-wide);
     }
     .count {
       font-size: var(--cg-font-size-xs); color: var(--cg-color-surface-base-text);

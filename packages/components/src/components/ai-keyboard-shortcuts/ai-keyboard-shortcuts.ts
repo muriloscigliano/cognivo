@@ -40,7 +40,7 @@ export class AiKeyboardShortcuts extends LitElement {
     .overlay {
       position: fixed;
       inset: 0;
-      background: var(--cg-overlay-dark-strong);
+      background: var(--cg-color-modal-overlay-background);
       backdrop-filter: blur(2px);
       display: flex;
       align-items: center;
@@ -85,7 +85,7 @@ export class AiKeyboardShortcuts extends LitElement {
     }
     .close-btn:hover { color: var(--cg-color-surface-base-text); }
     .close-btn:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: 2px solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -105,7 +105,7 @@ export class AiKeyboardShortcuts extends LitElement {
       color: var(--cg-color-input-text-placeholder);
     }
     .search-input:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: 2px solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 

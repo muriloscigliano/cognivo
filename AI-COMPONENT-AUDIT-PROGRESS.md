@@ -59,7 +59,30 @@
 | 39 | ai-embedding-viz | 🔧 | 3 applied (syntax err) | 🔬 | proposed |
 | 40 | ai-empty-state | ✅ | none (clean) | 🔬 | proposed |
 | 41 | ai-error-boundary | 🔧 | 4 applied | 🔬 | proposed |
-| ... | (remaining 50) | ⬜ | | | |
+| 42 | ai-eval-scorecard | 🔧 | 4 applied | 🔬 | proposed |
+| 43 | ai-feature-flag | 🔧 | 10 applied (toggle family) | 🔬 | proposed |
+| 44 | ai-feedback | 🔧 | 3 applied | 🔬 | proposed |
+| 45 | ai-file-upload | ✅ | none (clean) | 🔬 | proposed |
+| 46 | ai-form-generator | ✅ | none | 🔬 | proposed |
+| 47 | ai-guardrail | 🔧 | 1 applied | 🔬 | proposed |
+| 48 | ai-heatmap | ✅ | none (clean) | 🔬 | proposed |
+| 49 | ai-insight-card | 🔧 | 2 applied | 🔬 | proposed |
+| 50 | ai-json-viewer | 🔧 | 4 applied (broken radius-25) | 🔬 | proposed |
+| 51 | ai-keyboard-shortcuts | 🔧 | 3 applied | 🔬 | proposed |
+| 52 | ai-kpi-grid | 🔧 | 1 applied | 🔬 | proposed |
+| 53 | ai-labeling-board | 🔧 | 7 applied | 🔬 | proposed |
+| ... | (remaining 38) | ⬜ | | | |
+
+**Batch 5 complete:** 12 components, ~40 fixes incl. ai-feature-flag toggle family, broken `--cg-border-radius-25` (also fixed retroactively in ai-capture-flow + ai-prompt-template), broken `--cg-color-chart-7` (ai-changelog).
+
+### 🚨 VOCAB CORRECTION (critical process fix)
+My token vocab was built from token **source**, missing `dist/index.css` where many tokens resolve. This caused a **false "broken token" call on `--cg-letter-spacing-wide`** (it IS real) — agent proposed removing it in ai-confidence-slider and I applied it. **REVERTED.** Vocab is now rebuilt from `dist/index.css` (502 colors / 186 component / 119 tier1, authoritative). All prior fixes re-verified against full vocab — only the one letter-spacing removal was wrong; all others landed on real tokens.
+
+### 🐞 Genuinely-broken tokens still in NOT-YET-AUDITED files (confirmed absent from dist):
+- `--cg-color-surface-overlay` — ai-version-selector L63, ai-webhook-config L90/L193
+- `--cg-color-chart-7` (bare) — needs `-stroke`/`-background` suffix; ai-changelog fixed, check others
+- `var(300px)` — ai-tool-card-resolver L100
+- `--cg-badge-font-size` — ai-model-selector L98 (verify: may be a settable custom prop, not a violation)
 
 **Batch 4 complete:** 12 components, 18 fixes. Fixed 2nd CSS **syntax error** (ai-embedding-viz `calc(...` missing paren), broken `var(300px)`/`var(200px)` and nonexistent `--cg-color-surface-overlay` in ai-data-preview/embedding-viz; adopted `--cg-component-table-virtual-max-height` (tier-3), `--cg-color-ai-error-*` family for error-boundary.
 

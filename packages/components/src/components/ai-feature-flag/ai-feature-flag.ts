@@ -73,7 +73,7 @@ export class AiFeatureFlag extends LitElement {
 
     .search-input {
       width: 100%;
-      background: var(--cg-color-surface-overlay);
+      background: var(--cg-color-input-background-default);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-100);
       padding: var(--cg-spacing-8) var(--cg-spacing-12);
@@ -88,7 +88,7 @@ export class AiFeatureFlag extends LitElement {
     }
 
     .search-input:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: 2px solid var(--cg-color-focus-ring);
       outline-offset: -2px;
     }
 
@@ -112,21 +112,21 @@ export class AiFeatureFlag extends LitElement {
       align-items: center;
       gap: var(--cg-spacing-12);
       padding: var(--cg-spacing-8) var(--cg-spacing-12);
-      background: var(--cg-color-surface-overlay);
+      background: var(--cg-color-surface-inset-background);
       border-radius: var(--cg-border-radius-100);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       cursor: pointer;
     }
 
     .flag-item:hover {
-      border-color: var(--cg-color-surface-cards-border);
+      border-color: var(--cg-color-surface-cards-hover-border);
     }
     .flag-item:active {
       transform: scale(var(--cg-interaction-press-scale));
     }
 
     .flag-item:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: 2px solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -176,7 +176,7 @@ export class AiFeatureFlag extends LitElement {
     .toggle-track {
       position: absolute;
       inset: 0;
-      background: var(--cg-color-surface-base-background);
+      background: var(--cg-color-toggle-background-off);
       border-radius: var(--cg-border-radius-full);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       cursor: pointer;
@@ -189,24 +189,24 @@ export class AiFeatureFlag extends LitElement {
       width: var(--cg-spacing-12);
       height: var(--cg-spacing-12);
       border-radius: 50%;
-      background: var(--cg-color-input-text-placeholder);
+      background: var(--cg-color-toggle-thumb-off);
       top: var(--cg-spacing-2);
       left: var(--cg-spacing-2);
       transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .toggle-switch input:checked + .toggle-track {
-      background: var(--cg-overlay-accent-medium);
+      background: var(--cg-color-toggle-background-on);
       border-color: var(--cg-color-surface-base-text);
     }
 
     .toggle-switch input:checked + .toggle-track::after {
       transform: translateX(var(--cg-spacing-16));
-      background: var(--cg-color-action-primary-background-default);
+      background: var(--cg-color-toggle-thumb-on);
     }
 
     .toggle-switch input:focus-visible + .toggle-track {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: 2px solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 

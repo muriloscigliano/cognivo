@@ -77,7 +77,7 @@ export class AiKpiGrid extends LitElement {
     .kpi:hover { background: var(--cg-color-action-secondary-background-hover); }
     .kpi:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 2px var(--cg-overlay-accent-strong);
+      box-shadow: inset 0 0 0 var(--cg-border-width-100) var(--cg-overlay-accent-strong);
     }
     /* Single column — no right border, just bottom */
     :host([columns="1"]) .kpi {

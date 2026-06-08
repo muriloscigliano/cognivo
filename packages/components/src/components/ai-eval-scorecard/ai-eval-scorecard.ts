@@ -43,7 +43,7 @@ export class AiEvalScorecard extends LitElement {
     }
     .header-subtitle {
       font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-surface-container-text);
     }
 
     /* Grade — small filled dot + letter */
@@ -77,7 +77,7 @@ export class AiEvalScorecard extends LitElement {
       transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default), border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .metric:hover { background: var(--cg-overlay-dark-subtle); border-color: var(--cg-color-surface-cards-border); }
-    .metric:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .metric:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-color-focus-ring); }
 
     /* Top row: label + value + delta */
     .metric-top {
@@ -117,13 +117,13 @@ export class AiEvalScorecard extends LitElement {
     .metric-explanation {
       margin-top: var(--cg-spacing-8);
       font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-surface-container-text);
       line-height: var(--cg-line-height-snug);
     }
 
     .empty {
       padding: var(--cg-spacing-48) var(--cg-spacing-24);
-      text-align: center; color: var(--cg-color-surface-container-outlined);
+      text-align: center; color: var(--cg-color-surface-container-text);
       font-size: var(--cg-font-size-sm);
     }
 

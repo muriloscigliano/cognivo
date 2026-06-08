@@ -1,4 +1,3 @@
---cg-component-
 --cg-component-ai-badge-radius-lg
 --cg-component-ai-badge-radius-md
 --cg-component-ai-badge-radius-sm
@@ -58,7 +57,12 @@
 --cg-component-collapsible-trigger-padding-y-md
 --cg-component-collapsible-trigger-padding-y-sm
 --cg-component-color-picker-checker-color
---cg-component-color-picker-hue-stop-
+--cg-component-color-picker-hue-stop-0
+--cg-component-color-picker-hue-stop-120
+--cg-component-color-picker-hue-stop-180
+--cg-component-color-picker-hue-stop-240
+--cg-component-color-picker-hue-stop-300
+--cg-component-color-picker-hue-stop-60
 --cg-component-color-picker-spectrum-black
 --cg-component-color-picker-spectrum-white
 --cg-component-color-picker-thumb-border

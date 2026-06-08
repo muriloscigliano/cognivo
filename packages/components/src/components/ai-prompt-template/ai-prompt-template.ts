@@ -117,7 +117,7 @@ export class AiPromptTemplate extends LitElement {
       background: var(--cg-overlay-accent-subtle);
       color: var(--cg-color-surface-base-text);
       padding: var(--cg-spacing-1) var(--cg-spacing-4);
-      border-radius: var(--cg-border-radius-25);
+      border-radius: var(--cg-border-radius-50);
       font-weight: var(--cg-font-weight-semibold);
       font-family: var(--cg-font-family-mono);
       font-size: var(--cg-font-size-xs);

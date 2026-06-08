@@ -132,7 +132,7 @@ export class AiChangelog extends LitElement {
     }
     .type-badge.type-config {
       background: var(--cg-overlay-accent-light);
-      color: var(--cg-color-chart-7);
+      color: var(--cg-color-chart-7-stroke);
     }
     .type-badge.type-data {
       background: var(--cg-color-status-success-background-default);
@@ -141,7 +141,7 @@ export class AiChangelog extends LitElement {
 
     .entry-dot.type-model { background: var(--cg-color-status-info-text-default); }
     .entry-dot.type-prompt { background: var(--cg-color-action-primary-background-default); }
-    .entry-dot.type-config { background: var(--cg-color-chart-7); }
+    .entry-dot.type-config { background: var(--cg-color-chart-7-stroke); }
     .entry-dot.type-data { background: var(--cg-color-status-success-text-default); }
 
     .entry-meta {

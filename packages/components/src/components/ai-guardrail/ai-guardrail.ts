@@ -133,7 +133,7 @@ export class AiGuardrail extends LitElement {
     }
     .btn:hover { border-color: var(--cg-color-surface-cards-hover-border); color: var(--cg-color-surface-base-text); }
     .btn:active { transform: scale(var(--cg-interaction-press-scale)); }
-    .btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-color-focus-ring); }
 
     .btn.danger {
       border-color: var(--cg-color-status-error-border-default);

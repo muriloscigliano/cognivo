@@ -97,7 +97,7 @@ export class AiLabelingBoard extends LitElement {
     }
     .palette-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
     }
     .palette-dot {
       width: var(--cg-spacing-6);
@@ -152,7 +152,7 @@ export class AiLabelingBoard extends LitElement {
     }
     .item-row:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
     }
     .item-row.clickable {
       cursor: pointer;
@@ -163,7 +163,7 @@ export class AiLabelingBoard extends LitElement {
     .item-content {
       flex: 1;
       font-size: var(--cg-font-size-sm);
-      color: var(--cg-color-surface-base-text));
+      color: var(--cg-color-surface-base-text);
       line-height: var(--cg-line-height-normal);
     }
     .item-meta {
@@ -201,7 +201,7 @@ export class AiLabelingBoard extends LitElement {
       background: var(--cg-color-surface-cards-border);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-50);
-      color: var(--cg-color-surface-base-text));
+      color: var(--cg-color-surface-base-text);
       font-size: var(--cg-font-size-xs);
       padding: var(--cg-spacing-4) var(--cg-spacing-8);
       cursor: pointer;
@@ -209,7 +209,7 @@ export class AiLabelingBoard extends LitElement {
     }
     .label-select:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
     }
 
     /* ── Remove label button ── */
@@ -229,7 +229,7 @@ export class AiLabelingBoard extends LitElement {
     }
     .remove-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
     }
     .remove-btn svg {
       width: var(--cg-spacing-12);
@@ -257,7 +257,7 @@ export class AiLabelingBoard extends LitElement {
     }
     .stat-count {
       font-weight: var(--cg-font-weight-bold);
-      color: var(--cg-color-surface-base-text));
+      color: var(--cg-color-surface-base-text);
     }
 
     @media (prefers-reduced-motion: reduce) {

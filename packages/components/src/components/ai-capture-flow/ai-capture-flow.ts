@@ -138,14 +138,14 @@ export class AiCaptureFlow extends LitElement {
       width: 100%;
       height: var(--cg-spacing-6);
       background: var(--cg-color-surface-container-background);
-      border-radius: var(--cg-border-radius-25);
+      border-radius: var(--cg-border-radius-50);
       overflow: hidden;
       margin-bottom: var(--cg-spacing-8);
     }
     .progress-fill {
       height: 100%;
       background: var(--cg-color-action-primary-background-default);
-      border-radius: var(--cg-border-radius-25);
+      border-radius: var(--cg-border-radius-50);
       transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     .progress-pct {

@@ -43,7 +43,7 @@ export class AiInsightCard extends LitElement {
     .card:active { transform: scale(var(--cg-interaction-press-scale)); }
     .card:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
     }
     .card:focus-within .actions { opacity: 1; }
     .card.selected {
@@ -159,7 +159,7 @@ export class AiInsightCard extends LitElement {
     .source a:hover { text-decoration: underline; }
     .source a:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
       border-radius: var(--cg-border-radius-50);
     }
     .source-dot { width: var(--cg-spacing-4); height: var(--cg-spacing-4); border-radius: var(--cg-border-radius-full); flex-shrink: 0; }
