@@ -32,7 +32,7 @@ export class CgAvatar extends LitElement {
       align-items: center;
       justify-content: center;
       background: var(--cg-color-action-secondary-background-default);
-      color: var(--cg-color-surface-container-text);
+      color: var(--cg-color-action-secondary-text-default);
       overflow: hidden;
       border-radius: var(--cg-border-radius-full);
       font-weight: var(--cg-font-weight-semibold);
@@ -144,7 +144,11 @@ export class CgAvatar extends LitElement {
   override render() {
     const initials = this._getInitials(this.name);
     const hasImage = this.src && !this._imgFailed;
-    const label = this.alt || this.name || 'Avatar';
+    // Fold type (role) and status (presence) into the accessible name — both
+    // are otherwise conveyed by color alone (ring / dot), invisible to AT.
+    const typePrefix = this.type ? `${this.type} ` : '';
+    const statusSuffix = this.status ? `, ${this.status}` : '';
+    const label = `${typePrefix}${this.alt || this.name || 'Avatar'}${statusSuffix}`;
 
     const userIcon = svg`
       <svg class="fallback-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">

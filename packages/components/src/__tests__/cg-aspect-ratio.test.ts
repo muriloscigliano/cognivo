@@ -34,18 +34,28 @@ describe('cg-aspect-ratio', () => {
     expect(el.shadowRoot!.querySelector('slot')).not.toBeNull();
   });
 
-  it('sets --cg-component-aspect-ratio-value from ratio prop', async () => {
+  it('sets --_aspect-ratio from ratio prop', async () => {
     await create({ ratio: '4/3' });
     const wrap = el.shadowRoot!.querySelector('.wrap') as HTMLElement;
     const style = wrap.getAttribute('style') || '';
-    expect(style).toContain('--cg-component-aspect-ratio-value: 4 / 3');
+    expect(style).toContain('--_aspect-ratio');
+    expect(style).toContain('4 / 3');
   });
 
   it('normalizes ratio with spaces', async () => {
     await create({ ratio: '1/1' });
     const wrap = el.shadowRoot!.querySelector('.wrap') as HTMLElement;
     const style = wrap.getAttribute('style') || '';
-    expect(style).toContain('--cg-component-aspect-ratio-value: 1 / 1');
+    expect(style).toContain('1 / 1');
+  });
+
+  it('falls back to 16 / 9 for invalid ratio input', async () => {
+    await create({ ratio: 'garbage; background:red' });
+    const wrap = el.shadowRoot!.querySelector('.wrap') as HTMLElement;
+    const style = wrap.getAttribute('style') || '';
+    expect(style).toContain('16 / 9');
+    // CSS injection must not leak through styleMap.
+    expect(style).not.toContain('background:red');
   });
 
   it('updates wrap when ratio changes', async () => {

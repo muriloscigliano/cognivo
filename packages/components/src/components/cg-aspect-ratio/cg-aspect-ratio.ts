@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { styleMap } from 'lit/directives/style-map.js';
 import { hostBlock } from '../../styles/index.js';
 
 /**
@@ -26,13 +27,13 @@ export class CgAspectRatio extends LitElement {
   static override styles = [hostBlock, css`
     .wrap {
       width: 100%;
-      aspect-ratio: var(--cg-component-aspect-ratio-value);
+      aspect-ratio: var(--_aspect-ratio);
       overflow: hidden;
     }
     .wrap ::slotted(*) {
       width: 100%;
       height: 100%;
-      object-fit: var(--cg-component-aspect-ratio-fit);
+      object-fit: var(--_aspect-fit);
       display: block;
     }
   `];
@@ -45,10 +46,17 @@ export class CgAspectRatio extends LitElement {
 
   override render() {
     // Accept "16/9" or "16 / 9" and normalize to CSS aspect-ratio syntax.
-    const normalized = this.ratio.replace('/', ' / ');
-    const styleVars = `--cg-component-aspect-ratio-value: ${normalized}; --cg-component-aspect-ratio-fit: ${this.fit};`;
+    // Validate against W/H to (a) avoid a collapsed 0-height box on garbage
+    // input and (b) prevent CSS injection — styleMap binds the value as a
+    // discrete property value, never a parsed declaration string.
+    const raw = (this.ratio ?? '').trim();
+    const valid = /^\d+(\.\d+)?\s*\/\s*\d+(\.\d+)?$/.test(raw);
+    const normalized = valid ? raw.replace(/\s*\/\s*/g, ' / ') : '16 / 9';
     return html`
-      <div class="wrap" style=${styleVars}>
+      <div
+        class="wrap"
+        style=${styleMap({ '--_aspect-ratio': normalized, '--_aspect-fit': this.fit })}
+      >
         <slot></slot>
       </div>
     `;

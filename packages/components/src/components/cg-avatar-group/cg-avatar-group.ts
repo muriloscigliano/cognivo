@@ -39,7 +39,7 @@ export class CgAvatarGroup extends LitElement {
       cursor: pointer;
       transition: transform var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out), margin var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
       animation: avatarIn var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out) both;
-      animation-delay: calc(var(--avatar-index, 0) * 50ms);
+      animation-delay: calc(var(--avatar-index, 0) * var(--cg-transition-duration-fast) / 2);
     }
 
     .avatar-inner {
@@ -57,9 +57,15 @@ export class CgAvatarGroup extends LitElement {
       to { opacity: 1; transform: scale(1); }
     }
 
-    :host([expanded]) .avatar,
-    :host([expanded]) .overflow { margin-left: var(--cg-spacing-4) !important; }
-    :host([expanded]) .avatar:first-child { margin-left: 0 !important; }
+    /* Expanded spread. Per-size selectors (2 attrs + class) out-specify the
+       base :host([size]) overlap rules, so no !important is needed. The
+       :not(:first-child) excludes the leading avatar naturally. */
+    :host([expanded][size="sm"]) .avatar:not(:first-child),
+    :host([expanded][size="sm"]) .overflow { margin-left: var(--cg-spacing-4); }
+    :host([expanded][size="md"]) .avatar:not(:first-child),
+    :host([expanded][size="md"]) .overflow { margin-left: var(--cg-spacing-4); }
+    :host([expanded][size="lg"]) .avatar:not(:first-child),
+    :host([expanded][size="lg"]) .overflow { margin-left: var(--cg-spacing-4); }
 
     .avatar:hover {
       z-index: 10;
@@ -131,19 +137,19 @@ export class CgAvatarGroup extends LitElement {
     }
 
     /* Sizes */
-    :host([size="sm"]) .avatar, :host([size="sm"]) .overflow { width: var(--cg-spacing-32); height: var(--cg-spacing-32); }
+    :host([size="sm"]) .avatar, :host([size="sm"]) .overflow { width: var(--cg-component-avatar-size-sm); height: var(--cg-component-avatar-size-sm); }
     :host([size="sm"]) .avatar:not(:first-child) { margin-left: calc(-1 * var(--cg-spacing-8)); }
     :host([size="sm"]) .overflow { margin-left: calc(-1 * var(--cg-spacing-8)); font-size: var(--cg-font-size-xs); }
     :host([size="sm"]) .initials { font-size: var(--cg-font-size-xs); }
     :host([size="sm"]) .status { width: var(--cg-spacing-8); height: var(--cg-spacing-8); }
 
-    :host([size="md"]) .avatar, :host([size="md"]) .overflow { width: var(--cg-spacing-40); height: var(--cg-spacing-40); }
+    :host([size="md"]) .avatar, :host([size="md"]) .overflow { width: var(--cg-component-avatar-size-md); height: var(--cg-component-avatar-size-md); }
     :host([size="md"]) .avatar:not(:first-child) { margin-left: calc(-1 * var(--cg-spacing-12)); }
     :host([size="md"]) .overflow { margin-left: calc(-1 * var(--cg-spacing-12)); font-size: var(--cg-font-size-xs); }
     :host([size="md"]) .initials { font-size: var(--cg-font-size-xs); }
     :host([size="md"]) .status { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
 
-    :host([size="lg"]) .avatar, :host([size="lg"]) .overflow { width: var(--cg-spacing-48); height: var(--cg-spacing-48); }
+    :host([size="lg"]) .avatar, :host([size="lg"]) .overflow { width: var(--cg-component-avatar-size-lg); height: var(--cg-component-avatar-size-lg); }
     :host([size="lg"]) .avatar:not(:first-child) { margin-left: calc(-1 * var(--cg-spacing-12)); }
     :host([size="lg"]) .overflow { margin-left: calc(-1 * var(--cg-spacing-12)); font-size: var(--cg-font-size-sm); }
     :host([size="lg"]) .initials { font-size: var(--cg-font-size-sm); }
@@ -189,7 +195,7 @@ export class CgAvatarGroup extends LitElement {
           <div class="avatar"
             role="button"
             tabindex="0"
-            aria-label=${a.name}
+            aria-label=${a.status ? `${a.name}, ${a.status}` : a.name}
             style="z-index:${visible.length - i}; --avatar-index: ${i}"
             @click=${this._onAvatarClick}
             @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._onAvatarClick(); } }}>
@@ -200,7 +206,7 @@ export class CgAvatarGroup extends LitElement {
                 <span class="initials">${this._getInitials(a.name)}</span>
               `}
             </div>
-            ${a.status ? html`<span class="status ${a.status}"></span>` : nothing}
+            ${a.status ? html`<span class="status ${a.status}" aria-hidden="true"></span>` : nothing}
           </div>
         `)}
         ${overflow > 0 ? html`

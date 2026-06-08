@@ -21,10 +21,10 @@
 |---|-----------|--------|-------|
 | 1 | cg-accordion | 🔧 | focus-ring tokenized, chevron aria-hidden, dead import removed, open-state accent edge added |
 | 2 | cg-alert-dialog | 🔧 | dangling aria-labelledby/describedby now conditional, decorative SVG aria-hidden |
-| 3 | cg-aspect-ratio | ⬜ | |
+| 3 | cg-aspect-ratio | 🔧 | CSS-injection fixed (styleMap + ratio validation), local vars renamed --_aspect-*, +injection test |
 | 4 | cg-autocomplete | ⬜ | |
-| 5 | cg-avatar | ⬜ | |
-| 6 | cg-avatar-group | ⬜ | |
+| 5 | cg-avatar | 🔧 | status+type folded into accessible name (were color-only), initials text → action-secondary-text-default |
+| 6 | cg-avatar-group | 🔧 | tier-3 avatar size tokens, status in aria-label + dot aria-hidden, removed !important via specificity, stagger tokenized |
 | 7 | cg-badge | ⬜ | |
 | 8 | cg-badge-group | ⬜ | |
 | 9 | cg-breadcrumbs | 🔧 | focus-ring tokenized (more findings pending: active-state hierarchy, dead ellipsis, max-width px) |
