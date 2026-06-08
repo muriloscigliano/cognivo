@@ -34,6 +34,11 @@ export class CgCollapsible extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-component-collapsible-radius);
     }
+    /* Open card: structural divider under the trigger so the expanded state
+       reads beyond the chevron alone (card is the default variant). */
+    :host([variant="card"][open]) .trigger {
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
+    }
 
     /* ── Variant: flush — no chrome, just hover affordance ── */
     :host([variant="flush"]) .trigger {
@@ -58,7 +63,7 @@ export class CgCollapsible extends LitElement {
       font-weight: var(--cg-font-weight-medium);
       text-align: left;
       cursor: pointer;
-      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     /* ── Sizes ── */

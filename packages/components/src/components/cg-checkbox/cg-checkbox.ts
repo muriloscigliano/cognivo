@@ -74,9 +74,10 @@ export class CgCheckbox extends LitElement {
     :host([rounded="lg"]) .box { border-radius: var(--cg-border-radius-150); }
     :host([rounded="full"]) .box { border-radius: var(--cg-border-radius-full); }
 
-    /* Hover */
-    :host(:not([disabled])) label:hover .box {
-      border-color: var(--cg-color-checkbox-background-hover);
+    /* Hover — scoped so it doesn't override the error/success border, and
+       uses the accent BORDER token (not a -background- fill) for the edge. */
+    :host(:not([disabled]):not([error]):not([success])) label:hover .box {
+      border-color: var(--cg-color-checkbox-border-checked);
     }
 
     /* Pressed */
@@ -87,7 +88,7 @@ export class CgCheckbox extends LitElement {
     /* Focus ring */
     label:focus-visible .box {
       border-color: var(--cg-color-checkbox-border-focus);
-      box-shadow: 0 0 0 2px var(--cg-color-focus-ring-offset), 0 0 0 4px var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring-offset), 0 0 0 calc(var(--cg-border-width-100) * 2) var(--cg-color-focus-ring);
     }
 
     /* ── Checked state ── */
@@ -97,10 +98,11 @@ export class CgCheckbox extends LitElement {
       animation: boxPop var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out);
     }
 
-    /* Indeterminate */
+    /* Indeterminate — same spring entry as checked for consistent feedback. */
     .box.indeterminate {
       background: var(--cg-color-checkbox-background-checked);
       border-color: var(--cg-color-checkbox-border-checked);
+      animation: boxPop var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out);
     }
 
     /* ── Animated tick — stroke reveal ── */

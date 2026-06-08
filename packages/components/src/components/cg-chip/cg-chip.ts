@@ -154,7 +154,7 @@ export class CgChip extends LitElement {
     .chip-label {
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 200px;
+      max-width: var(--cg-spacing-192);
     }
 
     /* ── Remove button ── */
@@ -180,7 +180,7 @@ export class CgChip extends LitElement {
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .remove-btn:hover { opacity: 1; }
-    .remove-btn:active { transform: scale(0.9); }
+    .remove-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .remove-btn:focus-visible {
       box-shadow: 0 0 0 var(--cg-spacing-2) var(--cg-overlay-accent-strong);
       outline: none;
@@ -224,7 +224,7 @@ export class CgChip extends LitElement {
         tabindex="${this.disabled ? '-1' : '0'}"
         aria-disabled="${this.disabled}"
         aria-pressed="${this.selected}"
-        aria-label="${this.label}"
+        aria-label="${this.label ? nothing : (this.icon || nothing)}"
         @click="${this._handleClick}"
         @keydown="${(e: KeyboardEvent) => {
           if (e.key === 'Enter' || e.key === ' ') {

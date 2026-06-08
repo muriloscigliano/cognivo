@@ -35,10 +35,10 @@
 | 14 | cg-card | 🔧 | focus-ring tokenized |
 | 15 | cg-carousel | 🔧 | tablist→group+aria-current (orphan tab pattern), aria-live off during autoplay, dot visibility fix, nav arrows discoverable (opacity 0→.65), focus-ring tokenized, _paused reactive. DEFERRED: autoplay pause control (WCAG 2.2 — new feature), scroll-index calc for multi-column |
 | 16 | cg-chart | 🔧 | P0 a11y: svg role=img + data aria-label; raw-px margin tokenized; dead fallback tokens → real. DEFERRED: loading/error states, tooltip keyboard, hardcoded hex palette (larger features) |
-| 17 | cg-checkbox | ⬜ | |
-| 18 | cg-chip | ⬜ | |
+| 17 | cg-checkbox | 🔧 | hover border → -border-checked (was -background- as border) + scoped so error/success not overridden, indeterminate boxPop animation, focus-ring tokenized. DEFERRED: 44px touch-target (needs shared --cg-spacing-44 token) |
+| 18 | cg-chip | 🔧 | press-scale tokenized, max-width → spacing-192, aria-label only for icon-only (visible label names the rest). DEFERRED: role=button nesting restructure (chip-4) |
 | 19 | cg-code-block | ⬜ | |
-| 20 | cg-collapsible | ⬜ | |
+| 20 | cg-collapsible | 🔧 | trigger transform now eased (was instant snap), card-variant open divider for clearer expanded state |
 | 21 | cg-color-picker | 🔧 | P0 a11y: spectrum + hue + alpha sliders now keyboard-operable (tabindex/role=slider/aria-value*/arrow+Page+Home/End handlers) — were pointer-only |
 | 22 | cg-combobox | ⬜ | |
 | 23 | cg-command | ⬜ | |
