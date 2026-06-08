@@ -41,14 +41,14 @@
 | 20 | cg-collapsible | 🔧 | trigger transform now eased (was instant snap), card-variant open divider for clearer expanded state |
 | 21 | cg-color-picker | 🔧 | P0 a11y: spectrum + hue + alpha sliders now keyboard-operable (tabindex/role=slider/aria-value*/arrow+Page+Home/End handlers) — were pointer-only |
 | 22 | cg-combobox | 🔧 | keyboard-active option now distinct accent (was = hover), aria-haspopup, specific chip-remove/clear labels, aria-busy on listbox, ArrowUp opens list |
-| 23 | cg-command | ⬜ | |
-| 24 | cg-context-menu | ⬜ | |
-| 25 | cg-date-picker | ⬜ | |
-| 26 | cg-date-range-picker | ⬜ | |
-| 27 | cg-date-time-picker | ⬜ | |
-| 28 | cg-drawer | ⬜ | |
-| 29 | cg-dropdown | ⬜ | |
-| 30 | cg-empty-state | ⬜ | |
+| 23 | cg-command | 🔧 | aria-activedescendant + option ids, listbox aria-label, keyboard-active accent bar (was = hover). DEFERRED: skip disabled items in nav |
+| 24 | cg-context-menu | ⬜ | DEFERRED whole component: roving focus + aria-activedescendant, roving tabindex, menu name, exit anim, empty-state — all need focus-model refactor+tests |
+| 25 | cg-date-picker | 🔧 | aria-controls→popover id, aria-invalid. DEFERRED: focus management (move into calendar / restore on close) |
+| 26 | cg-date-range-picker | 🔧 | aria-disabled added (aria-invalid already present), end-placeholder now overridable/i18n. DEFERRED: range active-state emphasis |
+| 27 | cg-date-time-picker | 🔧 | aria-disabled + aria-invalid. dtp-1 "invisible SVG" = FALSE POSITIVE (renders fine, verified). DEFERRED: focus mgmt, grid roles, keyboard nav |
+| 28 | cg-drawer | 🔧 | close/back icon button resting bg was a -hover token (always looked filled) → -default (transparent ghost). DEFERRED: hardcoded setTimeout 200 sync |
+| 29 | cg-dropdown | 🔧 | removed dead :host color transition. DEFERRED: trigger focusability + closed-menu AT exposure (focus-model refactor) |
+| 30 | cg-empty-state | 🔧 | description/title/icon → dedicated empty-state component tokens (were outlined-as-text/icon), fixed .actions:empty never matching (slotchange-driven hide) |
 | 31 | cg-file-input | ⬜ | |
 | 32 | cg-focus-scope | ⬜ | |
 | 33 | cg-follow-up | ⬜ | |

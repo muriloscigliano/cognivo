@@ -42,7 +42,6 @@ export interface DropdownItem {
 export class CgDropdown extends LitElement {
   static override styles = [entranceStagger, menuListStyles, css`
     :host {
-      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       display: inline-block;
       position: relative;
       font-family: var(--cg-font-family-primary);

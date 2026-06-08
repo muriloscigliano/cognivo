@@ -197,6 +197,8 @@ export class CgDatePicker extends LitElement {
         role="combobox"
         aria-expanded=${this._open}
         aria-haspopup="dialog"
+        aria-controls="cg-dp-popover"
+        aria-invalid=${this.error ? 'true' : nothing}
         aria-label=${this.label || 'Date picker'}
         @click=${this._toggle}
         @keydown=${this._handleKeydown}
@@ -214,7 +216,7 @@ export class CgDatePicker extends LitElement {
         </span>
       </div>
 
-      <div class="popover ${this._open ? 'open' : ''}" role="dialog" aria-label="Calendar">
+      <div id="cg-dp-popover" class="popover ${this._open ? 'open' : ''}" role="dialog" aria-label="Calendar">
         <cg-calendar
           mode="single"
           .value=${this.value}

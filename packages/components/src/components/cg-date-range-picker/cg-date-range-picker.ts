@@ -154,6 +154,8 @@ export class CgDateRangePicker extends LitElement {
   @property() min = '';
   @property() max = '';
   @property() placeholder = 'Select date range';
+  /** Placeholder for the end-date segment (overridable / i18n-able). */
+  @property({ attribute: 'end-placeholder' }) endPlaceholder = 'End date';
   @property() format = 'MMM dd, yyyy';
   @property({ type: Boolean }) disabled = false;
   @property({ type: Boolean, reflect: true }) open = false;
@@ -237,6 +239,7 @@ export class CgDateRangePicker extends LitElement {
         role="combobox"
         tabindex=${this.disabled ? '-1' : '0'}
         aria-expanded=${this.open ? 'true' : 'false'}
+        aria-disabled=${this.disabled ? 'true' : nothing}
         aria-haspopup="dialog"
         aria-controls="cg-drp-dropdown"
         aria-label=${this.label || 'Date range picker'}
@@ -259,7 +262,7 @@ export class CgDateRangePicker extends LitElement {
             <path d="M9 6l6 6-6 6"/>
           </svg>
         </span>
-        <span class="segment ${toText ? '' : 'empty'}">${toText || 'End date'}</span>
+        <span class="segment ${toText ? '' : 'empty'}">${toText || this.endPlaceholder}</span>
       </div>
 
       <div id="cg-drp-dropdown" class="dropdown ${this.open ? 'open' : ''}" role="dialog" aria-label="Date range calendar">

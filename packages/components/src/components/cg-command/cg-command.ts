@@ -155,12 +155,17 @@ export class CgCommand extends LitElement {
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    /* Hover (mouse) AND data-active (keyboard) get the same treatment so both
-       input methods feel instant — no waiting for a state-driven re-render. */
+    /* Hover (mouse) AND data-active (keyboard) share the background so both
+       input methods feel instant. The keyboard-active row additionally gets
+       an accent left bar so the item Enter will trigger is unmistakable in a
+       palette (a faint gray fill alone was too easy to lose track of). */
     .item:hover:not([disabled]),
     .item[data-active]:not([disabled]) {
       background: var(--cg-color-action-tertiary-background-hover);
       color: var(--cg-color-surface-base-text);
+    }
+    .item[data-active]:not([disabled]) {
+      box-shadow: inset var(--cg-spacing-2) 0 0 0 var(--cg-color-action-primary-background-default);
     }
     .item:active:not([disabled]) {
       transform: scale(var(--cg-interaction-press-scale));
@@ -332,6 +337,7 @@ export class CgCommand extends LitElement {
             role="combobox"
             aria-expanded=${this.open ? 'true' : 'false'}
             aria-controls="command-list"
+            aria-activedescendant=${this.open && filtered.length ? `command-opt-${this._activeIndex}` : nothing}
             aria-autocomplete="list"
             placeholder=${this.placeholder}
             .value=${this.value}
@@ -339,7 +345,7 @@ export class CgCommand extends LitElement {
             @keydown=${this._handleKeydown}
           />
         </div>
-        <div class="list" id="command-list" role="listbox">
+        <div class="list" id="command-list" role="listbox" aria-label="Commands">
           ${this.loading ? html`
             <div class="loading" aria-busy="true">
               <cg-spinner size="sm"></cg-spinner>
@@ -357,6 +363,7 @@ export class CgCommand extends LitElement {
               return html`
                 <button
                   class="item"
+                  id=${`command-opt-${flatIndex}`}
                   role="option"
                   ?disabled=${item.disabled}
                   aria-selected=${isActive ? 'true' : 'false'}

@@ -422,6 +422,8 @@ export class CgDateTimePicker extends LitElement {
         tabindex=${this.disabled ? '-1' : '0'}
         role="combobox"
         aria-expanded=${this._open}
+        aria-disabled=${this.disabled ? 'true' : nothing}
+        aria-invalid=${this.error ? 'true' : nothing}
         aria-haspopup="dialog"
         aria-label=${this.label || 'Date and time picker'}
         @click=${this._toggle}

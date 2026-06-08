@@ -181,7 +181,7 @@ export class CgDrawer extends LitElement {
       height: var(--cg-spacing-32);
       border: none;
       border-radius: var(--cg-border-radius-full);
-      background: var(--cg-color-action-tertiary-background-hover);
+      background: var(--cg-color-action-tertiary-background-default);
       color: var(--cg-color-surface-container-outlined);
       cursor: pointer;
       padding: 0;

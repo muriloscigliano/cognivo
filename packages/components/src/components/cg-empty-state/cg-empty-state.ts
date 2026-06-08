@@ -1,5 +1,5 @@
 import { LitElement, html, css, nothing, svg } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
@@ -42,7 +42,7 @@ export class CgEmptyState extends LitElement {
       justify-content: center;
       width: var(--cg-component-empty-state-icon-size);
       height: var(--cg-component-empty-state-icon-size);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-empty-state-icon);
       margin-bottom: var(--cg-spacing-4);
     }
     .icon-wrap svg {
@@ -67,14 +67,14 @@ export class CgEmptyState extends LitElement {
     .title {
       font-size: var(--cg-font-size-md);
       font-weight: var(--cg-font-weight-semibold);
-      color: var(--cg-color-surface-base-text);
+      color: var(--cg-color-empty-state-text-primary);
       line-height: var(--cg-line-height-snug);
       margin: 0;
     }
 
     .description {
       font-size: var(--cg-font-size-sm);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-empty-state-text-secondary);
       line-height: var(--cg-line-height-relaxed);
       margin: 0;
       max-width: 52ch;
@@ -88,13 +88,23 @@ export class CgEmptyState extends LitElement {
       gap: var(--cg-spacing-12);
       margin-top: var(--cg-spacing-8);
     }
-    .actions:empty { display: none; }
+    .actions[hidden] { display: none; }
   `];
 
   @property({ reflect: true }) variant: 'default' | 'search' | 'error' | 'success' | 'info' | 'ai' = 'default';
   @property() override title = '';
   @property() description = '';
   @property() icon = '';
+
+  // The .actions wrapper always contains a <slot>, so `.actions:empty` never
+  // matched — leaving stray margin when no actions are slotted. Track real
+  // slotted content and hide the row when there is none.
+  @state() private _hasActions = false;
+
+  private _onActionsSlotChange(e: Event) {
+    this._hasActions =
+      (e.target as HTMLSlotElement).assignedNodes({ flatten: true }).length > 0;
+  }
 
   private _defaultIcon() {
     switch (this.variant) {
@@ -162,8 +172,8 @@ export class CgEmptyState extends LitElement {
         ${this.title ? html`<h3 id=${titleId!} class="title">${this.title}</h3>` : nothing}
         ${this.description ? html`<p id=${descId!} class="description">${this.description}</p>` : nothing}
         <slot></slot>
-        <div class="actions">
-          <slot name="actions"></slot>
+        <div class="actions" ?hidden=${!this._hasActions}>
+          <slot name="actions" @slotchange=${this._onActionsSlotChange}></slot>
         </div>
       </div>
     `;
