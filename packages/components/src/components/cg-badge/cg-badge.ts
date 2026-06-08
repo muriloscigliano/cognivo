@@ -29,6 +29,12 @@ export class CgBadge extends LitElement {
     :host {
       animation: staggerFadeIn var(--cg-transition-duration-fast) ease-out both;
     }
+    /* Collapse a truly-empty badge (no label, no dot, no slotted text) so it
+       doesn't render as a stray padded/bordered pill. Slot-only usage still
+       renders because .text:empty is false when slotted text is present. */
+    :host(:not([dot])) .badge:has(.text:empty) {
+      display: none;
+    }
 
     .badge {
       display: inline-flex;
@@ -115,9 +121,13 @@ export class CgBadge extends LitElement {
   @property({ type: Boolean }) dot = false;
 
   override render() {
+    // No role override: a badge is a styled inline label whose text is read
+    // natively. role="status" made every dotted badge a polite live region
+    // (spurious announcements on mount); role="presentation" hid its own
+    // semantics. A plain <span> is correct for a static label.
     return html`
-      <span class="badge" role=${this.dot ? 'status' : 'presentation'}>
-        ${this.dot ? html`<span class="dot"></span>` : nothing}
+      <span class="badge">
+        ${this.dot ? html`<span class="dot" aria-hidden="true"></span>` : nothing}
         <span class="text">${this.label}<slot></slot></span>
       </span>
     `;

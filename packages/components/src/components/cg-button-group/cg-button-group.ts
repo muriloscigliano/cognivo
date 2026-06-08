@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 
@@ -35,37 +35,48 @@ export class CgButtonGroup extends LitElement {
     :host([align="end"]) div[role="group"] { justify-content: flex-end; }
     :host([align="stretch"]) ::slotted(*) { flex: 1; }
 
-    /* Attached mode — buttons share borders */
-    :host([attached]) {
+    /* Attached mode — buttons share borders. The gap must be zeroed on the
+       flex CONTAINER (the div), not the host (not a flex parent), or the
+       gap-attribute rule above keeps an 8px gap and buttons aren't attached. */
+    :host([attached]) div[role="group"] {
       gap: 0;
     }
     :host([attached]) ::slotted(*) {
       border-radius: 0;
-      margin-left: -1px;
+      margin-left: calc(-1 * var(--cg-border-width-50));
+    }
+    /* Lift the hovered/focused button so its border + focus ring aren't
+       clipped under the next sibling (the -1px overlap stacks later siblings
+       on top). position:relative is required for z-index on flex children. */
+    :host([attached]) ::slotted(*:hover),
+    :host([attached]) ::slotted(*:focus),
+    :host([attached]) ::slotted(*:focus-within) {
+      position: relative;
+      z-index: 1;
     }
     :host([attached]) ::slotted(*:first-child) {
       margin-left: 0;
-      border-radius: var(--cg-border-radius-150) 0 0 var(--cg-border-radius-150);
+      border-radius: var(--cg-component-button-radius-md) 0 0 var(--cg-component-button-radius-md);
     }
     :host([attached]) ::slotted(*:last-child) {
-      border-radius: 0 var(--cg-border-radius-150) var(--cg-border-radius-150) 0;
+      border-radius: 0 var(--cg-component-button-radius-md) var(--cg-component-button-radius-md) 0;
     }
     :host([attached]) ::slotted(*:only-child) {
-      border-radius: var(--cg-border-radius-150);
+      border-radius: var(--cg-component-button-radius-md);
       margin-left: 0;
     }
 
     /* Attached vertical */
     :host([attached][direction="column"]) ::slotted(*) {
       margin-left: 0;
-      margin-top: -1px;
+      margin-top: calc(-1 * var(--cg-border-width-50));
     }
     :host([attached][direction="column"]) ::slotted(*:first-child) {
       margin-top: 0;
-      border-radius: var(--cg-border-radius-150) var(--cg-border-radius-150) 0 0;
+      border-radius: var(--cg-component-button-radius-md) var(--cg-component-button-radius-md) 0 0;
     }
     :host([attached][direction="column"]) ::slotted(*:last-child) {
-      border-radius: 0 0 var(--cg-border-radius-150) var(--cg-border-radius-150);
+      border-radius: 0 0 var(--cg-component-button-radius-md) var(--cg-component-button-radius-md);
     }
   `];
 
@@ -73,9 +84,11 @@ export class CgButtonGroup extends LitElement {
   @property({ reflect: true }) gap: 'none' | 'xs' | 'sm' | 'md' = 'sm';
   @property({ reflect: true }) align: 'start' | 'center' | 'end' | 'stretch' = 'start';
   @property({ type: Boolean, reflect: true }) attached = false;
+  /** Accessible name for the group landmark (e.g. "Text alignment"). */
+  @property() label?: string;
 
   override render() {
-    return html`<div role="group"><slot></slot></div>`;
+    return html`<div role="group" aria-label=${this.label ? this.label : nothing}><slot></slot></div>`;
   }
 }
 

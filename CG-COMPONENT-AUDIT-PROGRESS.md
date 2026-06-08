@@ -25,11 +25,11 @@
 | 4 | cg-autocomplete | 🔧 | a11y: aria-controls/activedescendant/invalid + listbox/option ids; keyboard: scroll-into-view + ArrowUp reopen. DEFERRED: accent-text highlight (needs light-theme token add), loading state (new feature) |
 | 5 | cg-avatar | 🔧 | status+type folded into accessible name (were color-only), initials text → action-secondary-text-default |
 | 6 | cg-avatar-group | 🔧 | tier-3 avatar size tokens, status in aria-label + dot aria-hidden, removed !important via specificity, stagger tokenized |
-| 7 | cg-badge | ⬜ | |
-| 8 | cg-badge-group | ⬜ | |
+| 7 | cg-badge | 🔧 | removed misapplied role=status live-region/presentation, dot aria-hidden, empty-state collapse guard |
+| 8 | cg-badge-group | 🔧 | overflow text contrast (paired secondary-text), aria-label on +N, removed unimplemented "size" doc claim |
 | 9 | cg-breadcrumbs | 🔧 | focus-ring tokenized (more findings pending: active-state hierarchy, dead ellipsis, max-width px) |
 | 10 | cg-button | 🔧 | focus-ring tokenized (bare px → border-width-100) |
-| 11 | cg-button-group | ⬜ | |
+| 11 | cg-button-group | 🔧 | FIXED broken attached mode (gap on container not host), focus z-index lift, radius matches button, group aria-label, tokenized -1px overlap |
 | 12 | cg-calendar | ⬜ | |
 | 13 | cg-callout | ⬜ | |
 | 14 | cg-card | 🔧 | focus-ring tokenized |

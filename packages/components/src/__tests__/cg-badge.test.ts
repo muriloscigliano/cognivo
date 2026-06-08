@@ -82,18 +82,20 @@ describe('cg-badge', () => {
     expect(dot).toBeNull();
   });
 
-  it('has role="presentation" when dot is false', async () => {
+  it('renders no role override (static label, not a live region)', async () => {
     el = await createElement('cg-badge', { label: 'Status' });
     const badge = el.shadowRoot!.querySelector('.badge');
     expect(badge).not.toBeNull();
-    expect(badge!.getAttribute('role')).toBe('presentation');
+    // A static badge must not be role="status" (a polite live region) nor
+    // role="presentation" (which would hide its own label semantics).
+    expect(badge!.getAttribute('role')).toBeNull();
   });
 
-  it('has role="status" when dot is true', async () => {
+  it('marks the decorative dot aria-hidden', async () => {
     el = await createElement('cg-badge', { dot: true, label: 'Live' });
-    const badge = el.shadowRoot!.querySelector('.badge');
-    expect(badge).not.toBeNull();
-    expect(badge!.getAttribute('role')).toBe('status');
+    const dot = el.shadowRoot!.querySelector('.dot');
+    expect(dot).not.toBeNull();
+    expect(dot!.getAttribute('aria-hidden')).toBe('true');
   });
 
   it('dot has pulse animation CSS class', async () => {

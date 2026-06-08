@@ -9,7 +9,6 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
  * - Horizontal wrap layout with configurable gap
  * - Optional label above the group
  * - Max visible count with "+N more" overflow indicator
- * - Configurable size passed to children
  */
 @customElement('cg-badge-group')
 export class CgBadgeGroup extends LitElement {
@@ -42,7 +41,9 @@ export class CgBadgeGroup extends LitElement {
     .overflow {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-semibold);
-      color: var(--cg-color-input-text-placeholder);
+      /* Paired text token for the secondary surface — legible (gray-100 on
+         gray-800) vs the placeholder gray-500 which failed AA here. */
+      color: var(--cg-color-action-secondary-text-default);
       padding: var(--cg-spacing-2) var(--cg-spacing-8);
       background: var(--cg-color-action-secondary-background-default);
       border-radius: var(--cg-border-radius-100);
@@ -69,7 +70,7 @@ export class CgBadgeGroup extends LitElement {
       ${this.label ? html`<div class="label">${this.label}</div>` : nothing}
       <div class="badges" role="group" aria-label=${this.label || 'Badge group'}>
         <slot></slot>
-        ${overflowCount > 0 ? html`<span class="overflow" title="${overflowCount} more items">+${overflowCount}</span>` : nothing}
+        ${overflowCount > 0 ? html`<span class="overflow" aria-label="${overflowCount} more items">+${overflowCount}</span>` : nothing}
       </div>
     `;
   }
