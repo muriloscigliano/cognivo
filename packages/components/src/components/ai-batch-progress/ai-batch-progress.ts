@@ -119,7 +119,7 @@ export class AiBatchProgress extends LitElement {
     }
 
     .progress-track {
-      height: 10px;
+      height: var(--cg-component-progress-height-lg);
       background: var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-50);
       overflow: hidden;
@@ -180,7 +180,7 @@ export class AiBatchProgress extends LitElement {
       color: var(--cg-color-surface-base-text);
     }
     .action-btn:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 

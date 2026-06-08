@@ -75,7 +75,7 @@ export class AiChartSummary extends LitElement {
     }
     .icon-btn:hover { color: var(--cg-color-surface-base-text); }
     .icon-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
-    .icon-btn svg { width: 12px; height: 12px; }
+    .icon-btn svg { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
 
     /* ── Summary text ── */
     .summary-text {

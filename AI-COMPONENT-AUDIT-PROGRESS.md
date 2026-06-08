@@ -35,7 +35,28 @@
 | 15 | ai-assistant-widget | 🔧 | 0 applied (3 defer) | 🔬 | proposed |
 | 16 | ai-audio-player | 🔧 | 1 applied (2 defer) | 🔬 | proposed |
 | 17 | ai-avatar | ✅ | none (clean) | 🔬 | proposed |
-| ... | (remaining 74) | ⬜ | | | |
+| 18 | ai-badge | ✅ | none (clean) | 🔬 | proposed |
+| 19 | ai-batch-progress | 🔧 | 2 applied | 🔬 | proposed |
+| 20 | ai-capture-flow | 🔧 | 9 applied (+2 sweep) | 🔬 | proposed |
+| 21 | ai-changelog | 🔧 | 7 applied (fixed syntax err) | 🔬 | proposed |
+| 22 | ai-chart-summary | 🔧 | 1 applied (10px svg flagged) | 🔬 | proposed |
+| 23 | ai-citation | 🔧 | 1 applied (400px flagged) | 🔬 | proposed |
+| ... | (remaining 68) | ⬜ | | | |
+
+**Batch 3a complete (v2 workflow):** 6 components, 23 fixes applied; type-check green. Fixed a real CSS **syntax error** in ai-changelog (`calc(...` missing paren) and broken `var(240px)` + bare `200ms` in ai-capture-flow.
+
+### ⚠️ PROCESS IMPROVEMENT (important)
+The per-component agent audits **miss some violations** (they're not exhaustive on repeated patterns). A **global mechanical sweep** is now run each batch for concrete bad patterns. It already surfaced bugs the agents missed.
+
+### 🐞 Confirmed bugs in NOT-YET-AUDITED files (broken `var(number)` = invalid CSS) — fix in their batch:
+- ai-collaborative-editor L45, L51 — `min-height: var(200px)`
+- ai-data-preview L70 — `max-height: var(300px)`
+- ai-embedding-viz L80 — `height: var(200px)`
+- ai-tool-card-resolver L100 — `max-height: var(300px)`
+Also ~13 files still have `outline: Npx solid` bare-width focus rings (ai-copy-button, ai-debug-console, ai-feature-flag, ai-json-viewer, ai-keyboard-shortcuts, ai-prompt-template, ai-version-selector, ai-webhook-config, etc.) — will be swept in their batches.
+
+### Flagged (no exact token, needs decision):
+- ai-citation L59 `max-width: 400px`, ai-chart-summary `10px` SVG icon — spacing scale has no 400/10px token.
 
 **Batch 1 complete (val):** 17 fixes across 3 components; type-check green.
 **Batch 2 complete:** 31 fixes across 9 components; type-check green.

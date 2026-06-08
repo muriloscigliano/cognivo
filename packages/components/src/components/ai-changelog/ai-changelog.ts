@@ -76,7 +76,7 @@ export class AiChangelog extends LitElement {
 
     .entry-dot {
       position: absolute;
-      left: calc(-1 * var(--cg-spacing-20);
+      left: calc(-1 * var(--cg-spacing-20));
       top: var(--cg-spacing-6);
       width: var(--cg-spacing-8);
       height: var(--cg-spacing-8);
@@ -148,15 +148,15 @@ export class AiChangelog extends LitElement {
       display: flex;
       gap: var(--cg-spacing-8);
       font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-input-border-hover);
+      color: var(--cg-color-input-text-placeholder);
       margin-top: var(--cg-spacing-4);
     }
 
     .changes-preview {
-      font-size: var(--cg-font-size-xs);
+      font-size: var(--cg-font-size-sm);
       color: var(--cg-color-input-text-placeholder);
       margin-top: var(--cg-spacing-6);
-      line-height: 1.5;
+      line-height: var(--cg-line-height-normal);
       overflow: hidden;
       max-height: var(--cg-spacing-40);
       transition: max-height var(--cg-transition-duration-default) var(--cg-transition-easing-default);
@@ -177,7 +177,7 @@ export class AiChangelog extends LitElement {
     }
     .expand-toggle:hover { color: var(--cg-color-surface-base-text); }
     .expand-toggle:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -204,13 +204,13 @@ export class AiChangelog extends LitElement {
       color: var(--cg-color-status-warning-text-default);
     }
     .rollback-btn:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
     .empty-state {
       text-align: center;
-      color: var(--cg-color-input-border-hover);
+      color: var(--cg-color-empty-state-text-secondary);
       font-size: var(--cg-font-size-sm);
       padding: var(--cg-spacing-24) 0;
     }

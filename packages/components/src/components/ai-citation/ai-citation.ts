@@ -46,7 +46,7 @@ export class AiCitation extends LitElement {
     }
     .cite-badge:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
     }
 
     /* ── Source card (expanded) ── */

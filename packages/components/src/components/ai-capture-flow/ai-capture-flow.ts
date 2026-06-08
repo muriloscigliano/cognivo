@@ -29,7 +29,7 @@ const STEPS: Step[] = ['upload', 'preview', 'processing', 'complete'];
 export class AiCaptureFlow extends LitElement {
   static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
-      animation: fadeSlideIn 200ms var(--cg-transition-easing-ease-out) both;
+      animation: fadeSlideIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
     }
 
     .card {
@@ -80,7 +80,7 @@ export class AiCaptureFlow extends LitElement {
     }
     .step-line {
       flex: 1;
-      height: 2px;
+      height: var(--cg-spacing-2);
       background: var(--cg-color-surface-container-background);
       transition: background var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
@@ -88,7 +88,7 @@ export class AiCaptureFlow extends LitElement {
 
     /* ── Upload zone ── */
     .upload-zone {
-      border: 2px dashed var(--cg-color-surface-cards-border);
+      border: var(--cg-border-width-100) dashed var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-100);
       padding: var(--cg-spacing-24) var(--cg-spacing-16);
       text-align: center;
@@ -100,14 +100,14 @@ export class AiCaptureFlow extends LitElement {
       background: var(--cg-overlay-accent-subtle);
     }
     .upload-zone:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
     .upload-icon { font-size: var(--cg-font-size-3xl); margin-bottom: var(--cg-spacing-8); }
     .upload-text {
       font-size: var(--cg-font-size-sm);
       color: var(--cg-color-input-text-placeholder);
-      line-height: 1.5;
+      line-height: var(--cg-line-height-normal);
     }
     .upload-hint {
       font-size: var(--cg-font-size-xs);
@@ -120,7 +120,7 @@ export class AiCaptureFlow extends LitElement {
     .preview { text-align: center; }
     .preview-img {
       max-width: 100%;
-      max-height: var(240px);
+      max-height: var(--cg-spacing-256);
       border-radius: var(--cg-border-radius-100);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       margin-bottom: var(--cg-spacing-16);
@@ -159,19 +159,19 @@ export class AiCaptureFlow extends LitElement {
     .result-icon {
       font-size: var(--cg-font-size-2xl);
       margin-bottom: var(--cg-spacing-8);
-      color: var(--cg-color-status-success-text-default);
+      color: var(--cg-color-ai-complete-text);
     }
     .result-text {
       font-size: var(--cg-font-size-sm);
       color: var(--cg-color-surface-base-text);
-      line-height: 1.5;
+      line-height: var(--cg-line-height-normal);
       margin-bottom: var(--cg-spacing-16);
       white-space: pre-wrap;
     }
 
     /* ── Error ── */
-    .error-icon { color: var(--cg-color-status-error-text-default); }
-    .error-text { color: var(--cg-color-status-error-text-default); }
+    .error-icon { color: var(--cg-color-ai-error-text); }
+    .error-text { color: var(--cg-color-ai-error-text); }
 
     /* ── Buttons ── */
     .btn-row {
@@ -191,7 +191,7 @@ export class AiCaptureFlow extends LitElement {
       transition: filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .btn-row button:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
     .btn-primary {
