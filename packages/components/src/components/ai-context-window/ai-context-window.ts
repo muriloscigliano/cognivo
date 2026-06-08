@@ -103,7 +103,7 @@ export class AiContextWindow extends LitElement {
       font-size: var(--cg-font-size-xs); color: var(--cg-color-surface-container-outlined);
     }
     .cache-icon {
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-ai-cached-text);
       width: var(--cg-spacing-12); height: var(--cg-spacing-12);
       display: flex;
     }

@@ -218,7 +218,7 @@ export class AiCostDashboard extends LitElement {
 
     .empty-state {
       text-align: center;
-      color: var(--cg-color-input-border-hover);
+      color: var(--cg-color-empty-state-text-secondary);
       font-size: var(--cg-font-size-sm);
       padding: var(--cg-spacing-24) 0;
     }

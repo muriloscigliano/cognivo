@@ -113,7 +113,7 @@ export class AiDetectionCanvas extends LitElement {
       align-items: center;
       justify-content: center;
       height: var(--cg-spacing-96);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-empty-state-text-secondary);
       font-size: var(--cg-font-size-sm);
     }
 

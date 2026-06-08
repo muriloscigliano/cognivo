@@ -29,7 +29,7 @@ export class AiErrorBoundary extends LitElement {
 
     .error-card {
       background: var(--cg-color-surface-container-background);
-      border: var(--cg-border-width-50) solid var(--cg-color-status-error-border-default);
+      border: var(--cg-border-width-50) solid var(--cg-color-ai-error-border);
       border-radius: var(--cg-border-radius-150);
       padding: var(--cg-spacing-16);
     }
@@ -60,7 +60,7 @@ export class AiErrorBoundary extends LitElement {
     }
 
     .title {
-      color: var(--cg-color-status-error-text-default);
+      color: var(--cg-color-ai-error-text);
       font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-bold);
     }
@@ -69,8 +69,8 @@ export class AiErrorBoundary extends LitElement {
       display: inline-block;
       padding: var(--cg-spacing-2) var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-50);
-      background: var(--cg-color-status-error-background-default);
-      color: var(--cg-color-status-error-text-default);
+      background: var(--cg-color-ai-error-background);
+      color: var(--cg-color-ai-error-text);
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-bold);
       font-family: var(--cg-font-family-mono);

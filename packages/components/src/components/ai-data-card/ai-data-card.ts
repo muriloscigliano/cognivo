@@ -206,7 +206,7 @@ export class AiDataCard extends LitElement {
       padding: var(--cg-spacing-24);
       text-align: center;
       color: var(--cg-color-input-text-placeholder);
-      font-size: var(--cg-font-size-xs);
+      font-size: var(--cg-font-size-sm);
     }
 
   `];

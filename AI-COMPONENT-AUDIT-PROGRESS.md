@@ -47,7 +47,21 @@
 | 27 | ai-confidence-badge | ✅ | none (140/220px flagged) | 🔬 | proposed |
 | 28 | ai-confidence-slider | 🔧 | 6 applied (fixed broken token) | 🔬 | proposed |
 | 29 | ai-consent-manager | 🔧 | 1 applied | 🔬 | proposed |
-| ... | (remaining 62) | ⬜ | | | |
+| 30 | ai-context-window | 🔧 | 1 applied | 🔬 | proposed |
+| 31 | ai-copy-button | 🔧 | 1 applied | 🔬 | proposed |
+| 32 | ai-cost-dashboard | 🔧 | 1 applied | 🔬 | proposed |
+| 33 | ai-data-card | 🔧 | 1 applied | 🔬 | proposed |
+| 34 | ai-data-lineage | 🔧 | 2 applied | 🔬 | proposed |
+| 35 | ai-data-preview | 🔧 | 3 applied (broken tokens) | 🔬 | proposed |
+| 36 | ai-debug-console | 🔧 | 1 applied (sweep) | 🔬 | proposed |
+| 37 | ai-detection-canvas | 🔧 | 1 applied | 🔬 | proposed |
+| 38 | ai-diff-panel | ✅ | none (clean) | 🔬 | proposed |
+| 39 | ai-embedding-viz | 🔧 | 3 applied (syntax err) | 🔬 | proposed |
+| 40 | ai-empty-state | ✅ | none (clean) | 🔬 | proposed |
+| 41 | ai-error-boundary | 🔧 | 4 applied | 🔬 | proposed |
+| ... | (remaining 50) | ⬜ | | | |
+
+**Batch 4 complete:** 12 components, 18 fixes. Fixed 2nd CSS **syntax error** (ai-embedding-viz `calc(...` missing paren), broken `var(300px)`/`var(200px)` and nonexistent `--cg-color-surface-overlay` in ai-data-preview/embedding-viz; adopted `--cg-component-table-virtual-max-height` (tier-3), `--cg-color-ai-error-*` family for error-boundary.
 
 **Batch 3b complete:** 6 components, 17 fixes. Fixed broken `--cg-letter-spacing-wide` (nonexistent token) in ai-confidence-slider, broken `var(200px)` ×2 in ai-collaborative-editor, adopted dedicated `--cg-color-slider-thumb-*` family. Flagged: ai-confidence-badge `140px`/`220px` (no token on scale 128/160).
 

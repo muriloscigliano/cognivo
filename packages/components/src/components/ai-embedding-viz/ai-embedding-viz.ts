@@ -77,7 +77,7 @@ export class AiEmbeddingViz extends LitElement {
     svg {
       display: block;
       width: 100%;
-      height: var(200px);
+      height: var(--cg-spacing-192);
     }
 
     .point {
@@ -86,7 +86,7 @@ export class AiEmbeddingViz extends LitElement {
     }
     .point:hover { r: 7; }
     .point:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-border-width-100) solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -108,7 +108,7 @@ export class AiEmbeddingViz extends LitElement {
       pointer-events: none;
       z-index: 10;
       transform: translate(-50%, -100%);
-      margin-top: calc(-1 * var(--cg-spacing-8);
+      margin-top: calc(-1 * var(--cg-spacing-8));
     }
 
     .legend {

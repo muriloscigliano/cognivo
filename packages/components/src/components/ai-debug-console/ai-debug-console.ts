@@ -205,7 +205,7 @@ export class AiDebugConsole extends LitElement {
       padding: var(--cg-spacing-8) var(--cg-spacing-16) var(--cg-spacing-12) var(--cg-spacing-24);
       font-family: var(--cg-font-family-mono);
       font-size: var(--cg-font-size-xs);
-      line-height: 1.5;
+      line-height: var(--cg-line-height-normal);
       white-space: pre-wrap;
       word-break: break-word;
       color: var(--cg-color-code-text);

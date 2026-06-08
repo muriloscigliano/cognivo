@@ -90,7 +90,7 @@ export class AiDataLineage extends LitElement {
     }
 
     .node-label {
-      font-size: var(--cg-font-size-xs);
+      font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-semibold);
       white-space: nowrap;
     }
@@ -109,7 +109,7 @@ export class AiDataLineage extends LitElement {
       right: var(--cg-spacing-6);
     }
     .status-dot.active { background: var(--cg-color-surface-base-text); }
-    .status-dot.complete { background: var(--cg-color-input-text-placeholder); }
+    .status-dot.complete { background: var(--cg-color-ai-complete-text); }
     .status-dot.error { background: var(--cg-color-status-error-text-default); }
 
     /* ── Arrow ── */

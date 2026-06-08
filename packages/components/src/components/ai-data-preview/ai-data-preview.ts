@@ -67,9 +67,9 @@ export class AiDataPreview extends LitElement {
     }
 
     .preview-area {
-      max-height: var(300px);
+      max-height: var(--cg-component-table-virtual-max-height);
       overflow: auto;
-      background: var(--cg-color-surface-overlay);
+      background: var(--cg-color-surface-cards-background);
       border-radius: var(--cg-border-radius-100);
       padding: var(--cg-spacing-12);
       margin-bottom: var(--cg-spacing-12);
@@ -104,7 +104,7 @@ export class AiDataPreview extends LitElement {
       font-weight: var(--cg-font-weight-semibold);
       position: sticky;
       top: 0;
-      background: var(--cg-color-surface-overlay);
+      background: var(--cg-color-surface-cards-background);
     }
 
     td {

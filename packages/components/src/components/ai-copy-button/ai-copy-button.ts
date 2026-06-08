@@ -61,7 +61,7 @@ export class AiCopyButton extends LitElement {
     /* Minimal variant */
     :host([variant="minimal"]) .copy-btn {
       padding: var(--cg-spacing-4) var(--cg-spacing-8);
-      font-size: var(--cg-font-size-xs);
+      font-size: var(--cg-font-size-sm);
       background: none;
       color: var(--cg-color-input-text-placeholder);
     }
