@@ -21,9 +21,6 @@ const KEYWORD_PATTERNS: Record<string, RegExp> = {
   comment: /\/\/.*$|\/\*[\s\S]*?\*\/|#.*$/gm,
   number: /\b\d+\.?\d*\b/g,
   function: /\b([a-zA-Z_]\w*)\s*(?=\()/g,
-  tag: /(&lt;\/?[a-zA-Z][a-zA-Z0-9-]*)/g,
-  attr: /\b([a-zA-Z-]+)(?==)/g,
-  punctuation: /[{}()\[\];,.:]/g,
 };
 
 function highlight(code: string): string {
@@ -118,7 +115,7 @@ export class CgCodeBlock extends LitElement {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-medium);
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: var(--cg-letter-spacing-wider);
     }
 
     .copy-btn {
@@ -200,8 +197,6 @@ export class CgCodeBlock extends LitElement {
     .hl-comment { color: var(--cg-color-code-comment); font-style: italic; }
     .hl-number { color: var(--cg-color-code-number); }
     .hl-function { color: var(--cg-color-code-function); }
-    .hl-tag { color: var(--cg-color-code-keyword); }
-    .hl-attr { color: var(--cg-color-code-number); }
 
     /* ── Expand button ── */
     .expand-bar {
@@ -299,7 +294,7 @@ export class CgCodeBlock extends LitElement {
           </div>
           <div class="actions">
             ${this.language ? html`<span class="language">${this.language}</span>` : nothing}
-            <button class="copy-btn ${this._copied ? 'copied' : ''}" @click=${this._copy} aria-label="Copy code">
+            <button class="copy-btn ${this._copied ? 'copied' : ''}" @click=${this._copy} aria-label=${this._copied ? 'Code copied' : 'Copy code'}>
               ${this._copied
                 ? html`<cg-icon name="check" size="xs"></cg-icon> Copied`
                 : html`<cg-icon name="copy" size="xs"></cg-icon> Copy`
@@ -309,18 +304,22 @@ export class CgCodeBlock extends LitElement {
           </div>
         </div>
 
-        <div class="code-area ${isLong && this._collapsed ? 'collapsed' : ''}">
+        <div id="code-area" class="code-area ${isLong && this._collapsed ? 'collapsed' : ''}">
           <pre>${this.lineNumbers
             ? lines.map(l => html`<span class="line">${this._highlightLine(l)}\n</span>`)
             : html`${this._unsafeHTML(highlighted)}`
           }</pre>
         </div>
 
-        ${isLong && this._collapsed ? html`
+        ${isLong ? html`
           <div class="expand-bar">
-            <button class="expand-btn" aria-expanded="false" @click=${() => { this._collapsed = false; }}>
-              <cg-icon name="chevron-down" size="xs"></cg-icon>
-              Show all ${lines.length} lines
+            <button
+              class="expand-btn"
+              aria-expanded=${this._collapsed ? 'false' : 'true'}
+              aria-controls="code-area"
+              @click=${() => { this._collapsed = !this._collapsed; }}>
+              <cg-icon name=${this._collapsed ? 'chevron-down' : 'chevron-up'} size="xs"></cg-icon>
+              ${this._collapsed ? html`Show all ${lines.length} lines` : html`Show less`}
             </button>
           </div>
         ` : nothing}

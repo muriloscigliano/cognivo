@@ -173,9 +173,14 @@ export class CgCombobox extends LitElement {
       cursor: pointer;
       transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .option:hover,
-    .option.active {
+    .option:hover {
       background: var(--cg-color-action-tertiary-background-hover);
+    }
+    /* Keyboard-active descendant gets a distinct accent so it's not confused
+       with a hovered row. */
+    .option.active {
+      background: var(--cg-overlay-accent-strong);
+      box-shadow: inset var(--cg-spacing-2) 0 0 0 var(--cg-color-action-primary-background-default);
     }
     .option.disabled { opacity: 0.5; cursor: not-allowed; }
     .option.selected { font-weight: var(--cg-font-weight-medium); }
@@ -308,6 +313,7 @@ export class CgCombobox extends LitElement {
       this._activeIndex = Math.min(filtered.length - 1, this._activeIndex + 1);
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
+      this.open = true;
       this._activeIndex = Math.max(0, this._activeIndex - 1);
     } else if (e.key === 'Enter') {
       if (this.open && filtered[this._activeIndex]) {
@@ -340,7 +346,7 @@ export class CgCombobox extends LitElement {
           ? values.map(v => html`
               <span class="chip">
                 ${this._labelFor(v)}
-                <button class="chip-remove" aria-label="Remove" @click=${(e: MouseEvent) => { e.stopPropagation(); this._removeChip(v); }}>×</button>
+                <button class="chip-remove" aria-label=${`Remove ${this._labelFor(v)}`} @click=${(e: MouseEvent) => { e.stopPropagation(); this._removeChip(v); }}>×</button>
               </span>
             `)
           : nothing}
@@ -350,6 +356,7 @@ export class CgCombobox extends LitElement {
           aria-expanded=${this.open ? 'true' : 'false'}
           aria-autocomplete="list"
           aria-controls="combobox-listbox"
+          aria-haspopup="listbox"
           aria-activedescendant=${this.open && this._activeIndex >= 0 ? `combobox-opt-${this._activeIndex}` : nothing}
           ?disabled=${this.disabled}
           .value=${this.multiple ? this._query : (typeof this.value === 'string' ? (this._query || this._labelFor(this.value)) : this._query)}
@@ -359,7 +366,7 @@ export class CgCombobox extends LitElement {
           @focus=${() => { this.open = true; }}
         />
         ${this.clearable && hasValue ? html`
-          <button class="clear-btn" aria-label="Clear" @click=${(e: MouseEvent) => { e.stopPropagation(); this._clear(); }}>×</button>
+          <button class="clear-btn" aria-label="Clear selection" @click=${(e: MouseEvent) => { e.stopPropagation(); this._clear(); }}>×</button>
         ` : nothing}
       </div>
       <div
@@ -367,6 +374,7 @@ export class CgCombobox extends LitElement {
         id="combobox-listbox"
         role="listbox"
         aria-multiselectable=${this.multiple ? 'true' : 'false'}
+        aria-busy=${this.loading ? 'true' : 'false'}
       >
         ${this.loading ? html`<div class="empty">Loading…</div>` :
           filtered.length === 0 ? html`<div class="empty">No options</div>` :
