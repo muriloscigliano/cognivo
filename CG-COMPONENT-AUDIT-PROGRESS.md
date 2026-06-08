@@ -30,10 +30,10 @@
 | 9 | cg-breadcrumbs | 🔧 | focus-ring tokenized (more findings pending: active-state hierarchy, dead ellipsis, max-width px) |
 | 10 | cg-button | 🔧 | focus-ring tokenized (bare px → border-width-100) |
 | 11 | cg-button-group | 🔧 | FIXED broken attached mode (gap on container not host), focus z-index lift, radius matches button, group aria-label, tokenized -1px overlap |
-| 12 | cg-calendar | ⬜ | |
-| 13 | cg-callout | ⬜ | |
+| 12 | cg-calendar | 🔧 | today accent → border token (was bg-as-border/text), nav buttons disable at min/max bounds. F1 "invisible icons" = FALSE POSITIVE (renders fine, verified). DEFERRED: roving tabindex (needs render-loop refactor+test) |
+| 13 | cg-callout | 🔧 | role/aria-live conflict fixed (assertive for danger/warning), per-variant tinted surface, dropped title opacity, icon top-align, focus-ring tokenized, decorative SVG aria-hidden, keyframe px tokenized |
 | 14 | cg-card | 🔧 | focus-ring tokenized |
-| 15 | cg-carousel | ⬜ | |
+| 15 | cg-carousel | 🔧 | tablist→group+aria-current (orphan tab pattern), aria-live off during autoplay, dot visibility fix, nav arrows discoverable (opacity 0→.65), focus-ring tokenized, _paused reactive. DEFERRED: autoplay pause control (WCAG 2.2 — new feature), scroll-index calc for multi-column |
 | 16 | cg-chart | ⬜ | |
 | 17 | cg-checkbox | ⬜ | |
 | 18 | cg-chip | ⬜ | |

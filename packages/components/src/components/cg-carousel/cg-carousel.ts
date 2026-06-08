@@ -77,7 +77,9 @@ export class CgCarousel extends LitElement {
       align-items: center;
       justify-content: center;
       padding: 0;
-      opacity: 0;
+      /* Discoverable by default (touch devices have no hover); brightens to
+         full on host hover. */
+      opacity: 0.65;
       color: var(--cg-color-surface-container-outlined);
       box-shadow: var(--cg-elevation-1);
       transition:
@@ -98,7 +100,7 @@ export class CgCarousel extends LitElement {
     }
     .nav-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-overlay-accent-strong);
       opacity: 1;
     }
     .nav-btn:disabled { opacity: 0 !important; cursor: default; }
@@ -117,7 +119,9 @@ export class CgCarousel extends LitElement {
       width: var(--cg-spacing-8);
       height: var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-full);
-      background: var(--cg-color-surface-container-border);
+      /* outlined (gray-600), not -border- (gray-800) — the border value was
+         nearly invisible against the dark surface, hiding inactive dots. */
+      background: var(--cg-color-surface-container-outlined);
       border: none;
       cursor: pointer;
       padding: 0;
@@ -125,7 +129,7 @@ export class CgCarousel extends LitElement {
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         width var(--cg-transition-duration-fast) var(--cg-transition-easing-spring);
     }
-    .dot:hover { background: var(--cg-color-surface-container-outlined); }
+    .dot:hover { background: var(--cg-color-surface-container-text); }
     .dot.active {
       background: var(--cg-color-action-primary-background-default);
       width: var(--cg-spacing-24);
@@ -157,7 +161,9 @@ export class CgCarousel extends LitElement {
   @query('.track') private _track!: HTMLElement;
 
   private _autoplayTimer: ReturnType<typeof setInterval> | null = null;
-  private _paused = false;
+  // Reactive so the region's aria-live flips between off/polite as autoplay
+  // pauses (e.g. on hover).
+  @state() private _paused = false;
 
   override firstUpdated() {
     const slot = this.shadowRoot!.querySelector('slot');
@@ -264,7 +270,7 @@ export class CgCarousel extends LitElement {
         role="region"
         aria-label="Carousel"
         aria-roledescription="carousel"
-        aria-live="polite"
+        aria-live=${this.autoplay && !this._paused ? 'off' : 'polite'}
       >
         <div class="track" @click=${this._handleSlideClick}><slot></slot></div>
       </div>
@@ -279,13 +285,12 @@ export class CgCarousel extends LitElement {
       ` : nothing}
 
       ${this.showDots && this._total > 1 ? html`
-        <div class="dots" role="tablist" aria-label="Slide indicators">
+        <div class="dots" role="group" aria-label="Slide indicators">
           ${Array.from({ length: this._total }, (_, i) => html`
             <button
               class="dot ${i === this._current ? 'active' : ''}"
-              role="tab"
-              aria-selected=${i === this._current}
-              aria-label="Slide ${i + 1}"
+              aria-current=${i === this._current ? 'true' : nothing}
+              aria-label="Go to slide ${i + 1}"
               @click=${() => this._goTo(i)}
             ></button>
           `)}

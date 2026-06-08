@@ -49,6 +49,10 @@ export class CgCalendar extends LitElement {
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .nav-btn:hover { background: var(--cg-color-action-tertiary-background-hover); }
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
     .nav-btn:focus-visible {
       outline: none;
       box-shadow:
@@ -119,8 +123,8 @@ export class CgCalendar extends LitElement {
       opacity: 0.5;
     }
     .day.today:not(.selected):not(.range-start):not(.range-end) {
-      box-shadow: inset 0 0 0 var(--cg-border-width-50) var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-action-primary-background-default);
+      box-shadow: inset 0 0 0 var(--cg-border-width-50) var(--cg-color-action-primary-border-default);
+      color: var(--cg-color-action-primary-border-default);
       font-weight: var(--cg-font-weight-semibold);
     }
     .day.selected {
@@ -246,7 +250,26 @@ export class CgCalendar extends LitElement {
     return false;
   }
 
+  /** True when the entire previous month is before `min` (nothing to show). */
+  private _isPrevMonthOutOfBounds(): boolean {
+    if (!this.min) return false;
+    const min = this._parseDate(this.min);
+    if (!min) return false;
+    const lastDayPrev = new Date(this._displayYear, this._displayMonth, 0);
+    return lastDayPrev < min;
+  }
+
+  /** True when the entire next month is after `max` (nothing to show). */
+  private _isNextMonthOutOfBounds(): boolean {
+    if (!this.max) return false;
+    const max = this._parseDate(this.max);
+    if (!max) return false;
+    const firstDayNext = new Date(this._displayYear, this._displayMonth + 1, 1);
+    return firstDayNext > max;
+  }
+
   private _prevMonth(): void {
+    if (this._isPrevMonthOutOfBounds()) return;
     if (this._displayMonth === 0) {
       this._displayMonth = 11;
       this._displayYear--;
@@ -256,6 +279,7 @@ export class CgCalendar extends LitElement {
   }
 
   private _nextMonth(): void {
+    if (this._isNextMonthOutOfBounds()) return;
     if (this._displayMonth === 11) {
       this._displayMonth = 0;
       this._displayYear++;
@@ -382,13 +406,13 @@ export class CgCalendar extends LitElement {
     return html`
       <div class="calendar" role="grid" aria-label=${`${this._getMonthName()} ${this._displayYear}`}>
         <div class="header">
-          <button class="nav-btn" type="button" aria-label="Previous month" @click=${this._prevMonth}>
+          <button class="nav-btn" type="button" aria-label="Previous month" ?disabled=${this._isPrevMonthOutOfBounds()} @click=${this._prevMonth}>
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M9 3L5 7l4 4"/>
             </svg>
           </button>
           <div class="month-year">${this._getMonthName()} ${this._displayYear}</div>
-          <button class="nav-btn" type="button" aria-label="Next month" @click=${this._nextMonth}>
+          <button class="nav-btn" type="button" aria-label="Next month" ?disabled=${this._isNextMonthOutOfBounds()} @click=${this._nextMonth}>
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5 3l4 4-4 4"/>
             </svg>

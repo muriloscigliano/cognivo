@@ -28,7 +28,7 @@ export class CgCallout extends LitElement {
         opacity var(--cg-transition-duration-default) var(--cg-transition-easing-default),
         transform var(--cg-transition-duration-default) var(--cg-transition-easing-default);
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: var(--cg-spacing-12);
       padding: var(--cg-spacing-12) var(--cg-spacing-16);
       border-radius: var(--cg-border-radius-100);
@@ -37,22 +37,23 @@ export class CgCallout extends LitElement {
       line-height: var(--cg-line-height-normal);
     }
 
-    /* Variants — colored border, icon + title colored (softened), description normal */
-    :host([variant="info"]) .callout { border-color: var(--cg-color-message-border-info); }
+    /* Variants — tinted surface + colored border for at-a-glance distinction,
+       icon + title at full accent strength (no opacity dampening). */
+    :host([variant="info"]) .callout { background: var(--cg-color-message-background-info); border-color: var(--cg-color-message-border-info); }
     :host([variant="info"]) .icon { color: var(--cg-color-message-icon-info); }
-    :host([variant="info"]) .title { color: var(--cg-color-message-text-info); opacity: 0.85; }
+    :host([variant="info"]) .title { color: var(--cg-color-message-text-info); }
 
-    :host([variant="success"]) .callout { border-color: var(--cg-color-message-border-success); }
+    :host([variant="success"]) .callout { background: var(--cg-color-message-background-success); border-color: var(--cg-color-message-border-success); }
     :host([variant="success"]) .icon { color: var(--cg-color-message-icon-success); }
-    :host([variant="success"]) .title { color: var(--cg-color-message-text-success); opacity: 0.85; }
+    :host([variant="success"]) .title { color: var(--cg-color-message-text-success); }
 
-    :host([variant="warning"]) .callout { border-color: var(--cg-color-message-border-warning); }
+    :host([variant="warning"]) .callout { background: var(--cg-color-message-background-warning); border-color: var(--cg-color-message-border-warning); }
     :host([variant="warning"]) .icon { color: var(--cg-color-message-icon-warning); }
-    :host([variant="warning"]) .title { color: var(--cg-color-message-text-warning); opacity: 0.85; }
+    :host([variant="warning"]) .title { color: var(--cg-color-message-text-warning); }
 
-    :host([variant="danger"]) .callout { border-color: var(--cg-color-message-border-error); }
+    :host([variant="danger"]) .callout { background: var(--cg-color-message-background-error); border-color: var(--cg-color-message-border-error); }
     :host([variant="danger"]) .icon { color: var(--cg-color-message-icon-error); }
-    :host([variant="danger"]) .title { color: var(--cg-color-message-text-error); opacity: 0.85; }
+    :host([variant="danger"]) .title { color: var(--cg-color-message-text-error); }
 
     :host([variant="neutral"]) .icon,
     :host([variant="neutral"]) .title { color: var(--cg-color-surface-container-text); }
@@ -105,13 +106,13 @@ export class CgCallout extends LitElement {
     .dismiss:hover { opacity: 0.8; }
     .dismiss:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-surface-base-background), 0 0 0 4px var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 var(--cg-focus-ring-offset) var(--cg-color-surface-base-background), 0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
     .dismiss svg { width: var(--cg-spacing-16); height: var(--cg-spacing-16); }
 
     @keyframes calloutExit {
       from { opacity: 1; transform: translateY(0); }
-      to { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 0; transform: translateY(calc(-1 * var(--cg-spacing-8))); }
     }
     .callout.dismissing {
       animation: calloutExit var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-in) forwards;
@@ -170,12 +171,16 @@ export class CgCallout extends LitElement {
     if (this._dismissed && !this._dismissing) return nothing;
 
     const iconPath = this._iconPaths[this.variant] ?? this._iconPaths.info;
+    // role="alert" carries implicit aria-live="assertive"; setting an explicit
+    // "polite" on it downgrades urgent callouts. Pair role and aria-live so
+    // danger/warning announce assertively and the rest stay polite.
+    const isAlert = this.variant === 'danger' || this.variant === 'warning';
 
     return html`
-      <div class="callout ${this._dismissing ? 'dismissing' : ''}" role=${this.variant === 'danger' || this.variant === 'warning' ? 'alert' : 'note'} aria-live="polite" @keydown=${this._handleKeydown}>
+      <div class="callout ${this._dismissing ? 'dismissing' : ''}" role=${isAlert ? 'alert' : 'note'} aria-live=${isAlert ? 'assertive' : 'polite'} @keydown=${this._handleKeydown}>
         <div class="icon">
           <slot name="icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="${iconPath}"></path>
             </svg>
           </slot>
