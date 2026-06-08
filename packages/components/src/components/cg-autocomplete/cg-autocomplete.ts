@@ -192,6 +192,10 @@ export class CgAutocomplete extends LitElement {
 
   @query('input') private _input!: HTMLInputElement;
 
+  // Per-instance id prefix so aria-controls / aria-activedescendant references
+  // never collide across multiple autocompletes on the same page.
+  private _uid = `cg-ac-${Math.random().toString(36).slice(2, 9)}`;
+
   private get _filtered(): AutocompleteOption[] {
     const q = this._query.toLowerCase();
     if (!q) return this.options;
@@ -212,7 +216,7 @@ export class CgAutocomplete extends LitElement {
     this.dispatchEvent(new CustomEvent('cg-autocomplete-select', { detail: { value: opt.value, label: opt.label }, bubbles: true, composed: true }));
   }
 
-  private _onKeyDown(e: KeyboardEvent) {
+  private async _onKeyDown(e: KeyboardEvent) {
     const list = this._filtered;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -220,13 +224,21 @@ export class CgAutocomplete extends LitElement {
       this._activeIndex = Math.min(this._activeIndex + 1, list.length - 1);
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
+      this._open = true;
       this._activeIndex = Math.max(this._activeIndex - 1, 0);
     } else if (e.key === 'Enter' && this._activeIndex >= 0 && list[this._activeIndex]) {
       e.preventDefault();
       this._select(list[this._activeIndex]!);
+      return;
     } else if (e.key === 'Escape') {
       this._open = false;
+      return;
+    } else {
+      return;
     }
+    // Keep the active option visible when navigating past the scroll window.
+    await this.updateComplete;
+    this.renderRoot.querySelector('.option.active')?.scrollIntoView({ block: 'nearest' });
   }
 
   private _clear() {
@@ -258,6 +270,9 @@ export class CgAutocomplete extends LitElement {
           role="combobox"
           aria-expanded=${this._open}
           aria-autocomplete="list"
+          aria-controls=${`${this._uid}-listbox`}
+          aria-activedescendant=${this._open && this._activeIndex >= 0 ? `${this._uid}-opt-${this._activeIndex}` : nothing}
+          aria-invalid=${this.error ? 'true' : nothing}
           aria-label=${this.label || 'Autocomplete'}
           @input=${this._onInput}
           @keydown=${this._onKeyDown}
@@ -274,11 +289,12 @@ export class CgAutocomplete extends LitElement {
         </span>
       </div>
       ${this._open ? html`
-        <div class="dropdown" role="listbox">
+        <div class="dropdown" role="listbox" id=${`${this._uid}-listbox`}>
           ${filtered.length === 0 ? html`<div class="empty">No results found</div>` :
             filtered.map((opt, i) => html`
               <div class="option ${i === this._activeIndex ? 'active' : ''}"
                 role="option"
+                id=${`${this._uid}-opt-${i}`}
                 aria-selected=${i === this._activeIndex}
                 @mousedown=${(e: Event) => e.preventDefault()}
                 @click=${() => this._select(opt)}>

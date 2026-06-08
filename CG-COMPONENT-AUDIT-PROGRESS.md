@@ -22,7 +22,7 @@
 | 1 | cg-accordion | 🔧 | focus-ring tokenized, chevron aria-hidden, dead import removed, open-state accent edge added |
 | 2 | cg-alert-dialog | 🔧 | dangling aria-labelledby/describedby now conditional, decorative SVG aria-hidden |
 | 3 | cg-aspect-ratio | 🔧 | CSS-injection fixed (styleMap + ratio validation), local vars renamed --_aspect-*, +injection test |
-| 4 | cg-autocomplete | ⬜ | |
+| 4 | cg-autocomplete | 🔧 | a11y: aria-controls/activedescendant/invalid + listbox/option ids; keyboard: scroll-into-view + ArrowUp reopen. DEFERRED: accent-text highlight (needs light-theme token add), loading state (new feature) |
 | 5 | cg-avatar | 🔧 | status+type folded into accessible name (were color-only), initials text → action-secondary-text-default |
 | 6 | cg-avatar-group | 🔧 | tier-3 avatar size tokens, status in aria-label + dot aria-hidden, removed !important via specificity, stagger tokenized |
 | 7 | cg-badge | ⬜ | |
