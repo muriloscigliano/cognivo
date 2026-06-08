@@ -54,8 +54,8 @@ export class CgButton extends LitElement {
     /* Focus ring — dual-layer */
     button:focus-visible {
       box-shadow:
-        0 0 0 2px var(--cg-color-focus-ring-offset),
-        0 0 0 calc(2px + 2px) var(--cg-color-focus-ring);
+        0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-border-width-100) * 2) var(--cg-color-focus-ring);
       outline: none;
     }
 

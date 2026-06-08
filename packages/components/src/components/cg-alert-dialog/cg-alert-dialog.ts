@@ -194,15 +194,15 @@ export class CgAlertDialog extends LitElement {
         class="dialog"
         role="alertdialog"
         aria-modal="true"
-        aria-labelledby="alert-title"
-        aria-describedby="alert-description"
+        aria-labelledby=${this.title ? 'alert-title' : nothing}
+        aria-describedby=${this.description ? 'alert-description' : nothing}
         ?inert=${!this.open}
       >
         <div class="header">
           <slot name="icon">
             ${this.destructive ? html`
               <div class="icon-wrap">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 9v4M12 17h.01"/>
                   <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
                 </svg>

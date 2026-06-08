@@ -83,7 +83,7 @@ export class CgCard extends LitElement {
     }
     :host([clickable]) .card:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px var(--cg-color-focus-ring-offset), 0 0 0 4px var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring-offset), 0 0 0 calc(var(--cg-border-width-100) * 2) var(--cg-color-focus-ring);
     }
 
     /* ── Padding ── */

@@ -19,20 +19,20 @@
 
 | # | Component | Status | Notes |
 |---|-----------|--------|-------|
-| 1 | cg-accordion | ⬜ | |
-| 2 | cg-alert-dialog | ⬜ | |
+| 1 | cg-accordion | 🔧 | focus-ring tokenized, chevron aria-hidden, dead import removed, open-state accent edge added |
+| 2 | cg-alert-dialog | 🔧 | dangling aria-labelledby/describedby now conditional, decorative SVG aria-hidden |
 | 3 | cg-aspect-ratio | ⬜ | |
 | 4 | cg-autocomplete | ⬜ | |
 | 5 | cg-avatar | ⬜ | |
 | 6 | cg-avatar-group | ⬜ | |
 | 7 | cg-badge | ⬜ | |
 | 8 | cg-badge-group | ⬜ | |
-| 9 | cg-breadcrumbs | ⬜ | |
-| 10 | cg-button | ⬜ | |
+| 9 | cg-breadcrumbs | 🔧 | focus-ring tokenized (more findings pending: active-state hierarchy, dead ellipsis, max-width px) |
+| 10 | cg-button | 🔧 | focus-ring tokenized (bare px → border-width-100) |
 | 11 | cg-button-group | ⬜ | |
 | 12 | cg-calendar | ⬜ | |
 | 13 | cg-callout | ⬜ | |
-| 14 | cg-card | ⬜ | |
+| 14 | cg-card | 🔧 | focus-ring tokenized |
 | 15 | cg-carousel | ⬜ | |
 | 16 | cg-chart | ⬜ | |
 | 17 | cg-checkbox | ⬜ | |

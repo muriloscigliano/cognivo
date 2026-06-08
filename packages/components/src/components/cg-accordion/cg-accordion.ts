@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
@@ -80,7 +80,7 @@ export class CgAccordion extends LitElement {
 
     .trigger:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 2px var(--cg-color-focus-ring-offset), inset 0 0 0 4px var(--cg-color-focus-ring);
+      box-shadow: inset 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring-offset), inset 0 0 0 calc(var(--cg-border-width-100) * 2) var(--cg-color-focus-ring);
     }
 
     .trigger:disabled {
@@ -104,6 +104,14 @@ export class CgAccordion extends LitElement {
     .item.open .chevron {
       transform: rotate(180deg);
       color: var(--cg-color-surface-base-text);
+    }
+    /* ── Open trigger: subtle accent so the active section is scannable ──
+       The chevron flip alone was the only signal; add a faint accent wash +
+       a brand leading edge + brighter title text. */
+    .item.open .trigger {
+      background: var(--cg-overlay-accent-subtle);
+      color: var(--cg-color-surface-base-text);
+      box-shadow: inset var(--cg-border-width-100) 0 0 0 var(--cg-color-action-primary-background-default);
     }
 
     /* ── Content — CSS grid smooth height ── */
@@ -204,7 +212,7 @@ export class CgAccordion extends LitElement {
             @keydown=${this._handleTriggerKeydown}
           >
             <span class="trigger-text">${item.trigger}</span>
-            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="chevron" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M6 9l6 6 6-6"></path>
             </svg>
           </button>
