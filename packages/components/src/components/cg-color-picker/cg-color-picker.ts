@@ -364,6 +364,55 @@ export class CgColorPicker extends LitElement {
     this._emit();
   }
 
+  // ── Keyboard (mirrors the pointer handlers so the spectrum + sliders are
+  //    fully operable without a mouse — they were pointer-only before). ──
+  private _onAreaKeydown(e: KeyboardEvent) {
+    const step = e.shiftKey ? 0.1 : 0.01;
+    let { s, v } = this._hsv;
+    switch (e.key) {
+      case 'ArrowLeft': s -= step; break;
+      case 'ArrowRight': s += step; break;
+      case 'ArrowUp': v += step; break;
+      case 'ArrowDown': v -= step; break;
+      default: return;
+    }
+    e.preventDefault();
+    this._hsv = { ...this._hsv, s: Math.max(0, Math.min(1, s)), v: Math.max(0, Math.min(1, v)) };
+    this._emit();
+  }
+
+  private _onHueKeydown(e: KeyboardEvent) {
+    let h = this._hsv.h;
+    switch (e.key) {
+      case 'ArrowRight': case 'ArrowUp': h += 1; break;
+      case 'ArrowLeft': case 'ArrowDown': h -= 1; break;
+      case 'PageUp': h += 10; break;
+      case 'PageDown': h -= 10; break;
+      case 'Home': h = 0; break;
+      case 'End': h = 360; break;
+      default: return;
+    }
+    e.preventDefault();
+    this._hsv = { ...this._hsv, h: Math.max(0, Math.min(360, h)) };
+    this._emit();
+  }
+
+  private _onAlphaKeydown(e: KeyboardEvent) {
+    let a = this._hsv.a;
+    switch (e.key) {
+      case 'ArrowRight': case 'ArrowUp': a += 0.01; break;
+      case 'ArrowLeft': case 'ArrowDown': a -= 0.01; break;
+      case 'PageUp': a += 0.1; break;
+      case 'PageDown': a -= 0.1; break;
+      case 'Home': a = 0; break;
+      case 'End': a = 1; break;
+      default: return;
+    }
+    e.preventDefault();
+    this._hsv = { ...this._hsv, a: Math.max(0, Math.min(1, a)) };
+    this._emit();
+  }
+
   // ── Inputs ──
   private _onHexInput(e: Event) {
     let val = (e.target as HTMLInputElement).value.trim();
@@ -421,9 +470,14 @@ export class CgColorPicker extends LitElement {
       <div class="dropdown ${this._open ? 'open' : ''}" role="dialog" aria-label="Color picker">
         <!-- Spectrum -->
         <div class="color-area"
+          tabindex="0"
+          role="slider"
+          aria-label="Saturation and brightness"
+          aria-valuetext=${`Saturation ${Math.round(this._hsv.s * 100)}%, brightness ${Math.round(this._hsv.v * 100)}%, ${currentHex}`}
           @pointerdown=${this._onAreaPointerDown}
           @pointermove=${this._onAreaPointerMove}
           @pointerup=${this._onPointerUp}
+          @keydown=${this._onAreaKeydown}
         >
           <div class="color-area-bg" style="background:${hueColor}"></div>
           <div class="color-area-white"></div>
@@ -434,9 +488,16 @@ export class CgColorPicker extends LitElement {
         <!-- Hue -->
         <div class="slider-row">
           <div class="slider-track hue-track"
+            tabindex="0"
+            role="slider"
+            aria-label="Hue"
+            aria-valuemin="0"
+            aria-valuemax="360"
+            aria-valuenow=${Math.round(this._hsv.h)}
             @pointerdown=${this._onHuePointerDown}
             @pointermove=${this._onHuePointerMove}
             @pointerup=${this._onPointerUp}
+            @keydown=${this._onHueKeydown}
           ><div class="slider-thumb" style="left:${(this._hsv.h / 360) * 100}%;background:${hueColor}"></div></div>
         </div>
 
@@ -444,9 +505,16 @@ export class CgColorPicker extends LitElement {
         ${this.showAlpha ? html`
           <div class="slider-row">
             <div class="slider-track alpha-track"
+              tabindex="0"
+              role="slider"
+              aria-label="Opacity"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow=${Math.round(this._hsv.a * 100)}
               @pointerdown=${this._onAlphaPointerDown}
               @pointermove=${this._onAlphaPointerMove}
               @pointerup=${this._onPointerUp}
+              @keydown=${this._onAlphaKeydown}
             ><div class="alpha-gradient" style="background:linear-gradient(to right,transparent,${currentHex})"></div>
             <div class="slider-thumb" style="left:${this._hsv.a * 100}%;background:${currentHex}"></div></div>
           </div>

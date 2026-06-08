@@ -34,12 +34,12 @@
 | 13 | cg-callout | 🔧 | role/aria-live conflict fixed (assertive for danger/warning), per-variant tinted surface, dropped title opacity, icon top-align, focus-ring tokenized, decorative SVG aria-hidden, keyframe px tokenized |
 | 14 | cg-card | 🔧 | focus-ring tokenized |
 | 15 | cg-carousel | 🔧 | tablist→group+aria-current (orphan tab pattern), aria-live off during autoplay, dot visibility fix, nav arrows discoverable (opacity 0→.65), focus-ring tokenized, _paused reactive. DEFERRED: autoplay pause control (WCAG 2.2 — new feature), scroll-index calc for multi-column |
-| 16 | cg-chart | ⬜ | |
+| 16 | cg-chart | 🔧 | P0 a11y: svg role=img + data aria-label; raw-px margin tokenized; dead fallback tokens → real. DEFERRED: loading/error states, tooltip keyboard, hardcoded hex palette (larger features) |
 | 17 | cg-checkbox | ⬜ | |
 | 18 | cg-chip | ⬜ | |
 | 19 | cg-code-block | ⬜ | |
 | 20 | cg-collapsible | ⬜ | |
-| 21 | cg-color-picker | ⬜ | |
+| 21 | cg-color-picker | 🔧 | P0 a11y: spectrum + hue + alpha sliders now keyboard-operable (tabindex/role=slider/aria-value*/arrow+Page+Home/End handlers) — were pointer-only |
 | 22 | cg-combobox | ⬜ | |
 | 23 | cg-command | ⬜ | |
 | 24 | cg-context-menu | ⬜ | |

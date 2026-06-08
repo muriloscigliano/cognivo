@@ -81,7 +81,7 @@ export class CgChart extends LitElement {
       pointer-events: none;
       white-space: nowrap;
       transform: translate(-50%, -100%);
-      margin-top: -8px;
+      margin-top: calc(var(--cg-spacing-8) * -1);
       z-index: 10;
       display: none;
     }
@@ -140,9 +140,9 @@ export class CgChart extends LitElement {
   private _resolve() {
     if (this._resolved) return;
     const s = getComputedStyle(this);
-    this._grid = s.getPropertyValue('--cg-color-chart-grid').trim() || s.getPropertyValue('--cg-color-border-default').trim();
-    this._axis = s.getPropertyValue('--cg-color-chart-axis').trim() || s.getPropertyValue('--cg-color-text-muted').trim();
-    this._text = s.getPropertyValue('--cg-color-surface-base-text').trim() || s.getPropertyValue('--cg-color-text-default').trim();
+    this._grid = s.getPropertyValue('--cg-color-chart-grid').trim() || s.getPropertyValue('--cg-color-surface-cards-border').trim();
+    this._axis = s.getPropertyValue('--cg-color-chart-axis').trim() || s.getPropertyValue('--cg-color-input-text-placeholder').trim();
+    this._text = s.getPropertyValue('--cg-color-surface-base-text').trim() || s.getPropertyValue('--cg-color-surface-base-text').trim();
     this._bg = s.getPropertyValue('--cg-color-surface-container-background').trim() || s.getPropertyValue('--cg-color-surface-base-background').trim();
     for (let i = 0; i < 8; i++) {
       const v = s.getPropertyValue(`--cg-color-chart-${i + 1}`).trim();
@@ -429,7 +429,12 @@ export class CgChart extends LitElement {
         ` : nothing}
 
         <div class="svg-wrap">
-          <svg viewBox="0 0 ${vw} ${vh}" style="${isPie ? `max-width:${vw}px; margin:0 auto;` : ''}">
+          <svg
+            role="img"
+            aria-label=${`${this.title || 'Chart'}: ${this.data.map((d) => `${d.label} ${this._fmt(d.value)}`).join(', ')}`}
+            viewBox="0 0 ${vw} ${vh}"
+            style="${isPie ? `max-width:${vw}px; margin:0 auto;` : ''}"
+          >
             ${chartSvg}
           </svg>
           <div class="tip ${this._tipShow ? 'show' : ''}" style="left:${this._tipX}px;top:${this._tipY}px;">
