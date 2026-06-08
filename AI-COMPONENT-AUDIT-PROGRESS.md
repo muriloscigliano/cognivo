@@ -41,7 +41,15 @@
 | 21 | ai-changelog | 🔧 | 7 applied (fixed syntax err) | 🔬 | proposed |
 | 22 | ai-chart-summary | 🔧 | 1 applied (10px svg flagged) | 🔬 | proposed |
 | 23 | ai-citation | 🔧 | 1 applied (400px flagged) | 🔬 | proposed |
-| ... | (remaining 68) | ⬜ | | | |
+| 24 | ai-chat | 🔧 | 1 applied | 🔬 | proposed |
+| 25 | ai-collaborative-editor | 🔧 | 5 applied (+sweep) | 🔬 | proposed |
+| 26 | ai-command-palette | ✅ | none (clean) | 🔬 | proposed |
+| 27 | ai-confidence-badge | ✅ | none (140/220px flagged) | 🔬 | proposed |
+| 28 | ai-confidence-slider | 🔧 | 6 applied (fixed broken token) | 🔬 | proposed |
+| 29 | ai-consent-manager | 🔧 | 1 applied | 🔬 | proposed |
+| ... | (remaining 62) | ⬜ | | | |
+
+**Batch 3b complete:** 6 components, 17 fixes. Fixed broken `--cg-letter-spacing-wide` (nonexistent token) in ai-confidence-slider, broken `var(200px)` ×2 in ai-collaborative-editor, adopted dedicated `--cg-color-slider-thumb-*` family. Flagged: ai-confidence-badge `140px`/`220px` (no token on scale 128/160).
 
 **Batch 3a complete (v2 workflow):** 6 components, 23 fixes applied; type-check green. Fixed a real CSS **syntax error** in ai-changelog (`calc(...` missing paren) and broken `var(240px)` + bare `200ms` in ai-capture-flow.
 

@@ -113,7 +113,7 @@ export class AiChat extends LitElement {
       display: inline-block;
       width: var(--cg-spacing-2);
       height: var(--cg-spacing-16);
-      background: var(--cg-color-action-primary-background-default);
+      background: var(--cg-color-ai-streaming-background);
       margin-left: var(--cg-spacing-1);
       vertical-align: text-bottom;
       animation: blink 1s step-end infinite;

@@ -42,13 +42,13 @@ export class AiCollaborativeEditor extends LitElement {
 
     .editor-wrap {
       position: relative;
-      min-height: var(200px);
+      min-height: var(--cg-spacing-192);
     }
 
     textarea {
       display: block;
       width: 100%;
-      min-height: var(200px);
+      min-height: var(--cg-spacing-192);
       background: transparent;
       color: var(--cg-color-surface-base-text);
       border: none;
@@ -57,7 +57,7 @@ export class AiCollaborativeEditor extends LitElement {
       padding: var(--cg-spacing-12);
       font-family: var(--cg-font-family-mono);
       font-size: var(--cg-font-size-sm);
-      line-height: 1.6;
+      line-height: var(--cg-line-height-relaxed);
       box-sizing: border-box;
       caret-color: var(--cg-color-surface-base-text);
     }
@@ -68,7 +68,7 @@ export class AiCollaborativeEditor extends LitElement {
 
     textarea:focus-visible {
       border-radius: var(--cg-border-radius-150);
-      box-shadow: inset 0 0 0 2px var(--cg-overlay-accent-strong);
+      box-shadow: inset 0 0 0 var(--cg-border-width-100) var(--cg-overlay-accent-strong);
     }
 
     textarea:disabled {
@@ -98,7 +98,7 @@ export class AiCollaborativeEditor extends LitElement {
     .cursor-line {
       width: var(--cg-spacing-2);
       height: var(--cg-spacing-20);
-      border-radius: 1px;
+      border-radius: var(--cg-border-radius-50);
     }
 
     .cursor-label {

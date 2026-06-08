@@ -62,7 +62,7 @@ export class AiConsentManager extends LitElement {
       display: flex; align-items: center; gap: var(--cg-spacing-6);
     }
     .item-description {
-      font-size: var(--cg-font-size-xs);
+      font-size: var(--cg-font-size-sm);
       color: var(--cg-color-surface-container-outlined);
       line-height: var(--cg-line-height-snug);
       margin-top: var(--cg-spacing-2);

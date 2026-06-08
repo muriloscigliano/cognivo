@@ -39,7 +39,7 @@ export class AiConfidenceSlider extends LitElement {
     }
     .label {
       font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-bold); color: var(--cg-color-input-text-placeholder);
-      text-transform: uppercase; letter-spacing: var(--cg-letter-spacing-wide);
+      text-transform: uppercase;
     }
     .count {
       font-size: var(--cg-font-size-xs); color: var(--cg-color-surface-base-text);
@@ -64,22 +64,22 @@ export class AiConfidenceSlider extends LitElement {
       width: var(--cg-spacing-16);
       height: var(--cg-spacing-16);
       border-radius: var(--cg-border-radius-full);
-      background: var(--cg-color-surface-base-text);
-      border: var(--cg-spacing-2) solid var(--cg-color-surface-cards-background);
+      background: var(--cg-color-slider-thumb-background);
+      border: var(--cg-spacing-2) solid var(--cg-color-slider-thumb-border);
       cursor: pointer;
     }
     input[type="range"]:focus-visible::-webkit-slider-thumb {
-      outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      outline: none; box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
     }
     /* Firefox */
     input[type="range"]::-moz-range-thumb {
       width: var(--cg-spacing-16); height: var(--cg-spacing-16); border-radius: var(--cg-border-radius-full);
-      background: var(--cg-color-surface-base-text);
-      border: var(--cg-spacing-2) solid var(--cg-color-surface-cards-background);
+      background: var(--cg-color-slider-thumb-background);
+      border: var(--cg-spacing-2) solid var(--cg-color-slider-thumb-border);
       cursor: pointer;
     }
     input[type="range"]:focus-visible::-moz-range-thumb {
-      outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      outline: none; box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
     }
     input[type="range"]::-moz-range-track {
       height: var(--cg-spacing-6); border-radius: var(--cg-border-radius-50);
@@ -112,7 +112,7 @@ export class AiConfidenceSlider extends LitElement {
     }
     .preset-btn:hover { border-color: var(--cg-color-input-border-hover); color: var(--cg-color-surface-base-text); }
     .preset-btn:focus-visible {
-      outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      outline: none; box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
     }
     .preset-btn.active { border-color: var(--cg-color-surface-base-text); color: var(--cg-color-surface-base-text); background: var(--cg-overlay-accent-subtle); }
 
