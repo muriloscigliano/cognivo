@@ -83,7 +83,21 @@
 | 63 | ai-prompt-editor | ✅ | none (clean) | 🔬 | proposed |
 | 64 | ai-prompt-template | 🔧 | 5 applied (+opacity) | 🔬 | proposed |
 | 65 | ai-rag-panel | 🔧 | 3 applied | 🔬 | proposed |
-| ... | (remaining 26) | ⬜ | | | |
+| 66 | ai-reasoning-tree | 🔧 | 2 applied (ai-reasoning color) | 🔬 | proposed |
+| 67 | ai-result-panel | ✅ | none (clean) | 🔬 | proposed |
+| 68 | ai-reveal-animation | 🔧 | 2 applied (syntax err) | 🔬 | proposed |
+| 69 | ai-reward-signal | ✅ | none (clean) | 🔬 | proposed |
+| 70 | ai-scenario-panel | 🔧 | 1 applied | 🔬 | proposed |
+| 71 | ai-search | ✅ | none (clean) | 🔬 | proposed |
+| 72 | ai-segmentation-viewer | 🔧 | 2 applied | 🔬 | proposed |
+| 73 | ai-sidebar | ✅ | none (clean) | 🔬 | proposed |
+| 74 | ai-similarity-card | ✅ | none (clean) | 🔬 | proposed |
+| 75 | ai-source-graph | 🔧 | 1 applied | 🔬 | proposed |
+| 76 | ai-status-page | 🔧 | 2 applied (+sweep) | 🔬 | proposed |
+| 77 | ai-streaming-text | ✅ | none (clean) | 🔬 | proposed |
+| ... | (remaining 14) | ⬜ | | | |
+
+**Batch 7 complete (split 7a+7b after a 12-wide StructuredOutput timeout):** 12 components, ~11 fixes. **3rd CSS syntax error** fixed (ai-reveal-animation `translateY(var(...);` unbalanced parens, broke slide-up ×2). ai-reasoning-tree adopted `--cg-color-ai-reasoning-text`. Flagged: status-page sparkline geometry (1px/2px), decorative opacities 0.35/0.4/0.7/0.85 (no exact token; opacity scale is 0/25/50/60/75/100).
 
 **Batch 6 complete:** 12 components, 29 fixes. All proposed tokens verified against the rebuilt dist vocab (incl. --cg-focus-ring-width, --cg-opacity-50, --cg-outline-width-default — all real). ai-presence adopted tooltip family; ai-model-comparison had raw `10px`. Flagged: opacity 0.85 / keyframe 0.6 (no exact token).
 

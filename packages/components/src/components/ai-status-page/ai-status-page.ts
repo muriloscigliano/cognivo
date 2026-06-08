@@ -104,7 +104,7 @@ export class AiStatusPage extends LitElement {
       align-items: center;
       padding: var(--cg-spacing-2) var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-full);
-      font-size: 10px;
+      font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-bold);
       letter-spacing: var(--cg-letter-spacing-wide);
       text-transform: uppercase;
@@ -212,7 +212,7 @@ export class AiStatusPage extends LitElement {
       background: var(--cg-color-status-success-text-default);
       opacity: 0.35;
     }
-    .history-day.day-operational:hover { opacity: 0.6; }
+    .history-day.day-operational:hover { opacity: var(--cg-opacity-60); }
     /* Incident days: full opacity, eye locks on */
     .history-day.day-degraded     { background: var(--cg-color-status-warning-text-default); opacity: 1; }
     .history-day.day-down         { background: var(--cg-color-status-error-text-default); opacity: 1; }

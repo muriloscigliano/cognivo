@@ -67,7 +67,7 @@ export class AiScenarioPanel extends LitElement {
     }
     .scenario:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 2px var(--cg-overlay-accent-strong);
+      box-shadow: inset 0 0 0 var(--cg-outline-width-default) var(--cg-overlay-accent-strong);
     }
 
     .scenario-info { flex: 1; min-width: 0; }

@@ -54,7 +54,7 @@ export class AiReasoningTree extends LitElement {
       background: none;
       border: none;
       font: inherit;
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-ai-reasoning-text);
       font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-medium);
       width: 100%;
@@ -64,7 +64,7 @@ export class AiReasoningTree extends LitElement {
     .toggle:focus-visible {
       outline: none;
       border-radius: var(--cg-border-radius-50);
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-outline-width-thick) var(--cg-color-focus-ring);
     }
 
     .chevron {

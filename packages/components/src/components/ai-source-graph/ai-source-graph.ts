@@ -154,7 +154,7 @@ export class AiSourceGraph extends LitElement {
 
     /* Excerpt */
     .excerpt {
-      font-size: var(--cg-font-size-xs);
+      font-size: var(--cg-font-size-sm);
       color: var(--cg-color-input-text-placeholder);
       line-height: var(--cg-line-height-normal);
       margin-top: var(--cg-spacing-4);

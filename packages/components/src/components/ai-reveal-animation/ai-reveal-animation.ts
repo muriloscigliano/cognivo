@@ -39,7 +39,7 @@ export class AiRevealAnimation extends LitElement {
     .wrapper.fade { opacity: 0; }
     .wrapper.slide-up {
       opacity: 0;
-      transform: translateY(var(--cg-spacing-24);
+      transform: translateY(var(--cg-spacing-24));
     }
     .wrapper.scale {
       opacity: 0;
@@ -77,7 +77,7 @@ export class AiRevealAnimation extends LitElement {
     }
 
     @keyframes reveal-slide-up {
-      from { opacity: 0; transform: translateY(var(--cg-spacing-24); }
+      from { opacity: 0; transform: translateY(var(--cg-spacing-24)); }
       to   { opacity: 1; transform: translateY(0); }
     }
 

@@ -61,7 +61,7 @@ export class AiSegmentationViewer extends LitElement {
     }
     .legend-title {
       font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-semibold);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-surface-cards-text);
       text-transform: uppercase; letter-spacing: var(--cg-letter-spacing-wide);
     }
     .legend-items { display: flex; flex-wrap: wrap; gap: var(--cg-spacing-8); }
@@ -72,7 +72,7 @@ export class AiSegmentationViewer extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       background: transparent;
       font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-medium);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-surface-cards-text);
       cursor: pointer;
       transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
