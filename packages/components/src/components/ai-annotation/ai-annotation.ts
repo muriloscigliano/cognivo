@@ -283,7 +283,7 @@ export class AiAnnotation extends LitElement {
       return html`<span class="annotated-span" tabindex="0" role="note"
           aria-label="${f.annotation.label}: ${f.text}"
           style="border-color: ${color}"
-          @click=${() => this._handleAnnotationClick(f.annotation)}>${f.text}</span>${isActive ? html`<span class="annotation-tag" style="background: ${color}; color: #000;">${f.annotation.label}${f.annotation.confidence !== undefined ? html` · ${Math.round(f.annotation.confidence * 100)}%` : nothing}</span>` : nothing}`;
+          @click=${() => this._handleAnnotationClick(f.annotation)}>${f.text}</span>${isActive ? html`<span class="annotation-tag" style="background: ${color}; color: var(--cg-overlay-dark-text);">${f.annotation.label}${f.annotation.confidence !== undefined ? html` · ${Math.round(f.annotation.confidence * 100)}%` : nothing}</span>` : nothing}`;
     });
   }
 

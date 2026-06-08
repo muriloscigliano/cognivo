@@ -41,7 +41,7 @@ export class AiActionPreview extends LitElement {
     }
     .card.critical {
       border-color: var(--cg-color-status-error-text-default);
-      animation: pulse-border 2s ease-in-out infinite;
+      animation: pulse-border var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-in-out) infinite;
     }
 
     /* ── Header ── */
@@ -80,7 +80,7 @@ export class AiActionPreview extends LitElement {
     }
     .severity.high {
       background: var(--cg-color-status-error-background-default);
-      color: var(--cg-color-chart-5);
+      color: var(--cg-color-status-error-text-default);
     }
     .severity.critical {
       background: var(--cg-color-status-error-background-default);
@@ -141,6 +141,7 @@ export class AiActionPreview extends LitElement {
     }
     button {
       flex: 1;
+      min-height: var(--cg-component-button-height-md);
       padding: var(--cg-spacing-8) var(--cg-spacing-16);
       border-radius: var(--cg-border-radius-100);
       font-size: var(--cg-font-size-sm);
@@ -154,7 +155,7 @@ export class AiActionPreview extends LitElement {
     }
     button:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
     }
     button:active {
       transform: scale(0.97);

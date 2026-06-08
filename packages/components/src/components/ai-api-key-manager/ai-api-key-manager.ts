@@ -38,7 +38,7 @@ export class AiApiKeyManager extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);
       padding: var(--cg-spacing-16);
-      animation: fadeSlideIn 200ms var(--cg-transition-easing-ease-out) both;
+      animation: fadeSlideIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) both;
     }
     :host([hidden]) { display: none; }
 
@@ -78,7 +78,7 @@ export class AiApiKeyManager extends LitElement {
     }
 
     .create-btn:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -101,7 +101,7 @@ export class AiApiKeyManager extends LitElement {
       align-items: center;
       gap: var(--cg-spacing-12);
       padding: var(--cg-spacing-12);
-      background: var(--cg-color-surface-overlay);
+      background: var(--cg-color-surface-cards-background);
       border-radius: var(--cg-border-radius-100);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
@@ -181,7 +181,7 @@ export class AiApiKeyManager extends LitElement {
     }
 
     .action-btn:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 

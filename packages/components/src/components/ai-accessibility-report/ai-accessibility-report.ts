@@ -149,6 +149,7 @@ export class AiAccessibilityReport extends LitElement {
       align-items: center;
       gap: var(--cg-spacing-8);
       padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      min-height: var(--cg-spacing-40);
       cursor: pointer;
       background: transparent;
       border: none;
@@ -220,7 +221,7 @@ export class AiAccessibilityReport extends LitElement {
     .issue-details {
       padding: var(--cg-spacing-8) var(--cg-spacing-12) var(--cg-spacing-12) var(--cg-spacing-32);
       border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      font-size: var(--cg-font-size-xs);
+      font-size: var(--cg-font-size-sm);
       display: flex;
       flex-direction: column;
       gap: var(--cg-spacing-8);

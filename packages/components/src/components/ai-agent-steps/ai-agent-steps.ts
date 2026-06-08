@@ -78,7 +78,7 @@ export class AiAgentSteps extends LitElement {
 
     /* Loading — spinning ring */
     .status-icon.loading {
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-ai-thinking-text);
     }
     .status-icon.loading .spinner {
       width: var(--cg-spacing-16);
@@ -91,7 +91,7 @@ export class AiAgentSteps extends LitElement {
 
     /* Complete — checkmark */
     .status-icon.complete {
-      color: var(--cg-color-status-success-text-default);
+      color: var(--cg-color-ai-complete-text);
     }
     .status-icon.complete svg {
       width: var(--cg-spacing-16);
@@ -107,7 +107,7 @@ export class AiAgentSteps extends LitElement {
 
     /* Error — X icon */
     .status-icon.error {
-      color: var(--cg-color-status-error-text-default);
+      color: var(--cg-color-ai-error-text);
     }
     .status-icon.error svg {
       width: var(--cg-spacing-16);
@@ -139,7 +139,7 @@ export class AiAgentSteps extends LitElement {
       color: var(--cg-color-surface-container-outlined);
     }
     .step.error .step-label {
-      color: var(--cg-color-status-error-text-default);
+      color: var(--cg-color-ai-error-text);
     }
 
     .step-detail {
@@ -154,7 +154,7 @@ export class AiAgentSteps extends LitElement {
       background: linear-gradient(
         110deg,
         var(--cg-color-surface-base-text) 35%,
-        var(--cg-color-action-primary-background-default) 50%,
+        var(--cg-color-ai-streaming-text) 50%,
         var(--cg-color-surface-base-text) 65%
       );
       background-size: 300% 100%;
@@ -183,7 +183,7 @@ export class AiAgentSteps extends LitElement {
       background: var(--cg-color-surface-base-divider);
     }
     .step.complete:not(:last-child)::after {
-      background: var(--cg-color-status-success-text-default);
+      background: var(--cg-color-ai-complete-text);
       opacity: 0.3;
     }
 

@@ -150,6 +150,10 @@ export class AiAudioPlayer extends LitElement {
       outline: none;
       box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
     }
+    .progress-track:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
+    }
     @media (prefers-reduced-motion: reduce) {
       .wave-bar { transition: none; }
       .progress-fill { transition: none; }

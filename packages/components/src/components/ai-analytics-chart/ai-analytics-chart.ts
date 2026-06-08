@@ -100,11 +100,11 @@ export class AiAnalyticsChart extends LitElement {
 
     .axis-label {
       font-size: var(--cg-font-size-xs);
-      fill: var(--cg-color-input-text-placeholder);
+      fill: var(--cg-color-chart-axis);
     }
 
     .grid-line {
-      stroke: var(--cg-color-surface-cards-divider);
+      stroke: var(--cg-color-chart-grid);
       stroke-width: 0.5;
     }
 
@@ -152,12 +152,12 @@ export class AiAnalyticsChart extends LitElement {
 
     .y-label {
       font-size: var(--cg-font-size-xs);
-      fill: var(--cg-color-input-text-placeholder);
+      fill: var(--cg-color-chart-axis);
     }
 
     :focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
     }
   `];
   @property({ type: Array }) series: AnalyticsSeries[] = [];

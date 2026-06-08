@@ -56,12 +56,12 @@ export class AiAppSidebar extends LitElement {
       height: 100%;
       background: var(--cg-color-surface-sidebar-background);
       border-right: var(--cg-border-width-50) solid var(--cg-color-surface-sidebar-border);
-      width: var(--ai-sidebar-width, 240px);
+      width: var(--ai-sidebar-width, var(--cg-component-sidebar-width));
       overflow: hidden;
       transition: width var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     :host([collapsed]) .sidebar {
-      width: var(--ai-sidebar-collapsed-width, 56px);
+      width: var(--ai-sidebar-collapsed-width, var(--cg-component-sidebar-collapsed-width));
     }
 
     .collapse-btn {
@@ -168,8 +168,8 @@ export class AiAppSidebar extends LitElement {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-semibold);
       border-radius: var(--cg-border-radius-100);
-      background: var(--cg-overlay-accent-strong);
-      color: var(--cg-color-surface-base-text);
+      background: var(--cg-color-badge-background-default);
+      color: var(--cg-color-badge-text-default);
     }
     :host([collapsed]) .item-badge {
       display: none;
@@ -215,7 +215,7 @@ export class AiAppSidebar extends LitElement {
                 class="item"
                 role="menuitem"
                 tabindex="0"
-                aria-current=${item.id === this.activeId ? 'true' : 'false'}
+                aria-current=${item.id === this.activeId ? 'page' : 'false'}
                 aria-label=${item.label}
                 @click=${() => this._handleItemClick(item)}
               >

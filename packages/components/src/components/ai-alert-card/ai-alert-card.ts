@@ -41,7 +41,7 @@ export class AiAlertCard extends LitElement {
       align-items: flex-start;
       gap: var(--cg-spacing-12);
       position: relative;
-      border-left: var(--cg-border-width-200) solid transparent;
+      border-left: var(--cg-border-width-300) solid transparent;
       transition:
         box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
@@ -59,11 +59,11 @@ export class AiAlertCard extends LitElement {
       outline: none;
       box-shadow:
         0 0 0 2px var(--cg-color-surface-base-background),
-        0 0 0 3px var(--cg-overlay-accent-strong);
+        0 0 0 3px var(--cg-color-focus-ring);
     }
     .card.critical {
       border-left-color: var(--cg-color-status-error-text-default);
-      animation: pulse-glow var(--cg-transition-duration-slower) var(--cg-transition-easing-default) infinite;
+      animation: pulse-glow var(--cg-transition-duration-slow) var(--cg-transition-easing-default) infinite;
     }
 
     /* ── Dismiss exit ── */
@@ -116,7 +116,7 @@ export class AiAlertCard extends LitElement {
 
     .message {
       font-size: var(--cg-font-size-sm);
-      color: var(--cg-color-input-text-placeholder);
+      color: var(--cg-color-surface-cards-subtle);
       line-height: var(--cg-line-height-normal);
       padding-bottom: var(--cg-spacing-12);
       margin-bottom: var(--cg-spacing-12);
