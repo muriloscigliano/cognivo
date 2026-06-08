@@ -127,7 +127,7 @@ export class AiNotificationCenter extends LitElement {
     .notification:active { transform: scale(var(--cg-interaction-press-scale)); }
     .notification:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
     }
 
     /* Left-accent unread indicator (replaces dot + bg) */
@@ -135,7 +135,7 @@ export class AiNotificationCenter extends LitElement {
       content: '';
       position: absolute;
       left: 0; top: var(--cg-spacing-12); bottom: var(--cg-spacing-12);
-      width: 2px;
+      width: var(--cg-border-width-100);
       background: var(--cg-color-action-primary-background-default);
       border-radius: var(--cg-border-radius-full);
     }
@@ -201,7 +201,7 @@ export class AiNotificationCenter extends LitElement {
     .dismiss-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .dismiss-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
     }
 
     /* ── Empty state ── */

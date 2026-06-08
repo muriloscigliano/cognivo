@@ -178,7 +178,7 @@ export class AiModelComparison extends LitElement {
       padding: 0 var(--cg-spacing-6);
       height: var(--cg-spacing-16);
       border-radius: var(--cg-border-radius-full);
-      font-size: 10px;
+      font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-bold);
       letter-spacing: var(--cg-letter-spacing-wide);
       text-transform: uppercase;

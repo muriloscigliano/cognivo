@@ -64,7 +64,7 @@ export class AiRagPanel extends LitElement {
     }
     .control-btn:hover { border-color: var(--cg-color-surface-cards-hover-border); color: var(--cg-color-surface-base-text); }
     .control-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
-    .control-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .control-btn:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-focus-ring-width) var(--cg-overlay-accent-strong); }
     .control-btn.active { border-color: var(--cg-color-action-primary-background-default); color: var(--cg-color-action-primary-background-default); background: var(--cg-overlay-accent-subtle); }
 
     /* ── Documents ── */
@@ -80,7 +80,7 @@ export class AiRagPanel extends LitElement {
     .doc:last-child { border-bottom: none; }
     .doc:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 2px var(--cg-overlay-accent-strong);
+      box-shadow: inset 0 0 0 var(--cg-focus-ring-width) var(--cg-overlay-accent-strong);
     }
 
     .doc-header { display: flex; align-items: center; gap: var(--cg-spacing-12); margin-bottom: var(--cg-spacing-4); }
@@ -122,7 +122,7 @@ export class AiRagPanel extends LitElement {
     .relevance-fill {
       height: 100%; border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-action-primary-background-default);
-      opacity: 0.6;
+      opacity: var(--cg-opacity-60);
       transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
 

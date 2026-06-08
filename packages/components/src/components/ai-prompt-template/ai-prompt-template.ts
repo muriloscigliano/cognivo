@@ -77,7 +77,7 @@ export class AiPromptTemplate extends LitElement {
     .mode-btn:hover:not(.active) { border-color: var(--cg-color-surface-cards-border); color: var(--cg-color-input-text-placeholder); }
     .mode-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-outline-width-thick) var(--cg-color-focus-ring);
     }
 
     /* ── Template editor area ── */
@@ -88,7 +88,7 @@ export class AiPromptTemplate extends LitElement {
       padding: var(--cg-spacing-16);
       min-height: 80px;
       font-size: var(--cg-font-size-sm);
-      line-height: 1.7;
+      line-height: var(--cg-line-height-relaxed);
       color: var(--cg-color-input-text-placeholder);
       white-space: pre-wrap;
       word-break: break-word;
@@ -104,13 +104,13 @@ export class AiPromptTemplate extends LitElement {
       box-sizing: border-box;
       font-size: var(--cg-font-size-sm);
       font-family: var(--cg-font-family-mono);
-      line-height: 1.7;
+      line-height: var(--cg-line-height-relaxed);
       color: var(--cg-color-input-text-placeholder);
       resize: vertical;
     }
     .template-textarea:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
-      outline-offset: -2px;
+      outline: var(--cg-outline-width-default) solid var(--cg-color-focus-ring);
+      outline-offset: calc(-1 * var(--cg-outline-offset-default));
     }
 
     .var-highlight {
@@ -166,11 +166,11 @@ export class AiPromptTemplate extends LitElement {
       font-family: inherit;
     }
     .var-input:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
-      outline-offset: -2px;
+      outline: var(--cg-outline-width-default) solid var(--cg-color-focus-ring);
+      outline-offset: calc(-1 * var(--cg-outline-offset-default));
     }
     .var-input:disabled {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-50);
       cursor: not-allowed;
     }
 

@@ -71,7 +71,21 @@
 | 51 | ai-keyboard-shortcuts | 🔧 | 3 applied | 🔬 | proposed |
 | 52 | ai-kpi-grid | 🔧 | 1 applied | 🔬 | proposed |
 | 53 | ai-labeling-board | 🔧 | 7 applied | 🔬 | proposed |
-| ... | (remaining 38) | ⬜ | | | |
+| 54 | ai-memory-panel | 🔧 | 2 applied (+opacity) | 🔬 | proposed |
+| 55 | ai-model-comparison | 🔧 | 1 applied (raw 10px) | 🔬 | proposed |
+| 56 | ai-model-selector | 🔧 | 2 applied | 🔬 | proposed |
+| 57 | ai-notification-center | 🔧 | 3 applied | 🔬 | proposed |
+| 58 | ai-onboarding | 🔧 | 4 applied | 🔬 | proposed |
+| 59 | ai-permission-gate | ✅ | none (clean) | 🔬 | proposed |
+| 60 | ai-personalization-dash | ✅ | none (clean) | 🔬 | proposed |
+| 61 | ai-presence | 🔧 | 4 applied (tooltip family) | 🔬 | proposed |
+| 62 | ai-progress-steps | 🔧 | 3 applied | 🔬 | proposed |
+| 63 | ai-prompt-editor | ✅ | none (clean) | 🔬 | proposed |
+| 64 | ai-prompt-template | 🔧 | 5 applied (+opacity) | 🔬 | proposed |
+| 65 | ai-rag-panel | 🔧 | 3 applied | 🔬 | proposed |
+| ... | (remaining 26) | ⬜ | | | |
+
+**Batch 6 complete:** 12 components, 29 fixes. All proposed tokens verified against the rebuilt dist vocab (incl. --cg-focus-ring-width, --cg-opacity-50, --cg-outline-width-default — all real). ai-presence adopted tooltip family; ai-model-comparison had raw `10px`. Flagged: opacity 0.85 / keyframe 0.6 (no exact token).
 
 **Batch 5 complete:** 12 components, ~40 fixes incl. ai-feature-flag toggle family, broken `--cg-border-radius-25` (also fixed retroactively in ai-capture-flow + ai-prompt-template), broken `--cg-color-chart-7` (ai-changelog).
 

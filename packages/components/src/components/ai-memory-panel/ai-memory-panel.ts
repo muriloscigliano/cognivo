@@ -67,7 +67,7 @@ export class AiMemoryPanel extends LitElement {
     .tab-count {
       font-size: var(--cg-font-size-xs);
       margin-left: var(--cg-spacing-4);
-      opacity: 0.5;
+      opacity: var(--cg-opacity-50);
     }
 
     /* ── Search ── */
@@ -78,7 +78,7 @@ export class AiMemoryPanel extends LitElement {
       border-radius: var(--cg-border-radius-100);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
       background: transparent; color: var(--cg-color-surface-base-text);
-      font: inherit; font-size: var(--cg-font-size-xs); outline: none;
+      font: inherit; font-size: var(--cg-font-size-sm); outline: none;
     }
     .search-input:focus { border-color: var(--cg-color-input-border-focus); }
     .search-input::placeholder { color: var(--cg-color-surface-container-outlined); }
@@ -136,7 +136,7 @@ export class AiMemoryPanel extends LitElement {
     }
     .mem-btn svg { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
     .mem-btn:hover { color: var(--cg-color-surface-base-text); }
-    .mem-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); opacity: 1; }
+    .mem-btn:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-focus-ring-width) var(--cg-overlay-accent-strong); opacity: 1; }
     .mem-btn.pinned-btn { color: var(--cg-color-action-primary-background-default); opacity: 1; }
 
     .empty {

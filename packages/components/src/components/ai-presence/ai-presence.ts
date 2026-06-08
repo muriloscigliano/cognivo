@@ -131,7 +131,7 @@ export class AiPresence extends LitElement {
       bottom: calc(100% + var(--cg-spacing-8));
       left: 50%;
       transform: translateX(-50%) translateY(var(--cg-spacing-2));
-      background: var(--cg-color-modal-container-background);
+      background: var(--cg-color-surface-tooltip-background);
       color: var(--cg-color-surface-base-text);
       padding: var(--cg-spacing-6) var(--cg-spacing-12);
       border-radius: var(--cg-border-radius-100);
@@ -144,7 +144,7 @@ export class AiPresence extends LitElement {
         opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out);
       z-index: 20;
-      border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-tooltip-border);
       box-shadow: var(--cg-elevation-2);
       white-space: nowrap;
     }
@@ -156,9 +156,9 @@ export class AiPresence extends LitElement {
       width: var(--cg-spacing-8);
       height: var(--cg-spacing-8);
       transform: translateX(-50%) translateY(-50%) rotate(45deg);
-      background: var(--cg-color-modal-container-background);
-      border-right: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
-      border-bottom: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
+      background: var(--cg-color-surface-tooltip-background);
+      border-right: var(--cg-border-width-50) solid var(--cg-color-surface-tooltip-border);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-tooltip-border);
     }
     .tooltip-name {
       font-weight: var(--cg-font-weight-semibold);
@@ -169,7 +169,7 @@ export class AiPresence extends LitElement {
     .tooltip-meta {
       display: block;
       margin-top: var(--cg-spacing-2);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-surface-container-subtle);
     }
     .avatar-wrapper:hover .tooltip,
     .avatar-wrapper:focus-within .tooltip {

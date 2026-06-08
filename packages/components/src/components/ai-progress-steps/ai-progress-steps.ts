@@ -63,7 +63,7 @@ export class AiProgressSteps extends LitElement {
       transform: scale(var(--cg-interaction-press-scale));
     }
     .step:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-outline-width-default) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
       border-radius: var(--cg-border-radius-50);
     }
@@ -76,7 +76,7 @@ export class AiProgressSteps extends LitElement {
 
     .line {
       flex: 1;
-      height: 2px;
+      height: var(--cg-border-width-100);
       background: var(--cg-color-surface-cards-border);
       transition: background var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
@@ -128,7 +128,7 @@ export class AiProgressSteps extends LitElement {
     }
 
     .label {
-      font-size: var(--cg-font-size-xs);
+      font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-medium);
       color: var(--cg-color-input-text-placeholder);
       white-space: nowrap;

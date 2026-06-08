@@ -91,7 +91,7 @@ export class AiOnboarding extends LitElement {
     .dismiss-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .dismiss-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
     }
 
     /* ── Progress: numbered ── */
@@ -121,7 +121,7 @@ export class AiOnboarding extends LitElement {
     }
     .dot.completed {
       background: var(--cg-color-action-primary-background-default);
-      opacity: 0.5;
+      opacity: var(--cg-opacity-50);
       cursor: pointer;
     }
     .dot.completed:hover { opacity: 0.85; }
@@ -132,7 +132,7 @@ export class AiOnboarding extends LitElement {
     }
     .dot:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
     }
 
     /* ── Progress: bar ── */
@@ -195,7 +195,7 @@ export class AiOnboarding extends LitElement {
     }
     .stepper-node:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
     }
     .stepper-line {
       flex: 1;

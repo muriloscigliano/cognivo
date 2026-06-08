@@ -42,7 +42,7 @@ export class AiModelSelector extends LitElement {
       transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .filter-chip:hover { border-color: var(--cg-color-surface-cards-hover-border); color: var(--cg-color-surface-base-text); }
-    .filter-chip:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .filter-chip:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring); }
     .filter-chip.active { border-color: var(--cg-color-action-primary-background-default); color: var(--cg-color-action-primary-background-default); background: var(--cg-overlay-accent-subtle); }
 
     /* ── Grid ── */
@@ -64,7 +64,7 @@ export class AiModelSelector extends LitElement {
     }
     .model-card:hover { border-color: var(--cg-color-surface-cards-hover-border); background: var(--cg-color-surface-cards-hover-background); }
     .model-card:active { transform: scale(var(--cg-interaction-press-scale)); }
-    .model-card:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .model-card:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring); }
     .model-card.selected {
       border-color: var(--cg-color-action-primary-background-default);
       background: var(--cg-overlay-accent-subtle);
