@@ -62,10 +62,21 @@ describe('cg-hover-card', () => {
     expect(fired).toBe(true);
   });
 
-  it('card has role="tooltip"', async () => {
+  it('card has role="dialog" (rich interactive content, not a tooltip)', async () => {
     await create();
     const card = el.shadowRoot!.querySelector('.card')!;
-    expect(card.getAttribute('role')).toBe('tooltip');
+    expect(card.getAttribute('role')).toBe('dialog');
+    expect(card.getAttribute('aria-modal')).toBe('false');
+  });
+
+  it('closes on Escape', async () => {
+    await create();
+    el.open = true;
+    await el.updateComplete;
+    const trigger = el.shadowRoot!.querySelector('.trigger')!;
+    trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await el.updateComplete;
+    expect(el.open).toBe(false);
   });
 
   it('renders content slot', async () => {

@@ -134,7 +134,7 @@ export class CgImageGallery extends LitElement {
     const gridClass = count <= 4 ? `count-${count}` : 'count-many';
 
     return html`
-      <div class="grid ${gridClass}">
+      <div class="grid ${gridClass}" role="group" aria-label="Image gallery">
         ${visible.map((img, i) => {
           const isLast = i === visible.length - 1 && overflow > 0;
           const loaded = this._loadedSet.has(i);
@@ -151,7 +151,7 @@ export class CgImageGallery extends LitElement {
               ${isLast && overflow > 0 ? html`<div class="overflow-badge">+${overflow}</div>` : nothing}
               <img
                 src=${img.src}
-                alt=${img.alt ?? ''}
+                alt=""
                 loading="lazy"
                 @load=${() => this._handleImageLoad(i)}
               />

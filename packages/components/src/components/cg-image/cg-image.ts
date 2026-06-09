@@ -90,7 +90,7 @@ export class CgImage extends LitElement {
     /* Loaded transition */
     img {
       opacity: 0;
-      transition: opacity var(--cg-transition-duration-slower) var(--cg-transition-easing-default);
+      transition: opacity var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     img.loaded {
       opacity: 1;

@@ -257,6 +257,7 @@ export class CgListbox extends LitElement {
         role="listbox"
         aria-label=${this.label || nothing}
         aria-multiselectable=${this.multiple ? 'true' : nothing}
+        aria-activedescendant=${this._highlightedIndex >= 0 && this.options[this._highlightedIndex] ? `opt-${this.options[this._highlightedIndex]!.value}` : nothing}
         tabindex="0"
         @keydown=${this._handleKeydown}
       >

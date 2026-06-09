@@ -148,6 +148,12 @@ export class CgHoverCard extends LitElement {
     this._closeTimer = window.setTimeout(() => { this.open = false; }, this.closeDelay);
   }
 
+  private _onKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && this.open) {
+      this.open = false;
+    }
+  };
+
   override render() {
     return html`
       <div
@@ -156,15 +162,18 @@ export class CgHoverCard extends LitElement {
         @mouseleave=${this._scheduleClose}
         @focusin=${this._scheduleOpen}
         @focusout=${this._scheduleClose}
+        @keydown=${this._onKeydown}
       >
         <slot></slot>
       </div>
       <div
         class="card"
-        role="tooltip"
+        role="dialog"
+        aria-modal="false"
         ?inert=${!this.open}
         @mouseenter=${this._scheduleOpen}
         @mouseleave=${this._scheduleClose}
+        @keydown=${this._onKeydown}
       >
         <slot name="content"></slot>
       </div>

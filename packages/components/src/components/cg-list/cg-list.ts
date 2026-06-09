@@ -305,7 +305,7 @@ export class CgList extends LitElement {
         <div class="right">
           ${item.meta ? html`<span class="meta">${item.meta}</span>` : nothing}
           ${item.actionLabel ? html`<button class="action-btn" @click=${(e: Event) => this._handleAction(e, item, i)}>${item.actionLabel}</button>` : nothing}
-          ${this.clickable ? html`<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>` : nothing}
+          ${this.clickable ? html`<svg class="chevron" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>` : nothing}
         </div>
       </div>
     `)}</div>`;

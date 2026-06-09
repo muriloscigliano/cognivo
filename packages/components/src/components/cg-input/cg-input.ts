@@ -110,7 +110,7 @@ export class CgInput extends LitElement {
     }
     :host([success]) .wrapper.focused {
       border-color: var(--cg-color-status-success-text-default);
-      box-shadow: 0 0 0 3px var(--cg-shadow-focus-success);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-shadow-focus-success);
     }
 
     /* Disabled */
@@ -397,7 +397,7 @@ export class CgInput extends LitElement {
             aria-invalid=${this.error ? 'true' : 'false'}
             aria-busy=${this.loading ? 'true' : 'false'}
             aria-required=${this.required ? 'true' : 'false'}
-            aria-label=${this.label || nothing}
+            aria-label=${this.label || this.placeholder || nothing}
             aria-describedby=${this.helper ? 'helper' : nothing}
             @input=${this._handleInput}
             @focus=${this._handleFocus}

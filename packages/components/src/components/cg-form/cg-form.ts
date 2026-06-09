@@ -111,8 +111,8 @@ export class CgForm extends LitElement {
         aria-busy=${this.loading ? 'true' : 'false'}
       >
         ${this.errors.length > 0 ? html`
-          <div class="error-summary" role="alert">
-            <strong>Please fix the following:</strong>
+          <div class="error-summary" role="alert" aria-labelledby="cg-form-error-heading">
+            <strong id="cg-form-error-heading" role="heading" aria-level="2">Please fix the following:</strong>
             <ul>${this.errors.map(e => html`<li>${e}</li>`)}</ul>
           </div>
         ` : nothing}

@@ -45,7 +45,7 @@ export class CgImageBlock extends LitElement {
       object-fit: cover;
       display: block;
       opacity: 0;
-      transition: opacity var(--cg-transition-duration-slower) var(--cg-transition-easing-default);
+      transition: opacity var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
     img.loaded { opacity: 1; }
 
@@ -118,7 +118,7 @@ export class CgImageBlock extends LitElement {
     :host([clickable]) figure { cursor: pointer; }
     :host([clickable]) figure:hover img { transform: scale(1.02); }
     :host([clickable]) figure:active img { transform: scale(0.99); }
-    :host([clickable]) img { transition: opacity var(--cg-transition-duration-slower) var(--cg-transition-easing-default), transform var(--cg-transition-duration-default) var(--cg-transition-easing-default); }
+    :host([clickable]) img { transition: opacity var(--cg-transition-duration-slow) var(--cg-transition-easing-default), transform var(--cg-transition-duration-default) var(--cg-transition-easing-default); }
 
     :focus-visible {
       outline: none;

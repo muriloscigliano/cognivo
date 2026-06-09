@@ -52,18 +52,18 @@
 | 31 | cg-file-input | 🔧 | compact focus ring → shared focusRingSingle helper (was inline 3px). DEFERRED: press states, success/error tint polish |
 | 32 | cg-focus-scope | ✅ | CLEAN — headless focus-trap primitive, no token/a11y issues |
 | 33 | cg-follow-up | 🔧 | focus ring → focusRingSingle helper, aria-busy on chips group during loading |
-| 34 | cg-form | ⬜ | |
-| 35 | cg-hover-card | ⬜ | |
-| 36 | cg-icon | ⬜ | |
-| 37 | cg-image | ⬜ | |
-| 38 | cg-image-block | ⬜ | |
-| 39 | cg-image-gallery | ⬜ | |
-| 40 | cg-input | ⬜ | |
-| 41 | cg-kbd | ⬜ | |
-| 42 | cg-label | ⬜ | |
+| 34 | cg-form | 🔧 | error-summary heading now has heading semantics + aria-labelledby. (other findings P2 polish — deferred) |
+| 35 | cg-hover-card | 🔧 | role=tooltip → dialog (rich interactive content), Escape-to-close handler +test |
+| 36 | cg-icon | ⬜ | icon-1 (muted→on-surface-container) REJECTED for consistency (outlined-as-text is the 44-component convention). icon-2 P2 polish only |
+| 37 | cg-image | 🔧 | orphan --cg-transition-duration-slower → -slow (fade now animates). cg-image-1 "invisible SVG" = FALSE POSITIVE (rejected) |
+| 38 | cg-image-block | 🔧 | orphan --cg-transition-duration-slower → -slow. DEFERRED: IB token + correctness P1s |
+| 39 | cg-image-gallery | 🔧 | grid role=group + label, inner img alt="" (wrapper aria-label names it — was double-announced). DEFERRED: col-min token, overflow state |
+| 40 | cg-input | 🔧 | placeholder as accessible-name fallback when no label, success-focus ring tokenized (3px→border-width-300) |
+| 41 | cg-kbd | ⬜ | kbd-1 (separator outlined→container-text) NOT applied — deliberate muted glyph, outlined-as-text convention |
+| 42 | cg-label | ⬜ | label-1 (outlined→input-text-placeholder) NOT applied — same value, outlined-as-text convention |
 | 43 | cg-link | 🔧 | dual focus-ring widths tokenized, underline bottom -1px → border-width-50. (kept surface-base-background offset — focus-ring-offset is dark-only) |
-| 44 | cg-list | ⬜ | |
-| 45 | cg-listbox | 🔧 | P0: added missing focus ring (was no visible focus indicator, WCAG 2.4.7). DEFERRED: aria-activedescendant, outlined-as-text |
+| 44 | cg-list | 🔧 | clickable chevron SVG aria-hidden. DEFERRED: other L2 polish |
+| 45 | cg-listbox | 🔧 | P0 focus ring added + aria-activedescendant now points at highlighted option. DEFERRED: outlined-as-text |
 | 46 | cg-markdown | ⬜ | |
 | 47 | cg-menubar | ⬜ | |
 | 48 | cg-meter | ⬜ | |
