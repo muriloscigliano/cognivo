@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, focusRingSingle } from '../../styles/index.js';
 
 /** Option for cg-listbox. */
 export interface ListboxOption {
@@ -33,6 +33,11 @@ export class CgListbox extends LitElement {
       padding: var(--cg-spacing-6);
       overflow-y: auto;
       max-height: 320px;
+    }
+    /* The listbox itself is the focusable element (tabindex=0); without this
+       a keyboard user tabbing in got no visible focus indicator (WCAG 2.4.7). */
+    .listbox:focus-visible {
+      ${focusRingSingle}
     }
 
     .option {

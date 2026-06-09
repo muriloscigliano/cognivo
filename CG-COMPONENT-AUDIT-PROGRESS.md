@@ -49,9 +49,9 @@
 | 28 | cg-drawer | 🔧 | close/back icon button resting bg was a -hover token (always looked filled) → -default (transparent ghost). DEFERRED: hardcoded setTimeout 200 sync |
 | 29 | cg-dropdown | 🔧 | removed dead :host color transition. DEFERRED: trigger focusability + closed-menu AT exposure (focus-model refactor) |
 | 30 | cg-empty-state | 🔧 | description/title/icon → dedicated empty-state component tokens (were outlined-as-text/icon), fixed .actions:empty never matching (slotchange-driven hide) |
-| 31 | cg-file-input | ⬜ | |
-| 32 | cg-focus-scope | ⬜ | |
-| 33 | cg-follow-up | ⬜ | |
+| 31 | cg-file-input | 🔧 | compact focus ring → shared focusRingSingle helper (was inline 3px). DEFERRED: press states, success/error tint polish |
+| 32 | cg-focus-scope | ✅ | CLEAN — headless focus-trap primitive, no token/a11y issues |
+| 33 | cg-follow-up | 🔧 | focus ring → focusRingSingle helper, aria-busy on chips group during loading |
 | 34 | cg-form | ⬜ | |
 | 35 | cg-hover-card | ⬜ | |
 | 36 | cg-icon | ⬜ | |
@@ -61,9 +61,9 @@
 | 40 | cg-input | ⬜ | |
 | 41 | cg-kbd | ⬜ | |
 | 42 | cg-label | ⬜ | |
-| 43 | cg-link | ⬜ | |
+| 43 | cg-link | 🔧 | dual focus-ring widths tokenized, underline bottom -1px → border-width-50. (kept surface-base-background offset — focus-ring-offset is dark-only) |
 | 44 | cg-list | ⬜ | |
-| 45 | cg-listbox | ⬜ | |
+| 45 | cg-listbox | 🔧 | P0: added missing focus ring (was no visible focus indicator, WCAG 2.4.7). DEFERRED: aria-activedescendant, outlined-as-text |
 | 46 | cg-markdown | ⬜ | |
 | 47 | cg-menubar | ⬜ | |
 | 48 | cg-meter | ⬜ | |

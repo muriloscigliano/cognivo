@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing, svg } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, focusRingSingle } from '../../styles/index.js';
 
 /** Per-file upload status driven by the consumer via `setFileStatus()`. */
 export type FileStatus = 'idle' | 'uploading' | 'done' | 'error';
@@ -144,9 +144,8 @@ export class CgFileInput extends LitElement {
       background: var(--cg-color-action-tertiary-background-hover);
     }
     .compact:focus-visible {
-      outline: none;
       border-color: var(--cg-color-input-border-focus);
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      ${focusRingSingle}
     }
     .compact.dragging {
       border-style: dashed;

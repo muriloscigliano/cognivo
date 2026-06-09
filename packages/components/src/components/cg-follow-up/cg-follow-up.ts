@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion, shimmerKeyframes, focusRingSingle } from '../../styles/index.js';
 
 /**
  * <cg-follow-up> — Suggestion chips for chat conversations.
@@ -81,8 +81,7 @@ export class CgFollowUp extends LitElement {
     }
     button:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
     button:focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      ${focusRingSingle}
     }
     button:disabled { opacity: 0.4; cursor: not-allowed; }
 
@@ -201,7 +200,7 @@ export class CgFollowUp extends LitElement {
         </div>
       ` : nothing}
 
-      <div class="chips" role="group" aria-label=${this.label}>
+      <div class="chips" role="group" aria-label=${this.label} aria-busy=${this.loading}>
         ${this.loading
           ? shimmerWidths.slice(0, this.maxVisible || 3).map(w => html`
               <div class="shimmer" style="width: ${w}px"></div>

@@ -30,7 +30,7 @@ export class CgLink extends LitElement {
     a::after {
       content: '';
       position: absolute;
-      bottom: -1px;
+      bottom: calc(-1 * var(--cg-border-width-50));
       left: 50%;
       width: 0;
       height: var(--cg-border-width-50);
@@ -47,8 +47,8 @@ export class CgLink extends LitElement {
       outline: none;
       border-radius: var(--cg-border-radius-50);
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background),
-        0 0 0 4px var(--cg-color-focus-ring);
+        0 0 0 var(--cg-border-width-100) var(--cg-color-surface-base-background),
+        0 0 0 calc(var(--cg-border-width-100) * 2) var(--cg-color-focus-ring);
     }
 
     /* Sizes */
