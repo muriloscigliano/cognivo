@@ -20,6 +20,18 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     <span class="badge">spec: dynamic-interfaces</span>
   </div>
 
+  <!-- ════ The thesis: ONE dataset, MANY surfaces ════ -->
+  <h2>One dataset → many surfaces</h2>
+  <p class="desc">
+    All four surfaces below are generated from the <strong>same</strong>
+    <code>inbox.message.v1</code> dataset (6 messages). Each is a pure function
+    <code>(dataset) → DSL</code>, parsed, governed, and rendered. A surface may
+    only reference fields the dataset declares (the L1/L2 firewall). This is the
+    headline claim: shared data underneath, radically different surfaces on top.
+  </p>
+  <div id="di-surfaces" class="di-surfaces"></div>
+
+  <h2>Try it yourself</h2>
   <section class="di-presets">
     <span class="di-presets-label">Presets:</span>
     <cg-button size="sm" variant="outline" data-preset="list">Inbox list</cg-button>
@@ -57,6 +69,9 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
       cognivoLibrary,
       suggestBiasesForTree,
     } from '@cognivo/gen-ui';
+    // Shared dataset + deterministic surface generators (the thesis demo).
+    import { INBOX_DATASET } from '../../../specs/dynamic-interfaces/fixtures.mjs';
+    import { SURFACES } from '../../../specs/dynamic-interfaces/surfaces.mjs';
 
     const PRESETS = {
       list: [
@@ -164,6 +179,44 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
       audit.innerHTML = html;
     }
 
+    // ── The thesis: render all four surfaces from the ONE shared dataset ──
+    function renderSurfaces() {
+      const host = $('di-surfaces');
+      host.innerHTML = '';
+      for (const [key, s] of Object.entries(SURFACES)) {
+        const card = document.createElement('div');
+        card.className = 'di-scard';
+        const head = document.createElement('div');
+        head.className = 'di-scard-h';
+        const body = document.createElement('div');
+        body.className = 'di-scard-body';
+        try {
+          const treeDsl = s.gen(INBOX_DATASET);            // (dataset) -> DSL
+          const result = parser.parse(treeDsl);
+          result.meta.tokenViolations = validateTokenUsage(result.root);
+          const ve = result.meta.validationErrors || [];
+          const tv = result.meta.tokenViolations || [];
+          const ok = !!result.root && ve.length === 0 && tv.length === 0;
+          const biases = result.root ? suggestBiasesForTree(result, cognivoLibrary) : [];
+          head.innerHTML = `<span class="di-scard-name">${esc(s.label)}</span>`
+            + ` <span class="di-pill ${ok ? 'ok' : 'err'}">${ok ? 'govern ✓' : 'govern ✗'}</span>`
+            + ` <span class="di-muted">${biases.length} bias${biases.length === 1 ? '' : 'es'}</span>`;
+          if (ok) {
+            const dom = renderTreeToDom(result.root);
+            if (dom) body.appendChild(dom);
+          } else {
+            body.innerHTML = `<p class="di-issue">${esc(ve[0]?.message || tv[0]?.message || 'render blocked')}</p>`;
+          }
+        } catch (err) {
+          head.innerHTML = `<span class="di-scard-name">${esc(s.label)}</span> <span class="di-pill err">error</span>`;
+          body.innerHTML = `<p class="di-issue">${esc(err.message)}</p>`;
+        }
+        card.appendChild(head);
+        card.appendChild(body);
+        host.appendChild(card);
+      }
+    }
+
     document.querySelectorAll('[data-preset]').forEach((btn) => {
       btn.addEventListener('click', () => {
         dsl.value = PRESETS[btn.getAttribute('data-preset')] || '';
@@ -172,12 +225,22 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     });
     $('di-render').addEventListener('click', render);
 
-    // Boot with the list preset so the page is alive on load.
+    // Boot: the four-surface thesis demo, then the editable playground.
+    renderSurfaces();
     dsl.value = PRESETS.list;
     render();
   </script>
 
   <style>
+    .di-surfaces { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--cg-spacing-12); margin: var(--cg-spacing-12) 0 var(--cg-spacing-24); }
+    @media (max-width: 1100px) { .di-surfaces { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px) { .di-surfaces { grid-template-columns: 1fr; } }
+    .di-scard { display: flex; flex-direction: column; border-radius: var(--cg-border-radius-150); overflow: hidden; border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border); background: var(--cg-color-surface-container-background); }
+    .di-scard-h { display: flex; align-items: center; gap: var(--cg-spacing-8); padding: var(--cg-spacing-8) var(--cg-spacing-12); border-bottom: var(--cg-border-width-100) solid var(--cg-color-surface-base-border); font-size: var(--cg-font-size-sm); }
+    .di-scard-name { font-weight: var(--cg-font-weight-semibold); }
+    .di-scard-body { padding: var(--cg-spacing-12); min-height: 160px; }
+    .di-pill.ok { color: var(--cg-color-status-success-text-default); }
+    .di-pill.err { color: var(--cg-color-status-error-text-default); }
     .di-presets { display: flex; align-items: center; gap: var(--cg-spacing-8); margin: var(--cg-spacing-12) 0; flex-wrap: wrap; }
     .di-presets-label { color: var(--cg-color-surface-inset-text); font-size: var(--cg-font-size-sm); }
     .di-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--cg-spacing-24); margin-top: var(--cg-spacing-12); }

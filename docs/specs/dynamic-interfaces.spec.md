@@ -11,6 +11,12 @@
 > - `g1-harness.mjs` — runnable G1 measurement: NL prompt → `AnthropicClient` → `createParser().parse` → governance, with `--repair` and `--model` flags. **Dry-run verified** (wiring + system-prompt assembly, no key needed).
 > - `docs/src/pages/playground/dynamic-interfaces.astro` — visual render + govern + bias-audit page. **Docs build passes** (207 pages, page emits a bundled client module).
 > Verified working offline: the 3 DSL examples parse to valid `Stack` trees, 0 validation/0 token violations. `@cognivo/gen-ui` + `@cognivo/gen-ui-lit` added as `docs` workspace deps so the page resolves them.
+>
+> **Scenario A (one dataset → many surfaces) — BUILT & verified offline:**
+> - `surfaces.mjs` — 4 deterministic generators `(DatasetEnvelope) → DSL`: `listSurface`, `taskListSurface`, `calendarSurface`, `summarySurface`. Each enforces the L1/L2 field firewall via `assertField()`.
+> - From the single `INBOX_DATASET`: **all 4 surfaces parse → govern PASS → 0 violations**; bias audit fires (`tasks`/`summary` each engage 2 biases); the firewall **throws** when a surface references an undeclared field. This is the headline thesis ("shared data, radically different surfaces"), proven without an LLM.
+> - The playground page renders all four side-by-side on load (the "One dataset → many surfaces" section) plus the editable DSL playground below it.
+>
 > **Open:** the actual G1 parse/govern *rate* over the 10 prompts — needs `ANTHROPIC_API_KEY`. This is the make-or-break number (§8). Run: `ANTHROPIC_API_KEY=… node docs/specs/dynamic-interfaces/g1-harness.mjs --repair`.
 
 ---
