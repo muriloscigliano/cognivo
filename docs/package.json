@@ -11,6 +11,8 @@
   "dependencies": {
     "@cognivo/components": "workspace:*",
     "@cognivo/design-advisor": "workspace:*",
+    "@cognivo/gen-ui": "workspace:*",
+    "@cognivo/gen-ui-lit": "workspace:*",
     "@cognivo/lens-core": "workspace:*",
     "@cognivo/lens-pack-core": "workspace:*",
     "@cognivo/lens-pack-ethics": "workspace:*",

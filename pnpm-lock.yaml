@@ -68,6 +68,12 @@ importers:
       '@cognivo/design-advisor':
         specifier: workspace:*
         version: link:../packages/design-advisor
+      '@cognivo/gen-ui':
+        specifier: workspace:*
+        version: link:../packages/gen-ui
+      '@cognivo/gen-ui-lit':
+        specifier: workspace:*
+        version: link:../packages/gen-ui-lit
       '@cognivo/lens-core':
         specifier: workspace:*
         version: link:../packages/lens-core

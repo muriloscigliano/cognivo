@@ -1,0 +1,216 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+---
+
+<DocsLayout title="Dynamic Interfaces (Phase 1)">
+  <p class="bc"><a href="/">Home</a> <span>/</span> Dynamic Interfaces</p>
+
+  <h1>Dynamic Software Interfaces — Phase 1 prototype</h1>
+  <p class="desc">
+    One shared dataset, many surfaces. An agent emits a Cognivo component-DSL
+    tree; we parse it, enforce token + field governance, render it, and audit it
+    for engaged cognitive biases. This page proves the <strong>render + govern +
+    audit</strong> half of the loop with no API key — paste DSL, or load a
+    preset. The live-LLM half is measured by the G1 harness (see the spec).
+  </p>
+
+  <div class="badges">
+    <span class="badge">playground</span>
+    <span class="badge">gen-ui</span>
+    <span class="badge">spec: dynamic-interfaces</span>
+  </div>
+
+  <section class="di-presets">
+    <span class="di-presets-label">Presets:</span>
+    <cg-button size="sm" variant="outline" data-preset="list">Inbox list</cg-button>
+    <cg-button size="sm" variant="outline" data-preset="tasks">Task list</cg-button>
+    <cg-button size="sm" variant="outline" data-preset="summary">Summary</cg-button>
+  </section>
+
+  <div class="di-grid">
+    <div class="di-col">
+      <label class="di-h">Component-DSL (agent output)</label>
+      <textarea id="di-dsl" class="di-dsl" spellcheck="false"></textarea>
+      <div class="di-actions">
+        <cg-button id="di-render" variant="primary" size="sm">Render &amp; audit</cg-button>
+        <span id="di-status" class="di-status"></span>
+      </div>
+    </div>
+
+    <div class="di-col">
+      <label class="di-h">Rendered surface</label>
+      <div id="di-surface" class="di-surface"></div>
+    </div>
+
+    <div class="di-col">
+      <label class="di-h">Governance &amp; bias audit</label>
+      <div id="di-audit" class="di-audit"><p class="di-muted">Render to see governance result and engaged biases.</p></div>
+    </div>
+  </div>
+
+  <script>
+    // Register the generative-ui custom element (BaseLayout loads cg-* but not gen-ui-lit).
+    import '@cognivo/gen-ui-lit';
+    import {
+      createParser,
+      validateTokenUsage,
+      cognivoLibrary,
+      suggestBiasesForTree,
+    } from '@cognivo/gen-ui';
+
+    const PRESETS = {
+      list: [
+        'root = Stack([row1, row2], "column", "sm")',
+        'row1 = Stack([t1, b1], "row", "md")',
+        't1 = TextContent("Q4 budget sign-off", "medium")',
+        'b1 = Badge("urgent", "danger")',
+        'row2 = Stack([t2, b2], "row", "md")',
+        't2 = TextContent("Design review notes", "medium")',
+        'b2 = Badge("high", "warning")',
+      ].join('\n'),
+      tasks: [
+        'root = Stack([task1, task2, task3], "column", "sm")',
+        'task1 = Checkbox("Q4 budget sign-off", false)',
+        'task2 = Checkbox("Design review notes", false)',
+        'task3 = Checkbox("Sprint retro action items", false)',
+      ].join('\n'),
+      summary: [
+        'root = Stack([header, metrics], "column", "lg")',
+        'header = TextContent("Inbox summary", "large")',
+        'metrics = Stack([m1, m2, m3], "row", "md")',
+        'm1 = MetricCard("Total", "6", "")',
+        'm2 = MetricCard("Unread", "3", "+1")',
+        'm3 = MetricCard("Urgent", "1", "")',
+      ].join('\n'),
+    };
+
+    const parser = createParser(cognivoLibrary.toJSONSchema());
+    const $ = (id) => document.getElementById(id);
+    const dsl = $('di-dsl');
+    const surface = $('di-surface');
+    const audit = $('di-audit');
+    const status = $('di-status');
+
+    function esc(s) {
+      return String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    }
+
+    function renderTreeToDom(node) {
+      // Minimal renderer: map ElementNode -> cg-* custom element by tag name.
+      if (!node || node.type !== 'element') return null;
+      const tag = cognivoLibrary.getTagName(node.typeName);
+      if (!tag) return null;
+      const el = document.createElement(tag);
+      for (const [k, v] of Object.entries(node.props || {})) {
+        if (k === 'children' && Array.isArray(v)) {
+          for (const child of v) {
+            const c = renderTreeToDom(child);
+            if (c) el.appendChild(c);
+          }
+        } else if (v && typeof v === 'object' && v.type === 'element') {
+          const c = renderTreeToDom(v);
+          if (c) el.appendChild(c);
+        } else {
+          try { el[k] = v; } catch {}
+          if (typeof v !== 'object') el.setAttribute(k, String(v));
+        }
+      }
+      return el;
+    }
+
+    function render() {
+      const src = dsl.value;
+      const result = parser.parse(src);
+      result.meta.tokenViolations = validateTokenUsage(result.root);
+
+      const ve = result.meta.validationErrors || [];
+      const tv = result.meta.tokenViolations || [];
+      const parsed = !!result.root && !result.meta.incomplete;
+      const pass = parsed && ve.length === 0 && tv.length === 0;
+
+      // ── Governance gate: do NOT render on failure (spec §1 step 3) ──
+      surface.innerHTML = '';
+      if (pass) {
+        const dom = renderTreeToDom(result.root);
+        if (dom) surface.appendChild(dom);
+        status.textContent = '✓ rendered';
+        status.className = 'di-status ok';
+      } else {
+        status.textContent = parsed ? '~ parsed, governance failed — render blocked' : '✗ parse failed';
+        status.className = 'di-status err';
+      }
+
+      // ── Audit panel ──
+      let html = '';
+      html += `<div class="di-gov ${pass ? 'ok' : 'err'}">`;
+      html += `<strong>Governance:</strong> ${pass ? 'PASS' : 'FAIL'} `;
+      html += `<span class="di-muted">(${ve.length} validation, ${tv.length} token)</span></div>`;
+      for (const e of ve.slice(0, 8)) html += `<div class="di-issue">• ${esc(e.message || JSON.stringify(e))}</div>`;
+      for (const t of tv.slice(0, 8)) html += `<div class="di-issue">• ${esc(t.message || JSON.stringify(t))}</div>`;
+
+      if (parsed) {
+        const biases = suggestBiasesForTree(result, cognivoLibrary);
+        html += `<div class="di-bias-h"><strong>Engaged biases:</strong> ${biases.length}</div>`;
+        for (const b of biases) {
+          html += `<div class="di-bias di-sev-${b.severity}">`;
+          html += `<span class="di-bias-name">${esc(b.biasName)}</span> `;
+          html += `<span class="di-pill">${b.severity}</span> `;
+          html += `<span class="di-muted">×${b.occurrences}</span>`;
+          if (b.recommendation) html += `<div class="di-rec">${esc(b.recommendation)}</div>`;
+          html += `</div>`;
+        }
+        if (!biases.length) html += `<p class="di-muted">No engaged biases detected in this surface.</p>`;
+      }
+      audit.innerHTML = html;
+    }
+
+    document.querySelectorAll('[data-preset]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        dsl.value = PRESETS[btn.getAttribute('data-preset')] || '';
+        render();
+      });
+    });
+    $('di-render').addEventListener('click', render);
+
+    // Boot with the list preset so the page is alive on load.
+    dsl.value = PRESETS.list;
+    render();
+  </script>
+
+  <style>
+    .di-presets { display: flex; align-items: center; gap: var(--cg-spacing-8); margin: var(--cg-spacing-12) 0; flex-wrap: wrap; }
+    .di-presets-label { color: var(--cg-color-surface-inset-text); font-size: var(--cg-font-size-sm); }
+    .di-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--cg-spacing-24); margin-top: var(--cg-spacing-12); }
+    @media (max-width: 980px) { .di-grid { grid-template-columns: 1fr; } }
+    .di-col { display: flex; flex-direction: column; gap: var(--cg-spacing-8); min-width: 0; }
+    .di-h { font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-semibold); color: var(--cg-color-surface-inset-text); }
+    .di-dsl {
+      width: 100%; min-height: 240px; resize: vertical;
+      font-family: var(--cg-font-family-mono); font-size: var(--cg-font-size-sm); line-height: 1.5;
+      padding: var(--cg-spacing-12); border-radius: var(--cg-border-radius-150);
+      background: var(--cg-color-surface-inset-background); color: var(--cg-color-surface-base-text);
+      border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border);
+    }
+    .di-actions { display: flex; align-items: center; gap: var(--cg-spacing-12); }
+    .di-status { font-size: var(--cg-font-size-sm); }
+    .di-status.ok { color: var(--cg-color-status-success-text-default); }
+    .di-status.err { color: var(--cg-color-status-error-text-default); }
+    .di-surface, .di-audit {
+      padding: var(--cg-spacing-12); border-radius: var(--cg-border-radius-150); min-height: 240px;
+      background: var(--cg-color-surface-container-background);
+      border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border);
+    }
+    .di-audit { font-size: var(--cg-font-size-sm); }
+    .di-muted { color: var(--cg-color-surface-inset-text); }
+    .di-gov { padding: var(--cg-spacing-8); border-radius: var(--cg-border-radius-100); margin-bottom: var(--cg-spacing-12); }
+    .di-gov.ok { background: var(--cg-color-status-success-background-default); }
+    .di-gov.err { background: var(--cg-color-status-error-background-default); }
+    .di-issue { color: var(--cg-color-status-error-text-default); margin: var(--cg-spacing-4) 0; }
+    .di-bias-h { margin: var(--cg-spacing-12) 0 var(--cg-spacing-8); }
+    .di-bias { padding: var(--cg-spacing-8); border-radius: var(--cg-border-radius-100); margin-bottom: var(--cg-spacing-8); background: var(--cg-color-surface-inset-background); }
+    .di-bias-name { font-weight: var(--cg-font-weight-semibold); }
+    .di-pill { font-size: var(--cg-font-size-xs); padding: 0 var(--cg-spacing-4); border-radius: var(--cg-border-radius-100); background: var(--cg-color-surface-base-background); }
+    .di-rec { color: var(--cg-color-surface-inset-text); margin-top: var(--cg-spacing-4); }
+    .di-sev-critical .di-pill, .di-sev-high .di-pill { color: var(--cg-color-status-error-text-default); }
+  </style>
+</DocsLayout>
