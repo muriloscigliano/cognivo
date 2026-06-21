@@ -94,7 +94,11 @@ function resolveProp(
   if (isFieldBinding(value)) return resolveBinding(value, env, itemIndex, rejections);
   if (isLiteralValue(value)) return value.value;
   if (Array.isArray(value)) {
-    return value.map((child) => resolveNode(child, env, itemIndex, rejections));
+    // Recurse into genuine UiNodes; leave non-node array items (e.g. stray
+    // _args) untouched rather than treating them as nodes.
+    return value.map((child) =>
+      isUiNode(child) ? resolveNode(child, env, itemIndex, rejections) : child,
+    );
   }
   if (isUiNode(value)) return resolveNode(value, env, itemIndex, rejections);
   // Unknown prop shape — pass through untouched (the parser guarantees shapes;
@@ -137,7 +141,9 @@ export function collectFieldBindings(tree: UiNode): string[] {
   const keys = new Set<string>();
   const walkValue = (v: PropValue): void => {
     if (isFieldBinding(v)) keys.add(v.key);
-    else if (Array.isArray(v)) v.forEach(walkNode);
+    // An array prop may hold non-node items (e.g. a stray _args array); recurse
+    // only into genuine UiNodes, ignore the rest. Mirror resolveProp's guarding.
+    else if (Array.isArray(v)) v.forEach((c) => isUiNode(c) && walkNode(c));
     else if (isUiNode(v)) walkNode(v);
   };
   const walkNode = (n: UiNode): void => {
