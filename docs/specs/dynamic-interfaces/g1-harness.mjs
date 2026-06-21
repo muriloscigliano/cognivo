@@ -103,11 +103,11 @@ async function main() {
     let content, gov, repaired = false;
     try {
       content = await callModel(client, prompt);
-      gov = evaluateGovernance(runOnce(content));
+      gov = evaluateGovernance(runOnce(content), cognivoLibrary);
 
       if (REPAIR && !gov.governancePass) {
         const fixed = await callModel(client, prompt, content, describeFailures(gov));
-        const gov2 = evaluateGovernance(runOnce(fixed));
+        const gov2 = evaluateGovernance(runOnce(fixed), cognivoLibrary);
         if (gov2.governancePass || (gov2.parsed && !gov.parsed)) {
           content = fixed;
           gov = gov2;

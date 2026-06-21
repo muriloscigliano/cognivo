@@ -45,6 +45,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
       <textarea id="di-dsl" class="di-dsl" spellcheck="false"></textarea>
       <div class="di-actions">
         <cg-button id="di-render" variant="primary" size="sm">Render &amp; audit</cg-button>
+        <cg-button id="di-save" variant="outline" size="sm">Save version</cg-button>
         <span id="di-status" class="di-status"></span>
       </div>
     </div>
@@ -60,6 +61,16 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     </div>
   </div>
 
+  <!-- ════ Layer 3: per-user versioning (spec §5 Scenario E, §6) ════ -->
+  <h2>Saved versions <span class="di-muted di-h3-note">(Layer 3 — IndexedDB, append-only, re-validated on load)</span></h2>
+  <p class="desc">
+    Each <strong>Save version</strong> appends an immutable <code>InterfaceSpec</code>
+    keyed to a demo user. Rollback clones an older version as a new latest one —
+    history is never deleted. Every load re-validates the stored DSL (token rules
+    and the component library can change after a spec was saved).
+  </p>
+  <div id="di-versions" class="di-versions"><p class="di-muted">No saved versions yet — render a surface and click “Save version”.</p></div>
+
   <script>
     // Register the generative-ui custom element (BaseLayout loads cg-* but not gen-ui-lit).
     import '@cognivo/gen-ui-lit';
@@ -70,8 +81,10 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
       suggestBiasesForTree,
     } from '@cognivo/gen-ui';
     // Shared dataset + deterministic surface generators (the thesis demo).
-    import { INBOX_DATASET } from '../../../specs/dynamic-interfaces/fixtures.mjs';
+    import { INBOX_DATASET, evaluateGovernance } from '../../../specs/dynamic-interfaces/fixtures.mjs';
     import { SURFACES } from '../../../specs/dynamic-interfaces/surfaces.mjs';
+    // Layer 3: per-user spec persistence + versioning (IndexedDB in the browser).
+    import { InterfaceSpecStore } from '../../../specs/dynamic-interfaces/spec-store.mjs';
 
     const PRESETS = {
       list: [
@@ -217,6 +230,66 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
       }
     }
 
+    // ── Layer 3: persist + version the current DSL per (demo) user ──
+    const DEMO_USER = 'demo-user';
+    const DEMO_SPEC = 'inbox-main';
+    const store = new InterfaceSpecStore({
+      // Re-validation gate (§6): never trust stored DSL blindly.
+      validator: (tree) => {
+        const r = parser.parse(tree);
+        r.meta.tokenViolations = validateTokenUsage(r.root);
+        const g = evaluateGovernance(r, cognivoLibrary);
+        return { ok: g.governancePass, errors: [...g.validationErrors, ...g.tokenViolations] };
+      },
+    });
+
+    async function refreshVersions() {
+      const host = $('di-versions');
+      const history = await store.versions(DEMO_USER, DEMO_SPEC);
+      if (!history.length) {
+        host.innerHTML = '<p class="di-muted">No saved versions yet — render a surface and click “Save version”.</p>';
+        return;
+      }
+      const active = history[history.length - 1];
+      // Re-validate the active version on load (§6).
+      const reval = await store.revalidateOnLoad(DEMO_USER, DEMO_SPEC);
+      let html = `<div class="di-muted" style="margin-bottom:var(--cg-spacing-8)">Active: v${active.version} — re-validation on load: ${reval.valid ? '✓ valid' : '✗ invalid (' + esc(reval.errors[0]?.message || '') + ')'}</div>`;
+      html += '<div class="di-vlist">';
+      for (const v of [...history].reverse()) {
+        const isActive = v.version === active.version;
+        html += `<div class="di-vrow${isActive ? ' active' : ''}">`;
+        html += `<span class="di-pill">v${v.version}</span> `;
+        html += `<span class="di-vintent">${esc(v.intent || '(no intent)')}</span> `;
+        if (v.parentVersion) html += `<span class="di-muted">← v${v.parentVersion}</span> `;
+        html += `<span class="di-muted di-vtime">${esc(v.createdAt)}</span>`;
+        html += `<span class="di-vactions">`;
+        html += `<cg-button size="sm" variant="ghost" data-load="${v.version}">Load</cg-button>`;
+        if (!isActive) html += `<cg-button size="sm" variant="ghost" data-rollback="${v.version}">Roll back</cg-button>`;
+        html += `</span></div>`;
+      }
+      html += '</div>';
+      host.innerHTML = html;
+      host.querySelectorAll('[data-load]').forEach((b) => b.addEventListener('click', async () => {
+        const vs = await store.versions(DEMO_USER, DEMO_SPEC);
+        const v = vs.find((x) => String(x.version) === b.getAttribute('data-load'));
+        if (v) { dsl.value = v.tree; render(); }
+      }));
+      host.querySelectorAll('[data-rollback]').forEach((b) => b.addEventListener('click', async () => {
+        await store.rollback(DEMO_USER, DEMO_SPEC, Number(b.getAttribute('data-rollback')));
+        const a = await store.getActive(DEMO_USER, DEMO_SPEC);
+        if (a) { dsl.value = a.tree; render(); }
+        refreshVersions();
+      }));
+    }
+
+    $('di-save').addEventListener('click', async () => {
+      await store.save({
+        userId: DEMO_USER, specId: DEMO_SPEC, schemaId: INBOX_DATASET.schemaId,
+        intent: 'manual save from playground', tree: dsl.value,
+      });
+      refreshVersions();
+    });
+
     document.querySelectorAll('[data-preset]').forEach((btn) => {
       btn.addEventListener('click', () => {
         dsl.value = PRESETS[btn.getAttribute('data-preset')] || '';
@@ -225,10 +298,11 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     });
     $('di-render').addEventListener('click', render);
 
-    // Boot: the four-surface thesis demo, then the editable playground.
+    // Boot: the four-surface thesis demo, then the editable playground + versions.
     renderSurfaces();
     dsl.value = PRESETS.list;
     render();
+    refreshVersions();
   </script>
 
   <style>
@@ -241,6 +315,14 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     .di-scard-body { padding: var(--cg-spacing-12); min-height: 160px; }
     .di-pill.ok { color: var(--cg-color-status-success-text-default); }
     .di-pill.err { color: var(--cg-color-status-error-text-default); }
+    .di-h3-note { font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-normal); }
+    .di-versions { margin: var(--cg-spacing-12) 0 var(--cg-spacing-24); }
+    .di-vlist { display: flex; flex-direction: column; gap: var(--cg-spacing-4); }
+    .di-vrow { display: flex; align-items: center; gap: var(--cg-spacing-8); padding: var(--cg-spacing-8); border-radius: var(--cg-border-radius-100); border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border); background: var(--cg-color-surface-container-background); font-size: var(--cg-font-size-sm); flex-wrap: wrap; }
+    .di-vrow.active { border-color: var(--cg-color-status-success-text-default); }
+    .di-vintent { font-weight: var(--cg-font-weight-semibold); }
+    .di-vtime { margin-left: auto; }
+    .di-vactions { display: flex; gap: var(--cg-spacing-4); }
     .di-presets { display: flex; align-items: center; gap: var(--cg-spacing-8); margin: var(--cg-spacing-12) 0; flex-wrap: wrap; }
     .di-presets-label { color: var(--cg-color-surface-inset-text); font-size: var(--cg-font-size-sm); }
     .di-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--cg-spacing-24); margin-top: var(--cg-spacing-12); }

@@ -85,13 +85,40 @@ export const DSL_EXAMPLES = [
 
 // ─── Governance gate (§3.1 firewall + §1 step 3) ──────────────────────────────
 // A parsed tree passes only if: it parsed (has a root), no validationErrors,
-// no tokenViolations. Field-reference firewall is checked separately by callers
-// that want strict L1/L2 enforcement.
-export function evaluateGovernance(parseResult) {
+// no tokenViolations, AND every node resolves to a real library component.
+//
+// NOTE (verified 2026-06-21): the parser does NOT reject an unknown component —
+// `root = Nonexistent("x")` yields a node with typeName "Nonexistent" and
+// props { _args: [...] } and zero validationErrors. So a governance gate that
+// only checks meta.validationErrors has a hole (a stored spec that no longer
+// renders passes silently). We close it by walking the tree against the library:
+//   - unknown typeName  -> reject (unresolved component)
+//   - leftover `_args`   -> reject (positional args didn't map = wrong arity)
+// Pass `library` to enable this stricter check; omit it to keep the meta-only gate.
+function collectTreeIssues(node, library, issues, seen = new Set()) {
+  if (!node || node.type !== 'element' || seen.has(node)) return;
+  seen.add(node);
+  if (library && typeof library.getTagName === 'function') {
+    if (!library.getTagName(node.typeName)) {
+      issues.push({ message: `Unknown component "${node.typeName}" — not in library` });
+    }
+  }
+  const props = node.props || {};
+  if (Array.isArray(props._args)) {
+    issues.push({ message: `Component "${node.typeName}" has unmapped positional args (wrong arity)` });
+  }
+  for (const v of Object.values(props)) {
+    if (Array.isArray(v)) v.forEach((c) => collectTreeIssues(c, library, issues, seen));
+    else if (v && typeof v === 'object' && v.type === 'element') collectTreeIssues(v, library, issues, seen);
+  }
+}
+
+export function evaluateGovernance(parseResult, library) {
   const meta = parseResult?.meta ?? {};
   const parsed = !!parseResult?.root && !meta.incomplete;
-  const validationErrors = meta.validationErrors ?? [];
+  const validationErrors = [...(meta.validationErrors ?? [])];
   const tokenViolations = meta.tokenViolations ?? [];
+  if (parsed) collectTreeIssues(parseResult.root, library, validationErrors);
   return {
     parsed,
     governancePass:
