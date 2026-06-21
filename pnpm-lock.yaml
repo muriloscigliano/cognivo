@@ -86,6 +86,9 @@ importers:
       '@cognivo/lens-ui':
         specifier: workspace:*
         version: link:../packages/lens-ui
+      '@cognivo/theme-generator':
+        specifier: workspace:*
+        version: link:../packages/theme-generator
       '@cognivo/tokens':
         specifier: workspace:*
         version: link:../packages/tokens

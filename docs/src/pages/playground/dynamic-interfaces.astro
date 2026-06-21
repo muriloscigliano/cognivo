@@ -52,6 +52,12 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 
     <div class="di-col">
       <label class="di-h">Rendered surface</label>
+      <div class="di-theme">
+        <input id="di-theme-input" class="di-theme-input" placeholder="theme: e.g. calm focused green" value="calm focused green" />
+        <label class="di-theme-dark"><input id="di-theme-dark" type="checkbox" /> dark</label>
+        <cg-button id="di-theme-apply" size="sm" variant="outline">Apply theme</cg-button>
+        <cg-button id="di-theme-reset" size="sm" variant="ghost">Reset</cg-button>
+      </div>
       <div id="di-surface" class="di-surface"></div>
     </div>
 
@@ -85,6 +91,9 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     import { SURFACES } from '../../../specs/dynamic-interfaces/surfaces.mjs';
     // Layer 3: per-user spec persistence + versioning (IndexedDB in the browser).
     import { InterfaceSpecStore } from '../../../specs/dynamic-interfaces/spec-store.mjs';
+    // Scenario B: natural-language theming (deterministic curated palette -> tier-2 vars).
+    import { generateTheme } from '@cognivo/theme-generator';
+    import { tokenOverrideToCssVars, applyThemeVars, clearThemeVars } from '../../../specs/dynamic-interfaces/theme.mjs';
 
     const PRESETS = {
       list: [
@@ -290,6 +299,25 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
       refreshVersions();
     });
 
+    // ── Scenario B: natural-language theming (re-skin, no re-layout) ──
+    let appliedThemeVars = {};
+    function applyTheme() {
+      const desc = $('di-theme-input').value || 'professional';
+      const preferDark = $('di-theme-dark').checked;
+      clearThemeVars(surface, appliedThemeVars);                  // drop the prior theme
+      const override = generateTheme({ description: desc, preferDark });
+      appliedThemeVars = tokenOverrideToCssVars(override);
+      applyThemeVars(surface, appliedThemeVars);                  // re-skin the SAME tree
+      surface.style.setProperty('background', 'var(--cg-color-surface-base-background)');
+    }
+    function resetTheme() {
+      clearThemeVars(surface, appliedThemeVars);
+      appliedThemeVars = {};
+      surface.style.removeProperty('background');
+    }
+    $('di-theme-apply').addEventListener('click', applyTheme);
+    $('di-theme-reset').addEventListener('click', resetTheme);
+
     document.querySelectorAll('[data-preset]').forEach((btn) => {
       btn.addEventListener('click', () => {
         dsl.value = PRESETS[btn.getAttribute('data-preset')] || '';
@@ -315,6 +343,9 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     .di-scard-body { padding: var(--cg-spacing-12); min-height: 160px; }
     .di-pill.ok { color: var(--cg-color-status-success-text-default); }
     .di-pill.err { color: var(--cg-color-status-error-text-default); }
+    .di-theme { display: flex; align-items: center; gap: var(--cg-spacing-8); flex-wrap: wrap; }
+    .di-theme-input { flex: 1; min-width: 140px; padding: var(--cg-spacing-4) var(--cg-spacing-8); font-size: var(--cg-font-size-sm); border-radius: var(--cg-border-radius-100); background: var(--cg-color-surface-inset-background); color: var(--cg-color-surface-base-text); border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border); }
+    .di-theme-dark { font-size: var(--cg-font-size-sm); color: var(--cg-color-surface-inset-text); display: flex; align-items: center; gap: var(--cg-spacing-4); }
     .di-h3-note { font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-normal); }
     .di-versions { margin: var(--cg-spacing-12) 0 var(--cg-spacing-24); }
     .di-vlist { display: flex; flex-direction: column; gap: var(--cg-spacing-4); }

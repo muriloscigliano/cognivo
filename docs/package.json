@@ -17,6 +17,7 @@
     "@cognivo/lens-pack-core": "workspace:*",
     "@cognivo/lens-pack-ethics": "workspace:*",
     "@cognivo/lens-ui": "workspace:*",
+    "@cognivo/theme-generator": "workspace:*",
     "@cognivo/tokens": "workspace:*",
     "@lit/reactive-element": "^2.1.2",
     "astro": "^4.16.0",

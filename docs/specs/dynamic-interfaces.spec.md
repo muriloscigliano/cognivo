@@ -17,7 +17,15 @@
 > - From the single `INBOX_DATASET`: **all 4 surfaces parse → govern PASS → 0 violations**; bias audit fires (`tasks`/`summary` each engage 2 biases); the firewall **throws** when a surface references an undeclared field. This is the headline thesis ("shared data, radically different surfaces"), proven without an LLM.
 > - The playground page renders all four side-by-side on load (the "One dataset → many surfaces" section) plus the editable DSL playground below it.
 >
-> **Open:** the actual G1 parse/govern *rate* over the 10 prompts — needs `ANTHROPIC_API_KEY`. This is the make-or-break number (§8). Run: `ANTHROPIC_API_KEY=… node docs/specs/dynamic-interfaces/g1-harness.mjs --repair`.
+> **Scenario B (natural-language theming) — BUILT & verified offline:**
+> - `theme.mjs` — `tokenOverrideToCssVars()` flattens a `generateTheme()` `TokenOverride` into `--cg-*` CSS custom properties (dot-path → `--cg-` + path joined by `-`); `applyThemeVars`/`clearThemeVars` re-skin a surface root in place.
+> - Verified: 4 descriptions → 4 distinct palettes (ocean cyan / calm green / sunset gold / monochrome), `preferDark` flips to a dark base (`#0d1117`), 48 vars per theme, all valid `--cg-*` names.
+> - Playground: a theme input + dark toggle re-skins the rendered surface **without re-rendering the tree** (re-skin, not re-layout). `@cognivo/theme-generator` added as a `docs` workspace dep.
+> - Honest caveat (spec §4.3): this is a **deterministic curated palette pick, not LLM-synthesized** — "make it calmer" snaps to the nearest of ~30 palettes.
+>
+> **Layer 3 (per-user versioning) — BUILT & tested:** `spec-store.mjs` + `spec-store.test.mjs` (all checks pass). Immutable versioned specs, append-only rollback, re-validation on load. Playground has a live "Saved versions" panel (IndexedDB).
+>
+> **Open:** the actual G1 parse/govern *rate* over the 10 prompts — needs `ANTHROPIC_API_KEY`. This is the make-or-break number (§8) and the ONLY piece not yet measurable offline. Run: `ANTHROPIC_API_KEY=… node docs/specs/dynamic-interfaces/g1-harness.mjs --repair`.
 
 ---
 
