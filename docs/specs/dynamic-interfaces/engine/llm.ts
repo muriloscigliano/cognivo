@@ -89,21 +89,36 @@ function failureTree(mode: MockFailure): UiNode {
 export interface MockLLMOptions {
   /** Force a specific failure mode regardless of intent (for governance tests). */
   forceFailure?: MockFailure;
+  /**
+   * Repair-aware mode (for G1e): emit `forceFailure` for the first `repairAfter`
+   * calls, then heal to a good tree. Lets us test convergence + cap without a key.
+   * Requires `forceFailure` to be set. If omitted, the failure never heals.
+   */
+  repairAfter?: number;
   /** Map an intent substring to a tree builder (extends the defaults). */
   overrides?: Array<{ match: RegExp; tree: () => UiNode }>;
 }
 
 /**
  * Deterministic mock LLM. Maps the user intent to a known-good tree, or a
- * scripted failure. No randomness — output is a pure function of (intent, opts).
+ * scripted failure. Output is a pure function of (intent, opts) EXCEPT in
+ * repair-aware mode, where it heals after a fixed number of calls — that call
+ * count is the only state, and it is monotonic, so behavior is still fully
+ * predictable for tests.
  */
 export class MockLLM implements LlmClient {
   readonly name = 'mock';
+  private calls = 0;
   constructor(private opts: MockLLMOptions = {}) {}
 
   async generate(req: LlmRequest): Promise<LlmResponse> {
+    const call = this.calls++;
     if (this.opts.forceFailure) {
-      return { tree: failureTree(this.opts.forceFailure), raw: `mock:${this.opts.forceFailure}` };
+      const heals = this.opts.repairAfter !== undefined && call >= this.opts.repairAfter;
+      if (!heals) {
+        return { tree: failureTree(this.opts.forceFailure), raw: `mock:${this.opts.forceFailure}:${call}` };
+      }
+      // healed: fall through to normal intent routing below
     }
     const intent = req.user.toLowerCase();
     for (const o of this.opts.overrides ?? []) {
