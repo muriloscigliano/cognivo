@@ -2,391 +2,141 @@
 import DocsLayout from '../../layouts/DocsLayout.astro';
 ---
 
-<DocsLayout title="Dynamic Interfaces (Phase 1)">
+<DocsLayout title="Dynamic Interfaces">
   <p class="bc"><a href="/">Home</a> <span>/</span> Dynamic Interfaces</p>
 
-  <h1>Dynamic Software Interfaces — Phase 1 prototype</h1>
+  <h1>Dynamic Software Interfaces</h1>
   <p class="desc">
-    One shared dataset, many surfaces. An agent emits a Cognivo component-DSL
-    tree; we parse it, enforce token + field governance, render it, and audit it
-    for engaged cognitive biases. This page proves the <strong>render + govern +
-    audit</strong> half of the loop with no API key — paste DSL, or load a
-    preset. The live-LLM half is measured by the G1 harness (see the spec).
+    The real loop, end to end: a component-DSL tree is parsed by the
+    <strong>real</strong> gen-ui parser, run through the governance engine
+    (unknown components, token violations, and fabricated-data provenance all
+    block render), and only then rendered with real <code>cg-*</code>
+    components. A rejected tree never renders — you see the previous good
+    surface and a plain-language reason.
   </p>
 
-  <div class="badges">
-    <span class="badge">playground</span>
-    <span class="badge">gen-ui</span>
-    <span class="badge">spec: dynamic-interfaces</span>
+  <div class="di-shapes">
+    <span class="di-label">Try a shape:</span>
+    <cg-button size="sm" variant="outline" data-shape="list">List</cg-button>
+    <cg-button size="sm" variant="outline" data-shape="tasks">Task list</cg-button>
+    <cg-button size="sm" variant="outline" data-shape="summary">Summary</cg-button>
+    <cg-button size="sm" variant="ghost" data-shape="bad-unknown">⚠ unknown component</cg-button>
+    <cg-button size="sm" variant="ghost" data-shape="bad-data">⚠ fabricated data</cg-button>
   </div>
 
-  <!-- ════ The thesis: ONE dataset, MANY surfaces ════ -->
-  <h2>One dataset → many surfaces</h2>
-  <p class="desc">
-    All four surfaces below are generated from the <strong>same</strong>
-    <code>inbox.message.v1</code> dataset (6 messages). Each is a pure function
-    <code>(dataset) → DSL</code>, parsed, governed, and rendered. A surface may
-    only reference fields the dataset declares (the L1/L2 firewall). This is the
-    headline claim: shared data underneath, radically different surfaces on top.
-  </p>
-  <div id="di-surfaces" class="di-surfaces"></div>
-
-  <h2>Try it yourself</h2>
-  <section class="di-presets">
-    <span class="di-presets-label">Presets:</span>
-    <cg-button size="sm" variant="outline" data-preset="list">Inbox list</cg-button>
-    <cg-button size="sm" variant="outline" data-preset="tasks">Task list</cg-button>
-    <cg-button size="sm" variant="outline" data-preset="summary">Summary</cg-button>
-  </section>
-
-  <div class="di-grid">
-    <div class="di-col">
-      <label class="di-h">Component-DSL (agent output)</label>
-      <textarea id="di-dsl" class="di-dsl" spellcheck="false"></textarea>
-      <div class="di-actions">
-        <cg-button id="di-render" variant="primary" size="sm">Render &amp; audit</cg-button>
-        <cg-button id="di-save" variant="outline" size="sm">Save version</cg-button>
-        <span id="di-status" class="di-status"></span>
-      </div>
-    </div>
-
-    <div class="di-col">
-      <label class="di-h">Rendered surface</label>
-      <div class="di-theme">
-        <input id="di-theme-input" class="di-theme-input" placeholder="theme: e.g. calm focused green" value="calm focused green" />
-        <label class="di-theme-dark"><input id="di-theme-dark" type="checkbox" /> dark</label>
-        <cg-button id="di-theme-apply" size="sm" variant="outline">Apply theme</cg-button>
-        <cg-button id="di-theme-reset" size="sm" variant="ghost">Reset</cg-button>
-      </div>
-      <div id="di-surface" class="di-surface"></div>
-    </div>
-
-    <div class="di-col">
-      <label class="di-h">Governance &amp; bias audit</label>
-      <div id="di-audit" class="di-audit"><p class="di-muted">Render to see governance result and engaged biases.</p></div>
-    </div>
-  </div>
-
-  <!-- ════ Layer 3: per-user versioning (spec §5 Scenario E, §6) ════ -->
-  <h2>Saved versions <span class="di-muted di-h3-note">(Layer 3 — IndexedDB, append-only, re-validated on load)</span></h2>
-  <p class="desc">
-    Each <strong>Save version</strong> appends an immutable <code>InterfaceSpec</code>
-    keyed to a demo user. Rollback clones an older version as a new latest one —
-    history is never deleted. Every load re-validates the stored DSL (token rules
-    and the component library can change after a spec was saved).
-  </p>
-  <div id="di-versions" class="di-versions"><p class="di-muted">No saved versions yet — render a surface and click “Save version”.</p></div>
+  <div id="di-stage" class="di-stage"></div>
+  <p id="di-note" class="di-note"></p>
 
   <script>
-    // Register the generative-ui custom element (BaseLayout loads cg-* but not gen-ui-lit).
-    import '@cognivo/gen-ui-lit';
+    import '@cognivo/components';
     import {
-      createParser,
-      validateTokenUsage,
-      cognivoLibrary,
-      suggestBiasesForTree,
-    } from '@cognivo/gen-ui';
-    // Shared dataset + deterministic surface generators (the thesis demo).
-    import { INBOX_DATASET, evaluateGovernance } from '../../../specs/dynamic-interfaces/fixtures.mjs';
-    import { SURFACES } from '../../../specs/dynamic-interfaces/surfaces.mjs';
-    // Layer 3: per-user spec persistence + versioning (IndexedDB in the browser).
-    import { InterfaceSpecStore } from '../../../specs/dynamic-interfaces/spec-store.mjs';
-    // Scenario B: natural-language theming (deterministic curated palette -> tier-2 vars).
-    import { generateTheme } from '@cognivo/theme-generator';
-    import { tokenOverrideToCssVars, applyThemeVars, clearThemeVars } from '../../../specs/dynamic-interfaces/theme.mjs';
+      parseRealDsl,
+      realRegistry,
+      realTokenValidator,
+      dataProvenanceRejections,
+    } from '../../../specs/dynamic-interfaces/engine/real-adapter.ts';
+    import { govern } from '../../../specs/dynamic-interfaces/engine/governance.ts';
+    import { renderGoverned } from '../../../specs/dynamic-interfaces/engine/render.ts';
 
-    const PRESETS = {
-      list: [
-        'root = Stack([row1, row2], "column", "sm")',
-        'row1 = Stack([t1, b1], "row", "md")',
-        't1 = TextContent("Q4 budget sign-off", "medium")',
-        'b1 = Badge("urgent", "danger")',
-        'row2 = Stack([t2, b2], "row", "md")',
-        't2 = TextContent("Design review notes", "medium")',
-        'b2 = Badge("high", "warning")',
-      ].join('\n'),
-      tasks: [
-        'root = Stack([task1, task2, task3], "column", "sm")',
-        'task1 = Checkbox("Q4 budget sign-off", false)',
-        'task2 = Checkbox("Design review notes", false)',
-        'task3 = Checkbox("Sprint retro action items", false)',
-      ].join('\n'),
-      summary: [
-        'root = Stack([header, metrics], "column", "lg")',
-        'header = TextContent("Inbox summary", "large")',
-        'metrics = Stack([m1, m2, m3], "row", "md")',
-        'm1 = MetricCard("Total", "6", "")',
-        'm2 = MetricCard("Unread", "3", "+1")',
-        'm3 = MetricCard("Urgent", "1", "")',
-      ].join('\n'),
+    // The shared inbox dataset (provenance firewall checks against this).
+    const ENV = {
+      schemaId: 'inbox.message.v1',
+      fields: [
+        { key: 'subject', type: 'text', label: 'Subject' },
+        { key: 'priority', type: 'enum', label: 'Priority', enumValues: ['low', 'normal', 'high', 'urgent'] },
+      ],
+      items: [
+        { subject: 'Q4 budget sign-off', priority: 'urgent' },
+        { subject: 'Design review notes', priority: 'high' },
+        { subject: 'Sprint retro action items', priority: 'high' },
+        { subject: 'Lunch?', priority: 'low' },
+      ],
     };
 
-    const parser = createParser(cognivoLibrary.toJSONSchema());
-    const $ = (id) => document.getElementById(id);
-    const dsl = $('di-dsl');
-    const surface = $('di-surface');
-    const audit = $('di-audit');
-    const status = $('di-status');
+    // Each "shape" is real DSL that references only real dataset values.
+    const SHAPES = {
+      list: [
+        'root = Stack([r1, r2, r3, r4], "column", "sm")',
+        'r1 = Stack([Badge("urgent","danger"), TextContent("Q4 budget sign-off","medium")], "row", "sm")',
+        'r2 = Stack([Badge("high","warning"), TextContent("Design review notes","medium")], "row", "sm")',
+        'r3 = Stack([Badge("high","warning"), TextContent("Sprint retro action items","medium")], "row", "sm")',
+        'r4 = Stack([Badge("low","neutral"), TextContent("Lunch?","medium")], "row", "sm")',
+      ].join('\n'),
+      tasks: [
+        'root = Stack([c1, c2, c3, c4], "column", "sm")',
+        'c1 = Checkbox("Q4 budget sign-off", false)',
+        'c2 = Checkbox("Design review notes", false)',
+        'c3 = Checkbox("Sprint retro action items", false)',
+        'c4 = Checkbox("Lunch?", false)',
+      ].join('\n'),
+      summary: [
+        'root = Stack([h, m], "column", "lg")',
+        'h = TextContent("Inbox summary", "large")',
+        'm = Stack([MetricCard("Total","4",""), MetricCard("High+","3",""), MetricCard("Urgent","1","")], "row", "md")',
+      ].join('\n'),
+      // Deliberately broken, to SHOW governance blocking:
+      'bad-unknown': 'root = Stack([TotallyFakeComponent("x")], "column")',
+      'bad-data': 'root = Stack([TextContent("Everyone secret password is hunter2","medium")], "column")',
+    };
 
-    function esc(s) {
-      return String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
-    }
+    const deps = { registry: realRegistry, validateTokens: realTokenValidator };
+    const stage = document.getElementById('di-stage');
+    const note = document.getElementById('di-note');
 
-    function renderTreeToDom(node) {
-      // Minimal renderer: map ElementNode -> cg-* custom element by tag name.
-      if (!node || node.type !== 'element') return null;
-      const tag = cognivoLibrary.getTagName(node.typeName);
-      if (!tag) return null;
-      const el = document.createElement(tag);
-      for (const [k, v] of Object.entries(node.props || {})) {
-        if (k === 'children' && Array.isArray(v)) {
-          for (const child of v) {
-            const c = renderTreeToDom(child);
-            if (c) el.appendChild(c);
-          }
-        } else if (v && typeof v === 'object' && v.type === 'element') {
-          const c = renderTreeToDom(v);
-          if (c) el.appendChild(c);
-        } else {
-          try { el[k] = v; } catch {}
-          if (typeof v !== 'object') el.setAttribute(k, String(v));
-        }
-      }
-      return el;
-    }
+    function show(shapeKey) {
+      const dsl = SHAPES[shapeKey];
+      const { uiNode, parseRejections } = parseRealDsl(dsl);
 
-    function render() {
-      const src = dsl.value;
-      const result = parser.parse(src);
-      result.meta.tokenViolations = validateTokenUsage(result.root);
-
-      const ve = result.meta.validationErrors || [];
-      const tv = result.meta.tokenViolations || [];
-      const parsed = !!result.root && !result.meta.incomplete;
-      const pass = parsed && ve.length === 0 && tv.length === 0;
-
-      // ── Governance gate: do NOT render on failure (spec §1 step 3) ──
-      surface.innerHTML = '';
-      if (pass) {
-        const dom = renderTreeToDom(result.root);
-        if (dom) surface.appendChild(dom);
-        status.textContent = '✓ rendered';
-        status.className = 'di-status ok';
-      } else {
-        status.textContent = parsed ? '~ parsed, governance failed — render blocked' : '✗ parse failed';
-        status.className = 'di-status err';
+      if (!uiNode) {
+        note.textContent = `Couldn’t build that — ${parseRejections[0]?.message ?? 'parse failed'}. Showing the previous view.`;
+        note.className = 'di-note err';
+        return; // keep the last good surface (coherent: never render broken)
       }
 
-      // ── Audit panel ──
-      let html = '';
-      html += `<div class="di-gov ${pass ? 'ok' : 'err'}">`;
-      html += `<strong>Governance:</strong> ${pass ? 'PASS' : 'FAIL'} `;
-      html += `<span class="di-muted">(${ve.length} validation, ${tv.length} token)</span></div>`;
-      for (const e of ve.slice(0, 8)) html += `<div class="di-issue">• ${esc(e.message || JSON.stringify(e))}</div>`;
-      for (const t of tv.slice(0, 8)) html += `<div class="di-issue">• ${esc(t.message || JSON.stringify(t))}</div>`;
+      const g = govern(uiNode, ENV, deps);
+      const provenance = dataProvenanceRejections(uiNode, ENV);
+      const rejections = [...g.rejections, ...provenance];
 
-      if (parsed) {
-        const biases = suggestBiasesForTree(result, cognivoLibrary);
-        html += `<div class="di-bias-h"><strong>Engaged biases:</strong> ${biases.length}</div>`;
-        for (const b of biases) {
-          html += `<div class="di-bias di-sev-${b.severity}">`;
-          html += `<span class="di-bias-name">${esc(b.biasName)}</span> `;
-          html += `<span class="di-pill">${b.severity}</span> `;
-          html += `<span class="di-muted">×${b.occurrences}</span>`;
-          if (b.recommendation) html += `<div class="di-rec">${esc(b.recommendation)}</div>`;
-          html += `</div>`;
-        }
-        if (!biases.length) html += `<p class="di-muted">No engaged biases detected in this surface.</p>`;
-      }
-      audit.innerHTML = html;
-    }
-
-    // ── The thesis: render all four surfaces from the ONE shared dataset ──
-    function renderSurfaces() {
-      const host = $('di-surfaces');
-      host.innerHTML = '';
-      for (const [key, s] of Object.entries(SURFACES)) {
-        const card = document.createElement('div');
-        card.className = 'di-scard';
-        const head = document.createElement('div');
-        head.className = 'di-scard-h';
-        const body = document.createElement('div');
-        body.className = 'di-scard-body';
-        try {
-          const treeDsl = s.gen(INBOX_DATASET);            // (dataset) -> DSL
-          const result = parser.parse(treeDsl);
-          result.meta.tokenViolations = validateTokenUsage(result.root);
-          const ve = result.meta.validationErrors || [];
-          const tv = result.meta.tokenViolations || [];
-          const ok = !!result.root && ve.length === 0 && tv.length === 0;
-          const biases = result.root ? suggestBiasesForTree(result, cognivoLibrary) : [];
-          head.innerHTML = `<span class="di-scard-name">${esc(s.label)}</span>`
-            + ` <span class="di-pill ${ok ? 'ok' : 'err'}">${ok ? 'govern ✓' : 'govern ✗'}</span>`
-            + ` <span class="di-muted">${biases.length} bias${biases.length === 1 ? '' : 'es'}</span>`;
-          if (ok) {
-            const dom = renderTreeToDom(result.root);
-            if (dom) body.appendChild(dom);
-          } else {
-            body.innerHTML = `<p class="di-issue">${esc(ve[0]?.message || tv[0]?.message || 'render blocked')}</p>`;
-          }
-        } catch (err) {
-          head.innerHTML = `<span class="di-scard-name">${esc(s.label)}</span> <span class="di-pill err">error</span>`;
-          body.innerHTML = `<p class="di-issue">${esc(err.message)}</p>`;
-        }
-        card.appendChild(head);
-        card.appendChild(body);
-        host.appendChild(card);
-      }
-    }
-
-    // ── Layer 3: persist + version the current DSL per (demo) user ──
-    const DEMO_USER = 'demo-user';
-    const DEMO_SPEC = 'inbox-main';
-    const store = new InterfaceSpecStore({
-      // Re-validation gate (§6): never trust stored DSL blindly.
-      validator: (tree) => {
-        const r = parser.parse(tree);
-        r.meta.tokenViolations = validateTokenUsage(r.root);
-        const g = evaluateGovernance(r, cognivoLibrary);
-        return { ok: g.governancePass, errors: [...g.validationErrors, ...g.tokenViolations] };
-      },
-    });
-
-    async function refreshVersions() {
-      const host = $('di-versions');
-      const history = await store.versions(DEMO_USER, DEMO_SPEC);
-      if (!history.length) {
-        host.innerHTML = '<p class="di-muted">No saved versions yet — render a surface and click “Save version”.</p>';
+      if (rejections.length > 0) {
+        // Legible refusal in plain language; the previous surface stays.
+        note.textContent = `I couldn’t do that safely — ${humanReason(rejections[0])}. Showing the previous view.`;
+        note.className = 'di-note err';
         return;
       }
-      const active = history[history.length - 1];
-      // Re-validate the active version on load (§6).
-      const reval = await store.revalidateOnLoad(DEMO_USER, DEMO_SPEC);
-      let html = `<div class="di-muted" style="margin-bottom:var(--cg-spacing-8)">Active: v${active.version} — re-validation on load: ${reval.valid ? '✓ valid' : '✗ invalid (' + esc(reval.errors[0]?.message || '') + ')'}</div>`;
-      html += '<div class="di-vlist">';
-      for (const v of [...history].reverse()) {
-        const isActive = v.version === active.version;
-        html += `<div class="di-vrow${isActive ? ' active' : ''}">`;
-        html += `<span class="di-pill">v${v.version}</span> `;
-        html += `<span class="di-vintent">${esc(v.intent || '(no intent)')}</span> `;
-        if (v.parentVersion) html += `<span class="di-muted">← v${v.parentVersion}</span> `;
-        html += `<span class="di-muted di-vtime">${esc(v.createdAt)}</span>`;
-        html += `<span class="di-vactions">`;
-        html += `<cg-button size="sm" variant="ghost" data-load="${v.version}">Load</cg-button>`;
-        if (!isActive) html += `<cg-button size="sm" variant="ghost" data-rollback="${v.version}">Roll back</cg-button>`;
-        html += `</span></div>`;
+
+      renderGoverned(uiNode, stage, realRegistry);
+      note.textContent = `Reshaped to “${shapeKey}” · governed ✓`;
+      note.className = 'di-note ok';
+    }
+
+    function humanReason(r) {
+      switch (r.code) {
+        case 'unknown-component': return `“${r.where}” isn’t a real component`;
+        case 'undeclared-field': return `it tried to show data that isn’t in your inbox`;
+        case 'token-violation': return `it used an off-brand style`;
+        case 'a11y': return `“${r.where}” wouldn’t be accessible`;
+        default: return r.message;
       }
-      html += '</div>';
-      host.innerHTML = html;
-      host.querySelectorAll('[data-load]').forEach((b) => b.addEventListener('click', async () => {
-        const vs = await store.versions(DEMO_USER, DEMO_SPEC);
-        const v = vs.find((x) => String(x.version) === b.getAttribute('data-load'));
-        if (v) { dsl.value = v.tree; render(); }
-      }));
-      host.querySelectorAll('[data-rollback]').forEach((b) => b.addEventListener('click', async () => {
-        await store.rollback(DEMO_USER, DEMO_SPEC, Number(b.getAttribute('data-rollback')));
-        const a = await store.getActive(DEMO_USER, DEMO_SPEC);
-        if (a) { dsl.value = a.tree; render(); }
-        refreshVersions();
-      }));
     }
 
-    $('di-save').addEventListener('click', async () => {
-      await store.save({
-        userId: DEMO_USER, specId: DEMO_SPEC, schemaId: INBOX_DATASET.schemaId,
-        intent: 'manual save from playground', tree: dsl.value,
-      });
-      refreshVersions();
-    });
+    document.querySelectorAll('[data-shape]').forEach((b) =>
+      b.addEventListener('click', () => show(b.getAttribute('data-shape'))),
+    );
 
-    // ── Scenario B: natural-language theming (re-skin, no re-layout) ──
-    let appliedThemeVars = {};
-    function applyTheme() {
-      const desc = $('di-theme-input').value || 'professional';
-      const preferDark = $('di-theme-dark').checked;
-      clearThemeVars(surface, appliedThemeVars);                  // drop the prior theme
-      const override = generateTheme({ description: desc, preferDark });
-      appliedThemeVars = tokenOverrideToCssVars(override);
-      applyThemeVars(surface, appliedThemeVars);                  // re-skin the SAME tree
-      surface.style.setProperty('background', 'var(--cg-color-surface-base-background)');
-    }
-    function resetTheme() {
-      clearThemeVars(surface, appliedThemeVars);
-      appliedThemeVars = {};
-      surface.style.removeProperty('background');
-    }
-    $('di-theme-apply').addEventListener('click', applyTheme);
-    $('di-theme-reset').addEventListener('click', resetTheme);
-
-    document.querySelectorAll('[data-preset]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        dsl.value = PRESETS[btn.getAttribute('data-preset')] || '';
-        render();
-      });
-    });
-    $('di-render').addEventListener('click', render);
-
-    // Boot: the four-surface thesis demo, then the editable playground + versions.
-    renderSurfaces();
-    dsl.value = PRESETS.list;
-    render();
-    refreshVersions();
+    // Boot with a real, governed surface — pixels on screen immediately.
+    show('list');
   </script>
 
   <style>
-    .di-surfaces { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--cg-spacing-12); margin: var(--cg-spacing-12) 0 var(--cg-spacing-24); }
-    @media (max-width: 1100px) { .di-surfaces { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 640px) { .di-surfaces { grid-template-columns: 1fr; } }
-    .di-scard { display: flex; flex-direction: column; border-radius: var(--cg-border-radius-150); overflow: hidden; border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border); background: var(--cg-color-surface-container-background); }
-    .di-scard-h { display: flex; align-items: center; gap: var(--cg-spacing-8); padding: var(--cg-spacing-8) var(--cg-spacing-12); border-bottom: var(--cg-border-width-100) solid var(--cg-color-surface-base-border); font-size: var(--cg-font-size-sm); }
-    .di-scard-name { font-weight: var(--cg-font-weight-semibold); }
-    .di-scard-body { padding: var(--cg-spacing-12); min-height: 160px; }
-    .di-pill.ok { color: var(--cg-color-status-success-text-default); }
-    .di-pill.err { color: var(--cg-color-status-error-text-default); }
-    .di-theme { display: flex; align-items: center; gap: var(--cg-spacing-8); flex-wrap: wrap; }
-    .di-theme-input { flex: 1; min-width: 140px; padding: var(--cg-spacing-4) var(--cg-spacing-8); font-size: var(--cg-font-size-sm); border-radius: var(--cg-border-radius-100); background: var(--cg-color-surface-inset-background); color: var(--cg-color-surface-base-text); border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border); }
-    .di-theme-dark { font-size: var(--cg-font-size-sm); color: var(--cg-color-surface-inset-text); display: flex; align-items: center; gap: var(--cg-spacing-4); }
-    .di-h3-note { font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-normal); }
-    .di-versions { margin: var(--cg-spacing-12) 0 var(--cg-spacing-24); }
-    .di-vlist { display: flex; flex-direction: column; gap: var(--cg-spacing-4); }
-    .di-vrow { display: flex; align-items: center; gap: var(--cg-spacing-8); padding: var(--cg-spacing-8); border-radius: var(--cg-border-radius-100); border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border); background: var(--cg-color-surface-container-background); font-size: var(--cg-font-size-sm); flex-wrap: wrap; }
-    .di-vrow.active { border-color: var(--cg-color-status-success-text-default); }
-    .di-vintent { font-weight: var(--cg-font-weight-semibold); }
-    .di-vtime { margin-left: auto; }
-    .di-vactions { display: flex; gap: var(--cg-spacing-4); }
-    .di-presets { display: flex; align-items: center; gap: var(--cg-spacing-8); margin: var(--cg-spacing-12) 0; flex-wrap: wrap; }
-    .di-presets-label { color: var(--cg-color-surface-inset-text); font-size: var(--cg-font-size-sm); }
-    .di-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--cg-spacing-24); margin-top: var(--cg-spacing-12); }
-    @media (max-width: 980px) { .di-grid { grid-template-columns: 1fr; } }
-    .di-col { display: flex; flex-direction: column; gap: var(--cg-spacing-8); min-width: 0; }
-    .di-h { font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-semibold); color: var(--cg-color-surface-inset-text); }
-    .di-dsl {
-      width: 100%; min-height: 240px; resize: vertical;
-      font-family: var(--cg-font-family-mono); font-size: var(--cg-font-size-sm); line-height: 1.5;
-      padding: var(--cg-spacing-12); border-radius: var(--cg-border-radius-150);
-      background: var(--cg-color-surface-inset-background); color: var(--cg-color-surface-base-text);
-      border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border);
-    }
-    .di-actions { display: flex; align-items: center; gap: var(--cg-spacing-12); }
-    .di-status { font-size: var(--cg-font-size-sm); }
-    .di-status.ok { color: var(--cg-color-status-success-text-default); }
-    .di-status.err { color: var(--cg-color-status-error-text-default); }
-    .di-surface, .di-audit {
-      padding: var(--cg-spacing-12); border-radius: var(--cg-border-radius-150); min-height: 240px;
+    .di-shapes { display: flex; align-items: center; gap: var(--cg-spacing-8); flex-wrap: wrap; margin: var(--cg-spacing-16) 0; }
+    .di-label { color: var(--cg-color-surface-inset-text); font-size: var(--cg-font-size-sm); }
+    .di-stage {
+      min-height: 240px; padding: var(--cg-spacing-24); border-radius: var(--cg-border-radius-200);
       background: var(--cg-color-surface-container-background);
       border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border);
     }
-    .di-audit { font-size: var(--cg-font-size-sm); }
-    .di-muted { color: var(--cg-color-surface-inset-text); }
-    .di-gov { padding: var(--cg-spacing-8); border-radius: var(--cg-border-radius-100); margin-bottom: var(--cg-spacing-12); }
-    .di-gov.ok { background: var(--cg-color-status-success-background-default); }
-    .di-gov.err { background: var(--cg-color-status-error-background-default); }
-    .di-issue { color: var(--cg-color-status-error-text-default); margin: var(--cg-spacing-4) 0; }
-    .di-bias-h { margin: var(--cg-spacing-12) 0 var(--cg-spacing-8); }
-    .di-bias { padding: var(--cg-spacing-8); border-radius: var(--cg-border-radius-100); margin-bottom: var(--cg-spacing-8); background: var(--cg-color-surface-inset-background); }
-    .di-bias-name { font-weight: var(--cg-font-weight-semibold); }
-    .di-pill { font-size: var(--cg-font-size-xs); padding: 0 var(--cg-spacing-4); border-radius: var(--cg-border-radius-100); background: var(--cg-color-surface-base-background); }
-    .di-rec { color: var(--cg-color-surface-inset-text); margin-top: var(--cg-spacing-4); }
-    .di-sev-critical .di-pill, .di-sev-high .di-pill { color: var(--cg-color-status-error-text-default); }
+    .di-note { font-size: var(--cg-font-size-sm); margin-top: var(--cg-spacing-12); }
+    .di-note.ok { color: var(--cg-color-status-success-text-default); }
+    .di-note.err { color: var(--cg-color-status-error-text-default); }
   </style>
 </DocsLayout>
