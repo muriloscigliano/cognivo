@@ -33,6 +33,8 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     <span class="di-label">Live data:</span>
     <cg-button size="sm" variant="ghost" data-act="add">+ new message</cg-button>
     <cg-button size="sm" variant="ghost" data-act="reset">reset</cg-button>
+    <span class="di-sep2"></span>
+    <cg-button id="di-undo" size="sm" variant="ghost">↶ undo shape</cg-button>
   </div>
 
   <div id="di-stage" class="di-stage"></div>
@@ -45,6 +47,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     import { resolveTemplate } from '../../../specs/dynamic-interfaces/engine/template-resolver.ts';
     import { semanticFit } from '../../../specs/dynamic-interfaces/engine/semantic-fit.ts';
     import { measure, playFlip } from '../../../specs/dynamic-interfaces/engine/flip.ts';
+    import { TemplateStore, createMemoryTemplateBackend } from '../../../specs/dynamic-interfaces/engine/template-store.ts';
     import { createReconciler } from '../../../specs/dynamic-interfaces/engine/reconcile.ts';
     import { createDomDoc, mountInto } from '../../../specs/dynamic-interfaces/engine/dom-adapter.ts';
     import { realRegistry } from '../../../specs/dynamic-interfaces/engine/real-adapter.ts';
@@ -78,6 +81,9 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 
     // The currently-generated template. Data changes re-resolve THIS — no regen.
     let currentTemplate = null;
+    // W2: per-user versioned template corpus (the moat) — in-memory for the demo.
+    const store = new TemplateStore({ backend: createMemoryTemplateBackend() });
+    const USER = 'demo', TID = 'inbox-main';
 
     function humanReason(r) {
       if (r.code === 'undeclared-field') return 'it tried to show data that isn’t in your inbox';
@@ -94,12 +100,16 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
         return;
       }
       currentTemplate = result.template;
+      const first = measure(keyedEls());
       reconciler.render(result.resolved);
+      playFlip(first, keyedEls());
+      // W2: persist this generated template as a new version (the corpus/moat).
+      await store.save({ userId: USER, templateId: TID, intent, template: result.template });
       // S3: surface a metacognitive fit note if the shape fits the data poorly.
       const fit = semanticFit(result.template, env(), intent);
       const warn = fit.find((n) => n.severity === 'warn') || fit[0];
       const fitMsg = warn ? ` · note: ${warn.message}${warn.suggestion ? ` (try: ${warn.suggestion})` : ''}` : '';
-      note.textContent = `Generated a template (${Object.keys(result.template.nodes).length} nodes) · resolved ${items.length} items · governed ✓${fitMsg}`;
+      note.textContent = `Generated (${Object.keys(result.template.nodes).length} nodes) · resolved ${items.length} items · governed ✓ · saved version${fitMsg}`;
       note.className = warn && warn.severity === 'warn' ? 'di-note warn' : 'di-note ok';
     }
 
@@ -135,6 +145,20 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
       }),
     );
 
+    // W2: first-class undo — restore the previous shape, morph back (no hard cut).
+    document.getElementById('di-undo').addEventListener('click', async () => {
+      const restored = await store.undo(USER, TID);
+      if (!restored) { note.textContent = 'Nothing to undo yet.'; note.className = 'di-note'; return; }
+      currentTemplate = restored.template;
+      const { root } = resolveTemplate(currentTemplate, env());
+      if (!root) return;
+      const first = measure(keyedEls());
+      reconciler.render(root);
+      playFlip(first, keyedEls());
+      note.textContent = `Undone → restored "${restored.intent}" (now v${restored.version}, append-only) · morphed back`;
+      note.className = 'di-note ok';
+    });
+
     generate(intentInput.value);
   </script>
 
@@ -146,6 +170,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
       color: var(--cg-color-surface-base-text); border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border);
     }
     .di-chips, .di-row { display: flex; align-items: center; gap: var(--cg-spacing-8); flex-wrap: wrap; margin: var(--cg-spacing-8) 0; }
+    .di-sep2 { width: var(--cg-border-width-100); height: 20px; background: var(--cg-color-surface-base-border); margin: 0 var(--cg-spacing-4); }
     .di-label { color: var(--cg-color-surface-inset-text); font-size: var(--cg-font-size-sm); }
     .di-chip {
       font-size: var(--cg-font-size-sm); padding: var(--cg-spacing-4) var(--cg-spacing-12);
