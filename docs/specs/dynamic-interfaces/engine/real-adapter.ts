@@ -157,27 +157,47 @@ function datasetValueSet(env: DatasetEnvelope): Set<string> {
   return set;
 }
 
+/**
+ * Prop names whose value is a navigation/action target. A structural-looking
+ * string in one of these is the DANGEROUS case (javascript:, path traversal,
+ * fabricated mailto). These get ZERO structural bypass — the value must trace
+ * to the dataset exactly, or it is rejected. (Audit C1.)
+ */
+const ACTION_PROP_NAMES = new Set([
+  'href', 'src', 'url', 'link', 'action', 'to', 'route', 'target',
+  'onclick', 'onClick', 'onclickaction', 'onClickAction', 'onsubmit', 'onSubmit', 'formaction', 'formAction',
+]);
+
+/**
+ * The provenance firewall on the REAL LLM path, rebuilt allowlist-by-construction
+ * (audit C1). A string prop value is allowed ONLY if it is:
+ *   (a) an exact value in the dataset (datasetValueSet), OR
+ *   (b) a known structural literal (layout enums, sizes, variants).
+ * There is NO "short token is probably fine" escape hatch — that let
+ * javascript:alert(1) and ../../etc/passwd through. Action/URL props get rule
+ * (a) ONLY (no structural bypass at all), because a structural-looking string in
+ * an href is exactly the exploit.
+ */
 export function dataProvenanceRejections(tree: UiNode, env: DatasetEnvelope): GovernanceRejection[] {
   const allowed = datasetValueSet(env);
   const rejections: GovernanceRejection[] = [];
 
-  const checkValue = (val: unknown, where: string): void => {
-    if (typeof val === 'string') {
-      const s = val.trim();
-      if (s === '') return;
-      if (STRUCTURAL_LITERALS.has(s)) return;
-      if (allowed.has(s)) return;
-      // Heuristic: short structural tokens (single word, no spaces, <= 24 chars
-      // that look like UI labels) we allow as headings; longer free text that
-      // isn't in the dataset is suspicious fabricated data.
-      if (s.length > 24 || /\s/.test(s)) {
-        rejections.push({
-          code: 'undeclared-field',
-          message: `Inlined value "${s.slice(0, 40)}" does not trace back to the dataset (possible fabricated data).`,
-          where,
-        });
-      }
-    }
+  const checkValue = (val: unknown, where: string, propName: string): void => {
+    if (typeof val !== 'string') return;
+    const s = val.trim();
+    if (s === '') return;
+    const isAction = ACTION_PROP_NAMES.has(propName);
+
+    if (allowed.has(s)) return; // (a) traces to real data — always fine
+    if (!isAction && STRUCTURAL_LITERALS.has(s)) return; // (b) structural, non-action only
+
+    rejections.push({
+      code: 'undeclared-field',
+      message: isAction
+        ? `Action/URL prop "${propName}" value "${s.slice(0, 40)}" is not a dataset value — refused (no structural bypass for navigation targets).`
+        : `Inlined value "${s.slice(0, 40)}" does not trace back to the dataset (possible fabricated data).`,
+      where,
+    });
   };
 
   const walk = (node: UiNode, path: string): void => {
@@ -189,10 +209,10 @@ export function dataProvenanceRejections(tree: UiNode, env: DatasetEnvelope): Go
         v.forEach((c, i) =>
           c && typeof c === 'object' && 'props' in (c as object)
             ? walk(c as UiNode, `${p}[${i}]`)
-            : checkValue(c, `${p}[${i}]`),
+            : checkValue(c, `${p}[${i}]`, k),
         );
       } else {
-        checkValue(v, p);
+        checkValue(v, p, k);
       }
     }
   };

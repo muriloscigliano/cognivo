@@ -95,6 +95,43 @@ describe('FIX-1 — the HONEST firewall: data provenance', () => {
   });
 });
 
+describe('FIX C1 — allowlist-by-construction (no short-token / URL bypass)', () => {
+  // Build UiNodes directly to set arbitrary prop names (DSL maps positionally).
+  const node = (type: string, props: Record<string, unknown>) => ({ type, props } as never);
+
+  it('a short single-token fabricated string is now REJECTED (was the C1 hole)', () => {
+    for (const evil of ['TransferAll', 'FreeMoney', 'sudo', '8675309', 'admin@evil.com']) {
+      const rej = dataProvenanceRejections(node('TextContent', { text: evil }), ENV);
+      expect(rej.length, `should reject "${evil}"`).toBeGreaterThan(0);
+    }
+  });
+
+  it('a javascript: / path-traversal string in an ACTION prop is REJECTED (zero bypass)', () => {
+    for (const [prop, evil] of [['href', 'javascript:alert(1)'], ['src', '../../etc/passwd'], ['action', 'https://evil.example']]) {
+      const rej = dataProvenanceRejections(node('Link', { [prop]: evil }), ENV);
+      expect(rej.length, `should reject ${prop}="${evil}"`).toBeGreaterThan(0);
+      expect(rej[0].message).toContain('Action/URL');
+    }
+  });
+
+  it('a structural literal in an ACTION prop is still rejected (no structural bypass for nav)', () => {
+    // "row" is a valid structural literal for layout — but not for an href.
+    const rej = dataProvenanceRejections(node('Link', { href: 'row' }), ENV);
+    expect(rej.length).toBeGreaterThan(0);
+  });
+
+  it('a real dataset value in an action prop passes (provenance honored)', () => {
+    // ENV has a subject "Q4 budget sign-off"; an action bound to a real value is fine.
+    const rej = dataProvenanceRejections(node('Link', { href: 'Q4 budget sign-off' }), ENV);
+    expect(rej).toEqual([]);
+  });
+
+  it('a real dataset value in a normal prop still passes', () => {
+    const rej = dataProvenanceRejections(node('TextContent', { text: 'Design review notes' }), ENV);
+    expect(rej).toEqual([]);
+  });
+});
+
 describe('FIX-1 — real token validator is wired', () => {
   it('a clean real tree yields no token violations', () => {
     const { uiNode } = parseRealDsl('root = Stack([t], "column")\nt = TextContent("Design review notes", "medium")');
