@@ -13,8 +13,31 @@
  * Without a key it prints how to run and exits — the number is never faked.
  */
 
+import { readFileSync } from 'node:fs';
 import { type DatasetEnvelope, type FieldDef } from '../contracts.js';
 import { realRegistry } from '../real-adapter.js';
+
+// Load .env ourselves (Node's --env-file is finicky about comment lines on some
+// versions). Reads repo-root .env, ignores comments/blanks, sets any var not
+// already in the environment. Never logs values.
+function loadDotEnv(): void {
+  try {
+    const text = readFileSync(new URL('../../../../../.env', import.meta.url), 'utf8');
+    for (const raw of text.split('\n')) {
+      const line = raw.trim();
+      if (!line || line.startsWith('#')) continue;
+      const eq = line.indexOf('=');
+      if (eq < 0) continue;
+      const k = line.slice(0, eq).trim();
+      let v = line.slice(eq + 1).trim();
+      if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) v = v.slice(1, -1);
+      if (k && process.env[k] === undefined) process.env[k] = v;
+    }
+  } catch {
+    /* no .env — rely on the real environment */
+  }
+}
+loadDotEnv();
 import { generateWithPipeline, type PipelineGenerateDeps } from '../pipeline-generate.js';
 import { GOLDEN, INBOX_FIELDS, type GoldenCase } from '../golden/dataset.js';
 import { MockJudge } from './judge.js';
