@@ -112,6 +112,7 @@ const samplesIdx = args.indexOf('--samples');
 const SAMPLES = samplesIdx >= 0 ? Number(args[samplesIdx + 1]) : 3;
 const modelIdx = args.indexOf('--model');
 const MODEL = modelIdx >= 0 ? args[modelIdx + 1] : 'claude-opus-4-8';
+const MOCK = args.includes('--mock'); // free full dry-run with the deterministic MockLLM (no API, no credits)
 
 // The inbox dataset covering every golden-referenced field.
 const ENV: DatasetEnvelope = {
@@ -153,18 +154,26 @@ const dataManifest = {
 
 async function main(): Promise<void> {
   const key = process.env.ANTHROPIC_API_KEY;
-  if (!key) {
+  if (!MOCK && !key) {
     console.log('── LIVE GATE not run: ANTHROPIC_API_KEY is not set ──');
     console.log(`Golden cases: ${GOLDEN.length} · samples/case: ${SAMPLES} · model: ${MODEL}`);
-    console.log('Run:  ANTHROPIC_API_KEY=sk-ant-... npx tsx docs/specs/dynamic-interfaces/engine/harness/live-gate.ts');
+    console.log('Run live:  node_modules/.bin/tsx docs/specs/dynamic-interfaces/engine/harness/live-gate.ts');
+    console.log('Free dry-run (no API/credits):  add --mock');
     process.exitCode = 2;
     return;
   }
 
-  // The real adapter — the ONLY networked piece. Imported lazily so the no-key
-  // path never touches the SDK.
-  const { AnthropicTemplateClient } = await import('../anthropic-client.js');
-  const client = new AnthropicTemplateClient({ apiKey: key, model: MODEL });
+  // Client: real Anthropic adapter, OR the deterministic MockLLM for a free
+  // full dry-run (--mock) that exercises the whole gate without spending credits.
+  let client;
+  if (MOCK) {
+    const { MockPipelineTemplateLLM } = await import('../pipeline-mock.js');
+    client = new MockPipelineTemplateLLM();
+    console.log('── MOCK MODE: deterministic generator, no API calls, no credits ──\n');
+  } else {
+    const { AnthropicTemplateClient } = await import('../anthropic-client.js');
+    client = new AnthropicTemplateClient({ apiKey: key!, model: MODEL });
+  }
   const judge = new MockJudge(); // swap for a real LLM judge when desired
   const deps: PipelineGenerateDeps = { client, registry: realRegistry, manifest: dataManifest as never, now: new Date() };
 
@@ -194,8 +203,16 @@ async function main(): Promise<void> {
       } catch (e) {
         // Surface the cause — a thrown error (rate limit, network, API) is NOT
         // the same as a govern failure, and must never be swallowed silently.
-        const err = e as { status?: number; message?: string };
-        const tag = err.status ? `HTTP ${err.status}` : (err.message ?? String(e)).slice(0, 40);
+        const err = e as { status?: number; message?: string; error?: { error?: { message?: string } } };
+        const body = err.error?.error?.message ?? err.message ?? String(e);
+        // Account-level errors (no credits, bad key) won't recover across 51
+        // cases — abort immediately with the real message instead of grinding.
+        if (/credit balance is too low|insufficient|quota|authentication|invalid x-api-key/i.test(body)) {
+          console.log(`\n⛔ ABORTING — account/API error, not a model failure:\n   ${body}\n   Fix this (add credits / check the key at console.anthropic.com), then re-run.`);
+          process.exitCode = 4;
+          return;
+        }
+        const tag = err.status ? `HTTP ${err.status}` : body.slice(0, 40);
         errorCounts.set(tag, (errorCounts.get(tag) ?? 0) + 1);
         lastReason = `THREW: ${tag}`;
       }
