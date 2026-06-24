@@ -5,23 +5,25 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 <DocsLayout title="Dynamic Interfaces">
   <p class="bc"><a href="/">Home</a> <span>/</span> Dynamic Interfaces</p>
 
-  <h1>Dynamic Software Interfaces</h1>
+  <h1>Dynamic Software Interfaces — the living loop</h1>
   <p class="desc">
-    The real loop, end to end: a component-DSL tree is parsed by the
-    <strong>real</strong> gen-ui parser, run through the governance engine
-    (unknown components, token violations, and fabricated-data provenance all
-    block render), and only then rendered with real <code>cg-*</code>
-    components. A rejected tree never renders — you see the previous good
-    surface and a plain-language reason.
+    A flat <strong>interface template</strong> with data <strong>bindings</strong>
+    is generated once, then re-rendered against <strong>live data</strong> by a
+    keyed reconciler — no LLM in the data path, no flicker. Change the data and
+    the surface morphs in place. Switch the template and the same data takes a
+    different shape. Every value comes from the dataset (fabrication impossible);
+    a binding to an undeclared field is rejected before render.
   </p>
 
-  <div class="di-shapes">
-    <span class="di-label">Try a shape:</span>
+  <div class="di-controls">
+    <span class="di-label">Shape:</span>
     <cg-button size="sm" variant="outline" data-shape="list">List</cg-button>
-    <cg-button size="sm" variant="outline" data-shape="tasks">Task list</cg-button>
-    <cg-button size="sm" variant="outline" data-shape="summary">Summary</cg-button>
-    <cg-button size="sm" variant="ghost" data-shape="bad-unknown">⚠ unknown component</cg-button>
-    <cg-button size="sm" variant="ghost" data-shape="bad-data">⚠ fabricated data</cg-button>
+    <cg-button size="sm" variant="outline" data-shape="board">Board by priority</cg-button>
+    <span class="di-sep"></span>
+    <span class="di-label">Live data:</span>
+    <cg-button size="sm" variant="ghost" data-act="add">+ new message</cg-button>
+    <cg-button size="sm" variant="ghost" data-act="read">mark top read</cg-button>
+    <cg-button size="sm" variant="ghost" data-act="reset">reset</cg-button>
   </div>
 
   <div id="di-stage" class="di-stage"></div>
@@ -29,113 +31,102 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 
   <script>
     import '@cognivo/components';
-    import {
-      parseRealDsl,
-      realRegistry,
-      realTokenValidator,
-      dataProvenanceRejections,
-    } from '../../../specs/dynamic-interfaces/engine/real-adapter.ts';
-    import { govern } from '../../../specs/dynamic-interfaces/engine/governance.ts';
-    import { renderGoverned } from '../../../specs/dynamic-interfaces/engine/render.ts';
+    import { field, literal } from '../../../specs/dynamic-interfaces/engine/contracts.ts';
+    import { node } from '../../../specs/dynamic-interfaces/engine/template.ts';
+    import { resolveTemplate } from '../../../specs/dynamic-interfaces/engine/template-resolver.ts';
+    import { createReconciler } from '../../../specs/dynamic-interfaces/engine/reconcile.ts';
+    import { createDomDoc, mountInto } from '../../../specs/dynamic-interfaces/engine/dom-adapter.ts';
+    import { realRegistry } from '../../../specs/dynamic-interfaces/engine/real-adapter.ts';
 
-    // The shared inbox dataset (provenance firewall checks against this).
-    const ENV = {
+    // ── live dataset (the source of truth; the template binds to it) ──
+    const SEED = [
+      { subject: 'Q4 budget sign-off', priority: 'urgent', unread: true },
+      { subject: 'Design review notes', priority: 'high', unread: true },
+      { subject: 'Sprint retro action items', priority: 'high', unread: false },
+      { subject: 'Lunch?', priority: 'low', unread: false },
+    ];
+    let items = structuredClone(SEED);
+    const env = () => ({
       schemaId: 'inbox.message.v1',
       fields: [
         { key: 'subject', type: 'text', label: 'Subject' },
         { key: 'priority', type: 'enum', label: 'Priority', enumValues: ['low', 'normal', 'high', 'urgent'] },
+        { key: 'unread', type: 'bool', label: 'Unread' },
+        { key: 'items', type: 'text', label: 'Items' },
       ],
-      items: [
-        { subject: 'Q4 budget sign-off', priority: 'urgent' },
-        { subject: 'Design review notes', priority: 'high' },
-        { subject: 'Sprint retro action items', priority: 'high' },
-        { subject: 'Lunch?', priority: 'low' },
-      ],
+      items,
+    });
+
+    // ── two templates over the SAME data (structure, not snapshots) ──
+    const LIST_TPL = {
+      schemaId: 'inbox.message.v1', root: 'root',
+      nodes: {
+        root: node('root', 'Stack', { direction: literal('column'), gap: literal('sm') }, ['row']),
+        row: node('row', 'Stack', { direction: literal('row'), gap: literal('sm') }, ['badge', 'title']),
+        badge: node('badge', 'Badge', { label: field('item.priority'), variant: literal('neutral') }),
+        title: node('title', 'TextContent', { text: field('item.subject'), size: literal('medium') }),
+      },
+      repeats: { row: { over: field('items'), as: 'item' } },
+    };
+    const BOARD_TPL = {
+      schemaId: 'inbox.message.v1', root: 'root',
+      nodes: {
+        root: node('root', 'Stack', { direction: literal('column'), gap: literal('md') }, ['hdr', 'col']),
+        hdr: node('hdr', 'TextContent', { text: literal('By priority'), size: literal('large') }),
+        col: node('col', 'Stack', { direction: literal('column'), gap: literal('sm') }, ['card']),
+        card: node('card', 'MetricCard', { label: field('item.subject'), value: field('item.priority') }),
+      },
+      repeats: { card: { over: field('items'), as: 'item' } },
     };
 
-    // Each "shape" is real DSL that references only real dataset values.
-    const SHAPES = {
-      list: [
-        'root = Stack([r1, r2, r3, r4], "column", "sm")',
-        'r1 = Stack([Badge("urgent","danger"), TextContent("Q4 budget sign-off","medium")], "row", "sm")',
-        'r2 = Stack([Badge("high","warning"), TextContent("Design review notes","medium")], "row", "sm")',
-        'r3 = Stack([Badge("high","warning"), TextContent("Sprint retro action items","medium")], "row", "sm")',
-        'r4 = Stack([Badge("low","neutral"), TextContent("Lunch?","medium")], "row", "sm")',
-      ].join('\n'),
-      tasks: [
-        'root = Stack([c1, c2, c3, c4], "column", "sm")',
-        'c1 = Checkbox("Q4 budget sign-off", false)',
-        'c2 = Checkbox("Design review notes", false)',
-        'c3 = Checkbox("Sprint retro action items", false)',
-        'c4 = Checkbox("Lunch?", false)',
-      ].join('\n'),
-      summary: [
-        'root = Stack([h, m], "column", "lg")',
-        'h = TextContent("Inbox summary", "large")',
-        'm = Stack([MetricCard("Total","4",""), MetricCard("High+","3",""), MetricCard("Urgent","1","")], "row", "md")',
-      ].join('\n'),
-      // Deliberately broken, to SHOW governance blocking:
-      'bad-unknown': 'root = Stack([TotallyFakeComponent("x")], "column")',
-      'bad-data': 'root = Stack([TextContent("Everyone secret password is hunter2","medium")], "column")',
-    };
-
-    const deps = { registry: realRegistry, validateTokens: realTokenValidator };
+    let template = LIST_TPL;
     const stage = document.getElementById('di-stage');
     const note = document.getElementById('di-note');
 
-    function show(shapeKey) {
-      const dsl = SHAPES[shapeKey];
-      const { uiNode, parseRejections } = parseRealDsl(dsl);
+    // ── one reconciler over the real DOM; re-render is keyed (no flicker) ──
+    const reconciler = createReconciler(realRegistry, createDomDoc(), mountInto(stage));
 
-      if (!uiNode) {
-        note.textContent = `Couldn’t build that — ${parseRejections[0]?.message ?? 'parse failed'}. Showing the previous view.`;
-        note.className = 'di-note err';
-        return; // keep the last good surface (coherent: never render broken)
-      }
-
-      const g = govern(uiNode, ENV, deps);
-      const provenance = dataProvenanceRejections(uiNode, ENV);
-      const rejections = [...g.rejections, ...provenance];
-
-      if (rejections.length > 0) {
-        // Legible refusal in plain language; the previous surface stays.
-        note.textContent = `I couldn’t do that safely — ${humanReason(rejections[0])}. Showing the previous view.`;
+    function rerender(reason) {
+      const { root, rejections } = resolveTemplate(template, env());
+      if (!root) {
+        note.textContent = `Rejected before render — ${rejections[0]?.message ?? 'unknown'}. Previous view kept.`;
         note.className = 'di-note err';
         return;
       }
-
-      renderGoverned(uiNode, stage, realRegistry);
-      note.textContent = `Reshaped to “${shapeKey}” · governed ✓`;
+      const stats = reconciler.render(root);
+      note.textContent = `${reason} · resolved ${items.length} items · reconcile {created:${stats.created} updated:${stats.updated} reused:${stats.reused} removed:${stats.removed}} · no LLM`;
       note.className = 'di-note ok';
     }
 
-    function humanReason(r) {
-      switch (r.code) {
-        case 'unknown-component': return `“${r.where}” isn’t a real component`;
-        case 'undeclared-field': return `it tried to show data that isn’t in your inbox`;
-        case 'token-violation': return `it used an off-brand style`;
-        case 'a11y': return `“${r.where}” wouldn’t be accessible`;
-        default: return r.message;
-      }
-    }
-
     document.querySelectorAll('[data-shape]').forEach((b) =>
-      b.addEventListener('click', () => show(b.getAttribute('data-shape'))),
+      b.addEventListener('click', () => {
+        template = b.getAttribute('data-shape') === 'board' ? BOARD_TPL : LIST_TPL;
+        rerender(`Reshaped to ${b.getAttribute('data-shape')}`);
+      }),
+    );
+    document.querySelectorAll('[data-act]').forEach((b) =>
+      b.addEventListener('click', () => {
+        const act = b.getAttribute('data-act');
+        if (act === 'add') items = [{ subject: `New task ${items.length + 1}`, priority: 'normal', unread: true }, ...items];
+        else if (act === 'read' && items[0]) items = items.map((m, i) => (i === 0 ? { ...m, unread: false } : m));
+        else if (act === 'reset') items = structuredClone(SEED);
+        rerender(`Data changed (${act})`);
+      }),
     );
 
-    // Boot with a real, governed surface — pixels on screen immediately.
-    show('list');
+    rerender('Initial render');
   </script>
 
   <style>
-    .di-shapes { display: flex; align-items: center; gap: var(--cg-spacing-8); flex-wrap: wrap; margin: var(--cg-spacing-16) 0; }
+    .di-controls { display: flex; align-items: center; gap: var(--cg-spacing-8); flex-wrap: wrap; margin: var(--cg-spacing-16) 0; }
     .di-label { color: var(--cg-color-surface-inset-text); font-size: var(--cg-font-size-sm); }
+    .di-sep { width: var(--cg-border-width-100); height: 20px; background: var(--cg-color-surface-base-border); margin: 0 var(--cg-spacing-8); }
     .di-stage {
-      min-height: 240px; padding: var(--cg-spacing-24); border-radius: var(--cg-border-radius-200);
+      min-height: 220px; padding: var(--cg-spacing-24); border-radius: var(--cg-border-radius-200);
       background: var(--cg-color-surface-container-background);
       border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border);
     }
-    .di-note { font-size: var(--cg-font-size-sm); margin-top: var(--cg-spacing-12); }
+    .di-note { font-size: var(--cg-font-size-sm); margin-top: var(--cg-spacing-12); font-family: var(--cg-font-family-mono); }
     .di-note.ok { color: var(--cg-color-status-success-text-default); }
     .di-note.err { color: var(--cg-color-status-error-text-default); }
   </style>
