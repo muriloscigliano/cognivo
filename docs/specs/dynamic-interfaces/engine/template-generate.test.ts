@@ -12,16 +12,18 @@ const ENV: DatasetEnvelope = {
   schemaId: 'inbox.message.v1',
   fields: [
     { key: 'subject', type: 'text', label: 'Subject' },
+    { key: 'from', type: 'text', label: 'From' },
     { key: 'priority', type: 'enum', label: 'Priority', enumValues: ['low', 'high'] },
     { key: 'items', type: 'text', label: 'Items' },
   ],
   items: [
-    { subject: 'Budget', priority: 'high' },
-    { subject: 'Lunch?', priority: 'low' },
+    { subject: 'Budget', from: 'Dana', priority: 'high' },
+    { subject: 'Lunch?', from: 'Sam', priority: 'low' },
   ],
 };
 
-const KNOWN = new Set(['Stack', 'Badge', 'TextContent', 'Checkbox', 'MetricCard']);
+// rich surfaces (S1) compose Card + Avatar — the fake registry must know them.
+const KNOWN = new Set(['Stack', 'Badge', 'TextContent', 'Checkbox', 'MetricCard', 'Card', 'Avatar']);
 const registry: ComponentRegistry = { getTagName: (t) => (KNOWN.has(t) ? `cg-${t.toLowerCase()}` : undefined) };
 const deps = (client = new MockTemplateLLM()): TemplateGenerateDeps => ({ client, registry });
 
@@ -49,7 +51,10 @@ describe('A5 — happy path: prompt → governed living template', () => {
       n.children.forEach(walk);
     };
     walk(r.resolved!);
-    expect(titles).toEqual(['Budget', 'Lunch?']); // exactly the live data
+    // rich list binds subject AND sender per item — all from live data, none fabricated
+    expect(titles).toContain('Budget');
+    expect(titles).toContain('Lunch?');
+    expect(titles).toContain('Dana'); // sender bound (real density)
   });
 
   it('task intent → checkbox template', async () => {

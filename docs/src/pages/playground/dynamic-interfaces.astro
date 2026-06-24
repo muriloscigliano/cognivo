@@ -48,16 +48,17 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     import { realRegistry } from '../../../specs/dynamic-interfaces/engine/real-adapter.ts';
 
     const SEED = [
-      { subject: 'Q4 budget sign-off', priority: 'urgent', unread: true },
-      { subject: 'Design review notes', priority: 'high', unread: true },
-      { subject: 'Sprint retro action items', priority: 'high', unread: false },
-      { subject: 'Lunch?', priority: 'low', unread: false },
+      { subject: 'Q4 budget sign-off', from: 'Dana (CFO)', priority: 'urgent', unread: true },
+      { subject: 'Design review notes', from: 'Priya', priority: 'high', unread: true },
+      { subject: 'Sprint retro action items', from: 'Alex', priority: 'high', unread: false },
+      { subject: 'Lunch?', from: 'Sam', priority: 'low', unread: false },
     ];
     let items = structuredClone(SEED);
     const env = () => ({
       schemaId: 'inbox.message.v1',
       fields: [
         { key: 'subject', type: 'text', label: 'Subject' },
+        { key: 'from', type: 'text', label: 'From' },
         { key: 'priority', type: 'enum', label: 'Priority', enumValues: ['low', 'normal', 'high', 'urgent'] },
         { key: 'unread', type: 'bool', label: 'Unread' },
         { key: 'items', type: 'text', label: 'Items' },
@@ -114,7 +115,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     document.querySelectorAll('[data-act]').forEach((b) =>
       b.addEventListener('click', () => {
         const act = b.getAttribute('data-act');
-        if (act === 'add') items = [{ subject: `New task ${items.length + 1}`, priority: 'normal', unread: true }, ...items];
+        if (act === 'add') items = [{ subject: `New task ${items.length + 1}`, from: 'You', priority: 'normal', unread: true }, ...items];
         else if (act === 'reset') items = structuredClone(SEED);
         reRenderData(`Data changed (${act})`);
       }),

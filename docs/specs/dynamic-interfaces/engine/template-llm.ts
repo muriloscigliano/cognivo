@@ -11,6 +11,7 @@
 
 import { field, literal } from './contracts.js';
 import { node, type InterfaceTemplate } from './template.js';
+import { richListTemplate, richTaskTemplate, richSummaryTemplate } from './surface-library.js';
 
 export interface TemplateRequest {
   system: string;
@@ -28,46 +29,8 @@ export interface TemplateLlmClient {
   generate(req: TemplateRequest): Promise<TemplateResponse>;
 }
 
-// ─── Known-good templates the mock emits (flat, bound, with repeats) ──────────
-
-function listTemplate(): InterfaceTemplate {
-  return {
-    schemaId: 'inbox.message.v1',
-    root: 'root',
-    nodes: {
-      root: node('root', 'Stack', { direction: literal('column'), gap: literal('sm') }, ['row']),
-      row: node('row', 'Stack', { direction: literal('row'), gap: literal('sm') }, ['badge', 'title']),
-      badge: node('badge', 'Badge', { label: field('item.priority'), variant: literal('neutral') }),
-      title: node('title', 'TextContent', { text: field('item.subject'), size: literal('medium') }),
-    },
-    repeats: { row: { over: field('items'), as: 'item' } },
-  };
-}
-
-function taskTemplate(): InterfaceTemplate {
-  return {
-    schemaId: 'inbox.message.v1',
-    root: 'root',
-    nodes: {
-      root: node('root', 'Stack', { direction: literal('column'), gap: literal('sm') }, ['task']),
-      task: node('task', 'Checkbox', { label: field('item.subject') }),
-    },
-    repeats: { task: { over: field('items'), as: 'item' } },
-  };
-}
-
-function summaryTemplate(): InterfaceTemplate {
-  return {
-    schemaId: 'inbox.message.v1',
-    root: 'root',
-    nodes: {
-      root: node('root', 'Stack', { direction: literal('column'), gap: literal('lg') }, ['hdr', 'card']),
-      hdr: node('hdr', 'TextContent', { text: literal('Inbox summary'), size: literal('large') }),
-      card: node('card', 'MetricCard', { label: field('item.subject'), value: field('item.priority') }),
-    },
-    repeats: { card: { over: field('items'), as: 'item' } },
-  };
-}
+// Known-good templates come from the shared surface library (S1/S2) — rich,
+// chrome-bearing compositions (Card/Avatar/Badge) that read as a real app.
 
 // ─── Scripted failures (drive governance/repair on the real path) ─────────────
 
@@ -122,8 +85,8 @@ export class MockTemplateLLM implements TemplateLlmClient {
     if (/password|secret|ssn|credential|credit.?card/.test(intent)) {
       return { template: failureTemplate('undeclared-field'), raw: 'mock:undeclared' };
     }
-    if (/task|checklist|to-?do/.test(intent)) return { template: taskTemplate(), raw: 'mock:task' };
-    if (/summary|overview|total|count/.test(intent)) return { template: summaryTemplate(), raw: 'mock:summary' };
-    return { template: listTemplate(), raw: 'mock:list' };
+    if (/task|checklist|to-?do/.test(intent)) return { template: richTaskTemplate(), raw: 'mock:task' };
+    if (/summary|overview|total|count/.test(intent)) return { template: richSummaryTemplate(), raw: 'mock:summary' };
+    return { template: richListTemplate(), raw: 'mock:list' };
   }
 }
