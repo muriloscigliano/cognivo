@@ -87,3 +87,24 @@ describe('A1 — data enters props ONLY as a BoundValue', () => {
     expect(isBoundValue(42)).toBe(false);
   });
 });
+
+describe('A1 — validateTemplate never throws on malformed LLM output (crash-proof)', () => {
+  const bad: Array<[string, unknown]> = [
+    ['no nodes map', { schemaId: 's', root: 'r' }],
+    ['nodes not object', { schemaId: 's', root: 'r', nodes: 'x' }],
+    ['node missing type', { schemaId: 's', root: 'r', nodes: { r: { id: 'r', props: {} } } }],
+    ['props not object', { schemaId: 's', root: 'r', nodes: { r: { id: 'r', type: 'Stack', props: 'x' } } }],
+    ['children not array', { schemaId: 's', root: 'r', nodes: { r: { id: 'r', type: 'Stack', children: 'x' } } }],
+    ['repeat without over', { schemaId: 's', root: 'r', nodes: { r: { id: 'r', type: 'Stack' } }, repeats: { r: {} } }],
+    ['null node', { schemaId: 's', root: 'r', nodes: { r: null } }],
+    ['empty object', {}],
+  ];
+  for (const [name, t] of bad) {
+    it(`rejects (not throws): ${name}`, () => {
+      // The key guarantee: it returns issues, it does NOT throw.
+      const issues = validateTemplate(t as never);
+      expect(Array.isArray(issues)).toBe(true);
+      expect(issues.length).toBeGreaterThan(0);
+    });
+  }
+});

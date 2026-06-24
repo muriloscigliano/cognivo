@@ -70,16 +70,32 @@ export interface TemplateIssue {
  */
 export function validateTemplate(t: InterfaceTemplate): TemplateIssue[] {
   const issues: TemplateIssue[] = [];
-  if (!t.nodes[t.root]) issues.push({ nodeId: t.root, problem: 'root node not found' });
+
+  // Top-level shape must be safe to traverse — a malformed template (from an LLM
+  // that omitted a field) is REJECTED here, never crashed on downstream.
+  if (!t || typeof t !== 'object') return [{ nodeId: '(root)', problem: 'template is not an object' }];
+  if (typeof t.root !== 'string' || t.root === '') issues.push({ nodeId: '(root)', problem: 'missing or invalid "root"' });
+  if (!t.nodes || typeof t.nodes !== 'object') {
+    issues.push({ nodeId: '(nodes)', problem: 'missing or invalid "nodes" map' });
+    return issues; // can't traverse without a nodes map
+  }
+  if (typeof t.root === 'string' && !t.nodes[t.root]) issues.push({ nodeId: t.root, problem: 'root node not found' });
 
   for (const [id, node] of Object.entries(t.nodes)) {
+    if (!node || typeof node !== 'object') { issues.push({ nodeId: id, problem: 'node is not an object' }); continue; }
     if (node.id !== id) issues.push({ nodeId: id, problem: `node.id "${node.id}" != map key "${id}"` });
-    for (const childId of node.children ?? []) {
-      if (!t.nodes[childId]) issues.push({ nodeId: id, problem: `child "${childId}" not found` });
+    if (typeof node.type !== 'string' || node.type === '') issues.push({ nodeId: id, problem: 'node missing "type"' });
+    if (node.props !== undefined && (typeof node.props !== 'object' || node.props === null)) issues.push({ nodeId: id, problem: 'node "props" must be an object' });
+    if (node.children !== undefined && !Array.isArray(node.children)) issues.push({ nodeId: id, problem: 'node "children" must be an array of ids' });
+    for (const childId of Array.isArray(node.children) ? node.children : []) {
+      if (typeof childId !== 'string' || !t.nodes[childId]) issues.push({ nodeId: id, problem: `child "${String(childId)}" not found` });
     }
   }
-  for (const hostId of Object.keys(t.repeats ?? {})) {
+  for (const [hostId, spec] of Object.entries(t.repeats ?? {})) {
     if (!t.nodes[hostId]) issues.push({ nodeId: hostId, problem: 'repeat host node not found' });
+    if (!spec || typeof spec !== 'object' || !spec.over || typeof spec.over.key !== 'string') {
+      issues.push({ nodeId: hostId, problem: 'repeat must have { over: {kind:"field",key}, as }' });
+    }
   }
 
   // cycle detection (children form a DAG rooted at `root`)
@@ -104,12 +120,14 @@ export function validateTemplate(t: InterfaceTemplate): TemplateIssue[] {
 /** Every field key any binding in the template references (incl. repeats). */
 export function templateFieldKeys(t: InterfaceTemplate): string[] {
   const keys = new Set<string>();
-  for (const node of Object.values(t.nodes)) {
-    for (const v of Object.values(node.props)) {
+  for (const node of Object.values(t.nodes ?? {})) {
+    for (const v of Object.values(node?.props ?? {})) {
       if (isFieldBinding(v)) keys.add(v.key);
     }
   }
-  for (const r of Object.values(t.repeats ?? {})) keys.add(r.over.key);
+  for (const r of Object.values(t.repeats ?? {})) {
+    if (r?.over?.key) keys.add(r.over.key);
+  }
   return [...keys];
 }
 
