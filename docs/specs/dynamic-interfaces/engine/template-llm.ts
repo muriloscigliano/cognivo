@@ -115,6 +115,13 @@ export class MockTemplateLLM implements TemplateLlmClient {
       if (!heals) return { template: failureTemplate(this.opts.forceFailure), raw: `mock:${this.opts.forceFailure}` };
     }
     const intent = req.user.toLowerCase();
+    // An intent asking for data the dataset doesn't have → the mock honestly
+    // produces a template that binds an undeclared field, which governance then
+    // rejects. (A real model might comply with such a request; the firewall is
+    // what makes either outcome safe.)
+    if (/password|secret|ssn|credential|credit.?card/.test(intent)) {
+      return { template: failureTemplate('undeclared-field'), raw: 'mock:undeclared' };
+    }
     if (/task|checklist|to-?do/.test(intent)) return { template: taskTemplate(), raw: 'mock:task' };
     if (/summary|overview|total|count/.test(intent)) return { template: summaryTemplate(), raw: 'mock:summary' };
     return { template: listTemplate(), raw: 'mock:list' };

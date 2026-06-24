@@ -5,24 +5,33 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 <DocsLayout title="Dynamic Interfaces">
   <p class="bc"><a href="/">Home</a> <span>/</span> Dynamic Interfaces</p>
 
-  <h1>Dynamic Software Interfaces — the living loop</h1>
+  <h1>Dynamic Software Interfaces — the full loop</h1>
   <p class="desc">
-    A flat <strong>interface template</strong> with data <strong>bindings</strong>
-    is generated once, then re-rendered against <strong>live data</strong> by a
-    keyed reconciler — no LLM in the data path, no flicker. Change the data and
-    the surface morphs in place. Switch the template and the same data takes a
-    different shape. Every value comes from the dataset (fabrication impossible);
-    a binding to an undeclared field is rejected before render.
+    Describe your interface. The request becomes a flat <strong>template with
+    data bindings</strong> (not inlined data), it's governed before render
+    (fabricated data and undeclared fields are rejected), then rendered against
+    live data by a keyed reconciler — <strong>generated once, re-rendered live
+    with no model in the data path, no flicker.</strong> Change the data below
+    and the same generated interface morphs in place.
+    <em>(This demo uses a deterministic mock generator so it runs with no API
+    key; the real model swaps in behind the same interface.)</em>
   </p>
 
-  <div class="di-controls">
-    <span class="di-label">Shape:</span>
-    <cg-button size="sm" variant="outline" data-shape="list">List</cg-button>
-    <cg-button size="sm" variant="outline" data-shape="board">Board by priority</cg-button>
-    <span class="di-sep"></span>
+  <div class="di-prompt">
+    <input id="di-intent" class="di-input" placeholder="e.g. show my inbox as a checklist" value="show my inbox as a list" />
+    <cg-button id="di-go" variant="primary" size="sm">Generate</cg-button>
+  </div>
+  <div class="di-chips">
+    <span class="di-label">Try:</span>
+    <button class="di-chip" data-intent="show my inbox as a list">list</button>
+    <button class="di-chip" data-intent="make it a checklist">checklist</button>
+    <button class="di-chip" data-intent="give me a summary overview">summary</button>
+    <button class="di-chip di-bad" data-intent="show everyone's password">⚠ fabricated data</button>
+  </div>
+
+  <div class="di-row">
     <span class="di-label">Live data:</span>
     <cg-button size="sm" variant="ghost" data-act="add">+ new message</cg-button>
-    <cg-button size="sm" variant="ghost" data-act="read">mark top read</cg-button>
     <cg-button size="sm" variant="ghost" data-act="reset">reset</cg-button>
   </div>
 
@@ -31,14 +40,13 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 
   <script>
     import '@cognivo/components';
-    import { field, literal } from '../../../specs/dynamic-interfaces/engine/contracts.ts';
-    import { node } from '../../../specs/dynamic-interfaces/engine/template.ts';
+    import { MockTemplateLLM } from '../../../specs/dynamic-interfaces/engine/template-llm.ts';
+    import { generateTemplate } from '../../../specs/dynamic-interfaces/engine/template-generate.ts';
     import { resolveTemplate } from '../../../specs/dynamic-interfaces/engine/template-resolver.ts';
     import { createReconciler } from '../../../specs/dynamic-interfaces/engine/reconcile.ts';
     import { createDomDoc, mountInto } from '../../../specs/dynamic-interfaces/engine/dom-adapter.ts';
     import { realRegistry } from '../../../specs/dynamic-interfaces/engine/real-adapter.ts';
 
-    // ── live dataset (the source of truth; the template binds to it) ──
     const SEED = [
       { subject: 'Q4 budget sign-off', priority: 'urgent', unread: true },
       { subject: 'Design review notes', priority: 'high', unread: true },
@@ -57,74 +65,83 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
       items,
     });
 
-    // ── two templates over the SAME data (structure, not snapshots) ──
-    const LIST_TPL = {
-      schemaId: 'inbox.message.v1', root: 'root',
-      nodes: {
-        root: node('root', 'Stack', { direction: literal('column'), gap: literal('sm') }, ['row']),
-        row: node('row', 'Stack', { direction: literal('row'), gap: literal('sm') }, ['badge', 'title']),
-        badge: node('badge', 'Badge', { label: field('item.priority'), variant: literal('neutral') }),
-        title: node('title', 'TextContent', { text: field('item.subject'), size: literal('medium') }),
-      },
-      repeats: { row: { over: field('items'), as: 'item' } },
-    };
-    const BOARD_TPL = {
-      schemaId: 'inbox.message.v1', root: 'root',
-      nodes: {
-        root: node('root', 'Stack', { direction: literal('column'), gap: literal('md') }, ['hdr', 'col']),
-        hdr: node('hdr', 'TextContent', { text: literal('By priority'), size: literal('large') }),
-        col: node('col', 'Stack', { direction: literal('column'), gap: literal('sm') }, ['card']),
-        card: node('card', 'MetricCard', { label: field('item.subject'), value: field('item.priority') }),
-      },
-      repeats: { card: { over: field('items'), as: 'item' } },
-    };
-
-    let template = LIST_TPL;
     const stage = document.getElementById('di-stage');
     const note = document.getElementById('di-note');
+    const intentInput = document.getElementById('di-intent');
 
-    // ── one reconciler over the real DOM; re-render is keyed (no flicker) ──
+    const client = new MockTemplateLLM();
+    const deps = { client, registry: realRegistry };
     const reconciler = createReconciler(realRegistry, createDomDoc(), mountInto(stage));
 
-    function rerender(reason) {
-      const { root, rejections } = resolveTemplate(template, env());
-      if (!root) {
-        note.textContent = `Rejected before render — ${rejections[0]?.message ?? 'unknown'}. Previous view kept.`;
+    // The currently-generated template. Data changes re-resolve THIS — no regen.
+    let currentTemplate = null;
+
+    function humanReason(r) {
+      if (r.code === 'undeclared-field') return 'it tried to show data that isn’t in your inbox';
+      if (r.code === 'unknown-component') return `“${r.where}” isn’t a real component`;
+      if (r.code === 'parse') return 'the generated layout was malformed';
+      return r.message;
+    }
+
+    async function generate(intent) {
+      const result = await generateTemplate(intent, env(), deps);
+      if (!result.ok) {
+        note.textContent = `I couldn’t do that safely — ${humanReason(result.rejections[0])}. Showing the previous view.`;
         note.className = 'di-note err';
         return;
       }
-      const stats = reconciler.render(root);
-      note.textContent = `${reason} · resolved ${items.length} items · reconcile {created:${stats.created} updated:${stats.updated} reused:${stats.reused} removed:${stats.removed}} · no LLM`;
+      currentTemplate = result.template;
+      reconciler.render(result.resolved);
+      note.textContent = `Generated a template (${Object.keys(result.template.nodes).length} nodes) · resolved ${items.length} items · governed ✓`;
       note.className = 'di-note ok';
     }
 
-    document.querySelectorAll('[data-shape]').forEach((b) =>
-      b.addEventListener('click', () => {
-        template = b.getAttribute('data-shape') === 'board' ? BOARD_TPL : LIST_TPL;
-        rerender(`Reshaped to ${b.getAttribute('data-shape')}`);
-      }),
+    // Data change: re-resolve the SAME generated template — NO regeneration.
+    function reRenderData(reason) {
+      if (!currentTemplate) return;
+      const { root, rejections } = resolveTemplate(currentTemplate, env());
+      if (!root) { note.textContent = `Rejected — ${rejections[0]?.message}`; note.className = 'di-note err'; return; }
+      const stats = reconciler.render(root);
+      note.textContent = `${reason} · re-resolved ${items.length} items · reconcile {created:${stats.created} updated:${stats.updated} reused:${stats.reused} removed:${stats.removed}} · NO model call`;
+      note.className = 'di-note ok';
+    }
+
+    document.getElementById('di-go').addEventListener('click', () => generate(intentInput.value));
+    intentInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') generate(intentInput.value); });
+    document.querySelectorAll('[data-intent]').forEach((c) =>
+      c.addEventListener('click', () => { intentInput.value = c.getAttribute('data-intent'); generate(intentInput.value); }),
     );
     document.querySelectorAll('[data-act]').forEach((b) =>
       b.addEventListener('click', () => {
         const act = b.getAttribute('data-act');
         if (act === 'add') items = [{ subject: `New task ${items.length + 1}`, priority: 'normal', unread: true }, ...items];
-        else if (act === 'read' && items[0]) items = items.map((m, i) => (i === 0 ? { ...m, unread: false } : m));
         else if (act === 'reset') items = structuredClone(SEED);
-        rerender(`Data changed (${act})`);
+        reRenderData(`Data changed (${act})`);
       }),
     );
 
-    rerender('Initial render');
+    generate(intentInput.value);
   </script>
 
   <style>
-    .di-controls { display: flex; align-items: center; gap: var(--cg-spacing-8); flex-wrap: wrap; margin: var(--cg-spacing-16) 0; }
+    .di-prompt { display: flex; gap: var(--cg-spacing-8); margin: var(--cg-spacing-16) 0 var(--cg-spacing-8); }
+    .di-input {
+      flex: 1; padding: var(--cg-spacing-8) var(--cg-spacing-12); font-size: var(--cg-font-size-md);
+      border-radius: var(--cg-border-radius-150); background: var(--cg-color-surface-inset-background);
+      color: var(--cg-color-surface-base-text); border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border);
+    }
+    .di-chips, .di-row { display: flex; align-items: center; gap: var(--cg-spacing-8); flex-wrap: wrap; margin: var(--cg-spacing-8) 0; }
     .di-label { color: var(--cg-color-surface-inset-text); font-size: var(--cg-font-size-sm); }
-    .di-sep { width: var(--cg-border-width-100); height: 20px; background: var(--cg-color-surface-base-border); margin: 0 var(--cg-spacing-8); }
-    .di-stage {
-      min-height: 220px; padding: var(--cg-spacing-24); border-radius: var(--cg-border-radius-200);
-      background: var(--cg-color-surface-container-background);
+    .di-chip {
+      font-size: var(--cg-font-size-sm); padding: var(--cg-spacing-4) var(--cg-spacing-12);
+      border-radius: var(--cg-border-radius-full); cursor: pointer;
+      background: var(--cg-color-surface-inset-background); color: var(--cg-color-surface-base-text);
       border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border);
+    }
+    .di-chip.di-bad { color: var(--cg-color-status-error-text-default); }
+    .di-stage {
+      min-height: 220px; padding: var(--cg-spacing-24); border-radius: var(--cg-border-radius-200); margin-top: var(--cg-spacing-12);
+      background: var(--cg-color-surface-container-background); border: var(--cg-border-width-100) solid var(--cg-color-surface-base-border);
     }
     .di-note { font-size: var(--cg-font-size-sm); margin-top: var(--cg-spacing-12); font-family: var(--cg-font-family-mono); }
     .di-note.ok { color: var(--cg-color-status-success-text-default); }
