@@ -67,22 +67,39 @@ function buildSystem(env: DatasetEnvelope): string {
     },
     repeats: { row: { over: { kind: 'field', key: 'items' }, as: 'item' } },
   });
+  // A valid pipeline example (filter + group) — teaches the data layer shape.
+  const pipelineExample = JSON.stringify({
+    ops: [
+      { kind: 'filter', field: 'unread', operator: 'eq', value: { kind: 'literal', value: true } },
+      { kind: 'group', by: 'priority', keyAs: 'p', countAs: 'n' },
+    ],
+    outputSchema: [{ key: 'p', type: 'text', label: 'Priority' }, { key: 'n', type: 'number', label: 'Count' }],
+  });
   return [
-    'Generate a UI as a FLAT InterfaceTemplate and emit it with the emit_surface tool.',
+    'Generate a UI by emitting the emit_surface tool with { template, pipeline? }.',
     '',
-    'HARD RULES (a template that breaks any of these is REJECTED):',
-    '1. Every node object MUST include an "id" field equal to its key in the nodes map. e.g. "root": { "id": "root", ... }.',
-    '2. Use ONLY these component types: ' + COMPONENTS.join(', ') + '. No "list", "heading", "row" (as a type), "container", "listItem", etc.',
+    'TEMPLATE — HARD RULES (breaking any → REJECTED):',
+    '1. Every node object MUST include an "id" equal to its key in the nodes map.',
+    '2. Use ONLY these component types: ' + COMPONENTS.join(', ') + '. No "list","heading","row"(as a type),"container".',
     '3. Children are an array of node IDs (strings), never nested objects.',
-    '4. EVERY prop value MUST be either { "kind":"field","key":"<field>" } or { "kind":"literal","value": <string|number|bool> }. Never a bare string/number.',
-    '5. To show one node per message, add a "repeats" entry: { "<nodeId>": { "over": {"kind":"field","key":"items"}, "as":"item" } }, and inside that node bind item fields as {"kind":"field","key":"item.<field>"}.',
-    '6. Bind ONLY the declared fields listed below. Never invent fields or hard-code data values.',
-    '7. For literal layout values use these vocabularies: direction = column|row; gap/size = xs|sm|md|lg; Badge variant = neutral|info|success|warning|danger.',
-    '',
-    'COMPLETE VALID EXAMPLE (copy this exact structure, adapt types/fields to the request):',
+    '4. EVERY prop value MUST be {"kind":"field","key":"<field>"} or {"kind":"literal","value":<v>}. Never a bare value.',
+    '5. One node per record: add "repeats": {"<nodeId>":{"over":{"kind":"field","key":"items"},"as":"item"}} and bind {"kind":"field","key":"item.<field>"}.',
+    '6. Bind ONLY the declared fields below. Never invent fields or hard-code data.',
+    '7. Literals: direction=column|row; gap/size=xs|sm|md|lg; Badge variant=neutral|info|success|warning|danger.',
+    'TEMPLATE EXAMPLE:',
     example,
     '',
-    'Declared fields you may bind:',
+    'PIPELINE (optional "pipeline" key) — use it whenever the request needs to FILTER, SORT, GROUP, or COUNT data (e.g. "only unread", "overdue", "group by priority", "board by X", "summary/counts", "newest first", "this week"):',
+    '- Shape: { "ops": [ ...DataOp ], "outputSchema"?: [ {key,type,label} ] }.',
+    '- "ops" MUST be an array (this is the #1 mistake — never omit it).',
+    '- DataOp kinds: filter {field,operator,value:{kind:"literal",value}} (operators: eq,neq,lt,lte,gt,gte,in,nin,isEmpty,isNotEmpty); sort {field,direction:"asc"|"desc"}; group {by,keyAs,countAs}; derive {fn,from,as} (fn: isOverdue|dateBucket); limit {count}.',
+    '- For filter/sort/limit you may OMIT outputSchema (shape unchanged). For group/derive you MUST provide outputSchema describing the new fields, and the template then binds those new fields (e.g. item.p, item.n).',
+    '- IMPORTANT: after a "group" op the ONLY fields that exist are the group\'s keyAs and countAs — the original fields (subject, from, etc.) are GONE. outputSchema must list exactly those new fields, and the template must bind only them. "derive" ADDS a field (keep the originals in outputSchema plus the new one).',
+    '- If you only need to display records as-is (a plain list/checklist with no filtering or grouping), DO NOT emit a pipeline at all — just the template with a repeat over items.',
+    'PIPELINE EXAMPLE (filter unread, then group by priority → board over groups):',
+    pipelineExample,
+    '',
+    'Declared fields you may bind / filter / sort / group:',
     fields,
   ].join('\n');
 }
@@ -111,12 +128,25 @@ const ENV: DatasetEnvelope = {
   ],
 };
 
+// The vendor grants sensible, safe operations across the inbox fields. (A real
+// vendor authors this once; the gate failures showed the demo manifest was too
+// narrow — the model wanted legitimate ops the vendor hadn't declared.)
+const ALL_FILTER_OPS = ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'in', 'nin', 'contains', 'isEmpty', 'isNotEmpty'] as const;
 const dataManifest = {
   schemaId: 'inbox.message.v1',
   grants: [
-    { field: 'priority', ops: ['group', 'filter'] as const, filterOperators: ['eq', 'in'] as const },
-    { field: 'dueDate', ops: ['filter', 'sort', 'derive'] as const, filterOperators: ['lt', 'gte', 'isEmpty'] as const, deriveFns: ['isOverdue', 'dateBucket'] as const },
-    { field: 'unread', ops: ['filter', 'group'] as const, filterOperators: ['eq'] as const },
+    { field: 'subject', ops: ['filter', 'sort'] as const, filterOperators: ['contains', 'eq', 'isEmpty', 'isNotEmpty'] as const },
+    { field: 'from', ops: ['filter', 'sort', 'group'] as const, filterOperators: ['eq', 'contains', 'in'] as const },
+    { field: 'to', ops: ['filter', 'group'] as const, filterOperators: ['eq', 'contains'] as const },
+    { field: 'receivedAt', ops: ['filter', 'sort', 'derive'] as const, filterOperators: ['lt', 'lte', 'gt', 'gte', 'isEmpty', 'isNotEmpty'] as const, deriveFns: ['dateBucket'] as const },
+    { field: 'dueDate', ops: ['filter', 'sort', 'derive'] as const, filterOperators: ALL_FILTER_OPS, deriveFns: ['isOverdue', 'dateBucket'] as const },
+    { field: 'unread', ops: ['filter', 'group'] as const, filterOperators: ['eq', 'neq'] as const },
+    { field: 'priority', ops: ['filter', 'sort', 'group'] as const, filterOperators: ['eq', 'in', 'nin'] as const },
+    { field: 'labels', ops: ['filter', 'group'] as const, filterOperators: ['eq', 'contains', 'in'] as const },
+    { field: 'hasAttachment', ops: ['filter', 'group'] as const, filterOperators: ['eq', 'neq'] as const },
+    // derived buckets the model creates (e.g. dateBucket → "bucket") are filterable/groupable
+    { field: 'bucket', ops: ['filter', 'group'] as const, filterOperators: ['eq', 'in'] as const },
+    { field: 'overdue', ops: ['filter', 'group'] as const, filterOperators: ['eq', 'neq'] as const },
   ],
   policy: { maxRows: 500, maxOps: 8, maxGroups: 50 },
 };
