@@ -58,7 +58,7 @@ export class AnthropicTemplateClient implements PipelineTemplateClient {
     const apiKey = opts.apiKey ?? process.env.ANTHROPIC_API_KEY;
     if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not set — provide it via env, never in source.');
     this.client = new Anthropic({ apiKey });
-    this.model = opts.model ?? 'claude-opus-4-8';
+    this.model = opts.model ?? 'claude-haiku-4-5'; // cheap default; caller overrides for quality
     this.maxTokens = opts.maxTokens ?? 4096;
   }
 

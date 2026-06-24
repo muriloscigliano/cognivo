@@ -111,7 +111,17 @@ const args = process.argv.slice(2);
 const samplesIdx = args.indexOf('--samples');
 const SAMPLES = samplesIdx >= 0 ? Number(args[samplesIdx + 1]) : 3;
 const modelIdx = args.indexOf('--model');
-const MODEL = modelIdx >= 0 ? args[modelIdx + 1] : 'claude-opus-4-8';
+// Default to the CHEAPEST model — this is a bulk eval harness (51 cases × N
+// samples), not production. Opt into a stronger model explicitly with --model.
+const MODEL = modelIdx >= 0 ? args[modelIdx + 1] : 'claude-haiku-4-5';
+
+// Rough per-million-token prices for a pre-run cost estimate (input/output USD).
+const PRICES: Record<string, [number, number]> = {
+  'claude-haiku-4-5': [1, 5],
+  'claude-sonnet-4-6': [3, 15],
+  'claude-opus-4-8': [5, 25],
+};
+const sleepTop = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const MOCK = args.includes('--mock'); // free full dry-run with the deterministic MockLLM (no API, no credits)
 
 // The inbox dataset covering every golden-referenced field.
@@ -173,6 +183,14 @@ async function main(): Promise<void> {
   } else {
     const { AnthropicTemplateClient } = await import('../anthropic-client.js');
     client = new AnthropicTemplateClient({ apiKey: key!, model: MODEL });
+    // Cost estimate up front so a live run is never a surprise bill.
+    const [inP, outP] = PRICES[MODEL] ?? [5, 25];
+    const calls = GOLDEN.length * SAMPLES * 1.3; // ×1.3 for occasional repair retries
+    const estIn = (calls * 2500) / 1e6, estOut = (calls * 700) / 1e6;
+    const estUsd = estIn * inP + estOut * outP;
+    console.log(`── LIVE RUN · model ${MODEL} · ${GOLDEN.length} cases × ${SAMPLES} samples ──`);
+    console.log(`   est. ~${Math.round(calls)} calls, ~$${estUsd.toFixed(2)} (rough). Ctrl-C now to cancel.\n`);
+    await sleepTop(1500); // brief window to abort before spending
   }
   const judge = new MockJudge(); // swap for a real LLM judge when desired
   const deps: PipelineGenerateDeps = { client, registry: realRegistry, manifest: dataManifest as never, now: new Date() };
