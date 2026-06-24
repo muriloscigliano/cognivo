@@ -89,6 +89,19 @@ export async function generateWithPipeline(
 
   // 1. middleware layer (optional)
   if (output.pipeline) {
+    // Default derivable fields the model often omits: a pipeline's schemaId is
+    // always the dataset's, and outputSchema defaults to the dataset's fields
+    // when the ops don't reshape (filter/sort keep the shape). The model
+    // shouldn't have to restate these; only group/aggregate truly need a custom
+    // outputSchema, and governance still verifies it when present.
+    const pipe = output.pipeline as { schemaId?: string; outputSchema?: unknown; ops?: unknown };
+    if (pipe && typeof pipe === 'object') {
+      if (pipe.schemaId == null) pipe.schemaId = env.schemaId;
+      if (!Array.isArray(pipe.outputSchema)) {
+        const reshapes = Array.isArray(pipe.ops) && (pipe.ops as Array<{ kind?: string }>).some((o) => o?.kind === 'group' || o?.kind === 'aggregate' || o?.kind === 'derive');
+        if (!reshapes) pipe.outputSchema = env.fields; // filter/sort/limit keep the dataset shape
+      }
+    }
     if (!deps.manifest) {
       rejections.push({ code: 'parse', message: 'A pipeline was emitted but no data manifest is configured.' });
     } else {

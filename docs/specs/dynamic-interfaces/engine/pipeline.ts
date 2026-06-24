@@ -58,6 +58,12 @@ export function governPipeline(
   const reject = (code: GovernanceRejection['code'], message: string, where?: string) =>
     rejections.push({ code, message, where });
 
+  // Shape guard: a malformed pipeline (LLM omitted ops/outputSchema) is REJECTED,
+  // never crashed on. Return early so nothing downstream iterates undefined.
+  if (!pipeline || typeof pipeline !== 'object') return { ok: false, rejections: [{ code: 'parse', message: 'pipeline is not an object' }] };
+  if (!Array.isArray(pipeline.ops)) return { ok: false, rejections: [{ code: 'parse', message: 'pipeline "ops" must be an array' }] };
+  if (!Array.isArray(pipeline.outputSchema)) return { ok: false, rejections: [{ code: 'parse', message: 'pipeline "outputSchema" must be an array' }] };
+
   if (pipeline.schemaId !== env.schemaId) {
     reject('parse', `Pipeline schemaId "${pipeline.schemaId}" != dataset "${env.schemaId}".`);
   }
@@ -137,6 +143,7 @@ export function governPipeline(
       case 'aggregate': {
         const where = 'aggregate';
         const out = new Set<string>();
+        if (!Array.isArray(op.entries)) { reject('parse', 'aggregate "entries" must be an array.', where); break; }
         for (const e of op.entries) {
           if (requireField(e.field, where) && requirePermit(e.field, 'aggregate', where)) {
             const g = grantFor(manifest, e.field)!;
