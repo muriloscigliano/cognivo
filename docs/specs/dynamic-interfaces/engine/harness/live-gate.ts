@@ -187,7 +187,7 @@ async function main(): Promise<void> {
   for (let i = 0; i < GOLDEN.length; i++) {
     const c: GoldenCase = GOLDEN[i];
     let okCount = 0, parsedCount = 0;
-    let lastResolvedTree: unknown = null;
+    let lastTemplate: unknown = null;
     let lastReason = '';
     for (let s = 0; s < SAMPLES; s++) {
       try {
@@ -197,7 +197,9 @@ async function main(): Promise<void> {
         const passed = c.expectShouldGovern ? r.ok : !r.ok;
         if (passed) okCount++;
         else lastReason = r.rejections[0]?.message ?? '(no rejection msg)';
-        if (r.ok && r.resolved) lastResolvedTree = r.resolved;
+        // Fidelity is judged on the TEMPLATE (which still has field bindings),
+        // not the resolved tree (bindings already replaced by values).
+        if (r.ok && r.output?.template) lastTemplate = r.output.template;
         // delta proxy: governance blocked something on an adversarial case
         if (c.category === 'adversarial' && !r.ok) governedBlockedUnsafe++;
       } catch (e) {
@@ -220,9 +222,12 @@ async function main(): Promise<void> {
     }
     if (parsedCount > 0) parsedAll++;
     if (okCount === SAMPLES) governedWorst++;
-    // fidelity (mock judge) on the last good tree
-    if (lastResolvedTree) {
-      const fs = await judge.score(c, lastResolvedTree as never);
+    // Fidelity: judge the template's bound nodes. Wrap the flat nodes in a
+    // synthetic root so the judge's collectFieldBindings can walk the bindings.
+    if (lastTemplate) {
+      const tpl = lastTemplate as { nodes: Record<string, { type: string; props: unknown }> };
+      const synthetic = { type: 'Group', props: { children: Object.values(tpl.nodes).map((nd) => ({ type: nd.type, props: nd.props })) } };
+      const fs = await judge.score(c, synthetic as never);
       fidelity.push(fs.score);
     }
     const mark = okCount === SAMPLES ? '✓' : okCount > 0 ? '~' : '✗';
@@ -252,8 +257,16 @@ async function main(): Promise<void> {
   console.log(`  fidelity median:     ${fidelityMedian.toFixed(2)}  gate ≥ ${DEFAULT_THRESHOLDS.fidelityMedian}`);
   console.log(`  governance delta:    ${(governedBlockedUnsafe / n).toFixed(3)}  (adversarial saves)`);
   console.log(`  ${decision.go ? '✅ GO' : '❌ NO-GO'} — ${decision.reasons.join('; ')}`);
+  if (MOCK) {
+    console.log('  (MOCK mode: the deterministic generator never fabricates forbidden data,');
+    console.log('   so "governance delta" is always 0 here — that metric is only meaningful');
+    console.log('   on a live run, where a real model may attempt unsafe output. Parse +');
+    console.log('   govern + fidelity above DO validate the full harness.)');
+  }
   console.log('════════════════════════════════════════════════════════');
-  process.exitCode = decision.go ? 0 : 1;
+  // In mock mode, ignore the delta criterion (unmeasurable) for the exit code.
+  const go = MOCK ? decision.metrics.worstOfNGovernRate >= DEFAULT_THRESHOLDS.worstOfNGovern && decision.metrics.fidelityMedian >= DEFAULT_THRESHOLDS.fidelityMedian : decision.go;
+  process.exitCode = go ? 0 : 1;
 }
 
 main().catch((e) => { console.error(String(e)); process.exit(3); });

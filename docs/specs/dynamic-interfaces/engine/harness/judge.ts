@@ -29,7 +29,9 @@ export interface Judge {
 export class MockJudge implements Judge {
   readonly name = 'mock-judge';
   async score(caseDef: GoldenCase, surface: UiNode): Promise<FidelityScore> {
-    const bound = new Set(collectFieldBindings(surface));
+    // Bindings may carry a repeat-alias prefix (e.g. "item.subject"); compare on
+    // the bare field name so expected fields match regardless of the alias.
+    const bound = new Set(collectFieldBindings(surface).map((k) => (k.includes('.') ? k.split('.').pop()! : k)));
     const must = caseDef.mustReferenceFields ?? [];
     const mustNot = caseDef.mustNotReference ?? [];
 
