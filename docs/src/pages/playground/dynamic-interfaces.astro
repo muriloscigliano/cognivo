@@ -44,6 +44,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     import { generateTemplate } from '../../../specs/dynamic-interfaces/engine/template-generate.ts';
     import { resolveTemplate } from '../../../specs/dynamic-interfaces/engine/template-resolver.ts';
     import { semanticFit } from '../../../specs/dynamic-interfaces/engine/semantic-fit.ts';
+    import { measure, playFlip } from '../../../specs/dynamic-interfaces/engine/flip.ts';
     import { createReconciler } from '../../../specs/dynamic-interfaces/engine/reconcile.ts';
     import { createDomDoc, mountInto } from '../../../specs/dynamic-interfaces/engine/dom-adapter.ts';
     import { realRegistry } from '../../../specs/dynamic-interfaces/engine/real-adapter.ts';
@@ -102,12 +103,20 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
       note.className = warn && warn.severity === 'warn' ? 'di-note warn' : 'di-note ok';
     }
 
+    function keyedEls() {
+      const m = new Map();
+      stage.querySelectorAll('[data-flip-id]').forEach((el) => m.set(el.getAttribute('data-flip-id'), el));
+      return m;
+    }
+
     // Data change: re-resolve the SAME generated template — NO regeneration.
     function reRenderData(reason) {
       if (!currentTemplate) return;
       const { root, rejections } = resolveTemplate(currentTemplate, env());
       if (!root) { note.textContent = `Rejected — ${rejections[0]?.message}`; note.className = 'di-note err'; return; }
+      const first = measure(keyedEls());          // FLIP: First positions
       const stats = reconciler.render(root);
+      playFlip(first, keyedEls());                // Invert + Play → morph in place
       note.textContent = `${reason} · re-resolved ${items.length} items · reconcile {created:${stats.created} updated:${stats.updated} reused:${stats.reused} removed:${stats.removed}} · NO model call`;
       note.className = 'di-note ok';
     }

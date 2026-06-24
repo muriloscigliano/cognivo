@@ -53,6 +53,8 @@ export function createReconciler(
     const tag = node.type === 'Group' ? 'cg-stack' : registry.getTagName(node.type);
     if (!tag) return null; // governance guarantees known types; defensive
     const el = doc.createElement(tag);
+    // Stamp the stable id so a FLIP layer (W1) can key animations to it.
+    el.setAttribute('data-flip-id', node.id);
     applyProps(el, node);
     stats.created++;
     const children = new Map<string, Managed>();
