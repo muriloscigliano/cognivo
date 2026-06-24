@@ -107,3 +107,46 @@ describe('M1 — execution is pure + deterministic', () => {
     expect(r.output).toBeNull();
   });
 });
+
+describe('FIX H2 — type-correct comparators (no mixed-type corruption)', () => {
+  const numEnv: DatasetEnvelope = {
+    schemaId: 'inbox.message.v1',
+    fields: [{ key: 'amount', type: 'number', label: 'Amount' }, { key: 'subject', type: 'text', label: 'S' }],
+    items: [{ amount: 10, subject: 'a' }, { amount: 9, subject: 'b' }, { amount: '100', subject: 'c' }, { amount: 2, subject: 'd' }],
+  };
+  const numManifest: DataManifest = {
+    schemaId: 'inbox.message.v1',
+    grants: [{ field: 'amount', ops: ['sort', 'aggregate'], aggregateFns: ['min', 'max'] }],
+    policy: { maxRows: 100, maxOps: 10, maxGroups: 50 },
+  };
+
+  it('min over a number field with a numeric-string value returns 2, not "100"', () => {
+    const out: FieldDef[] = [{ key: 'lo', type: 'number', label: 'Lo' }];
+    const p: DataPipeline = { schemaId: 'inbox.message.v1', ops: [{ kind: 'aggregate', entries: [{ fn: 'min', field: 'amount', as: 'lo' }] }], outputSchema: out };
+    const r = resolvePipeline(p, numEnv, numManifest, { now: NOW });
+    expect(Number((r.output!.items[0] as Record<string, unknown>).lo)).toBe(2); // was "100" with the bug
+  });
+
+  it('numeric sort is monotonic even with a string value mixed in', () => {
+    const p: DataPipeline = { schemaId: 'inbox.message.v1', ops: [{ kind: 'sort', field: 'amount', direction: 'asc' }], outputSchema: numEnv.fields };
+    const r = resolvePipeline(p, numEnv, numManifest, { now: NOW });
+    const amts = r.output!.items.map((i) => Number((i as Record<string, unknown>).amount));
+    expect(amts).toEqual([2, 9, 10, 100]); // numeric order, not lexicographic
+  });
+});
+
+describe('FIX H1 — group cardinality cap (DoS guard)', () => {
+  it('a group exceeding maxGroups overflows to a rejection, not an unbounded map', () => {
+    const manyEnv: DatasetEnvelope = {
+      schemaId: 'inbox.message.v1',
+      fields: [{ key: 'id', type: 'text', label: 'Id' }],
+      items: Array.from({ length: 20 }, (_, i) => ({ id: `id-${i}` })), // 20 distinct
+    };
+    const m: DataManifest = { schemaId: 'inbox.message.v1', grants: [{ field: 'id', ops: ['group'] }], policy: { maxRows: 100, maxOps: 10, maxGroups: 5 } };
+    const out: FieldDef[] = [{ key: 'k', type: 'text', label: 'K' }, { key: 'n', type: 'number', label: 'N' }];
+    const p: DataPipeline = { schemaId: 'inbox.message.v1', ops: [{ kind: 'group', by: 'id', keyAs: 'k', countAs: 'n' }], outputSchema: out };
+    const r = resolvePipeline(p, manyEnv, m, { now: NOW });
+    expect(r.output).toBeNull();
+    expect(r.rejections.some((x) => x.message.includes('cardinality cap'))).toBe(true);
+  });
+});

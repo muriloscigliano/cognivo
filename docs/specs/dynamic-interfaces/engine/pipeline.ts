@@ -186,25 +186,32 @@ function deriveValue(fn: DeriveOp['fn'], v: unknown, now: Date): unknown {
   }
 }
 
-function compareVals(a: unknown, b: unknown): number {
+/**
+ * Type-correct comparator (audit H2). The comparison strategy is fixed by the
+ * DECLARED field type, never by the runtime JS type of one operand — so
+ * [10, 9, "100", 2] no longer sorts lexicographically because one value is a
+ * string. number → numeric; date → epoch; text/enum → locale string.
+ */
+function compareTyped(a: unknown, b: unknown, type: FieldDef['type'] | undefined): number {
   if (a == null && b == null) return 0;
   if (a == null) return -1;
   if (b == null) return 1;
-  if (typeof a === 'number' && typeof b === 'number') return a - b;
+  if (type === 'number') return Number(a) - Number(b);
+  if (type === 'date') return new Date(String(a)).getTime() - new Date(String(b)).getTime();
   return String(a).localeCompare(String(b));
 }
 
-function applyFilter(rows: Row[], op: FilterOp): Row[] {
+function applyFilter(rows: Row[], op: FilterOp, type: FieldDef['type'] | undefined): Row[] {
   const want = op.value?.value;
   return rows.filter((r) => {
     const v = r[op.field];
     switch (op.operator) {
       case 'eq': return v === want;
       case 'neq': return v !== want;
-      case 'lt': return compareVals(v, want) < 0;
-      case 'lte': return compareVals(v, want) <= 0;
-      case 'gt': return compareVals(v, want) > 0;
-      case 'gte': return compareVals(v, want) >= 0;
+      case 'lt': return compareTyped(v, want, type) < 0;
+      case 'lte': return compareTyped(v, want, type) <= 0;
+      case 'gt': return compareTyped(v, want, type) > 0;
+      case 'gte': return compareTyped(v, want, type) >= 0;
       case 'in': return Array.isArray(want) ? want.includes(v) : String(want).split(',').includes(String(v));
       case 'nin': return Array.isArray(want) ? !want.includes(v) : !String(want).split(',').includes(String(v));
       case 'contains': return String(v ?? '').toLowerCase().includes(String(want ?? '').toLowerCase());
@@ -214,27 +221,36 @@ function applyFilter(rows: Row[], op: FilterOp): Row[] {
   });
 }
 
-function applyGroup(rows: Row[], op: GroupOp): Row[] {
+/**
+ * Group with a hard cardinality cap (audit H1). Stops building buckets the
+ * moment distinct keys exceed maxGroups and signals overflow, so a high-
+ * cardinality group can't allocate one bucket per row before any cap applies.
+ */
+function applyGroup(rows: Row[], op: GroupOp, maxGroups: number): { rows: Row[]; overflow: boolean } {
   const buckets = new Map<string, number>();
   const order: string[] = [];
   for (const r of rows) {
     const k = String(r[op.by] ?? '');
-    if (!buckets.has(k)) { buckets.set(k, 0); order.push(k); }
+    if (!buckets.has(k)) {
+      if (buckets.size >= maxGroups) return { rows: [], overflow: true };
+      buckets.set(k, 0); order.push(k);
+    }
     buckets.set(k, buckets.get(k)! + 1);
   }
-  return order.sort().map((k) => ({ [op.keyAs]: k, [op.countAs]: buckets.get(k)! }));
+  return { rows: order.sort().map((k) => ({ [op.keyAs]: k, [op.countAs]: buckets.get(k)! })), overflow: false };
 }
 
-function applyAggregate(rows: Row[], op: AggregateOp): Row[] {
+function applyAggregate(rows: Row[], op: AggregateOp, typeOf: (k: string) => FieldDef['type'] | undefined): Row[] {
   const out: Row = {};
   for (const e of op.entries) {
     const nums = rows.map((r) => Number(r[e.field])).filter((n) => !Number.isNaN(n));
+    const t = typeOf(e.field);
     switch (e.fn) {
       case 'count': out[e.as] = rows.length; break;
       case 'sum': out[e.as] = nums.reduce((a, b) => a + b, 0); break;
       case 'avg': out[e.as] = nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : 0; break;
-      case 'min': out[e.as] = rows.reduce<unknown>((m, r) => (m === undefined || compareVals(r[e.field], m) < 0 ? r[e.field] : m), undefined); break;
-      case 'max': out[e.as] = rows.reduce<unknown>((m, r) => (m === undefined || compareVals(r[e.field], m) > 0 ? r[e.field] : m), undefined); break;
+      case 'min': out[e.as] = rows.reduce<unknown>((m, r) => (m === undefined || compareTyped(r[e.field], m, t) < 0 ? r[e.field] : m), undefined); break;
+      case 'max': out[e.as] = rows.reduce<unknown>((m, r) => (m === undefined || compareTyped(r[e.field], m, t) > 0 ? r[e.field] : m), undefined); break;
     }
   }
   return [out];
@@ -253,21 +269,42 @@ export function resolvePipeline(
   const now = ctx.now ?? new Date(0); // deterministic default; callers inject real now
   let rows: Row[] = env.items.map((r) => ({ ...(r as Row) }));
 
+  // Track field types as the schema evolves (derive adds typed fields). Used by
+  // the type-correct comparator (H2). group/aggregate replace the schema.
+  const types = new Map<string, FieldDef['type']>(env.fields.map((f) => [f.key, f.type]));
+  const typeOf = (k: string) => types.get(k);
+
   for (const op of pipeline.ops) {
     switch (op.kind) {
-      case 'filter': rows = applyFilter(rows, op); break;
+      case 'filter': rows = applyFilter(rows, op, typeOf(op.field)); break;
       case 'sort': {
         const dir = op.direction === 'desc' ? -1 : 1;
+        const t = typeOf(op.field);
         rows = rows
           .map((r, i) => [r, i] as const)
-          .sort(([a, ai], [b, bi]) => { const c = compareVals(a[op.field], b[op.field]) * dir; return c !== 0 ? c : ai - bi; })
+          .sort(([a, ai], [b, bi]) => { const c = compareTyped(a[op.field], b[op.field], t) * dir; return c !== 0 ? c : ai - bi; })
           .map(([r]) => r);
         break;
       }
       case 'limit': rows = rows.slice(0, op.count); break;
-      case 'derive': rows = rows.map((r) => ({ ...r, [op.as]: deriveValue(op.fn, r[op.from], now) })); break;
-      case 'group': rows = applyGroup(rows, op); break;
-      case 'aggregate': rows = applyAggregate(rows, op); break;
+      case 'derive':
+        rows = rows.map((r) => ({ ...r, [op.as]: deriveValue(op.fn, r[op.from], now) }));
+        types.set(op.as, DERIVE_OUTPUT[op.fn]);
+        break;
+      case 'group': {
+        const g = applyGroup(rows, op, manifest.policy.maxGroups);
+        if (g.overflow) {
+          return { output: null, rejections: [{ code: 'parse', message: `group on "${op.by}" produced > ${manifest.policy.maxGroups} groups (cardinality cap).`, where: 'group' }] };
+        }
+        rows = g.rows;
+        types.clear(); types.set(op.keyAs, 'text'); types.set(op.countAs, 'number');
+        break;
+      }
+      case 'aggregate':
+        rows = applyAggregate(rows, op, typeOf);
+        types.clear();
+        for (const e of op.entries) types.set(e.as, AGGREGATE_OUTPUT_NUMERIC.has(e.fn) ? 'number' : (typeOf(e.field) ?? 'text'));
+        break;
     }
   }
   if (rows.length > manifest.policy.maxRows) rows = rows.slice(0, manifest.policy.maxRows);

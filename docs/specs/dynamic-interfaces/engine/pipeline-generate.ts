@@ -18,7 +18,7 @@
 import { type DatasetEnvelope, type GovernanceRejection } from './contracts.js';
 import { type InterfaceTemplate, validateTemplate } from './template.js';
 import { resolveTemplate, type RenderNode } from './template-resolver.js';
-import { type ComponentRegistry } from './governance.js';
+import { govern, type ComponentRegistry, type GovernDeps } from './governance.js';
 import { type DataPipeline, type DataManifest } from './data-op.js';
 import { governPipeline, resolvePipeline } from './pipeline.js';
 
@@ -39,6 +39,12 @@ export interface PipelineGenerateDeps {
   registry: ComponentRegistry;
   /** Vendor data-layer contract; required only if a pipeline is emitted. */
   manifest?: DataManifest;
+  /**
+   * Full UI-governance deps (audit M1): when present, every template node is run
+   * through govern() (a11y, token, manifest prop/value/token checks) — so the
+   * middleware path is governed AS STRONGLY as the plain path, not less.
+   */
+  govern?: Omit<GovernDeps, 'registry'>;
   now?: Date;
   sample?: number;
 }
@@ -100,6 +106,21 @@ export async function generateWithPipeline(
   // 2. template structure
   for (const issue of validateTemplate(output.template)) {
     rejections.push({ code: 'parse', message: issue.problem, where: issue.nodeId });
+  }
+
+  // 2b. FULL UI governance per template node (audit M1): a11y + token + manifest
+  // prop/value/token checks — so this path is governed as strongly as plain
+  // generate(). Each flat node is a UiNode (type + BoundValue props); nesting is
+  // covered structurally by validateTemplate. Field firewall runs at resolve (step 3).
+  if (deps.govern && rejections.length === 0) {
+    const govDeps: GovernDeps = { registry: deps.registry, ...deps.govern };
+    for (const tnode of Object.values(output.template.nodes)) {
+      const node = { type: tnode.type, props: tnode.props } as Parameters<typeof govern>[0];
+      const g = govern(node, boundEnvelope, govDeps);
+      // keep only non-field-firewall rejections here (firewall handled at resolve,
+      // where bindings resolve against the derived/raw env with item context).
+      rejections.push(...g.rejections.filter((x) => x.code !== 'undeclared-field'));
+    }
   }
 
   // 3. template resolve + govern against the bound envelope
