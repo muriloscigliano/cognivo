@@ -31,7 +31,12 @@ function loadDotEnv(): void {
       const k = line.slice(0, eq).trim();
       let v = line.slice(eq + 1).trim();
       if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) v = v.slice(1, -1);
-      if (k && process.env[k] === undefined) process.env[k] = v;
+      // Set if unset, empty, or a leftover placeholder — an empty exported var
+      // ("" from a prior shell command) must NOT shadow the real .env value.
+      const existing = process.env[k];
+      if (k && (existing === undefined || existing === '' || existing.includes('YOUR-KEY') || existing.includes('REPLACE'))) {
+        process.env[k] = v;
+      }
     }
   } catch {
     /* no .env — rely on the real environment */
@@ -39,6 +44,30 @@ function loadDotEnv(): void {
 }
 loadDotEnv();
 import { generateWithPipeline, type PipelineGenerateDeps } from '../pipeline-generate.js';
+
+// The real components the model may compose from (must resolve in the registry).
+const COMPONENTS = ['Stack', 'Card', 'TextContent', 'Badge', 'Checkbox', 'MetricCard', 'Avatar'] as const;
+
+/** System prompt that teaches the EXACT engine shape: flat nodes, real components,
+ *  declared fields, binding grammar. Without this the model invents components the
+ *  registry rejects. */
+function buildSystem(env: DatasetEnvelope): string {
+  const fields = env.fields.map((f) => `- ${f.key} (${f.type})${f.enumValues ? ` one of [${f.enumValues.join(', ')}]` : ''}`).join('\n');
+  return [
+    'Generate a UI as a FLAT InterfaceTemplate, emitted via the emit_surface tool.',
+    'Shape: { "schemaId": "inbox.message.v1", "root": "<id>", "nodes": { "<id>": { "id":"<id>", "type":"<Component>", "props": {...}, "children": ["<id>", ...] } }, "repeats"?: { "<nodeId>": { "over": {"kind":"field","key":"items"}, "as":"item" } } }',
+    'RULES:',
+    '- Use ONLY these component types: ' + COMPONENTS.join(', ') + '. No other types (no "list","heading","row","listItem","container").',
+    '- Every node has a unique "id"; children are referenced BY id (flat map), never nested inline.',
+    '- A data value MUST be { "kind":"field","key":"<declaredField>" }. Inside a repeat use "item.<field>" (e.g. {"kind":"field","key":"item.subject"}).',
+    '- A constant MUST be { "kind":"literal","value": <string|number|bool> }.',
+    '- To show one node per message, declare a repeat over {"kind":"field","key":"items"} with as:"item", and bind item fields in that subtree.',
+    '- Bind ONLY the declared fields below. Do not invent fields or data values.',
+    '',
+    'Declared fields:',
+    fields,
+  ].join('\n');
+}
 import { GOLDEN, INBOX_FIELDS, type GoldenCase } from '../golden/dataset.js';
 import { MockJudge } from './judge.js';
 import { evaluateGate, DEFAULT_THRESHOLDS } from './gate.js';
@@ -101,7 +130,7 @@ async function main(): Promise<void> {
     let lastResolvedTree: unknown = null;
     for (let s = 0; s < SAMPLES; s++) {
       try {
-        const r = await generateWithPipeline(c.intent, ENV, { ...deps, sample: s }, { system: '', user: c.intent });
+        const r = await generateWithPipeline(c.intent, ENV, { ...deps, sample: s }, { system: buildSystem(ENV), user: c.intent });
         const parsed = !!r.output?.template?.nodes;
         if (parsed) parsedCount++;
         const passed = c.expectShouldGovern ? r.ok : !r.ok;
