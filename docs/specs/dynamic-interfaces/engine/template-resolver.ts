@@ -88,8 +88,11 @@ function resolveNode(
   // A repeat host expands once per item in its collection.
   const repeat = template.repeats?.[nodeId];
   if (repeat && !scope.itemAlias) {
-    if (!hasField(env, repeat.over.key)) {
-      rejections.push({ code: 'undeclared-field', message: `Repeat collection "${repeat.over.key}" is not a declared field.`, where: nodeId });
+    // `over` names the envelope's item COLLECTION, not a per-row field. The
+    // canonical name is "items"; a vendor may also declare it as a field marker.
+    // Either is valid — what a repeat iterates is always env.items.
+    if (repeat.over.key !== 'items' && !hasField(env, repeat.over.key)) {
+      rejections.push({ code: 'undeclared-field', message: `Repeat collection "${repeat.over.key}" is not a known collection (use "items").`, where: nodeId });
       return null;
     }
     // The collection is the dataset items (repeat.over names the item set).
