@@ -43,6 +43,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     import { MockTemplateLLM } from '../../../specs/dynamic-interfaces/engine/template-llm.ts';
     import { generateTemplate } from '../../../specs/dynamic-interfaces/engine/template-generate.ts';
     import { resolveTemplate } from '../../../specs/dynamic-interfaces/engine/template-resolver.ts';
+    import { semanticFit } from '../../../specs/dynamic-interfaces/engine/semantic-fit.ts';
     import { createReconciler } from '../../../specs/dynamic-interfaces/engine/reconcile.ts';
     import { createDomDoc, mountInto } from '../../../specs/dynamic-interfaces/engine/dom-adapter.ts';
     import { realRegistry } from '../../../specs/dynamic-interfaces/engine/real-adapter.ts';
@@ -93,8 +94,12 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
       }
       currentTemplate = result.template;
       reconciler.render(result.resolved);
-      note.textContent = `Generated a template (${Object.keys(result.template.nodes).length} nodes) · resolved ${items.length} items · governed ✓`;
-      note.className = 'di-note ok';
+      // S3: surface a metacognitive fit note if the shape fits the data poorly.
+      const fit = semanticFit(result.template, env(), intent);
+      const warn = fit.find((n) => n.severity === 'warn') || fit[0];
+      const fitMsg = warn ? ` · note: ${warn.message}${warn.suggestion ? ` (try: ${warn.suggestion})` : ''}` : '';
+      note.textContent = `Generated a template (${Object.keys(result.template.nodes).length} nodes) · resolved ${items.length} items · governed ✓${fitMsg}`;
+      note.className = warn && warn.severity === 'warn' ? 'di-note warn' : 'di-note ok';
     }
 
     // Data change: re-resolve the SAME generated template — NO regeneration.
@@ -146,6 +151,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     }
     .di-note { font-size: var(--cg-font-size-sm); margin-top: var(--cg-spacing-12); font-family: var(--cg-font-family-mono); }
     .di-note.ok { color: var(--cg-color-status-success-text-default); }
+    .di-note.warn { color: var(--cg-color-status-warning-text-default); }
     .di-note.err { color: var(--cg-color-status-error-text-default); }
   </style>
 </DocsLayout>
