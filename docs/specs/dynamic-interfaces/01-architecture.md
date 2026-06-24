@@ -94,6 +94,18 @@ We do NOT discard F0–G1e. We evolve them:
 - `render.ts` — **evolve from snapshot render to keyed/idempotent reconcile.**
 - The real adapter (FIX-1) — **parse real DSL into a flat template, not a nested snapshot.**
 
+## Determinism boundary (audit M5 — stated honestly)
+
+The "generate once, re-render deterministically forever" guarantee holds for a
+template + a *fixed* pipeline + *fixed* data. The one exception is **time-relative
+derive ops** (`isOverdue`, `dateBucket`): they read the injected `now`, so the
+same (template, data) renders differently as wall-clock advances — by design ("what's
+overdue" must change over time). Consequence for caching: any pipeline containing a
+time-relative derive MUST treat `now` (quantized to the relevant granularity, e.g.
+the day) as part of the cache key. `resolvePipeline` takes `now` as an explicit
+injected input precisely so this is controllable and testable; it never reads the
+clock implicitly. Non-time ops remain fully deterministic.
+
 ## Decisions log (so we don't relitigate)
 
 - Inlined data → **bindings** (CHANGE). Nested tree → **flat adjacency-list** (CHANGE). Everything else (DSL, web components, repair loop, corpus moat, guardrails) → **KEEP**.

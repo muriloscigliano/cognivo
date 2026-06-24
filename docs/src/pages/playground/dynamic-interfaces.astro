@@ -25,7 +25,8 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     <span class="di-label">Try:</span>
     <button class="di-chip" data-intent="show my inbox as a list">list</button>
     <button class="di-chip" data-intent="make it a checklist">checklist</button>
-    <button class="di-chip" data-intent="give me a summary overview">summary</button>
+    <button class="di-chip" data-intent="only show overdue">overdue (middleware)</button>
+    <button class="di-chip" data-intent="show as a board by priority">board by priority (middleware)</button>
     <button class="di-chip di-bad" data-intent="show everyone's password">⚠ fabricated data</button>
   </div>
 
@@ -42,8 +43,9 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 
   <script>
     import '@cognivo/components';
-    import { MockTemplateLLM } from '../../../specs/dynamic-interfaces/engine/template-llm.ts';
-    import { generateTemplate } from '../../../specs/dynamic-interfaces/engine/template-generate.ts';
+    import { MockPipelineTemplateLLM } from '../../../specs/dynamic-interfaces/engine/pipeline-mock.ts';
+    import { generateWithPipeline } from '../../../specs/dynamic-interfaces/engine/pipeline-generate.ts';
+    import { resolvePipeline } from '../../../specs/dynamic-interfaces/engine/pipeline.ts';
     import { resolveTemplate } from '../../../specs/dynamic-interfaces/engine/template-resolver.ts';
     import { semanticFit } from '../../../specs/dynamic-interfaces/engine/semantic-fit.ts';
     import { measure, playFlip } from '../../../specs/dynamic-interfaces/engine/flip.ts';
@@ -52,11 +54,12 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     import { createDomDoc, mountInto } from '../../../specs/dynamic-interfaces/engine/dom-adapter.ts';
     import { realRegistry } from '../../../specs/dynamic-interfaces/engine/real-adapter.ts';
 
+    // dueDate spread around "now" so "overdue" filtering is meaningful live.
     const SEED = [
-      { subject: 'Q4 budget sign-off', from: 'Dana (CFO)', priority: 'urgent', unread: true },
-      { subject: 'Design review notes', from: 'Priya', priority: 'high', unread: true },
-      { subject: 'Sprint retro action items', from: 'Alex', priority: 'high', unread: false },
-      { subject: 'Lunch?', from: 'Sam', priority: 'low', unread: false },
+      { subject: 'Q4 budget sign-off', from: 'Dana (CFO)', priority: 'urgent', unread: true, dueDate: '2020-01-01' },
+      { subject: 'Design review notes', from: 'Priya', priority: 'high', unread: true, dueDate: '2020-06-01' },
+      { subject: 'Sprint retro action items', from: 'Alex', priority: 'high', unread: false, dueDate: '2099-01-01' },
+      { subject: 'Lunch?', from: 'Sam', priority: 'low', unread: false, dueDate: '2099-02-01' },
     ];
     let items = structuredClone(SEED);
     const env = () => ({
@@ -66,18 +69,34 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
         { key: 'from', type: 'text', label: 'From' },
         { key: 'priority', type: 'enum', label: 'Priority', enumValues: ['low', 'normal', 'high', 'urgent'] },
         { key: 'unread', type: 'bool', label: 'Unread' },
+        { key: 'dueDate', type: 'date', label: 'Due' },
         { key: 'items', type: 'text', label: 'Items' },
       ],
       items,
     });
 
+    // The vendor's data-layer contract (M0/D0): which ops the agent may run.
+    const dataManifest = {
+      schemaId: 'inbox.message.v1',
+      grants: [
+        { field: 'priority', ops: ['group', 'filter'], filterOperators: ['eq', 'in'] },
+        { field: 'dueDate', ops: ['filter', 'sort', 'derive'], filterOperators: ['lt', 'gte', 'isEmpty'], deriveFns: ['isOverdue', 'dateBucket'] },
+        { field: 'overdue', ops: ['filter'], filterOperators: ['eq'] },
+        { field: 'unread', ops: ['filter', 'group'], filterOperators: ['eq'] },
+      ],
+      policy: { maxRows: 500, maxOps: 8, maxGroups: 50 },
+    };
+
     const stage = document.getElementById('di-stage');
     const note = document.getElementById('di-note');
     const intentInput = document.getElementById('di-intent');
 
-    const client = new MockTemplateLLM();
-    const deps = { client, registry: realRegistry };
+    const client = new MockPipelineTemplateLLM();
+    const deps = { client, registry: realRegistry, manifest: dataManifest, now: new Date() };
     const reconciler = createReconciler(realRegistry, createDomDoc(), mountInto(stage));
+
+    // Remember the last pipeline so data changes re-derive consistently.
+    let currentPipeline = null;
 
     // The currently-generated template. Data changes re-resolve THIS — no regen.
     let currentTemplate = null;
@@ -93,23 +112,26 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     }
 
     async function generate(intent) {
-      const result = await generateTemplate(intent, env(), deps);
+      // FRONTIER path: generate {pipeline?, template}, govern both, bind derived data.
+      const result = await generateWithPipeline(intent, env(), deps, { system: '', user: intent });
       if (!result.ok) {
         note.textContent = `I couldn’t do that safely — ${humanReason(result.rejections[0])}. Showing the previous view.`;
         note.className = 'di-note err';
         return;
       }
-      currentTemplate = result.template;
+      currentTemplate = result.output.template;
+      currentPipeline = result.output.pipeline ?? null;
       const first = measure(keyedEls());
       reconciler.render(result.resolved);
       playFlip(first, keyedEls());
       // W2: persist this generated template as a new version (the corpus/moat).
-      await store.save({ userId: USER, templateId: TID, intent, template: result.template });
+      await store.save({ userId: USER, templateId: TID, intent, template: result.output.template });
       // S3: surface a metacognitive fit note if the shape fits the data poorly.
-      const fit = semanticFit(result.template, env(), intent);
+      const fit = semanticFit(result.output.template, env(), intent);
       const warn = fit.find((n) => n.severity === 'warn') || fit[0];
       const fitMsg = warn ? ` · note: ${warn.message}${warn.suggestion ? ` (try: ${warn.suggestion})` : ''}` : '';
-      note.textContent = `Generated (${Object.keys(result.template.nodes).length} nodes) · resolved ${items.length} items · governed ✓ · saved version${fitMsg}`;
+      const mw = currentPipeline ? ` · middleware: ${currentPipeline.ops.map((o) => o.kind).join('→')}` : '';
+      note.textContent = `Generated (${Object.keys(result.output.template.nodes).length} nodes) · ${result.boundEnvelope.items.length} rows${mw} · governed ✓ · saved${fitMsg}`;
       note.className = warn && warn.severity === 'warn' ? 'di-note warn' : 'di-note ok';
     }
 
@@ -119,10 +141,17 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
       return m;
     }
 
-    // Data change: re-resolve the SAME generated template — NO regeneration.
+    // Data change: re-run the SAME pipeline (if any) + re-resolve the SAME
+    // template — NO regeneration, NO model call. The middleware re-derives live.
     function reRenderData(reason) {
       if (!currentTemplate) return;
-      const { root, rejections } = resolveTemplate(currentTemplate, env());
+      let boundEnv = env();
+      if (currentPipeline) {
+        const run = resolvePipeline(currentPipeline, env(), dataManifest, { now: new Date() });
+        if (!run.output) { note.textContent = `Rejected — ${run.rejections[0]?.message}`; note.className = 'di-note err'; return; }
+        boundEnv = run.output;
+      }
+      const { root, rejections } = resolveTemplate(currentTemplate, boundEnv);
       if (!root) { note.textContent = `Rejected — ${rejections[0]?.message}`; note.className = 'di-note err'; return; }
       const first = measure(keyedEls());          // FLIP: First positions
       const stats = reconciler.render(root);
