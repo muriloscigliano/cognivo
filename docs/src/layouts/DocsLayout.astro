@@ -32,6 +32,10 @@ const navLinks = [
 // Pick sidebar based on current section
 const section = '/' + (path.split('/').filter(Boolean)[0] || '');
 const currentSidebar = sidebars[section] || [];
+// Pre-compute the persist key — Astro 7's compiler can't parse a template
+// literal with interpolation directly inside a directive value, so build the
+// string here and pass a plain variable to transition:persist below.
+const sidebarPersistKey = 'docs-sidebar-' + section;
 
 // Section title for sidebar header
 const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
@@ -72,37 +76,37 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
 
   <div class:list={['shell', { 'shell--no-sidebar': hideSidebar }]}>
     {!hideSidebar && (
-      <aside class="sb" transition:persist={`docs-sidebar-${section}`} data-section={section}>
+      <aside class="sb" transition:persist={sidebarPersistKey} data-section={section}>
         {sectionTitle && <div class="sb-header">{sectionTitle}</div>}
         <nav>
-          {currentSidebar.map((item: SidebarItem, idx: number) => {
-            if (isLink(item)) {
-              return <a href={item.href} class:list={['sl', { on: match(item.href) }]}>{item.label}</a>;
-            }
-            const g = item as SidebarGroup;
-            return (
-              <>
-                {idx > 0 && <hr class="divider" />}
-                <div class="group">
-                  <span class="title">{g.label}</span>
-                  {g.items.map(sub => {
-                    if (isLink(sub)) return <a href={sub.href} class:list={['sl', { on: match(sub.href) }]}>{sub.label}</a>;
-                    const sg = sub as SidebarGroup;
-                    return (
-                      <div class="sub">
-                        <details open={groupOpen(sg)}>
-                          <summary class="subtitle">{sg.label}</summary>
-                          <div class="sub-items">
-                            {sg.items.map(leaf => isLink(leaf) ? <a href={leaf.href} class:list={['sl', { on: match(leaf.href) }]}>{leaf.label}</a> : null)}
-                          </div>
-                        </details>
-                      </div>
-                    );
-                  })}
-                </div>
-              </>
-            );
-          })}
+          {currentSidebar.map((item: SidebarItem, idx: number) =>
+            isLink(item) ? (
+              <a href={item.href} class:list={['sl', { on: match(item.href) }]}>{item.label}</a>
+            ) : (
+              <div class="group">
+                {idx > 0 ? <hr class="divider" /> : null}
+                <span class="title">{(item as SidebarGroup).label}</span>
+                {(item as SidebarGroup).items.map((sub) =>
+                  isLink(sub) ? (
+                    <a href={sub.href} class:list={['sl', { on: match(sub.href) }]}>{sub.label}</a>
+                  ) : (
+                    <div class="sub">
+                      <details open={groupOpen(sub as SidebarGroup)}>
+                        <summary class="subtitle">{(sub as SidebarGroup).label}</summary>
+                        <div class="sub-items">
+                          {(sub as SidebarGroup).items.map((leaf) =>
+                            isLink(leaf) ? (
+                              <a href={leaf.href} class:list={['sl', { on: match(leaf.href) }]}>{leaf.label}</a>
+                            ) : null
+                          )}
+                        </div>
+                      </details>
+                    </div>
+                  )
+                )}
+              </div>
+            )
+          )}
         </nav>
       </aside>
     )}
