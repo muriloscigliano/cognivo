@@ -13,6 +13,21 @@ const repoRoot = resolve(__dirname, '..');
 const componentsSrc = resolve(repoRoot, 'packages/components/src/index.ts');
 const componentsSrcDir = resolve(repoRoot, 'packages/components/src');
 
+// Minimal shape of the Vite dev server we use. `hot` is the unified channel
+// added in Vite 6 (environment-aware); `ws` is the back-compat alias. Either
+// works for a full-reload push, so we target whichever the running Vite exposes.
+type ViteServerLike = {
+  hot?: { send(payload: unknown): void };
+  ws?: { send(payload: unknown): void };
+  watcher: { add(p: string): void; on(e: string, cb: (file: string) => void): void };
+  config: { logger: { info(msg: string): void } };
+};
+
+/** Push a full browser reload through whichever channel this Vite version has. */
+function fullReload(server: ViteServerLike): void {
+  (server.hot ?? server.ws)?.send({ type: 'full-reload', path: '*' });
+}
+
 /**
  * Web Components have one inherent constraint: customElements.define()
  * can only run once per tag name. Vite's normal HMR tries to patch
@@ -28,7 +43,7 @@ function cognivoComponentReload(): Plugin {
   return {
     name: 'cognivo-component-full-reload',
     enforce: 'post',
-    configureServer(server) {
+    configureServer(server: ViteServerLike) {
       // Add the entire components src dir to Vite's chokidar watcher,
       // not just the files that happen to be in the module graph.
       server.watcher.add(componentsSrcDir);
@@ -42,7 +57,7 @@ function cognivoComponentReload(): Plugin {
           server.config.logger.info(
             `\x1b[36m[cognivo]\x1b[0m component changed → full reload: ${rel}`,
           );
-          server.ws.send({ type: 'full-reload', path: '*' });
+          fullReload(server);
         }
       };
 
@@ -50,11 +65,19 @@ function cognivoComponentReload(): Plugin {
       server.watcher.on('add', onChange);
       server.watcher.on('unlink', onChange);
     },
-    // Belt-and-suspenders: also intercept HMR for any component file
-    // that DID make it into the graph.
-    handleHotUpdate({ file, server }) {
-      if (file.startsWith(componentsSrcDir)) {
-        server.ws.send({ type: 'full-reload', path: '*' });
+    // Belt-and-suspenders: also intercept HMR for any component file that DID
+    // make it into the graph. Vite 6+ renamed `handleHotUpdate` → `hotUpdate`
+    // (environment-scoped); we keep both so the reload fires on Vite 5/6/7/8.
+    hotUpdate(ctx: { file: string }) {
+      if (ctx.file.startsWith(componentsSrcDir)) {
+        this.environment.hot.send({ type: 'full-reload', path: '*' });
+        return [];
+      }
+      return undefined;
+    },
+    handleHotUpdate(ctx: { file: string; server: ViteServerLike }) {
+      if (ctx.file.startsWith(componentsSrcDir)) {
+        fullReload(ctx.server);
         return [];
       }
       return undefined;

@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -52,7 +52,7 @@ const { title, description = 'AI-native component library with cognitive psychol
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
-  <ViewTransitions />
+  <ClientRouter />
   <style is:global>
     :root {
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;

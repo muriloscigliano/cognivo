@@ -20,7 +20,7 @@
     "@cognivo/theme-generator": "workspace:*",
     "@cognivo/tokens": "workspace:*",
     "@lit/reactive-element": "^2.1.2",
-    "astro": "^4.16.0",
+    "astro": "^7.0.4",
     "gsap": "^3.12.0",
     "lit": "^3.1.0",
     "lit-element": "^4.2.2",
