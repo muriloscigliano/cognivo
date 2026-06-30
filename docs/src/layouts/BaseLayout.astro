@@ -166,7 +166,7 @@ const { title, description = 'AI-native component library with cognitive psychol
     // hint. See: https://rollupjs.org/configuration-options/#treeshake
     import * as cognivoComponents from '@cognivo/components';
     import '@cognivo/tokens/dist/index.css';
-    // @ts-expect-error — exposing for runtime debugging + side-effect anchor.
+    // Exposed for runtime debugging + as a side-effect anchor (see note above).
     (globalThis as { __cognivo?: unknown }).__cognivo = cognivoComponents;
   </script>
 </body>

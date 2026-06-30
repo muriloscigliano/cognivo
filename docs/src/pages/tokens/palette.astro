@@ -5,7 +5,9 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 const HUES = ['gray', 'slate', 'zinc', 'stone', 'red', 'orange', 'amber', 'yellow', 'green', 'teal', 'cyan', 'blue', 'indigo', 'purple', 'pink'];
 const SHADES = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 
-const SEMANTIC_GROUPS = [
+type SemanticToken = { token: string; usage: string; paired?: string };
+type SemanticGroup = { id: string; name: string; intro: string; tokens: SemanticToken[] };
+const SEMANTIC_GROUPS: SemanticGroup[] = [
   { id: 'action', name: 'Action', intro: 'Primary, secondary, and tertiary interactive surfaces — buttons, links, toggles.', tokens: [
     { token: '--cg-color-action-primary-background-default', usage: 'Primary button fill.' },
     { token: '--cg-color-action-primary-background-hover', usage: 'Primary button hover.' },

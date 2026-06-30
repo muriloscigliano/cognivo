@@ -26,5 +26,10 @@
     "lit-element": "^4.2.2",
     "lit-html": "^3.3.2",
     "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.13"
   }
 }

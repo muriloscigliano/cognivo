@@ -43,7 +43,7 @@ function buildGroups(basePath: string, filter: (id: string) => boolean, stripTag
         })
         .sort(byLabel);
       if (items.length === 0) return null;
-      return { label: cat.label, items };
+      return { label: cat.label, items } as SidebarGroup;
     })
     .filter((g): g is SidebarGroup => g !== null);
 }

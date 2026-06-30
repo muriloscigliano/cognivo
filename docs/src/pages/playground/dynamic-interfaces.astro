@@ -53,16 +53,25 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     import { createReconciler } from '../../../specs/dynamic-interfaces/engine/reconcile.ts';
     import { createDomDoc, mountInto } from '../../../specs/dynamic-interfaces/engine/dom-adapter.ts';
     import { realRegistry } from '../../../specs/dynamic-interfaces/engine/real-adapter.ts';
+    import type { DatasetEnvelope, GovernanceRejection } from '../../../specs/dynamic-interfaces/engine/contracts.ts';
+    import type { InterfaceTemplate } from '../../../specs/dynamic-interfaces/engine/template.ts';
+    import type { DataPipeline, DataManifest } from '../../../specs/dynamic-interfaces/engine/data-op.ts';
+
+    // One inbox message. Typed so the live "add" action and the dataset
+    // envelope below are checked against the SAME shape — no drift.
+    type Message = {
+      subject: string; from: string; priority: string; unread: boolean; dueDate: string;
+    };
 
     // dueDate spread around "now" so "overdue" filtering is meaningful live.
-    const SEED = [
+    const SEED: Message[] = [
       { subject: 'Q4 budget sign-off', from: 'Dana (CFO)', priority: 'urgent', unread: true, dueDate: '2020-01-01' },
       { subject: 'Design review notes', from: 'Priya', priority: 'high', unread: true, dueDate: '2020-06-01' },
       { subject: 'Sprint retro action items', from: 'Alex', priority: 'high', unread: false, dueDate: '2099-01-01' },
       { subject: 'Lunch?', from: 'Sam', priority: 'low', unread: false, dueDate: '2099-02-01' },
     ];
-    let items = structuredClone(SEED);
-    const env = () => ({
+    let items: Message[] = structuredClone(SEED);
+    const env = (): DatasetEnvelope => ({
       schemaId: 'inbox.message.v1',
       fields: [
         { key: 'subject', type: 'text', label: 'Subject' },
@@ -76,7 +85,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
     });
 
     // The vendor's data-layer contract (M0/D0): which ops the agent may run.
-    const dataManifest = {
+    const dataManifest: DataManifest = {
       schemaId: 'inbox.message.v1',
       grants: [
         { field: 'priority', ops: ['group', 'filter'], filterOperators: ['eq', 'in'] },
@@ -87,31 +96,33 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
       policy: { maxRows: 500, maxOps: 8, maxGroups: 50 },
     };
 
-    const stage = document.getElementById('di-stage');
-    const note = document.getElementById('di-note');
-    const intentInput = document.getElementById('di-intent');
+    // These elements are part of this page's own markup above — assert their
+    // presence + concrete types once so the rest of the script is null-clean.
+    const stage = document.getElementById('di-stage') as HTMLElement;
+    const note = document.getElementById('di-note') as HTMLElement;
+    const intentInput = document.getElementById('di-intent') as HTMLInputElement;
 
     const client = new MockPipelineTemplateLLM();
     const deps = { client, registry: realRegistry, manifest: dataManifest, now: new Date() };
     const reconciler = createReconciler(realRegistry, createDomDoc(), mountInto(stage));
 
     // Remember the last pipeline so data changes re-derive consistently.
-    let currentPipeline = null;
+    let currentPipeline: DataPipeline | null = null;
 
     // The currently-generated template. Data changes re-resolve THIS — no regen.
-    let currentTemplate = null;
+    let currentTemplate: InterfaceTemplate | null = null;
     // W2: per-user versioned template corpus (the moat) — in-memory for the demo.
     const store = new TemplateStore({ backend: createMemoryTemplateBackend() });
     const USER = 'demo', TID = 'inbox-main';
 
-    function humanReason(r) {
+    function humanReason(r: GovernanceRejection) {
       if (r.code === 'undeclared-field') return 'it tried to show data that isn’t in your inbox';
       if (r.code === 'unknown-component') return `“${r.where}” isn’t a real component`;
       if (r.code === 'parse') return 'the generated layout was malformed';
       return r.message;
     }
 
-    async function generate(intent) {
+    async function generate(intent: string) {
       // FRONTIER path: generate {pipeline?, template}, govern both, bind derived data.
       const result = await generateWithPipeline(intent, env(), deps, { system: '', user: intent });
       if (!result.ok) {
@@ -121,6 +132,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
       }
       currentTemplate = result.output.template;
       currentPipeline = result.output.pipeline ?? null;
+      if (!result.resolved) return;
       const first = measure(keyedEls());
       reconciler.render(result.resolved);
       playFlip(first, keyedEls());
@@ -143,7 +155,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 
     // Data change: re-run the SAME pipeline (if any) + re-resolve the SAME
     // template — NO regeneration, NO model call. The middleware re-derives live.
-    function reRenderData(reason) {
+    function reRenderData(reason: string) {
       if (!currentTemplate) return;
       let boundEnv = env();
       if (currentPipeline) {
@@ -160,22 +172,22 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
       note.className = 'di-note ok';
     }
 
-    document.getElementById('di-go').addEventListener('click', () => generate(intentInput.value));
+    document.getElementById('di-go')!.addEventListener('click', () => generate(intentInput.value));
     intentInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') generate(intentInput.value); });
     document.querySelectorAll('[data-intent]').forEach((c) =>
-      c.addEventListener('click', () => { intentInput.value = c.getAttribute('data-intent'); generate(intentInput.value); }),
+      c.addEventListener('click', () => { intentInput.value = c.getAttribute('data-intent') ?? ''; generate(intentInput.value); }),
     );
     document.querySelectorAll('[data-act]').forEach((b) =>
       b.addEventListener('click', () => {
         const act = b.getAttribute('data-act');
-        if (act === 'add') items = [{ subject: `New task ${items.length + 1}`, from: 'You', priority: 'normal', unread: true }, ...items];
+        if (act === 'add') items = [{ subject: `New task ${items.length + 1}`, from: 'You', priority: 'normal', unread: true, dueDate: '2099-12-31' }, ...items];
         else if (act === 'reset') items = structuredClone(SEED);
         reRenderData(`Data changed (${act})`);
       }),
     );
 
     // W2: first-class undo — restore the previous shape, morph back (no hard cut).
-    document.getElementById('di-undo').addEventListener('click', async () => {
+    document.getElementById('di-undo')!.addEventListener('click', async () => {
       const restored = await store.undo(USER, TID);
       if (!restored) { note.textContent = 'Nothing to undo yet.'; note.className = 'di-note'; return; }
       currentTemplate = restored.template;
