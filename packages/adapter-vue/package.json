@@ -1,6 +1,6 @@
 {
   "name": "@cognivo/adapter-vue",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Vue wrappers for every Cognivo web component.",
   "license": "MIT",
   "author": "Cognivo",

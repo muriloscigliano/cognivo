@@ -95,7 +95,6 @@ export { AiRichMessage } from "./components/AiRichMessage.js";
 export { AiDataCard } from "./components/AiDataCard.js";
 // Layout
 export { CgStack } from './components/CgStack.js';
-export { CgSection } from './components/CgSection.js';
 
 // Typography
 export { CgText } from './components/CgText.js';
