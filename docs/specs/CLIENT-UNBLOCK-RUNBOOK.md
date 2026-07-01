@@ -33,27 +33,51 @@ Plain `npm pack` ships `"@cognivo/core": "workspace:*"` verbatim (uninstallable)
 
 ---
 
-## FAST PATH — unblock the client (publish 3 missing packages)
+## VUE FAST PATH — unblock the client (publish 3 packages) ✅ VERSIONS ALIGNED
 
-This makes the ALREADY-PUBLISHED `components@0.8.0` installable and delivers Vue + theming.
+The repo is now prepared and PROVEN. Final versions (this session):
+
+| Package | Publish at | Why |
+|---|---|---|
+| `@cognivo/core` | **0.4.0** | the already-live `components@0.8.0` pins `core@0.4.0` exactly — publish as-is |
+| `@cognivo/tokens` | **0.8.0** | aligned up to the live line (styling / `--cg-*` CSS) |
+| `@cognivo/components` | **0.8.0** (already live) | local bumped 0.4.0→0.8.0 to match npm; usually no republish needed |
+| `@cognivo/adapter-vue` | **0.8.0** | the Vue wrappers; peer `components: workspace:^` → publishes as `^0.8.0` |
+
+PROVEN end-to-end: packed all 4 with `pnpm pack`, installed into a clean Vue project,
+`renderToString` of `AiChat`/`AiBadge` → `<ai-chat placeholder="…"></ai-chat>` etc.
+npm tree resolves with **zero peer warnings**. See test at bottom.
 
 ```bash
 # from repo root, logged into npm as the @cognivo owner
 pnpm --filter @cognivo/core --filter @cognivo/tokens --filter @cognivo/adapter-vue build
-pnpm verify-publish            # must print ✅ before continuing
+pnpm verify-publish            # MUST print ✅ before continuing
 
-# publish core at 0.4.0 FIRST (components@0.8.0 already pins it)
+# ORDER MATTERS — core first (components@0.8.0 pins core@0.4.0)
 cd packages/core        && pnpm publish --access public --no-git-checks && cd ../..
 cd packages/tokens      && pnpm publish --access public --no-git-checks && cd ../..
-# adapter-vue peer-needs components@0.8.0 (already on npm) — bump its version to match if desired
 cd packages/adapter-vue && pnpm publish --access public --no-git-checks && cd ../..
+# components@0.8.0 is already live; only republish if you changed its code:
+# cd packages/components && pnpm publish --access public --no-git-checks && cd ../..
 ```
 
-Then verify from OUTSIDE the repo:
+Then verify from OUTSIDE the repo (this is exactly what passed locally with tarballs):
 ```bash
-cd $(mktemp -d) && npm init -y >/dev/null
-npm install @cognivo/components @cognivo/adapter-vue @cognivo/tokens vue
-node -e "require('@cognivo/components'); console.log('client install OK')"
+cd $(mktemp -d) && npm init -y >/dev/null && npm pkg set type=module
+npm install @cognivo/adapter-vue @cognivo/components @cognivo/core @cognivo/tokens vue @vue/server-renderer
+cat > t.mjs <<'JS'
+import { createSSRApp, h } from 'vue';
+import { renderToString } from '@vue/server-renderer';
+import { AiChat } from '@cognivo/adapter-vue';
+console.log(await renderToString(createSSRApp({ render: () => h(AiChat, { placeholder: 'hi' }) })));
+JS
+node t.mjs   # expect: <ai-chat placeholder="hi"></ai-chat>
+```
+
+The client then uses:
+```js
+import { AiChat } from '@cognivo/adapter-vue';
+import '@cognivo/tokens/dist/index.css';   // styling (4,155 --cg-* vars)
 ```
 
 ## FULL PATH — coherent whole-library release (recommended after the fast fix)

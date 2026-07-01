@@ -1,6 +1,6 @@
 {
   "name": "@cognivo/adapter-vue",
-  "version": "0.4.0",
+  "version": "0.8.0",
   "description": "Vue wrappers for every Cognivo web component.",
   "license": "MIT",
   "author": "Cognivo",
@@ -40,7 +40,7 @@
   },
   "peerDependencies": {
     "vue": ">=3.0.0",
-    "@cognivo/components": "workspace:*"
+    "@cognivo/components": "workspace:^"
   },
   "devDependencies": {
     "vue": "^3.5.0",
