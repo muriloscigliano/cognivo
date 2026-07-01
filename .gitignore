@@ -55,3 +55,4 @@ docs/.astro/
 playwright-report/
 test-results/
 playwright/.cache/
+.claude/plugins/
