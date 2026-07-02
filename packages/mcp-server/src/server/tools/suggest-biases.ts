@@ -99,17 +99,16 @@ function scoreBias(
 
 // ─── How to Apply ──────────────────────────────────────────────────────────
 
-function generateHowToApply(bias: BiasEntry, scenario: string): string {
-  // Combine the bias's simple definition with the scenario context
-  const definition = bias.definition.simple;
-
-  // Use the first "do" guideline as a concrete action if available
+function generateHowToApply(bias: BiasEntry): string {
+  // Use the first "do" guideline as a concrete action if available.
+  // The definition is already printed above the "How to apply" line,
+  // so never repeat it here.
   const firstDo = bias.guidelines.dos[0];
   if (firstDo) {
-    return `${definition} **Apply it here:** ${firstDo}`;
+    return firstDo;
   }
 
-  return definition;
+  return bias.designImpact.description || 'See the full bias card for guidance.';
 }
 
 // ─── Relevance Label ───────────────────────────────────────────────────────
@@ -160,7 +159,7 @@ export function suggestBiases(
 
     lines.push(`### ${i + 1}. ${bias.name} (relevance: ${relevance})`);
     lines.push(bias.definition.simple);
-    lines.push(`**How to apply:** ${generateHowToApply(bias, input.scenario)}`);
+    lines.push(`**How to apply:** ${generateHowToApply(bias)}`);
 
     if (bias.guidelines.donts.length > 0) {
       lines.push(`**Watch out:** ${bias.guidelines.donts[0]}`);

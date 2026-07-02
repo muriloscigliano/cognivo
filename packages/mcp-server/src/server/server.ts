@@ -50,7 +50,7 @@ export function createServer(): McpServer {
 
   server.tool(
     'cognivo_list_components',
-    "Search and browse Cognivo's 143 web components by category, wave, or keyword.",
+    `Search and browse Cognivo's ${catalog.components.length} web components by category, wave, or keyword.`,
     listComponentsSchema.shape,
     async (input) => {
       const parsed = listComponentsSchema.parse(input);
@@ -76,7 +76,7 @@ export function createServer(): McpServer {
 
   server.tool(
     'cognivo_find_tokens',
-    "Search Cognivo's 1,800+ design tokens by name, tier, category, or component association.",
+    `Search Cognivo's ${catalog.tokens.length.toLocaleString('en-US')} design tokens by name, tier, category, or component association.`,
     findTokensSchema.shape,
     async (input) => {
       const parsed = findTokensSchema.parse(input);
@@ -128,7 +128,7 @@ export function createServer(): McpServer {
 
   server.tool(
     'cognivo_get_bias',
-    "Look up cognitive biases from Cognivo's library of 180 biases with design impact analysis.",
+    `Look up cognitive biases from Cognivo's library of ${catalog.biases.length} biases with design impact analysis.`,
     getBiasSchema.shape,
     async (input) => {
       const parsed = getBiasSchema.parse(input);

@@ -17,14 +17,30 @@ import type { BiasEntry } from '../types.js';
 // ─── Regex Helpers ─────────────────────────────────────────────────────────
 
 /**
+ * Quoted-string pattern that respects the opening quote type and skips
+ * backslash-escaped characters: `(['"])((?:\\.|(?!\1)[^\\])*)\1`.
+ * Group 1 is the quote, group 2 the raw (still-escaped) content.
+ */
+const QUOTED = `(['"])((?:\\\\.|(?!\\1)[^\\\\\\n])*)\\1`;
+const QUOTED_MULTILINE = `(['"])((?:\\\\.|(?!\\1)[^\\\\])*)\\1`;
+
+/** Resolve JS string escapes (\' \" \\ \n \t) in extracted raw content. */
+function unescapeJs(raw: string): string {
+  return raw.replace(/\\(.)/g, (_, ch: string) => {
+    if (ch === 'n' || ch === 't') return ' ';
+    return ch;
+  });
+}
+
+/**
  * Extract a single-quoted or double-quoted string value for a given key.
- * Matches: `key: 'value'` or `key: "value"`
+ * Matches: `key: 'value'` or `key: "value"`, honoring escaped quotes.
  */
 function extractString(source: string, key: string): string {
-  // Try single/double quotes first
-  const quoteRe = new RegExp(`${key}:\\s*['"]([^'"]*?)['"]`);
+  // Try single/double quotes first (same-line)
+  const quoteRe = new RegExp(`${key}:\\s*${QUOTED}`);
   const quoteMatch = quoteRe.exec(source);
-  if (quoteMatch) return quoteMatch[1]!;
+  if (quoteMatch) return unescapeJs(quoteMatch[2]!);
 
   // Try template literal (backtick)
   const tickRe = new RegExp(`${key}:\\s*\`([^\`]*?)\``, 's');
@@ -32,9 +48,9 @@ function extractString(source: string, key: string): string {
   if (tickMatch) return tickMatch[1]!.trim();
 
   // Try multi-line string continuation: key:\n  'value...'
-  const multiRe = new RegExp(`${key}:\\s*\\n\\s*['"\`]([^'"\`]*?)['"\`]`);
+  const multiRe = new RegExp(`${key}:\\s*\\n\\s*${QUOTED_MULTILINE}`);
   const multiMatch = multiRe.exec(source);
-  if (multiMatch) return multiMatch[1]!;
+  if (multiMatch) return unescapeJs(multiMatch[2]!);
 
   return '';
 }
@@ -52,21 +68,20 @@ function extractLongString(source: string, key: string, maxLen: number): string 
     return text.substring(0, maxLen);
   }
 
-  // Single/double quotes (shorter values)
-  const quoteRe = new RegExp(`${key}:\\s*['"]([\\s\\S]*?)['"]`);
-  const quoteMatch = quoteRe.exec(source);
-  if (quoteMatch) {
-    const text = quoteMatch[1]!.replace(/\s+/g, ' ').trim();
-    return text.substring(0, maxLen);
-  }
-
-  // Multi-line string with concatenation: 'part1' +\n  'part2'
+  // Single/double quotes, honoring escaped quotes; concatenated parts
+  // ('part1' +\n 'part2' + ...) are joined.
   const concatRe = new RegExp(
-    `${key}:\\s*\\n?\\s*['"\`]([\\s\\S]*?)['"\`](?:\\s*\\+\\s*['"\`]([\\s\\S]*?)['"\`])*`,
+    `${key}:\\s*\\n?\\s*${QUOTED_MULTILINE}((?:\\s*\\+\\s*${QUOTED_MULTILINE})*)`,
   );
   const concatMatch = concatRe.exec(source);
   if (concatMatch) {
-    const parts = [concatMatch[1]!, concatMatch[2]].filter(Boolean);
+    const parts = [unescapeJs(concatMatch[2]!)];
+    const rest = concatMatch[3] ?? '';
+    const partRe = new RegExp(QUOTED_MULTILINE, 'g');
+    let partMatch: RegExpExecArray | null;
+    while ((partMatch = partRe.exec(rest)) !== null) {
+      parts.push(unescapeJs(partMatch[2]!));
+    }
     const text = parts.join(' ').replace(/\s+/g, ' ').trim();
     return text.substring(0, maxLen);
   }
@@ -96,12 +111,12 @@ function extractStringArray(source: string, key: string, limit = Infinity): stri
 
   const content = match[1]!;
 
-  // Extract quoted strings from the array content
+  // Extract quoted strings from the array content, honoring escaped quotes
   const items: string[] = [];
-  const itemRe = /['"]([^'"]*?)['"]/g;
+  const itemRe = new RegExp(QUOTED_MULTILINE, 'g');
   let itemMatch: RegExpExecArray | null;
   while ((itemMatch = itemRe.exec(content)) !== null) {
-    items.push(itemMatch[1]!);
+    items.push(unescapeJs(itemMatch[2]!).replace(/\s+/g, ' ').trim());
     if (items.length >= limit) break;
   }
 

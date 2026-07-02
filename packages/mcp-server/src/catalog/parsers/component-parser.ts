@@ -75,18 +75,30 @@ function parseWaveMap(barrelFile: string): Map<string, string> {
  * Returns the raw content between the opening and closing comment markers.
  */
 function extractJsDoc(source: string): string {
-  // Find the JSDoc block — the last /** ... */ before @customElement
   const customElIdx = source.indexOf('@customElement(');
   if (customElIdx === -1) return '';
 
   const before = source.slice(0, customElIdx);
+
+  // Preferred: a JSDoc block immediately preceding @customElement — only
+  // whitespace may sit between its closing */ and the decorator. Taking the
+  // bare "last comment before the decorator" is wrong when an interface with
+  // field-level JSDoc sits between the module doc and the class.
   const docEnd = before.lastIndexOf('*/');
-  if (docEnd === -1) return '';
+  if (docEnd !== -1 && before.slice(docEnd + 2).trim() === '') {
+    const docStart = before.lastIndexOf('/**', docEnd);
+    if (docStart !== -1) return before.slice(docStart, docEnd + 2);
+  }
 
-  const docStart = before.lastIndexOf('/**', docEnd);
-  if (docStart === -1) return '';
+  // Fallback: the module-level component doc — the first JSDoc block in the
+  // file carrying an @element tag (many components keep it above the imports).
+  const blockRe = /\/\*\*[\s\S]*?\*\//g;
+  let match: RegExpExecArray | null;
+  while ((match = blockRe.exec(before)) !== null) {
+    if (match[0].includes('@element')) return match[0];
+  }
 
-  return before.slice(docStart, docEnd + 2);
+  return '';
 }
 
 /**
@@ -110,7 +122,11 @@ function parseDescription(jsDoc: string): string {
     descLines.push(line);
   }
 
-  return descLines.join(' ').trim();
+  return descLines
+    .join(' ')
+    .replace(/\*\/\s*$/, '') // stray closing marker from single-line JSDoc
+    .replace(/^<[\w-]+>\s*[—–-]+\s*/, '') // redundant "<tag-name> —" prefix
+    .trim();
 }
 
 /**

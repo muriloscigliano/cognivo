@@ -28,6 +28,7 @@ export const recommendComponentSchema = z.object({
 export type RecommendComponentInput = z.infer<typeof recommendComponentSchema>;
 
 interface ContentSignals {
+  isStructuredData: boolean;
   hasKeyValuePairs: boolean;
   hasMetricNumbers: boolean;
   hasStatusWords: boolean;
@@ -44,13 +45,45 @@ interface ContentSignals {
   sentenceCount: number;
 }
 
+/**
+ * If the content is a JSON object (or array of objects), return the first
+ * object's entries so it can be analyzed as key-value data. Returns null
+ * for primitives, empty arrays, and anything that doesn't parse.
+ */
+function tryParseJsonObject(content: string): Record<string, unknown> | null {
+  const trimmed = content.trim();
+  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return null;
+  try {
+    const parsed: unknown = JSON.parse(trimmed);
+    const candidate = Array.isArray(parsed) ? parsed[0] : parsed;
+    if (candidate && typeof candidate === 'object' && !Array.isArray(candidate)) {
+      return candidate as Record<string, unknown>;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 function analyzeContent(content: string): ContentSignals {
+  // JSON payloads (the common case for agent tool output) carry their
+  // structure in the object shape, not in line layout — normalize to
+  // "key: value" lines so the line-based heuristics below apply.
+  const json = tryParseJsonObject(content);
+  if (json !== null) {
+    const normalized = Object.entries(json)
+      .map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : String(v)}`)
+      .join('\n');
+    return { ...analyzeContent(normalized), isStructuredData: true };
+  }
+
   const lines = content.split('\n').filter((l) => l.trim().length > 0);
   const words = content.split(/\s+/).filter((w) => w.length > 0);
   const sentences = content.split(/[.!?]+\s+/).filter((s) => s.trim().length > 0);
 
-  // Key-value pairs: "Label: value" or "Label = value" patterns
-  const kvPattern = /^[\w\s]{2,30}[:=]\s*[\w$%.,\d]+$/;
+  // Key-value pairs: "Label: value" or "Label = value" patterns.
+  // Values may carry signs (+12.4%), currency, and short phrases (Q2 2026).
+  const kvPattern = /^[\w\s]{2,30}[:=]\s*[+\-\w$%.,\d ]+$/;
   const kvLines = lines.filter((l) => kvPattern.test(l.trim()));
 
   // Pure metric numbers (currency, percentage, count)
@@ -59,8 +92,8 @@ function analyzeContent(content: string): ContentSignals {
   // Status words commonly paired with metrics
   const statusWords = /\b(success|error|warning|failed|passed|pending|active|disabled|completed|in[- ]progress)\b/i;
 
-  // Trend indicators
-  const trendPattern = /\b(up|down|↑|↓|▲|▼|\+\d|-\d|increas|decreas|spike|drop|surge)\b/i;
+  // Trend indicators (signed deltas like "+12.4%" have no \b before the sign)
+  const trendPattern = /\b(up|down|↑|↓|▲|▼|increas|decreas|spike|drop|surge)\b|(^|[\s:="'])[+\-]\d/im;
 
   // Alert urgency
   const alertPattern = /\b(critical|urgent|warning|danger|caution|deadline|expires?|overdue|immediate|action required)\b/i;
@@ -82,6 +115,7 @@ function analyzeContent(content: string): ContentSignals {
   const avgLineLength = lines.length > 0 ? words.length / lines.length : 0;
 
   return {
+    isStructuredData: false,
     hasKeyValuePairs: kvLines.length >= 2,
     hasMetricNumbers: metricPattern.test(content),
     hasStatusWords: statusWords.test(content),
@@ -133,9 +167,17 @@ function classify(signals: ContentSignals, context: string): Recommendation {
   }
 
   // ── Metric data (key-value pairs dominate)
-  if (signals.hasKeyValuePairs && (signals.hasMetricNumbers || signals.hasStatusWords)) {
-    reasoning.push('Content is structured as label → value pairs.');
+  if (
+    (signals.hasKeyValuePairs || signals.isStructuredData) &&
+    (signals.hasMetricNumbers || signals.hasStatusWords || signals.hasTrends)
+  ) {
+    reasoning.push(
+      signals.isStructuredData
+        ? 'Content is structured JSON data (label → value pairs).'
+        : 'Content is structured as label → value pairs.',
+    );
     if (signals.hasMetricNumbers) reasoning.push('Contains numeric metrics (currency, percentages, counts).');
+    if (signals.hasTrends) reasoning.push('Contains trend/delta indicators.');
     if (signals.hasStatusWords) reasoning.push('Contains status indicators (success/error/warning).');
     reasoning.push('Users will scan/compare, not read top-to-bottom.');
     return {
