@@ -54,28 +54,28 @@
 | 33 | cg-follow-up | 🔧 | focus ring → focusRingSingle helper, aria-busy on chips group during loading |
 | 34 | cg-form | 🔧 | error-summary heading now has heading semantics + aria-labelledby. (other findings P2 polish — deferred) |
 | 35 | cg-hover-card | 🔧 | role=tooltip → dialog (rich interactive content), Escape-to-close handler +test |
-| 36 | cg-icon | ⬜ | icon-1 (muted→on-surface-container) REJECTED for consistency (outlined-as-text is the 44-component convention). icon-2 P2 polish only |
+| 36 | cg-icon | 🔧 | wave4: accent bg-as-fg → accent-text, API fetch race guarded (requested-name gate), display:contents a11y span → .api-icon box. DEFERRED: dead size=xs enum (needs --cg-icon-size-50 token or API break) |
 | 37 | cg-image | 🔧 | orphan --cg-transition-duration-slower → -slow (fade now animates). cg-image-1 "invisible SVG" = FALSE POSITIVE (rejected) |
 | 38 | cg-image-block | 🔧 | orphan --cg-transition-duration-slower → -slow. DEFERRED: IB token + correctness P1s |
 | 39 | cg-image-gallery | 🔧 | grid role=group + label, inner img alt="" (wrapper aria-label names it — was double-announced). DEFERRED: col-min token, overflow state |
 | 40 | cg-input | 🔧 | placeholder as accessible-name fallback when no label, success-focus ring tokenized (3px→border-width-300) |
-| 41 | cg-kbd | ⬜ | kbd-1 (separator outlined→container-text) NOT applied — deliberate muted glyph, outlined-as-text convention |
-| 42 | cg-label | ⬜ | label-1 (outlined→input-text-placeholder) NOT applied — same value, outlined-as-text convention |
+| 41 | cg-kbd | 🔧 | wave4: hover-token-as-resting-bg → surface-cards-background, text → cards-text (coherent family), separator sizes via tier-3 kbd font tokens. Separator outlined-as-text kept (convention) |
+| 42 | cg-label | 🔧 | wave4: P0 shadow-DOM for= no-op → click-to-focus delegation (getRootNode lookup), disabled dims hint, dead transitions + host margin removed. NOTE: --cg-opacity-* tokens generate as invalid "50rem" — token-gen bug flagged |
 | 43 | cg-link | 🔧 | dual focus-ring widths tokenized, underline bottom -1px → border-width-50. (kept surface-base-background offset — focus-ring-offset is dark-only) |
 | 44 | cg-list | 🔧 | clickable chevron SVG aria-hidden. DEFERRED: other L2 polish |
 | 45 | cg-listbox | 🔧 | P0 focus ring added + aria-activedescendant now points at highlighted option. DEFERRED: outlined-as-text |
-| 46 | cg-markdown | ⬜ | |
-| 47 | cg-menubar | ⬜ | |
-| 48 | cg-meter | ⬜ | |
-| 49 | cg-metric-card | ⬜ | |
-| 50 | cg-modal | ⬜ | |
-| 51 | cg-navbar | ⬜ | |
-| 52 | cg-navigation-menu | ⬜ | nav landmark unnamed (from system audit) |
-| 53 | cg-number-input | ⬜ | |
-| 54 | cg-otp-input | ⬜ | |
-| 55 | cg-pagination | ⬜ | |
-| 56 | cg-password-input | ⬜ | |
-| 57 | cg-phone-input | ⬜ | |
+| 46 | cg-markdown | 🔧 | wave4: GFM pipe tables implemented, task-list sr-only state text, alert bodies block-parsed, image syntax (safe protocols), heading anchors scroll in shadow DOM + deep-link, copy btn aria-live, SSR DOMParser guard, letter-spacing/decoration tokenized |
+| 47 | cg-menubar | 🔧 | wave4: P0 submenus invisible (host [open] attr never set for menuListStyles reveal) FIXED, label prop for menubar name, Tab restores trigger focus, ArrowUp opens at last item, ResizeObserver re-measures underline, dead transition removed |
+| 48 | cg-meter | 🔧 | wave4: track bg → loading-spinner-secondary (visible on dark), aria-valuenow clamped, aria-valuetext added, aria-disabled removed (unsupported on meter), _level() matches native <meter> midpoint-optimum semantics |
+| 49 | cg-metric-card | 🔧 | wave4: P0 role=figure on clickable → role=button, spark colors saturated *-text tokens, skeleton border-token-as-fill → secondary-bg-hover, button-family focus ring, dup .spark-bar selector merged |
+| 50 | cg-modal | 🔧 | wave4: P0 backdrop-click dead (container covers it) → container click w/ target guard; P0 focus trap now crosses slots (shared getFocusableElements rewrite + deepContains active-mapping); mount no longer fires spurious close; empty <h2> gone; loading overlay role=status; tertiary ramp + tokenized ring; closing clears on animationend |
+| 51 | cg-navbar | 🔧 | wave4: mobile menu/menuitem roles dropped (nav links, not app menu), arrow-nav no longer selects (roving focus only), Escape restores focus to toggle, blur tokenized, mobile focus-visible/active states, dead --idx removed, slot doc honest |
+| 52 | cg-navigation-menu | 🔧 | wave4: fake menu semantics dropped (disclosure pattern: aria-expanded + conditional aria-controls), @focus force-open removed, click clears hover timers, focusout closes, open state has accent underline, caret + link-icon polish. Landmark named (label prop, earlier commit) |
+| 53 | cg-number-input | 🔧 | wave4: tier-3 input heights (form rows align), runaway auto-repeat fixed (window release + boundary stop), no clamp-per-keystroke (commit on blur/Enter), steppers keyboard-activatable, Home/End, loading keeps input (readonly + truthful aria-busy), paired secondary text token, tier-3 radius |
+| 54 | cg-otp-input | 🔧 | wave4: caret bg-token → accent-text, stale-value re-sync guard (positions preserved), OS one-time-code autofill distributes all digits, aria-invalid on boxes, stagger tokenized, filled border stronger-not-fainter on dark, focus scale removed |
+| 55 | cg-pagination | 🔧 | wave4: prev/next aria-disabled (focus not dropped at bounds), showFirst/Last usable from markup (string-aware converter, API kept), button-family focus ring, real … glyph, active cursor default, dead hover decls removed |
+| 56 | cg-password-input | 🔧 | wave4: P0 no accessible name → label for/id + aria-label fallback, helper linked via aria-describedby, error/success focus rings, toggle disabled with host + tokenized ring/press, aria-pressed double-signal removed, strength label live region, validity tracks required/minLength |
+| 57 | cg-phone-input | 🔧 | wave4: P0 tel input aria-label, Enter/Space toggle (was one-way), search input named + no dangling activedescendant, aria-controls → popover id, popover entrance animates (visibility not display), trigger locks while loading + press state, letter-spacing tokenized |
 | 58 | cg-popover | ⬜ | |
 | 59 | cg-portal | ⬜ | |
 | 60 | cg-progress-bar | ⬜ | |

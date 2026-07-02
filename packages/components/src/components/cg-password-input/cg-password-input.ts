@@ -69,9 +69,11 @@ export class CgPasswordInput extends LitElement {
     :host([error]) input {
       border-color: var(--cg-color-status-error-border-default);
     }
+    :host([error]) input:focus { box-shadow: 0 0 0 3px var(--cg-shadow-focus-error); }
     :host([success]) input {
       border-color: var(--cg-color-status-success-border-default);
     }
+    :host([success]) input:focus { box-shadow: 0 0 0 3px var(--cg-shadow-focus-success); }
 
     .toggle {
       position: absolute;
@@ -90,16 +92,18 @@ export class CgPasswordInput extends LitElement {
       border-radius: var(--cg-border-radius-50);
       transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .toggle:hover {
+    .toggle:hover:not(:disabled) {
       color: var(--cg-color-surface-base-text);
       background: var(--cg-color-action-tertiary-background-hover);
     }
+    .toggle:disabled { opacity: 0.6; cursor: not-allowed; }
     .toggle:focus-visible {
       outline: none;
       box-shadow:
-        0 0 0 2px var(--cg-color-focus-ring-offset),
-        0 0 0 4px var(--cg-color-focus-ring);
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
+    .toggle:active { transform: translateY(-50%) scale(var(--cg-interaction-press-scale)); }
 
     .helper {
       margin-top: var(--cg-spacing-6);
@@ -132,7 +136,6 @@ export class CgPasswordInput extends LitElement {
       from { transform: scaleX(0); }
       to { transform: scaleX(1); }
     }
-    .toggle:active { transform: translateY(-50%) scale(0.9); }
     .strength-bar.active[data-level="1"] { background: var(--cg-color-status-error-text-default); }
     .strength-bar.active[data-level="2"] { background: var(--cg-color-status-warning-text-default); }
     .strength-bar.active[data-level="3"] { background: var(--cg-color-status-warning-text-default); }
@@ -143,6 +146,8 @@ export class CgPasswordInput extends LitElement {
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-surface-container-outlined);
     }
+
+    .required-marker { color: var(--cg-color-status-error-text-default); }
   `];
 
   static formAssociated = true;
@@ -170,7 +175,7 @@ export class CgPasswordInput extends LitElement {
   @state() private _visible = false;
 
   override updated(changed: Map<string, unknown>): void {
-    if (changed.has('value')) {
+    if (changed.has('value') || changed.has('required') || changed.has('minLength')) {
       this._internals?.setFormValue(this.value);
       if (this.required && !this.value) {
         this._internals?.setValidity({ valueMissing: true }, 'Password is required');
@@ -224,15 +229,18 @@ export class CgPasswordInput extends LitElement {
     const score = this._strengthScore();
     return html`
       <div class="wrap">
-        ${this.label ? html`<label>${this.label}${this.required ? html` <span style="color:var(--cg-color-status-error-text-default);">*</span>` : nothing}</label>` : nothing}
+        ${this.label ? html`<label for="input">${this.label}${this.required ? html` <span class="required-marker">*</span>` : nothing}</label>` : nothing}
         <div class="input-wrap">
           <input
+            id="input"
             type=${this._visible ? 'text' : 'password'}
             .value=${this.value}
             placeholder=${this.placeholder}
             name=${this.name}
             ?disabled=${this.disabled}
             ?required=${this.required}
+            aria-label=${this.label ? nothing : (this.placeholder || 'Password')}
+            aria-describedby=${this.helper ? 'helper' : nothing}
             aria-invalid=${this.error ? 'true' : 'false'}
             aria-required=${this.required ? 'true' : 'false'}
             @input=${this._handleInput}
@@ -240,8 +248,8 @@ export class CgPasswordInput extends LitElement {
           <button
             type="button"
             class="toggle"
+            ?disabled=${this.disabled}
             aria-label=${this._visible ? 'Hide password' : 'Show password'}
-            aria-pressed=${this._visible ? 'true' : 'false'}
             @click=${this._toggleVisibility}
           >
             ${this._visible ? html`
@@ -263,9 +271,9 @@ export class CgPasswordInput extends LitElement {
               <div class="strength-bar ${i <= score ? 'active' : ''}" data-level=${score}></div>
             `)}
           </div>
-          <div class="strength-label">${this._strengthLabel()}</div>
+          <div class="strength-label" role="status" aria-live="polite">${this._strengthLabel()}</div>
         ` : nothing}
-        ${this.helper ? html`<div class="helper">${this.helper}</div>` : nothing}
+        ${this.helper ? html`<div class="helper" id="helper">${this.helper}</div>` : nothing}
       </div>
     `;
   }

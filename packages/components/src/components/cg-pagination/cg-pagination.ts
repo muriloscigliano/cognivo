@@ -58,28 +58,29 @@ export class CgPagination extends LitElement {
       -webkit-font-smoothing: antialiased;
     }
 
-    .page-btn:hover:not(:disabled):not(.active) {
+    .page-btn:hover:not([aria-disabled="true"]):not(.active) {
       background: var(--cg-overlay-accent-subtle);
-      color: var(--cg-color-surface-container-text);
-      border-color: var(--cg-color-surface-base-border);
     }
 
-    .page-btn:active:not(:disabled) {
+    .page-btn:active:not([aria-disabled="true"]) {
       transform: scale(var(--cg-interaction-press-scale));
     }
 
     .page-btn:focus-visible {
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
       outline: none;
+      box-shadow:
+        0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-border-width-100) * 2) var(--cg-color-focus-ring);
     }
 
-    .page-btn:disabled {
+    .page-btn[aria-disabled="true"] {
       opacity: 0.5;
       cursor: not-allowed;
     }
 
     /* ── Active page ── */
     .page-btn.active {
+      cursor: default;
       background: var(--cg-color-action-primary-background-default);
       color: var(--cg-color-action-primary-text-default);
       border-color: var(--cg-color-action-primary-border-default);
@@ -96,7 +97,6 @@ export class CgPagination extends LitElement {
       color: var(--cg-color-surface-container-outlined);
       font-size: var(--cg-font-size-sm);
       user-select: none;
-      letter-spacing: var(--cg-letter-spacing-widest);
     }
 
     /* Size variants */
@@ -148,8 +148,10 @@ export class CgPagination extends LitElement {
   @property({ type: Number }) total = 1;
   @property({ type: Number }) current = 1;
   @property({ type: Number }) siblings = 1;
-  @property({ type: Boolean }) showFirst = true;
-  @property({ type: Boolean }) showLast = true;
+  /** Accepts attribute "false" — plain Lit Booleans can never be turned off from markup. */
+  private static _boolConverter = { fromAttribute: (v: string | null) => v !== 'false' };
+  @property({ converter: CgPagination._boolConverter }) showFirst = true;
+  @property({ converter: CgPagination._boolConverter }) showLast = true;
 
   private _goToPage(page: number) {
     if (page < 1 || page > this.total || page === this.current) return;
@@ -208,7 +210,7 @@ export class CgPagination extends LitElement {
           <li>
             <button
               class="page-btn"
-              ?disabled="${isFirstPage}"
+              aria-disabled="${isFirstPage ? 'true' : 'false'}"
               aria-label="Previous page"
               @click="${() => this._goToPage(this.current - 1)}"
             >
@@ -218,7 +220,7 @@ export class CgPagination extends LitElement {
 
           ${pages.map(page => {
             if (page === 'ellipsis') {
-              return html`<li><span class="ellipsis" aria-hidden="true">...</span></li>`;
+              return html`<li><span class="ellipsis" aria-hidden="true">…</span></li>`;
             }
             const isActive = page === this.current;
             return html`
@@ -238,7 +240,7 @@ export class CgPagination extends LitElement {
           <li>
             <button
               class="page-btn"
-              ?disabled="${isLastPage}"
+              aria-disabled="${isLastPage ? 'true' : 'false'}"
               aria-label="Next page"
               @click="${() => this._goToPage(this.current + 1)}"
             >

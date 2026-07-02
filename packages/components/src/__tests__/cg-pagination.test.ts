@@ -87,16 +87,19 @@ describe('cg-pagination', () => {
     expect((detail as { page: number }).page).toBe(4);
   });
 
-  it('previous button is disabled on first page', async () => {
+  it('previous button is aria-disabled on first page (stays focusable)', async () => {
     el = await createElement('cg-pagination', { total: 5, current: 1 });
     const prev = el.shadowRoot!.querySelector('[aria-label="Previous page"]') as HTMLButtonElement;
-    expect(prev.disabled).toBe(true);
+    // aria-disabled (not native disabled) so focus is not dropped to <body>
+    expect(prev.getAttribute('aria-disabled')).toBe('true');
+    expect(prev.disabled).toBe(false);
   });
 
-  it('next button is disabled on last page', async () => {
+  it('next button is aria-disabled on last page (stays focusable)', async () => {
     el = await createElement('cg-pagination', { total: 5, current: 5 });
     const next = el.shadowRoot!.querySelector('[aria-label="Next page"]') as HTMLButtonElement;
-    expect(next.disabled).toBe(true);
+    expect(next.getAttribute('aria-disabled')).toBe('true');
+    expect(next.disabled).toBe(false);
   });
 
   it('previous button is enabled when not on first page', async () => {
@@ -115,7 +118,7 @@ describe('cg-pagination', () => {
     el = await createElement('cg-pagination', { total: 20, current: 10 });
     const ellipses = el.shadowRoot!.querySelectorAll('.ellipsis');
     expect(ellipses.length).toBeGreaterThan(0);
-    expect(ellipses[0]!.textContent).toBe('...');
+    expect(ellipses[0]!.textContent).toBe('\u2026');
   });
 
   it('defaults to size="md"', async () => {

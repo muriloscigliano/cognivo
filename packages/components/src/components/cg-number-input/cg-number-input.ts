@@ -24,7 +24,7 @@ export class CgNumberInput extends LitElement {
       display: inline-flex;
       align-items: center;
       border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
-      border-radius: var(--cg-border-radius-100);
+      border-radius: var(--cg-component-input-radius);
       background: var(--cg-color-input-background-default);
       overflow: hidden;
       transition: border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default), box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
@@ -74,7 +74,7 @@ export class CgNumberInput extends LitElement {
     :host([rounded="none"]) .wrapper { border-radius: 0; }
     :host([rounded="sm"]) .wrapper { border-radius: var(--cg-border-radius-50); }
     :host([rounded="md"]) .wrapper { border-radius: var(--cg-border-radius-100); }
-    :host([rounded="lg"]) .wrapper { border-radius: var(--cg-border-radius-150); }
+    :host([rounded="lg"]) .wrapper { border-radius: var(--cg-component-input-radius); }
     :host([rounded="full"]) .wrapper { border-radius: var(--cg-border-radius-full); }
 
     .btn {
@@ -83,7 +83,7 @@ export class CgNumberInput extends LitElement {
       justify-content: center;
       border: none;
       background: var(--cg-color-action-secondary-background-default);
-      color: var(--cg-color-surface-base-text);
+      color: var(--cg-color-action-secondary-text-default);
       cursor: pointer;
       padding: 0;
       flex-shrink: 0;
@@ -103,9 +103,9 @@ export class CgNumberInput extends LitElement {
     .btn svg { width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); }
 
     /* Sizes */
-    :host([size="sm"]) .btn { width: var(--cg-spacing-32); height: var(--cg-spacing-32); }
-    :host([size="md"]) .btn { width: var(--cg-spacing-40); height: var(--cg-spacing-40); }
-    :host([size="lg"]) .btn { width: var(--cg-spacing-48); height: var(--cg-spacing-48); }
+    :host([size="sm"]) .btn { width: var(--cg-component-input-height-sm); height: var(--cg-component-input-height-sm); }
+    :host([size="md"]) .btn { width: var(--cg-component-input-height-md); height: var(--cg-component-input-height-md); }
+    :host([size="lg"]) .btn { width: var(--cg-component-input-height-lg); height: var(--cg-component-input-height-lg); }
 
     input {
       border: none;
@@ -121,11 +121,11 @@ export class CgNumberInput extends LitElement {
     input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     input:disabled { cursor: not-allowed; }
 
-    :host([size="sm"]) input { width: var(--cg-spacing-48); font-size: var(--cg-font-size-xs); height: var(--cg-spacing-32); }
-    :host([size="md"]) input { width: var(--cg-spacing-56); font-size: var(--cg-font-size-sm); height: var(--cg-spacing-40); }
-    :host([size="lg"]) input { width: var(--cg-spacing-64); font-size: var(--cg-font-size-base); height: var(--cg-spacing-48); }
+    :host([size="sm"]) input { width: var(--cg-spacing-48); font-size: var(--cg-font-size-xs); height: var(--cg-component-input-height-sm); }
+    :host([size="md"]) input { width: var(--cg-spacing-56); font-size: var(--cg-font-size-sm); height: var(--cg-component-input-height-md); }
+    :host([size="lg"]) input { width: var(--cg-spacing-64); font-size: var(--cg-font-size-base); height: var(--cg-component-input-height-lg); }
 
-    .label { display: block; font-size: var(--cg-font-size-xs); color: var(--cg-color-surface-container-outlined); margin-bottom: var(--cg-spacing-4); font-weight: var(--cg-font-weight-medium); }
+    .label { display: block; font-size: var(--cg-font-size-xs); color: var(--cg-color-input-text-placeholder); margin-bottom: var(--cg-spacing-4); font-weight: var(--cg-font-weight-medium); }
   `];
 
   @property({ type: Number }) value = 0;
@@ -187,25 +187,40 @@ export class CgNumberInput extends LitElement {
 
   private _startRepeat(action: () => void) {
     action();
+    // The button disables itself at the boundary mid-press, which suppresses
+    // its mouseup — release must be caught at the window level or the timer
+    // loops forever.
+    window.addEventListener('mouseup', this._stopRepeat, { once: true });
+    window.addEventListener('touchend', this._stopRepeat, { once: true });
     let delay = 400;
     const repeat = () => {
+      const before = this.value;
       action();
+      if (this.disabled || this.value === before) return; // boundary reached — stop
       delay = Math.max(60, delay * 0.8);
       this._repeatTimer = window.setTimeout(repeat, delay);
     };
     this._repeatTimer = window.setTimeout(repeat, delay);
   }
-  private _stopRepeat() { clearTimeout(this._repeatTimer); }
+  private _stopRepeat = () => { clearTimeout(this._repeatTimer); };
 
-  private _onInput(e: Event) {
-    const raw = (e.target as HTMLInputElement).value;
-    const parsed = parseFloat(raw);
-    if (!Number.isNaN(parsed)) this._setValue(parsed);
+  private _onInput() {
+    // Don't clamp while typing (min=10 would turn a keystroke "5" — intending
+    // 50 — into 10 mid-edit). The value commits on blur or Enter.
+  }
+
+  private _commitInput() {
+    const parsed = parseFloat(this._input?.value ?? '');
+    if (Number.isFinite(parsed)) this._setValue(parsed);
+    if (this._input) this._input.value = String(this.value);
   }
 
   private _onKeyDown(e: KeyboardEvent) {
     if (e.key === 'ArrowUp') { e.preventDefault(); this._increment(); }
     else if (e.key === 'ArrowDown') { e.preventDefault(); this._decrement(); }
+    else if (e.key === 'Enter') { this._commitInput(); }
+    else if (e.key === 'Home' && Number.isFinite(this.min)) { e.preventDefault(); this._setValue(this.min); }
+    else if (e.key === 'End' && Number.isFinite(this.max)) { e.preventDefault(); this._setValue(this.max); }
   }
 
   override disconnectedCallback() { super.disconnectedCallback(); this._stopRepeat(); }
@@ -218,13 +233,14 @@ export class CgNumberInput extends LitElement {
       <div class="wrapper ${this._focused ? 'focused' : ''} ${this.disabled ? 'disabled' : ''}">
         <button class="btn" aria-label="Decrease"
           ?disabled=${this.disabled || atMin}
+          @click=${(e: MouseEvent) => { if (e.detail === 0) this._decrement(); }}
           @mousedown=${() => this._startRepeat(() => this._decrement())}
           @mouseup=${this._stopRepeat} @mouseleave=${this._stopRepeat}
           @touchstart=${(e: Event) => { e.preventDefault(); this._startRepeat(() => this._decrement()); }}
           @touchend=${this._stopRepeat}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg>
         </button>
-        ${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : html`
+        ${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : nothing}
         <input type="text" inputmode="numeric"
           role="spinbutton"
           aria-valuenow=${this.value}
@@ -236,12 +252,14 @@ export class CgNumberInput extends LitElement {
           aria-busy=${this.loading ? 'true' : 'false'}
           .value=${String(this.value)}
           ?disabled=${this.disabled}
+          ?readonly=${this.loading}
           @input=${this._onInput}
           @keydown=${this._onKeyDown}
           @focus=${() => { this._focused = true; }}
-          @blur=${() => { this._focused = false; }} />`}
+          @blur=${() => { this._focused = false; this._commitInput(); }} />
         <button class="btn" aria-label="Increase"
           ?disabled=${this.disabled || atMax}
+          @click=${(e: MouseEvent) => { if (e.detail === 0) this._increment(); }}
           @mousedown=${() => this._startRepeat(() => this._increment())}
           @mouseup=${this._stopRepeat} @mouseleave=${this._stopRepeat}
           @touchstart=${(e: Event) => { e.preventDefault(); this._startRepeat(() => this._increment()); }}

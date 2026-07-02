@@ -123,6 +123,7 @@ export class CgPhoneInput extends LitElement {
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .trigger:hover:not(:disabled) { background: var(--cg-overlay-accent-subtle); }
+    .trigger:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
     .trigger:focus-visible {
       outline: none;
       background: var(--cg-overlay-accent-subtle);
@@ -136,7 +137,6 @@ export class CgPhoneInput extends LitElement {
     .flag {
       font-size: var(--cg-font-size-base);
       line-height: 1;
-      filter: saturate(1.1);
       flex-shrink: 0;
     }
     :host([size="lg"]) .flag { font-size: var(--cg-font-size-lg); }
@@ -144,7 +144,6 @@ export class CgPhoneInput extends LitElement {
     .dial-code {
       color: var(--cg-color-input-text-default);
       font-variant-numeric: tabular-nums;
-      letter-spacing: 0.01em;
     }
 
     .chevron {
@@ -188,7 +187,6 @@ export class CgPhoneInput extends LitElement {
       color: var(--cg-color-input-text-default);
       padding: var(--cg-spacing-8) 0;
       font-variant-numeric: tabular-nums;
-      letter-spacing: 0.01em;
     }
     :host([size="lg"]) input[type="tel"] {
       font-size: var(--cg-font-size-base);
@@ -269,16 +267,20 @@ export class CgPhoneInput extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-modal-container-border);
       border-radius: var(--cg-component-popover-radius);
       box-shadow: var(--cg-shadow-elevation-xl);
-      display: none;
+      visibility: hidden;
+      pointer-events: none;
       opacity: 0;
       transform: translateY(calc(var(--cg-spacing-4) * -1));
       transition:
         opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out),
+        visibility 0s linear var(--cg-transition-duration-fast);
       overflow: hidden;
     }
     :host([open]) .popover {
-      display: block;
+      visibility: visible;
+      pointer-events: auto;
+      transition-delay: 0s;
       opacity: 1;
       transform: translateY(0);
     }
@@ -322,7 +324,7 @@ export class CgPhoneInput extends LitElement {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-semibold);
       color: var(--cg-color-input-text-placeholder);
-      letter-spacing: 0.06em;
+      letter-spacing: var(--cg-letter-spacing-wider);
       text-transform: uppercase;
     }
 
@@ -370,7 +372,7 @@ export class CgPhoneInput extends LitElement {
     .empty {
       padding: var(--cg-spacing-20);
       text-align: center;
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-input-text-placeholder);
       font-size: var(--cg-font-size-sm);
     }
 
@@ -702,12 +704,12 @@ export class CgPhoneInput extends LitElement {
           class="trigger"
           aria-haspopup="dialog"
           aria-expanded=${this.open ? 'true' : 'false'}
-          aria-controls="cg-phone-listbox"
+          aria-controls="cg-phone-popover"
           aria-label=${triggerLabel}
-          ?disabled=${this.disabled || this.readonly}
+          ?disabled=${this.disabled || this.readonly || this.loading}
           @click=${this._toggleOpen}
           @keydown=${(e: KeyboardEvent) => {
-            if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+            if (e.key === 'ArrowDown') {
               e.preventDefault();
               this.open = true;
             }
@@ -733,6 +735,7 @@ export class CgPhoneInput extends LitElement {
             .value=${this._national}
             name=${this.name || nothing}
             placeholder=${placeholder}
+            aria-label=${this.label || nothing}
             ?disabled=${this.disabled || this.loading}
             ?readonly=${this.readonly}
             aria-invalid=${this.error ? 'true' : 'false'}
@@ -746,6 +749,7 @@ export class CgPhoneInput extends LitElement {
         </div>
 
         <div
+          id="cg-phone-popover"
           class="popover"
           role="dialog"
           aria-label="Select country"
@@ -759,11 +763,11 @@ export class CgPhoneInput extends LitElement {
             </svg>
             <input
               type="search"
-              role="searchbox"
+              aria-label="Search countries"
               .value=${this._query}
               placeholder="Search country or +code"
               aria-controls="cg-phone-listbox"
-              aria-activedescendant=${this.open && this._activeIndex >= 0 ? `cg-phone-opt-${this._activeIndex}` : nothing}
+              aria-activedescendant=${this.open && this._activeIndex >= 0 && this._flatFiltered.length > 0 ? `cg-phone-opt-${this._activeIndex}` : nothing}
               @input=${this._onSearchInput}
             />
           </div>

@@ -37,12 +37,11 @@ export class CgOtpInput extends LitElement {
       font-size: var(--cg-font-size-lg);
       font-weight: var(--cg-font-weight-semibold);
       text-align: center;
-      caret-color: var(--cg-color-action-primary-background-default);
+      caret-color: var(--cg-color-accent-text);
       outline: none;
       transition:
         border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       animation: otpCellIn var(--cg-transition-duration-slow) var(--cg-transition-easing-default) both;
     }
 
@@ -58,7 +57,6 @@ export class CgOtpInput extends LitElement {
     .box:focus {
       border-color: var(--cg-color-input-border-focus);
       box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
-      transform: scale(1.05);
     }
 
     .box:disabled {
@@ -86,7 +84,7 @@ export class CgOtpInput extends LitElement {
     }
 
     .box.filled {
-      border-color: var(--cg-color-surface-container-border);
+      border-color: var(--cg-color-surface-cards-border-strong);
     }
 
     /* Rounded variants */
@@ -121,7 +119,7 @@ export class CgOtpInput extends LitElement {
   }
 
   override updated(changed: Map<string, unknown>) {
-    if (changed.has('value') || changed.has('length')) this._syncDigits();
+    if ((changed.has('value') && this.value !== this._digits.join('')) || changed.has('length')) this._syncDigits();
   }
 
   private _syncDigits() {
@@ -150,7 +148,23 @@ export class CgOtpInput extends LitElement {
 
   private _onInput(index: number, e: Event) {
     const input = e.target as HTMLInputElement;
-    const char = input.value.replace(/[^0-9]/g, '').slice(-1);
+    const chars = input.value.replace(/[^0-9]/g, '');
+    if (chars.length > 1) {
+      // OS one-time-code autofill inserts the whole code as one input event —
+      // distribute across boxes like paste instead of keeping only one digit.
+      this._digits = Array.from({ length: this.length }, (_, i) => chars[i] || '');
+      this._emitValue();
+      this.updateComplete.then(() => {
+        const boxes = this._getBoxes();
+        this._digits.forEach((d, i) => {
+          const box = boxes[i];
+          if (box) box.value = this.mask && d ? '\u2022' : d;
+        });
+        this._focusBox(Math.min(chars.length, this.length - 1));
+      });
+      return;
+    }
+    const char = chars;
     this._digits = [...this._digits];
     this._digits[index] = char;
     input.value = this.mask && char ? '\u2022' : char;
@@ -201,9 +215,10 @@ export class CgOtpInput extends LitElement {
           return html`
             <input class="box ${digit ? 'filled' : ''}"
               type="text" inputmode="numeric" maxlength="1"
-              style="animation-delay: ${i * 40}ms"
+              style="animation-delay: calc(${i} * var(--cg-transition-duration-fast) / 2)"
               .value=${display}
               ?disabled=${this.disabled}
+              aria-invalid=${this.error ? 'true' : 'false'}
               autocomplete="one-time-code"
               aria-label=${`Digit ${i + 1} of ${this.length}`}
               @input=${(e: Event) => this._onInput(i, e)}
