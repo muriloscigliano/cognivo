@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { LitElement, html, css, nothing } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
@@ -51,6 +51,10 @@ export class CgScrollArea extends LitElement {
       background-color: var(--cg-color-surface-cards-border-strong);
       background-clip: padding-box;
     }
+    .viewport::-webkit-scrollbar-thumb:active {
+      background-color: var(--cg-color-surface-cards-selected-border);
+      background-clip: padding-box;
+    }
     .viewport::-webkit-scrollbar-corner {
       background: transparent;
     }
@@ -71,6 +75,21 @@ export class CgScrollArea extends LitElement {
     }
     :host([type="hover"]:hover) .viewport::-webkit-scrollbar-thumb:hover {
       background-color: var(--cg-color-surface-cards-border-strong);
+    }
+    :host([type="hover"]:hover) .viewport::-webkit-scrollbar-thumb:active {
+      background-color: var(--cg-color-surface-cards-selected-border);
+    }
+    /* Keyboard users need the position indicator too, not just mouse hover */
+    :host([type="hover"]) .viewport:focus-visible::-webkit-scrollbar-thumb {
+      background-color: var(--cg-color-surface-cards-border);
+    }
+    /* Firefox: scrollbar-color is the only channel — mirror the hover reveal */
+    :host([type="hover"]) .viewport {
+      scrollbar-color: transparent transparent;
+    }
+    :host([type="hover"]:hover) .viewport,
+    :host([type="hover"]) .viewport:focus-visible {
+      scrollbar-color: var(--cg-color-surface-cards-border) transparent;
     }
 
     /* Always-visible scrollbar (forces overflow even when content fits) */
@@ -99,11 +118,46 @@ export class CgScrollArea extends LitElement {
 
   @property({ reflect: true }) orientation: 'vertical' | 'horizontal' | 'both' = 'vertical';
   @property({ reflect: true }) type: 'auto' | 'always' | 'hover' = 'hover';
+  /** Accessible name for the scroll region (role="region" is only emitted
+   *  when named — an anonymous focusable container is an AT dead stop). */
+  @property() label = '';
+
+  @state() private _scrollable = false;
+
+  private _resizeObserver: ResizeObserver | undefined;
+
+  override firstUpdated(): void {
+    const viewport = this.shadowRoot?.querySelector<HTMLElement>('.viewport');
+    if (!viewport) return;
+    this._resizeObserver = new ResizeObserver(() => this._updateScrollable(viewport));
+    this._resizeObserver.observe(viewport);
+    this._updateScrollable(viewport);
+  }
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this._resizeObserver?.disconnect();
+    this._resizeObserver = undefined;
+  }
+
+  private _updateScrollable(viewport: HTMLElement): void {
+    this._scrollable =
+      viewport.scrollHeight > viewport.clientHeight ||
+      viewport.scrollWidth > viewport.clientWidth;
+  }
 
   override render() {
     return html`
-      <div class="viewport" tabindex="0">
-        <slot></slot>
+      <div
+        class="viewport"
+        tabindex=${this._scrollable ? '0' : '-1'}
+        role=${this.label ? 'region' : nothing}
+        aria-label=${this.label || nothing}
+      >
+        <slot @slotchange=${() => {
+          const viewport = this.shadowRoot?.querySelector<HTMLElement>('.viewport');
+          if (viewport) this._updateScrollable(viewport);
+        }}></slot>
       </div>
     `;
   }

@@ -44,9 +44,14 @@ describe('cg-scroll-area', () => {
     expect(el.getAttribute('type')).toBe('always');
   });
 
-  it('viewport is focusable', async () => {
+  it('viewport is a tab stop only when content actually scrolls', async () => {
     await create();
     const vp = el.shadowRoot!.querySelector('.viewport')!;
+    // jsdom has no layout, so nothing overflows — not a tab stop
+    expect(vp.getAttribute('tabindex')).toBe('-1');
+    // When overflow is detected the viewport becomes focusable
+    (el as any)._scrollable = true;
+    await el.updateComplete;
     expect(vp.getAttribute('tabindex')).toBe('0');
   });
 

@@ -33,13 +33,13 @@ export class CgRating extends LitElement {
       width: var(--cg-component-rating-size-md);
       height: var(--cg-component-rating-size-md);
       cursor: pointer;
-      color: var(--cg-color-surface-container-border);
+      color: var(--cg-color-surface-container-outlined);
       transition:
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-spring);
     }
     .star:hover { transform: scale(1.15); }
-    .star:active { transform: scale(0.95); }
+    .star:active { transform: scale(var(--cg-interaction-press-scale)); }
     .star[data-filled="full"] { color: var(--cg-color-status-warning-text-default); }
     .star[data-filled="half"] { color: var(--cg-color-status-warning-text-default); }
 
@@ -67,13 +67,13 @@ export class CgRating extends LitElement {
 
     :host([readonly]) .star { cursor: default; }
     :host([readonly]) .star:hover { transform: none; }
-    :host([disabled]) .rating { opacity: 0.45; pointer-events: none; }
+    :host([disabled]) .rating { opacity: var(--cg-opacity-50); pointer-events: none; }
 
     .rating:focus-visible {
       outline: none;
       box-shadow:
-        0 0 0 2px var(--cg-color-focus-ring-offset),
-        0 0 0 4px var(--cg-color-focus-ring);
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
       border-radius: var(--cg-border-radius-50);
     }
   `];
@@ -185,12 +185,15 @@ export class CgRating extends LitElement {
     return html`
       <div
         class="rating"
-        role="radiogroup"
-        tabindex="0"
-        aria-label=${`Rated ${this.value} of ${this.max}`}
+        role="slider"
+        tabindex=${this.disabled ? '-1' : '0'}
+        aria-label="Rating"
         aria-valuenow=${this.value}
         aria-valuemin="0"
         aria-valuemax=${this.max}
+        aria-valuetext=${`${this.value} of ${this.max} stars`}
+        aria-disabled=${this.disabled ? 'true' : nothing}
+        aria-readonly=${this.readonly ? 'true' : nothing}
         @keydown=${this._handleKeydown}
         @mouseleave=${this._handleMouseLeave}
       >
@@ -200,8 +203,7 @@ export class CgRating extends LitElement {
             <div
               class="star"
               data-filled=${fill}
-              role="radio"
-              aria-checked=${i + 1 <= this.value ? 'true' : 'false'}
+              aria-hidden="true"
               @click=${(e: MouseEvent) => this._handleClick(i, e)}
               @mousemove=${(e: MouseEvent) => this._handleMouseMove(i, e)}
             >

@@ -35,10 +35,12 @@ describe('cg-rating', () => {
     expect(stars.length).toBe(5);
   });
 
-  it('rating has role="radiogroup"', async () => {
+  it('rating uses the slider ARIA pattern (value props are valid there)', async () => {
     await create();
     const r = el.shadowRoot!.querySelector('.rating')!;
-    expect(r.getAttribute('role')).toBe('radiogroup');
+    expect(r.getAttribute('role')).toBe('slider');
+    expect(r.getAttribute('aria-valuemin')).toBe('0');
+    expect(r.hasAttribute('aria-valuetext')).toBe(true);
   });
 
   it('fills stars up to value', async () => {

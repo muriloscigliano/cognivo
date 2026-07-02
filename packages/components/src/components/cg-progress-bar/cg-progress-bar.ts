@@ -81,9 +81,12 @@ export class CgProgressBar extends LitElement {
       height: 100%;
       border-radius: var(--cg-component-progress-radius);
       background: var(--cg-color-loading-spinner-primary);
-      opacity: 0.25;
+      opacity: var(--cg-opacity-25);
       transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
     }
+    :host([variant="success"]) .buffer { background: var(--cg-color-status-success-text-default); }
+    :host([variant="warning"]) .buffer { background: var(--cg-color-status-warning-text-default); }
+    :host([variant="danger"]) .buffer { background: var(--cg-color-status-error-text-default); }
 
     /* ── Fill bar ── */
     .fill {
@@ -123,7 +126,7 @@ export class CgProgressBar extends LitElement {
         transparent 75%,
         transparent
       );
-      background-size: 20px 20px;
+      background-size: var(--cg-spacing-20) var(--cg-spacing-20);
     }
 
     /* ── Animated stripes ── */
@@ -133,7 +136,7 @@ export class CgProgressBar extends LitElement {
 
     @keyframes stripe-move {
       from { background-position: 0 0; }
-      to { background-position: 20px 0; }
+      to { background-position: var(--cg-spacing-20) 0; }
     }
 
     /* ── Indeterminate ── */
@@ -165,10 +168,6 @@ export class CgProgressBar extends LitElement {
 
     /* Reduced motion */
     @media (prefers-reduced-motion: reduce) {
-      .fill::before {
-        animation: none !important;
-        background: none !important;
-      }
       :host([animated]) .fill::after {
         animation: none !important;
       }
@@ -248,6 +247,7 @@ export class CgProgressBar extends LitElement {
         aria-valuemin="0"
         aria-valuemax="100"
         aria-label="${this.label || 'Progress'}"
+        aria-valuetext=${this.formatValue && !this.indeterminate ? this.formatValue : nothing}
         aria-busy="${this.indeterminate}"
       >
         ${hasBuffer ? html`

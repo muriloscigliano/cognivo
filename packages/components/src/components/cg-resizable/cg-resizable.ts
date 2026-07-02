@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, type PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
@@ -31,7 +31,10 @@ export class CgResizable extends LitElement {
     .handle {
       flex-shrink: 0;
       position: relative;
-      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      z-index: var(--cg-z-index-100);
+      transition:
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([direction="horizontal"]) .handle {
       width: var(--cg-spacing-6);
@@ -72,12 +75,10 @@ export class CgResizable extends LitElement {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background:
-        var(--cg-color-surface-container-outlined),
-        var(--cg-color-surface-container-outlined),
-        var(--cg-color-surface-container-outlined);
       pointer-events: none;
-      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition:
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([direction="horizontal"]) .handle::before {
       width: var(--cg-border-width-50);
@@ -101,31 +102,31 @@ export class CgResizable extends LitElement {
     :host([direction="horizontal"]) .handle:focus-visible {
       border-left-color: var(--cg-color-action-primary-border-default);
       border-right-color: var(--cg-color-action-primary-border-default);
-      background: color-mix(in srgb, var(--cg-color-action-primary-background-default) 20%, transparent);
+      background: var(--cg-overlay-accent-medium);
       outline: none;
     }
     :host([direction="vertical"]) .handle:hover,
     :host([direction="vertical"]) .handle:focus-visible {
       border-top-color: var(--cg-color-action-primary-border-default);
       border-bottom-color: var(--cg-color-action-primary-border-default);
-      background: color-mix(in srgb, var(--cg-color-action-primary-background-default) 20%, transparent);
+      background: var(--cg-overlay-accent-medium);
       outline: none;
     }
     .handle:hover::before,
     .handle:focus-visible::before {
-      background: var(--cg-color-action-primary-text-default);
+      background: var(--cg-color-accent-text);
     }
     :host([direction="horizontal"]) .handle:hover::before,
     :host([direction="horizontal"]) .handle:focus-visible::before {
       box-shadow:
-        calc(var(--cg-spacing-4) * -1) 0 0 0 var(--cg-color-action-primary-text-default),
-        var(--cg-spacing-4) 0 0 0 var(--cg-color-action-primary-text-default);
+        calc(var(--cg-spacing-4) * -1) 0 0 0 var(--cg-color-accent-text),
+        var(--cg-spacing-4) 0 0 0 var(--cg-color-accent-text);
     }
     :host([direction="vertical"]) .handle:hover::before,
     :host([direction="vertical"]) .handle:focus-visible::before {
       box-shadow:
-        0 calc(var(--cg-spacing-4) * -1) 0 0 var(--cg-color-action-primary-text-default),
-        0 var(--cg-spacing-4) 0 0 var(--cg-color-action-primary-text-default);
+        0 calc(var(--cg-spacing-4) * -1) 0 0 var(--cg-color-accent-text),
+        0 var(--cg-spacing-4) 0 0 var(--cg-color-accent-text);
     }
 
     /* Active drag — stronger tint while pointer is down. */
@@ -144,8 +145,16 @@ export class CgResizable extends LitElement {
   @property({ type: Number }) defaultSize = 0.5;
   @property({ type: Number }) min = 0.1;
   @property({ type: Number }) max = 0.9;
+  /** Accessible name for the resize handle (window-splitter pattern). */
+  @property({ attribute: 'handle-label' }) handleLabel = 'Resize panes';
 
   @state() private _size = 0.5;
+
+  protected override willUpdate(changed: PropertyValues<this>): void {
+    if (changed.has('min') || changed.has('max')) {
+      this._size = this._clamp(this._size);
+    }
+  }
 
   private _activeMove: ((ev: PointerEvent) => void) | null = null;
   private _activeUp: (() => void) | null = null;
@@ -182,6 +191,7 @@ export class CgResizable extends LitElement {
   private _onPointerDown(e: PointerEvent): void {
     e.preventDefault();
     const handle = e.currentTarget as HTMLElement;
+    handle.focus();
     const pointerId = e.pointerId;
     handle.setPointerCapture?.(pointerId);
     handle.setAttribute('data-dragging', '');
@@ -259,6 +269,7 @@ export class CgResizable extends LitElement {
         class="handle"
         role="separator"
         tabindex="0"
+        aria-label=${this.handleLabel}
         aria-orientation=${horizontal ? 'vertical' : 'horizontal'}
         aria-valuenow=${Math.round(this._size * 100)}
         aria-valuemin=${Math.round(this.min * 100)}

@@ -40,6 +40,13 @@ export class CgRadioGroup extends LitElement {
       gap: var(--cg-spacing-16);
       flex-wrap: wrap;
     }
+
+    .label {
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-base-text);
+      margin-bottom: var(--cg-spacing-8);
+    }
   `];
 
   /** Shared name for all child radios */
@@ -57,7 +64,14 @@ export class CgRadioGroup extends LitElement {
   /** Layout direction */
   @property({ reflect: true }) orientation: 'vertical' | 'horizontal' = 'vertical';
 
+  /** Group-level error state, propagated to every child radio */
+  @property({ type: Boolean, reflect: true }) error = false;
+
   private _radios: CgRadio[] = [];
+  /** Radios WE disabled via group disabled — so re-enabling is reversible
+   *  without clobbering individually-disabled radios. */
+  private _groupDisabled = new WeakSet<CgRadio>();
+  private _appliedName = false;
 
   private _getRadios(): CgRadio[] {
     const slot = this.shadowRoot?.querySelector('slot');
@@ -70,8 +84,22 @@ export class CgRadioGroup extends LitElement {
     this._radios = this._getRadios();
 
     for (const radio of this._radios) {
-      if (this.name) radio.name = this.name;
-      if (this.disabled) radio.disabled = true;
+      if (this.name) {
+        radio.name = this.name;
+        this._appliedName = true;
+      } else if (this._appliedName) {
+        radio.name = '';
+      }
+      if (this.disabled) {
+        if (!radio.disabled) {
+          this._groupDisabled.add(radio);
+          radio.disabled = true;
+        }
+      } else if (this._groupDisabled.has(radio)) {
+        this._groupDisabled.delete(radio);
+        radio.disabled = false;
+      }
+      radio.error = this.error;
       radio.checked = radio.value === this.value;
     }
 
@@ -95,6 +123,7 @@ export class CgRadioGroup extends LitElement {
   }
 
   private _handleChange(e: Event) {
+    e.stopPropagation();
     const detail = (e as CustomEvent).detail;
     if (!detail) return;
 
@@ -125,7 +154,8 @@ export class CgRadioGroup extends LitElement {
 
     e.preventDefault();
 
-    const currentIndex = enabledRadios.findIndex(r => r.checked);
+    const focusedIndex = enabledRadios.findIndex(r => r.matches(':focus-within'));
+    const currentIndex = focusedIndex !== -1 ? focusedIndex : enabledRadios.findIndex(r => r.checked);
     let nextIndex: number;
 
     switch (e.key) {
@@ -180,10 +210,12 @@ export class CgRadioGroup extends LitElement {
 
   override render() {
     return html`
+      ${this.label ? html`<div class="label" id="group-label">${this.label}</div>` : nothing}
       <div
         class="group"
         role="radiogroup"
-        aria-label=${this.label || nothing}
+        aria-labelledby=${this.label ? 'group-label' : nothing}
+        aria-orientation=${this.orientation}
         @cg-change=${this._handleChange}
         @keydown=${this._handleKeydown}
       >

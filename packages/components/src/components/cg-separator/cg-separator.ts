@@ -6,7 +6,7 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
  * <cg-separator> — Visual divider, horizontal or vertical.
  *
  * Features beyond OpenUI's Separator:
- * - Label slot (text in the middle of the line)
+ * - Label attribute (text in the middle of the line)
  * - Vertical orientation
  * - Semantic spacing variants
  */
@@ -89,20 +89,14 @@ export class CgSeparator extends LitElement {
     return html`<div class="line" role="separator" aria-orientation="${this.orientation}"></div>`;
   }
 
-  override connectedCallback() {
-    super.connectedCallback();
-    if (this.label) {
-      this.setAttribute('role', 'separator');
-      this.setAttribute('aria-orientation', this.orientation);
-    }
-  }
-
   override updated(changed: Map<string, unknown>) {
     if (changed.has('label') || changed.has('orientation')) {
       if (this.label) {
         this.setAttribute('role', 'separator');
         this.setAttribute('aria-orientation', this.orientation);
-      } else {
+      } else if (this.getAttribute('role') === 'separator') {
+        // Only remove what this component set — never clobber a
+        // consumer-supplied role on the host.
         this.removeAttribute('role');
         this.removeAttribute('aria-orientation');
       }

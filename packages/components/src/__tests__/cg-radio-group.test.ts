@@ -67,7 +67,7 @@ describe('cg-radio-group', () => {
     expect(el.shadowRoot).toBeDefined();
   });
 
-  it('has role="radiogroup" with aria-label', async () => {
+  it('has role="radiogroup" with a visible, referenced label', async () => {
     el = await createRadioGroup({
       name: 'color',
       label: 'Pick a color',
@@ -79,7 +79,10 @@ describe('cg-radio-group', () => {
 
     const groupDiv = el.shadowRoot!.querySelector('.group');
     expect(groupDiv!.getAttribute('role')).toBe('radiogroup');
-    expect(groupDiv!.getAttribute('aria-label')).toBe('Pick a color');
+    // Label renders visibly and names the group via aria-labelledby
+    const labelDiv = el.shadowRoot!.querySelector('#group-label');
+    expect(labelDiv!.textContent).toBe('Pick a color');
+    expect(groupDiv!.getAttribute('aria-labelledby')).toBe('group-label');
   });
 
   it('syncs name to child cg-radio elements', async () => {

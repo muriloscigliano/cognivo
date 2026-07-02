@@ -48,15 +48,18 @@ export class CgPopover extends LitElement {
       color: var(--cg-color-surface-container-text);
       box-shadow: var(--cg-elevation-3);
       opacity: 0;
+      visibility: hidden;
       transform: scale(0.96) translateY(var(--cg-spacing-4));
       pointer-events: none;
       transition:
         opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out),
+        visibility var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     :host([open]) .popover {
       opacity: 1;
+      visibility: visible;
       transform: scale(1) translateY(0);
       pointer-events: auto;
     }
@@ -112,6 +115,8 @@ export class CgPopover extends LitElement {
   `];
 
   @property({ type: Boolean, reflect: true }) open = false;
+  /** Accessible name for the popover dialog (required for WCAG 4.1.2). */
+  @property() label = '';
   @property() placement: Placement = 'bottom';
   @property({ type: Number }) offset = 8;
   @property({ type: Boolean }) arrow = true;
@@ -129,6 +134,9 @@ export class CgPopover extends LitElement {
   private _focusTrap = new FocusTrap();
   private _cleanupAutoUpdate: (() => void) | null = null;
   private _disposeOutsideClick: (() => void) | null = null;
+  private _hoverOpenTimer = 0;
+  private _hoverCloseTimer = 0;
+  private _hoverEscListener: ((e: KeyboardEvent) => void) | null = null;
 
   override disconnectedCallback(): void {
     super.disconnectedCallback();
@@ -136,12 +144,38 @@ export class CgPopover extends LitElement {
     this._disposeOutsideClick?.();
     this._disposeOutsideClick = null;
     this._focusTrap.deactivate();
+    clearTimeout(this._hoverOpenTimer);
+    clearTimeout(this._hoverCloseTimer);
+    this._disposeHoverEsc();
+  }
+
+  private _disposeHoverEsc(): void {
+    if (this._hoverEscListener) {
+      document.removeEventListener('keydown', this._hoverEscListener);
+      this._hoverEscListener = null;
+    }
   }
 
   override updated(changed: Map<string, unknown>): void {
     if (changed.has('open')) {
+      this._slottedTrigger()?.setAttribute('aria-expanded', String(this.open));
       if (this.open) this._onOpen();
-      else this._onClose();
+      else if (changed.get('open') === true) this._onClose();
+    }
+  }
+
+  private _slottedTrigger(): Element | null {
+    const slot = this.shadowRoot?.querySelector<HTMLSlotElement>('slot:not([name])');
+    return slot?.assignedElements()[0] ?? null;
+  }
+
+  /** ARIA popup state lives on the slotted trigger — a role-less wrapper
+   *  div is invisible to assistive tech. */
+  private _onTriggerSlotChange(): void {
+    const el = this._slottedTrigger();
+    if (el) {
+      el.setAttribute('aria-haspopup', 'dialog');
+      el.setAttribute('aria-expanded', String(this.open));
     }
   }
 
@@ -160,14 +194,22 @@ export class CgPopover extends LitElement {
       this._disposeOutsideClick = bindOutsideClick(this, () => { this.open = false; });
     }
 
-    // Focus trap
-    requestAnimationFrame(() => {
-      if (this._popoverEl) {
-        this._focusTrap.activate(this._popoverEl, {
-          onEscape: this.closable ? () => { this.open = false; } : undefined,
-        });
-      }
-    });
+    // Focus trap — but never in hover mode: activate() steals keyboard focus
+    // on mere mouseover and deactivate() yanks it back on mouseleave.
+    if (this.trigger !== 'hover') {
+      requestAnimationFrame(() => {
+        if (this._popoverEl) {
+          this._focusTrap.activate(this._popoverEl, {
+            onEscape: this.closable ? () => { this.open = false; } : undefined,
+          });
+        }
+      });
+    } else if (this.closable) {
+      // WCAG 1.4.13: hover content must be dismissable without pointer moves.
+      this._disposeHoverEsc();
+      this._hoverEscListener = (e: KeyboardEvent) => { if (e.key === 'Escape') this.open = false; };
+      document.addEventListener('keydown', this._hoverEscListener);
+    }
   }
 
   private _onClose(): void {
@@ -177,6 +219,7 @@ export class CgPopover extends LitElement {
     this._disposeOutsideClick?.();
     this._disposeOutsideClick = null;
     this._focusTrap.deactivate();
+    this._disposeHoverEsc();
   }
 
   private _updatePosition(): void {
@@ -203,14 +246,17 @@ export class CgPopover extends LitElement {
     this.open = !this.open;
   }
 
-  private _handleTriggerMouseEnter(): void {
+  private _scheduleOpen(): void {
     if (this.trigger !== 'hover') return;
-    this.open = true;
+    clearTimeout(this._hoverCloseTimer);
+    this._hoverOpenTimer = window.setTimeout(() => { this.open = true; }, 80);
   }
 
-  private _handleTriggerMouseLeave(): void {
+  private _scheduleClose(): void {
     if (this.trigger !== 'hover') return;
-    this.open = false;
+    clearTimeout(this._hoverOpenTimer);
+    // Delay so the pointer can cross the gap into the popover (WCAG 1.4.13)
+    this._hoverCloseTimer = window.setTimeout(() => { this.open = false; }, 150);
   }
 
   override render() {
@@ -223,18 +269,21 @@ export class CgPopover extends LitElement {
       <div
         class="trigger"
         @click=${this._handleTriggerClick}
-        @mouseenter=${this._handleTriggerMouseEnter}
-        @mouseleave=${this._handleTriggerMouseLeave}
-        aria-haspopup="dialog"
-        aria-expanded=${this.open ? 'true' : 'false'}
+        @mouseenter=${this._scheduleOpen}
+        @mouseleave=${this._scheduleClose}
+        @focusin=${this._scheduleOpen}
+        @focusout=${this._scheduleClose}
       >
-        <slot></slot>
+        <slot @slotchange=${this._onTriggerSlotChange}></slot>
       </div>
       <div
         class="popover"
         role="dialog"
         aria-modal="false"
+        aria-label=${this.label || nothing}
         data-side=${this._actualSide}
+        @mouseenter=${this._scheduleOpen}
+        @mouseleave=${this._scheduleClose}
       >
         ${this.arrow ? html`<span class="arrow" data-side=${this._actualSide} style=${arrowStyle}></span>` : nothing}
         <slot name="content"></slot>

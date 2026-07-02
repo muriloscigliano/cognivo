@@ -25,8 +25,8 @@ export class CgSheet extends LitElement {
       inset: 0;
       z-index: var(--cg-z-index-500);
       background: var(--cg-color-modal-overlay-background);
-      backdrop-filter: blur(var(--cg-blur-backdrop)) saturate(140%);
-      -webkit-backdrop-filter: blur(var(--cg-blur-backdrop)) saturate(140%);
+      backdrop-filter: blur(var(--cg-blur-backdrop)) saturate(150%);
+      -webkit-backdrop-filter: blur(var(--cg-blur-backdrop)) saturate(150%);
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
@@ -98,10 +98,16 @@ export class CgSheet extends LitElement {
       width: var(--cg-spacing-40);
       height: var(--cg-spacing-4);
       border-radius: var(--cg-border-radius-full);
-      background: var(--cg-color-surface-container-border);
+      background: var(--cg-color-surface-container-divider);
       transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .handle:hover .handle-bar { background: var(--cg-color-surface-cards-border-strong); }
+    .handle:focus-visible {
+      outline: none;
+      box-shadow:
+        inset 0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        inset 0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
+    }
 
     .body {
       flex: 1;
@@ -127,17 +133,26 @@ export class CgSheet extends LitElement {
 
   override disconnectedCallback(): void {
     super.disconnectedCallback();
+    // An unmount while open must not leave the page scroll-locked.
+    if (this.open) document.body.style.overflow = this._previousOverflow;
     this._focusTrap.deactivate();
   }
 
   override updated(changed: Map<string, unknown>): void {
     if (changed.has('open')) {
+      // First render with open=false is not a close — no spurious event,
+      // no clobbering document.body.style.overflow on mount.
+      if (changed.get('open') === undefined && !this.open) return;
       if (this.open) this._onOpen();
       else this._onClose();
     }
   }
 
+  private _previousOverflow = '';
+
   private _onOpen(): void {
+    this._previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     this.dispatchEvent(new CustomEvent('cg-sheet-open', { bubbles: true, composed: true }));
     requestAnimationFrame(() => {
       const panel = this.shadowRoot?.querySelector<HTMLElement>('.panel');
@@ -150,6 +165,7 @@ export class CgSheet extends LitElement {
   }
 
   private _onClose(): void {
+    document.body.style.overflow = this._previousOverflow;
     this.dispatchEvent(new CustomEvent('cg-sheet-close', { bubbles: true, composed: true }));
     this._focusTrap.deactivate();
     this._dragOffset = 0;
@@ -160,7 +176,7 @@ export class CgSheet extends LitElement {
   }
 
   private _onDragStart(e: PointerEvent): void {
-    if (!this.dismissible) return;
+    if (!this.dismissible && !this.snapPoints.length) return;
     this._dragging = true;
     this._dragStart = this.side === 'bottom' || this.side === 'top' ? e.clientY : e.clientX;
     (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
@@ -171,21 +187,54 @@ export class CgSheet extends LitElement {
     const pos = this.side === 'bottom' || this.side === 'top' ? e.clientY : e.clientX;
     let delta = pos - this._dragStart;
     if (this.side === 'top' || this.side === 'left') delta = -delta;
-    this._dragOffset = Math.max(0, delta);
+    // With snap points the user can drag toward LARGER snaps too — keep the
+    // signed delta; dismiss-only sheets still clamp to the dismiss direction.
+    this._dragOffset = this.snapPoints.length ? delta : Math.max(0, delta);
   }
 
   private _onDragEnd(): void {
     if (!this._dragging) return;
     this._dragging = false;
-    if (this._dragOffset > 80 && this.dismissible) {
+    if (this.snapPoints.length) {
+      // Land on the snap nearest to the released position.
+      const viewport = this.side === 'bottom' || this.side === 'top'
+        ? window.innerHeight : window.innerWidth;
+      const current = (this.snapPoints[this.activeSnap] ?? 0.95) - this._dragOffset / Math.max(1, viewport);
+      let nearest = 0;
+      for (let i = 1; i < this.snapPoints.length; i++) {
+        if (Math.abs(this.snapPoints[i]! - current) < Math.abs(this.snapPoints[nearest]! - current)) nearest = i;
+      }
+      if (this.dismissible && current < Math.min(...this.snapPoints) - 0.1) {
+        this.open = false;
+      } else if (nearest !== this.activeSnap) {
+        this.activeSnap = nearest;
+        this._emitSnap();
+      }
+    } else if (this._dragOffset > 80 && this.dismissible) {
       this.open = false;
-    } else if (this.snapPoints.length) {
-      this.dispatchEvent(new CustomEvent('cg-sheet-snap', {
-        bubbles: true, composed: true,
-        detail: { index: this.activeSnap, value: this.snapPoints[this.activeSnap] ?? 1 },
-      }));
     }
     this._dragOffset = 0;
+  }
+
+  private _emitSnap(): void {
+    this.dispatchEvent(new CustomEvent('cg-sheet-snap', {
+      bubbles: true, composed: true,
+      detail: { index: this.activeSnap, value: this.snapPoints[this.activeSnap] ?? 1 },
+    }));
+  }
+
+  /** SHEET-5: keyboard path for snap resizing (slider pattern on the handle). */
+  private _onHandleKeydown(e: KeyboardEvent): void {
+    if (!this.snapPoints.length) return;
+    let next = this.activeSnap;
+    if (e.key === 'ArrowUp' || e.key === 'ArrowRight') next = Math.min(this.snapPoints.length - 1, next + 1);
+    else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') next = Math.max(0, next - 1);
+    else return;
+    e.preventDefault();
+    if (next !== this.activeSnap) {
+      this.activeSnap = next;
+      this._emitSnap();
+    }
   }
 
   override render() {
@@ -201,6 +250,7 @@ export class CgSheet extends LitElement {
       panelStyle = `height: ${Math.round(snap * 100)}vh;`;
     }
     if (this._dragging || this._dragOffset) panelStyle += `transform: ${translateAxis};`;
+    if (this._dragging) panelStyle += 'transition: none;';
 
     return html`
       <div class="backdrop" aria-hidden="true" @click=${this._handleBackdrop}></div>
@@ -216,6 +266,13 @@ export class CgSheet extends LitElement {
         ${this.side === 'bottom' || this.side === 'top' ? html`
           <div
             class="handle"
+            role=${this.snapPoints.length ? 'slider' : nothing}
+            tabindex=${this.snapPoints.length ? '0' : nothing}
+            aria-label=${this.snapPoints.length ? 'Resize sheet' : nothing}
+            aria-valuemin=${this.snapPoints.length ? '0' : nothing}
+            aria-valuemax=${this.snapPoints.length ? String(this.snapPoints.length - 1) : nothing}
+            aria-valuenow=${this.snapPoints.length ? String(this.activeSnap) : nothing}
+            @keydown=${this._onHandleKeydown}
             @pointerdown=${this._onDragStart}
             @pointermove=${this._onDragMove}
             @pointerup=${this._onDragEnd}
