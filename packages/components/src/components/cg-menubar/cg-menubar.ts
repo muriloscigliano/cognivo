@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, menuListStyles } from '../../styles/index.js';
+import { hostBlock, reducedMotion, menuListStyles, entranceStagger } from '../../styles/index.js';
 
 export interface MenubarChildItem {
   label: string;
@@ -25,7 +25,7 @@ export interface MenubarItem {
  */
 @customElement('cg-menubar')
 export class CgMenubar extends LitElement {
-  static override styles = [hostBlock, reducedMotion, menuListStyles, css`
+  static override styles = [hostBlock, reducedMotion, menuListStyles, entranceStagger, css`
     :host {
       display: block;
       color: var(--cg-color-surface-container-text);
@@ -101,7 +101,6 @@ export class CgMenubar extends LitElement {
       font-weight: var(--cg-font-weight-medium);
       border-radius: var(--cg-border-radius-50);
       cursor: pointer;
-      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     :host([size="sm"]) .top-trigger {
       padding: var(--cg-spacing-6) var(--cg-spacing-8);
@@ -161,6 +160,8 @@ export class CgMenubar extends LitElement {
    *    canonical macOS / VSCode / Figma app-menubar look.
    */
   @property({ reflect: true }) indicator: 'underline' | 'none' = 'underline';
+  /** Accessible name for the menubar (W3C APG requires a labeled menubar). */
+  @property() label = 'Application menu';
 
   @state() private _openIndex = -1;
   /** Roving-tabindex: only the focused menubar item is in the tab order. */
@@ -173,28 +174,46 @@ export class CgMenubar extends LitElement {
     if (!e.composedPath().includes(this)) this._openIndex = -1;
   };
 
+  /** Re-measure the indicator on resize so it doesn't drift while a menu is open. */
+  private _resizeObserver: ResizeObserver | undefined;
+
   override connectedCallback(): void {
     super.connectedCallback();
     document.addEventListener('click', this._outsideHandler);
+    this._resizeObserver = new ResizeObserver(() => {
+      if (this._openIndex >= 0) this._measureIndicator();
+    });
+    this._resizeObserver.observe(this);
   }
 
   override disconnectedCallback(): void {
     super.disconnectedCallback();
     document.removeEventListener('click', this._outsideHandler);
+    this._resizeObserver?.disconnect();
+    this._resizeObserver = undefined;
+  }
+
+  /** Measure the active trigger and slide the underline indicator under it. */
+  private _measureIndicator(): void {
+    const triggers = this.shadowRoot?.querySelectorAll<HTMLButtonElement>('.top-trigger');
+    const bar = this.shadowRoot?.querySelector<HTMLElement>('[role="menubar"]');
+    const trigger = triggers?.[this._openIndex];
+    if (trigger && bar) {
+      const tRect = trigger.getBoundingClientRect();
+      const bRect = bar.getBoundingClientRect();
+      this._indicatorLeft = tRect.left - bRect.left;
+      this._indicatorWidth = tRect.width;
+    }
   }
 
   override updated(changed: Map<string, unknown>): void {
-    // Measure the active trigger and slide the underline indicator under it.
+    // Reflect open state so menuListStyles' `:host([open]) .menu` reveal rule
+    // (and the shared cg-menu-enter animation) activates — matches
+    // cg-dropdown / cg-split-button. `open` is not a reactive property, so
+    // this cannot trigger an update loop.
+    this.toggleAttribute('open', this._openIndex >= 0);
     if (changed.has('_openIndex') && this._openIndex >= 0) {
-      const triggers = this.shadowRoot?.querySelectorAll<HTMLButtonElement>('.top-trigger');
-      const bar = this.shadowRoot?.querySelector<HTMLElement>('[role="menubar"]');
-      const trigger = triggers?.[this._openIndex];
-      if (trigger && bar) {
-        const tRect = trigger.getBoundingClientRect();
-        const bRect = bar.getBoundingClientRect();
-        this._indicatorLeft = tRect.left - bRect.left;
-        this._indicatorWidth = tRect.width;
-      }
+      this._measureIndicator();
     }
   }
 
@@ -237,6 +256,16 @@ export class CgMenubar extends LitElement {
         e.preventDefault();
         this._focusTop(n - 1);
         break;
+      case 'ArrowUp':
+        // W3C APG: ArrowUp on a menubar item opens its submenu and focuses
+        // the LAST item (complement of ArrowDown-focuses-first).
+        e.preventDefault();
+        this._openIndex = idx;
+        this.updateComplete.then(() => {
+          const menuItems = this.shadowRoot?.querySelectorAll<HTMLButtonElement>('.menu .menu-item:not(.disabled)');
+          menuItems?.[menuItems.length - 1]?.focus();
+        });
+        break;
       case 'Escape':
         e.preventDefault();
         this._openIndex = -1;
@@ -266,8 +295,13 @@ export class CgMenubar extends LitElement {
       return;
     }
     if (e.key === 'Tab') {
-      // Per W3C APG: Tab exits the menubar entirely. Close the submenu and
-      // let the browser's natural tab order take over.
+      // Per W3C APG: Tab exits the menubar entirely. Synchronously move focus
+      // back to the owning trigger (which holds the roving tabindex=0) before
+      // the default Tab action runs, so Tab / Shift+Tab proceed from the
+      // menubar to the adjacent tab-sequence element instead of dropping
+      // focus to <body> when the submenu is removed. No preventDefault.
+      this._focusedTopIndex = triggerIdx;
+      this.shadowRoot?.querySelectorAll<HTMLButtonElement>('.top-trigger')[triggerIdx]?.focus();
       this._openIndex = -1;
       return;
     }
@@ -358,7 +392,7 @@ export class CgMenubar extends LitElement {
   override render() {
     const indicatorStyle = `transform: translateX(${this._indicatorLeft}px); width: ${this._indicatorWidth}px;`;
     return html`
-      <div role="menubar">
+      <div role="menubar" aria-label=${this.label}>
         <div class="indicator ${this._openIndex >= 0 ? 'visible' : ''}" style=${indicatorStyle} aria-hidden="true"></div>
         ${this.items.map((menu, i) => html`
           <div class="menu-wrap">

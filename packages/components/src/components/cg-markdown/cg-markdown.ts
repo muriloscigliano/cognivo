@@ -68,7 +68,8 @@ function isBlockStart(line: string): boolean {
     line.startsWith('> ') ||
     line === '>' ||
     /^[-*] /.test(line) ||
-    /^\d+\. /.test(line)
+    /^\d+\. /.test(line) ||
+    /^\|.+\|\s*$/.test(line)
   );
 }
 
@@ -146,7 +147,7 @@ export class CgMarkdown extends LitElement {
       color: var(--cg-color-surface-base-text);
       margin: var(--cg-spacing-32) 0 var(--cg-spacing-12);
       line-height: var(--cg-line-height-tight);
-      letter-spacing: -0.02em;
+      letter-spacing: var(--cg-letter-spacing-tight);
       text-wrap: balance;
     }
     .md h2 {
@@ -155,7 +156,7 @@ export class CgMarkdown extends LitElement {
       color: var(--cg-color-surface-base-text);
       margin: var(--cg-spacing-24) 0 var(--cg-spacing-8);
       line-height: var(--cg-line-height-tight);
-      letter-spacing: -0.01em;
+      letter-spacing: var(--cg-letter-spacing-tight);
       text-wrap: balance;
     }
     .md h3 {
@@ -213,7 +214,7 @@ export class CgMarkdown extends LitElement {
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-surface-container-outlined);
       text-transform: lowercase;
-      letter-spacing: 0.02em;
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
     .md .code-copy {
       background: transparent;
@@ -279,7 +280,7 @@ export class CgMarkdown extends LitElement {
     .md .alert-label {
       font-weight: var(--cg-font-weight-semibold);
       font-size: var(--cg-font-size-sm);
-      letter-spacing: 0.01em;
+      letter-spacing: var(--cg-letter-spacing-normal);
     }
     .md .alert-body { font-style: normal; }
     .md .alert-body :is(p, ul, ol):first-child { margin-top: 0; }
@@ -346,6 +347,19 @@ export class CgMarkdown extends LitElement {
       line-height: 1;
     }
 
+    /* Rule 10 — visually hidden, screen-reader-only state text. */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     /* ── Heading anchors — visible on heading hover, "#" link to the slugged id. */
     .md :is(h1, h2, h3, h4, h5, h6) .anchor {
       display: inline-block;
@@ -363,7 +377,7 @@ export class CgMarkdown extends LitElement {
     .md a {
       color: var(--cg-color-accent-text);
       text-decoration: underline;
-      text-decoration-thickness: 1px;
+      text-decoration-thickness: var(--cg-border-width-50);
       text-underline-offset: var(--cg-spacing-4);
       text-decoration-color: color-mix(in oklch, currentColor 40%, transparent);
       transition: text-decoration-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
@@ -403,6 +417,13 @@ export class CgMarkdown extends LitElement {
     .md ::selection {
       background: var(--cg-overlay-accent-light);
       color: var(--cg-color-surface-base-text);
+    }
+
+    /* ── Images ── contained to the prose column. */
+    .md img {
+      max-width: 100%;
+      height: auto;
+      border-radius: var(--cg-border-radius-100);
     }
 
     /* ── Table ── */
@@ -505,11 +526,13 @@ export class CgMarkdown extends LitElement {
         if (alertMatch && ALERT_TYPES.has(alertMatch[1]!.toLowerCase())) {
           const type = alertMatch[1]!.toLowerCase();
           const label = type.charAt(0).toUpperCase() + type.slice(1);
-          const body = quoteLines.slice(1).join(' ');
+          // Run the body through the block parser so lists and paragraphs
+          // inside alerts render as real blocks, not flattened inline text.
+          const body = this._render(quoteLines.slice(1).join('\n'));
           blocks.push(
             `<blockquote class="alert alert-${type}">` +
               `<div class="alert-header"><span class="alert-label">${label}</span></div>` +
-              `<div class="alert-body">${this._inline(body)}</div>` +
+              `<div class="alert-body">${body}</div>` +
             `</blockquote>`,
           );
         } else {
@@ -532,6 +555,7 @@ export class CgMarkdown extends LitElement {
             items.push(
               `<li class="task">` +
                 `<span class="${checkClass}" aria-hidden="true"></span>` +
+                `<span class="sr-only">${checked ? 'Done: ' : 'To do: '}</span>` +
                 this._inline(taskMatch[2]!) +
               `</li>`,
             );
@@ -556,14 +580,37 @@ export class CgMarkdown extends LitElement {
         continue;
       }
 
+      // GFM pipe table — header row, then a |---|---| separator row, then body rows
+      if (/^\|.+\|\s*$/.test(line) && i + 1 < lines.length && /^\|(\s*:?-+:?\s*\|)+\s*$/.test(lines[i + 1]!)) {
+        const splitRow = (row: string): string[] =>
+          row.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(cell => this._inline(cell.trim()));
+        const headers = splitRow(line);
+        i += 2; // consume header + separator
+        const bodyRows: string[][] = [];
+        while (i < lines.length && /^\|.+\|\s*$/.test(lines[i]!)) {
+          bodyRows.push(splitRow(lines[i]!));
+          i++;
+        }
+        const thead = `<thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>`;
+        const tbody = bodyRows.length
+          ? `<tbody>${bodyRows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>`
+          : '';
+        blocks.push(`<table>${thead}${tbody}</table>`);
+        continue;
+      }
+
       // Blank line — paragraph separator
       if (line.trim() === '') {
         i++;
         continue;
       }
 
-      // Paragraph — consecutive non-blank, non-block lines joined with spaces
-      const paraLines: string[] = [];
+      // Paragraph — consecutive non-blank, non-block lines joined with spaces.
+      // The first line is consumed unconditionally: a pipe row without a
+      // separator line is a block start that no branch above claims, and
+      // skipping the consume would loop forever.
+      const paraLines: string[] = [line];
+      i++;
       while (i < lines.length && lines[i]!.trim() !== '' && !isBlockStart(lines[i]!)) {
         paraLines.push(lines[i]!);
         i++;
@@ -595,6 +642,17 @@ export class CgMarkdown extends LitElement {
       .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
       .replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
 
+    // Images — must run BEFORE links so ![alt](src) isn't half-eaten by the
+    // link rule. Unsafe protocols degrade to the alt text; the DOM sanitizer
+    // re-validates src as a backstop.
+    working = working.replace(
+      /!\[([^\]]*)\]\(((?:[^()\s]|\([^)]*\))+)\)/g,
+      (_m, alt: string, url: string) => {
+        const trimmed = url.trim();
+        return SAFE_PROTOCOLS.test(trimmed) ? `<img src="${trimmed}" alt="${alt}">` : alt;
+      },
+    );
+
     // Links — handle URLs with balanced single-level parens
     working = working.replace(
       /\[([^\]]+)\]\(((?:[^()\s]|\([^)]*\))+)\)/g,
@@ -620,13 +678,41 @@ export class CgMarkdown extends LitElement {
       requestAnimationFrame(() => {
         const buttons = this.shadowRoot?.querySelectorAll<HTMLButtonElement>('.code-copy');
         buttons?.forEach(btn => this._bindCopyButton(btn));
+        this.shadowRoot?.querySelectorAll<HTMLAnchorElement>('.anchor').forEach(a => this._bindAnchor(a));
       });
     }
+  }
+
+  override firstUpdated(): void {
+    // Deep-link support: fragment navigation can't reach shadow-root ids, so
+    // resolve the initial location.hash ourselves once content is rendered.
+    requestAnimationFrame(() => {
+      const slug = location.hash.slice(1);
+      if (!slug) return;
+      this.shadowRoot?.getElementById(slug)?.scrollIntoView({ block: 'start' });
+    });
+  }
+
+  private _bindAnchor(a: HTMLAnchorElement): void {
+    if (a.dataset['cgBound']) return;
+    a.dataset['cgBound'] = '1';
+    a.addEventListener('click', (e) => {
+      // Browsers can't fragment-navigate into a shadow root — scroll manually
+      // (scroll-margin-top's tier-3 token applies to scrollIntoView).
+      e.preventDefault();
+      const slug = a.getAttribute('href')?.slice(1);
+      if (!slug) return;
+      history.replaceState(null, '', `#${slug}`);
+      this.shadowRoot?.getElementById(slug)?.scrollIntoView({ block: 'start' });
+    });
   }
 
   private _bindCopyButton(btn: HTMLButtonElement): void {
     if (btn.dataset['cgBound']) return;
     btn.dataset['cgBound'] = '1';
+    // Announce the Copy -> Copied swap to screen readers (set post-sanitize
+    // via JS so the sanitizer allowlist stays unchanged).
+    btn.setAttribute('aria-live', 'polite');
     btn.addEventListener('click', async () => {
       const block = btn.closest('.code-block');
       const pre = block?.querySelector('pre');
@@ -646,6 +732,11 @@ export class CgMarkdown extends LitElement {
   }
 
   override render() {
+    // SSR has no DOMParser/document — emit an empty prose container and let
+    // the client fill it on hydration.
+    if (typeof DOMParser === 'undefined') {
+      return html`<div class="md"></div>`;
+    }
     return html`<div class="md" .innerHTML=${sanitizeHtml(this._render(this.text))}></div>`;
   }
 }

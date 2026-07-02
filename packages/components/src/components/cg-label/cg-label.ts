@@ -9,15 +9,13 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
  * - Required asterisk
  * - Hint text (description below label)
  * - Error text (replaces hint when in error state)
- * - htmlFor association
+ * - Click-to-focus delegation via `for` (label semantics cannot cross the
+ *   shadow boundary, so the target control must carry its own accessible
+ *   name via aria-label/aria-labelledby — cg-input already self-labels)
  */
 @customElement('cg-label')
 export class CgLabel extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
-    :host {
-      margin-bottom: var(--cg-spacing-6);
-    }
-
     label {
       font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-medium);
@@ -29,8 +27,12 @@ export class CgLabel extends LitElement {
       cursor: pointer;
     }
 
-    :host([disabled]) label {
+    :host([disabled]) label,
+    :host([disabled]) .hint {
       opacity: 0.5;
+    }
+
+    :host([disabled]) label {
       cursor: not-allowed;
     }
 
@@ -44,7 +46,6 @@ export class CgLabel extends LitElement {
       color: var(--cg-color-surface-container-outlined);
       margin-top: var(--cg-spacing-2);
       line-height: var(--cg-line-height-snug);
-      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
 
     .error-text {
@@ -52,7 +53,6 @@ export class CgLabel extends LitElement {
       color: var(--cg-color-status-error-text-default);
       margin-top: var(--cg-spacing-2);
       line-height: var(--cg-line-height-snug);
-      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
   `];
 
@@ -63,9 +63,21 @@ export class CgLabel extends LitElement {
   @property({ type: Boolean }) required = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
 
+  private _delegateClick(): void {
+    if (this.disabled || !this.htmlFor) return;
+    const root = this.getRootNode() as Document | ShadowRoot;
+    const target = root.getElementById(this.htmlFor);
+    if (target instanceof HTMLElement) {
+      target.focus();
+      if (target instanceof HTMLInputElement && (target.type === 'checkbox' || target.type === 'radio')) {
+        target.click();
+      }
+    }
+  }
+
   override render() {
     return html`
-      <label for=${this.htmlFor || nothing}>
+      <label @click=${this._delegateClick}>
         ${this.text}<slot></slot>
         ${this.required ? html`<span class="required" aria-hidden="true"> *</span>` : nothing}
       </label>

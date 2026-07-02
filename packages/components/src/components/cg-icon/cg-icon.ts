@@ -182,7 +182,7 @@ export class CgIcon extends LitElement {
     :host([size="xl"]) { font-size: var(--cg-icon-size-300); }
 
     :host([color="muted"]) { color: var(--cg-color-surface-container-outlined); }
-    :host([color="accent"]) { color: var(--cg-color-action-primary-background-default); }
+    :host([color="accent"]) { color: var(--cg-color-accent-text); }
     :host([color="success"]) { color: var(--cg-color-status-success-text-default); }
     :host([color="warning"]) { color: var(--cg-color-status-warning-text-default); }
     :host([color="danger"]) { color: var(--cg-color-status-error-text-default); }
@@ -196,6 +196,12 @@ export class CgIcon extends LitElement {
 
     :host([name="loading"]) svg {
       animation: spin var(--cg-transition-duration-slow) linear infinite;
+    }
+
+    .api-icon {
+      display: inline-flex;
+      width: 100%;
+      height: 100%;
     }
 
     .placeholder {
@@ -253,7 +259,8 @@ export class CgIcon extends LitElement {
 
   /** Fetch from Iconify API as fallback */
   private async _fetchFromApi() {
-    let solarName = this.name;
+    const requested = this.name;
+    let solarName = requested;
     if (solarName.startsWith('solar:')) solarName = solarName.slice(6);
     else if (ALIASES[solarName]) solarName = ALIASES[solarName]!;
 
@@ -271,13 +278,13 @@ export class CgIcon extends LitElement {
         const safe = sanitizeSvg(raw);
         if (safe) {
           API_CACHE.set(solarName, safe);
-          this._apiSvg = safe;
+          if (this.name === requested) this._apiSvg = safe;
         }
       }
     } catch {
       // Silently fail — icon just won't render
     } finally {
-      this._loading = false;
+      if (this.name === requested) this._loading = false;
     }
   }
 
@@ -330,8 +337,8 @@ export class CgIcon extends LitElement {
 
     // 3. API-fetched SVG
     if (this._apiSvg) {
-      return html`<span role="${ariaRole}" aria-label="${ariaLabel}" aria-hidden="${ariaHidden}"
-        style="display:contents;">${unsafeHTML(this._apiSvg)}</span>`;
+      return html`<span class="api-icon" role="${ariaRole}" aria-label="${ariaLabel}"
+        aria-hidden="${ariaHidden}">${unsafeHTML(this._apiSvg)}</span>`;
     }
 
     // 4. Loading placeholder

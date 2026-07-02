@@ -28,11 +28,11 @@ export class CgKbd extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: var(--cg-color-action-tertiary-background-hover);
+      background: var(--cg-color-surface-cards-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-bottom-width: var(--cg-border-width-100);
       border-radius: var(--cg-component-kbd-radius);
-      color: var(--cg-color-surface-base-text);
+      color: var(--cg-color-surface-cards-text);
       font-family: var(--cg-font-family-mono);
       font-weight: var(--cg-font-weight-medium);
       line-height: var(--cg-line-height-tight);
@@ -64,8 +64,10 @@ export class CgKbd extends LitElement {
 
     .plus {
       color: var(--cg-color-surface-container-outlined);
-      font-size: var(--cg-font-size-xs);
     }
+    :host([size="sm"]) .plus { font-size: var(--cg-component-kbd-font-size-sm); }
+    :host([size="md"]) .plus { font-size: var(--cg-component-kbd-font-size-md); }
+    :host([size="lg"]) .plus { font-size: var(--cg-component-kbd-font-size-lg); }
   `];
 
   @property() keys: string = '';
