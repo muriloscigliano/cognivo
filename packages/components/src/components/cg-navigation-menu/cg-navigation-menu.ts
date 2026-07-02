@@ -173,6 +173,8 @@ export class CgNavigationMenu extends LitElement {
   `];
 
   @property({ type: Array }) items: NavMenuItem[] = [];
+  /** Accessible name for the navigation landmark. */
+  @property() label = 'Main navigation';
   @property({ type: Number }) openDelay = 80;
   @property({ type: Number }) closeDelay = 120;
   /** Panel grid column count. Default 2. */
@@ -219,7 +221,7 @@ export class CgNavigationMenu extends LitElement {
 
   override render() {
     return html`
-      <nav role="navigation" @mouseleave=${this._scheduleClose} @keydown=${this._onKeydown}>
+      <nav role="navigation" aria-label=${this.label} @mouseleave=${this._scheduleClose} @keydown=${this._onKeydown}>
         ${this.items.map((menu, i) => html`
           <button
             class="trigger ${this._openIndex === i ? 'open' : ''}"
