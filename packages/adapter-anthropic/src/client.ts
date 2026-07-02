@@ -74,6 +74,24 @@ export class AnthropicClient extends BaseAiClient {
   }
 
   /**
+   * Build the `system` parameter for a Messages API request.
+   *
+   * When prompt caching is enabled, returns system content blocks with a
+   * `cache_control: { type: 'ephemeral' }` breakpoint so Anthropic caches
+   * the tools + system prefix. Otherwise returns the plain string.
+   */
+  private buildSystemParam(
+    systemPromptOverride?: string
+  ): string | Anthropic.Messages.TextBlockParam[] {
+    if (this.cacheManager) {
+      return this.cacheManager.buildSystemBlocks(
+        systemPromptOverride
+      ) as Anthropic.Messages.TextBlockParam[];
+    }
+    return systemPromptOverride || SYSTEM_PROMPT;
+  }
+
+  /**
    * Execute an AI intent via Anthropic's Messages API with tool_use
    */
   protected async executeIntent<T = unknown>(
@@ -88,7 +106,7 @@ export class AnthropicClient extends BaseAiClient {
       throw new Error(`No tool defined for intent: ${intent}`);
     }
 
-    const systemContent = options?.systemPrompt || SYSTEM_PROMPT;
+    const systemContent = this.buildSystemParam(options?.systemPrompt);
 
     try {
       const response = await this.client.messages.create({
@@ -141,7 +159,7 @@ export class AnthropicClient extends BaseAiClient {
       throw new Error(`No tool defined for intent: ${intent}`);
     }
 
-    const systemContent = options?.systemPrompt || SYSTEM_PROMPT;
+    const systemContent = this.buildSystemParam(options?.systemPrompt);
 
     const stream = this.client.messages.stream({
       model: options?.model || this.config.defaultModel,

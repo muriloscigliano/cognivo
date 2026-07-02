@@ -79,13 +79,17 @@ export class OpenAiClient extends BaseAiClient {
   }
 
   /**
-   * Execute an AI intent
+   * Build the shared chat-completion request parameters.
+   *
+   * Used by both the non-streaming and streaming paths so the
+   * json_schema structured-output configuration can never drift
+   * between them.
    */
-  protected async executeIntent<T = unknown>(
+  private buildRequestParams<T = unknown>(
     intent: AiIntent,
     context: AiContext<T>,
     options?: AiRequestOptions
-  ): Promise<AiResult> {
+  ): OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming {
     // Build the prompt
     const userPrompt = buildPrompt(intent, context);
 
@@ -103,22 +107,35 @@ export class OpenAiClient extends BaseAiClient {
           { role: 'user' as const, content: userPrompt },
         ];
 
+    return {
+      model: options?.model || this.config.defaultModel,
+      messages,
+      response_format: {
+        type: 'json_schema',
+        json_schema: {
+          name: `${intent}_result`,
+          strict: true,
+          schema,
+        },
+      },
+      temperature: options?.temperature ?? this.config.defaultTemperature,
+      max_tokens: options?.maxTokens ?? this.config.defaultMaxTokens,
+    };
+  }
+
+  /**
+   * Execute an AI intent
+   */
+  protected async executeIntent<T = unknown>(
+    intent: AiIntent,
+    context: AiContext<T>,
+    options?: AiRequestOptions
+  ): Promise<AiResult> {
+    const params = this.buildRequestParams(intent, context, options);
+
     try {
       // Call OpenAI with structured outputs
-      const response = await this.client.chat.completions.create({
-        model: options?.model || this.config.defaultModel,
-        messages,
-        response_format: {
-          type: 'json_schema',
-          json_schema: {
-            name: `${intent}_result`,
-            strict: true,
-            schema,
-          },
-        },
-        temperature: options?.temperature ?? this.config.defaultTemperature,
-        max_tokens: options?.maxTokens ?? this.config.defaultMaxTokens,
-      });
+      const response = await this.client.chat.completions.create(params);
 
       // Extract and parse the result
       const content = response.choices[0]?.message?.content;
@@ -145,24 +162,14 @@ export class OpenAiClient extends BaseAiClient {
     context: AiContext<T>,
     options?: AiRequestOptions
   ): AsyncGenerator<Partial<AiResult>> {
-    const userPrompt = buildPrompt(intent, context);
-    const schema = schemas[intent];
-
-    if (!schema) {
-      throw new Error(`No schema defined for intent: ${intent}`);
-    }
-
-    const systemPrompt = options?.systemPrompt || SYSTEM_PROMPT;
+    // Reuse the exact same request parameters as the non-streaming path
+    // (including the json_schema response_format) so streamed generations
+    // keep structured-output schema enforcement.
+    const params = this.buildRequestParams(intent, context, options);
 
     const stream = await this.client.chat.completions.create({
-      model: options?.model || this.config.defaultModel,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
+      ...params,
       stream: true,
-      temperature: options?.temperature ?? this.config.defaultTemperature,
-      max_tokens: options?.maxTokens ?? this.config.defaultMaxTokens,
     });
 
     let buffer = '';

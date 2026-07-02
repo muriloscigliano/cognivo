@@ -229,6 +229,121 @@ describe('AnthropicClient', () => {
     });
   });
 
+  // --- prompt caching ---
+
+  describe('prompt caching', () => {
+    const mockToolUseResponse = {
+      content: [
+        { type: 'tool_use', id: 'toolu_123', name: 'explain_result', input: mockExplainResult },
+      ],
+    };
+
+    it('sets cache_control on the system block when enablePromptCache is true', async () => {
+      mockCreate.mockResolvedValueOnce(mockToolUseResponse);
+
+      const client = new AnthropicClient({ apiKey: 'test-key', enablePromptCache: true });
+      await client.runIntent(AiIntent.EXPLAIN, validContext);
+
+      const callArgs = mockCreate.mock.calls[0]![0];
+      expect(Array.isArray(callArgs.system)).toBe(true);
+      expect(callArgs.system).toHaveLength(1);
+      expect(callArgs.system[0].type).toBe('text');
+      expect(typeof callArgs.system[0].text).toBe('string');
+      expect(callArgs.system[0].text.length).toBeGreaterThan(0);
+      expect(callArgs.system[0].cache_control).toEqual({ type: 'ephemeral' });
+    });
+
+    it('does not set cache_control when enablePromptCache is omitted', async () => {
+      mockCreate.mockResolvedValueOnce(mockToolUseResponse);
+
+      const client = new AnthropicClient({ apiKey: 'test-key' });
+      await client.runIntent(AiIntent.EXPLAIN, validContext);
+
+      const callArgs = mockCreate.mock.calls[0]![0];
+      expect(typeof callArgs.system).toBe('string');
+      expect(JSON.stringify(callArgs)).not.toContain('cache_control');
+    });
+
+    it('does not set cache_control when enablePromptCache is false', async () => {
+      mockCreate.mockResolvedValueOnce(mockToolUseResponse);
+
+      const client = new AnthropicClient({ apiKey: 'test-key', enablePromptCache: false });
+      await client.runIntent(AiIntent.EXPLAIN, validContext);
+
+      const callArgs = mockCreate.mock.calls[0]![0];
+      expect(typeof callArgs.system).toBe('string');
+      expect(JSON.stringify(callArgs)).not.toContain('cache_control');
+    });
+
+    it('keeps cache_control on a custom systemPrompt override when caching is enabled', async () => {
+      mockCreate.mockResolvedValueOnce(mockToolUseResponse);
+
+      const client = new AnthropicClient({ apiKey: 'test-key', enablePromptCache: true });
+      await client.runIntent(AiIntent.EXPLAIN, validContext, {
+        systemPrompt: 'You are a custom assistant.',
+      });
+
+      const callArgs = mockCreate.mock.calls[0]![0];
+      expect(Array.isArray(callArgs.system)).toBe(true);
+      expect(callArgs.system[0].text).toBe('You are a custom assistant.');
+      expect(callArgs.system[0].cache_control).toEqual({ type: 'ephemeral' });
+    });
+
+    it('sends identical system blocks across requests (stable cache prefix)', async () => {
+      mockCreate.mockResolvedValue(mockToolUseResponse);
+
+      const client = new AnthropicClient({ apiKey: 'test-key', enablePromptCache: true });
+      await client.runIntent(AiIntent.EXPLAIN, validContext);
+      await client.runIntent(AiIntent.EXPLAIN, validContext);
+
+      const first = mockCreate.mock.calls[0]![0];
+      const second = mockCreate.mock.calls[1]![0];
+      expect(JSON.stringify(first.system)).toBe(JSON.stringify(second.system));
+    });
+
+    it('sets cache_control on streaming requests when caching is enabled', async () => {
+      const mockAsyncIterator = {
+        [Symbol.asyncIterator]: async function* () {
+          yield {
+            type: 'content_block_delta',
+            delta: { type: 'input_json_delta', partial_json: '{}' },
+          };
+        },
+      };
+      mockStream.mockReturnValueOnce(mockAsyncIterator);
+
+      const client = new AnthropicClient({ apiKey: 'test-key', enablePromptCache: true });
+      for await (const _ of client.streamIntent(AiIntent.EXPLAIN, validContext)) {
+        // drain
+      }
+
+      const callArgs = mockStream.mock.calls[0]![0];
+      expect(Array.isArray(callArgs.system)).toBe(true);
+      expect(callArgs.system[0].cache_control).toEqual({ type: 'ephemeral' });
+    });
+
+    it('does not set cache_control on streaming requests when caching is disabled', async () => {
+      const mockAsyncIterator = {
+        [Symbol.asyncIterator]: async function* () {
+          yield {
+            type: 'content_block_delta',
+            delta: { type: 'input_json_delta', partial_json: '{}' },
+          };
+        },
+      };
+      mockStream.mockReturnValueOnce(mockAsyncIterator);
+
+      const client = new AnthropicClient({ apiKey: 'test-key' });
+      for await (const _ of client.streamIntent(AiIntent.EXPLAIN, validContext)) {
+        // drain
+      }
+
+      const callArgs = mockStream.mock.calls[0]![0];
+      expect(typeof callArgs.system).toBe('string');
+      expect(JSON.stringify(callArgs)).not.toContain('cache_control');
+    });
+  });
+
   // --- runIntent error handling ---
 
   describe('runIntent error handling', () => {

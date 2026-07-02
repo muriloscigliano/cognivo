@@ -354,6 +354,57 @@ describe('OpenAiClient', () => {
       expect(callArgs.stream).toBe(true);
     });
 
+    it('includes the json_schema response_format in the streaming request', async () => {
+      const mockStream = {
+        [Symbol.asyncIterator]: async function* () {
+          yield { choices: [{ delta: { content: '{}' } }] };
+        },
+      };
+
+      mockCreate.mockResolvedValueOnce(mockStream);
+
+      const client = new OpenAiClient(defaultConfig);
+
+      for await (const _ of client.streamIntent(AiIntent.EXPLAIN, validContext)) {
+        // drain
+      }
+
+      const callArgs = mockCreate.mock.calls[0][0];
+      expect(callArgs.response_format.type).toBe('json_schema');
+      expect(callArgs.response_format.json_schema.name).toBe('explain_result');
+      expect(callArgs.response_format.json_schema.strict).toBe(true);
+      expect(callArgs.response_format.json_schema.schema).toBeDefined();
+    });
+
+    it('sends the same response_format as the non-streaming path', async () => {
+      // Non-streaming call
+      mockCreate.mockResolvedValueOnce({
+        choices: [{ message: { content: JSON.stringify(mockExplainResult) } }],
+      });
+
+      const client = new OpenAiClient(defaultConfig);
+      await client.runIntent(AiIntent.EXPLAIN, validContext);
+
+      // Streaming call
+      const mockStream = {
+        [Symbol.asyncIterator]: async function* () {
+          yield { choices: [{ delta: { content: '{}' } }] };
+        },
+      };
+      mockCreate.mockResolvedValueOnce(mockStream);
+
+      for await (const _ of client.streamIntent(AiIntent.EXPLAIN, validContext)) {
+        // drain
+      }
+
+      const nonStreamingArgs = mockCreate.mock.calls[0][0];
+      const streamingArgs = mockCreate.mock.calls[1][0];
+
+      expect(streamingArgs.response_format).toEqual(
+        nonStreamingArgs.response_format
+      );
+    });
+
     it('throws for an invalid intent', async () => {
       const client = new OpenAiClient(defaultConfig);
 

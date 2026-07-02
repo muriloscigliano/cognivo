@@ -42,11 +42,14 @@ export class AnthropicPromptCacheManager {
    *
    * Returns an array of content blocks suitable for Anthropic's
    * `system` parameter (which accepts either a string or array of blocks).
+   *
+   * @param overrideText - Optional per-request system prompt that replaces
+   *   the configured static prefix while keeping the cache breakpoint.
    */
-  buildSystemBlocks(): SystemBlock[] {
+  buildSystemBlocks(overrideText?: string): SystemBlock[] {
     const block: SystemBlock = {
       type: 'text' as const,
-      text: this.staticPrefix,
+      text: overrideText ?? this.staticPrefix,
     };
 
     if (this.config.enableCaching !== false) {
