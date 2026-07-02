@@ -278,12 +278,17 @@ export function resolveVarChain(startName, decls) {
  * - `hash`: short content hash of the entries, for cache invalidation.
  */
 export function buildManifest(parsed) {
-  // Token NAMES are union of names across all theme blocks. The base :root is
-  // authoritative for "what exists"; theme blocks can re-bind values for some
-  // names but not introduce new ones (CSS can introduce them, but we treat
-  // theme-only tokens as a manifest builder error).
-  const baseDecls = mergeBase(parsed);
-  const allNames = Object.keys(baseDecls).sort();
+  // Token NAMES are the union of names across all theme blocks. Theme-only
+  // tokens (defined under [data-theme="dark"] but not :root) are real tokens
+  // components rely on — dropping them made the manifest lie about ~30
+  // dark-only names. Each entry's `themes` keys record which themes bind it.
+  const nameSet = new Set(Object.keys(mergeBase(parsed)));
+  for (const selector of Object.keys(parsed.themes)) {
+    for (const name of Object.keys(parsed.themes[selector])) {
+      nameSet.add(name);
+    }
+  }
+  const allNames = [...nameSet].sort();
 
   const entries = [];
   for (const name of allNames) {

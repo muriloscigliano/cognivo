@@ -7,8 +7,13 @@
  * - Patches to cognivo-light.json and cognivo-dark.json (semantic overrides)
  *
  * Usage:
- *   node generate-from-palette.js [palette-path]
- *   Default: palettes/eco-dashboard.json
+ *   node generate-from-palette.cjs <palette-path>
+ *
+ * The palette path is REQUIRED. There is deliberately no default: this script
+ * overwrites the committed token source files, so running it bare with an
+ * implicit palette silently corrupts the design system (this bit us when the
+ * default pointed at eco-dashboard.json while the shipped tokens came from
+ * stockify-dark.json). Bare invocation refuses and lists available palettes.
  *
  * This is the "token generator system" — swap the palette JSON
  * and the entire design system regenerates.
@@ -17,7 +22,60 @@
 const fs = require('fs');
 const path = require('path');
 
-const palettePath = process.argv[2] || path.join(__dirname, 'palettes/eco-dashboard.json');
+const PALETTES_DIR = path.join(__dirname, 'palettes');
+
+/** The palette the committed tokens were generated from, recorded in the
+ *  $description of the generated semantic patch. Best-effort — hint only. */
+function detectCurrentPalette() {
+  try {
+    const gen = JSON.parse(
+      fs.readFileSync(path.join(__dirname, 'tier2-semantic/generated-palette.json'), 'utf8')
+    );
+    const m = /Auto-generated from (\S+\.json)/.exec(gen.$description || '');
+    return m ? m[1] : null;
+  } catch {
+    return null;
+  }
+}
+
+const paletteArg = process.argv[2];
+
+if (!paletteArg) {
+  const available = fs.existsSync(PALETTES_DIR)
+    ? fs.readdirSync(PALETTES_DIR).filter((f) => f.endsWith('.json')).sort()
+    : [];
+  const current = detectCurrentPalette();
+  console.error('❌ No palette specified — refusing to run.');
+  console.error('   This script overwrites committed token source files; an implicit');
+  console.error('   default palette would silently corrupt them.');
+  console.error('');
+  console.error('   Usage: node generate-from-palette.cjs <palette-path>');
+  console.error('          pnpm --filter @cognivo/tokens generate palettes/<name>.json');
+  console.error('');
+  if (available.length > 0) {
+    console.error('   Available palettes:');
+    for (const f of available) console.error(`     - palettes/${f}`);
+  }
+  if (current) {
+    console.error('');
+    console.error(`   Current committed tokens were generated from: palettes/${current}`);
+  }
+  process.exit(1);
+}
+
+const palettePath = path.isAbsolute(paletteArg)
+  ? paletteArg
+  : path.resolve(process.cwd(), paletteArg);
+
+if (!fs.existsSync(palettePath)) {
+  console.error(`❌ Palette not found: ${palettePath}`);
+  console.error(`   Looked relative to cwd. Available under ${path.relative(process.cwd(), PALETTES_DIR)}/:`);
+  for (const f of fs.readdirSync(PALETTES_DIR).filter((f) => f.endsWith('.json')).sort()) {
+    console.error(`     - palettes/${f}`);
+  }
+  process.exit(1);
+}
+
 const palette = JSON.parse(fs.readFileSync(palettePath, 'utf8'));
 
 console.log(`🎨 Generating tokens from: ${path.basename(palettePath)}`);
