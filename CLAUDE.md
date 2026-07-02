@@ -35,9 +35,9 @@ Competes with OpenUI (Thesys) but framework-agnostic and token-governed.
 - Vitest for unit tests, Playwright for e2e + visual regression
 - Astro (docs site) with custom component hot-reload plugin
 
-## Packages (16 total — 14 public + 2 private)
+## Packages (20 total — 19 public + 1 private)
 
-Public packages ship at **0.4.0** unless noted. Paths are under `packages/`.
+Public packages ship at **0.4.0** unless noted (tokens/components/adapter-vue are at 0.8.x to match the live npm registry). Paths are under `packages/`.
 
 ### Core components & tokens
 - `@cognivo/components` — 186 Lit web components (89 `cg-*` foundation, 91 `ai-*` AI-native, 6 `bias-*` wrappers). 115 test files, ~1,875 test cases.
@@ -62,6 +62,12 @@ Public packages ship at **0.4.0** unless noted. Paths are under `packages/`.
 - `@cognivo/mcp-server` — MCP server exposing Cognivo tools to Claude Code / Cursor / Windsurf. Binary: `cognivo-mcp`.
 - `@cognivo/eslint-plugin` (dir `eslint-plugin-cognivo`) — Enforces token + interaction conventions.
 - `@cognivo/claude-code-skill` — Claude Code skill for design-aware UI generation. **Private.**
+
+### Lens (pre-1.0 subsystem — ship-or-private decision pending)
+- `@cognivo/lens-core` (0.1.0) — Headless engine: scene-graph observer, classifier, rule engine, scorer, verifier, agent emitting `FixManifest`s.
+- `@cognivo/lens-pack-core` (0.2.0) — Foundational a11y + system-health rule pack. On by default.
+- `@cognivo/lens-pack-ethics` (0.1.0) — Dark-pattern + transparency rules.
+- `@cognivo/lens-ui` (0.1.0) — Visible surface: `<cg-lens>` web component with toolbar.
 
 ## Top-level Apps
 - `docs/` — Astro documentation site. Pages: `ai/`, `biases/`, `components/`, `core/`, `design-advisor/`, `frameworks/`, `accessibility/`, `packages/`, `patterns/`, `playground/`, `tokens/`. Uses custom `cognivoComponentReload()` Astro plugin that watches `packages/components/src` for instant hot-reload.
