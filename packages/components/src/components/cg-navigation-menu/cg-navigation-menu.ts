@@ -61,6 +61,10 @@ export class CgNavigationMenu extends LitElement {
     .trigger.open {
       background: var(--cg-color-action-tertiary-background-hover);
     }
+    /* Distinct open indicator: accent underline so open != hover. */
+    .trigger.open:not(:focus-visible) {
+      box-shadow: inset 0 calc(-1 * var(--cg-border-width-100)) 0 var(--cg-color-action-primary-border-default);
+    }
     .trigger:active { transform: scale(var(--cg-interaction-press-scale)); }
     .trigger:focus-visible {
       outline: none;
@@ -211,6 +215,11 @@ export class CgNavigationMenu extends LitElement {
     }
   }
 
+  private _onFocusOut(e: FocusEvent): void {
+    const target = e.relatedTarget as Node | null;
+    if (!target || !this.renderRoot.contains(target)) this._scheduleClose();
+  }
+
   private _selectLink(menu: NavMenuItem, link: NavMenuLink): void {
     this.dispatchEvent(new CustomEvent('cg-navigation-menu-select', {
       bubbles: true, composed: true,
@@ -221,16 +230,20 @@ export class CgNavigationMenu extends LitElement {
 
   override render() {
     return html`
-      <nav role="navigation" aria-label=${this.label} @mouseleave=${this._scheduleClose} @keydown=${this._onKeydown}>
+      <nav
+        role="navigation"
+        aria-label=${this.label}
+        @mouseleave=${this._scheduleClose}
+        @keydown=${this._onKeydown}
+        @focusout=${this._onFocusOut}
+      >
         ${this.items.map((menu, i) => html`
           <button
             class="trigger ${this._openIndex === i ? 'open' : ''}"
-            aria-haspopup="menu"
             aria-expanded=${this._openIndex === i ? 'true' : 'false'}
-            aria-controls="cg-navigation-menu-panel"
+            aria-controls=${this._openIndex === i ? 'cg-navigation-menu-panel' : nothing}
             @mouseenter=${() => this._scheduleOpen(i)}
-            @focus=${() => { this._openIndex = i; }}
-            @click=${() => { this._openIndex = this._openIndex === i ? -1 : i; }}
+            @click=${() => { this._clearTimers(); this._openIndex = this._openIndex === i ? -1 : i; }}
           >
             <span>${menu.label}</span>
             <span class="trigger-caret" aria-hidden="true">
@@ -244,7 +257,6 @@ export class CgNavigationMenu extends LitElement {
           <div
             id="cg-navigation-menu-panel"
             class="panel"
-            role="menu"
             style=${`--cg-nm-columns: ${this.columns};`}
             @mouseenter=${() => { this._clearTimers(); }}
             @mouseleave=${this._scheduleClose}
@@ -253,7 +265,7 @@ export class CgNavigationMenu extends LitElement {
               <div>
                 ${section.heading ? html`<h4 class="section-heading">${section.heading}</h4>` : nothing}
                 ${section.links.map(link => html`
-                  <button class="link" role="menuitem" @click=${() => this._selectLink(this.items[this._openIndex]!, link)}>
+                  <button class="link" @click=${() => this._selectLink(this.items[this._openIndex]!, link)}>
                     ${link.icon ? html`<span class="link-icon" aria-hidden="true" .innerHTML=${link.icon}></span>` : nothing}
                     <span class="link-title">${link.title}</span>
                     ${link.description ? html`<span class="link-desc">${link.description}</span>` : nothing}

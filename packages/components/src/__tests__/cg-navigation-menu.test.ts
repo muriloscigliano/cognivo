@@ -37,10 +37,17 @@ describe('cg-navigation-menu', () => {
     expect(triggers.length).toBe(2);
   });
 
-  it('triggers have aria-haspopup', async () => {
+  it('triggers expose disclosure semantics (expanded + controls when open)', async () => {
     await create();
-    const trigger = el.shadowRoot!.querySelector('.trigger')!;
-    expect(trigger.getAttribute('aria-haspopup')).toBe('menu');
+    const trigger = el.shadowRoot!.querySelector<HTMLButtonElement>('.trigger')!;
+    // Not an ARIA menu (no menu keyboard model) — plain disclosure buttons
+    expect(trigger.hasAttribute('aria-haspopup')).toBe(false);
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
+    expect(trigger.hasAttribute('aria-controls')).toBe(false);
+    trigger.click();
+    await el.updateComplete;
+    expect(trigger.getAttribute('aria-expanded')).toBe('true');
+    expect(trigger.getAttribute('aria-controls')).toBe('cg-navigation-menu-panel');
   });
 
   it('opens panel on click', async () => {

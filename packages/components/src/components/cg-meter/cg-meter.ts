@@ -44,7 +44,7 @@ export class CgMeter extends LitElement {
     /* ── Linear ── */
     .track {
       width: 100%;
-      background: var(--cg-color-surface-container-background);
+      background: var(--cg-color-loading-spinner-secondary);
       border-radius: var(--cg-component-meter-radius);
       overflow: hidden;
       position: relative;
@@ -80,7 +80,7 @@ export class CgMeter extends LitElement {
       transform: rotate(-90deg);
     }
     .circular .bg {
-      stroke: var(--cg-color-surface-container-background);
+      stroke: var(--cg-color-loading-spinner-secondary);
     }
     .circular .fg {
       transition: stroke-dashoffset var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
@@ -120,20 +120,16 @@ export class CgMeter extends LitElement {
     const { value, min, max } = this;
     const low = this.low ?? min;
     const high = this.high ?? max;
-    const optimum = this.optimum;
+    // Native <meter> defaults the optimum point to the midpoint of the range.
+    const optimum = this.optimum ?? (min + max) / 2;
 
-    // Inside safe zone
-    if (value >= low && value <= high) {
-      if (optimum == null) return 'ok';
-      // Optimum also in safe zone -> ok
-      if (optimum >= low && optimum <= high) return 'ok';
-      return 'warn';
-    }
-    // Outside safe zone
-    if (optimum == null) return 'bad';
-    // If optimum is in the opposite suboptimal region, current is "bad"
-    if ((value < low && optimum > high) || (value > high && optimum < low)) return 'bad';
-    return 'warn';
+    // Classify a point into a region: 0 = below low, 1 = safe zone, 2 = above high.
+    const region = (v: number): number => (v < low ? 0 : v > high ? 2 : 1);
+    const diff = Math.abs(region(value) - region(optimum));
+
+    if (diff === 0) return 'ok';
+    if (diff === 1) return 'warn';
+    return 'bad';
   }
 
   private _pct(): number {
@@ -146,6 +142,7 @@ export class CgMeter extends LitElement {
   override render() {
     const level = this._level();
     const pct = this._pct();
+    const clamped = Math.max(this.min, Math.min(this.max, this.value));
     const valueText = this.showValue ? `${Math.round(pct)}%` : '';
     const labelId = this.label ? 'cg-meter-label' : undefined;
 
@@ -161,12 +158,12 @@ export class CgMeter extends LitElement {
         ` : nothing}
         <div class="circular"
           role="meter"
-          aria-valuenow=${this.value}
+          aria-valuenow=${clamped}
           aria-valuemin=${this.min}
           aria-valuemax=${this.max}
+          aria-valuetext=${this.showValue ? valueText : nothing}
           aria-labelledby=${labelId ?? nothing}
           aria-label=${labelId ? nothing : (this.label || 'Meter')}
-          aria-disabled=${this.disabled ? 'true' : nothing}
         >
           ${svg`
             <svg viewBox="0 0 100 100">
@@ -194,12 +191,12 @@ export class CgMeter extends LitElement {
       ` : nothing}
       <div class="track"
         role="meter"
-        aria-valuenow=${this.value}
+        aria-valuenow=${clamped}
         aria-valuemin=${this.min}
         aria-valuemax=${this.max}
+        aria-valuetext=${this.showValue ? valueText : nothing}
         aria-labelledby=${labelId ?? nothing}
         aria-label=${labelId ? nothing : (this.label || 'Meter')}
-        aria-disabled=${this.disabled ? 'true' : nothing}
       >
         <div class="fill ${level}" style="width: ${pct}%"></div>
       </div>

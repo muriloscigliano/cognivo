@@ -31,7 +31,6 @@ import { FocusTrap } from '../../utils/focus-trap.js';
 export class CgModal extends LitElement {
   static override styles = [spinKeyframes, reducedMotion, css`
     :host {
-      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       display: contents;
       font-family: var(--cg-font-family-primary);
     }
@@ -113,7 +112,7 @@ export class CgModal extends LitElement {
     @media (prefers-reduced-motion: reduce) {
       .backdrop,
       .modal {
-        transition: opacity var(--cg-transition-duration-fast) ease;
+        transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       }
       .modal {
         transform: scale(1) !important;
@@ -150,7 +149,7 @@ export class CgModal extends LitElement {
       width: var(--cg-spacing-40);
       height: var(--cg-spacing-40);
       border-radius: var(--cg-border-radius-100);
-      background: var(--cg-color-action-tertiary-background-hover);
+      background: var(--cg-color-accent-background);
       color: var(--cg-color-accent-text);
       font-size: var(--cg-icon-size-200);
     }
@@ -176,7 +175,7 @@ export class CgModal extends LitElement {
       height: var(--cg-spacing-32);
       border: none;
       border-radius: var(--cg-border-radius-full);
-      background: var(--cg-color-action-tertiary-background-hover);
+      background: var(--cg-color-action-tertiary-background-default);
       color: var(--cg-color-surface-container-outlined);
       cursor: pointer;
       font-size: var(--cg-font-size-sm);
@@ -190,18 +189,19 @@ export class CgModal extends LitElement {
     }
 
     .close-btn:hover {
-      background: var(--cg-color-action-secondary-background-hover);
+      background: var(--cg-color-action-tertiary-background-hover);
       color: var(--cg-color-surface-container-text);
     }
 
     .close-btn:active {
+      background: var(--cg-color-action-tertiary-background-active);
       transform: scale(var(--cg-interaction-press-scale));
     }
 
     .close-btn:focus-visible {
       box-shadow:
-        0 0 0 2px var(--cg-color-focus-ring-offset),
-        0 0 0 calc(2px + 2px) var(--cg-color-focus-ring);
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
       outline: none;
     }
 
@@ -227,16 +227,6 @@ export class CgModal extends LitElement {
       align-items: center;
       justify-content: flex-end;
       gap: var(--cg-spacing-12);
-    }
-
-    .modal-footer:empty,
-    .modal-footer ::slotted(:empty) {
-      display: none;
-    }
-
-    /* Hidden state for footer slot check */
-    .footer-wrapper {
-      display: contents;
     }
 
     /* Rounded variants */
@@ -320,12 +310,19 @@ export class CgModal extends LitElement {
 
   override updated(changed: Map<string, unknown>) {
     if (changed.has('open')) {
+      // First render with open=false is NOT a close — don't fire a spurious
+      // cg-modal-close or clobber document.body.style.overflow on mount.
+      if (changed.get('open') === undefined && !this.open) return;
       if (this.open) {
         this._onOpen();
       } else {
         if (changed.get('open') === true) {
           this._closing = true;
-          setTimeout(() => { this._closing = false; }, 150);
+          // Clear when the exit animation actually ends; the timeout stays
+          // only as a reduced-motion / detached-node fallback.
+          const modal = this.shadowRoot?.querySelector('.modal');
+          modal?.addEventListener('animationend', () => { this._closing = false; }, { once: true });
+          setTimeout(() => { this._closing = false; }, 300);
         }
         this._onClose();
       }
@@ -360,6 +357,12 @@ export class CgModal extends LitElement {
     }
   }
 
+  /** The container covers the backdrop (higher z-index), so outside-clicks
+   *  land here — only dismiss when the click is on the container itself. */
+  private _handleContainerClick(e: MouseEvent) {
+    if (e.target === e.currentTarget) this._handleBackdropClick();
+  }
+
   private _requestClose() {
     this.open = false;
   }
@@ -373,10 +376,9 @@ export class CgModal extends LitElement {
     return html`
       <div
         class="backdrop ${this._closing ? 'closing' : ''}"
-        @click="${this._handleBackdropClick}"
         aria-hidden="true"
       ></div>
-      <div class="modal-container">
+      <div class="modal-container" @click="${this._handleContainerClick}">
         <div
           class="modal ${this._closing ? 'closing' : ''}"
           role="dialog"
@@ -393,7 +395,7 @@ export class CgModal extends LitElement {
                     <slot name="icon"><cg-icon name="${this.icon}" size="md"></cg-icon></slot>
                   </div>
                 ` : nothing}
-                <h2 class="modal-title" id="modal-title">${this.title}</h2>
+                ${this.title ? html`<h2 class="modal-title" id="modal-title">${this.title}</h2>` : nothing}
               </div>
               ${this.closable ? html`
                 <button
@@ -414,10 +416,10 @@ export class CgModal extends LitElement {
             </div>
           ` : nothing}
 
-          <div class="modal-body">
+          <div class="modal-body" aria-busy="${this.loading ? 'true' : nothing}">
             <slot></slot>
             ${this.loading ? html`
-              <div class="modal-loading-overlay" aria-busy="true" aria-label="Loading">
+              <div class="modal-loading-overlay" role="status" aria-live="polite">
                 <span class="modal-spinner"></span>
                 <span class="modal-loading-text">Loading...</span>
               </div>

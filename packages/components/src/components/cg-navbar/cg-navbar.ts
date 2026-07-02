@@ -46,7 +46,7 @@ export interface NavItem {
  * ```
  *
  * @slot brand - Brand area (leftmost). Logo + name.
- * @slot center - Optional center content (search, breadcrumbs). Hidden below mobileBreakpoint.
+ * @slot center - Optional center content (search, breadcrumbs). Hidden below 768px.
  * @slot end - Right region for actions, profile, theme toggle.
  * @slot mobile-menu - Optional override for the mobile panel content.
  *
@@ -97,8 +97,8 @@ export class CgNavbar extends LitElement {
     /* Variant: glass — translucent + blur */
     :host([variant="glass"]) nav {
       background: color-mix(in srgb, var(--cg-color-surface-base-background) 72%, transparent);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      backdrop-filter: saturate(180%) blur(var(--cg-blur-backdrop));
+      -webkit-backdrop-filter: saturate(180%) blur(var(--cg-blur-backdrop));
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-action-secondary-border-default);
     }
 
@@ -108,8 +108,8 @@ export class CgNavbar extends LitElement {
       height: calc(var(--cg-component-navbar-height) - 2 * var(--cg-component-navbar-floating-margin));
       padding: 0 var(--cg-spacing-20);
       background: color-mix(in srgb, var(--cg-color-surface-base-background) 80%, transparent);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      backdrop-filter: saturate(180%) blur(var(--cg-blur-backdrop));
+      -webkit-backdrop-filter: saturate(180%) blur(var(--cg-blur-backdrop));
       border: var(--cg-border-width-50) solid var(--cg-color-action-secondary-border-default);
       border-radius: var(--cg-border-radius-full);
       box-shadow: var(--cg-shadow-elevation-lg);
@@ -125,7 +125,7 @@ export class CgNavbar extends LitElement {
       gap: var(--cg-spacing-8);
       font-size: var(--cg-font-size-base);
       font-weight: var(--cg-font-weight-semibold);
-      letter-spacing: -0.01em;
+      letter-spacing: var(--cg-letter-spacing-tight);
       flex-shrink: 0;
       color: var(--cg-color-surface-base-text);
       text-decoration: none;
@@ -237,7 +237,7 @@ export class CgNavbar extends LitElement {
       border-radius: var(--cg-border-radius-full);
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-semibold);
-      letter-spacing: 0.02em;
+      letter-spacing: var(--cg-letter-spacing-wide);
     }
 
     .item-kbd {
@@ -318,10 +318,21 @@ export class CgNavbar extends LitElement {
       font-weight: var(--cg-font-weight-medium);
       text-decoration: none;
       border-radius: var(--cg-border-radius-100);
-      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition:
+        background var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       animation: itemIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) backwards;
     }
     .mobile-item:hover { background: var(--cg-color-action-tertiary-background-hover); }
+    .mobile-item:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
+    }
+    .mobile-item:active:not([aria-disabled="true"]) {
+      transform: scale(var(--cg-interaction-press-scale));
+    }
     .mobile-item[aria-selected="true"] {
       background: var(--cg-color-surface-container-background);
       box-shadow: var(--cg-shadow-elevation-sm);
@@ -382,6 +393,10 @@ export class CgNavbar extends LitElement {
   private _onKeydown = (e: KeyboardEvent): void => {
     if (e.key === 'Escape' && this.mobileOpen) {
       this.closeMobileMenu();
+      // The panel goes display:none — restore focus to the toggle so
+      // keyboard users aren't stranded on <body>.
+      this.updateComplete.then(() =>
+        this.renderRoot.querySelector<HTMLElement>('.menu-btn')?.focus());
     }
   };
 
@@ -485,11 +500,10 @@ export class CgNavbar extends LitElement {
     if (next !== enabledIdx) {
       const target = enabled[next];
       if (target) {
-        this._selectItem(target.it, e);
-        this.updateComplete.then(() => {
-          const items = this._itemsEl?.querySelectorAll<HTMLElement>('.item');
-          items?.[target.i]?.focus();
-        });
+        // Roving focus only — arrowing must not select/navigate. Activation
+        // stays on Enter/click via the anchor's native behavior.
+        const items = this._itemsEl?.querySelectorAll<HTMLElement>('.item');
+        items?.[target.i]?.focus();
       }
     }
   }
@@ -499,14 +513,14 @@ export class CgNavbar extends LitElement {
   private _renderItem(item: NavItem, idx: number, mobile = false) {
     const selected = item.value === this.active;
     const cls = mobile ? 'mobile-item' : 'item';
-    const styleVar = mobile ? `--idx:${idx};animation-delay:calc(${idx} * 50ms);` : '';
+    const styleVar = mobile ? `animation-delay:calc(${idx} * var(--cg-transition-duration-fast) / 2);` : '';
     return html`
       <a
         class=${cls}
         href=${item.href}
         target=${item.external ? '_blank' : nothing}
         rel=${item.external ? 'noopener noreferrer' : nothing}
-        role=${mobile ? 'menuitem' : 'tab'}
+        role=${mobile ? nothing : 'tab'}
         aria-selected=${selected ? 'true' : 'false'}
         aria-disabled=${item.disabled ? 'true' : 'false'}
         tabindex=${selected || mobile ? '0' : '-1'}
@@ -552,7 +566,7 @@ export class CgNavbar extends LitElement {
             }
           </button>
         </div>
-        <div id="cg-navbar-mobile-panel" class="mobile-panel" role="menu">
+        <div id="cg-navbar-mobile-panel" class="mobile-panel">
           <slot name="mobile-menu">
             ${hasItems ? this.items.map((item, idx) => this._renderItem(item, idx, true)) : nothing}
           </slot>

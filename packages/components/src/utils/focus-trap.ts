@@ -9,25 +9,57 @@ const FOCUSABLE_SELECTOR =
   'summary, details, iframe, object, embed';
 
 /**
- * Returns all visible, non-disabled, focusable elements within a root.
- * Walks both shadow DOM and light DOM.
+ * Returns all visible, non-disabled, focusable elements within a root, in
+ * composed tab order. Crosses shadow AND slot boundaries: querySelectorAll
+ * alone never sees slotted content, so a trap on a shadow container missed
+ * every slotted body input / footer button (cg-modal, cg-alert-dialog, …).
+ * A custom-element host whose shadow tree contains a focusable counts as a
+ * single focus stop (its internals manage their own focus).
  */
 export function getFocusableElements(root: HTMLElement | ShadowRoot): HTMLElement[] {
-  const shadowFocusable = root instanceof HTMLElement && root.shadowRoot
-    ? [...root.shadowRoot.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)]
-    : root instanceof ShadowRoot
-      ? [...root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)]
-      : [];
+  const out: HTMLElement[] = [];
+  const scope: ParentNode = root instanceof HTMLElement && root.shadowRoot ? root.shadowRoot : root;
 
-  const lightFocusable = root instanceof HTMLElement
-    ? [...root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)]
-    : [];
+  const visit = (el: Element): void => {
+    if (!(el instanceof HTMLElement)) return;
+    if (el instanceof HTMLSlotElement) {
+      for (const assigned of el.assignedElements({ flatten: true })) visit(assigned);
+      return;
+    }
+    if (el.matches(FOCUSABLE_SELECTOR)) {
+      out.push(el);
+    } else if (el.shadowRoot) {
+      if (el.shadowRoot.querySelector(FOCUSABLE_SELECTOR)) {
+        out.push(el);
+        return;
+      }
+      // Host with no focusable internals — its light children are slotted
+      // through it, so keep descending.
+    }
+    for (const child of Array.from(el.children)) visit(child);
+  };
 
-  return [...shadowFocusable, ...lightFocusable].filter(el => {
+  for (const child of Array.from(scope.children)) visit(child);
+
+  return out.filter(el => {
     if (el.closest('[hidden]')) return false;
-    if (el.offsetParent === null && el.tagName !== 'INPUT') return false;
+    if (el.offsetParent === null && el.tagName !== 'INPUT' && getComputedStyle(el).position !== 'fixed') return false;
     return true;
   });
+}
+
+/**
+ * True when `node` sits anywhere under `ancestor`, crossing shadow roots.
+ * Needed to match a delegated-focus target (e.g. the <button> inside a
+ * slotted cg-button) back to its host entry in the focusable list.
+ */
+export function deepContains(ancestor: Element, node: Node | null): boolean {
+  let el: Node | null = node;
+  while (el) {
+    if (el === ancestor) return true;
+    el = el instanceof ShadowRoot ? el.host : el.parentNode;
+  }
+  return false;
 }
 
 /**
@@ -128,15 +160,18 @@ export class FocusTrap {
 
     const first = focusable[0]!;
     const last = focusable[focusable.length - 1]!;
-    const active = getDeepActiveElement() as HTMLElement;
+    // Map the deep active element back to its entry in the focusable list —
+    // delegated focus lands INSIDE a host (e.g. cg-button's internal button).
+    const deep = getDeepActiveElement();
+    const active = deep ? focusable.find(f => f === deep || deepContains(f, deep)) ?? null : null;
 
     if (e.shiftKey) {
-      if (active === first || !focusable.includes(active)) {
+      if (active === null || active === first) {
         e.preventDefault();
         last.focus();
       }
     } else {
-      if (active === last || !focusable.includes(active)) {
+      if (active === null || active === last) {
         e.preventDefault();
         first.focus();
       }

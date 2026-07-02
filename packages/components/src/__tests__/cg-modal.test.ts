@@ -71,17 +71,18 @@ describe('cg-modal', () => {
 
   // ── Backdrop click ──
 
-  it('backdrop click closes modal when not persistent', async () => {
+  it('outside click (on the container) closes modal when not persistent', async () => {
     await create({ open: true, persistent: false });
-    const backdrop = el.shadowRoot!.querySelector('.backdrop') as HTMLElement;
-    backdrop.click();
+    // The container covers the backdrop, so outside-clicks land on it
+    const container = el.shadowRoot!.querySelector('.modal-container') as HTMLElement;
+    container.click();
     await el.updateComplete;
     expect(el.open).toBe(false);
   });
 
   it('persistent mode: backdrop click does NOT close', async () => {
     await create({ open: true, persistent: true });
-    const backdrop = el.shadowRoot!.querySelector('.backdrop') as HTMLElement;
+    const backdrop = el.shadowRoot!.querySelector('.modal-container') as HTMLElement;
     backdrop.click();
     await el.updateComplete;
     expect(el.open).toBe(true);

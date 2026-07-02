@@ -38,9 +38,9 @@ export class CgMetricCard extends LitElement {
     .card.clickable:active {
       transform: scale(var(--cg-interaction-press-scale));
     }
-    .card:focus-visible {
+    .card.clickable:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring-offset), 0 0 0 calc(var(--cg-border-width-100) * 2) var(--cg-color-focus-ring);
     }
 
     /* Value entrance animation */
@@ -151,9 +151,6 @@ export class CgMetricCard extends LitElement {
       flex: 1;
       border-radius: var(--cg-border-radius-50);
       min-width: var(--cg-spacing-4);
-      transition: height var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
-    }
-    .spark-bar {
       opacity: 0.4;
       transition: height var(--cg-transition-duration-slow) var(--cg-transition-easing-default), opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out);
     }
@@ -172,7 +169,7 @@ export class CgMetricCard extends LitElement {
     /* ── Loading skeleton ── */
     .skeleton .skel {
       border-radius: var(--cg-border-radius-50);
-      background: var(--cg-color-surface-cards-border);
+      background: var(--cg-color-action-secondary-background-hover);
       position: relative;
       overflow: hidden;
     }
@@ -255,13 +252,11 @@ export class CgMetricCard extends LitElement {
     }
   }
 
-  private _getSparkColor(value: number, max: number): string {
+  private _getSparkColor(): string {
     const sentiment = this._getSentiment();
-    const ratio = value / max;
-    const isHigh = ratio > 0.6;
-    if (sentiment === 'positive') return isHigh ? 'var(--cg-color-status-success-text-default)' : 'var(--cg-color-status-success-background-default)';
-    if (sentiment === 'negative') return isHigh ? 'var(--cg-color-status-error-text-default)' : 'var(--cg-color-status-error-background-default)';
-    return isHigh ? 'var(--cg-color-surface-container-outlined)' : 'var(--cg-color-action-secondary-background-default)';
+    if (sentiment === 'positive') return 'var(--cg-color-status-success-text-default)';
+    if (sentiment === 'negative') return 'var(--cg-color-status-error-text-default)';
+    return 'var(--cg-color-surface-container-outlined)';
   }
 
   private _isIconName(icon: string): boolean {
@@ -292,8 +287,8 @@ export class CgMetricCard extends LitElement {
     return html`
       <div
         class="card ${this.clickable ? 'clickable' : ''}"
-        role="figure"
-        aria-roledescription="metric"
+        role=${this.clickable ? 'button' : 'figure'}
+        aria-roledescription=${this.clickable ? nothing : 'metric'}
         aria-label="${ariaLabel}"
         tabindex="${this.clickable ? '0' : nothing}"
         @click=${this._handleClick}
@@ -326,7 +321,7 @@ export class CgMetricCard extends LitElement {
               const max = Math.max(...this.sparkline, 1);
               return this.sparkline.map(v => {
                 const h = Math.max((v / max) * 32, 2);
-                return html`<div class="spark-bar ${v / max > 0.6 ? 'highlight' : 'dim'}" style="height: ${h}px; background: ${this._getSparkColor(v, max)};"></div>`;
+                return html`<div class="spark-bar ${v / max > 0.6 ? 'highlight' : 'dim'}" style="height: ${h}px; background: ${this._getSparkColor()};"></div>`;
               });
             })()}
           </div>
