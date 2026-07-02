@@ -27,7 +27,10 @@ export default defineConfig({
   ],
   webServer: {
     command: 'pnpm --filter @cognivo/docs dev',
-    port: 4321,
+    // Poll by URL, not port: the astro dev server binds the IPv6 loopback
+    // (::1) only, and port-based polling checks 127.0.0.1 — which never
+    // answers, so Playwright spawns a second server that exits early.
+    url: 'http://localhost:4321',
     reuseExistingServer: !process.env.CI,
     timeout: 60000,
   },

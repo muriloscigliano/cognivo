@@ -63,15 +63,16 @@ test.describe('Component interactions — real browser only', () => {
         firstIsCancel,
         cancelText: (cancel?.textContent || '').trim(),
         confirmText: (confirm?.textContent || '').trim(),
-        confirmVariant: confirm?.getAttribute('variant') ?? '',
+        confirmType: confirm?.getAttribute('type') ?? '',
       };
     });
     // Primary safety assertion: cancel comes first in DOM order so default
     // focus-trap focus goes there rather than the destructive action.
     expect(snapshot.firstIsCancel).toBe(true);
     expect(snapshot.cancelText.toLowerCase()).toContain('cancel');
-    // And the destructive confirm must use the danger variant
-    expect(snapshot.confirmVariant).toBe('danger');
+    // And the destructive confirm must use cg-button's danger type
+    // (destructiveness is `type="danger"`, orthogonal to `variant`)
+    expect(snapshot.confirmType).toBe('danger');
   });
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -388,31 +389,35 @@ test.describe('Component interactions — real browser only', () => {
     }, { timeout: 5_000 });
     await page.waitForTimeout(100);
 
-    const initiallyExpanded = await el.evaluate((host) => {
+    // The docs example may ship its first parent node expanded or collapsed —
+    // don't assume; read the initial state and assert both toggle directions
+    // from wherever it starts.
+    const readExpanded = () => el.evaluate((host) => {
       const item = host.shadowRoot?.querySelector('[role="treeitem"][aria-expanded]');
       return item?.getAttribute('aria-expanded');
     });
-    // First item ("src") has children and starts collapsed → aria-expanded="false"
-    expect(initiallyExpanded).toBe('false');
+    const initiallyExpanded = await readExpanded();
+    expect(['true', 'false']).toContain(initiallyExpanded);
 
     await el.evaluate((host) => {
       const item = host.shadowRoot?.querySelector('[role="treeitem"][aria-expanded]') as HTMLElement;
       item?.focus();
     });
-    await page.keyboard.press('ArrowRight');
-    await page.waitForTimeout(80);
-    const expandedAfterRight = await el.evaluate((host) => {
-      const item = host.shadowRoot?.querySelector('[role="treeitem"][aria-expanded]');
-      return item?.getAttribute('aria-expanded');
-    });
-    expect(expandedAfterRight).toBe('true');
 
-    await page.keyboard.press('ArrowLeft');
-    await page.waitForTimeout(80);
-    const expandedAfterLeft = await el.evaluate((host) => {
-      const item = host.shadowRoot?.querySelector('[role="treeitem"][aria-expanded]');
-      return item?.getAttribute('aria-expanded');
-    });
-    expect(expandedAfterLeft).toBe('false');
+    const pressAndRead = async (key: string) => {
+      await page.keyboard.press(key);
+      await page.waitForTimeout(80);
+      return readExpanded();
+    };
+
+    if (initiallyExpanded === 'true') {
+      // Left collapses, then Right re-expands
+      expect(await pressAndRead('ArrowLeft')).toBe('false');
+      expect(await pressAndRead('ArrowRight')).toBe('true');
+    } else {
+      // Right expands, then Left collapses
+      expect(await pressAndRead('ArrowRight')).toBe('true');
+      expect(await pressAndRead('ArrowLeft')).toBe('false');
+    }
   });
 });
