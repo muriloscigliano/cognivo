@@ -107,6 +107,7 @@ for (const prop of comp.props) {
   if (t === 'boolean') {
     const sw = document.createElement('cg-switch') as HTMLElement & { checked: boolean };
     sw.id = controlId;
+    sw.setAttribute('aria-label', `Toggle ${prop.name}`);
     sw.checked = prop.default === 'true';
     sw.addEventListener('cg-change', (e) => {
       const detail = (e as CustomEvent<{ checked: boolean }>).detail;

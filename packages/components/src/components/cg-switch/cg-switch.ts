@@ -135,14 +135,6 @@ export class CgSwitch extends LitElement {
       to { transform: rotate(360deg); }
     }
 
-    /* Hidden native input */
-    input {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-      pointer-events: none;
-    }
 
     /* Label text */
     .label-text {
@@ -154,6 +146,9 @@ export class CgSwitch extends LitElement {
   `];
 
   @property() label = '';
+  /** Accessible name when no visible label is rendered (host aria-label is
+   *  forwarded to the internal switch, which carries the role). */
+  @property({ attribute: 'aria-label' }) override ariaLabel: string | null = null;
   @property({ type: Boolean }) checked = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
   @property({ type: Boolean, reflect: true }) error = false;
@@ -190,6 +185,7 @@ export class CgSwitch extends LitElement {
       <label
         tabindex=${this.disabled ? '-1' : '0'}
         role="switch"
+        aria-label=${!this.label && this.ariaLabel ? this.ariaLabel : nothing}
         aria-checked=${String(this.checked)}
         aria-disabled=${String(this.disabled)}
         aria-invalid=${this.error ? 'true' : 'false'}
@@ -197,10 +193,6 @@ export class CgSwitch extends LitElement {
         @click=${this._toggle}
         @keydown=${(e: KeyboardEvent) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); this._toggle(); } }}
       >
-        <input type="checkbox" .checked=${this.checked}
-          ?disabled=${this.disabled} tabindex="-1" aria-hidden="true"
-          @click=${(e: Event) => e.stopPropagation()} />
-
         ${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : html`
         <span class="track ${this.checked ? 'checked' : ''}">
           <span class="thumb"></span>

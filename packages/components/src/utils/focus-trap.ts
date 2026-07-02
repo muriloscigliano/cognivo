@@ -30,6 +30,20 @@ export function getFocusableElements(root: HTMLElement | ShadowRoot): HTMLElemen
   });
 }
 
+/**
+ * The actually-focused element, resolved through nested shadow roots.
+ * `document.activeElement` alone stops at the outermost shadow HOST, which
+ * never matches the trap's focusable list — comparisons against it silently
+ * disable Tab wrapping and let focus escape the trap.
+ */
+export function getDeepActiveElement(): HTMLElement | null {
+  let el: Element | null = document.activeElement;
+  while (el?.shadowRoot?.activeElement) {
+    el = el.shadowRoot.activeElement;
+  }
+  return el as HTMLElement | null;
+}
+
 export interface FocusTrapOptions {
   /** Element to focus first when activated. Defaults to first focusable element. */
   initialFocus?: HTMLElement | null | undefined;
@@ -114,7 +128,7 @@ export class FocusTrap {
 
     const first = focusable[0]!;
     const last = focusable[focusable.length - 1]!;
-    const active = (this._root.shadowRoot?.activeElement as HTMLElement) || (document.activeElement as HTMLElement);
+    const active = getDeepActiveElement() as HTMLElement;
 
     if (e.shiftKey) {
       if (active === first || !focusable.includes(active)) {
@@ -122,7 +136,7 @@ export class FocusTrap {
         last.focus();
       }
     } else {
-      if (active === last) {
+      if (active === last || !focusable.includes(active)) {
         e.preventDefault();
         first.focus();
       }

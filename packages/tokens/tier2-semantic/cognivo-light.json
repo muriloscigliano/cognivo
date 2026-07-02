@@ -1775,7 +1775,7 @@
       },
       "muted": {
         "$type": "color",
-        "$value": "{gray.500}"
+        "$value": "{gray.400}"
       },
       "keyword": {
         "$type": "color",
@@ -1787,7 +1787,7 @@
       },
       "comment": {
         "$type": "color",
-        "$value": "{gray.600}"
+        "$value": "{gray.500}"
       },
       "number": {
         "$type": "color",

@@ -116,7 +116,7 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
 
   <!-- Mobile drawer -->
   <div class="drawer-backdrop" id="drawer-backdrop" aria-hidden="true"></div>
-  <aside class="drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+  <aside class="drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true" inert>
     <div class="drawer-head">
       <a href="/" class="logo">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7"/></svg>
@@ -293,6 +293,7 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
         drawer.classList.add('open');
         backdrop.classList.add('open');
         drawer.setAttribute('aria-hidden', 'false');
+        drawer.removeAttribute('inert');
         btn.setAttribute('aria-expanded', 'true');
         document.body.style.overflow = 'hidden';
       };
@@ -300,6 +301,7 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
         drawer.classList.remove('open');
         backdrop.classList.remove('open');
         drawer.setAttribute('aria-hidden', 'true');
+        drawer.setAttribute('inert', '');
         btn.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
       };
