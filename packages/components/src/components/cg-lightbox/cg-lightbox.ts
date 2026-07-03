@@ -58,7 +58,7 @@ export class CgLightbox extends LitElement {
       max-height: 80vh;
       object-fit: contain;
       border-radius: var(--cg-border-radius-150);
-      box-shadow: var(--cg-shadow-lg);
+      box-shadow: var(--cg-shadow-elevation-lg);
     }
 
     figcaption {
