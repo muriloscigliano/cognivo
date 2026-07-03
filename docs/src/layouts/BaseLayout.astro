@@ -168,6 +168,21 @@ const { title, description = 'AI-native component library with cognitive psychol
     import '@cognivo/tokens/dist/index.css';
     // Exposed for runtime debugging + as a side-effect anchor (see note above).
     (globalThis as { __cognivo?: unknown }).__cognivo = cognivoComponents;
+
+    // ── DEV-ONLY: force a TRUE hard reload on component edits ──────────────────
+    // Custom elements register once per JS realm via customElements.define().
+    // Astro's <ClientRouter> (View Transitions) keeps the realm alive across
+    // navigations and Vite's soft `full-reload`, so a re-imported component's
+    // define() silently no-ops → the page shows STALE element behavior until a
+    // manual hard refresh. Our Vite plugin emits a dedicated `cognivo:reload`
+    // event on any component-source change; here we answer it with a real
+    // location.reload(), which tears down the realm and re-registers the fresh
+    // classes. No effect in production (import.meta.hot is undefined).
+    if (import.meta.hot) {
+      import.meta.hot.on('cognivo:reload', () => {
+        window.location.reload();
+      });
+    }
   </script>
 </body>
 </html>
