@@ -179,36 +179,52 @@ describe('token resolution — performance microbenchmark', () => {
     document.body.innerHTML = '';
   });
 
-  it('scans a 1000-node tree in well under the per-scan budget', { timeout: 30_000 }, () => {
-    // Spec §7.1 sets evaluate() at 50ms p95 on a 5k-node page; scan()
-    // should be a fraction of that. We use 1000 nodes here because
-    // happy-dom is slower per-node than a real browser, so this gives a
-    // conservative ceiling on real-world perf without requiring jsdom.
-    const sb: string[] = [];
-    for (let i = 0; i < 1000; i++) {
-      // Mix tier-1 hits, off-grid, and untokenized to exercise both code paths.
-      const color = i % 3 === 0 ? '#71717a' : i % 3 === 1 ? '#abcdef' : 'inherit';
-      sb.push(`<div style="color: ${color}; padding-top: 8px;">x</div>`);
-    }
-    document.body.innerHTML = sb.join('');
+  it('scans in roughly linear time — no O(N²) blow-up', { timeout: 30_000 }, () => {
+    // This test exists to catch a catastrophic complexity regression, NOT to
+    // enforce production perf in the test environment. An absolute wall-clock
+    // ceiling is unreliable on shared CI runners (parallel load skews timing),
+    // so we assert on the SCALING RATIO instead: scan() should be ~linear, so
+    // 10× the nodes should cost on the order of 10× the time, not ~100× (which
+    // is what an accidental O(N²) would produce). Ratios cancel out absolute
+    // runner speed, making this deterministic regardless of machine.
+    const buildTree = (n: number) => {
+      const sb: string[] = [];
+      for (let i = 0; i < n; i++) {
+        // Mix tier-1 hits, off-grid, and untokenized to exercise both code paths.
+        const color = i % 3 === 0 ? '#71717a' : i % 3 === 1 ? '#abcdef' : 'inherit';
+        sb.push(`<div style="color: ${color}; padding-top: 8px;">x</div>`);
+      }
+      return sb.join('');
+    };
 
-    const runs = 10;
-    const samples: number[] = [];
-    for (let i = 0; i < runs; i++) {
-      const t0 = performance.now();
+    const median = (fn: () => void, runs = 7): number => {
+      const samples: number[] = [];
+      for (let i = 0; i < runs; i++) {
+        const t0 = performance.now();
+        fn();
+        samples.push(performance.now() - t0);
+      }
+      samples.sort((a, b) => a - b);
+      return samples[Math.floor(samples.length / 2)]!;
+    };
+
+    document.body.innerHTML = buildTree(100);
+    const small = median(() => {
       const graph = scan(document.body);
-      // Force token-resolution to actually run on every node.
-      const total = graph.nodes.reduce((acc, n) => acc + n.tokenUsage.length, 0);
-      expect(total).toBeGreaterThan(0);
-      samples.push(performance.now() - t0);
-    }
-    samples.sort((a, b) => a - b);
-    const p95 = samples[Math.floor(samples.length * 0.95)] ?? samples[samples.length - 1]!;
-    // Generous 1s ceiling — happy-dom is slow at getComputedStyle and shared CI
-    // runners are slower still. Real browsers will be ~10x faster. The point of
-    // the assertion is to catch a catastrophic regression (e.g. an O(N²) bug),
-    // not to enforce production perf in the test environment, so the ceiling is
-    // deliberately loose to avoid runner-dependent flakiness.
-    expect(p95).toBeLessThan(1000);
+      expect(graph.nodes.reduce((acc, n) => acc + n.tokenUsage.length, 0)).toBeGreaterThan(0);
+    });
+
+    document.body.innerHTML = buildTree(1000);
+    const large = median(() => {
+      const graph = scan(document.body);
+      expect(graph.nodes.reduce((acc, n) => acc + n.tokenUsage.length, 0)).toBeGreaterThan(0);
+    });
+
+    // 10× the input. Linear → ratio ≈ 10; O(N²) → ratio ≈ 100. Allow a very
+    // generous 40× to absorb fixed-cost overhead and timer noise on tiny
+    // durations while still catching a genuine quadratic regression.
+    // Guard against a near-zero `small` (timer granularity) inflating the ratio.
+    const ratio = large / Math.max(small, 0.5);
+    expect(ratio).toBeLessThan(40);
   });
 });
