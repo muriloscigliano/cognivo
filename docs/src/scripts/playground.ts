@@ -1091,6 +1091,56 @@ console.log(message);`;
   if (tag === 'cg-meter') { e.value = 72; e.low = 20; e.high = 80; e.optimum = 50; e.label = 'CPU usage'; e.showValue = true; liveElement.style.maxWidth = '320px'; }
   if (tag === 'cg-date-range-picker') { e.label = 'Travel dates'; e.from = '2026-04-01'; e.to = '2026-04-10'; liveElement.style.maxWidth = '400px'; }
 
+  // ── Astryx-parity gap-fill ──
+  if (tag === 'cg-toolbar') {
+    e.label = 'Text formatting';
+    liveElement.innerHTML = '<cg-button variant="ghost" size="sm">Bold</cg-button><cg-button variant="ghost" size="sm">Italic</cg-button><cg-button variant="ghost" size="sm">Underline</cg-button><cg-separator orientation="vertical"></cg-separator><cg-button variant="ghost" size="sm">Link</cg-button><cg-button variant="ghost" size="sm">Code</cg-button>';
+  }
+  if (tag === 'cg-grid') {
+    e.columns = 3; e.gap = 'md';
+    liveElement.style.width = '100%'; liveElement.style.maxWidth = '520px';
+    liveElement.innerHTML = Array.from({ length: 6 }, (_, i) => `<cg-card style="padding:16px;text-align:center;">${i + 1}</cg-card>`).join('');
+  }
+  if (tag === 'cg-center') {
+    e.full = true; e.gap = 'sm';
+    liveElement.style.minHeight = '180px'; liveElement.style.width = '100%';
+    liveElement.style.border = '1px dashed var(--cg-color-surface-base-divider)';
+    liveElement.style.borderRadius = '8px';
+    liveElement.innerHTML = '<cg-text as="h4">Centered content</cg-text><cg-button variant="primary" size="sm">Get started</cg-button>';
+  }
+  if (tag === 'cg-status-dot') { e.status = 'online'; e.label = 'Online'; e.pulse = true; }
+  if (tag === 'cg-timestamp') { e.datetime = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(); e.format = 'relative'; e.live = true; }
+  if (tag === 'cg-blockquote') {
+    e.variant = 'accent';
+    liveElement.style.maxWidth = '520px';
+    liveElement.innerHTML = 'Design tokens are the contract between design and code — every value earns its place in the system.<span slot="footer">— Cognivo design principles</span>';
+  }
+  if (tag === 'cg-thumbnail') { e.src = 'https://i.pravatar.cc/120?img=12'; e.alt = 'Preview'; e.size = 'lg'; e.selectable = true; }
+  if (tag === 'cg-overflow-list') {
+    e.moreLabel = 'More actions';
+    liveElement.style.maxWidth = '320px'; liveElement.style.width = '100%';
+    liveElement.innerHTML = ['Cut', 'Copy', 'Paste', 'Delete', 'Duplicate', 'Rename'].map(l => `<cg-button variant="secondary" size="sm">${l}</cg-button>`).join('');
+  }
+  if (tag === 'cg-lightbox') {
+    e.images = [
+      { src: 'https://picsum.photos/id/1015/900/600', alt: 'River', caption: 'A river in the mountains' },
+      { src: 'https://picsum.photos/id/1016/900/600', alt: 'Canyon', caption: 'Desert canyon' },
+      { src: 'https://picsum.photos/id/1018/900/600', alt: 'Forest', caption: 'Misty forest' },
+    ];
+    // Render an opener button next to the (initially closed) lightbox so the playground is interactive.
+    const opener = document.createElement('cg-button');
+    opener.setAttribute('variant', 'primary');
+    opener.textContent = 'Open lightbox';
+    opener.addEventListener('click', () => { e.open = true; });
+    liveElement.parentElement?.insertBefore(opener, liveElement);
+  }
+  if (tag === 'cg-app-shell') {
+    liveElement.style.height = '280px'; liveElement.style.width = '100%';
+    liveElement.style.border = '1px solid var(--cg-color-surface-base-divider)';
+    liveElement.style.borderRadius = '8px'; liveElement.style.overflow = 'hidden';
+    liveElement.innerHTML = '<div slot="header" style="display:flex;align-items:center;padding:0 16px;font-weight:600;">Dashboard</div><div slot="sidebar" style="padding:12px;"><cg-stack gap="xs"><cg-text>Overview</cg-text><cg-text>Reports</cg-text><cg-text>Settings</cg-text></cg-stack></div><div style="padding:16px;"><cg-text>Main content area — toggle the sidebar with the collapse control.</cg-text></div><div slot="footer" style="padding:8px 16px;"><cg-text size="sm" color="secondary">© Cognivo</cg-text></div>';
+  }
+
   // ── Bias Wrappers (Cognivo-defining composable behavioral primitives) ──
   if (tag === 'bias-anchoring') { e.anchor = '$199'; e.current = '$99'; e.label = 'Save 50%'; e.variant = 'emphasized'; }
   if (tag === 'bias-scarcity') { e.type = 'stock'; e.remaining = 3; e.threshold = 10; e.pulse = true; }

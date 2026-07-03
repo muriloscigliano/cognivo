@@ -27,7 +27,7 @@ export class CgBlockquote extends LitElement {
     blockquote {
       margin: 0;
       padding: var(--cg-spacing-12) var(--cg-spacing-16);
-      border-left: var(--cg-spacing-4) solid var(--cg-color-surface-cards-border);
+      border-left: var(--cg-border-width-300) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-100);
       color: inherit;
       font-style: italic;

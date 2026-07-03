@@ -53,6 +53,7 @@ export class CgCenter extends LitElement {
     }
 
     /* Gap — same scale as cg-stack */
+    :host([gap="none"]) .content { gap: 0; }
     :host([gap="xs"]) .content { gap: var(--cg-spacing-4); }
     :host([gap="sm"]) .content { gap: var(--cg-spacing-8); }
     :host([gap="md"]) .content { gap: var(--cg-spacing-16); }

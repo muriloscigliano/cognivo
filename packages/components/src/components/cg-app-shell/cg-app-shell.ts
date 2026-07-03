@@ -117,7 +117,8 @@ export class CgAppShell extends LitElement {
         inset-inline-start: 0;
         width: var(--_cg-shell-sidebar-w);
         z-index: var(--cg-z-index-300);
-        box-shadow: var(--cg-shadow-lg);
+        box-shadow: var(--cg-shadow-elevation-xl);
+        transition: transform var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
       }
       :host([sidebar-position="end"]) aside {
         inset-inline-start: auto;

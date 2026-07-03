@@ -62,7 +62,7 @@ export class CgStatusDot extends LitElement {
       inset: 0;
       border-radius: var(--cg-border-radius-full);
       background: inherit;
-      animation: cg-dot-pulse var(--cg-transition-duration-slow) var(--cg-transition-easing-default) infinite;
+      animation: cg-dot-pulse var(--cg-ai-effect-shimmer-duration) var(--cg-transition-easing-default) infinite;
     }
 
     @keyframes cg-dot-pulse {

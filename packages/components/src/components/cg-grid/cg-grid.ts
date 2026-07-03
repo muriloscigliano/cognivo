@@ -28,7 +28,6 @@ export class CgGrid extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
     :host {
       display: grid;
-      gap: var(--cg-spacing-16);
       grid-template-columns: repeat(var(--_cg-grid-columns, 1), minmax(0, 1fr));
     }
 

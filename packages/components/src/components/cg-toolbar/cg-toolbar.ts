@@ -30,7 +30,6 @@ export class CgToolbar extends LitElement {
       background: var(--cg-color-surface-cards-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-component-toolbar-radius);
-      font-family: var(--cg-font-family-primary);
     }
 
     /* ── Orientation ── */
@@ -151,10 +150,12 @@ export class CgToolbar extends LitElement {
     items[target]?.focus();
   };
 
-  /** Move focus to the current roving item. */
+  /** Move focus to the current roving item (or the first focusable item). */
   override focus(): void {
     const items = this._focusable();
-    items[this._rovingIndex]?.focus();
+    if (items.length === 0) return;
+    const index = this._rovingIndex < items.length ? this._rovingIndex : 0;
+    items[index]?.focus();
   }
 
   override render() {
