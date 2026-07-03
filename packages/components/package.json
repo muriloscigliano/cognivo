@@ -1,6 +1,6 @@
 {
   "name": "@cognivo/components",
-  "version": "0.8.0",
+  "version": "0.8.2",
   "description": "166 AI-native and foundation Web Components powered by Lit, cognitive science, and design tokens.",
   "type": "module",
   "main": "./dist/index.js",
@@ -52,7 +52,7 @@
   },
   "scripts": {
     "build": "vite build && vite build --mode iife",
-    "prepublishOnly": "pnpm build",
+    "prepublishOnly": "node ../../scripts/guard-pnpm-publish.mjs && pnpm build",
     "type-check": "tsc --noEmit",
     "dev": "vite build --watch",
     "test": "vitest run",

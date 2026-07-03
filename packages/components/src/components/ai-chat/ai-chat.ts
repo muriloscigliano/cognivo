@@ -220,6 +220,12 @@ export class AiChat extends LitElement {
     .send-btn:hover:not(:disabled) {
       background: var(--cg-color-action-primary-background-hover);
     }
+    /* Themeable disabled fill instead of dimming the action color to an unreadable smudge. */
+    .send-btn:disabled {
+      opacity: 1;
+      background: var(--cg-color-action-primary-background-disable);
+      color: var(--cg-color-action-primary-text-disable);
+    }
 
     .mic-btn {
       background: transparent;

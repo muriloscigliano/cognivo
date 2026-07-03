@@ -98,7 +98,21 @@ export class CgSplitButton extends LitElement {
       outline: none;
       z-index: 1;
     }
-    .group > button:disabled { opacity: 0.5; pointer-events: none; }
+    /* Themeable per-variant disabled colors (scoped with :host to win over variant rules). */
+    .group > button:disabled { pointer-events: none; }
+    :host([variant="primary"]) .group > button:disabled,
+    :host([type="danger"][variant="primary"]) .group > button:disabled {
+      background: var(--cg-color-action-primary-background-disable);
+      color: var(--cg-color-action-primary-text-disable);
+    }
+    :host([variant="secondary"]) .group > button:disabled {
+      background: var(--cg-color-action-secondary-background-disable);
+      color: var(--cg-color-action-secondary-text-disable);
+    }
+    :host([variant="tertiary"]) .group > button:disabled {
+      background: var(--cg-color-action-tertiary-background-disable);
+      color: var(--cg-color-action-tertiary-text-disable);
+    }
 
     /* Sizes — scoped to .group. */
     :host([size="sm"]) .group > button { height: var(--cg-component-button-height-sm); padding: 0 var(--cg-spacing-12); font-size: var(--cg-font-size-xs); }

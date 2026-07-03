@@ -223,4 +223,39 @@ describe('cg-button', () => {
     await el.updateComplete;
     expect(el.getAttribute('variant')).toBe('secondary');
   });
+
+  // ── Themeable disabled state (regression: no opacity smudge) ──
+
+  function cssText(): string {
+    const sheets = el.shadowRoot!.adoptedStyleSheets ?? [];
+    return sheets
+      .flatMap(sheet => {
+        try {
+          return [...sheet.cssRules].map(r => r.cssText);
+        } catch {
+          return [];
+        }
+      })
+      .join('\n');
+  }
+
+  it('exposes part="button" so consumers can theme the button', async () => {
+    await create();
+    const btn = el.shadowRoot!.querySelector('button')!;
+    expect(btn.getAttribute('part')).toBe('button');
+  });
+
+  it('disabled state uses themeable action-disable tokens per variant, not opacity dimming', async () => {
+    await create({ disabled: true });
+    const css = cssText();
+    // The disabled color must come from the semantic disable tokens (themeable on a re-pointed brand)…
+    expect(css).toContain('--cg-color-action-primary-background-disable');
+    expect(css).toContain('--cg-color-action-secondary-background-disable');
+    expect(css).toContain('--cg-color-action-tertiary-background-disable');
+    // …and the button:disabled rule must not fall back to fractional opacity (the smudge bug).
+    const disabledRule = cssText()
+      .split('\n')
+      .find(rule => /button:disabled\b/.test(rule) && !/:not\(:disabled\)/.test(rule)) ?? '';
+    expect(disabledRule).not.toMatch(/opacity:\s*0?\.\d/);
+  });
 });

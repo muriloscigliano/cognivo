@@ -66,13 +66,14 @@ export class AiValidationChecklist extends LitElement {
       cursor: pointer;
       transition: filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .run-btn:hover { filter: brightness(0.9); }
+    .run-btn:hover:not(:disabled) { filter: brightness(0.9); }
     .run-btn:focus-visible {
       outline: none;
       box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
     .run-btn:disabled {
-      opacity: 0.5;
+      background: var(--cg-color-action-primary-background-disable);
+      color: var(--cg-color-action-primary-text-disable);
       cursor: not-allowed;
     }
 

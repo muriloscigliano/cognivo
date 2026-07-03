@@ -149,6 +149,11 @@ export class AiErrorBoundary extends LitElement {
       color: var(--cg-color-action-primary-text-default);
     }
     .retry-btn:hover:not(:disabled) { filter: brightness(1.1); }
+    .retry-btn:disabled {
+      opacity: 1;
+      background: var(--cg-color-action-primary-background-disable);
+      color: var(--cg-color-action-primary-text-disable);
+    }
 
     .dismiss-btn {
       background: var(--cg-color-surface-container-background);
