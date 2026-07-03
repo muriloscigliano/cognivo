@@ -24,7 +24,7 @@ export class CgTimestamp extends LitElement {
   static override styles = [hostBase, css`
     :host { display: inline; font-family: var(--cg-font-family-primary); }
     time { color: inherit; white-space: nowrap; }
-    :host([muted]) time { color: var(--cg-color-surface-base-icon); }
+    :host([muted]) time { color: var(--cg-color-surface-container-outlined); }
   `];
 
   @property({ reflect: true }) datetime = '';
