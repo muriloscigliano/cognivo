@@ -1,5 +1,5 @@
 /**
- * @cognivo/components/foundation — all 87 foundation (cg-*) components.
+ * @cognivo/components/foundation — all 97 foundation (cg-*) components.
  *
  * Importing this barrel side-effect-registers every cg-* custom element and
  * re-exports their classes + types. It does NOT include any ai-* components;
@@ -119,3 +119,15 @@ export * from './components/cg-avatar/cg-avatar.js';
 export * from './components/cg-empty-state/cg-empty-state.js';
 export * from './components/cg-meter/cg-meter.js';
 export * from './components/cg-date-range-picker/cg-date-range-picker.js';
+
+// ── Astryx-parity gap-fill ──────────────────────────────────────────────────
+export * from './components/cg-toolbar/cg-toolbar.js';
+export * from './components/cg-grid/cg-grid.js';
+export * from './components/cg-center/cg-center.js';
+export * from './components/cg-status-dot/cg-status-dot.js';
+export * from './components/cg-timestamp/cg-timestamp.js';
+export * from './components/cg-blockquote/cg-blockquote.js';
+export * from './components/cg-thumbnail/cg-thumbnail.js';
+export * from './components/cg-overflow-list/cg-overflow-list.js';
+export * from './components/cg-lightbox/cg-lightbox.js';
+export * from './components/cg-app-shell/cg-app-shell.js';
