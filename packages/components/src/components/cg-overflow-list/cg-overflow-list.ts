@@ -1,5 +1,5 @@
 import { LitElement, html, css, svg } from 'lit';
-import { customElement, property, state, query, queryAssignedElements } from 'lit/decorators.js';
+import { customElement, property, state, query, queryAll, queryAssignedElements } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, focusRingDual } from '../../styles/index.js';
 
 /**
@@ -111,6 +111,7 @@ export class CgOverflowList extends LitElement {
   @query('.row') private _rowEl!: HTMLElement;
   @query('.more') private _moreEl?: HTMLElement;
   @queryAssignedElements({ flatten: true }) private _items!: HTMLElement[];
+  @queryAll('.menu-item') private _menuItemEls!: NodeListOf<HTMLButtonElement>;
 
   private _resizeObserver: ResizeObserver | undefined;
 
@@ -195,10 +196,57 @@ export class CgOverflowList extends LitElement {
 
   private _toggleMenu(): void {
     this._menuOpen = !this._menuOpen;
+    if (this._menuOpen) {
+      this.updateComplete.then(() => this._focusMenuItem(0));
+    }
+  }
+
+  private _closeMenu(returnFocus = true): void {
+    if (!this._menuOpen) return;
+    this._menuOpen = false;
+    if (returnFocus) this.updateComplete.then(() => this._moreEl?.focus());
+  }
+
+  private _focusMenuItem(index: number): void {
+    const items = this._menuItemEls;
+    if (!items.length) return;
+    const clamped = (index + items.length) % items.length;
+    items[clamped]?.focus();
+  }
+
+  private _currentMenuIndex(): number {
+    const items = Array.from(this._menuItemEls);
+    return items.findIndex((el) => el === this.shadowRoot?.activeElement);
+  }
+
+  /** Keyboard on the more-button: Arrow keys open the menu. */
+  private _onMoreKeydown(e: KeyboardEvent): void {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!this._menuOpen) {
+        this._menuOpen = true;
+        this.updateComplete.then(() => this._focusMenuItem(e.key === 'ArrowUp' ? -1 : 0));
+      }
+    } else if (e.key === 'Escape') {
+      this._closeMenu();
+    }
+  }
+
+  /** Roving keyboard within the open menu. */
+  private _onMenuKeydown(e: KeyboardEvent): void {
+    switch (e.key) {
+      case 'ArrowDown': e.preventDefault(); this._focusMenuItem(this._currentMenuIndex() + 1); break;
+      case 'ArrowUp': e.preventDefault(); this._focusMenuItem(this._currentMenuIndex() - 1); break;
+      case 'Home': e.preventDefault(); this._focusMenuItem(0); break;
+      case 'End': e.preventDefault(); this._focusMenuItem(-1); break;
+      case 'Escape': e.preventDefault(); this._closeMenu(); break;
+      case 'Tab': this._closeMenu(false); break;
+      default: break;
+    }
   }
 
   private _selectHidden(index: number): void {
-    this._menuOpen = false;
+    this._closeMenu();
     this.dispatchEvent(new CustomEvent('cg-overflow-select', {
       detail: { index },
       bubbles: true,
@@ -225,15 +273,16 @@ export class CgOverflowList extends LitElement {
             aria-expanded=${this._menuOpen ? 'true' : 'false'}
             aria-label=${this.moreLabel}
             @click=${this._toggleMenu}
+            @keydown=${this._onMoreKeydown}
           >
             <slot name="more">
               ${svg`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/></svg>`}
             </slot>
           </button>
-          <ul class="menu" role="menu" ?hidden=${!this._menuOpen}>
+          <ul class="menu" role="menu" ?hidden=${!this._menuOpen} @keydown=${this._onMenuKeydown}>
             ${this._hiddenIndices.map((i) => html`
               <li role="none">
-                <button class="menu-item" role="menuitem" type="button" @click=${() => this._selectHidden(i)}>
+                <button class="menu-item" role="menuitem" type="button" tabindex="-1" @click=${() => this._selectHidden(i)}>
                   ${this._hiddenLabel(i)}
                 </button>
               </li>
