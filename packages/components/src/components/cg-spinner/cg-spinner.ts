@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
+import { hostBase, pulseKeyframes, reducedMotion, spinKeyframes } from '../../styles/index.js';
 
 /**
  * <cg-spinner> — Spinning loading indicator.
@@ -18,7 +18,7 @@ import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
  */
 @customElement('cg-spinner')
 export class CgSpinner extends LitElement {
-  static override styles = [hostBase, reducedMotion, spinKeyframes, css`
+  static override styles = [hostBase, reducedMotion, spinKeyframes, pulseKeyframes, css`
     :host {
       display: inline-flex;
       align-items: center;
@@ -66,7 +66,7 @@ export class CgSpinner extends LitElement {
       border-top-color: var(--cg-color-loading-spinner-primary);
     }
     :host([color="accent"]) .spinner {
-      border-top-color: var(--cg-color-action-primary-background-default);
+      border-top-color: var(--cg-color-action-primary-border-default);
     }
     :host([color="white"]) .spinner {
       border-color: var(--cg-overlay-white-intense);
@@ -85,15 +85,10 @@ export class CgSpinner extends LitElement {
       border: 0;
     }
 
-    /* Reduced motion: replace spin with gentle opacity pulse */
+    /* Reduced motion: replace spin with gentle opacity pulse (shared keyframes) */
     @media (prefers-reduced-motion: reduce) {
       .spinner {
-        animation: spinnerPulse 2s ease-in-out infinite !important;
-      }
-
-      @keyframes spinnerPulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.4; }
+        animation: pulse 2s ease-in-out infinite !important;
       }
     }
   `];
@@ -104,11 +99,7 @@ export class CgSpinner extends LitElement {
 
   override render() {
     return html`
-      <div
-        class="spinner"
-        role="status"
-        aria-label="${this.label}"
-      >
+      <div class="spinner" role="status">
         <span class="sr-only">${this.label}</span>
       </div>
     `;

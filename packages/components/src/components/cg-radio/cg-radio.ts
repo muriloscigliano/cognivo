@@ -18,6 +18,7 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
 @customElement('cg-radio')
 export class CgRadio extends LitElement {
   static formAssociated = true;
+  static override shadowRootOptions = { ...LitElement.shadowRootOptions, delegatesFocus: true };
   private _internals: ElementInternals | undefined;
 
   constructor() {
@@ -82,8 +83,14 @@ export class CgRadio extends LitElement {
     /* Focus ring */
     label:focus-visible .circle {
       border-color: var(--cg-color-radio-border-focus);
-      box-shadow: 0 0 0 var(--cg-spacing-2) var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
       outline: none;
+    }
+    :host([error]) label:focus-visible .circle {
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
+    }
+    :host([success]) label:focus-visible .circle {
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-success);
     }
 
     /* Checked */
@@ -103,8 +110,8 @@ export class CgRadio extends LitElement {
 
     /* ── Dot indicator ── */
     .dot {
-      width: 10px;
-      height: 10px;
+      width: var(--cg-spacing-8);
+      height: var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-radio-dot-default);
       animation: dotIn var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out) forwards;
@@ -158,7 +165,7 @@ export class CgRadio extends LitElement {
     :host([success]) .label-text { color: var(--cg-color-status-success-text-default); }
 
     /* ── Loading state ── */
-    :host([loading]) label { pointer-events: none; opacity: 0.5; }
+    :host([loading]) label { pointer-events: none; opacity: var(--cg-opacity-50); }
     .loading-spinner {
       width: var(--cg-spacing-20);
       height: var(--cg-spacing-20);
@@ -189,7 +196,7 @@ export class CgRadio extends LitElement {
 
   @property() label = '';
   @property() description = '';
-  @property() name = '';
+  @property({ reflect: true }) name = '';
   @property() value = '';
   @property({ type: Boolean }) checked = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
@@ -198,6 +205,9 @@ export class CgRadio extends LitElement {
   @property({ type: Boolean, reflect: true }) loading = false;
   @property({ type: Boolean }) required = false;
   @property({ reflect: true }) variant: 'dot' | 'tick' = 'dot';
+
+  /** Roving tabindex slot managed by cg-radio-group; standalone radios stay tabbable. */
+  @property({ type: Number }) groupTabIndex = 0;
 
   override updated(changed: PropertyValues) {
     super.updated(changed);
@@ -245,11 +255,12 @@ export class CgRadio extends LitElement {
   override render() {
     return html`
       <label
-        tabindex=${this.disabled ? '-1' : '0'}
+        tabindex=${this.disabled ? '-1' : String(this.groupTabIndex)}
         role="radio"
         aria-checked=${String(this.checked)}
         aria-disabled=${String(this.disabled)}
         aria-required=${this.required ? 'true' : 'false'}
+        aria-busy=${this.loading ? 'true' : 'false'}
         @click=${this._select}
         @keydown=${(e: KeyboardEvent) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); this._select(); } }}
       >

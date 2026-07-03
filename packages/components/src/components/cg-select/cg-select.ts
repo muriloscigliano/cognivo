@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { bindOutsideClick } from '../../utils/outside-click.js';
 
 /**
  * @element cg-select
@@ -20,7 +21,7 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
  * @cssprop [--cg-color-input-background-default=#18181b] - Trigger background
  * @cssprop [--cg-color-surface-container-background=#18181b] - Dropdown panel background
  * @cssprop [--cg-color-focus-ring] - Focus/hover border accent
- * @cssprop [--cg-border-radius-150=12px] - Border radius for trigger and dropdown
+ * @cssprop [--cg-component-select-radius] - Border radius for trigger and dropdown (default rounded="md")
  */
 
 /** Option entry for cg-select, with value, display label, and optional disabled state. */
@@ -95,7 +96,7 @@ export class CgSelect extends LitElement {
 
     .trigger-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .placeholder { color: var(--cg-color-input-text-placeholder); }
-    .chevron { width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); flex-shrink: 0; transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-default); color: var(--cg-color-surface-container-outlined); }
+    .chevron { width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); flex-shrink: 0; transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-default); color: var(--cg-color-input-text-placeholder); }
     .trigger.open .chevron { transform: rotate(180deg); }
 
     .dropdown {
@@ -104,30 +105,32 @@ export class CgSelect extends LitElement {
       background: var(--cg-color-modal-container-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-component-card-radius);
-      max-height: 240px; overflow-y: auto;
-      opacity: 0; transform: translateY(calc(-1 * var(--cg-spacing-4))) scale(0.98); pointer-events: none;
-      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      max-height: var(--cg-component-combobox-listbox-max-height); overflow-y: auto;
     }
     .dropdown.open {
-      opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
+      animation: cg-select-dropdown-in var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+    }
+    @keyframes cg-select-dropdown-in {
+      from { opacity: 0; transform: scale(0.96) translateY(calc(var(--cg-spacing-4) * -1)); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
     }
     .dropdown[hidden] { display: none; }
 
     .option {
-      padding: var(--cg-spacing-8) var(--cg-spacing-12); border-radius: var(--cg-border-radius-150); cursor: pointer;
+      padding: var(--cg-spacing-8) var(--cg-spacing-12); border-radius: var(--cg-border-radius-100); cursor: pointer;
       font-size: var(--cg-font-size-sm);
       color: var(--cg-color-surface-base-text);
       transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       display: flex; align-items: center; gap: var(--cg-spacing-8);
     }
-    .option:hover { background: var(--cg-overlay-dark-subtle); }
-    .option.highlighted { background: var(--cg-overlay-dark-subtle); }
-    .option.selected { color: var(--cg-color-action-primary-background-default); font-weight: var(--cg-font-weight-medium); }
+    .option:hover { background: var(--cg-color-action-tertiary-background-hover); }
+    .option.highlighted { background: var(--cg-color-action-secondary-background-hover); }
+    .option.selected { color: var(--cg-color-accent-text); font-weight: var(--cg-font-weight-medium); }
     .option.disabled { opacity: 0.5; pointer-events: none; }
     .option .check {
       width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); flex-shrink: 0;
       margin-left: auto; opacity: 0;
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
       transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .option.selected .check { opacity: 1; }
@@ -136,7 +139,7 @@ export class CgSelect extends LitElement {
     .search input {
       width: 100%; box-sizing: border-box;
       padding: var(--cg-spacing-8) var(--cg-spacing-12);
-      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
+      border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
       border-radius: var(--cg-border-radius-100);
       font: inherit; font-size: var(--cg-font-size-sm); outline: none;
       background: transparent; color: var(--cg-color-input-text-default);
@@ -146,7 +149,7 @@ export class CgSelect extends LitElement {
 
     .empty-msg { padding: var(--cg-spacing-12); text-align: center; color: var(--cg-color-input-text-placeholder); font-size: var(--cg-font-size-sm); }
 
-    .label { display: block; font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-medium); color: var(--cg-color-surface-container-outlined); margin-bottom: var(--cg-spacing-4); }
+    .label { display: block; font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-medium); color: var(--cg-color-surface-container-text); margin-bottom: var(--cg-spacing-4); }
 
     /* Size variants */
     :host([size="sm"]) .trigger { height: var(--cg-component-input-height-sm); font-size: var(--cg-font-size-xs); padding: 0 var(--cg-spacing-8); border-radius: var(--cg-border-radius-100); }
@@ -165,11 +168,11 @@ export class CgSelect extends LitElement {
     :host([rounded="lg"]) .trigger { border-radius: var(--cg-border-radius-150); }
     :host([rounded="lg"]) .dropdown { border-radius: var(--cg-border-radius-150); }
     :host([rounded="full"]) .trigger { border-radius: var(--cg-border-radius-full); }
-    :host([rounded="full"]) .dropdown { border-radius: var(--cg-border-radius-full); }
+    :host([rounded="full"]) .dropdown { border-radius: var(--cg-border-radius-150); }
   `];
 
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
+  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
   @property({ type: Array }) options: SelectOption[] = [];
   @property() value = '';
   @property() label = '';
@@ -208,11 +211,22 @@ export class CgSelect extends LitElement {
   @state() private _search = '';
   @state() private _highlighted = -1;
 
+  private _openPanel() {
+    this._open = true;
+    this._search = '';
+    this._highlighted = this.options.findIndex(o => o.value === this.value);
+  }
+
   private _toggle() {
     if (this.disabled || this.loading) return;
-    this._open = !this._open;
-    this._search = '';
-    this._highlighted = -1;
+    if (this._open) {
+      this._close();
+      return;
+    }
+    this._openPanel();
+    if (this.searchable) {
+      this.updateComplete.then(() => this.shadowRoot?.querySelector<HTMLInputElement>('.search input')?.focus());
+    }
   }
 
   private _close() { this._open = false; this._search = ''; }
@@ -230,48 +244,83 @@ export class CgSelect extends LitElement {
     return this.options.filter(o => o.label.toLowerCase().includes(q));
   }
 
+  private _scrollHighlightedIntoView() {
+    this.updateComplete.then(() =>
+      this.shadowRoot?.querySelector('.option.highlighted')?.scrollIntoView({ block: 'nearest' })
+    );
+  }
+
   private _handleKeydown(e: KeyboardEvent) {
+    if (e.key === ' ' && e.target instanceof HTMLInputElement) return;
     const filtered = this._filteredOptions();
     if (e.key === 'Escape') { this._close(); return; }
     if (e.key === 'Enter' || e.key === ' ') {
       if (!this._open) { this._toggle(); e.preventDefault(); return; }
+      e.preventDefault();
       if (this._highlighted >= 0 && this._highlighted < filtered.length) {
         this._select(filtered[this._highlighted]!);
-        e.preventDefault();
       }
       return;
     }
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      if (!this._open) { this._open = true; return; }
+      if (!this._open) { this._openPanel(); return; }
       this._highlighted = Math.min(this._highlighted + 1, filtered.length - 1);
+      this._scrollHighlightedIntoView();
+      return;
     }
     if (e.key === 'ArrowUp') {
       e.preventDefault();
+      if (!this._open) { this._openPanel(); return; }
       this._highlighted = Math.max(this._highlighted - 1, 0);
+      this._scrollHighlightedIntoView();
+      return;
+    }
+    if (e.key === 'Home' && this._open) {
+      e.preventDefault();
+      this._highlighted = 0;
+      this._scrollHighlightedIntoView();
+      return;
+    }
+    if (e.key === 'End' && this._open) {
+      e.preventDefault();
+      this._highlighted = filtered.length - 1;
+      this._scrollHighlightedIntoView();
     }
   }
 
-  private _handleClickOutside = (e: Event) => {
-    if (!e.composedPath().includes(this)) this._close();
-  };
+  private _disposeOutsideClick: (() => void) | null = null;
 
-  override connectedCallback() { super.connectedCallback(); document.removeEventListener('click', this._handleClickOutside); document.addEventListener('click', this._handleClickOutside); }
-  override disconnectedCallback() { super.disconnectedCallback(); document.removeEventListener('click', this._handleClickOutside); }
+  override connectedCallback() {
+    super.connectedCallback();
+    this._disposeOutsideClick?.();
+    this._disposeOutsideClick = bindOutsideClick(this, () => this._close());
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    this._disposeOutsideClick?.();
+    this._disposeOutsideClick = null;
+  }
 
   override render() {
     const selected = this.options.find(o => o.value === this.value);
     const filtered = this._filteredOptions();
 
     return html`
-      ${this.label ? html`<span class="label">${this.label}</span>` : nothing}
+      ${this.label ? html`<span class="label" id="select-label">${this.label}</span>` : nothing}
       <div
         class="trigger ${this._open ? 'open' : ''} ${this.disabled ? 'disabled' : ''}"
         tabindex=${this.disabled ? '-1' : '0'}
         role="combobox"
         aria-expanded=${this._open}
         aria-haspopup="listbox"
+        aria-controls="select-listbox"
+        aria-labelledby=${this.label ? 'select-label' : nothing}
+        aria-label=${this.label ? nothing : this.placeholder}
+        aria-activedescendant=${this._open && this._highlighted >= 0 && this._highlighted < filtered.length ? `select-option-${this._highlighted}` : nothing}
         aria-required=${this.required ? 'true' : 'false'}
+        aria-invalid=${this.error ? 'true' : 'false'}
         aria-busy=${this.loading ? 'true' : 'false'}
         @click=${this._toggle}
         @keydown=${this._handleKeydown}
@@ -285,13 +334,15 @@ export class CgSelect extends LitElement {
         </svg>`}
       </div>
 
-      <div class="dropdown ${this._open ? 'open' : ''}" ?hidden=${!this._open} role="listbox">
+      <div class="dropdown ${this._open ? 'open' : ''}" ?hidden=${!this._open} role="listbox" id="select-listbox">
         ${this.searchable ? html`
           <div class="search">
             <input
               placeholder="Search..."
+              aria-label="Search options"
               .value=${this._search}
               @input=${(e: Event) => { this._search = (e.target as HTMLInputElement).value; this._highlighted = 0; }}
+              @keydown=${this._handleKeydown}
               @click=${(e: Event) => e.stopPropagation()}
             />
           </div>
@@ -301,7 +352,9 @@ export class CgSelect extends LitElement {
           <div
             class="option ${opt.value === this.value ? 'selected' : ''} ${i === this._highlighted ? 'highlighted' : ''} ${opt.disabled ? 'disabled' : ''}"
             role="option"
+            id="select-option-${i}"
             aria-selected=${opt.value === this.value}
+            aria-disabled=${opt.disabled ? 'true' : 'false'}
             @click=${(e: Event) => { e.stopPropagation(); this._select(opt); }}
           >
             <span>${opt.label}</span>
