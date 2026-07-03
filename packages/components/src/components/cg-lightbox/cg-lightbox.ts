@@ -72,8 +72,11 @@ export class CgLightbox extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: var(--cg-spacing-40);
-      height: var(--cg-spacing-40);
+      /* 44px = WCAG 2.5.5 / iOS minimum touch target. Raw px matches the
+         system convention (cg-checkbox min-height:44px); 44 is not on the
+         spacing scale. */
+      width: 44px;
+      height: 44px;
       padding: 0;
       border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-surface-cards-background);
@@ -94,6 +97,13 @@ export class CgLightbox extends LitElement {
     .nav.prev { left: calc(-1 * var(--cg-spacing-56)); }
     .nav.next { right: calc(-1 * var(--cg-spacing-56)); }
     .nav:active { transform: translateY(-50%) scale(var(--cg-interaction-press-scale)); }
+
+    /* On narrow viewports the stage fills ~92vw, so nav buttons positioned
+       outside the stage clip off-screen. Pull them just inside the edges. */
+    @media (max-width: 640px) {
+      .nav.prev { left: var(--cg-spacing-8); }
+      .nav.next { right: var(--cg-spacing-8); }
+    }
 
     .counter {
       color: var(--cg-color-surface-cards-text);
@@ -151,6 +161,10 @@ export class CgLightbox extends LitElement {
           returnFocus: true,
           handleEscape: this.closable,
           onEscape: () => this._requestClose(),
+          // Focus the dialog itself so opening always lands inside the trap,
+          // even with zero interactive controls (single image + closable=false).
+          // Controls remain reachable via Tab.
+          initialFocus: stage,
         });
       }
     });
@@ -201,6 +215,7 @@ export class CgLightbox extends LitElement {
           class="stage"
           role="dialog"
           aria-modal="true"
+          tabindex="-1"
           aria-label=${current?.caption || current?.alt || 'Image viewer'}
         >
           ${this.closable ? html`
