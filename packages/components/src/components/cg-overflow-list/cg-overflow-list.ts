@@ -77,7 +77,7 @@ export class CgOverflowList extends LitElement {
       background: var(--cg-color-surface-popover-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);
-      box-shadow: var(--cg-shadow-lg);
+      box-shadow: var(--cg-shadow-elevation-lg);
       z-index: var(--cg-z-index-300);
       list-style: none;
       margin: 0;
