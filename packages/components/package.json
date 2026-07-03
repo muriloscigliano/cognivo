@@ -1,6 +1,6 @@
 {
   "name": "@cognivo/components",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "166 AI-native and foundation Web Components powered by Lit, cognitive science, and design tokens.",
   "type": "module",
   "main": "./dist/index.js",
