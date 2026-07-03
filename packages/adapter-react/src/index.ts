@@ -314,6 +314,18 @@ export { CgDateTimePicker } from './components/CgDateTimePicker.js';
 export { CgSplitButton } from './components/CgSplitButton.js';
 export type { CgSplitButtonProps, SplitButtonItem } from './components/CgSplitButton.js';
 
+// Astryx parity: layout + primitive components
+export { CgToolbar } from './components/CgToolbar.js';
+export { CgGrid } from './components/CgGrid.js';
+export { CgCenter } from './components/CgCenter.js';
+export { CgStatusDot } from './components/CgStatusDot.js';
+export { CgTimestamp } from './components/CgTimestamp.js';
+export { CgBlockquote } from './components/CgBlockquote.js';
+export { CgThumbnail } from './components/CgThumbnail.js';
+export { CgOverflowList } from './components/CgOverflowList.js';
+export { CgLightbox } from './components/CgLightbox.js';
+export { CgAppShell } from './components/CgAppShell.js';
+
 // Bias wrappers (cognitive-pattern primitives)
 export { BiasAnchoring } from './components/BiasAnchoring.js';
 export type { BiasAnchoringProps } from './components/BiasAnchoring.js';

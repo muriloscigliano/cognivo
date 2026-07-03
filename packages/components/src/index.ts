@@ -226,6 +226,18 @@ import { CgVisuallyHidden } from './components/cg-visually-hidden/cg-visually-hi
 import { CgPortal } from './components/cg-portal/cg-portal.js';
 import { CgFocusScope } from './components/cg-focus-scope/cg-focus-scope.js';
 
+// ── Wave 8: Astryx-parity gap-fill ─────────────────────────────────────────
+import { CgToolbar } from './components/cg-toolbar/cg-toolbar.js';
+import { CgGrid } from './components/cg-grid/cg-grid.js';
+import { CgCenter } from './components/cg-center/cg-center.js';
+import { CgStatusDot } from './components/cg-status-dot/cg-status-dot.js';
+import { CgTimestamp } from './components/cg-timestamp/cg-timestamp.js';
+import { CgBlockquote } from './components/cg-blockquote/cg-blockquote.js';
+import { CgThumbnail } from './components/cg-thumbnail/cg-thumbnail.js';
+import { CgOverflowList } from './components/cg-overflow-list/cg-overflow-list.js';
+import { CgLightbox } from './components/cg-lightbox/cg-lightbox.js';
+import { CgAppShell } from './components/cg-app-shell/cg-app-shell.js';
+
 export {
   // Wave 1: Foundation
   CgStack, CgText, CgButton, CgCard, CgBadge, CgInput,
@@ -292,6 +304,9 @@ export {
   CgTreeView, CgCombobox, CgVisuallyHidden, CgPortal, CgFocusScope,
   // Wave 9: Final Foundation Gaps
   CgSidebar, CgAvatar, CgEmptyState, CgMeter, CgDateRangePicker,
+  // Wave 10: Astryx-parity gap-fill
+  CgToolbar, CgGrid, CgCenter, CgStatusDot, CgTimestamp, CgBlockquote, CgThumbnail,
+  CgOverflowList, CgLightbox, CgAppShell,
   // Bias Wrappers — composable behavioral primitives
   BiasAnchoring, BiasScarcity, BiasSocialProof,
   BiasAuthority, BiasCommitment, BiasReciprocity,
