@@ -39,7 +39,7 @@
   },
   "scripts": {
     "build": "vite build && tsc --emitDeclarationOnly",
-    "prepublishOnly": "pnpm build",
+    "prepublishOnly": "node ../../scripts/guard-pnpm-publish.mjs && pnpm build",
     "dev": "vite build --watch",
     "type-check": "tsc --noEmit",
     "test": "vitest run",

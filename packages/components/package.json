@@ -52,7 +52,7 @@
   },
   "scripts": {
     "build": "vite build && vite build --mode iife",
-    "prepublishOnly": "pnpm build",
+    "prepublishOnly": "node ../../scripts/guard-pnpm-publish.mjs && pnpm build",
     "type-check": "tsc --noEmit",
     "dev": "vite build --watch",
     "test": "vitest run",

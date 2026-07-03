@@ -42,7 +42,7 @@
   },
   "scripts": {
     "build": "vite build",
-    "prepublishOnly": "pnpm build",
+    "prepublishOnly": "node ../../scripts/guard-pnpm-publish.mjs && pnpm build",
     "dev": "vite build --watch",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
