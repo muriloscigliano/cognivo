@@ -52,6 +52,26 @@ for (const theme of ['light', 'dark'] as const) {
         document.addEventListener('DOMContentLoaded', apply);
       }, theme);
 
+      // Freeze the clock. Date-dependent components (cg-calendar highlights
+      // "today", timestamps render relative time) would otherwise drift the
+      // baseline every real-world day. Pin `Date`/`Date.now()` to a fixed
+      // instant so the rendered output is deterministic. Uses noon UTC on the
+      // baseline-capture date to stay on the same calendar day in any TZ.
+      await page.addInitScript(() => {
+        const FROZEN = 1782993600000; // 2026-07-02T12:00:00.000Z
+        const RealDate = Date;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const FakeDate = function (this: any, ...args: any[]) {
+          return args.length === 0 ? new RealDate(FROZEN) : new (RealDate as any)(...args);
+        } as unknown as DateConstructor;
+        FakeDate.prototype = RealDate.prototype;
+        FakeDate.now = () => FROZEN;
+        FakeDate.parse = RealDate.parse;
+        FakeDate.UTC = RealDate.UTC;
+        // eslint-disable-next-line no-global-assign
+        (globalThis as unknown as { Date: DateConstructor }).Date = FakeDate;
+      });
+
       await page.goto(`/components/${tag}/`);
 
       // Wait for the playground to actually mount the live custom element.
