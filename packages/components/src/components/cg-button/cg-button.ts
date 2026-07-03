@@ -38,10 +38,10 @@ export class CgButton extends LitElement {
       white-space: nowrap;
       text-decoration: none;
       transition:
-        background-color var(--cg-transition-duration-fast) ease,
-        border-color var(--cg-transition-duration-fast) ease,
-        box-shadow var(--cg-transition-duration-fast) ease,
-        transform var(--cg-transition-duration-fast) ease;
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       -webkit-font-smoothing: antialiased;
       position: relative;
     }
