@@ -1,0 +1,197 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+---
+
+<DocsLayout title="Social Proof & Trust — UI Pattern" description="Compose star ratings, avatar clusters, and copy into trust signals — with the cognitive rationale for when they help and when they erode trust.">
+  <h1>Social Proof &amp; Trust</h1>
+  <p class="subtitle">
+    A UI pattern, not a component. Trust signals — star ratings, review counts, avatar
+    clusters, "trusted by" copy — are <strong>compositions</strong> of primitives you
+    already have. Cognivo does not ship a <code>cg-trusted-badge</code>: that would
+    duplicate <code>cg-rating</code>, <code>cg-avatar-group</code>, and
+    <code>cg-text</code> behind a rigid API. Compose instead.
+  </p>
+
+  <p class="install">
+    <strong>Uses:</strong>
+    <a href="/components/cg-rating">cg-rating</a> ·
+    <a href="/components/cg-avatar-group">cg-avatar-group</a> ·
+    <a href="/components/cg-text">cg-text</a> ·
+    governed variants live in <code>bias-social-proof</code> / <code>bias-authority</code>.
+  </p>
+
+  <!-- ── Recipe 1 ─────────────────────────────────────────────────────────── -->
+  <section class="pattern" id="rating-claim">
+    <div class="pattern-header">
+      <span class="pattern-num">01</span>
+      <h2>Rating + claim</h2>
+      <code class="pattern-mod">social proof</code>
+    </div>
+    <p>
+      A row of stars over a short, benefit-led claim. The stars carry the
+      <em>social-proof</em> signal; the sentence names who the peer group is.
+      Keep the claim specific — "thousands of Australian businesses" beats a
+      vague "everyone".
+    </p>
+
+    <div class="demo">
+      <div class="trust-block">
+        <cg-rating value="5" max="5" readonly aria-label="Rated 5 out of 5"></cg-rating>
+        <cg-text color="secondary" size="sm">Trusted by thousands of Australian businesses</cg-text>
+      </div>
+    </div>
+
+    <pre><code>{`<div class="trust-block">
+  <cg-rating value="5" max="5" readonly></cg-rating>
+  <cg-text color="secondary" size="sm">
+    Trusted by thousands of Australian businesses
+  </cg-text>
+</div>`}</code></pre>
+  </section>
+
+  <!-- ── Recipe 2 ─────────────────────────────────────────────────────────── -->
+  <section class="pattern" id="avatars-rating-source">
+    <div class="pattern-header">
+      <span class="pattern-num">02</span>
+      <h2>Avatars + sourced rating</h2>
+      <code class="pattern-mod">social proof + authority</code>
+    </div>
+    <p>
+      Stacked avatars make the crowd feel real (faces &gt; numbers), the star row
+      quantifies it, and naming the source — "Google reviews" — adds
+      <em>authority</em>. A specific, sourced rating (<code>4.4 from 1,000+</code>)
+      is far more persuasive than a rounded, unattributed one.
+    </p>
+
+    <div class="demo">
+      <div class="trust-row">
+        <cg-avatar-group id="sp-avatars" size="md"></cg-avatar-group>
+        <div class="trust-copy">
+          <cg-rating value="4.5" max="5" precision="0.5" readonly aria-label="Rated 4.4 out of 5"></cg-rating>
+          <cg-text color="accent" size="sm" weight="semibold">4.4 from 1,000+ Google reviews</cg-text>
+        </div>
+      </div>
+    </div>
+
+    <pre><code>{`<div class="trust-row">
+  <cg-avatar-group size="md"></cg-avatar-group> <!-- .avatars = [...] -->
+  <div class="trust-copy">
+    <cg-rating value="4.5" precision="0.5" readonly></cg-rating>
+    <cg-text color="accent" size="sm" weight="semibold">
+      4.4 from 1,000+ Google reviews
+    </cg-text>
+  </div>
+</div>`}</code></pre>
+  </section>
+
+  <!-- ── Cognitive rationale ──────────────────────────────────────────────── -->
+  <section class="pattern" id="why">
+    <div class="pattern-header">
+      <span class="pattern-num">03</span>
+      <h2>Why it works — and when it backfires</h2>
+      <code class="pattern-mod">cognition</code>
+    </div>
+    <p>
+      Two biases do the work here. <strong>Social proof</strong>: people infer
+      correct behaviour from what similar others do — so a visible crowd lowers
+      perceived risk. <strong>Authority bias</strong>: a credible, named source
+      (Google, an ISO cert, a publication) transfers its credibility to you.
+    </p>
+
+    <div class="grid2">
+      <div class="col good">
+        <h3>Helps when…</h3>
+        <ul>
+          <li>The numbers are <strong>real and specific</strong> ("4.4 from 1,000+").</li>
+          <li>The source is <strong>named and verifiable</strong> — link it.</li>
+          <li>The peer group <strong>matches the visitor</strong> ("Australian businesses" on an AU site).</li>
+          <li>It sits near the <strong>decision point</strong> (pricing, signup), not buried in a footer.</li>
+        </ul>
+      </div>
+      <div class="col bad">
+        <h3>Erodes trust when…</h3>
+        <ul>
+          <li>Claims are <strong>vague or unsourced</strong> ("thousands of happy customers").</li>
+          <li>Stars are <strong>decorative</strong> with no rating behind them.</li>
+          <li>Avatars are obvious <strong>stock faces</strong> — reads as fake.</li>
+          <li>It's <strong>over-used</strong> — a badge on every section signals insecurity, not confidence.</li>
+        </ul>
+      </div>
+    </div>
+
+    <cg-callout variant="warning" title="Specific beats loud">
+      <span>A quiet, sourced "<strong>4.4 from 1,000+ Google reviews</strong>" outperforms a
+      big, vague "<strong>Trusted by everyone!</strong>". Generic trust badges read as
+      AI-generated filler and <em>reduce</em> credibility. Prefer real, attributable proof.</span>
+    </cg-callout>
+  </section>
+
+  <cg-callout variant="info" title="Governed variants">
+    <span>For bias-tagged, analytics-tracked surfaces, reach for
+    <code>&lt;bias-social-proof&gt;</code> (live counts, stacked avatars) and
+    <code>&lt;bias-authority&gt;</code> (verified / certified / featured sources)
+    instead of hand-rolling — they carry <code>engagedBiasIds[]</code> so the
+    design advisor and analytics can see them.</span>
+  </cg-callout>
+
+  <script>
+    import '@cognivo/components';
+    // Seed the avatar cluster for recipe 2 (array prop, set in JS).
+    function seed() {
+      const g = document.getElementById('sp-avatars') as (HTMLElement & { avatars?: unknown[] }) | null;
+      if (g) g.avatars = [
+        { name: 'Ada Lovelace' },
+        { name: 'Grace Hopper' },
+        { name: 'Alan Turing' },
+        { name: 'Katherine Johnson' },
+      ];
+    }
+    document.addEventListener('astro:page-load', seed);
+    seed();
+  </script>
+
+  <style>
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.03em; }
+    .subtitle { color: var(--fg-2); margin-bottom: 12px; line-height: 1.7; }
+    .install { margin-bottom: 32px; font-size: 14px; color: var(--fg-3); }
+    .install a { color: var(--accent); }
+
+    .pattern {
+      margin-bottom: 20px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .pattern:hover { border-color: var(--border-hover); }
+    .pattern-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+    .pattern-num { font: 700 13px/1 var(--font-mono); color: var(--accent); }
+    .pattern-header h2 { font-size: 18px; font-weight: 700; margin: 0; padding: 0; border: none; }
+    .pattern-header h2::before { display: none; }
+    .pattern-mod { font-size: 12px; color: var(--accent); opacity: 0.7; }
+    .pattern p { color: var(--fg-2); margin-bottom: 16px; line-height: 1.7; }
+    .pattern pre { margin: 16px 0 0; }
+
+    /* Live demo surface */
+    .demo {
+      display: flex; align-items: center; justify-content: center;
+      padding: 32px 24px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .trust-block { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .trust-row { display: flex; align-items: center; gap: 16px; }
+    .trust-copy { display: flex; flex-direction: column; gap: 2px; }
+
+    /* Rationale two-column */
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+    .col { padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); }
+    .col h3 { font-size: 14px; margin: 0 0 8px; }
+    .col ul { margin: 0; padding-left: 18px; }
+    .col li { color: var(--fg-2); line-height: 1.7; margin-bottom: 4px; font-size: 14px; }
+    .col.good { border-left: 3px solid var(--accent); }
+    .col.bad { opacity: 0.92; }
+  </style>
+</DocsLayout>
