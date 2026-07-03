@@ -1113,7 +1113,7 @@ console.log(message);`;
   if (tag === 'cg-blockquote') {
     e.variant = 'accent';
     liveElement.style.maxWidth = '520px';
-    liveElement.innerHTML = 'Design tokens are the contract between design and code — every value earns its place in the system.<span slot="footer">— Cognivo design principles</span>';
+    liveElement.innerHTML = 'Design tokens are the contract between design and code — every value earns its place in the system.<span slot="footer">Cognivo design principles</span>';
   }
   if (tag === 'cg-thumbnail') { e.src = 'https://i.pravatar.cc/120?img=12'; e.alt = 'Preview'; e.size = 'lg'; e.selectable = true; }
   if (tag === 'cg-overflow-list') {
