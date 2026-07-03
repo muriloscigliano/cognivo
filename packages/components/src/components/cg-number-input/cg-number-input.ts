@@ -93,7 +93,11 @@ export class CgNumberInput extends LitElement {
     }
     .btn:hover:not(:disabled) { background: var(--cg-color-action-secondary-background-hover); }
     .btn:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
-    .btn:disabled { cursor: not-allowed; opacity: 0.4; }
+    .btn:disabled {
+      cursor: not-allowed;
+      background: var(--cg-color-action-secondary-background-disable);
+      color: var(--cg-color-action-secondary-text-disable);
+    }
     .btn:focus-visible {
       box-shadow: 0 0 0 2px var(--cg-color-focus-ring-offset), 0 0 0 4px var(--cg-color-focus-ring);
       outline: none;

@@ -86,7 +86,8 @@ export class AiApiKeyManager extends LitElement {
       filter: brightness(1.1);
     }
     .create-btn:disabled {
-      opacity: 0.5;
+      background: var(--cg-color-action-primary-background-disable);
+      color: var(--cg-color-action-primary-text-disable);
       cursor: not-allowed;
     }
 

@@ -134,10 +134,29 @@ export class CgButton extends LitElement {
       background: var(--cg-color-status-error-background-hover);
     }
 
-    /* ── Disabled ── */
+    /* ── Disabled ──
+       Themeable per-variant disabled colors (no opacity smudge on re-pointed brands).
+       Scoped with :host so these win over the variant/type/status background rules. */
     button:disabled {
-      opacity: 0.5;
       pointer-events: none;
+    }
+    :host([variant="primary"]) button:disabled,
+    :host([type="danger"][variant="primary"]) button:disabled,
+    :host([status="error"]) button:disabled,
+    :host([status="success"]) button:disabled {
+      background: var(--cg-color-action-primary-background-disable);
+      color: var(--cg-color-action-primary-text-disable);
+      border-color: var(--cg-color-action-primary-border-disable);
+    }
+    :host([variant="secondary"]) button:disabled {
+      background: var(--cg-color-action-secondary-background-disable);
+      color: var(--cg-color-action-secondary-text-disable);
+      border-color: var(--cg-color-action-secondary-border-disable);
+    }
+    :host([variant="tertiary"]) button:disabled {
+      background: var(--cg-color-action-tertiary-background-disable);
+      color: var(--cg-color-action-tertiary-text-disable);
+      border-color: var(--cg-color-action-tertiary-border-disable);
     }
 
     /* ── Loading ── */
@@ -203,6 +222,7 @@ export class CgButton extends LitElement {
   override render() {
     return html`
       <button
+        part="button"
         ?disabled=${this.disabled || this.loading}
         aria-busy=${this.loading ? 'true' : 'false'}
         aria-label=${this.label || nothing}

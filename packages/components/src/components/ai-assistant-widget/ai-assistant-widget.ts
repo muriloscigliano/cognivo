@@ -226,9 +226,11 @@ export class AiAssistantWidget extends LitElement {
     .send-btn:hover { filter: brightness(0.9); }
     .send-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .send-btn:disabled {
-      opacity: 0.4;
+      background: var(--cg-color-action-primary-background-disable);
+      color: var(--cg-color-action-primary-text-disable);
       cursor: not-allowed;
     }
+    .send-btn:disabled:hover { filter: none; }
     .send-btn:focus-visible {
       outline: none;
       box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
@@ -326,6 +328,7 @@ export class AiAssistantWidget extends LitElement {
             />
             <button
               class="send-btn"
+              part="send-btn"
               @click=${this._send}
               ?disabled=${!this._inputValue.trim()}
               aria-label="Send message"

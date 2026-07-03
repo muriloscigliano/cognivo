@@ -284,9 +284,13 @@ export class AiFeedback extends LitElement {
         opacity var(--cg-transition-duration-default) var(--cg-transition-easing-default),
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .submit-btn:hover { background: var(--cg-color-action-primary-background-hover); }
+    .submit-btn:hover:not(:disabled) { background: var(--cg-color-action-primary-background-hover); }
     .submit-btn:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
-    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .submit-btn:disabled {
+      background: var(--cg-color-action-primary-background-disable);
+      color: var(--cg-color-action-primary-text-disable);
+      cursor: not-allowed;
+    }
     .submit-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); outline-offset: var(--cg-outline-offset-default); }
 
     /* Ripple pseudo-element */
