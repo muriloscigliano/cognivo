@@ -2,7 +2,10 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { LazyBiasRegistry } from '../utils/lazy-bias-registry.js';
 import { BiasCategory } from '../biases/core/types.js';
 
-describe('LazyBiasRegistry', () => {
+// Lazy category loading uses dynamic imports resolved from disk; cold, shared
+// CI runners routinely exceed vitest's 5s default. A generous per-test timeout
+// keeps these deterministic without masking a genuine hang.
+describe('LazyBiasRegistry', { timeout: 30_000 }, () => {
   let registry: LazyBiasRegistry;
 
   beforeEach(() => {

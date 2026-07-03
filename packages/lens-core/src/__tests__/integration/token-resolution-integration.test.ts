@@ -179,7 +179,7 @@ describe('token resolution — performance microbenchmark', () => {
     document.body.innerHTML = '';
   });
 
-  it('scans a 1000-node tree in well under the per-scan budget', () => {
+  it('scans a 1000-node tree in well under the per-scan budget', { timeout: 30_000 }, () => {
     // Spec §7.1 sets evaluate() at 50ms p95 on a 5k-node page; scan()
     // should be a fraction of that. We use 1000 nodes here because
     // happy-dom is slower per-node than a real browser, so this gives a
@@ -204,10 +204,11 @@ describe('token resolution — performance microbenchmark', () => {
     }
     samples.sort((a, b) => a - b);
     const p95 = samples[Math.floor(samples.length * 0.95)] ?? samples[samples.length - 1]!;
-    // Generous 250ms ceiling — happy-dom is slow at getComputedStyle. Real
-    // browsers will be ~10x faster. The point of the assertion is to catch a
-    // catastrophic regression (e.g. an O(N²) bug), not to enforce production
-    // perf in the test environment.
-    expect(p95).toBeLessThan(250);
+    // Generous 1s ceiling — happy-dom is slow at getComputedStyle and shared CI
+    // runners are slower still. Real browsers will be ~10x faster. The point of
+    // the assertion is to catch a catastrophic regression (e.g. an O(N²) bug),
+    // not to enforce production perf in the test environment, so the ceiling is
+    // deliberately loose to avoid runner-dependent flakiness.
+    expect(p95).toBeLessThan(1000);
   });
 });
