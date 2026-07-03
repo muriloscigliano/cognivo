@@ -114,7 +114,7 @@ export class CgRadioGroup extends LitElement {
     const focusTarget = selected ?? enabledRadios[0];
 
     for (const radio of this._radios) {
-      radio.tabIndex = radio === focusTarget ? 0 : -1;
+      radio.groupTabIndex = radio === focusTarget ? 0 : -1;
     }
   }
 

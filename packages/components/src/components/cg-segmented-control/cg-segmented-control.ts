@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 
@@ -16,6 +16,7 @@ export interface SegmentOption {
  * @example
  * ```html
  * <cg-segmented-control
+ *   label="View period"
  *   value="day"
  *   .options=${[
  *     { label: 'Day', value: 'day' },
@@ -26,6 +27,7 @@ export interface SegmentOption {
  * ```
  *
  * @fires {CustomEvent<{value: string}>} cg-segmented-change
+ * @attr {string} label - Accessible name for the radiogroup. Always provide one.
  */
 @customElement('cg-segmented-control')
 export class CgSegmentedControl extends LitElement {
@@ -78,7 +80,9 @@ export class CgSegmentedControl extends LitElement {
       font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
-      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition:
+        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       z-index: 1;
       border-radius: inherit;
       flex: 1;
@@ -96,8 +100,11 @@ export class CgSegmentedControl extends LitElement {
         0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
     .segment:disabled {
-      opacity: 0.45;
+      opacity: var(--cg-opacity-50);
       cursor: not-allowed;
+    }
+    .segment:active:not(:disabled) {
+      transform: scale(var(--cg-interaction-press-scale));
     }
 
     /* Sizes */
@@ -125,7 +132,9 @@ export class CgSegmentedControl extends LitElement {
 
   @property({ type: Array }) options: SegmentOption[] = [];
   @property() value = '';
-  @property() name = '';
+  @property({ reflect: true }) name = '';
+  /** Accessible name for the radiogroup (e.g. "View period"). Strongly recommended. */
+  @property() label = '';
   @property({ type: Boolean, reflect: true }) disabled = false;
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ type: Boolean, reflect: true }) full = false;
@@ -163,12 +172,18 @@ export class CgSegmentedControl extends LitElement {
   }
 
   private _updateIndicator(): void {
-    const activeIdx = this.options.findIndex(o => o.value === this.value);
-    if (activeIdx < 0) return;
-    const segments = this.shadowRoot?.querySelectorAll<HTMLElement>('.segment');
     const indicator = this.shadowRoot?.querySelector<HTMLElement>('.indicator');
-    if (!segments || !indicator || !segments[activeIdx]) return;
-    const seg = segments[activeIdx];
+    if (!indicator) return;
+    const activeIdx = this.options.findIndex(o => o.value === this.value);
+    if (activeIdx < 0) {
+      // No active option: hide the indicator so its border doesn't render as a sliver at left:0.
+      indicator.style.visibility = 'hidden';
+      return;
+    }
+    const segments = this.shadowRoot?.querySelectorAll<HTMLElement>('.segment');
+    const seg = segments?.[activeIdx];
+    if (!seg) return;
+    indicator.style.visibility = 'visible';
     indicator.style.width = `${seg.offsetWidth}px`;
     indicator.style.transform = `translateX(${seg.offsetLeft}px)`;
   }
@@ -185,21 +200,36 @@ export class CgSegmentedControl extends LitElement {
 
   private _handleKeydown(e: KeyboardEvent): void {
     if (this.disabled) return;
-    const current = this.options.findIndex(o => o.value === this.value);
+    let current = this.options.findIndex(o => o.value === this.value);
+    // No selection yet: navigate relative to the first enabled option (roving-focus seed).
+    if (current < 0) current = this.options.findIndex(o => !o.disabled);
     if (current < 0) return;
     let next = current;
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'ArrowRight' || e.key === 'ArrowDown') {
       e.preventDefault();
-      next = (current - 1 + this.options.length) % this.options.length;
-    } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-      e.preventDefault();
-      next = (current + 1) % this.options.length;
+      const dir = e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 1;
+      // Scan for the next enabled option, skipping disabled segments (WAI-ARIA radio-group pattern).
+      for (let i = 1; i <= this.options.length; i++) {
+        const idx = (current + dir * i + this.options.length) % this.options.length;
+        const candidate = this.options[idx];
+        if (candidate && !candidate.disabled) {
+          next = idx;
+          break;
+        }
+      }
     } else if (e.key === 'Home') {
       e.preventDefault();
-      next = 0;
+      const idx = this.options.findIndex(o => !o.disabled);
+      if (idx >= 0) next = idx;
     } else if (e.key === 'End') {
       e.preventDefault();
-      next = this.options.length - 1;
+      for (let i = this.options.length - 1; i >= 0; i--) {
+        const candidate = this.options[i];
+        if (candidate && !candidate.disabled) {
+          next = i;
+          break;
+        }
+      }
     }
     if (next !== current) {
       const option = this.options[next];
@@ -215,19 +245,23 @@ export class CgSegmentedControl extends LitElement {
   }
 
   override render() {
+    const activeIdx = this.options.findIndex(o => o.value === this.value);
+    // Roving tabindex: when nothing is selected, seed focus on the first enabled segment
+    // so the control stays keyboard-reachable.
+    const focusIdx = activeIdx >= 0 ? activeIdx : this.options.findIndex(o => !o.disabled);
     return html`
-      <div class="track" role="radiogroup" aria-disabled=${this.disabled ? 'true' : 'false'} @keydown=${this._handleKeydown}>
+      <div class="track" role="radiogroup" aria-label=${this.label || nothing} aria-disabled=${this.disabled ? 'true' : 'false'} @keydown=${this._handleKeydown}>
         <span class="indicator"></span>
-        ${this.options.map(option => html`
+        ${this.options.map((option, i) => html`
           <button
             type="button"
             class="segment"
             role="radio"
             aria-checked=${option.value === this.value ? 'true' : 'false'}
-            tabindex=${option.value === this.value ? '0' : '-1'}
+            tabindex=${i === focusIdx ? '0' : '-1'}
             ?disabled=${option.disabled || this.disabled}
             @click=${() => this._select(option)}
-          >${option.label}</button>
+          >${option.icon ? html`<cg-icon name=${option.icon}></cg-icon>` : nothing}${option.label}</button>
         `)}
       </div>
     `;

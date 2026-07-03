@@ -55,16 +55,20 @@ describe('cg-spinner', () => {
     expect(spinner.getAttribute('role')).toBe('status');
   });
 
-  it('has aria-label', async () => {
+  it('names the status via sr-only text without a duplicate aria-label', async () => {
     await create();
     const spinner = el.shadowRoot!.querySelector('.spinner')!;
-    expect(spinner.getAttribute('aria-label')).toBe('Loading');
+    // aria-label + identical text content double-announces in some SR combos;
+    // the sr-only child is the single source of the accessible name.
+    expect(spinner.hasAttribute('aria-label')).toBe(false);
+    expect(spinner.querySelector('.sr-only')!.textContent).toBe('Loading');
   });
 
   it('custom label is applied', async () => {
     await create({ label: 'Processing' });
     const spinner = el.shadowRoot!.querySelector('.spinner')!;
-    expect(spinner.getAttribute('aria-label')).toBe('Processing');
+    expect(spinner.hasAttribute('aria-label')).toBe(false);
+    expect(spinner.querySelector('.sr-only')!.textContent).toBe('Processing');
   });
 
   it('renders sr-only text', async () => {

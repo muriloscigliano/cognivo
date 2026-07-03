@@ -108,14 +108,24 @@ export class CgPortal extends LitElement {
   }
 
   private _mount(): void {
+    // Re-entrancy guard: _observer is non-null iff we are currently mounted
+    // to an external container (the disabled path never sets it, and
+    // _unmount() nulls it). Prevents the queued connectedCallback mount from
+    // double-firing after the first updated()-driven mount.
+    if (this._observer) return;
     if (!this.isConnected) return;
     this._container = this._resolveTarget();
     if (this._container === this) return;
 
     this._moved = Array.from(this.childNodes);
+    const active = document.activeElement as HTMLElement | null;
+    const hadFocus =
+      active !== null &&
+      this._moved.some((n) => n === active || n.contains(active));
     for (const node of this._moved) {
       this._container.appendChild(node);
     }
+    if (hadFocus) active!.focus();
 
     // Watch for new children added to this host and forward them.
     this._observer = new MutationObserver((mutations) => {
@@ -142,11 +152,18 @@ export class CgPortal extends LitElement {
     this._observer?.disconnect();
     this._observer = null;
     // Return moved children back to host so they are not lost on re-mount,
-    // target change, or disable toggle.
+    // target change, or disable toggle. appendChild atomically detaches from
+    // the container and works even while the host is disconnected, so
+    // children survive framework reparenting (disconnect + reconnect).
+    // Nodes the consumer already removed or reparented are left alone.
+    const active = document.activeElement as HTMLElement | null;
+    const hadFocus =
+      active !== null &&
+      this._moved.some((n) => n === active || n.contains(active));
     for (const node of this._moved) {
-      if (node.parentNode) node.parentNode.removeChild(node);
-      if (this.isConnected) this.appendChild(node);
+      if (node.parentNode === this._container) this.appendChild(node);
     }
+    if (hadFocus) active!.focus();
     this._moved = [];
     this._container = null;
     if (hadContainer) {

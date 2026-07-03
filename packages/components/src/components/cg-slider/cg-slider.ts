@@ -26,13 +26,13 @@ export class CgSlider extends LitElement {
       display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--cg-spacing-8);
     }
     .label { font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-medium); color: var(--cg-color-surface-base-text); }
-    .value-display { font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-semibold); color: var(--cg-color-action-primary-background-default); transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out); }
+    .value-display { font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-semibold); color: var(--cg-color-accent-text); transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out); }
     .value-display.active { transform: scale(1.1); }
 
     /* ── Track container ── */
     .track-container {
       position: relative;
-      height: 44px;
+      height: var(--cg-spacing-48);
       display: flex;
       align-items: center;
     }
@@ -63,6 +63,14 @@ export class CgSlider extends LitElement {
     }
 
     /* ── Thumb ── */
+    /* Private travel-inset var — keeps the thumb center inside the track at min/max
+       and aligned with the native input's inset thumb hotspot. */
+    :host { --_thumb-size: var(--cg-spacing-20); }
+    :host([size="sm"]:not([variant="toggle"])) { --_thumb-size: var(--cg-spacing-16); }
+    :host([size="lg"]:not([variant="toggle"])) { --_thumb-size: var(--cg-spacing-24); }
+    :host([variant="toggle"][size="sm"]) { --_thumb-size: var(--cg-spacing-12); }
+    :host([variant="toggle"][size="lg"]) { --_thumb-size: var(--cg-spacing-24); }
+
     .thumb-wrapper {
       position: absolute;
       top: 50%;
@@ -79,26 +87,30 @@ export class CgSlider extends LitElement {
       height: var(--cg-spacing-20);
       border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-slider-thumb-background);
-      border: var(--cg-border-width-100) solid var(--cg-color-surface-cards-border);
+      border: var(--cg-border-width-100) solid var(--cg-color-slider-thumb-border);
       box-shadow: var(--cg-elevation-1);
       transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out), box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       pointer-events: auto;
-      cursor: grab;
     }
-    .thumb:hover {
+    .track-container:hover .thumb:not(.dragging) {
       transform: scale(1.15);
       box-shadow: var(--cg-elevation-2);
     }
     .thumb.dragging {
-      cursor: grabbing;
       transform: scale(1.2);
       box-shadow: var(--cg-elevation-3);
     }
 
-    /* Focus ring */
-    .thumb:focus-visible {
-      outline: none;
+    /* Focus ring — native input is the accessible control; ring paints on the visual thumb.
+       :not(.dragging) keeps the ring above the container-hover rule in specificity. */
+    .track-container:has(input:focus-visible) .thumb:not(.dragging) {
       box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+    }
+    :host([error]) .track-container:has(input:focus-visible) .thumb:not(.dragging) {
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
+    }
+    :host([success]) .track-container:has(input:focus-visible) .thumb:not(.dragging) {
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-success);
     }
 
     /* ── Floating tooltip ── */
@@ -113,7 +125,7 @@ export class CgSlider extends LitElement {
       color: var(--cg-color-tooltip-text);
       font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-semibold);
-      border-radius: var(--cg-border-radius-100);
+      border-radius: var(--cg-component-tooltip-radius);
       white-space: nowrap;
       pointer-events: none;
       opacity: 0;
@@ -141,14 +153,15 @@ export class CgSlider extends LitElement {
       top: 0;
       left: 0;
       opacity: 0;
-      cursor: pointer;
+      cursor: grab;
       margin: 0;
       z-index: 3;
     }
+    .track-container:active input[type="range"] { cursor: grabbing; }
     input[type="range"]:disabled { cursor: not-allowed; }
 
     /* ── Disabled ── */
-    :host([disabled]) .track-container { opacity: 0.5; pointer-events: none; }
+    :host([disabled]) .track-container { opacity: var(--cg-opacity-50); pointer-events: none; }
 
     /* ── Error ── */
     :host([error]) .track-fill { background: var(--cg-color-status-error-text-default); }
@@ -161,7 +174,9 @@ export class CgSlider extends LitElement {
     :host([success]) .value-display { color: var(--cg-color-status-success-text-default); }
 
     /* ── Loading ── */
-    :host([loading]) .track-container { pointer-events: none; opacity: 0.5; }
+    :host([loading]) .track-container { pointer-events: none; opacity: var(--cg-opacity-50); }
+    :host([loading]) .track-fill,
+    :host([loading]) .thumb-wrapper { display: none; }
     .loading-bar {
       position: absolute;
       top: 50%;
@@ -171,7 +186,7 @@ export class CgSlider extends LitElement {
       width: 40%;
       background: var(--cg-color-slider-track-filled);
       border-radius: var(--cg-border-radius-full);
-      animation: cg-slider-loading 1.2s ease-in-out infinite;
+      animation: cg-slider-loading 1.2s var(--cg-transition-easing-ease-in-out) infinite;
     }
     @keyframes cg-slider-loading {
       0% { left: 0; width: 40%; }
@@ -180,7 +195,7 @@ export class CgSlider extends LitElement {
     }
 
     .range-labels { display: flex; justify-content: space-between; margin-top: var(--cg-spacing-4); }
-    .range-label { font-size: var(--cg-font-size-xs); color: var(--cg-color-slider-mark-background); }
+    .range-label { font-size: var(--cg-font-size-xs); color: var(--cg-color-input-text-placeholder); }
 
     /* ── Simple variant — no fill, no tooltip ── */
     :host([variant="simple"]) .track-fill { display: none; }
@@ -194,10 +209,10 @@ export class CgSlider extends LitElement {
     :host([variant="toggle"]) .thumb {
       width: var(--cg-spacing-20);
       height: var(--cg-spacing-20);
-      border: var(--cg-border-width-50) solid var(--cg-overlay-accent-subtle);
+      border: var(--cg-border-width-50) solid var(--cg-color-slider-thumb-border);
       box-shadow: var(--cg-elevation-1);
     }
-    :host([variant="toggle"]) .thumb:hover {
+    :host([variant="toggle"]) .track-container:hover .thumb:not(.dragging) {
       transform: scale(1.05);
     }
     :host([variant="toggle"]) .thumb.dragging {
@@ -279,9 +294,10 @@ export class CgSlider extends LitElement {
   }
 
   private _onPointerDown() { this._dragging = true; this._prevValue = this.value; }
-  private _onPointerUp() { this._dragging = false; this._tilt = 0; }
+  // Class-field arrow so the window listener stays bound to the component instance.
+  private _onPointerUp = () => { this._dragging = false; this._tilt = 0; };
   private _onMouseEnter() { this._hovering = true; }
-  private _onMouseLeave() { this._hovering = false; this._dragging = false; }
+  private _onMouseLeave() { this._hovering = false; }
 
   override connectedCallback() {
     super.connectedCallback();
@@ -314,15 +330,8 @@ export class CgSlider extends LitElement {
             <div class="track-fill ${this._dragging ? 'dragging' : ''}" style="width: ${pct}%"></div>
           </div>
 
-          <div class="thumb-wrapper ${this._dragging ? 'dragging' : ''}" style="left: ${pct}%; --_tilt: ${this._tilt}deg">
-            <div class="thumb ${this._dragging ? 'dragging' : ''}"
-              tabindex=${this.disabled ? '-1' : '0'}
-              role="slider"
-              aria-valuenow=${this.value}
-              aria-valuemin=${this.min}
-              aria-valuemax=${this.max}
-              aria-label=${this.label || nothing}
-            >
+          <div class="thumb-wrapper ${this._dragging ? 'dragging' : ''}" style="left: calc(${pct}% + (0.5 - ${pct / 100}) * var(--_thumb-size)); --_tilt: ${this._tilt}deg">
+            <div class="thumb ${this._dragging ? 'dragging' : ''}" aria-hidden="true">
               ${this.showTooltip ? html`
                 <div class="tooltip ${tooltipVisible ? 'visible' : ''}">${this.value}${this.unit}</div>
               ` : nothing}
@@ -336,8 +345,8 @@ export class CgSlider extends LitElement {
             max=${this.max}
             step=${this.step}
             ?disabled=${this.disabled || this.loading}
-            aria-hidden="true"
-            tabindex="-1"
+            aria-label=${this.label || 'Slider'}
+            aria-valuetext="${this.value}${this.unit}"
             name=${this.name || nothing}
             @input=${this._handleInput}
             @pointerdown=${this._onPointerDown}
