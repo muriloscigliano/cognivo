@@ -81,14 +81,14 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
         <nav>
           {currentSidebar.map((item: SidebarItem, idx: number) =>
             isLink(item) ? (
-              <a href={item.href} class:list={['sl', { on: match(item.href) }]}>{item.label}</a>
+              <a href={item.href} data-astro-reload class:list={['sl', { on: match(item.href) }]}>{item.label}</a>
             ) : (
               <div class="group">
                 {idx > 0 ? <hr class="divider" /> : null}
                 <span class="title">{(item as SidebarGroup).label}</span>
                 {(item as SidebarGroup).items.map((sub) =>
                   isLink(sub) ? (
-                    <a href={sub.href} class:list={['sl', { on: match(sub.href) }]}>{sub.label}</a>
+                    <a href={sub.href} data-astro-reload class:list={['sl', { on: match(sub.href) }]}>{sub.label}</a>
                   ) : (
                     <div class="sub">
                       <details open={groupOpen(sub as SidebarGroup)}>
@@ -96,7 +96,7 @@ const sectionTitle = navLinks.find(l => path.startsWith(l.href))?.label || '';
                         <div class="sub-items">
                           {(sub as SidebarGroup).items.map((leaf) =>
                             isLink(leaf) ? (
-                              <a href={leaf.href} class:list={['sl', { on: match(leaf.href) }]}>{leaf.label}</a>
+                              <a href={leaf.href} data-astro-reload class:list={['sl', { on: match(leaf.href) }]}>{leaf.label}</a>
                             ) : null
                           )}
                         </div>
