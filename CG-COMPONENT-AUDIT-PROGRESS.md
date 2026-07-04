@@ -76,22 +76,22 @@
 | 55 | cg-pagination | 🔧 | wave4: prev/next aria-disabled (focus not dropped at bounds), showFirst/Last usable from markup (string-aware converter, API kept), button-family focus ring, real … glyph, active cursor default, dead hover decls removed |
 | 56 | cg-password-input | 🔧 | wave4: P0 no accessible name → label for/id + aria-label fallback, helper linked via aria-describedby, error/success focus rings, toggle disabled with host + tokenized ring/press, aria-pressed double-signal removed, strength label live region, validity tracks required/minLength |
 | 57 | cg-phone-input | 🔧 | wave4: P0 tel input aria-label, Enter/Space toggle (was one-way), search input named + no dangling activedescendant, aria-controls → popover id, popover entrance animates (visibility not display), trigger locks while loading + press state, letter-spacing tokenized |
-| 58 | cg-popover | ⬜ | |
-| 59 | cg-portal | ⬜ | |
-| 60 | cg-progress-bar | ⬜ | |
-| 61 | cg-radio | ⬜ | |
-| 62 | cg-radio-group | ⬜ | |
-| 63 | cg-rating | ⬜ | |
-| 64 | cg-resizable | ⬜ | |
-| 65 | cg-scroll-area | ⬜ | |
-| 66 | cg-segmented-control | ⬜ | |
-| 67 | cg-select | ⬜ | |
-| 68 | cg-separator | ⬜ | |
-| 69 | cg-sheet | ⬜ | |
+| 58 | cg-popover | 🔧 | wave5: P0 closed popover left keyboard-focusable (visibility toggle), hover content hoverable (scheduled open/close both surfaces, WCAG 1.4.13), ARIA popup state forwarded to slotted trigger, label prop names the dialog, hover mode no longer steals focus, no spurious close on mount |
+| 59 | cg-portal | 🔧 | wave5: P0 double-mount on first connect guarded (observer leak + duplicate mount events), unmount no longer resurrects consumer-deleted nodes, focus preserved across teleport |
+| 60 | cg-progress-bar | 🔧 | wave5: buffer follows status variant + opacity token, formatValue → aria-valuetext, stripe geometry tokenized, dead reduced-motion rule removed |
+| 61 | cg-radio | 🔧 | wave5: P0 roving tabindex was on host not shadow label → delegatesFocus + groupTabIndex, ring/name-reflect/dot/opacity tokens, aria-busy, error/success focus rings. DEFERRED: aria-required move to group (P3-downgraded) |
+| 62 | cg-radio-group | 🔧 | wave5: reversible group disabled (WeakSet), duplicate cg-change swallowed, visible label + aria-labelledby, keyboard follows focus, aria-orientation, error propagation, name clearing propagates |
+| 63 | cg-rating | 🔧 | wave5: P0 invalid radiogroup/valuenow hybrid → slider pattern (stars presentational), disabled leaves tab order, press/opacity/ring/empty-star tokenized |
+| 64 | cg-resizable | 🔧 | wave5: handle hit-area + ring above panes (z-index), named separator (handle-label), drag hands focus to handle, invalid 3-color background dropped, accent overlay/text tokens, min/max re-clamp |
+| 65 | cg-scroll-area | 🔧 | wave5: hover scrollbars work in Firefox + reveal on keyboard focus, thumb drag state, viewport = named region, tab stop only when scrollable |
+| 66 | cg-segmented-control | 🔧 | wave5: P0 keyboard-unreachable when value matched no option (roving seed), arrows skip disabled, label prop, option icons render, press state, opacity token, name reflects, indicator hidden when unmatched |
+| 67 | cg-select | 🔧 | wave5: 18/18 — P0 combobox accessible name, full ARIA 1.2 wiring (controls/activedescendant/invalid/disabled), keyboard nav under search, accent-text selection, hover/highlight action tokens, tier-3 radius default restored, entrance animates, bindOutsideClick |
+| 68 | cg-separator | 🔧 | wave5: doc no longer advertises nonexistent slot, host role removal no longer clobbers consumer roles |
+| 69 | cg-sheet | 🔧 | wave5: body scroll lock (modal/drawer parity), snap-point drag actually works (signed delta, nearest-snap) + keyboard slider on handle, drag tracks 1:1, no spurious close on mount, divider token, saturate parity |
 | 70 | cg-sidebar | ✅ | redesigned (commit 90db886) — collapsed state, active accent, icon contract |
-| 71 | cg-skeleton | ⬜ | |
-| 72 | cg-slider | ⬜ | |
-| 73 | cg-spinner | ⬜ | |
+| 71 | cg-skeleton | 🔧 | wave5: rounded overrides rescoped (circular is circular), dead animated=false → no-animation attr (+ deprecated JS alias for adapters), spinner-secondary bg token, !important width rules dropped, shared pulse keyframes |
+| 72 | cg-slider | 🔧 | wave5: 13/13 — P0 double ARIA control → native input is sole accessible control (thumb presentational), pointer-up leak fixed, hover/cursor states rationalized, thumb-border/placeholder/accent/opacity/spacing tokens, error/success rings, loading hides fill |
+| 73 | cg-spinner | 🔧 | wave5: bg-token-as-border → primary-border token, double announcement fixed (sr-only span is sole name), shared pulse keyframes. DEFERRED: color="accent" removal (API break) |
 | 74 | cg-split-button | ⬜ | |
 | 75 | cg-stack | ⬜ | |
 | 76 | cg-steps | ⬜ | |
