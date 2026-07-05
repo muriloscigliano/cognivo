@@ -101,12 +101,6 @@ export class AiAppSidebar extends LitElement {
       white-space: nowrap;
       overflow: hidden;
     }
-    :host([collapsed]) .section-title {
-      opacity: 0;
-      height: 0;
-      padding: 0;
-    }
-
     .item {
       display: flex;
       align-items: center;
@@ -140,9 +134,15 @@ export class AiAppSidebar extends LitElement {
       outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
       outline-offset: calc(-1 * var(--cg-border-width-100));
     }
-    .item[aria-current="true"] {
+    .item[aria-current="page"] {
       background: var(--cg-color-surface-sidebar-active-background);
-      color: var(--cg-color-surface-base-text);
+      color: var(--cg-color-accent-text);
+      border-left: var(--cg-spacing-2) solid var(--cg-color-action-primary-border-default);
+      padding-left: calc(var(--cg-spacing-16) - var(--cg-spacing-2));
+    }
+    :host([collapsed]) .item[aria-current="page"] {
+      border-left: none;
+      padding-left: 0;
     }
 
     .item-icon {
@@ -150,8 +150,10 @@ export class AiAppSidebar extends LitElement {
       width: var(--cg-spacing-16);
       text-align: center;
       font-size: var(--cg-font-size-sm);
-      color: inherit;
+      color: var(--cg-color-surface-sidebar-icon);
     }
+    .item:hover .item-icon,
+    .item[aria-current="page"] .item-icon { color: inherit; }
 
     .item-label {
       flex: 1;
@@ -200,10 +202,11 @@ export class AiAppSidebar extends LitElement {
   override render() {
     const chevron = this.collapsed ? '\u25B6' : '\u25C0';
     return html`
-      <nav class="sidebar" role="navigation" aria-label="Sidebar navigation">
+      <nav class="sidebar" aria-label="Sidebar navigation">
         <button
           class="collapse-btn"
           @click=${this._handleCollapse}
+          aria-expanded=${this.collapsed ? 'false' : 'true'}
           aria-label=${this.collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >${chevron}</button>
 
@@ -213,10 +216,8 @@ export class AiAppSidebar extends LitElement {
             ${section.items.map(item => html`
               <button
                 class="item"
-                role="menuitem"
-                tabindex="0"
-                aria-current=${item.id === this.activeId ? 'page' : 'false'}
-                aria-label=${item.label}
+                aria-current=${item.id === this.activeId ? 'page' : nothing}
+                aria-label=${item.badge ? `${item.label}, ${item.badge}` : item.label}
                 @click=${() => this._handleItemClick(item)}
               >
                 ${item.icon ? html`<span class="item-icon">${item.icon}</span>` : nothing}

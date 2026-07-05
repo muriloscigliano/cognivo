@@ -7,7 +7,7 @@
  * <ai-analytics-chart
  *   title="Latency (ms)"
  *   yLabel="ms"
- *   .series=${[{name:'p50', color:'#4ade80', data:[{x:'Mon',y:120},{x:'Tue',y:98}]}]}
+ *   .series=${[{name:'p50', data:[{x:'Mon',y:120},{x:'Tue',y:98}]}]}
  * ></ai-analytics-chart>
  * ```
  *
@@ -16,13 +16,15 @@
  * @cssprop [--cg-color-surface-cards-background] - Chart card background
  * @cssprop [--cg-color-surface-cards-border] - Card border + grid line color
  */
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css, svg, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 export interface AnalyticsSeries {
   name: string;
-  color: string;
+  /** Optional stroke color. Defaults to the chart palette tokens
+   *  (--cg-color-chart-1..12-stroke) by series index. */
+  color?: string;
   data: { x: string; y: number }[];
 }
 
@@ -105,25 +107,18 @@ export class AiAnalyticsChart extends LitElement {
 
     .grid-line {
       stroke: var(--cg-color-chart-grid);
-      stroke-width: 0.5;
+      stroke-width: var(--cg-border-width-50);
     }
 
     .data-line {
       fill: none;
-      stroke-width: 2;
+      stroke-width: var(--cg-border-width-100);
       stroke-linecap: round;
       stroke-linejoin: round;
     }
 
     .data-point {
       transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
-    }
-
-    .hit-area {
-      fill: transparent;
-      stroke: transparent;
-      stroke-width: 12;
-      cursor: pointer;
     }
 
     .tooltip {
@@ -155,9 +150,19 @@ export class AiAnalyticsChart extends LitElement {
       fill: var(--cg-color-chart-axis);
     }
 
-    :focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
+    .hit-circle { cursor: pointer; }
+    .hit-circle:focus-visible {
+      outline: var(--cg-focus-ring-width) solid var(--cg-color-focus-ring);
+      outline-offset: var(--cg-focus-ring-offset);
+    }
+
+    .empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: var(--cg-spacing-64);
+      color: var(--cg-color-empty-state-text-secondary);
+      font-size: var(--cg-font-size-sm);
     }
   `];
   @property({ type: Array }) series: AnalyticsSeries[] = [];
@@ -197,7 +202,8 @@ export class AiAnalyticsChart extends LitElement {
   private get _allX(): string[] {
     const set = new Set<string>();
     this.series.forEach(s => s.data.forEach(d => set.add(d.x)));
-    return [...set].sort();
+    // Set preserves first-insertion order — the order the consumer supplied
+    return [...set];
   }
 
   private get _yMin() { return Math.min(0, ...this._allY); }
@@ -226,14 +232,21 @@ export class AiAnalyticsChart extends LitElement {
     }).join(' ');
   }
 
-  private _onPointHover(series: AnalyticsSeries, idx: number, e: MouseEvent): void {
+  /** Series color: consumer-supplied or the chart palette token by index. */
+  private _seriesColor(series: AnalyticsSeries, i: number): string {
+    return series.color ?? `var(--cg-color-chart-${(i % 12) + 1}-stroke)`;
+  }
+
+  private _onPointFocus(series: AnalyticsSeries, idx: number): void {
+    this._onPointHover(series, idx);
+  }
+
+  private _onPointHover(series: AnalyticsSeries, idx: number): void {
     const d = series.data[idx];
     if (!d) return;
-    const svgRect = (e.currentTarget as SVGElement).closest('svg')?.getBoundingClientRect();
-    if (!svgRect) return;
     this._hover = {
       seriesName: series.name,
-      color: series.color,
+      color: this._seriesColor(series, this.series.indexOf(series)),
       x: d.x,
       y: d.y,
       px: this._scaleX(d.x),
@@ -257,14 +270,17 @@ export class AiAnalyticsChart extends LitElement {
     const h = this.height;
     const ih = h - m.top - m.bottom;
 
+    if (!this.series.length || this.series.every(se => !se.data.length)) {
+      return html`<div class="empty">No data yet</div>`;
+    }
     return html`
       ${this.title || this.series.length ? html`
         <div class="header">
           ${this.title ? html`<h3 class="title">${this.title}</h3>` : nothing}
           <div class="legend" role="list" aria-label="Chart legend">
-            ${this.series.map(s => html`
+            ${this.series.map((s, i) => html`
               <span class="legend-item" role="listitem">
-                <span class="legend-dot" style="background:${s.color}"></span>
+                <span class="legend-dot" style="background:${this._seriesColor(s, i)}"></span>
                 ${s.name}
               </span>
             `)}
@@ -274,7 +290,7 @@ export class AiAnalyticsChart extends LitElement {
       <div class="chart-wrap" @mouseleave=${this._onMouseLeave}>
         <svg viewBox="0 0 ${this._width} ${h}" aria-label="${this.title || 'Analytics chart'}"
              role="img" tabindex="0">
-          ${this.yLabel ? html`
+          ${this.yLabel ? svg`
             <text class="y-label" x="4" y="${m.top + ih / 2}"
                   transform="rotate(-90, 12, ${m.top + ih / 2})"
                   text-anchor="middle">${this.yLabel}</text>
@@ -282,32 +298,33 @@ export class AiAnalyticsChart extends LitElement {
           ${Array.from({ length: yTicks }, (_, i) => {
             const val = this._yMin + (yRange * i) / (yTicks - 1);
             const y = this._scaleY(val);
-            return html`
+            return svg`
               <line class="grid-line" x1="${m.left}" x2="${this._width - m.right}" y1="${y}" y2="${y}" />
               <text class="axis-label" x="${m.left - 6}" y="${y + 3}" text-anchor="end">
                 ${Math.round(val * 10) / 10}
               </text>
             `;
           })}
-          ${xs.length <= 12 ? xs.map((x, i) => html`
+          ${xs.length <= 12 ? xs.map((x) => svg`
             <text class="axis-label" x="${this._scaleX(x)}" y="${h - 4}" text-anchor="middle">
               ${x}
             </text>
-          `) : xs.filter((_, i) => i % Math.ceil(xs.length / 8) === 0).map(x => html`
+          `) : xs.filter((_, i) => i % Math.ceil(xs.length / 8) === 0).map(x => svg`
             <text class="axis-label" x="${this._scaleX(x)}" y="${h - 4}" text-anchor="middle">
               ${x}
             </text>
           `)}
-          ${this.series.map(s => html`
-            <path class="data-line" d="${this._buildPath(s.data)}" stroke="${s.color}" />
-            <path class="hit-area" d="${this._buildPath(s.data)}" />
-            ${s.data.map((d, idx) => html`
+          ${this.series.map((s, si) => svg`
+            <path class="data-line" d="${this._buildPath(s.data)}" style="stroke:${this._seriesColor(s, si)}" />
+            ${s.data.map((d, idx) => svg`
               <circle class="data-point" cx="${this._scaleX(d.x)}" cy="${this._scaleY(d.y)}" r="3"
-                      fill="${s.color}" opacity="${this._hover?.x === d.x && this._hover?.seriesName === s.name ? 1 : 0}"
-                      @mouseenter=${(e: MouseEvent) => this._onPointHover(s, idx, e)} />
-              <circle cx="${this._scaleX(d.x)}" cy="${this._scaleY(d.y)}" r="10"
-                      fill="transparent" style="cursor:pointer"
-                      @mouseenter=${(e: MouseEvent) => this._onPointHover(s, idx, e)} />
+                      style="fill:${this._seriesColor(s, si)}" opacity="${this._hover?.x === d.x && this._hover?.seriesName === s.name ? 1 : 0}" />
+              <circle class="hit-circle" cx="${this._scaleX(d.x)}" cy="${this._scaleY(d.y)}" r="10"
+                      fill="transparent" tabindex="0" role="img"
+                      aria-label="${s.name}, ${d.x}: ${d.y}"
+                      @mouseenter=${() => this._onPointHover(s, idx)}
+                      @focus=${() => this._onPointFocus(s, idx)}
+                      @blur=${this._onMouseLeave} />
             `)}
           `)}
         </svg>
