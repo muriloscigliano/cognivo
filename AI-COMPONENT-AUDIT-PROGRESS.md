@@ -20,16 +20,16 @@
 
 | # | Component | Status | Notes |
 |---|-----------|--------|-------|
-| 1 | ai-ab-test | ⬜ | |
+| 1 | ai-ab-test | 🔧 | A1: winner border bg-token → border token, vote results announced (live region — cg-button shadow blocks host aria-pressed), swap announces vote-clear, region→group, bg transition enumerated; +6 tests |
 | 2 | ai-accessibility-report | ⬜ | |
-| 3 | ai-action-preview | ⬜ | |
+| 3 | ai-action-preview | 🔧 | A1: 16/16 — P0 contrast on critical confirm → text-inverse, real alertdialog contract (Escape, cancel autofocus), confirmed/disabled states, countdown pauses on focus/hover + role=timer, 7 token fixes; +6 tests |
 | 4 | ai-agent-card | ⬜ | |
 | 5 | ai-agent-steps | ⬜ | |
 | 6 | ai-alert-card | ⬜ | |
-| 7 | ai-analytics-chart | ⬜ | |
-| 8 | ai-annotation | ⬜ | |
+| 7 | ai-analytics-chart | 🔧 | A1: P0 chart INVISIBLE (nested html`` in svg → wrong namespace) fixed with svg``, x-order preserved, keyboard/SR hit-circles, empty state, palette-token default colors (color now optional), dead code removed; +5 tests incl. namespace regression |
+| 8 | ai-annotation | 🔧 | A1: 11/11 — P0 keyboard operability (role=button spans, keyup creation), unreachable remove event wired, dark-only token → cross-theme, hues sanitized, aria-pressed toolbar; +6 tests |
 | 9 | ai-api-key-manager | ⬜ | |
-| 10 | ai-app-sidebar | ⬜ | |
+| 10 | ai-app-sidebar | 🔧 | A1: P0 active state never rendered (aria-current true vs page) + distinct active chrome (accent bar), menuitem role dropped, badges in accessible names, aria-expanded on collapse, sidebar-icon token |
 | 11 | ai-assistant-widget | ⬜ | |
 | 12 | ai-audio-player | ⬜ | |
 | 13 | ai-avatar | ⬜ | |
