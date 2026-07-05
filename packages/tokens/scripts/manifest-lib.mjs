@@ -163,6 +163,7 @@ const TIER_RULES = [
   // Tier 1 — palette + brand + primitives
   { test: (n) => /^--cg-(gray|red|orange|amber|yellow|lime|green|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|brown|stone|neutral|zinc|slate)-/.test(n), tier: 1 },
   { test: (n) => n.startsWith('--cg-brand-'), tier: 1 },
+  { test: (n) => n.startsWith('--cg-size-'), tier: 1 },
   { test: (n) => /^--cg-(spacing|font-size|font-weight|font-family|line-height|letter-spacing|border-width|border-radius|border-style|opacity|icon-size|transition|motion|easing|blur|cursor|layout|outline-width|outline-style|outline-offset|z-index)-/.test(n), tier: 1 },
   // text-align / text-decoration / text-style / text-transform are CSS keyword primitives
   { test: (n) => /^--cg-text-(align|decoration|style|transform)-/.test(n), tier: 1 },

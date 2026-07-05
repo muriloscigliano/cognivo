@@ -1529,5 +1529,11 @@
       "$type": "color",
       "$value": "#0C0A09"
     }
+  },
+  "size": {
+    "touch-target": {
+      "$type": "dimension",
+      "$value": "44px"
+    }
   }
 }

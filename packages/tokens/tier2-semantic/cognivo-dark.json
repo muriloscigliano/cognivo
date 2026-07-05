@@ -173,7 +173,7 @@
           },
           "hover": {
             "$type": "color",
-            "$value": "{green.400}"
+            "$value": "rgba(34, 197, 94, 0.2)"
           }
         },
         "text": {
@@ -201,7 +201,7 @@
           },
           "hover": {
             "$type": "color",
-            "$value": "{yellow.400}"
+            "$value": "rgba(245, 158, 11, 0.2)"
           }
         },
         "text": {
@@ -229,7 +229,11 @@
           },
           "hover": {
             "$type": "color",
-            "$value": "{red.400}"
+            "$value": "rgba(239, 68, 68, 0.2)"
+          },
+          "hover-strong": {
+            "$type": "color",
+            "$value": "{red.500}"
           }
         },
         "text": {
@@ -257,7 +261,7 @@
           },
           "hover": {
             "$type": "color",
-            "$value": "{blue.400}"
+            "$value": "rgba(59, 130, 246, 0.2)"
           }
         },
         "text": {

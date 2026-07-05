@@ -200,6 +200,10 @@
           "hover": {
             "$type": "color",
             "$value": "{red.300}"
+          },
+          "hover-strong": {
+            "$type": "color",
+            "$value": "{red.800}"
           }
         },
         "text": {
