@@ -124,6 +124,10 @@
       "radius": {
         "$type": "dimension",
         "$value": "{border.radius.100}"
+      },
+      "max-width": {
+        "$type": "dimension",
+        "$value": "280px"
       }
     },
     "select": {
