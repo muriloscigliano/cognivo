@@ -14,8 +14,7 @@
  * @fires {CustomEvent} ai-audio-play - Playback started
  * @fires {CustomEvent} ai-audio-pause - Playback paused
  * @fires {CustomEvent} ai-audio-end - Playback reached the end
- *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Play button, waveform progress, and seek fill color
+ * @fires {CustomEvent} ai-audio-error - Audio source failed to load
  */
 import { LitElement, html, css } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
@@ -54,8 +53,13 @@ export class AiAudioPlayer extends LitElement {
       padding: 0;
       transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .play-btn:hover { transform: scale(1.05); }
-    .play-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
+    .play-btn:hover:not(:disabled) { transform: scale(1.05); }
+    .play-btn:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
+    .play-btn:disabled {
+      background: var(--cg-color-action-primary-background-disable);
+      color: var(--cg-color-action-primary-text-disable);
+      cursor: not-allowed;
+    }
     .play-btn:focus-visible {
       outline: none;
       box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
@@ -90,6 +94,9 @@ export class AiAudioPlayer extends LitElement {
       font-variant-numeric: tabular-nums;
       flex-shrink: 0;
     }
+    .time.error {
+      color: var(--cg-color-status-error-text-default);
+    }
 
     .waveform {
       display: flex;
@@ -119,6 +126,15 @@ export class AiAudioPlayer extends LitElement {
       border-radius: var(--cg-border-radius-full);
       cursor: pointer;
       position: relative;
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+    }
+    .progress-track::before {
+      content: '';
+      position: absolute;
+      inset: calc(-1 * var(--cg-spacing-8)) 0;
+    }
+    .progress-track:hover {
+      background: var(--cg-color-surface-cards-border-strong);
     }
     .progress-fill {
       height: 100%;
@@ -140,11 +156,15 @@ export class AiAudioPlayer extends LitElement {
       font-family: inherit;
       transition:
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .speed-btn:hover {
       color: var(--cg-color-surface-base-text);
       background: var(--cg-color-action-tertiary-background-hover);
+    }
+    .speed-btn:active {
+      transform: scale(var(--cg-interaction-press-scale));
     }
     .speed-btn:focus-visible {
       outline: none;
@@ -166,6 +186,7 @@ export class AiAudioPlayer extends LitElement {
   @state() private _playing = false;
   @state() private _currentTime = 0;
   @state() private _loaded = false;
+  @state() private _error = false;
   @state() private _speed = 1;
   @state() private _waveBars: number[] = [];
 
@@ -175,11 +196,20 @@ export class AiAudioPlayer extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback();
-    this._waveBars = Array.from({ length: 40 }, () => 20 + Math.random() * 80);
+    if (this._waveBars.length === 0) {
+      this._waveBars = Array.from({ length: 40 }, () => 20 + Math.random() * 80);
+    }
     this._audio = new Audio();
+    this._audio.playbackRate = this._speed;
     this._audio.addEventListener('loadedmetadata', () => {
       this._loaded = true;
       if (!this.duration) this.duration = this._audio!.duration;
+    });
+    this._audio.addEventListener('error', () => {
+      this._error = true;
+      this._playing = false;
+      cancelAnimationFrame(this._raf);
+      this.dispatchEvent(new CustomEvent('ai-audio-error', { bubbles: true, composed: true }));
     });
     this._audio.addEventListener('ended', () => {
       this._playing = false;
@@ -199,6 +229,12 @@ export class AiAudioPlayer extends LitElement {
 
   override updated(changed: Map<string, unknown>) {
     if (changed.has('src') && this._audio && this.src) {
+      this._audio.pause();
+      cancelAnimationFrame(this._raf);
+      this._playing = false;
+      this._currentTime = 0;
+      this._loaded = false;
+      this._error = false;
       this._audio.src = this.src;
       this._audio.load();
     }
@@ -212,19 +248,20 @@ export class AiAudioPlayer extends LitElement {
   };
 
   private _togglePlay() {
-    if (!this._audio) return;
+    if (!this._audio || this._error) return;
     if (this._playing) {
       this._audio.pause();
       this._playing = false;
       cancelAnimationFrame(this._raf);
       this.dispatchEvent(new CustomEvent('ai-audio-pause', { bubbles: true, composed: true }));
     } else {
-      this._audio.play().catch(() => {
+      Promise.resolve(this._audio.play()).then(() => {
+        this._playing = true;
+        this._raf = requestAnimationFrame(this._tick);
+        this.dispatchEvent(new CustomEvent('ai-audio-play', { bubbles: true, composed: true }));
+      }).catch(() => {
         this._playing = false;
       });
-      this._playing = true;
-      this._raf = requestAnimationFrame(this._tick);
-      this.dispatchEvent(new CustomEvent('ai-audio-play', { bubbles: true, composed: true }));
     }
   }
 
@@ -278,6 +315,7 @@ export class AiAudioPlayer extends LitElement {
         <button
           class="play-btn"
           aria-label=${this._playing ? 'Pause' : 'Play'}
+          ?disabled=${this._error}
           @click=${this._togglePlay}
         >
           <cg-icon name="${this._playing ? 'pause' : 'play'}" size="sm"></cg-icon>
@@ -286,7 +324,9 @@ export class AiAudioPlayer extends LitElement {
         <div class="content">
           <div class="title-row">
             <span class="title">${this.title}</span>
-            <span class="time">${this._fmt(this._currentTime)} / ${this._fmt(dur)}</span>
+            ${this._error
+              ? html`<span class="time error" role="status">Failed to load</span>`
+              : html`<span class="time">${this._fmt(this._currentTime)} / ${this._loaded || this.duration ? this._fmt(dur) : '--:--'}</span>`}
           </div>
           <div class="waveform" aria-hidden="true">
             ${this._waveBars.map((h, i) => {
@@ -302,6 +342,7 @@ export class AiAudioPlayer extends LitElement {
             aria-valuemin="0"
             aria-valuemax=${Math.floor(dur)}
             aria-valuenow=${Math.floor(this._currentTime)}
+            aria-valuetext=${`${this._fmt(this._currentTime)} of ${this._fmt(dur)}`}
             @click=${this._seek}
             @keydown=${this._seekKeydown}
           >
@@ -309,7 +350,7 @@ export class AiAudioPlayer extends LitElement {
           </div>
         </div>
 
-        <button class="speed-btn" aria-label="Playback speed" @click=${this._cycleSpeed}>
+        <button class="speed-btn" aria-label=${`Playback speed ${this._speed}x`} @click=${this._cycleSpeed}>
           ${this._speed}x
         </button>
       </div>

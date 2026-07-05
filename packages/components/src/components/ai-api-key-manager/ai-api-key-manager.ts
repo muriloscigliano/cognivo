@@ -13,8 +13,6 @@
  * @fires {CustomEvent} ai-key-create - Create button clicked
  * @fires {CustomEvent<{id: string, name: string}>} ai-key-revoke - Revoke button clicked
  * @fires {CustomEvent<{id: string, name: string}>} ai-key-delete - Delete button clicked
- *
- * @cssprop [--cg-color-accent=#dfff61] - Create button and focus ring color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
@@ -67,7 +65,7 @@ export class AiApiKeyManager extends LitElement {
       align-items: center;
       gap: var(--cg-spacing-4);
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-container-background);
+      color: var(--cg-color-action-primary-text-default);
       border: none;
       border-radius: var(--cg-border-radius-100);
       padding: var(--cg-spacing-6) var(--cg-spacing-12);
@@ -75,6 +73,9 @@ export class AiApiKeyManager extends LitElement {
       font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       font-family: inherit;
+      transition:
+        background-color var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out),
+        color var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
     }
 
     .create-btn:focus-visible {
@@ -83,7 +84,11 @@ export class AiApiKeyManager extends LitElement {
     }
 
     .create-btn:hover:not(:disabled) {
-      filter: brightness(1.1);
+      background: var(--cg-color-action-primary-background-hover);
+    }
+    .create-btn:active:not(:disabled) {
+      background: var(--cg-color-action-primary-background-active);
+      transform: scale(var(--cg-interaction-press-scale));
     }
     .create-btn:disabled {
       background: var(--cg-color-action-primary-background-disable);
@@ -140,7 +145,7 @@ export class AiApiKeyManager extends LitElement {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-semibold);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: var(--cg-letter-spacing-wider);
       flex-shrink: 0;
     }
 
@@ -174,6 +179,19 @@ export class AiApiKeyManager extends LitElement {
       font-size: var(--cg-font-size-xs);
       font-family: inherit;
       padding: 0;
+      transition:
+        background-color var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out),
+        color var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out),
+        border-color var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
+    }
+
+    .action-btn svg {
+      width: var(--cg-icon-size-100);
+      height: var(--cg-icon-size-100);
+    }
+
+    .action-btn:active {
+      transform: scale(var(--cg-interaction-press-scale));
     }
 
     .action-btn:hover {
@@ -189,7 +207,7 @@ export class AiApiKeyManager extends LitElement {
     .action-btn.danger:hover {
       background: var(--cg-color-status-error-background-default);
       color: var(--cg-color-status-error-text-default);
-      border-color: var(--cg-color-status-error-text-default);
+      border-color: var(--cg-color-status-error-border-default);
     }
 
     .copied-toast {
@@ -204,11 +222,30 @@ export class AiApiKeyManager extends LitElement {
       color: var(--cg-color-input-text-placeholder);
       font-size: var(--cg-font-size-sm);
     }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
   `];
   @property({ type: Array }) keys: ApiKeyEntry[] = [];
   @property({ type: Number }) maxKeys = 10;
 
   @state() private _copiedId: string | null = null;
+
+  private _copiedTimer?: ReturnType<typeof setTimeout>;
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    clearTimeout(this._copiedTimer);
+  }
 
   private _onCreate(): void {
     this.dispatchEvent(new CustomEvent('ai-key-create', {
@@ -233,8 +270,9 @@ export class AiApiKeyManager extends LitElement {
   private async _onCopy(key: ApiKeyEntry): Promise<void> {
     try {
       await navigator.clipboard.writeText(key.prefix);
+      clearTimeout(this._copiedTimer);
       this._copiedId = key.id;
-      setTimeout(() => { this._copiedId = null; }, 2000);
+      this._copiedTimer = setTimeout(() => { this._copiedId = null; }, 2000);
     } catch { /* clipboard not available */ }
   }
 
@@ -249,11 +287,11 @@ export class AiApiKeyManager extends LitElement {
         </div>
         <button class="create-btn" ?disabled=${atLimit}
                 @click=${this._onCreate}
-                aria-label="Create new API key"
-                tabindex="0">
+                aria-label="Create new API key">
           + Create Key
         </button>
       </div>
+      <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">${this._copiedId ? 'Key prefix copied to clipboard' : ''}</div>
       ${this.keys.length === 0 ? html`
         <div class="empty" role="status">No API keys created yet.</div>
       ` : html`
@@ -273,16 +311,28 @@ export class AiApiKeyManager extends LitElement {
               <span class="status-badge status-${k.status}">${k.status}</span>
               <div class="actions">
                 <button class="action-btn" @click=${() => this._onCopy(k)}
-                        aria-label="Copy key prefix" tabindex="0"
-                        title="Copy">&#x2398;</button>
+                        aria-label="Copy key prefix for ${k.name}"
+                        title="Copy">
+                  <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                    <path d="M5 2h7a1 1 0 0 1 1 1v8h-1.5V3.5H5V2ZM3 4.5h7a1 1 0 0 1 1 1V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5.5a1 1 0 0 1 1-1Zm.5 1.5v6.5h6V6h-6Z"/>
+                  </svg>
+                </button>
                 ${k.status === 'active' ? html`
                   <button class="action-btn" @click=${() => this._onRevoke(k)}
-                          aria-label="Revoke key ${k.name}" tabindex="0"
-                          title="Revoke">&#x2718;</button>
+                          aria-label="Revoke key ${k.name}"
+                          title="Revoke">
+                    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                      <path d="M4.28 3.22 8 6.94l3.72-3.72 1.06 1.06L9.06 8l3.72 3.72-1.06 1.06L8 9.06l-3.72 3.72-1.06-1.06L6.94 8 3.22 4.28l1.06-1.06Z"/>
+                    </svg>
+                  </button>
                 ` : nothing}
                 <button class="action-btn danger" @click=${() => this._onDelete(k)}
-                        aria-label="Delete key ${k.name}" tabindex="0"
-                        title="Delete">&#x1f5d1;</button>
+                        aria-label="Delete key ${k.name}"
+                        title="Delete">
+                  <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                    <path d="M6 2h4l.5 1H14v1.5H2V3h3.5L6 2ZM3.5 6h9L12 14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1L3.5 6Zm2.2 1.5.3 5.5h1.2l-.3-5.5H5.7Zm3.4 0-.3 5.5h1.2l.3-5.5H9.1Z"/>
+                  </svg>
+                </button>
               </div>
             </div>
           `)}
