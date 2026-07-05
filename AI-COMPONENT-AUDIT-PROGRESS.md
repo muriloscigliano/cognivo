@@ -28,10 +28,10 @@
 | 6 | ai-alert-card | ⬜ | |
 | 7 | ai-analytics-chart | 🔧 | A1: P0 chart INVISIBLE (nested html`` in svg → wrong namespace) fixed with svg``, x-order preserved, keyboard/SR hit-circles, empty state, palette-token default colors (color now optional), dead code removed; +5 tests incl. namespace regression |
 | 8 | ai-annotation | 🔧 | A1: 11/11 — P0 keyboard operability (role=button spans, keyup creation), unreachable remove event wired, dark-only token → cross-theme, hues sanitized, aria-pressed toolbar; +6 tests |
-| 9 | ai-api-key-manager | ⬜ | |
+| 9 | ai-api-key-manager | 🔧 | A1: 12/12 — 2 token contract fixes, brightness() → hover token, per-key copy labels, Copied! live region, press states, SVG icons replace emoji, timer leak; +6 tests |
 | 10 | ai-app-sidebar | 🔧 | A1: P0 active state never rendered (aria-current true vs page) + distinct active chrome (accent bar), menuitem role dropped, badges in accessible names, aria-expanded on collapse, sidebar-icon token |
 | 11 | ai-assistant-widget | ⬜ | |
-| 12 | ai-audio-player | ⬜ | |
+| 12 | ai-audio-player | 🔧 | A1: 11/11 — error state + event (was none), _loaded wired, stale-playback on src swap fixed, play() promise handled, speed/slider a11y, track hit area, reconnect playbackRate; +6 tests |
 | 13 | ai-avatar | ⬜ | |
 | 14 | ai-badge | ⬜ | |
 | 15 | ai-batch-progress | ⬜ | |
