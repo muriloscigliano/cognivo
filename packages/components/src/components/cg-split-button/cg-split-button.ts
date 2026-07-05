@@ -199,9 +199,11 @@ export class CgSplitButton extends LitElement {
       color: var(--cg-color-status-error-text-inverse);
       border-color: transparent;
     }
-    :host([type="danger"]) .group > button:not(:disabled):hover,
-    :host([type="danger"][variant="primary"]) .group > button:not(:disabled):hover {
+    :host([type="danger"]) .group > button:not(:disabled):hover {
       background: var(--cg-color-status-error-background-hover);
+    }
+    :host([type="danger"][variant="primary"]) .group > button:not(:disabled):hover {
+      background: var(--cg-color-status-error-background-hover-strong);
       color: var(--cg-color-status-error-text-inverse);
     }
     :host([type="danger"]) .primary::after { background: color-mix(in srgb, var(--cg-color-status-error-text-default) 25%, transparent); }
@@ -367,8 +369,10 @@ export class CgSplitButton extends LitElement {
       <ul class="menu" role="menu" ?inert=${!this.open}>
         ${this.items.map((item, index) => {
           if (item.separator) return html`<li role="separator" class="divider"></li>`;
-          selectableIdx++;
-          const isActive = selectableIdx === this._activeIndex;
+          // Roving index counts only enabled items (handleRovingKey skips
+          // disabled) — counting disabled here would offset the highlight.
+          if (!item.disabled) selectableIdx++;
+          const isActive = !item.disabled && selectableIdx === this._activeIndex;
           return html`
             <li role="none">
               <button

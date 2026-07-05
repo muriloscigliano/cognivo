@@ -37,7 +37,7 @@ export class CgCheckbox extends LitElement {
       gap: var(--cg-spacing-8);
       cursor: pointer;
       padding: var(--cg-spacing-6) 0;
-      min-height: 44px;
+      min-height: var(--cg-size-touch-target);
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
@@ -142,13 +142,6 @@ export class CgCheckbox extends LitElement {
     }
 
     /* Hidden native input */
-    input {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-      pointer-events: none;
-    }
 
     /* ── Error state ── */
     :host([error]) .box {
@@ -208,6 +201,9 @@ export class CgCheckbox extends LitElement {
   `];
 
   @property() label = '';
+  /** Accessible name when no visible label is rendered (host aria-label is
+   *  forwarded to the internal control, which carries the role). */
+  @property({ attribute: 'aria-label' }) override ariaLabel: string | null = null;
   @property() description = '';
   @property() name = '';
   @property() value = '';
@@ -260,6 +256,7 @@ export class CgCheckbox extends LitElement {
       <label
         tabindex=${this.disabled ? '-1' : '0'}
         role="checkbox"
+        aria-label=${!this.label && this.ariaLabel ? this.ariaLabel : nothing}
         aria-checked=${this.indeterminate ? 'mixed' : String(this.checked)}
         aria-disabled=${String(this.disabled)}
         aria-required=${this.required ? 'true' : 'false'}
@@ -268,11 +265,6 @@ export class CgCheckbox extends LitElement {
         @click=${this._toggle}
         @keydown=${(e: KeyboardEvent) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); this._toggle(e); } }}
       >
-        <input type="checkbox" .checked=${this.checked} .indeterminate=${this.indeterminate}
-          ?disabled=${this.disabled} name=${this.name} value=${this.value}
-          tabindex="-1" aria-hidden="true"
-          @click=${(e: Event) => e.stopPropagation()} />
-
         ${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : html`<span class="box ${state}">
           ${this.checked ? html`
             <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">

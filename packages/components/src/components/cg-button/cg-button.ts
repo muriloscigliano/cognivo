@@ -131,7 +131,7 @@ export class CgButton extends LitElement {
       background: var(--cg-color-status-error-background-hover);
     }
     :host([type="danger"][variant="primary"]) button:not(:disabled):hover {
-      background: var(--cg-color-status-error-background-hover);
+      background: var(--cg-color-status-error-background-hover-strong);
     }
 
     /* ── Disabled ──

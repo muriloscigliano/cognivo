@@ -56,17 +56,30 @@ export class CgContextMenu extends LitElement {
       z-index: var(--cg-z-index-500);
       list-style: none;
     }
+
+    .menu-empty {
+      padding: var(--cg-spacing-8);
+      color: var(--cg-color-surface-container-outlined);
+      font-size: var(--cg-font-size-sm);
+      text-align: center;
+    }
   `];
 
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: Array }) items: ContextMenuItem[] = [];
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Accessible name for the menu (bound as aria-label on role="menu"). */
+  @property() label = 'Context menu';
 
   @state() private _activeIndex = -1;
+  @state() private _closing = false;
 
   @query('.menu') private _menuEl!: HTMLElement;
 
   private _disposeOutsideClick: (() => void) | null = null;
+  /** Element focused before the menu opened — restored on Escape / select. */
+  private _previousFocus: HTMLElement | null = null;
+  private _closeTimer: number | null = null;
 
   /** Long-press support — touch equivalent of right-click. Opens the menu
    * after 500ms of stationary press. Auto-cancels if the pointer moves more
@@ -98,6 +111,11 @@ export class CgContextMenu extends LitElement {
     this._cancelLongPress();
     this._disposeOutsideClick?.();
     this._disposeOutsideClick = null;
+    document.removeEventListener('keydown', this._handleKeydown);
+    if (this._closeTimer !== null) {
+      window.clearTimeout(this._closeTimer);
+      this._closeTimer = null;
+    }
   }
 
   private _onPointerDown = (e: PointerEvent): void => {
@@ -133,13 +151,24 @@ export class CgContextMenu extends LitElement {
     }
   };
 
+  /** Deepest focused element, pierced through open shadow roots. */
+  private static _deepActiveElement(): HTMLElement | null {
+    let active: Element | null = document.activeElement;
+    while (active?.shadowRoot?.activeElement) {
+      active = active.shadowRoot.activeElement;
+    }
+    return active as HTMLElement | null;
+  }
+
   private _onContextMenu = (e: Event): void => {
     if (this.disabled) return;
     const mouseEvent = e as MouseEvent;
     mouseEvent.preventDefault();
 
+    if (!this.open) {
+      this._previousFocus = CgContextMenu._deepActiveElement();
+    }
     this.open = true;
-    this._activeIndex = -1;
     this.dispatchEvent(new CustomEvent('cg-context-menu-open', { bubbles: true, composed: true }));
 
     // Position at mouse coords — use a synthetic "reference" element positioned at the pointer.
@@ -163,12 +192,15 @@ export class CgContextMenu extends LitElement {
     this._disposeOutsideClick = bindOutsideClick(this, () => this._close());
   };
 
-  private _close(): void {
+  private _close(restoreFocus = false): void {
+    if (!this.open) return;
     this.open = false;
     this._activeIndex = -1;
     this._disposeOutsideClick?.();
     this._disposeOutsideClick = null;
     this.dispatchEvent(new CustomEvent('cg-context-menu-close', { bubbles: true, composed: true }));
+    if (restoreFocus) this._previousFocus?.focus();
+    this._previousFocus = null;
   }
 
   private _handleItemClick(item: ContextMenuItem): void {
@@ -178,32 +210,106 @@ export class CgContextMenu extends LitElement {
       bubbles: true,
       composed: true,
     }));
-    this._close();
+    this._close(true);
+  }
+
+  /** Selectable = keyboard-navigable: not a separator, not disabled. */
+  private get _selectableItems(): ContextMenuItem[] {
+    return this.items.filter(i => !i.separator && !i.disabled);
+  }
+
+  /** Move real DOM focus to the selectable item at `index` (roving focus). */
+  private _focusItem(index: number): void {
+    this.updateComplete.then(() => {
+      const items = this.shadowRoot?.querySelectorAll<HTMLElement>('.menu-item:not([disabled])');
+      items?.[index]?.focus();
+    });
   }
 
   private _handleKeydown = (e: KeyboardEvent): void => {
     if (!this.open) return;
+    if (e.key === 'Tab') {
+      // No focus trap — Tab dismisses and lets focus move on naturally.
+      this._close();
+      return;
+    }
     const { index, handled } = handleRovingKey(e, {
       items: this.items,
       activeIndex: this._activeIndex,
       isSkippable: i => Boolean(i.separator || i.disabled),
       onSelect: item => this._handleItemClick(item),
-      onEscape: () => this._close(),
+      onEscape: () => this._close(true),
     });
     if (handled) {
       e.preventDefault();
-      this._activeIndex = index;
+      if (this.open) {
+        this._activeIndex = index;
+        this._focusItem(index);
+      }
+      return;
     }
+    this._typeahead(e);
   };
 
-  override updated(changed: Map<string, unknown>): void {
-    if (changed.has('open')) {
-      if (this.open) {
-        document.addEventListener('keydown', this._handleKeydown);
-      } else {
-        document.removeEventListener('keydown', this._handleKeydown);
+  /** Jump focus to the next item whose label starts with the typed character. */
+  private _typeahead(e: KeyboardEvent): void {
+    if (e.key.length !== 1 || e.ctrlKey || e.metaKey || e.altKey) return;
+    const char = e.key.toLowerCase();
+    if (!/\S/.test(char)) return;
+    const selectable = this._selectableItems;
+    if (selectable.length === 0) return;
+    const start = this._activeIndex >= 0 ? this._activeIndex + 1 : 0;
+    for (let offset = 0; offset < selectable.length; offset++) {
+      const idx = (start + offset) % selectable.length;
+      const item = selectable[idx];
+      if (item && item.label.toLowerCase().startsWith(char)) {
+        e.preventDefault();
+        this._activeIndex = idx;
+        this._focusItem(idx);
+        return;
       }
     }
+  }
+
+  override updated(changed: Map<string, unknown>): void {
+    if (!changed.has('open')) return;
+    if (this.open) {
+      // Reopening cancels any in-flight exit animation.
+      if (this._closeTimer !== null) {
+        window.clearTimeout(this._closeTimer);
+        this._closeTimer = null;
+      }
+      this._closing = false;
+      document.addEventListener('keydown', this._handleKeydown);
+      // Roving focus: real DOM focus lands on the first selectable item
+      // (same pattern as cg-dropdown / cg-split-button).
+      if (this._activeIndex < 0 && this._selectableItems.length > 0) {
+        this._activeIndex = 0;
+      }
+      if (this._activeIndex >= 0) this._focusItem(this._activeIndex);
+    } else {
+      document.removeEventListener('keydown', this._handleKeydown);
+      if (changed.get('open') === true) this._startClosing();
+    }
+  }
+
+  /** Exit animation: `.closing` plays cg-menu-exit (menuListStyles), cleared
+   * on animationend with a timeout fallback — cg-modal / cg-tooltip pattern. */
+  private _startClosing(): void {
+    this._closing = true;
+    const finish = (): void => {
+      if (this._closeTimer !== null) {
+        window.clearTimeout(this._closeTimer);
+        this._closeTimer = null;
+      }
+      this._closing = false;
+    };
+    const menu = this.shadowRoot?.querySelector('.menu');
+    menu?.addEventListener('animationend', (e) => {
+      if ((e as AnimationEvent).animationName === 'cg-menu-exit') finish();
+    }, { once: true });
+    // Fallback for prefers-reduced-motion / detached nodes.
+    this._closeTimer = window.setTimeout(finish, 300);
   }
 
   override render() {
@@ -213,17 +319,23 @@ export class CgContextMenu extends LitElement {
         <slot></slot>
       </div>
       <ul
-        class="menu"
+        class="menu ${this._closing ? 'closing' : ''}"
         role="menu"
+        aria-label=${this.label}
         aria-orientation="vertical"
-        ?hidden=${!this.open}
+        ?inert=${!this.open}
       >
+        ${this.items.length === 0 ? html`
+          <li class="menu-empty" role="presentation">No actions</li>
+        ` : nothing}
         ${this.items.map((item, idx) => {
           if (item.separator) {
             return html`<li role="separator" class="divider"></li>`;
           }
-          selectableIdx++;
-          const isActive = selectableIdx === this._activeIndex;
+          // _activeIndex indexes the *selectable* sub-list (no separators,
+          // no disabled items) — matches handleRovingKey's contract.
+          if (!item.disabled) selectableIdx++;
+          const isActive = !item.disabled && selectableIdx === this._activeIndex;
           return html`
             <li role="none">
               <button

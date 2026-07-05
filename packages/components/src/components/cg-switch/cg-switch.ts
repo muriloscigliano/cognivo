@@ -33,7 +33,7 @@ export class CgSwitch extends LitElement {
       align-items: center;
       gap: var(--cg-spacing-8);
       cursor: pointer;
-      min-height: 44px;
+      min-height: var(--cg-size-touch-target);
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
