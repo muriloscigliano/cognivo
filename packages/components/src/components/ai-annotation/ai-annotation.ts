@@ -16,7 +16,7 @@
  * @fires {CustomEvent<{annotation: Annotation}>} ai-annotation-remove - Annotation removed
  * @fires {CustomEvent<{annotation: Annotation, text: string}>} ai-annotation-add - New annotation created via selection
  *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Focus ring color
+ * @cssprop [--cg-overlay-accent-strong] - Focus ring color
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
@@ -73,12 +73,20 @@ export class AiAnnotation extends LitElement {
         border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
+    .label-btn { color: var(--cg-color-surface-base-text); }
     .label-btn:hover { background: var(--cg-overlay-dark-subtle); }
-    .label-btn.selected { border-color: currentColor; background: var(--cg-overlay-dark-subtle); }
+    .label-btn.selected { border-color: var(--_label-color); background: var(--cg-overlay-dark-subtle); }
+    .label-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+    }
+    .label-btn:disabled { cursor: default; }
+    .label-btn:disabled:hover { background: none; }
     .label-dot {
       width: var(--cg-spacing-8);
       height: var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-full);
+      background: var(--_label-color);
     }
 
     .stats {
@@ -119,6 +127,15 @@ export class AiAnnotation extends LitElement {
       margin-left: var(--cg-spacing-2);
       vertical-align: middle;
       line-height: 1;
+      color: var(--cg-color-action-primary-text-default);
+    }
+    .tag-remove {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font: inherit;
+      color: inherit;
+      padding: 0 var(--cg-spacing-2);
     }
 
     /* Empty */
@@ -133,10 +150,6 @@ export class AiAnnotation extends LitElement {
     @media (prefers-reduced-motion: reduce) {
       :host {
         animation: none !important;
-      }
-      .annotation-label {
-        opacity: 1;
-        transition: none !important;
       }
       .annotated-span {
         transition: none !important;
@@ -180,7 +193,14 @@ export class AiAnnotation extends LitElement {
     }));
   }
 
-  private _handleMouseUp() {
+  private _handleAnnotationKeydown(e: KeyboardEvent, annotation: Annotation) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      this._handleAnnotationClick(annotation);
+    }
+  }
+
+  private _handleSelectionEnd() {
     if (!this.editable || !this._selectedLabel) return;
     // Shadow DOM doesn't support getSelection — use window
     const sel = window.getSelection();
@@ -278,12 +298,13 @@ export class AiAnnotation extends LitElement {
     return fragments.map(f => {
       if (typeof f === 'string') return f;
       const color = this._getLabelColor(f.annotation.label);
-      const opacity = f.annotation.confidence ?? 1;
       const isActive = this._activeAnnotation === f.annotation;
-      return html`<span class="annotated-span" tabindex="0" role="note"
+      return html`<span class="annotated-span" tabindex="0" role="button"
+          aria-pressed="${isActive ? 'true' : 'false'}"
           aria-label="${f.annotation.label}: ${f.text}"
           style="border-color: ${color}"
-          @click=${() => this._handleAnnotationClick(f.annotation)}>${f.text}</span>${isActive ? html`<span class="annotation-tag" style="background: ${color}; color: var(--cg-overlay-dark-text);">${f.annotation.label}${f.annotation.confidence !== undefined ? html` · ${Math.round(f.annotation.confidence * 100)}%` : nothing}</span>` : nothing}`;
+          @click=${() => this._handleAnnotationClick(f.annotation)}
+          @keydown=${(e: KeyboardEvent) => this._handleAnnotationKeydown(e, f.annotation)}>${f.text}</span>${isActive ? html`<span class="annotation-tag" style="background: ${color};">${f.annotation.label}${f.annotation.confidence !== undefined ? html` · ${Math.round(f.annotation.confidence * 100)}%` : nothing}${this.editable ? html`<button class="tag-remove" aria-label="Remove ${f.annotation.label} annotation" @click=${(e: Event) => this._handleRemove(f.annotation, e)}>×</button>` : nothing}</span>` : nothing}`;
     });
   }
 
@@ -294,9 +315,11 @@ export class AiAnnotation extends LitElement {
           <div class="toolbar">
             ${this.labels.map(l => html`
               <button class="label-btn ${this._selectedLabel === l.name ? 'selected' : ''}"
-                style="color: ${l.color}"
+                style="--_label-color: ${this._sanitizeColor(l.color)}"
+                aria-pressed=${this._selectedLabel === l.name ? 'true' : 'false'}
+                ?disabled=${!this.editable}
                 @click=${() => { this._selectedLabel = this._selectedLabel === l.name ? '' : l.name; }}>
-                <span class="label-dot" style="background: ${l.color}"></span>
+                <span class="label-dot"></span>
                 ${l.name}
               </button>
             `)}
@@ -304,7 +327,7 @@ export class AiAnnotation extends LitElement {
           </div>
         ` : nothing}
 
-        <div class="content" @mouseup=${this._handleMouseUp}>
+        <div class="content" @mouseup=${this._handleSelectionEnd} @keyup=${this._handleSelectionEnd}>
           ${this._renderAnnotatedContent()}
         </div>
       </div>

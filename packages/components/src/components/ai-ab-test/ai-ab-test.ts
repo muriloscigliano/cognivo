@@ -14,6 +14,8 @@
  *
  * @fires {CustomEvent<{winner: 'a'|'b'|'tie'}>} ai-ab-vote - User voted
  * @fires {CustomEvent} ai-ab-compare - Compare clicked
+ *
+ * Note: swapping variants clears any recorded vote (announced via live region).
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
@@ -56,11 +58,13 @@ export class AiAbTest extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-100);
       padding: var(--cg-spacing-16);
-      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition:
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       min-height: var(--cg-spacing-80);
     }
     .variant.winner {
-      border-color: var(--cg-color-action-primary-background-default);
+      border-color: var(--cg-color-action-primary-border-default);
       background: var(--cg-overlay-accent-subtle);
     }
 
@@ -83,6 +87,18 @@ export class AiAbTest extends LitElement {
       border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
     }
 
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     /* ── Rounded variants ── */
     :host([rounded="none"]) .container { border-radius: 0; }
     :host([rounded="sm"]) .container { border-radius: var(--cg-border-radius-50); }
@@ -99,9 +115,13 @@ export class AiAbTest extends LitElement {
 
   @state() private _winner: 'a' | 'b' | 'tie' | null = null;
   @state() private _swapped = false;
+  @state() private _announcement = '';
 
   private _vote(winner: 'a' | 'b' | 'tie') {
     this._winner = winner;
+    this._announcement = winner === 'tie'
+      ? 'Tie recorded'
+      : `${winner === 'a' ? this.labelA : this.labelB} marked as winner`;
     this.dispatchEvent(new CustomEvent('ai-ab-vote', {
       detail: { winner },
       bubbles: true, composed: true,
@@ -110,6 +130,9 @@ export class AiAbTest extends LitElement {
 
   private _swap() {
     this._swapped = !this._swapped;
+    this._announcement = this._winner !== null
+      ? 'Variants swapped, vote cleared'
+      : 'Variants swapped';
     this._winner = null;
   }
 
@@ -138,11 +161,11 @@ export class AiAbTest extends LitElement {
         </div>
 
         <div class="variants">
-          <div class="variant ${leftWin ? 'winner' : ''}" role="region" aria-label="Variant ${leftLabel}">
+          <div class="variant ${leftWin ? 'winner' : ''}" role="group" aria-label="Variant ${leftLabel}">
             <cg-badge variant=${leftWin ? 'accent' : 'neutral'} label=${leftLabel} size="sm" rounded="full"></cg-badge>
             <div class="variant-content">${leftContent}</div>
           </div>
-          <div class="variant ${rightWin ? 'winner' : ''}" role="region" aria-label="Variant ${rightLabel}">
+          <div class="variant ${rightWin ? 'winner' : ''}" role="group" aria-label="Variant ${rightLabel}">
             <cg-badge variant=${rightWin ? 'accent' : 'neutral'} label=${rightLabel} size="sm" rounded="full"></cg-badge>
             <div class="variant-content">${rightContent}</div>
           </div>
@@ -168,6 +191,8 @@ export class AiAbTest extends LitElement {
             aria-pressed=${this._winner === 'b' ? 'true' : 'false'}
           >${this.labelB} Wins</cg-button>
         </div>
+
+        <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">${this._announcement}</div>
       </div>
     `;
   }

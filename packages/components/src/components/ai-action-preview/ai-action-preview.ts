@@ -15,8 +15,8 @@
  * @fires {CustomEvent<{action: string, details: Record<string,string>}>} ai-action-confirm - User confirmed
  * @fires {CustomEvent<{action: string}>} ai-action-cancel - User cancelled
  *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Confirm button and focus ring color
- * @cssprop [--cg-red-400=#f87171] - Critical severity border and pulse
+ * @cssprop --cg-color-action-primary-background-default - Confirm button fill
+ * @cssprop --cg-color-status-error-text-default - Critical border, pulse, and critical confirm fill
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
@@ -34,8 +34,8 @@ export class AiActionPreview extends LitElement {
     .card {
       background: var(--cg-color-surface-cards-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      border-radius: var(--cg-border-radius-200);
-      padding: var(--cg-spacing-16);
+      border-radius: var(--cg-component-card-radius);
+      padding: var(--cg-component-card-padding-md);
       position: relative;
       overflow: hidden;
     }
@@ -83,15 +83,15 @@ export class AiActionPreview extends LitElement {
       color: var(--cg-color-status-error-text-default);
     }
     .severity.critical {
-      background: var(--cg-color-status-error-background-default);
-      color: var(--cg-color-status-error-text-default);
+      background: var(--cg-color-status-error-text-default);
+      color: var(--cg-color-status-error-text-inverse);
     }
 
     /* ── Description ── */
     .description {
       font-size: var(--cg-font-size-sm);
       color: var(--cg-color-input-text-placeholder);
-      line-height: 1.5;
+      line-height: var(--cg-line-height-normal);
       margin-bottom: var(--cg-spacing-16);
     }
 
@@ -143,37 +143,50 @@ export class AiActionPreview extends LitElement {
       flex: 1;
       min-height: var(--cg-component-button-height-md);
       padding: var(--cg-spacing-8) var(--cg-spacing-16);
-      border-radius: var(--cg-border-radius-100);
+      border-radius: var(--cg-component-button-radius-md);
       font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
       transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
                   color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-                  filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
                   transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       border: none;
     }
     button:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+                  0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
     button:active {
-      transform: scale(0.97);
+      transform: scale(var(--cg-interaction-press-scale));
+    }
+    button:disabled {
+      cursor: not-allowed;
     }
     .btn-cancel {
       background: var(--cg-color-surface-container-background);
       color: var(--cg-color-surface-base-text);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
-    .btn-cancel:hover { background: var(--cg-color-surface-cards-border); }
+    .btn-cancel:hover:not(:disabled) { background: var(--cg-color-surface-cards-hover-background); }
+    .btn-cancel:disabled {
+      background: var(--cg-color-surface-cards-disable-background);
+      color: var(--cg-color-surface-cards-disable-text);
+      border-color: var(--cg-color-surface-cards-disable-border);
+    }
     .btn-confirm {
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-base-background);
+      color: var(--cg-color-action-primary-text-default);
     }
-    .btn-confirm:hover { filter: brightness(0.9); }
+    .btn-confirm:hover:not(:disabled) { background: var(--cg-color-action-primary-background-hover); }
     .btn-confirm.critical {
       background: var(--cg-color-status-error-text-default);
-      color: var(--cg-color-surface-base-text);
+      color: var(--cg-color-status-error-text-inverse);
+    }
+    .btn-confirm.critical:hover:not(:disabled) { background: var(--cg-color-status-error-background-hover-strong); }
+    .btn-confirm:disabled {
+      background: var(--cg-color-action-primary-background-disable);
+      color: var(--cg-color-action-primary-text-disable);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -195,7 +208,9 @@ export class AiActionPreview extends LitElement {
   @property({ type: Number }) countdown = 0;
 
   @state() private _remaining = 0;
+  @state() private _confirmed = false;
   private _timer?: ReturnType<typeof setInterval> | undefined;
+  private _paused = false;
 
   override connectedCallback() {
     super.connectedCallback();
@@ -217,19 +232,46 @@ export class AiActionPreview extends LitElement {
 
   private _startCountdown() {
     this._clearTimer();
-    if (this.countdown > 0) {
+    this._paused = false;
+    if (this.countdown > 0 && !this._confirmed) {
       this._remaining = this.countdown;
-      this._timer = setInterval(() => {
-        this._remaining--;
-        if (this._remaining <= 0) {
-          this._clearTimer();
-          this._handleConfirm();
-        }
-      }, 1000);
+      this._startTicking();
     }
   }
 
-  private _confirmed = false;
+  private _startTicking() {
+    this._timer = setInterval(() => {
+      this._remaining--;
+      if (this._remaining <= 0) {
+        this._clearTimer();
+        this._handleConfirm();
+      }
+    }, 1000);
+  }
+
+  /** Pause the auto-confirm countdown while the user is engaging (WCAG 2.2.1). */
+  private _pauseCountdown = () => {
+    if (this._timer !== undefined) {
+      this._clearTimer();
+      this._paused = true;
+    }
+  };
+
+  private _resumeCountdown = () => {
+    if (this._paused && !this._confirmed && this._remaining > 0) {
+      this._paused = false;
+      this._startTicking();
+    }
+  };
+
+  private _handleKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') this._handleCancel();
+  };
+
+  protected override firstUpdated() {
+    // alertdialog contract: place initial focus on the least-destructive action.
+    this.renderRoot.querySelector<HTMLButtonElement>('.btn-cancel')?.focus();
+  }
 
   private _handleConfirm() {
     if (this._confirmed) return; // Guard double-fire
@@ -242,6 +284,7 @@ export class AiActionPreview extends LitElement {
   }
 
   private _handleCancel() {
+    if (this._confirmed) return; // Confirm already fired — don't emit contradictory events
     this._clearTimer();
     this.dispatchEvent(new CustomEvent('ai-action-cancel', {
       bubbles: true, composed: true,
@@ -262,18 +305,23 @@ export class AiActionPreview extends LitElement {
       <div
         class="card ${this.severity === 'critical' ? 'critical' : ''}"
         role="alertdialog"
-        aria-label="Action preview: ${this.heading}"
-        tabindex="0"
+        aria-labelledby="ap-title"
+        aria-describedby="ap-desc"
+        @keydown=${this._handleKeydown}
+        @focusin=${this._pauseCountdown}
+        @focusout=${this._resumeCountdown}
+        @mouseenter=${this._pauseCountdown}
+        @mouseleave=${this._resumeCountdown}
       >
         <div class="header">
-          <span class="title">${this.heading}</span>
+          <span class="title" id="ap-title">${this.heading}</span>
           <span class="severity ${this.severity}" aria-label="Severity: ${this.severity}">
             <span aria-hidden="true">${this._severityIcon()}</span>
             ${this.severity}
           </span>
         </div>
 
-        ${this.description ? html`<div class="description">${this.description}</div>` : nothing}
+        ${this.description ? html`<div class="description" id="ap-desc">${this.description}</div>` : nothing}
 
         ${entries.length > 0 ? html`
           <div class="details" role="list" aria-label="Action details">
@@ -287,7 +335,7 @@ export class AiActionPreview extends LitElement {
         ` : nothing}
 
         ${this._remaining > 0 ? html`
-          <div class="countdown" aria-live="polite">
+          <div class="countdown" role="timer" aria-label="Auto-confirm countdown">
             Auto-confirming in <span class="countdown-num">${this._remaining}s</span>
           </div>
         ` : nothing}
@@ -296,12 +344,12 @@ export class AiActionPreview extends LitElement {
           <button
             class="btn-cancel"
             @click=${this._handleCancel}
-            aria-label="${this.cancelLabel}"
+            ?disabled=${this._confirmed}
           >${this.cancelLabel}</button>
           <button
             class="btn-confirm ${this.severity === 'critical' ? 'critical' : ''}"
             @click=${this._handleConfirm}
-            aria-label="${this.confirmLabel}"
+            ?disabled=${this._confirmed}
           >${this.confirmLabel}</button>
         </div>
       </div>
