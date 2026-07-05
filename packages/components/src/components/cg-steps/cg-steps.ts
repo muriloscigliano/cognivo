@@ -135,13 +135,19 @@ export class CgSteps extends LitElement {
     /* ── Clickable ── */
     :host([clickable]) .circle { cursor: pointer; }
     :host([clickable]) .circle:active { transform: scale(var(--cg-interaction-press-scale)); }
-    :host([clickable]) .circle:hover:not(.active) {
+    /* Hover preview only for pending circles — done/error keep their
+       status fill so hovering never repaints a completed/failed step. */
+    :host([clickable]) .circle:hover:not(.active):not(.done):not(.error) {
       border-color: var(--cg-color-action-primary-border-default);
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
     }
+    /* Two-layer offset focus ring (button-family convention, matches
+       cg-calendar .day / cg-pagination .page-btn). */
     :host([clickable]) .circle:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow:
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
 
     /* ── Body text ── */
@@ -149,6 +155,9 @@ export class CgSteps extends LitElement {
       padding-bottom: var(--cg-spacing-24);
       min-width: 0;
     }
+    /* The padding is inter-step spacing; the last vertical step has no
+       following step, so drop the dead trailing space. */
+    .step-v:last-child .body { padding-bottom: 0; }
     .step-h .body {
       text-align: center;
       padding: 0 var(--cg-spacing-4);
@@ -162,7 +171,7 @@ export class CgSteps extends LitElement {
     }
     :host([compact]) .title { font-size: var(--cg-font-size-xs); }
 
-    .title.active { color: var(--cg-color-action-primary-background-default); }
+    .title.active { color: var(--cg-color-accent-text); }
     .title.done { color: var(--cg-color-status-success-text-default); }
     .title.error { color: var(--cg-color-status-error-text-default); }
 
@@ -171,6 +180,14 @@ export class CgSteps extends LitElement {
       color: var(--cg-color-surface-container-outlined);
       margin-top: var(--cg-spacing-2);
       line-height: var(--cg-line-height-snug);
+    }
+
+    /* Canonical W3C visually-hidden recipe (same as cg-phone-input) —
+       values are functional, not design values. */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
     }
 
     /* Reduced motion */
@@ -193,6 +210,20 @@ export class CgSteps extends LitElement {
     }));
   }
 
+  private _statusSuffix(status: string): string {
+    return status === 'done' ? ', completed' : status === 'error' ? ', error' : '';
+  }
+
+  /**
+   * Screen-reader-only status text for non-clickable steps: done/error is
+   * icon-only, invisible to AT. Clickable circles carry it in aria-label.
+   */
+  private _renderSrStatus(status: string) {
+    if (this.clickable) return nothing;
+    const suffix = this._statusSuffix(status);
+    return suffix ? html`<span class="sr-only">${suffix}</span>` : nothing;
+  }
+
   private _renderCircle(status: string, index: number) {
     const inner = status === 'done'
       ? html`<cg-icon name="check" size="xs"></cg-icon>`
@@ -205,7 +236,10 @@ export class CgSteps extends LitElement {
         class="circle ${status}"
         tabindex=${this.clickable ? '0' : nothing}
         role=${this.clickable ? 'button' : nothing}
-        aria-label="Step ${index + 1}: ${this.items[index]?.title}"
+        aria-current=${status === 'active' ? 'step' : nothing}
+        aria-label=${this.clickable
+          ? `Step ${index + 1} of ${this.items.length}: ${this.items[index]?.title}${this._statusSuffix(status)}`
+          : nothing}
         @click=${() => this._handleClick(index)}
         @keydown=${(e: KeyboardEvent) => { if (this.clickable && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); this._handleClick(index); } }}
       >${inner}</div>
@@ -223,14 +257,14 @@ export class CgSteps extends LitElement {
           ${this.items.map((item, i) => {
             const status = this._getStatus(item, i);
             return html`
-              <div class="step-h">
+              <div class="step-h" role="listitem">
                 <div class="indicator-h">
                   <div class="h-line ${i > 0 && this._getStatus(this.items[i - 1]!, i - 1) === 'done' ? 'done' : ''}"></div>
                   ${this._renderCircle(status, i)}
                   <div class="h-line ${status === 'done' ? 'done' : ''}"></div>
                 </div>
                 <div class="body">
-                  <div class="title ${status}">${item.title}</div>
+                  <div class="title ${status}">${item.title}${this._renderSrStatus(status)}</div>
                   ${item.description ? html`<div class="desc">${item.description}</div>` : nothing}
                 </div>
               </div>
@@ -246,13 +280,13 @@ export class CgSteps extends LitElement {
           const status = this._getStatus(item, i);
           const isLast = i === this.items.length - 1;
           return html`
-            <div class="step-v">
+            <div class="step-v" role="listitem">
               <div class="indicator-v">
                 ${this._renderCircle(status, i)}
                 ${!isLast ? html`<div class="v-line ${status === 'done' ? 'done' : ''}"></div>` : nothing}
               </div>
               <div class="body">
-                <div class="title ${status}">${item.title}</div>
+                <div class="title ${status}">${item.title}${this._renderSrStatus(status)}</div>
                 ${item.description ? html`<div class="desc">${item.description}</div>` : nothing}
               </div>
             </div>

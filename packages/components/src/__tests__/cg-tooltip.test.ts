@@ -53,9 +53,9 @@ describe('cg-tooltip', () => {
     await el.updateComplete;
     expect(el.hasAttribute('_visible')).toBe(true);
 
-    // Hide
+    // Hide (fallback timer is 300ms; jsdom never fires animationend)
     triggerWrap.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
-    vi.advanceTimersByTime(150);
+    vi.advanceTimersByTime(350);
     await el.updateComplete;
 
     expect(el.hasAttribute('_visible')).toBe(false);
@@ -80,9 +80,9 @@ describe('cg-tooltip', () => {
     await el.updateComplete;
     expect(el.hasAttribute('_visible')).toBe(true);
 
-    // Hide
+    // Hide (fallback timer is 300ms; jsdom never fires animationend)
     triggerWrap.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
-    vi.advanceTimersByTime(150);
+    vi.advanceTimersByTime(350);
     await el.updateComplete;
 
     expect(el.hasAttribute('_visible')).toBe(false);
@@ -164,11 +164,17 @@ describe('cg-tooltip', () => {
     expect(tooltip!.getAttribute('aria-hidden')).not.toBe('true');
   });
 
-  it('trigger has aria-describedby pointing to tooltip id', () => {
+  it('mirrors content onto the slotted trigger as aria-description', async () => {
+    // aria-describedby can't cross the shadow boundary from a slotted
+    // trigger — the wrapper no longer carries it; the content is mirrored
+    // onto the slotted element instead.
     const triggerWrap = el.shadowRoot!.querySelector('.trigger-wrap');
-    const tooltip = el.shadowRoot!.querySelector('.tooltip');
-    const tooltipId = tooltip!.getAttribute('id');
-    expect(triggerWrap!.getAttribute('aria-describedby')).toBe(tooltipId);
+    expect(triggerWrap!.hasAttribute('aria-describedby')).toBe(false);
+    const btn = document.createElement('button');
+    el.appendChild(btn);
+    await el.updateComplete;
+    await el.updateComplete;
+    expect(btn.getAttribute('aria-description')).toBe('Test tooltip');
   });
 
   it('exit animation with scale exists in styles', () => {

@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
@@ -30,7 +30,6 @@ export interface TableColumn {
  * @fires {CustomEvent<{index, row}>} cg-row-click - Row clicked
  *
  * @cssprop --cg-component-table-radius - Table border radius
- * @cssprop --cg-color-surface-table-header-background - Header background
  */
 @customElement('cg-table')
 export class CgTable extends LitElement {
@@ -38,7 +37,7 @@ export class CgTable extends LitElement {
     .table-wrapper {
       overflow: hidden;
       background: var(--cg-color-surface-container-background);
-      border: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-table-border);
       border-radius: var(--cg-component-table-radius);
       padding: var(--cg-spacing-4) 0;
     }
@@ -114,8 +113,8 @@ export class CgTable extends LitElement {
       text-align: left;
       font-weight: var(--cg-font-weight-medium);
       font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-surface-container-outlined);
-      background: transparent;
+      color: var(--cg-color-on-surface-container-default);
+      background: var(--cg-color-surface-container-background);
       border-bottom: none;
       white-space: nowrap;
       user-select: none;
@@ -125,14 +124,14 @@ export class CgTable extends LitElement {
     }
 
     th.sortable { cursor: pointer; }
-    th.sortable:hover { color: var(--cg-color-action-primary-background-default); }
+    th.sortable:hover { color: var(--cg-color-accent-text); }
     th.sortable:active {
-      transform: scale(0.98);
+      transform: scale(var(--cg-interaction-press-scale));
       transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     th.sortable:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 2px var(--cg-color-action-primary-background-default);
+      box-shadow: inset 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring);
     }
 
     th .sort-icon {
@@ -143,7 +142,7 @@ export class CgTable extends LitElement {
     }
     th.sorted .sort-icon {
       opacity: 1;
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
     }
 
     th[data-align="center"] { text-align: center; }
@@ -157,7 +156,6 @@ export class CgTable extends LitElement {
     th.select-col cg-checkbox,
     td.select-col cg-checkbox {
       min-height: 0;
-      transform: scale(0.85);
     }
 
     /* ── Cells ── */
@@ -189,6 +187,12 @@ export class CgTable extends LitElement {
     :host([clickable]) tbody tr {
       cursor: pointer;
     }
+    :host([clickable]) tbody tr:focus-visible {
+      outline: none;
+    }
+    :host([clickable]) tbody tr:focus-visible td {
+      box-shadow: inset 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring);
+    }
 
     /* ── Striped ── */
     :host([striped]) tbody tr:nth-child(even) td {
@@ -210,7 +214,7 @@ export class CgTable extends LitElement {
       padding: var(--cg-spacing-32);
       text-align: center;
       font-size: var(--cg-font-size-sm);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-on-surface-container-default);
     }
 
     /* ── Loading ── */
@@ -226,6 +230,11 @@ export class CgTable extends LitElement {
     .loading-bar.short { width: 60%; }
     .loading-bar.med { width: 80%; }
     .loading-bar.long { width: 95%; }
+    .loading-check {
+      width: var(--cg-spacing-16);
+      height: var(--cg-spacing-16);
+      margin: 0 auto;
+    }
 
     @keyframes tablePulse {
       0%, 100% { opacity: 1; }
@@ -239,7 +248,7 @@ export class CgTable extends LitElement {
       justify-content: space-between;
       padding: var(--cg-spacing-12) var(--cg-spacing-16);
       font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-on-surface-container-default);
     }
     .table-footer ::slotted(*) {
       display: flex;
@@ -268,6 +277,12 @@ export class CgTable extends LitElement {
   @state() private _sortDir: 'asc' | 'desc' = 'asc';
   @state() private _selected = new Set<number>();
   @state() private _hasFooter = false;
+
+  override willUpdate(changed: PropertyValues) {
+    if (changed.has('rows')) {
+      this._selected = new Set([...this._selected].filter(i => i < this.rows.length));
+    }
+  }
 
   private _handleSort(col: TableColumn) {
     if (!col.sortable) return;
@@ -320,13 +335,15 @@ export class CgTable extends LitElement {
     this._hasFooter = slot.assignedNodes({ flatten: true }).length > 0;
   }
 
-  private _getSortedRows(): unknown[][] {
-    if (!this._sortKey) return this.rows;
+  /** Rows paired with their ORIGINAL index so selection/click events stay stable under sorting. */
+  private _getSortedRows(): Array<{ row: unknown[]; i: number }> {
+    const entries = this.rows.map((row, i) => ({ row, i }));
+    if (!this._sortKey) return entries;
     const idx = this.columns.findIndex(c => c.key === this._sortKey);
-    if (idx === -1) return this.rows;
-    const sorted = [...this.rows].sort((a, b) => {
-      const va = (a as unknown[])[idx];
-      const vb = (b as unknown[])[idx];
+    if (idx === -1) return entries;
+    const sorted = [...entries].sort((a, b) => {
+      const va = a.row[idx];
+      const vb = b.row[idx];
       if (typeof va === 'number' && typeof vb === 'number') return va - vb;
       return String(va ?? '').localeCompare(String(vb ?? ''));
     });
@@ -341,13 +358,14 @@ export class CgTable extends LitElement {
     return html`
       <div class="table-wrapper">
         <div class="table-scroll">
-        <table role="table">
+        <table role="table" aria-busy=${this.loading ? 'true' : nothing}>
           <thead>
             <tr>
               ${this.selectable ? html`
                 <th class="select-col">
-                  <cg-checkbox size="sm"
+                  <cg-checkbox
                     ?checked=${allSelected}
+                    .indeterminate=${this._selected.size > 0 && !allSelected}
                     @cg-change=${this._toggleAll}
                     label=""
                     aria-label="Select all rows"></cg-checkbox>
@@ -371,8 +389,8 @@ export class CgTable extends LitElement {
           </thead>
           <tbody>
             ${this.loading ? Array.from({ length: this.loadingRows }, (_, ri) => html`
-              <tr class="loading-row">
-                ${this.selectable ? html`<td class="select-col"><div class="loading-bar short" style="width:16px;height:16px;border-radius:4px;margin:0 auto;"></div></td>` : nothing}
+              <tr class="loading-row" aria-hidden="true">
+                ${this.selectable ? html`<td class="select-col"><div class="loading-bar loading-check"></div></td>` : nothing}
                 ${this.columns.map((_, ci) => html`
                   <td><div class="loading-bar ${widths[ci % widths.length]}"></div></td>
                 `)}
@@ -383,20 +401,22 @@ export class CgTable extends LitElement {
                   <div class="empty-state">${this.emptyText}</div>
                 </td>
               </tr>
-            ` : sortedRows.map((row, rowIdx) => html`
-              <tr class="${this._selected.has(rowIdx) ? 'selected' : ''}"
-                @click=${() => this._handleRowClick(rowIdx, row as unknown[])}>
+            ` : sortedRows.map(({ row, i: origIdx }) => html`
+              <tr class="${this._selected.has(origIdx) ? 'selected' : ''}"
+                tabindex=${this.clickable ? '0' : nothing}
+                @click=${() => this._handleRowClick(origIdx, row)}
+                @keydown=${(e: KeyboardEvent) => { if (this.clickable && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); this._handleRowClick(origIdx, row); } }}>
                 ${this.selectable ? html`
                   <td class="select-col" @click=${(e: Event) => e.stopPropagation()}>
-                    <cg-checkbox size="sm"
-                      ?checked=${this._selected.has(rowIdx)}
-                      @cg-change=${() => this._toggleRow(rowIdx)}
+                    <cg-checkbox
+                      ?checked=${this._selected.has(origIdx)}
+                      @cg-change=${() => this._toggleRow(origIdx)}
                       label=""
-                      aria-label=${`Select row ${rowIdx + 1}`}></cg-checkbox>
+                      aria-label=${`Select row ${origIdx + 1}`}></cg-checkbox>
                   </td>
                 ` : nothing}
-                ${this.columns.map((col, i) => html`
-                  <td data-align=${col.align ?? 'left'}>${(row as unknown[])[i] ?? ''}</td>
+                ${this.columns.map((col, ci) => html`
+                  <td data-align=${col.align ?? 'left'}>${row[ci] ?? ''}</td>
                 `)}
               </tr>
             `)}

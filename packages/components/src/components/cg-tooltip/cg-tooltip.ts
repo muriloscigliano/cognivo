@@ -28,7 +28,6 @@ import { customElement, property, state } from 'lit/decorators.js';
 export class CgTooltip extends LitElement {
   static override styles = css`
     :host {
-      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       display: inline-block;
       position: relative;
       font-family: var(--cg-font-family-primary);
@@ -50,8 +49,9 @@ export class CgTooltip extends LitElement {
       border-radius: var(--cg-component-tooltip-radius);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-tooltip-border);
       white-space: nowrap;
-      max-width: 280px;
+      max-width: var(--cg-component-tooltip-max-width);
       pointer-events: none;
+      translate: 0 0;
 
       /* Animation — fade+scale with pop */
       opacity: 0;
@@ -75,6 +75,7 @@ export class CgTooltip extends LitElement {
     @keyframes tooltip-exit {
       from { opacity: 1; transform: scale(1); }
       to { opacity: 0; transform: scale(0.92); }
+      /* centering lives on the translate property, untouched here */
     }
     .tooltip.closing {
       animation: tooltip-exit var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-in) forwards;
@@ -103,11 +104,13 @@ export class CgTooltip extends LitElement {
       transform-origin: bottom center;
       margin-bottom: var(--cg-spacing-8);
     }
+    :host([_visible]) .tooltip { pointer-events: auto; }
+    :host([_effective-position="top"]) .tooltip { translate: -50% 0; }
     :host([_effective-position="top"][_visible]) .tooltip {
-      transform: scale(1) translateX(-50%);
+      transform: scale(1);
     }
-    :host([_effective-position="top"]) .tooltip:not([style]) {
-      transform: scale(0.92) translateX(-50%);
+    :host([_effective-position="top"]:not([_visible])) .tooltip {
+      transform: scale(0.92);
     }
     :host([_effective-position="top"]) .arrow {
       bottom: calc(var(--cg-spacing-4) * -1);
@@ -122,11 +125,12 @@ export class CgTooltip extends LitElement {
       transform-origin: top center;
       margin-top: var(--cg-spacing-8);
     }
+    :host([_effective-position="bottom"]) .tooltip { translate: -50% 0; }
     :host([_effective-position="bottom"][_visible]) .tooltip {
-      transform: scale(1) translateX(-50%);
+      transform: scale(1);
     }
-    :host([_effective-position="bottom"]) .tooltip:not([style]) {
-      transform: scale(0.92) translateX(-50%);
+    :host([_effective-position="bottom"]:not([_visible])) .tooltip {
+      transform: scale(0.92);
     }
     :host([_effective-position="bottom"]) .arrow {
       top: calc(var(--cg-spacing-4) * -1);
@@ -141,11 +145,12 @@ export class CgTooltip extends LitElement {
       transform-origin: right center;
       margin-right: var(--cg-spacing-8);
     }
+    :host([_effective-position="left"]) .tooltip { translate: 0 -50%; }
     :host([_effective-position="left"][_visible]) .tooltip {
-      transform: scale(1) translateY(-50%);
+      transform: scale(1);
     }
-    :host([_effective-position="left"]) .tooltip:not([style]) {
-      transform: scale(0.92) translateY(-50%);
+    :host([_effective-position="left"]:not([_visible])) .tooltip {
+      transform: scale(0.92);
     }
     :host([_effective-position="left"]) .arrow {
       right: calc(var(--cg-spacing-4) * -1);
@@ -160,11 +165,12 @@ export class CgTooltip extends LitElement {
       transform-origin: left center;
       margin-left: var(--cg-spacing-8);
     }
+    :host([_effective-position="right"]) .tooltip { translate: 0 -50%; }
     :host([_effective-position="right"][_visible]) .tooltip {
-      transform: scale(1) translateY(-50%);
+      transform: scale(1);
     }
-    :host([_effective-position="right"]) .tooltip:not([style]) {
-      transform: scale(0.92) translateY(-50%);
+    :host([_effective-position="right"]:not([_visible])) .tooltip {
+      transform: scale(0.92);
     }
     :host([_effective-position="right"]) .arrow {
       left: calc(var(--cg-spacing-4) * -1);
@@ -174,22 +180,24 @@ export class CgTooltip extends LitElement {
 
     /* ── Variant: error ── */
     :host([variant="error"]) .tooltip {
-      background: var(--cg-color-status-error-background-default);
+      background: var(--cg-color-tooltip-background);
       border: var(--cg-border-width-50) solid var(--cg-color-status-error-border-default);
       color: var(--cg-color-status-error-text-default);
     }
     :host([variant="error"]) .arrow {
-      background: var(--cg-color-status-error-background-default);
+      background: var(--cg-color-tooltip-background);
+      border-color: var(--cg-color-status-error-border-default);
     }
 
     /* ── Variant: success ── */
     :host([variant="success"]) .tooltip {
-      background: var(--cg-color-status-success-background-default);
+      background: var(--cg-color-tooltip-background);
       border: var(--cg-border-width-50) solid var(--cg-color-status-success-border-default);
       color: var(--cg-color-status-success-text-default);
     }
     :host([variant="success"]) .arrow {
-      background: var(--cg-color-status-success-background-default);
+      background: var(--cg-color-tooltip-background);
+      border-color: var(--cg-color-status-success-border-default);
     }
 
     /* Rounded variants */
@@ -263,6 +271,10 @@ export class CgTooltip extends LitElement {
     }
     // Reset effective position to the declared position before showing
     this._effectivePosition = this.position;
+    if (this._showTimeout) {
+      clearTimeout(this._showTimeout);
+      this._showTimeout = null;
+    }
     this._showTimeout = setTimeout(() => {
       this._visible = true;
       document.addEventListener('keydown', this._escapeHandler);
@@ -273,10 +285,26 @@ export class CgTooltip extends LitElement {
     }, this.delay);
   }
 
+  /** aria-describedby can't cross the shadow boundary from the slotted
+   *  trigger — mirror the tooltip text onto it as aria-description. */
+  private _syncTriggerDescription() {
+    const slot = this.shadowRoot?.querySelector<HTMLSlotElement>('slot:not([name])');
+    const el = slot?.assignedElements()[0];
+    if (el && this.content) el.setAttribute('aria-description', this.content);
+  }
+
   private _handleEscape(e: KeyboardEvent) {
     if (e.key === 'Escape') {
       this._hide();
     }
+  }
+
+  private _cancelHide() {
+    if (this._hideTimeout) {
+      clearTimeout(this._hideTimeout);
+      this._hideTimeout = null;
+    }
+    this._closing = false;
   }
 
   private _hide() {
@@ -287,12 +315,19 @@ export class CgTooltip extends LitElement {
     if (!this._visible) return;
     document.removeEventListener('keydown', this._escapeHandler);
     this._closing = true;
-    this._hideTimeout = setTimeout(() => {
+    const finish = () => {
+      if (this._hideTimeout) { clearTimeout(this._hideTimeout); this._hideTimeout = null; }
       this._closing = false;
       this._visible = false;
       // Reset effective position when hidden
       this._effectivePosition = this.position;
-    }, 100);
+    };
+    const tooltip = this.shadowRoot?.querySelector('.tooltip');
+    tooltip?.addEventListener('animationend', (e) => {
+      if ((e as AnimationEvent).animationName === 'tooltip-exit') finish();
+    }, { once: true });
+    // Fallback for prefers-reduced-motion / detached nodes
+    this._hideTimeout = setTimeout(finish, 300);
   }
 
   override disconnectedCallback() {
@@ -314,14 +349,15 @@ export class CgTooltip extends LitElement {
         @mouseleave="${this._hide}"
         @focusin="${this._show}"
         @focusout="${this._hide}"
-        aria-describedby="${this._tooltipId}"
       >
-        <slot></slot>
+        <slot @slotchange=${this._syncTriggerDescription}></slot>
       </div>
       <div
         class="tooltip ${this._closing ? 'closing' : ''}"
         id="${this._tooltipId}"
         role="tooltip"
+        @mouseenter=${this._cancelHide}
+        @mouseleave=${this._hide}
         aria-hidden=${!this._visible ? 'true' : nothing}
       >
         <span class="arrow"></span>

@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
 import { hostBase, reducedMotion, entranceStagger, menuListStyles } from '../../styles/index.js';
 import { applyFloatingPosition } from '../../utils/floating.js';
@@ -118,6 +118,11 @@ export class CgSplitButton extends LitElement {
     :host([size="sm"]) .group > button { height: var(--cg-component-button-height-sm); padding: 0 var(--cg-spacing-12); font-size: var(--cg-font-size-xs); }
     :host([size="lg"]) .group > button { height: var(--cg-component-button-height-lg); padding: 0 var(--cg-spacing-24); font-size: var(--cg-font-size-base); }
 
+    /* Chevron stays narrow at every size (placed after the size rules to win). */
+    .group > button.chevron { padding: 0 var(--cg-spacing-8); }
+    :host([size="sm"]) .group > button.chevron { padding: 0 var(--cg-spacing-8); }
+    :host([size="lg"]) .group > button.chevron { padding: 0 var(--cg-spacing-12); }
+
     .primary {
       border-top-left-radius: inherit;
       border-bottom-left-radius: inherit;
@@ -137,13 +142,12 @@ export class CgSplitButton extends LitElement {
     }
 
     .chevron {
-      padding: 0 var(--cg-spacing-8);
       border-top-right-radius: inherit;
       border-bottom-right-radius: inherit;
     }
     .chevron svg {
-      width: var(--cg-spacing-16);
-      height: var(--cg-spacing-16);
+      width: var(--cg-icon-size-100);
+      height: var(--cg-icon-size-100);
       transition: transform var(--cg-transition-duration-fast) ease;
     }
     :host([open]) .chevron svg { transform: rotate(180deg); }
@@ -198,18 +202,18 @@ export class CgSplitButton extends LitElement {
     :host([type="danger"]) .group > button:not(:disabled):hover,
     :host([type="danger"][variant="primary"]) .group > button:not(:disabled):hover {
       background: var(--cg-color-status-error-background-hover);
+      color: var(--cg-color-status-error-text-inverse);
     }
     :host([type="danger"]) .primary::after { background: color-mix(in srgb, var(--cg-color-status-error-text-default) 25%, transparent); }
 
     /* Loading spinner on primary button */
     .spinner {
-      width: var(--cg-spacing-16);
-      height: var(--cg-spacing-16);
+      width: var(--cg-icon-size-100);
+      height: var(--cg-icon-size-100);
       border: var(--cg-border-width-100) solid currentColor;
       border-right-color: transparent;
       border-radius: var(--cg-border-radius-full);
-      animation: spin 600ms linear infinite;
-      margin-right: var(--cg-spacing-8);
+      animation: spin var(--cg-transition-duration-slow) linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     :host([loading]) .primary { pointer-events: none; }
@@ -266,29 +270,34 @@ export class CgSplitButton extends LitElement {
     this.open = true;
     this._activeIndex = -1;
     this.dispatchEvent(new CustomEvent('cg-split-button-open', { bubbles: true, composed: true }));
-
-    requestAnimationFrame(() => {
-      if (!this._menuEl || !this._chevronEl) return;
-      applyFloatingPosition(this._chevronEl, this._menuEl, {
-        placement: this.menuPlacement, offset: 4, flip: true, shift: true,
-      });
-    });
-
-    this._disposeOutsideClick?.();
-    this._disposeOutsideClick = bindOutsideClick(this, () => this._close());
-    setTimeout(() => {
-      document.addEventListener('keydown', this._handleKeydown);
-    }, 0);
   }
 
   private _close(): void {
     if (!this.open) return;
     this.open = false;
     this._activeIndex = -1;
+    this.dispatchEvent(new CustomEvent('cg-split-button-close', { bubbles: true, composed: true }));
+  }
+
+  /* Positioning + listener wiring keyed on `open` so external property/attribute
+     toggles behave the same as _openMenu/_close (mirrors cg-dropdown). */
+  override updated(changed: PropertyValues): void {
+    if (!changed.has('open')) return;
     this._disposeOutsideClick?.();
     this._disposeOutsideClick = null;
     document.removeEventListener('keydown', this._handleKeydown);
-    this.dispatchEvent(new CustomEvent('cg-split-button-close', { bubbles: true, composed: true }));
+    if (this.open) {
+      requestAnimationFrame(() => {
+        if (!this._menuEl || !this._chevronEl) return;
+        applyFloatingPosition(this._chevronEl, this._menuEl, {
+          placement: this.menuPlacement, offset: 4, flip: true, shift: true,
+        });
+      });
+      this._disposeOutsideClick = bindOutsideClick(this, () => this._close());
+      setTimeout(() => {
+        if (this.open) document.addEventListener('keydown', this._handleKeydown);
+      }, 0);
+    }
   }
 
   private _select(item: SplitButtonItem): void {
@@ -313,6 +322,9 @@ export class CgSplitButton extends LitElement {
     if (handled) {
       e.preventDefault();
       this._activeIndex = index;
+      this.updateComplete.then(() => {
+        this.shadowRoot?.querySelector<HTMLElement>('.menu-item[data-active]')?.focus();
+      });
     }
   };
 
@@ -352,7 +364,7 @@ export class CgSplitButton extends LitElement {
           </svg>
         </button>
       </div>
-      <ul class="menu" role="menu" ?hidden=${!this.open}>
+      <ul class="menu" role="menu" ?inert=${!this.open}>
         ${this.items.map((item, index) => {
           if (item.separator) return html`<li role="separator" class="divider"></li>`;
           selectableIdx++;

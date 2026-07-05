@@ -92,19 +92,19 @@
 | 71 | cg-skeleton | 🔧 | wave5: rounded overrides rescoped (circular is circular), dead animated=false → no-animation attr (+ deprecated JS alias for adapters), spinner-secondary bg token, !important width rules dropped, shared pulse keyframes |
 | 72 | cg-slider | 🔧 | wave5: 13/13 — P0 double ARIA control → native input is sole accessible control (thumb presentational), pointer-up leak fixed, hover/cursor states rationalized, thumb-border/placeholder/accent/opacity/spacing tokens, error/success rings, loading hides fill |
 | 73 | cg-spinner | 🔧 | wave5: bg-token-as-border → primary-border token, double announcement fixed (sr-only span is sole name), shared pulse keyframes. DEFERRED: color="accent" removal (API break) |
-| 74 | cg-split-button | ⬜ | |
-| 75 | cg-stack | ⬜ | |
-| 76 | cg-steps | ⬜ | |
-| 77 | cg-switch | ⬜ | |
-| 78 | cg-table | ⬜ | |
-| 79 | cg-tabs | ⬜ | |
-| 80 | cg-tag-input | ⬜ | |
-| 81 | cg-text | ⬜ | |
-| 82 | cg-textarea | ⬜ | |
-| 83 | cg-time-picker | ⬜ | |
-| 84 | cg-toaster | ⬜ | partial: undefined-token fixes already applied (commit a0ad6e2) |
-| 85 | cg-toggle | ⬜ | |
-| 86 | cg-toggle-group | ⬜ | |
-| 87 | cg-tooltip | ⬜ | |
-| 88 | cg-tree-view | ⬜ | |
-| 89 | cg-visually-hidden | ⬜ | |
+| 74 | cg-split-button | 🔧 | wave6: P0 closed menu was tabbable ([hidden] beaten by menuListStyles display:flex → inert), chevron dead-padding fixed per size, danger hover red-on-red → text-inverse, arrow keys move real focus to menu items, spinner/icon tokens, open-toggle lifecycle idempotent. Danger-primary hover no-op needs tokens follow-up |
+| 75 | cg-stack | 🔧 | wave6: JSDoc no longer claims unimplemented breakpoint/align-self features; full-width comment honest |
+| 76 | cg-steps | 🔧 | wave6: 8/8 — 2x bg-as-fg → accent-text, role=listitem pairs the list, aria-current=step, per-step accessible labels, hover no longer corrupts done/error circles, 2-layer focus ring, trailing dead space |
+| 77 | cg-switch | 🔧 | wave6: loading keeps track rendered (spinner in thumb, no layout shift), tokenized ring/opacity, name reflects for forms, formDisabledCallback (fieldset), thumb transition covers bg+shadow. DEFERRED: 44px touch target needs --cg-size-touch-target token. (aria-label forward + nested-input removal landed earlier, commit 6668f03) |
+| 78 | cg-table | 🔧 | wave6: 14/15 — sort-stable selection (original indices travel with rows), keyboard-activatable rows + ring, sticky header opaque, indeterminate select-all, accent-text sort states, aria-busy/skeleton-hidden, selection pruned on rows swap. DEFERRED: checkbox aria-label needs forwarding inside cg-checkbox |
+| 79 | cg-tabs | 🔧 | wave6: 9/9 — 2x bg-as-fg → accent-text, tokenized ring, value syncs on select (uncontrolled reset bug), aria-controls only when panel exists, tabpanel tabindex, indicator aria-hidden + clip fix |
+| 80 | cg-tag-input | 🔧 | wave6: P0 input had no accessible name (label‖placeholder + describedby), chip hover off brand-lime, helper token, tag-remove focus ring, disabled uses input-disable tokens, paste splits delimited tags |
+| 81 | cg-text | 🔧 | wave6: clamp no longer pins display inline-style (CSS regains control), clamp beats truncate nowrap, title attr surfaces full text when truncated. cg-text-04 logged: no tier-2 mid-gray text token exists (token-system gap) |
+| 82 | cg-textarea | 🔧 | wave6: autoresize on programmatic value changes, lg min-height tokenized, count in describedby, loading overlay role=status, count error color parity |
+| 83 | cg-time-picker | 🔧 | wave6: 10/10 — P0 closed dropdown 36 buttons tabbable (visibility), aria-pressed on hour/minute/period, bg-as-border + icon-as-border fixed, listbox max-height token, aria-controls, elevation, period-btn focus/press |
+| 84 | cg-toaster | 🔧 | wave6: auto-dismiss pauses on hover/focus with banked remaining time (WCAG 2.2.1), ai icon bg-as-fg → accent-text, action/close focus+press states, double live-region fixed, evicted toasts fire dismiss event, opacity transitions. DEFERRED: exit animation (new lifecycle) |
+| 85 | cg-toggle | 🔧 | wave6: P0 focus ring invisible when pressed (specificity), bg-as-border → border tokens, input-family hover token off non-input, label prop for icon-only, name reflects, opacity token |
+| 86 | cg-toggle-group | 🔧 | wave6: P0 gap/orientation CSS targeted :host but flex children live in inner div (moved), slotchange syncs late toggles, reversible group disabled (WeakSet), label prop names the group |
+| 87 | cg-tooltip | 🔧 | wave6 (self-verified): P0 description on shadow wrapper → aria-description mirrored to slotted trigger, hidden-state selector race fixed via translate/scale split (exit no longer jumps half-width), opaque status variants, show-timer leak, hoverable tooltip (WCAG 1.4.13), animationend close, new --cg-component-tooltip-max-width token, dead host transition |
+| 88 | cg-tree-view | 🔧 | wave6 (self-verified): bg-token-as-icon-color → container-icon, label prop names the tree, aria-setsize/posinset on flattened items, disabled nodes can't expand, roving stop validated after items swap, hover vs selected distinct chrome, opacity tokens, empty state |
+| 89 | cg-visually-hidden | 🔧 | wave6: reveals on focus-within (skip-link pattern); no-op for plain text |

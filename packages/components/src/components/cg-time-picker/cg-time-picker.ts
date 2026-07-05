@@ -46,7 +46,7 @@ export class CgTimePicker extends LitElement {
     :host([error]) .trigger { border-color: var(--cg-color-input-border-error); }
     :host([error]) .trigger:focus-visible,
     :host([error]) .trigger.open { border-color: var(--cg-color-status-error-text-default); box-shadow: 0 0 0 3px var(--cg-shadow-focus-error); }
-    :host([success]) .trigger { border-color: var(--cg-color-input-icon-success); }
+    :host([success]) .trigger { border-color: var(--cg-color-status-success-border-default); }
     :host([success]) .trigger:focus-visible,
     :host([success]) .trigger.open { border-color: var(--cg-color-status-success-text-default); box-shadow: 0 0 0 3px var(--cg-shadow-focus-success); }
 
@@ -100,21 +100,25 @@ export class CgTimePicker extends LitElement {
       top: 100%;
       left: 0;
       z-index: var(--cg-z-index-200);
-      min-width: 240px;
+      min-width: var(--cg-spacing-256);
       margin-top: var(--cg-spacing-4);
       padding: var(--cg-spacing-16);
       background: var(--cg-color-modal-container-background);
       border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
       border-radius: var(--cg-component-input-radius);
+      box-shadow: var(--cg-shadow-elevation-xl);
       opacity: 0;
+      visibility: hidden;
       transform: translateY(calc(-1 * var(--cg-spacing-4))) scale(0.98);
       pointer-events: none;
       transition:
         opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        visibility var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .dropdown.open {
       opacity: 1;
+      visibility: visible;
       transform: translateY(0) scale(1);
       pointer-events: auto;
     }
@@ -143,7 +147,7 @@ export class CgTimePicker extends LitElement {
       display: flex;
       flex-direction: column;
       gap: var(--cg-spacing-2);
-      max-height: 200px;
+      max-height: var(--cg-component-combobox-listbox-max-height);
       overflow-y: auto;
       width: 100%;
       scrollbar-width: thin;
@@ -210,10 +214,15 @@ export class CgTimePicker extends LitElement {
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .period-btn:hover { border-color: var(--cg-color-input-border-hover); }
+    .period-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
+    .period-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--cg-overlay-accent-strong);
+    }
     .period-btn.active {
       background: var(--cg-color-action-primary-background-default);
       color: var(--cg-color-action-primary-text-default);
-      border-color: var(--cg-color-action-primary-background-default);
+      border-color: var(--cg-color-action-primary-border-default);
     }
 
     /* ── Divider ── */
@@ -352,6 +361,7 @@ export class CgTimePicker extends LitElement {
         role="combobox"
         aria-expanded=${this._open}
         aria-haspopup="dialog"
+        aria-controls="cg-tp-popover"
         aria-label=${this.label || 'Time picker'}
         @click=${this._toggle}
         @keydown=${this._handleKeydown}
@@ -367,7 +377,7 @@ export class CgTimePicker extends LitElement {
         </span>
       </div>
 
-      <div class="dropdown ${this._open ? 'open' : ''}" role="dialog" aria-label="Time selector">
+      <div class="dropdown ${this._open ? 'open' : ''}" id="cg-tp-popover" role="dialog" aria-label="Time selector">
         <div class="time-columns">
           <div class="time-column">
             <span class="time-column-label">Hour</span>
@@ -377,7 +387,7 @@ export class CgTimePicker extends LitElement {
                   class="time-option ${this._selectedHour === h ? 'selected' : ''}"
                   @click=${(e: Event) => { e.stopPropagation(); this._selectHour(h); }}
                   aria-label="${h} hours"
-                  aria-selected=${this._selectedHour === h ? 'true' : 'false'}
+                  aria-pressed=${this._selectedHour === h ? 'true' : 'false'}
                 >${this.use12h ? h : String(h).padStart(2, '0')}</button>
               `)}
             </div>
@@ -393,7 +403,7 @@ export class CgTimePicker extends LitElement {
                   class="time-option ${this._selectedMinute === m ? 'selected' : ''}"
                   @click=${(e: Event) => { e.stopPropagation(); this._selectMinute(m); }}
                   aria-label="${m} minutes"
-                  aria-selected=${this._selectedMinute === m ? 'true' : 'false'}
+                  aria-pressed=${this._selectedMinute === m ? 'true' : 'false'}
                 >${String(m).padStart(2, '0')}</button>
               `)}
             </div>
@@ -401,8 +411,8 @@ export class CgTimePicker extends LitElement {
 
           ${this.use12h ? html`
             <div class="period-toggle">
-              <button class="period-btn ${this._period === 'AM' ? 'active' : ''}" @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('AM'); }}>AM</button>
-              <button class="period-btn ${this._period === 'PM' ? 'active' : ''}" @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('PM'); }}>PM</button>
+              <button class="period-btn ${this._period === 'AM' ? 'active' : ''}" aria-pressed=${this._period === 'AM' ? 'true' : 'false'} @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('AM'); }}>AM</button>
+              <button class="period-btn ${this._period === 'PM' ? 'active' : ''}" aria-pressed=${this._period === 'PM' ? 'true' : 'false'} @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('PM'); }}>PM</button>
             </div>
           ` : nothing}
         </div>

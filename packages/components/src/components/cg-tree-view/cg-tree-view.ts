@@ -18,6 +18,8 @@ interface FlatNode {
   hasChildren: boolean;
   expanded: boolean;
   parentPath: string | null;
+  setsize: number;
+  posinset: number;
 }
 
 /**
@@ -67,14 +69,17 @@ export class CgTreeView extends LitElement {
     /* Hover and selected share the same chrome for now — list-row bg shift
        (theme-aware via surface-cards tokens) plus a 1px container outline.
        The transparent border at rest prevents any layout shift. */
-    .node:hover:not(.disabled),
+    .node:hover:not(.disabled) {
+      background: var(--cg-color-surface-cards-hover-background);
+      border-color: var(--cg-color-surface-cards-hover-border);
+    }
     .node.selected {
-      background: var(--cg-color-surface-cards-active-background);
-      border-color: var(--cg-color-surface-container-border);
+      background: var(--cg-color-surface-cards-selected-background);
+      border-color: var(--cg-color-surface-cards-selected-border);
     }
 
     .node.disabled {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-50);
       cursor: not-allowed;
     }
     .node:focus-visible {
@@ -92,16 +97,21 @@ export class CgTreeView extends LitElement {
       height: var(--cg-spacing-16);
       flex-shrink: 0;
       color: var(--cg-color-surface-container-outlined);
-      opacity: 0.7;
       transition:
         transform var(--cg-transition-duration-default) var(--cg-transition-easing-default),
-        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .toggle.expanded { transform: rotate(90deg); }
     .node:hover .toggle,
-    .node.selected .toggle { opacity: 1; color: var(--cg-color-surface-base-text); }
+    .node.selected .toggle { color: var(--cg-color-surface-container-text); }
     .toggle.placeholder { visibility: hidden; }
+
+    .empty {
+      margin: 0;
+      padding: var(--cg-spacing-8);
+      color: var(--cg-color-surface-container-outlined);
+      font-size: var(--cg-font-size-sm);
+    }
 
     /* Optional leading icon next to the label. Muted at rest, full color on
        hover/selected so the row feels alive but doesn't compete with text. */
@@ -110,15 +120,12 @@ export class CgTreeView extends LitElement {
       color: var(--cg-color-surface-container-outlined);
       width: var(--cg-spacing-16);
       height: var(--cg-spacing-16);
-      opacity: 0.85;
       transition:
-        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .node:hover .leading-icon,
     .node.selected .leading-icon {
-      color: var(--cg-color-action-primary-background-default);
-      opacity: 1;
+      color: var(--cg-color-surface-container-icon);
     }
 
     .label {
@@ -130,6 +137,9 @@ export class CgTreeView extends LitElement {
   `];
 
   @property({ type: Array }) items: TreeItem[] = [];
+  /** Accessible name for the tree widget (host aria-label can't reach the
+   *  internal list across the shadow boundary). */
+  @property() label = '';
   @property({ type: Boolean }) multiple = false;
   @property({ type: Array }) selected: string[] = [];
 
@@ -144,6 +154,7 @@ export class CgTreeView extends LitElement {
   override willUpdate(changed: Map<string, unknown>): void {
     if (changed.has('items')) {
       this._expanded.clear();
+      this._focusedPath = null;
       this._seedExpanded(this.items, '');
     }
   }
@@ -163,7 +174,7 @@ export class CgTreeView extends LitElement {
         const path = parentPath ? `${parentPath}.${i}` : `${i}`;
         const hasChildren = !!(item.children && item.children.length);
         const expanded = this._expanded.has(path);
-        out.push({ item, level, path, hasChildren, expanded, parentPath });
+        out.push({ item, level, path, hasChildren, expanded, parentPath, setsize: items.length, posinset: i + 1 });
         if (hasChildren && expanded) walk(item.children!, level + 1, path);
       });
     };
@@ -172,7 +183,7 @@ export class CgTreeView extends LitElement {
   }
 
   private _toggle(node: FlatNode): void {
-    if (!node.hasChildren) return;
+    if (!node.hasChildren || node.item.disabled) return;
     if (this._expanded.has(node.path)) {
       this._expanded.delete(node.path);
       this.dispatchEvent(new CustomEvent('cg-tree-collapse', { bubbles: true, composed: true, detail: { path: node.path } }));
@@ -266,17 +277,25 @@ export class CgTreeView extends LitElement {
 
   override render() {
     const flat = this._flatten();
+    if (flat.length === 0) {
+      return html`<p class="empty">No items</p>`;
+    }
+    // Roving stop must exist in the current flat list, or keyboard users
+    // are stranded after an items replacement.
+    const focusable = flat.some(n => n.path === this._focusedPath) ? this._focusedPath : flat[0]!.path;
     return html`
-      <ul role="tree" aria-multiselectable=${this.multiple ? 'true' : 'false'}>
+      <ul role="tree" aria-label=${this.label || nothing} aria-multiselectable=${this.multiple ? 'true' : 'false'}>
         ${flat.map(node => html`
           <li role="none">
             <div
               class="node ${this._isSelected(node) ? 'selected' : ''} ${node.item.disabled ? 'disabled' : ''}"
               role="treeitem"
               data-path=${node.path}
-              tabindex=${this._focusedPath === node.path || (this._focusedPath === null && node === flat[0]) ? '0' : '-1'}
+              tabindex=${node.path === focusable ? '0' : '-1'}
               style="--cg-tree-level: ${node.level};"
               aria-level=${node.level + 1}
+              aria-setsize=${node.setsize}
+              aria-posinset=${node.posinset}
               aria-expanded=${node.hasChildren ? (node.expanded ? 'true' : 'false') : nothing}
               aria-selected=${this._isSelected(node) ? 'true' : 'false'}
               aria-disabled=${node.item.disabled ? 'true' : 'false'}

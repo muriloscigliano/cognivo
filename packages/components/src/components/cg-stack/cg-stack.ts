@@ -5,10 +5,9 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
 /**
  * <cg-stack> — Flex layout container for composing child components.
  *
- * Features beyond OpenUI's Stack:
- * - wrap support
- * - responsive breakpoint attrs (inline, not media queries)
- * - align-self on children via slot
+ * Features:
+ * - direction / gap / align / justify / wrap / full attributes
+ * - token-driven gap scale (none|xs|sm|md|lg|xl|2xl)
  */
 @customElement('cg-stack')
 export class CgStack extends LitElement {
@@ -53,7 +52,7 @@ export class CgStack extends LitElement {
     :host([wrap="wrap"]) { flex-wrap: wrap; }
     :host([wrap="reverse"]) { flex-wrap: wrap-reverse; }
 
-    /* Full width/height */
+    /* Full width */
     :host([full]) { width: 100%; }
   `];
 

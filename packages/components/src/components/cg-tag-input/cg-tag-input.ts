@@ -66,7 +66,15 @@ export class CgTagInput extends LitElement {
       border-color: var(--cg-color-status-success-text-default);
       box-shadow: 0 0 0 3px var(--cg-shadow-focus-success);
     }
-    :host([disabled]) .container { opacity: 0.6; pointer-events: none; }
+    :host([disabled]) .container {
+      background: var(--cg-color-input-background-disabled);
+      border-color: var(--cg-color-input-border-disabled);
+      pointer-events: none;
+    }
+    :host([disabled]) input,
+    :host([disabled]) .tag {
+      color: var(--cg-color-input-text-disabled);
+    }
 
     .tag {
       display: inline-flex;
@@ -87,7 +95,7 @@ export class CgTagInput extends LitElement {
     }
     .tag:hover {
       background: var(--cg-color-action-secondary-background-hover);
-      border-color: var(--cg-color-input-border-hover);
+      border-color: var(--cg-color-surface-cards-border-strong);
     }
     :host([size="lg"]) .tag {
       padding: var(--cg-spacing-8) var(--cg-spacing-8) var(--cg-spacing-8) var(--cg-spacing-16);
@@ -125,6 +133,14 @@ export class CgTagInput extends LitElement {
       opacity: 1;
       background: var(--cg-color-action-tertiary-background-hover);
     }
+    .tag-remove:focus-visible {
+      opacity: 1;
+      outline: none;
+      background: var(--cg-color-action-tertiary-background-hover);
+      box-shadow:
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
+    }
 
     input {
       flex: 1;
@@ -149,7 +165,7 @@ export class CgTagInput extends LitElement {
     .helper {
       margin-top: var(--cg-spacing-6);
       font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-input-text-placeholder);
     }
     :host([error]) .helper { color: var(--cg-color-status-error-text-default); }
 
@@ -254,6 +270,14 @@ export class CgTagInput extends LitElement {
     this._inputValue = (e.target as HTMLInputElement).value;
   }
 
+  private _handlePaste(e: ClipboardEvent): void {
+    const text = e.clipboardData?.getData('text') ?? '';
+    if (!text.includes(this.delimiter)) return;
+    e.preventDefault();
+    text.split(this.delimiter).forEach(t => this._addTag(t));
+    this._inputValue = '';
+  }
+
   private _handleKeydown(e: KeyboardEvent): void {
     if (e.key === 'Enter' || e.key === this.delimiter) {
       e.preventDefault();
@@ -272,7 +296,7 @@ export class CgTagInput extends LitElement {
 
   override render() {
     return html`
-      ${this.label ? html`<label>${this.label}</label>` : nothing}
+      ${this.label ? html`<label @click=${() => this._inputEl?.focus()}>${this.label}</label>` : nothing}
       <div
         class="container ${this._focused ? 'focused' : ''}"
         @click=${this._handleContainerClick}
@@ -297,13 +321,17 @@ export class CgTagInput extends LitElement {
           .value=${this._inputValue}
           placeholder=${this.value.length === 0 ? this.placeholder : ''}
           ?disabled=${this.disabled}
+          aria-label=${this.label || this.placeholder || nothing}
+          aria-invalid=${this.error ? 'true' : 'false'}
+          aria-describedby=${this.helper ? 'helper' : nothing}
           @input=${this._handleInput}
           @keydown=${this._handleKeydown}
+          @paste=${this._handlePaste}
           @focus=${() => this._focused = true}
           @blur=${() => this._focused = false}
         />
       </div>
-      ${this.helper ? html`<div class="helper">${this.helper}</div>` : nothing}
+      ${this.helper ? html`<div class="helper" id="helper">${this.helper}</div>` : nothing}
       <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">${this._announcement}</div>
     `;
   }

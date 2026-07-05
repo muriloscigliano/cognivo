@@ -16,6 +16,12 @@ export interface ToastOptions {
 interface ToastEntry extends ToastOptions {
   id: string;
   timer: number | null;
+  /** ms left on the auto-dismiss clock; 0 = persistent toast. */
+  remaining: number;
+  /** Absolute epoch-ms the armed timer will fire at (null while paused). */
+  deadline: number | null;
+  hovered: boolean;
+  focused: boolean;
 }
 
 /**
@@ -60,7 +66,9 @@ export class CgToaster extends LitElement {
       box-shadow: var(--cg-shadow-elevation-lg);
       animation: toast-in var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
       transform-origin: center;
-      transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-default);
+      transition:
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        opacity var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     /* Stack effect: non-last toasts scale down subtly */
     .toast:not(:last-child) {
@@ -99,7 +107,7 @@ export class CgToaster extends LitElement {
     .toast.warning .toast-icon { color: var(--cg-color-status-warning-text-default); }
     .toast.error .toast-icon { color: var(--cg-color-status-error-text-default); }
     .toast.info .toast-icon { color: var(--cg-color-status-info-text-default); }
-    .toast.ai .toast-icon { color: var(--cg-color-action-primary-background-default); }
+    .toast.ai .toast-icon { color: var(--cg-color-accent-text); }
 
     .toast-body {
       flex: 1;
@@ -132,6 +140,17 @@ export class CgToaster extends LitElement {
     .toast-action:hover, .toast-close:hover {
       background: var(--cg-color-action-tertiary-background-hover);
     }
+    .toast-action:active, .toast-close:active {
+      background: var(--cg-color-action-tertiary-background-active);
+    }
+    /* Two-layer focus ring: inner layer matches the toast surface so the
+       ring reads as offset (same pattern as cg-callout .dismiss). */
+    .toast-action:focus-visible, .toast-close:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-modal-container-background),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
+    }
     .toast-close {
       color: var(--cg-color-surface-container-outlined);
     }
@@ -145,19 +164,75 @@ export class CgToaster extends LitElement {
   public show(opts: ToastOptions): string {
     const id = `t_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
     const duration = opts.duration ?? 5000;
-    const entry: ToastEntry = { ...opts, id, timer: null };
+    const entry: ToastEntry = {
+      ...opts, id, timer: null, remaining: duration, deadline: null, hovered: false, focused: false,
+    };
     let next = [...this._toasts, entry];
     if (next.length > this.max) {
-      // Clear timers for dropped toasts so they don't leak.
+      // Clear timers for dropped toasts so they don't leak, and dispatch the
+      // same lifecycle event as dismiss() so consumers tracking ids don't
+      // leak state for evicted toasts.
       const dropped = next.slice(0, next.length - this.max);
-      for (const t of dropped) if (t.timer) clearTimeout(t.timer);
+      for (const t of dropped) {
+        if (t.timer) clearTimeout(t.timer);
+        this.dispatchEvent(new CustomEvent('cg-toaster-dismiss', {
+          bubbles: true, composed: true, detail: { id: t.id },
+        }));
+      }
       next = next.slice(next.length - this.max);
     }
     this._toasts = next;
     if (duration > 0) {
-      entry.timer = window.setTimeout(() => this.dismiss(id), duration);
+      this._armTimer(entry);
     }
     return id;
+  }
+
+  /** Arm (or re-arm) the auto-dismiss timer from the entry's remaining time. */
+  private _armTimer(entry: ToastEntry): void {
+    entry.deadline = Date.now() + entry.remaining;
+    entry.timer = window.setTimeout(() => this.dismiss(entry.id), entry.remaining);
+  }
+
+  /** Pause auto-dismiss, banking the time left (WCAG 2.2.1 Timing Adjustable). */
+  private _pauseTimer(entry: ToastEntry): void {
+    if (entry.timer === null) return;
+    clearTimeout(entry.timer);
+    entry.timer = null;
+    if (entry.deadline !== null) {
+      // Keep at least 1ms so a timed toast always re-arms on resume.
+      entry.remaining = Math.max(1, entry.deadline - Date.now());
+      entry.deadline = null;
+    }
+  }
+
+  /** Resume only when the toast is neither hovered nor contains focus. */
+  private _resumeTimer(entry: ToastEntry): void {
+    if (entry.hovered || entry.focused || entry.timer !== null || entry.remaining <= 0) return;
+    this._armTimer(entry);
+  }
+
+  private _onToastEnter(entry: ToastEntry): void {
+    entry.hovered = true;
+    this._pauseTimer(entry);
+  }
+
+  private _onToastLeave(entry: ToastEntry): void {
+    entry.hovered = false;
+    this._resumeTimer(entry);
+  }
+
+  private _onToastFocusIn(entry: ToastEntry): void {
+    entry.focused = true;
+    this._pauseTimer(entry);
+  }
+
+  private _onToastFocusOut(entry: ToastEntry, e: FocusEvent): void {
+    // Ignore focus moving between the toast's own controls (action ↔ close).
+    const related = e.relatedTarget as Node | null;
+    if (related && (e.currentTarget as Node).contains(related)) return;
+    entry.focused = false;
+    this._resumeTimer(entry);
   }
 
   public dismiss(id: string): void {
@@ -212,13 +287,20 @@ export class CgToaster extends LitElement {
 
   override render() {
     return html`
-      <div role="region" aria-live="polite" aria-label="Notifications" style="display: contents;">
+      <div role="region" aria-label="Notifications" style="display: contents;">
         ${this._toasts.map(toast => {
           const iconPath = this._iconFor(toast.variant);
           // `ai` is the only variant using fill; the rest use stroke.
           const useFill = toast.variant === 'ai';
           return html`
-          <div class="toast ${toast.variant ?? 'default'}" role="status">
+          <div
+            class="toast ${toast.variant ?? 'default'}"
+            role="status"
+            @mouseenter=${() => this._onToastEnter(toast)}
+            @mouseleave=${() => this._onToastLeave(toast)}
+            @focusin=${() => this._onToastFocusIn(toast)}
+            @focusout=${(e: FocusEvent) => this._onToastFocusOut(toast, e)}
+          >
             ${iconPath ? html`
               <svg
                 class="toast-icon"

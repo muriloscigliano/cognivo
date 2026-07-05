@@ -35,7 +35,7 @@ export class CgTabs extends LitElement {
 
     :host(:not([variant="pills"])) .indicator {
       position: absolute;
-      bottom: calc(-1 * var(--cg-spacing-1));
+      bottom: 0;
       height: var(--cg-border-width-100);
       background: var(--cg-color-action-primary-background-default);
       border-radius: var(--cg-border-radius-full);
@@ -63,16 +63,16 @@ export class CgTabs extends LitElement {
       color: var(--cg-color-surface-base-text);
     }
     .tab.active {
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
       font-weight: var(--cg-font-weight-semibold);
     }
-    .tab.disabled { opacity: 0.5; cursor: not-allowed; }
+    .tab.disabled { opacity: var(--cg-opacity-50); cursor: not-allowed; }
     .tab:active:not(.disabled) { transform: scale(var(--cg-interaction-press-scale)); }
 
     .tab:focus-visible {
       outline: none;
       border-radius: var(--cg-border-radius-50);
-      box-shadow: 0 0 0 2px var(--cg-color-focus-ring-offset), 0 0 0 4px var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset), 0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
 
     /* Count badge */
@@ -87,7 +87,7 @@ export class CgTabs extends LitElement {
     }
     .tab.active .tab-count {
       background: var(--cg-overlay-accent-light);
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
     }
 
     /* Pills variant */
@@ -178,6 +178,7 @@ export class CgTabs extends LitElement {
 
   private _select(tab: TabItem) {
     if (tab.disabled) return;
+    this.value = tab.value;
     this._active = tab.value;
     this.dispatchEvent(new CustomEvent('cg-tab-change', {
       detail: { value: tab.value, label: tab.label },
@@ -218,7 +219,7 @@ export class CgTabs extends LitElement {
             id="tab-${tab.value}"
             tabindex=${tab.value === this._active ? '0' : '-1'}
             aria-selected=${tab.value === this._active}
-            aria-controls="panel-${tab.value}"
+            aria-controls=${tab.value === this._active ? `panel-${tab.value}` : nothing}
             ?disabled=${tab.disabled}
             @click=${() => this._select(tab)}
           >
@@ -226,9 +227,9 @@ export class CgTabs extends LitElement {
             ${tab.count !== undefined ? html`<span class="tab-count">${tab.count}</span>` : nothing}
           </button>
         `)}
-        <div class="indicator" style="left: ${this._indicatorLeft}px; width: ${this._indicatorWidth}px;"></div>
+        <div class="indicator" aria-hidden="true" style="left: ${this._indicatorLeft}px; width: ${this._indicatorWidth}px;"></div>
       </div>
-      <div class="panel" role="tabpanel" id="panel-${this._active}" aria-labelledby="tab-${this._active}">
+      <div class="panel" role="tabpanel" tabindex="0" id="panel-${this._active}" aria-labelledby="tab-${this._active}">
         <slot name=${this._active}></slot>
         <slot></slot>
       </div>

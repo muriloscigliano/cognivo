@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 
@@ -82,7 +82,7 @@ export class CgToggle extends LitElement {
     }
     :host([variant="outline"]) button:hover:not(:disabled) {
       background: var(--cg-color-action-tertiary-background-hover);
-      border-color: var(--cg-color-input-border-hover);
+      border-color: var(--cg-color-surface-cards-border-strong);
     }
     :host([variant="solid"]) button:hover:not(:disabled) {
       background: var(--cg-color-action-secondary-background-hover);
@@ -115,8 +115,8 @@ export class CgToggle extends LitElement {
     :host([variant="outline"][pressed]) button {
       background: var(--cg-overlay-accent-subtle);
       color: var(--cg-color-accent-text);
-      border-color: var(--cg-color-action-primary-background-default);
-      box-shadow: inset 0 0 0 var(--cg-border-width-50) var(--cg-color-action-primary-background-default);
+      border-color: var(--cg-color-action-primary-border-default);
+      box-shadow: inset 0 0 0 var(--cg-border-width-50) var(--cg-color-action-primary-border-default);
     }
     :host([variant="outline"][pressed]) button:hover:not(:disabled) {
       background: var(--cg-overlay-accent-medium);
@@ -138,8 +138,12 @@ export class CgToggle extends LitElement {
       transform: scale(var(--cg-interaction-press-scale));
     }
 
-    /* Focus */
-    button:focus-visible {
+    /* Focus — pressed-aware selectors so the pressed rules' box-shadow
+       (higher specificity) can't hide the ring on a pressed toggle. */
+    button:focus-visible,
+    :host([pressed]) button:focus-visible,
+    :host([variant="outline"][pressed]) button:focus-visible,
+    :host([variant="solid"][pressed]) button:focus-visible {
       outline: none;
       box-shadow:
         0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
@@ -148,7 +152,7 @@ export class CgToggle extends LitElement {
 
     /* Disabled */
     :host([disabled]) button {
-      opacity: 0.45;
+      opacity: var(--cg-opacity-50);
       cursor: not-allowed;
     }
 
@@ -176,7 +180,10 @@ export class CgToggle extends LitElement {
   @property({ reflect: true }) variant: 'ghost' | 'outline' | 'solid' = 'ghost';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
   @property() value = '';
-  @property() name = '';
+  @property({ reflect: true }) name = '';
+  /** Accessible name for icon-only toggles (host aria-label can't cross
+   *  the shadow boundary to the inner button). */
+  @property() label = '';
 
   override updated(changed: Map<string, unknown>): void {
     if (changed.has('pressed') || changed.has('value')) {
@@ -198,6 +205,7 @@ export class CgToggle extends LitElement {
     return html`
       <button
         type="button"
+        aria-label=${this.label || nothing}
         aria-pressed=${this.pressed ? 'true' : 'false'}
         ?disabled=${this.disabled}
         @click=${this._toggle}

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, queryAssignedElements } from 'lit/decorators.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 import type { CgToggle } from '../cg-toggle/cg-toggle.js';
@@ -25,14 +25,17 @@ export class CgToggleGroup extends LitElement {
   static override styles = [hostBase, reducedMotion, css`
     :host {
       display: inline-flex;
+    }
+    div {
+      display: inline-flex;
       gap: var(--cg-spacing-4);
     }
-    :host([orientation="vertical"]) {
+    :host([orientation="vertical"]) div {
       flex-direction: column;
     }
 
     /* Connected pill mode: when variant=outline, flush-join neighbors */
-    :host([variant="outline"]) {
+    :host([variant="outline"]) div {
       gap: 0;
     }
     :host([variant="outline"]) ::slotted(cg-toggle:not(:first-child)) {
@@ -44,6 +47,9 @@ export class CgToggleGroup extends LitElement {
     }
   `];
 
+  /** Accessible name for the group (required — anonymous groups are
+   *  indistinguishable to screen readers). */
+  @property() label = '';
   @property() type: 'single' | 'multiple' = 'single';
   @property() value: string | string[] = '';
   @property({ type: Boolean, reflect: true }) disabled = false;
@@ -63,15 +69,30 @@ export class CgToggleGroup extends LitElement {
     this.removeEventListener('cg-toggle-change', this._onToggleChange as EventListener);
   }
 
+  /** Toggles WE disabled via group disabled — keeps re-enabling reversible
+   *  without clobbering individually-disabled toggles. */
+  private _groupDisabled = new WeakSet<CgToggle>();
+
   override updated(changed: Map<string, unknown>): void {
     // Only sync when relevant props change (avoids infinite loops)
     if (!changed.has('value') && !changed.has('size') && !changed.has('variant') && !changed.has('disabled') && !changed.has('type')) return;
+    this._syncToggles();
+  }
 
+  private _syncToggles(): void {
     const toggles = this._toggles;
     for (const toggle of toggles) {
       toggle.size = this.size;
       toggle.variant = this.variant;
-      if (this.disabled) toggle.disabled = true;
+      if (this.disabled) {
+        if (!toggle.disabled) {
+          this._groupDisabled.add(toggle);
+          toggle.disabled = true;
+        }
+      } else if (this._groupDisabled.has(toggle)) {
+        this._groupDisabled.delete(toggle);
+        toggle.disabled = false;
+      }
 
       if (this.type === 'single') {
         toggle.pressed = toggle.value === this.value;
@@ -118,8 +139,8 @@ export class CgToggleGroup extends LitElement {
 
   override render() {
     return html`
-      <div role=${this.type === 'multiple' ? 'toolbar' : 'group'}>
-        <slot @slotchange=${() => this.requestUpdate()}></slot>
+      <div role=${this.type === 'multiple' ? 'toolbar' : 'group'} aria-label=${this.label || nothing}>
+        <slot @slotchange=${() => this._syncToggles()}></slot>
       </div>
     `;
   }

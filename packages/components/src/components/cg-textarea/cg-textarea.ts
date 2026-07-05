@@ -180,7 +180,7 @@ export class CgTextarea extends LitElement {
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-input-text-placeholder);
     }
-    :host([error]) .count { color: var(--cg-color-input-icon-error); }
+    :host([error]) .count { color: var(--cg-color-status-error-text-default); }
 
     /* ── Helper text ── */
     .helper {
@@ -192,7 +192,7 @@ export class CgTextarea extends LitElement {
     :host([success]) .helper { color: var(--cg-color-status-success-text-default); }
 
     /* Size variants */
-    :host([size="lg"]) textarea { font-size: var(--cg-font-size-base); padding: var(--cg-spacing-12) var(--cg-spacing-16); min-height: 140px; }
+    :host([size="lg"]) textarea { font-size: var(--cg-font-size-base); padding: var(--cg-spacing-12) var(--cg-spacing-16); min-height: var(--cg-spacing-128); }
 
     /* ── Rounded overrides ── */
     :host([rounded="none"]) textarea { border-radius: 0; }
@@ -233,6 +233,10 @@ export class CgTextarea extends LitElement {
       } else {
         this._internals?.setValidity({});
       }
+    }
+    if (this.autoresize && changed.has('value') && this._textarea) {
+      this._textarea.style.height = 'auto';
+      this._textarea.style.height = this._textarea.scrollHeight + 'px';
     }
   }
 
@@ -280,14 +284,14 @@ export class CgTextarea extends LitElement {
             aria-busy=${this.loading ? 'true' : 'false'}
             aria-required=${this.required ? 'true' : 'false'}
             aria-label=${this.label || nothing}
-            aria-describedby=${this.helper ? 'helper' : nothing}
+            aria-describedby=${[this.helper ? 'helper' : '', this.maxlength ? 'count' : ''].filter(Boolean).join(' ') || nothing}
             @input=${this._handleInput}
             @focus=${this._handleFocus}
             @blur=${this._handleBlur}
           ></textarea>
-          ${this.loading ? html`<div class="loading-overlay"><span class="loading-spinner" aria-hidden="true"></span></div>` : nothing}
+          ${this.loading ? html`<div class="loading-overlay" role="status" aria-label="Loading"><span class="loading-spinner" aria-hidden="true"></span></div>` : nothing}
         </div>
-        ${this.maxlength ? html`<div class="footer"><span class="count">${this.value.length}/${this.maxlength}</span></div>` : nothing}
+        ${this.maxlength ? html`<div class="footer"><span class="count" id="count">${this.value.length}/${this.maxlength}</span></div>` : nothing}
       </div>
       ${this.helper ? html`<div class="helper" id="helper">${this.helper}</div>` : nothing}
     `;

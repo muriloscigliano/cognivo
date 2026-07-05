@@ -54,6 +54,19 @@ export class CgVisuallyHidden extends LitElement {
       white-space: nowrap;
       border: 0;
     }
+
+    /* Reveal when a focusable child (skip link, shortcut) receives focus —
+       no-op for plain text, which can't receive focus. */
+    .sr-only:focus-within {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: 0;
+      overflow: visible;
+      clip: auto;
+      clip-path: none;
+      white-space: normal;
+    }
   `;
 
   override render() {

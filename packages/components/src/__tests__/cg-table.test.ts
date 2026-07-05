@@ -181,7 +181,7 @@ describe('cg-table', () => {
   it('_getSortedRows returns rows unchanged when no sort key set', () => {
     const el2 = make({ rows: [['B'], ['A']] });
     const result = (el2 as any)._getSortedRows();
-    expect(result).toEqual([['B'], ['A']]);
+    expect(result).toEqual([{ row: ['B'], i: 0 }, { row: ['A'], i: 1 }]);
   });
 
   it('_getSortedRows sorts numeric ascending', () => {
@@ -191,7 +191,9 @@ describe('cg-table', () => {
     });
     (el2 as any)._handleSort({ key: 'age', label: 'Age', sortable: true });
     const sorted = (el2 as any)._getSortedRows();
-    expect(sorted).toEqual([[2], [10], [30]]);
+    expect(sorted.map((e: { row: number[] }) => e.row)).toEqual([[2], [10], [30]]);
+    // Original indices travel with the rows so selection stays stable under sorting
+    expect(sorted.map((e: { i: number }) => e.i)).toEqual([1, 0, 2]);
   });
 
   it('_getSortedRows sorts strings alphabetically', () => {
@@ -201,7 +203,7 @@ describe('cg-table', () => {
     });
     (el2 as any)._handleSort({ key: 'name', label: 'Name', sortable: true });
     const sorted = (el2 as any)._getSortedRows();
-    expect(sorted.map((r: string[]) => r[0])).toEqual(['Alice', 'Bob', 'Charlie']);
+    expect(sorted.map((e: { row: string[] }) => e.row[0])).toEqual(['Alice', 'Bob', 'Charlie']);
   });
 
   it('_getSortedRows reverses on desc', () => {
@@ -213,7 +215,7 @@ describe('cg-table', () => {
     (el2 as any)._handleSort(col);
     (el2 as any)._handleSort(col); // desc
     const sorted = (el2 as any)._getSortedRows();
-    expect(sorted.map((r: number[]) => r[0])).toEqual([3, 2, 1]);
+    expect(sorted.map((e: { row: number[] }) => e.row[0])).toEqual([3, 2, 1]);
   });
 
   it('_getSortedRows returns rows unchanged when sort key not in columns', () => {
@@ -223,7 +225,7 @@ describe('cg-table', () => {
     });
     (el2 as any)._sortKey = 'unknown';
     const sorted = (el2 as any)._getSortedRows();
-    expect(sorted).toEqual([[1], [2]]);
+    expect(sorted).toEqual([{ row: [1], i: 0 }, { row: [2], i: 1 }]);
   });
 
   it('_handleFooterSlotChange with nodes sets _hasFooter=true', () => {

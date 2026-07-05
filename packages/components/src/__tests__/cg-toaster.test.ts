@@ -58,9 +58,28 @@ describe('cg-toaster', () => {
     expect(el.shadowRoot!.querySelectorAll('.toast').length).toBe(2);
   });
 
-  it('aria-live polite on region', async () => {
+  it('region has no aria-live; each toast is its own live region via role=status', async () => {
     await create();
     const region = el.shadowRoot!.querySelector('[role="region"]')!;
-    expect(region.getAttribute('aria-live')).toBe('polite');
+    // aria-live on the wrapper + role=status on children = nested live
+    // regions → double announcements. The toast's role=status is the
+    // single announcement mechanism.
+    expect(region.hasAttribute('aria-live')).toBe(false);
+    expect(region.getAttribute('aria-label')).toBe('Notifications');
+    el.show({ title: 'Announce me', duration: 0 });
+    await el.updateComplete;
+    expect(el.shadowRoot!.querySelector('.toast')!.getAttribute('role')).toBe('status');
+  });
+
+  it('evicted toasts dispatch cg-toaster-dismiss', async () => {
+    await create({ max: 1 });
+    const dismissed: string[] = [];
+    el.addEventListener('cg-toaster-dismiss', e => {
+      dismissed.push((e as CustomEvent<{ id: string }>).detail.id);
+    });
+    const first = el.show({ title: '1', duration: 0 });
+    el.show({ title: '2', duration: 0 });
+    await el.updateComplete;
+    expect(dismissed).toEqual([first]);
   });
 });

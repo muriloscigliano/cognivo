@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
@@ -85,11 +86,16 @@ export class CgText extends LitElement {
         this.style.display = '-webkit-box';
         this.style.setProperty('-webkit-line-clamp', String(this.clamp));
         this.style.setProperty('-webkit-box-orient', 'vertical');
+        // clamp needs wrapping — override the truncate nowrap if both are set
+        this.style.setProperty('white-space', 'normal');
         this.style.overflow = 'hidden';
       } else {
-        this.style.display = this.inline ? 'inline' : 'block';
+        // Give control back to the stylesheet (hostBlock block display,
+        // :host([inline]) inline) instead of pinning an inline style.
+        this.style.removeProperty('display');
         this.style.removeProperty('-webkit-line-clamp');
         this.style.removeProperty('-webkit-box-orient');
+        this.style.removeProperty('white-space');
         this.style.overflow = '';
       }
     }
@@ -97,15 +103,17 @@ export class CgText extends LitElement {
 
   override render() {
     const content = this.text || html`<slot></slot>`;
+    // Truncated/clamped text is unreadable — surface the full text on hover
+    const title = (this.truncate || this.clamp > 0) && this.text ? this.text : undefined;
     switch (this.as) {
-      case 'h1': return html`<h1>${content}</h1>`;
-      case 'h2': return html`<h2>${content}</h2>`;
-      case 'h3': return html`<h3>${content}</h3>`;
-      case 'h4': return html`<h4>${content}</h4>`;
-      case 'h5': return html`<h5>${content}</h5>`;
-      case 'h6': return html`<h6>${content}</h6>`;
-      case 'span': return html`<span>${content}</span>`;
-      default: return html`<p>${content}</p>`;
+      case 'h1': return html`<h1 title=${ifDefined(title)}>${content}</h1>`;
+      case 'h2': return html`<h2 title=${ifDefined(title)}>${content}</h2>`;
+      case 'h3': return html`<h3 title=${ifDefined(title)}>${content}</h3>`;
+      case 'h4': return html`<h4 title=${ifDefined(title)}>${content}</h4>`;
+      case 'h5': return html`<h5 title=${ifDefined(title)}>${content}</h5>`;
+      case 'h6': return html`<h6 title=${ifDefined(title)}>${content}</h6>`;
+      case 'span': return html`<span title=${ifDefined(title)}>${content}</span>`;
+      default: return html`<p title=${ifDefined(title)}>${content}</p>`;
     }
   }
 }

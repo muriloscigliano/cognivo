@@ -64,13 +64,20 @@ export class CgSwitch extends LitElement {
     /* ── Thumb ── */
     .thumb {
       position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: var(--cg-spacing-20);
       height: var(--cg-spacing-20);
       border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-toggle-thumb-off);
       top: var(--cg-spacing-2);
       left: var(--cg-spacing-2);
-      transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out), width var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition:
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out),
+        width var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       box-shadow: var(--cg-elevation-1);
     }
 
@@ -101,7 +108,9 @@ export class CgSwitch extends LitElement {
 
     /* ── Focus ring ── */
     label:focus-visible .track {
-      box-shadow: 0 0 0 2px var(--cg-color-focus-ring-offset), 0 0 0 4px var(--cg-color-focus-ring);
+      box-shadow:
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
 
     /* ── Error state ── */
@@ -121,7 +130,7 @@ export class CgSwitch extends LitElement {
     }
 
     /* ── Loading state ── */
-    :host([loading]) label { pointer-events: none; opacity: 0.5; }
+    :host([loading]) label { pointer-events: none; opacity: var(--cg-opacity-50); }
     .loading-spinner {
       width: var(--cg-spacing-16);
       height: var(--cg-spacing-16);
@@ -154,7 +163,7 @@ export class CgSwitch extends LitElement {
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;
   @property({ type: Boolean, reflect: true }) loading = false;
-  @property() name = '';
+  @property({ reflect: true }) name = '';
 
   override updated(changed: PropertyValues) {
     super.updated(changed);
@@ -169,6 +178,11 @@ export class CgSwitch extends LitElement {
 
   formStateRestoreCallback(state: string) {
     this.checked = state === 'on';
+  }
+
+  /** Native form semantics: a disabled <fieldset> disables the switch. */
+  formDisabledCallback(disabled: boolean) {
+    this.disabled = disabled;
   }
 
   private _toggle() {
@@ -193,10 +207,9 @@ export class CgSwitch extends LitElement {
         @click=${this._toggle}
         @keydown=${(e: KeyboardEvent) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); this._toggle(); } }}
       >
-        ${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : html`
         <span class="track ${this.checked ? 'checked' : ''}">
-          <span class="thumb"></span>
-        </span>`}
+          <span class="thumb">${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : nothing}</span>
+        </span>
 
         ${this.label ? html`<span class="label-text">${this.label}</span>` : nothing}
       </label>
