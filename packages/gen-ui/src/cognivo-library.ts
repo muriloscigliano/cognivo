@@ -1,5 +1,7 @@
 /**
- * Cognivo Component Library — All 166 components registered for gen-ui.
+ * Cognivo Component Library — 196 components registered for gen-ui.
+ * (Keep this count in sync — see __tests__/registry-parity.test.ts, which
+ * asserts registry ⇄ packages/components directory parity.)
  *
  * Each component has a Zod schema matching its actual @property() interface,
  * a tagName for Web Component rendering, and biasHints for cognitive psychology integration.
@@ -398,19 +400,6 @@ export const ListDef = defineComponent({
     dividers: z.boolean().optional(),
   }),
   description: 'Rich list with numbered/bullet/image variants, clickable items, action buttons, and meta text',
-});
-
-export const SectionDef = defineComponent({
-  name: 'Section', tagName: 'cg-section',
-  props: z.object({
-    title: z.string(),
-    description: z.string().optional(),
-    foldable: z.boolean().optional(),
-    open: z.boolean().optional(),
-    bordered: z.boolean().optional(),
-    count: z.number().optional(),
-  }),
-  description: 'Foldable content section with smooth animation, description, badge count, streaming-aware',
 });
 
 export const FollowUpDef = defineComponent({
@@ -2168,6 +2157,301 @@ export const AiVoicePanelDef = defineComponent({
   description: 'Voice input panel with push-to-talk, continuous mode, language, and timeout controls',
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Wave 11: Astryx-parity layout & display (10 components)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const ToolbarDef = defineComponent({
+  name: 'Toolbar', tagName: 'cg-toolbar',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    orientation: z.enum(['horizontal', 'vertical']).optional(),
+    label: z.string().optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    wrap: z.boolean().optional(),
+  }),
+  description: 'Grouped-action toolbar (ARIA roving tabindex, one tab stop) for buttons, toggles, and separators',
+});
+
+export const GridDef = defineComponent({
+  name: 'Grid', tagName: 'cg-grid',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    columns: z.number().optional(),
+    minColumn: z.string().optional(),
+    gap: z.enum(['none', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']).optional(),
+    align: z.enum(['start', 'center', 'end', 'stretch']).optional(),
+    justify: z.enum(['start', 'center', 'end', 'stretch']).optional(),
+    full: z.boolean().optional(),
+  }),
+  description: 'CSS-grid layout with fixed column count or responsive auto-fill via minColumn (e.g. "200px")',
+});
+
+export const CenterDef = defineComponent({
+  name: 'Center', tagName: 'cg-center',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    inline: z.boolean().optional(),
+    maxWidth: z.string().optional(),
+    full: z.boolean().optional(),
+    gap: z.enum(['none', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']).optional(),
+  }),
+  description: 'Centers content on both axes with optional max-width for readable content columns',
+});
+
+export const StatusDotDef = defineComponent({
+  name: 'StatusDot', tagName: 'cg-status-dot',
+  props: z.object({
+    status: z.enum(['online', 'away', 'busy', 'offline', 'success', 'warning', 'error', 'info', 'neutral']).optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    pulse: z.boolean().optional(),
+    label: z.string().optional(),
+  }),
+  description: 'Small colored presence/status dot with optional pulse animation and accessible label',
+});
+
+export const TimestampDef = defineComponent({
+  name: 'Timestamp', tagName: 'cg-timestamp',
+  props: z.object({
+    datetime: z.string(),
+    format: z.enum(['relative', 'datetime', 'date', 'time']).optional(),
+    live: z.boolean().optional(),
+  }),
+  description: 'Renders an ISO datetime as relative ("2h ago") or absolute text, auto-refreshing when live',
+});
+
+export const BlockquoteDef = defineComponent({
+  name: 'Blockquote', tagName: 'cg-blockquote',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    cite: z.string().optional(),
+    variant: z.enum(['default', 'accent', 'muted']).optional(),
+  }),
+  description: 'Editorial pull-quote with oversized decorative quotation mark and optional attribution footer',
+});
+
+export const ThumbnailDef = defineComponent({
+  name: 'Thumbnail', tagName: 'cg-thumbnail',
+  props: z.object({
+    src: z.string(),
+    alt: z.string().optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    rounded: z.enum(['none', 'sm', 'md', 'lg', 'full']).optional(),
+    selectable: z.boolean().optional(),
+    selected: z.boolean().optional(),
+    disabled: z.boolean().optional(),
+  }),
+  description: 'Small fixed-size preview image with selectable/clickable tile mode — use Image for large content',
+});
+
+export const OverflowListDef = defineComponent({
+  name: 'OverflowList', tagName: 'cg-overflow-list',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    gap: z.enum(['none', 'xs', 'sm', 'md', 'lg']).optional(),
+    moreLabel: z.string().optional(),
+    minVisible: z.number().optional(),
+  }),
+  description: 'Single-row layout that collapses items that do not fit into a trailing "more" menu',
+});
+
+export const LightboxDef = defineComponent({
+  name: 'Lightbox', tagName: 'cg-lightbox',
+  props: z.object({
+    open: z.boolean().optional(),
+    images: z.array(z.object({ src: z.string(), alt: z.string().optional(), caption: z.string().optional() })).optional(),
+    index: z.number().optional(),
+    closable: z.boolean().optional(),
+  }),
+  description: 'Fullscreen image viewer with prev/next navigation, keyboard control, focus trap, and captions',
+});
+
+export const AppShellDef = defineComponent({
+  name: 'AppShell', tagName: 'cg-app-shell',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    sidebarPosition: z.enum(['start', 'end']).optional(),
+    sidebarWidth: z.string().optional(),
+    sidebarCollapsed: z.boolean().optional(),
+    headerHeight: z.string().optional(),
+    stickyHeader: z.boolean().optional(),
+  }),
+  description: 'Top-level app scaffold with header/sidebar/content/footer landmark regions and collapsible sidebar',
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Wave 11: Forms & actions coverage (2 components)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const PhoneInputDef = defineComponent({
+  name: 'PhoneInput', tagName: 'cg-phone-input',
+  props: z.object({
+    value: z.string().optional(),
+    country: z.string().optional(),
+    defaultCountry: z.string().optional(),
+    name: z.string().optional(),
+    label: z.string().optional(),
+    placeholder: z.string().optional(),
+    helper: z.string().optional(),
+    size: z.enum(['md', 'lg']).optional(),
+    rounded: z.enum(['none', 'sm', 'md', 'lg']).optional(),
+    disabled: z.boolean().optional(),
+    readonly: z.boolean().optional(),
+    error: z.boolean().optional(),
+    success: z.boolean().optional(),
+    required: z.boolean().optional(),
+    loading: z.boolean().optional(),
+    nationalMode: z.boolean().optional(),
+    preferredCountries: z.array(z.string()).optional(),
+    onlyCountries: z.array(z.string()).optional(),
+    excludeCountries: z.array(z.string()).optional(),
+    open: z.boolean().optional(),
+  }),
+  description: 'International phone input with searchable country selector emitting a single E.164 value',
+});
+
+export const SplitButtonDef = defineComponent({
+  name: 'SplitButton', tagName: 'cg-split-button',
+  props: z.object({
+    label: z.string(),
+    variant: z.enum(['primary', 'secondary', 'tertiary']).optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    type: z.enum(['normal', 'danger']).optional(),
+    disabled: z.boolean().optional(),
+    loading: z.boolean().optional(),
+    items: z.array(z.object({
+      id: z.string(),
+      label: z.string(),
+      icon: z.string().optional(),
+      shortcut: z.string().optional(),
+      disabled: z.boolean().optional(),
+      danger: z.boolean().optional(),
+      separator: z.boolean().optional(),
+    })).optional(),
+    open: z.boolean().optional(),
+    menuPlacement: z.enum(['bottom-start', 'bottom-end', 'top-start', 'top-end']).optional(),
+    rounded: z.enum(['none', 'sm', 'md', 'lg']).optional(),
+  }),
+  description: 'Primary action button with attached dropdown of related actions (Save / Save As), shares Button variants',
+  biasHints: ['default-effect'],
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Wave 11: AI coverage (2 components)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const AiAppSidebarDef = defineComponent({
+  name: 'AiAppSidebar', tagName: 'ai-app-sidebar',
+  props: z.object({
+    sections: z.array(z.object({
+      title: z.string(),
+      items: z.array(z.object({
+        id: z.string(),
+        label: z.string(),
+        icon: z.string().optional(),
+        badge: z.string().optional(),
+      })),
+    })).optional(),
+    collapsed: z.boolean().optional(),
+    activeId: z.string().optional(),
+  }),
+  description: 'Data-driven app sidebar with grouped sections, item icons, badges, and collapse-to-icon mode',
+});
+
+export const AiConfidenceBadgeDef = defineComponent({
+  name: 'AiConfidenceBadge', tagName: 'ai-confidence-badge',
+  props: z.object({
+    score: z.number(),
+    showPercentage: z.boolean().optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    explanation: z.string().optional(),
+    history: z.array(z.number()).optional(),
+    highThreshold: z.number().optional(),
+    lowThreshold: z.number().optional(),
+  }),
+  description: 'Confidence badge with color-coded high/medium/low levels, explanation tooltip, and history sparkline',
+  biasHints: ['anchoring-bias', 'authority-bias'],
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Bias Wrappers (6 components) — cognitive-bias building blocks
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const BiasAnchoringDef = defineComponent({
+  name: 'BiasAnchoring', tagName: 'bias-anchoring',
+  props: z.object({
+    anchor: z.string(),
+    current: z.string(),
+    label: z.string().optional(),
+    orientation: z.enum(['horizontal', 'vertical']).optional(),
+    variant: z.enum(['default', 'subtle', 'emphasized']).optional(),
+  }),
+  description: 'Reference-price anchoring: struck-through anchor value next to emphasized current value with savings label',
+  biasHints: ['anchoring-bias'],
+});
+
+export const BiasAuthorityDef = defineComponent({
+  name: 'BiasAuthority', tagName: 'bias-authority',
+  props: z.object({
+    source: z.string(),
+    kind: z.enum(['verified', 'endorsed', 'certified', 'featured']).optional(),
+    icon: z.string().optional(),
+    href: z.string().optional(),
+  }),
+  description: 'Endorsement / trust badge ("Verified by X", "Certified", "Featured in") with optional link mode',
+  biasHints: ['authority-bias'],
+});
+
+export const BiasCommitmentDef = defineComponent({
+  name: 'BiasCommitment', tagName: 'bias-commitment',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    step: z.number().optional(),
+    total: z.number().optional(),
+    showProgress: z.boolean().optional(),
+  }),
+  description: 'Progressive multi-step reveal: children with data-step="N" appear when step >= N, optional progress bar',
+  biasHints: ['commitment-bias'],
+});
+
+export const BiasReciprocityDef = defineComponent({
+  name: 'BiasReciprocity', tagName: 'bias-reciprocity',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    gift: z.string(),
+    icon: z.string().optional(),
+    prominence: z.enum(['subtle', 'standard', 'hero']).optional(),
+  }),
+  description: 'Value-first framing around a CTA: presents a "gift" (free shipping, bonus, trial) as an inbound favor',
+  biasHints: ['reciprocity'],
+});
+
+export const BiasScarcityDef = defineComponent({
+  name: 'BiasScarcity', tagName: 'bias-scarcity',
+  props: z.object({
+    type: z.enum(['time', 'stock', 'popularity']).optional(),
+    deadline: z.string().optional(),
+    remaining: z.number().optional(),
+    threshold: z.number().optional(),
+    pulse: z.boolean().optional(),
+  }),
+  description: 'Urgency indicator (countdown, stock count, popularity) that escalates visually near thresholds',
+  biasHints: ['scarcity-bias'],
+});
+
+export const BiasSocialProofDef = defineComponent({
+  name: 'BiasSocialProof', tagName: 'bias-social-proof',
+  props: z.object({
+    count: z.number(),
+    type: z.enum(['viewing', 'purchased', 'rated', 'subscribed']).optional(),
+    interval: z.enum(['now', 'today', 'week', 'month']).optional(),
+    format: z.enum(['compact', 'full']).optional(),
+    avatars: z.array(z.string()).optional(),
+  }),
+  description: 'Social-proof badge showing how many others are viewing/purchasing/rating, with optional stacked avatars',
+  biasHints: ['social-proof'],
+});
+
 const ALL_COMPONENTS = [
   // Layout
   StackDef, TextContentDef, SeparatorDef, IconDef, CardDef,
@@ -2186,7 +2470,7 @@ const ALL_COMPONENTS = [
   // Feedback
   ProgressBarDef, SpinnerDef, SkeletonDef,
   // Chat
-  ListDef, SectionDef, FollowUpDef, ChartDef,
+  ListDef, FollowUpDef, ChartDef,
   // AI
   AiThinkingDef, AiBadgeDef, AiInsightCardDef, AiResultPanelDef, AiChartSummaryDef, AiChatDef,
   // AI Extended
@@ -2223,10 +2507,21 @@ const ALL_COMPONENTS = [
   AiDataLineageDef, AiDetectionCanvasDef, AiLabelingBoardDef, AiPersonalizationDashDef,
   AiRewardSignalDef, AiScenarioPanelDef, AiSegmentationViewerDef, AiSimilarityCardDef,
   AiTransformSliderDef, AiTranslationPanelDef, AiValidationChecklistDef, AiVoicePanelDef,
+  // Wave 11: Astryx-parity layout & display
+  ToolbarDef, GridDef, CenterDef, StatusDotDef, TimestampDef,
+  BlockquoteDef, ThumbnailDef, OverflowListDef, LightboxDef, AppShellDef,
+  // Wave 11: Forms & actions coverage
+  PhoneInputDef, SplitButtonDef,
+  // Wave 11: AI coverage
+  AiAppSidebarDef, AiConfidenceBadgeDef,
+  // Bias Wrappers
+  BiasAnchoringDef, BiasAuthorityDef, BiasCommitmentDef,
+  BiasReciprocityDef, BiasScarcityDef, BiasSocialProofDef,
 ];
 
 /**
- * Full Cognivo library — 176 components registered for LLM generation.
+ * Full Cognivo library — 196 components registered for LLM generation.
+ * Keep in sync — see __tests__/registry-parity.test.ts.
  */
 export const cognivoLibrary: Library = createLibrary({
   root: 'Stack',
@@ -2234,7 +2529,7 @@ export const cognivoLibrary: Library = createLibrary({
   componentGroups: [
     {
       name: 'Foundation',
-      components: ['Stack', 'TextContent', 'Separator', 'Icon', 'Label', 'Button', 'ButtonGroup', 'Chip', 'Link', 'Card', 'Badge', 'BadgeGroup', 'Callout', 'Image', 'ImageBlock', 'Avatar'],
+      components: ['Stack', 'TextContent', 'Separator', 'Icon', 'Label', 'Button', 'ButtonGroup', 'SplitButton', 'Chip', 'Link', 'Card', 'Badge', 'BadgeGroup', 'Callout', 'Image', 'ImageBlock', 'Avatar'],
       notes: [
         '- Stack is the root container — use for all layouts (row/column/wrap)',
         '- Card has 3 variants: elevated (shadow), outlined (border), filled (subtle bg)',
@@ -2247,7 +2542,7 @@ export const cognivoLibrary: Library = createLibrary({
     },
     {
       name: 'Forms',
-      components: ['Form', 'Label', 'Input', 'Select', 'Textarea', 'Checkbox', 'Radio', 'RadioGroup', 'Switch', 'Slider', 'DatePicker', 'Autocomplete', 'NumberInput', 'OtpInput', 'ColorPicker', 'Toggle', 'ToggleGroup', 'SegmentedControl', 'PasswordInput', 'Rating', 'TagInput', 'FileInput', 'Combobox', 'DateRangePicker'],
+      components: ['Form', 'Label', 'Input', 'Select', 'Textarea', 'Checkbox', 'Radio', 'RadioGroup', 'Switch', 'Slider', 'DatePicker', 'Autocomplete', 'NumberInput', 'OtpInput', 'ColorPicker', 'Toggle', 'ToggleGroup', 'SegmentedControl', 'PasswordInput', 'Rating', 'TagInput', 'FileInput', 'Combobox', 'DateRangePicker', 'PhoneInput'],
       notes: [
         '- Wrap fields in Form, use Label above each input',
         '- Input supports clear button, character count, prefix/suffix slots',
@@ -2284,8 +2579,13 @@ export const cognivoLibrary: Library = createLibrary({
     },
     {
       name: 'Structural',
-      components: ['Collapsible', 'Kbd', 'AspectRatio', 'ScrollArea', 'Navbar', 'Calendar', 'Resizable', 'TreeView', 'Sidebar'],
+      components: ['Collapsible', 'Kbd', 'AspectRatio', 'ScrollArea', 'Navbar', 'Calendar', 'Resizable', 'TreeView', 'Sidebar', 'Toolbar', 'Grid', 'Center', 'OverflowList', 'AppShell'],
       notes: [
+        '- Toolbar: grouped-action container (one tab stop, arrow-key navigation) for buttons/toggles',
+        '- Grid: CSS-grid with fixed columns or responsive auto-fill via minColumn (e.g. "200px")',
+        '- Center: centers content on both axes with optional maxWidth for readable columns',
+        '- OverflowList: single row that collapses non-fitting items into a "more" menu',
+        '- AppShell: top-level app scaffold with header/sidebar/content/footer regions',
         '- Collapsible: single expand/collapse region with animated height',
         '- Kbd: keyboard shortcut display (e.g. "Cmd+K") with default and outline variants',
         '- AspectRatio: locks wrapped content to a ratio like "16/9", "1/1", "4/3"',
@@ -2297,8 +2597,12 @@ export const cognivoLibrary: Library = createLibrary({
     },
     {
       name: 'Data & Navigation',
-      components: ['MetricCard', 'Table', 'Chart', 'ImageGallery', 'AvatarGroup', 'Tabs', 'Accordion', 'Steps', 'Carousel', 'CodeBlock', 'Markdown', 'List', 'Section'],
+      components: ['MetricCard', 'Table', 'Chart', 'ImageGallery', 'AvatarGroup', 'Tabs', 'Accordion', 'Steps', 'Carousel', 'CodeBlock', 'Markdown', 'List', 'StatusDot', 'Timestamp', 'Blockquote', 'Thumbnail', 'Lightbox'],
       notes: [
+        '- StatusDot: small presence/status dot (online/busy/success/error…) with optional pulse',
+        '- Timestamp: relative ("2h ago") or absolute time display, live-refreshing',
+        '- Blockquote: editorial pull-quote with attribution; Thumbnail: small selectable preview image',
+        '- Lightbox: fullscreen image viewer — pair with ImageGallery',
         '- MetricCard: group in a row Stack for KPI dashboard headers',
         '- Table: columns array defines headers, rows is array of arrays, supports sorting',
         '- Chart: 6 types (bar, horizontal-bar, line, area, pie, donut) with tooltips',
@@ -2355,18 +2659,33 @@ export const cognivoLibrary: Library = createLibrary({
         'AiRevealAnimation', 'AiRichMessage', 'AiSearch', 'AiSidebar', 'AiSourceGraph',
         'AiStatusPage', 'AiStreamingText', 'AiTestRunner', 'AiTimeline', 'AiToast',
         'AiTokenTracker', 'AiToolCardResolver', 'AiToolIndicator', 'AiUsageMeter', 'AiVersionSelector',
-        'AiWebhookConfig', 'AiWorkflowBuilder',
+        'AiWebhookConfig', 'AiWorkflowBuilder', 'AiAppSidebar', 'AiConfidenceBadge',
       ],
       notes: [
         '- These are specialized AI/ML components for production applications',
         '- Many accept complex data objects — set via JS properties, not attributes',
+        '- AiAppSidebar: data-driven app-shell sidebar (sections prop); AiSidebar is the legacy alias',
+        '- AiConfidenceBadge: richer confidence display than AiBadge — sizes, explanation, history sparkline',
+      ],
+    },
+    {
+      name: 'Bias Wrappers',
+      components: ['BiasAnchoring', 'BiasAuthority', 'BiasCommitment', 'BiasReciprocity', 'BiasScarcity', 'BiasSocialProof'],
+      notes: [
+        '- Cognitive-bias building blocks — use deliberately and ethically, never to deceive',
+        '- BiasAnchoring: struck-through reference price next to emphasized current price',
+        '- BiasAuthority: "Verified by X" / "Certified" trust badge with verified/endorsed/certified/featured kinds',
+        '- BiasCommitment: progressive reveal — children with data-step="N" show when step >= N',
+        '- BiasReciprocity: frames a gift (free shipping, bonus, trial) around a CTA',
+        '- BiasScarcity: urgency pill — time countdown, stock count, or popularity with thresholds',
+        '- BiasSocialProof: "N people are viewing/purchased" badge with optional stacked avatars',
       ],
     },
   ],
 });
 
 /**
- * Chat-optimized library — 175 components (excludes AiChat since chat IS the container).
+ * Chat-optimized library — one fewer than the full library (excludes AiChat since chat IS the container).
  */
 export const cognivoChatLibrary: Library = createLibrary({
   root: 'Stack',

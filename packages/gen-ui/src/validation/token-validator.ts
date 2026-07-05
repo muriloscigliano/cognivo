@@ -26,19 +26,21 @@ const VISUAL_PROPS = new Set([
   'minWidth', 'minHeight', 'maxWidth', 'maxHeight',
 ]);
 
+// Suggested names below are verified against packages/tokens/dist/index.css —
+// a suggestion pointing at a nonexistent token is worse than no suggestion.
 function suggestToken(prop: string, value: string): string {
   if (HEX_COLOR.test(value) || RGB_COLOR.test(value) || HSL_COLOR.test(value)) {
-    if (prop.toLowerCase().includes('background')) return '--cg-color-surface-default';
-    if (prop.toLowerCase().includes('text') || prop.toLowerCase() === 'color') return '--cg-color-text-default';
-    if (prop.toLowerCase().includes('border')) return '--cg-color-border-default';
+    if (prop.toLowerCase().includes('background')) return '--cg-color-surface-base-background';
+    if (prop.toLowerCase().includes('text') || prop.toLowerCase() === 'color') return '--cg-color-surface-base-text';
+    if (prop.toLowerCase().includes('border')) return '--cg-color-surface-base-border';
     return '--cg-color-action-primary-background-default';
   }
   if (PX_VALUE.test(value) || EM_VALUE.test(value) || REM_VALUE.test(value)) {
-    if (prop.toLowerCase().includes('font') || prop.toLowerCase().includes('size')) return '--cg-font-size-body-md';
-    if (prop.toLowerCase().includes('radius')) return '--cg-radius-md';
-    return '--cg-spacing-md';
+    if (prop.toLowerCase().includes('font') || prop.toLowerCase().includes('size')) return '--cg-font-size-base';
+    if (prop.toLowerCase().includes('radius')) return '--cg-border-radius-100';
+    return '--cg-spacing-16';
   }
-  if (RAW_FONT.test(value)) return '--cg-font-family-body';
+  if (RAW_FONT.test(value)) return '--cg-font-family-primary';
   return '--cg-*';
 }
 

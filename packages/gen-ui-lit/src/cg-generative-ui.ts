@@ -38,15 +38,15 @@ export class CgGenerativeUi extends LitElement {
       width: 100%;
     }
     .gen-ui-error {
-      color: var(--cg-color-text-danger, #dc2626);
-      padding: var(--cg-spacing-sm, 8px);
-      border: 1px solid var(--cg-color-border-danger, #fca5a5);
-      border-radius: var(--cg-radius-sm, 4px);
-      font-size: var(--cg-font-size-body-sm, 0.875rem);
+      color: var(--cg-color-status-error-text-default);
+      padding: var(--cg-spacing-8);
+      border: var(--cg-border-width-50) solid var(--cg-color-status-error-border-default);
+      border-radius: var(--cg-border-radius-50);
+      font-size: var(--cg-font-size-sm);
     }
     .gen-ui-empty {
-      color: var(--cg-color-text-muted, #9ca3af);
-      padding: var(--cg-spacing-md, 16px);
+      color: var(--cg-color-surface-container-outlined);
+      padding: var(--cg-spacing-16);
       text-align: center;
       font-style: italic;
     }

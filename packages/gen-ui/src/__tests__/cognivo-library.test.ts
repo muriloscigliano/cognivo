@@ -300,11 +300,11 @@ describe('golden parse: Wave 2-4 new components', () => {
     expect(r.root!.props.label).toBe('Suggestions');
   });
 
-  it('parses Section foldable', () => {
-    const r = parser.parse('root = Section("Details", "More information here", true, false, true)');
-    expect(r.root!.typeName).toBe('Section');
-    expect(r.root!.props.title).toBe('Details');
-    expect(r.root!.props.foldable).toBe(true);
+  it('parses StatusDot with status and pulse', () => {
+    const r = parser.parse('root = StatusDot("online", "md", true, "Online")');
+    expect(r.root!.typeName).toBe('StatusDot');
+    expect(r.root!.props.status).toBe('online');
+    expect(r.root!.props.pulse).toBe(true);
   });
 
   it('parses Button with all props', () => {
