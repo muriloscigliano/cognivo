@@ -35,21 +35,21 @@
 | 13 | ai-avatar | 🔧 | A1: 4/4 — 2-layer focus ring, reduced-motion + eased hover scale, role guard, ifDefined attr forwarding; +5 tests |
 | 14 | ai-badge | ✅ | A1: manually audited (wave auditor died) — clean deprecation shim over ai-confidence-badge; dual-event escape noted as deliberate migration behavior |
 | 15 | ai-batch-progress | 🔧 | A1: 13/13 — retry button triple token break, lime ETA flash, tier-3 track tokens, role=status transitions, percent clamps, press states; +6 tests |
-| 16 | ai-cache-indicator | ⬜ | |
-| 17 | ai-capture-flow | ⬜ | |
-| 18 | ai-changelog | ⬜ | |
-| 19 | ai-chart-summary | ⬜ | |
-| 20 | ai-chat | ⬜ | |
-| 21 | ai-citation | ⬜ | |
-| 22 | ai-collaborative-editor | ⬜ | |
-| 23 | ai-command-palette | ⬜ | |
-| 24 | ai-confidence-badge | ⬜ | |
-| 25 | ai-confidence-slider | ⬜ | |
-| 26 | ai-consent-manager | ⬜ | |
-| 27 | ai-context-window | ⬜ | |
-| 28 | ai-copy-button | ⬜ | |
-| 29 | ai-cost-dashboard | ⬜ | |
-| 30 | ai-data-card | ⬜ | |
+| 16 | ai-cache-indicator | 🔧 | A2 6/6: hover no-op → border-strong, raw-3px rings tokenized, named progressbar, loading pulse, disabled-cache guard; +5 tests |
+| 17 | ai-capture-flow | 🔧 | A2 5/5: bg-as-fg contrast on primary/step-dots, filter() hover → token, disabled matrix, role group not navigation, live progress; +5 tests |
+| 18 | ai-changelog | 🔧 | A2 4/4: nested-interactive → version is the button, chart-token badge → status-warning, hover no-op, tokenized ring; +5 tests |
+| 19 | ai-chart-summary | 🔧 | A2 5/5: keyboard-activatable trends + focus ring, trend-icon svg tokenized, direction-colored arrows, press state |
+| 20 | ai-chat | 🔧 | A2 4/4: empty/version/tail tokens (text-intent, radius family), nested live region removed (parent role=log owns it) |
+| 21 | ai-citation | 🔧 | A2 6/6: aria-expanded disclosure, static +N badge (no false affordance), list-mode relevance titles (was color-only), open-state distinct |
+| 22 | ai-collaborative-editor | 🔧 | A2 6/6: dead hover removed, opacity/focus-ring/read-only tokenized, stats live region, cursor caret+label polish; +tests |
+| 23 | ai-command-palette | 🔧 | A2 3/3: dead rounded prop removed, loading/emptyText forwarded to cg-command, doc fix; +7 tests |
+| 24 | ai-confidence-badge | 🔧 | A2 4/4: role status→button, min/max-width tokens, disabled state (guards + tabindex/aria) |
+| 25 | ai-confidence-slider | 🔧 | A2 4/4: focus-ring/thumb-border tokens, distribution bars now %-height (magic 32/2px gone), redundant aria-value* dropped; +6 tests |
+| 26 | ai-consent-manager | 🔧 | A2 3/3: P0 per-switch aria-label (were nameless), row dividers/hover/focus-within, non-vanishing empty-state panel |
+| 27 | ai-context-window | 🔧 | A2 3/3: P0 bar segments keyboard-operable buttons + focus ring, tooltip focus parity, over-budget widths clamped + flagged |
+| 28 | ai-copy-button | 🔧 | A2 5/5: opacity/focus-ring tokens, icon aria-hidden, empty-value disable, aria-label only when icon-only |
+| 29 | ai-cost-dashboard | 🔧 | A2 2/2: focus-ring width tokenized, full-width row press feedback scale→background |
+| 30 | ai-data-card | 🔧 | A2 4/4: P0 dead footer buttons (@cg-click→@click), P0 missing cg-icon import (copy glyph invisible), nested-interactive rows fixed, dead code removed; +tests |
 | 31 | ai-data-lineage | ⬜ | |
 | 32 | ai-data-preview | ⬜ | |
 | 33 | ai-data-table | ⬜ | |
