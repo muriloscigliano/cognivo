@@ -226,6 +226,7 @@ export class AiAccessibilityReport extends LitElement {
       flex-direction: column;
       gap: var(--cg-spacing-8);
     }
+    .issue-details[hidden] { display: none; }
 
     .issue-desc {
       color: var(--cg-color-surface-container-outlined);
@@ -236,7 +237,7 @@ export class AiAccessibilityReport extends LitElement {
       display: inline-block;
       align-self: flex-start;
       padding: var(--cg-spacing-2) var(--cg-spacing-8);
-      background: var(--cg-color-action-tertiary-background-hover);
+      background: var(--cg-color-surface-cards-background);
       border-radius: var(--cg-border-radius-50);
       font-family: var(--cg-font-family-mono);
       font-size: var(--cg-font-size-xs);
@@ -290,7 +291,6 @@ export class AiAccessibilityReport extends LitElement {
 
   private _getScoreColor(): string {
     if (this.score >= 90) return 'var(--cg-color-status-success-text-default)';
-    if (this.score >= 70) return 'var(--cg-color-status-warning-text-default)';
     if (this.score >= 50) return 'var(--cg-color-status-warning-text-default)';
     return 'var(--cg-color-status-error-text-default)';
   }
@@ -320,8 +320,9 @@ export class AiAccessibilityReport extends LitElement {
   }
 
   override render() {
+    const score = Math.max(0, Math.min(100, this.score));
     const circumference = 2 * Math.PI * 27;
-    const offset = circumference - (this.score / 100) * circumference;
+    const offset = circumference - (score / 100) * circumference;
     const scoreColor = this._getScoreColor();
     const total = this.totalChecks > 0 ? this.totalChecks : this.issues.length;
     const passed = Math.max(0, total - this.issues.length);
@@ -329,8 +330,8 @@ export class AiAccessibilityReport extends LitElement {
     return html`
       <cg-card>
         <div class="header">
-          <div class="score-circle" role="meter" aria-valuenow=${this.score}
-               aria-valuemin="0" aria-valuemax="100" aria-label="Accessibility score ${this.score} out of 100">
+          <div class="score-circle" role="meter" aria-valuenow=${score}
+               aria-valuemin="0" aria-valuemax="100" aria-label="Accessibility score ${score} out of 100">
             <svg viewBox="0 0 64 64" aria-hidden="true">
               <circle class="score-bg" cx="32" cy="32" r="27" />
               <circle class="score-fg" cx="32" cy="32" r="27"
@@ -338,7 +339,7 @@ export class AiAccessibilityReport extends LitElement {
                       stroke-dasharray="${circumference}"
                       stroke-dashoffset="${offset}" />
             </svg>
-            <div class="score-text" style="color:${scoreColor}">${this.score}</div>
+            <div class="score-text" style="color:${scoreColor}">${score}</div>
           </div>
           <div class="header-info">
             <h3 class="title">${this.title}</h3>
@@ -369,14 +370,15 @@ export class AiAccessibilityReport extends LitElement {
               <div class="issue-item" role="listitem">
                 <button class="issue-header"
                         @click=${() => this._onClick(issue, i)}
-                        aria-expanded=${this._expanded.has(i) ? 'true' : 'false'}>
+                        aria-expanded=${this._expanded.has(i) ? 'true' : 'false'}
+                        aria-controls="issue-details-${i}">
                   ${this._sevIcon(issue.severity)}
                   <span class="issue-rule">${issue.rule}</span>
                   <span class="level-badge level-${issue.level}">WCAG ${issue.level}</span>
                   <cg-icon class="chevron" name="chevron-down" size="xs"></cg-icon>
                 </button>
-                ${this._expanded.has(i) ? html`
-                  <div class="issue-details">
+                <div class="issue-details" id="issue-details-${i}" ?hidden=${!this._expanded.has(i)}>
+                  ${this._expanded.has(i) ? html`
                     <div class="issue-desc">${issue.description}</div>
                     ${issue.element ? html`
                       <code class="issue-element">${issue.element}</code>
@@ -387,8 +389,8 @@ export class AiAccessibilityReport extends LitElement {
                         <span>${issue.fix}</span>
                       </div>
                     ` : nothing}
-                  </div>
-                ` : nothing}
+                  ` : nothing}
+                </div>
               </div>
             `)}
           </div>

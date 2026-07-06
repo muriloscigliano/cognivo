@@ -15,7 +15,7 @@
  * @fires {CustomEvent} ai-assistant-close - Widget collapsed
  * @fires {CustomEvent<{message: string}>} ai-assistant-send - Message sent
  *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - FAB and send button accent
+ * @cssprop --cg-color-action-primary-background-default - FAB and send button background
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement, query } from 'lit/decorators.js';
@@ -58,16 +58,19 @@ export class AiAssistantWidget extends LitElement {
       justify-content: center;
       transition:
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       box-shadow: var(--cg-elevation-3);
     }
     .fab:hover {
-      filter: brightness(0.9);
+      background: var(--cg-color-action-primary-background-hover);
       transform: scale(1.05);
     }
     .fab:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
+      box-shadow:
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-surface-base-background),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring),
+        var(--cg-elevation-3);
     }
     .fab:active {
       transform: scale(var(--cg-interaction-press-scale));
@@ -94,9 +97,11 @@ export class AiAssistantWidget extends LitElement {
     :host([position="bottom-right"]) .panel,
     :host(:not([position])) .panel {
       right: 0;
+      transform-origin: bottom right;
     }
     :host([position="bottom-left"]) .panel {
       left: 0;
+      transform-origin: bottom left;
     }
 
     /* ── Header ── */
@@ -136,7 +141,9 @@ export class AiAssistantWidget extends LitElement {
     }
     .close-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
+      box-shadow:
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-surface-base-background),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
 
     /* ── Messages ── */
@@ -174,9 +181,22 @@ export class AiAssistantWidget extends LitElement {
 
     .msg.ai {
       align-self: flex-start;
-      background: var(--cg-color-action-tertiary-background-hover);
+      background: var(--cg-color-surface-cards-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       color: var(--cg-color-surface-base-text);
       border-bottom-left-radius: var(--cg-border-radius-50);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     /* ── Input ── */
@@ -198,13 +218,16 @@ export class AiAssistantWidget extends LitElement {
       font-size: var(--cg-font-size-sm);
       font-family: inherit;
       outline: none;
-      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition:
+        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .input-field::placeholder {
       color: var(--cg-color-input-text-placeholder);
     }
     .input-field:focus {
-      border-color: var(--cg-color-focus-ring);
+      border-color: var(--cg-color-input-border-focus);
+      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
 
     .send-btn {
@@ -220,20 +243,21 @@ export class AiAssistantWidget extends LitElement {
       justify-content: center;
       flex-shrink: 0;
       transition:
-        filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .send-btn:hover { filter: brightness(0.9); }
+    .send-btn:hover:not(:disabled) { background: var(--cg-color-action-primary-background-hover); }
     .send-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .send-btn:disabled {
       background: var(--cg-color-action-primary-background-disable);
       color: var(--cg-color-action-primary-text-disable);
       cursor: not-allowed;
     }
-    .send-btn:disabled:hover { filter: none; }
     .send-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
+      box-shadow:
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-surface-base-background),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -265,8 +289,10 @@ export class AiAssistantWidget extends LitElement {
   }
 
   private _close() {
+    if (!this.expanded) return;
     this.expanded = false;
     this.dispatchEvent(new CustomEvent('ai-assistant-close', { bubbles: true, composed: true }));
+    this.updateComplete.then(() => (this.renderRoot.querySelector('.fab') as HTMLElement | null)?.focus());
   }
 
   private _send() {
@@ -285,9 +311,6 @@ export class AiAssistantWidget extends LitElement {
       e.preventDefault();
       this._send();
     }
-    if (e.key === 'Escape') {
-      this._close();
-    }
   }
 
   private _scrollToBottom() {
@@ -299,7 +322,7 @@ export class AiAssistantWidget extends LitElement {
   override render() {
     return html`
       ${this.expanded ? html`
-        <div class="panel" role="dialog" aria-modal="true" aria-label="${this.title}" @keydown=${(e: KeyboardEvent) => { if (e.key === 'Escape') this._close(); }}>
+        <div class="panel" role="dialog" aria-label="${this.title}" @keydown=${(e: KeyboardEvent) => { if (e.key === 'Escape') this._close(); }}>
           <div class="panel-header">
             <span class="panel-title">${this.title}</span>
             <button class="close-btn" @click=${this._close} aria-label="Close assistant">
@@ -312,7 +335,7 @@ export class AiAssistantWidget extends LitElement {
               <div class="welcome">${this.welcomeMessage}</div>
             ` : nothing}
             ${this.messages.map(m => html`
-              <div class="msg ${m.role}" aria-label="${m.role === 'user' ? 'You' : 'Assistant'}">${m.content}</div>
+              <div class="msg ${m.role}"><span class="sr-only">${m.role === 'user' ? 'You:' : 'Assistant:'}</span>${m.content}</div>
             `)}
           </div>
 
@@ -340,10 +363,11 @@ export class AiAssistantWidget extends LitElement {
       ` : nothing}
 
       <button
-        class="fab ${this.expanded ? 'open' : ''}"
+        class="fab"
         @click=${this._toggle}
         aria-label="${this.expanded ? 'Close assistant' : 'Open assistant'}"
         aria-expanded=${this.expanded}
+        aria-haspopup="dialog"
       >
         <cg-icon name="${this.expanded ? 'x' : 'message-circle'}" size="md"></cg-icon>
       </button>

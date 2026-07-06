@@ -14,8 +14,6 @@
  * @fires {CustomEvent<{total, completed, failed, status}>} ai-batch-pause - Pause clicked
  * @fires {CustomEvent<{total, completed, failed, status}>} ai-batch-cancel - Cancel clicked
  * @fires {CustomEvent<{total, completed, failed, status}>} ai-batch-retry - Retry/Resume clicked
- *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Accent for percentage text
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
@@ -53,7 +51,7 @@ export class AiBatchProgress extends LitElement {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-bold);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: var(--cg-letter-spacing-wider);
       padding: var(--cg-spacing-2) var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-100);
     }
@@ -120,8 +118,8 @@ export class AiBatchProgress extends LitElement {
 
     .progress-track {
       height: var(--cg-component-progress-height-lg);
-      background: var(--cg-color-surface-cards-border);
-      border-radius: var(--cg-border-radius-50);
+      background: var(--cg-color-loading-spinner-secondary);
+      border-radius: var(--cg-component-progress-radius);
       overflow: hidden;
       display: flex;
     }
@@ -151,7 +149,7 @@ export class AiBatchProgress extends LitElement {
 
     .eta {
       font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-input-border-hover);
+      color: var(--cg-color-input-text-placeholder);
       margin-top: var(--cg-spacing-6);
     }
 
@@ -176,8 +174,11 @@ export class AiBatchProgress extends LitElement {
       transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .action-btn:hover {
-      border-color: var(--cg-color-surface-cards-border);
+      border-color: var(--cg-color-surface-cards-border-strong);
       color: var(--cg-color-surface-base-text);
+    }
+    .action-btn:active {
+      transform: scale(var(--cg-interaction-press-scale));
     }
     .action-btn:focus-visible {
       outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
@@ -188,10 +189,10 @@ export class AiBatchProgress extends LitElement {
     .action-btn.cancel:hover { border-color: var(--cg-color-status-error-text-default); color: var(--cg-color-status-error-text-default); }
     .action-btn.retry {
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-container-background);
-      border-color: var(--cg-color-surface-base-text);
+      color: var(--cg-color-action-primary-text-default);
+      border-color: var(--cg-color-action-primary-border-default);
     }
-    .action-btn.retry:hover { filter: brightness(0.9); }
+    .action-btn.retry:hover { background: var(--cg-color-action-primary-background-hover); }
 
     .complete-text {
       font-size: var(--cg-font-size-xs);
@@ -218,17 +219,17 @@ export class AiBatchProgress extends LitElement {
 
   private get _percent(): number {
     if (this.total <= 0) return 0;
-    return Math.round(((this.completed + this.failed) / this.total) * 100);
+    return Math.min(100, Math.round(((this.completed + this.failed) / this.total) * 100));
   }
 
   private get _successPercent(): number {
     if (this.total <= 0) return 0;
-    return (this.completed / this.total) * 100;
+    return Math.min(100, (this.completed / this.total) * 100);
   }
 
   private get _failPercent(): number {
     if (this.total <= 0) return 0;
-    return (this.failed / this.total) * 100;
+    return Math.min(100, (this.failed / this.total) * 100);
   }
 
   private _dispatch(eventName: string) {
@@ -247,7 +248,7 @@ export class AiBatchProgress extends LitElement {
             ${this.status === 'running' ? html`<span class="pulse-dot" aria-hidden="true"></span>` : nothing}
             ${this.heading}
           </span>
-          <span class="status-badge ${this.status}">${this.status}</span>
+          <span class="status-badge ${this.status}" role="status">${this.status}</span>
         </div>
 
         <div class="stats">
@@ -298,13 +299,11 @@ export class AiBatchProgress extends LitElement {
               class="action-btn pause"
               @click=${() => this._dispatch('ai-batch-pause')}
               aria-label="Pause batch job"
-              tabindex="0"
             >Pause</button>
             <button
               class="action-btn cancel"
               @click=${() => this._dispatch('ai-batch-cancel')}
               aria-label="Cancel batch job"
-              tabindex="0"
             >Cancel</button>
           ` : nothing}
           ${this.status === 'paused' ? html`
@@ -312,13 +311,11 @@ export class AiBatchProgress extends LitElement {
               class="action-btn retry"
               @click=${() => this._dispatch('ai-batch-retry')}
               aria-label="Resume batch job"
-              tabindex="0"
             >Resume</button>
             <button
               class="action-btn cancel"
               @click=${() => this._dispatch('ai-batch-cancel')}
               aria-label="Cancel batch job"
-              tabindex="0"
             >Cancel</button>
           ` : nothing}
           ${this.status === 'failed' ? html`
@@ -326,7 +323,6 @@ export class AiBatchProgress extends LitElement {
               class="action-btn retry"
               @click=${() => this._dispatch('ai-batch-retry')}
               aria-label="Retry failed items"
-              tabindex="0"
             >Retry Failed</button>
           ` : nothing}
           ${this.status === 'complete' ? html`

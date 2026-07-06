@@ -62,7 +62,9 @@ export class AiAudioPlayer extends LitElement {
     }
     .play-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
+      box-shadow:
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
 
     .content {

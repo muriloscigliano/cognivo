@@ -9,7 +9,7 @@
  * ```html
  * <ai-agent-card
  *   name="Researcher"
- *   role="Data Analyst"
+ *   agent-role="Data Analyst"
  *   status="thinking"
  *   task="Querying vector store for Q4 revenue data..."
  *   .capabilities=${['search','summarize','code']}
@@ -21,7 +21,8 @@
  * @fires {CustomEvent<{name}>} ai-agent-cancel - Cancel button clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property, state, customElement } from 'lit/decorators.js';
+import type { PropertyValues } from 'lit';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 type AgentStatus = 'idle' | 'thinking' | 'acting' | 'done' | 'error';
@@ -57,15 +58,15 @@ export class AiAgentCard extends LitElement {
       border-color: var(--cg-color-surface-cards-hover-border);
     }
 
-    /* Left accent per state */
+    /* Left accent per state — inset shadow keeps layout stable (no border-width jump) */
     .card.active {
-      border-left: var(--cg-border-width-300) solid var(--cg-color-action-primary-background-default);
+      box-shadow: inset var(--cg-border-width-300) 0 0 var(--cg-color-action-primary-border-default);
     }
     .card.error-state {
-      border-left: var(--cg-border-width-300) solid var(--cg-color-status-error-text-default);
+      box-shadow: inset var(--cg-border-width-300) 0 0 var(--cg-color-status-error-text-default);
     }
     .card.done-state {
-      border-left: var(--cg-border-width-300) solid var(--cg-color-status-success-text-default);
+      box-shadow: inset var(--cg-border-width-300) 0 0 var(--cg-color-status-success-text-default);
     }
 
     /* Shimmer on active */
@@ -81,9 +82,6 @@ export class AiAgentCard extends LitElement {
       background: linear-gradient(90deg, transparent, var(--cg-color-action-primary-background-default), transparent);
       animation: shimmerSlide 2s var(--cg-transition-easing-default) infinite;
     }
-    .card.error-state::before {
-      background: linear-gradient(90deg, transparent, var(--cg-color-status-error-text-default), transparent);
-    }
 
     /* ── Header: name + role | badge ── */
     .header {
@@ -91,6 +89,8 @@ export class AiAgentCard extends LitElement {
       align-items: flex-start;
       justify-content: space-between;
       gap: var(--cg-spacing-12);
+    }
+    .header:not(:last-child) {
       margin-bottom: var(--cg-spacing-16);
     }
 
@@ -112,13 +112,11 @@ export class AiAgentCard extends LitElement {
 
     .header-badge { flex-shrink: 0; }
 
-    /* ── Actions ── */
+    /* ── Actions (in-flow in the header, after the badge) ── */
     .actions {
       display: flex;
       gap: var(--cg-spacing-4);
-      position: absolute;
-      top: var(--cg-spacing-12);
-      right: var(--cg-spacing-12);
+      flex-shrink: 0;
     }
 
     /* ── Body ── */
@@ -162,10 +160,9 @@ export class AiAgentCard extends LitElement {
       font-weight: var(--cg-font-weight-bold);
     }
     .handoff-step.past {
-      opacity: 0.6;
+      opacity: var(--cg-opacity-60);
     }
     .handoff-arrow {
-      color: var(--cg-color-surface-cards-border);
       flex-shrink: 0;
       display: flex;
     }
@@ -175,6 +172,19 @@ export class AiAgentCard extends LitElement {
       display: flex;
       gap: var(--cg-spacing-6);
       flex-wrap: wrap;
+    }
+
+    /* ── Visually-hidden live region for screen readers ── */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     /* ── Reduced motion ── */
@@ -192,11 +202,26 @@ export class AiAgentCard extends LitElement {
 
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: String }) name: string = 'Agent';
-  @property({ type: String }) override role: string = '';
+  @property({ type: String, attribute: 'agent-role' }) agentRole: string = '';
   @property({ type: String }) status: AgentStatus = 'idle';
   @property({ type: String }) task: string = '';
   @property({ type: Array }) handoffChain: string[] = [];
   @property({ type: Array }) capabilities: string[] = [];
+
+  @state() private _announcement = '';
+
+  override updated(changed: PropertyValues<this>) {
+    // Announce status transitions (skip the initial render's undefined → idle).
+    if (changed.has('status') && changed.get('status') !== undefined) {
+      this._announce(`${this.name}: ${this.status}`);
+    }
+  }
+
+  private _announce(message: string): void {
+    // Force change so AT re-reads even when the same message repeats.
+    this._announcement = '';
+    requestAnimationFrame(() => { this._announcement = message; });
+  }
 
   private _handlePause(e: Event) {
     e.stopPropagation();
@@ -209,7 +234,8 @@ export class AiAgentCard extends LitElement {
   }
 
   private _currentStepIndex(): number {
-    return this.handoffChain.length > 0 ? this.handoffChain.length - 1 : -1;
+    const idx = this.handoffChain.indexOf(this.name);
+    return idx >= 0 ? idx : this.handoffChain.length - 1;
   }
 
   override render() {
@@ -229,25 +255,24 @@ export class AiAgentCard extends LitElement {
       <div class="${cardClasses}" role="article"
         aria-label="${this.name} agent — ${this.status}${this.task ? `: ${this.task}` : ''}">
 
-        ${isActive ? html`
-          <div class="actions">
-            <cg-button variant="tertiary" size="sm" rounded="full" label="Pause agent" @click=${this._handlePause}>
-              <cg-icon name="pause" size="xs"></cg-icon>
-            </cg-button>
-            <cg-button variant="tertiary" size="sm" rounded="full" label="Cancel agent" @click=${this._handleCancel}>
-              <cg-icon name="close" size="xs"></cg-icon>
-            </cg-button>
-          </div>
-        ` : nothing}
-
         <div class="header">
           <div class="identity">
             <div class="name">${this.name}</div>
-            ${this.role ? html`<div class="role">${this.role}</div>` : nothing}
+            ${this.agentRole ? html`<div class="role">${this.agentRole}</div>` : nothing}
           </div>
           <div class="header-badge">
             <cg-badge variant=${badgeVariant} label=${this.status} size="sm" rounded="full" ?dot=${showDot}></cg-badge>
           </div>
+          ${isActive ? html`
+            <div class="actions">
+              <cg-button variant="tertiary" size="sm" rounded="full" label="Pause agent" @click=${this._handlePause}>
+                <cg-icon name="pause" size="xs"></cg-icon>
+              </cg-button>
+              <cg-button variant="tertiary" size="sm" rounded="full" label="Cancel agent" @click=${this._handleCancel}>
+                <cg-icon name="close" size="xs"></cg-icon>
+              </cg-button>
+            </div>
+          ` : nothing}
         </div>
 
         ${this.task || this.handoffChain.length > 0 || this.capabilities.length > 0 ? html`
@@ -255,7 +280,7 @@ export class AiAgentCard extends LitElement {
             ${this.task ? html`<div class="task">${this.task}</div>` : nothing}
 
             ${this.handoffChain.length > 0 ? html`
-              <div class="handoff" aria-label="Handoff: ${this.handoffChain.join(' → ')}">
+              <div class="handoff" role="group" aria-label="Handoff: ${this.handoffChain.join(' → ')}">
                 ${this.handoffChain.map((step, i) => html`
                   ${i > 0 ? html`<span class="handoff-arrow" aria-hidden="true">→</span>` : nothing}
                   <span class="handoff-step ${i === currentIdx ? 'current' : i < currentIdx ? 'past' : ''}">${step}</span>
@@ -264,7 +289,7 @@ export class AiAgentCard extends LitElement {
             ` : nothing}
 
             ${this.capabilities.length > 0 ? html`
-              <div class="caps" aria-label="Capabilities: ${this.capabilities.join(', ')}">
+              <div class="caps" role="group" aria-label="Capabilities: ${this.capabilities.join(', ')}">
                 ${this.capabilities.map(c => html`
                   <cg-chip label=${c} variant="default" size="sm"></cg-chip>
                 `)}
@@ -273,6 +298,7 @@ export class AiAgentCard extends LitElement {
           </div>
         ` : nothing}
       </div>
+      <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">${this._announcement}</div>
     `;
   }
 }

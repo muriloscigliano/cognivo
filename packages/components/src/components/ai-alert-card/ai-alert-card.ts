@@ -21,13 +21,13 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { hostBlock, reducedMotion, fadeSlideInKeyframes, pulseKeyframes } from '../../styles/index.js';
+import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 type Urgency = 'info' | 'warning' | 'urgent' | 'critical';
 
 @customElement('ai-alert-card')
 export class AiAlertCard extends LitElement {
-  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, pulseKeyframes, css`
+  static override styles = [hostBlock, reducedMotion, fadeSlideInKeyframes, css`
     :host {
       animation: fadeSlideIn var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
@@ -54,22 +54,22 @@ export class AiAlertCard extends LitElement {
     /* ── Urgency left border ── */
     .card.info    { border-left-color: var(--cg-color-status-info-text-default); }
     .card.warning { border-left-color: var(--cg-color-status-warning-text-default); }
-    .card.urgent  { border-left-color: var(--cg-color-status-error-border-default); }
+    .card.urgent  { border-left-color: var(--cg-color-status-error-text-default); }
     .card:focus-visible {
       outline: none;
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background),
-        0 0 0 3px var(--cg-color-focus-ring);
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-surface-base-background),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
     .card.critical {
       border-left-color: var(--cg-color-status-error-text-default);
-      animation: pulse-glow var(--cg-transition-duration-slow) var(--cg-transition-easing-default) infinite;
+      animation: pulse-glow var(--cg-ai-effect-shimmer-duration) var(--cg-transition-easing-default) infinite;
     }
 
     /* ── Dismiss exit ── */
     @keyframes alertExit {
       from { opacity: 1; transform: translateY(0); }
-      to { opacity: 0; transform: translateY(-8px) scale(0.97); }
+      to { opacity: 0; transform: translateY(calc(-1 * var(--cg-spacing-8))) scale(var(--cg-interaction-press-scale)); }
     }
     .card.dismissing {
       animation: alertExit var(--cg-transition-duration-default) var(--cg-transition-easing-ease-in) forwards;
@@ -84,7 +84,7 @@ export class AiAlertCard extends LitElement {
     }
     .icon.info    { color: var(--cg-color-status-info-text-default); }
     .icon.warning { color: var(--cg-color-status-warning-text-default); }
-    .icon.urgent  { color: var(--cg-color-status-error-border-default); }
+    .icon.urgent  { color: var(--cg-color-status-error-text-default); }
     .icon.critical { color: var(--cg-color-status-error-text-default); }
 
     /* ── Body ── */
@@ -95,6 +95,7 @@ export class AiAlertCard extends LitElement {
       align-items: center;
       gap: var(--cg-spacing-8);
       margin-bottom: var(--cg-spacing-6);
+      padding-right: var(--cg-spacing-32);
     }
     .title {
       font-size: var(--cg-font-size-base);
@@ -116,8 +117,10 @@ export class AiAlertCard extends LitElement {
 
     .message {
       font-size: var(--cg-font-size-sm);
-      color: var(--cg-color-surface-cards-subtle);
+      color: var(--cg-color-surface-container-outlined);
       line-height: var(--cg-line-height-normal);
+    }
+    .message:not(:last-child) {
       padding-bottom: var(--cg-spacing-12);
       margin-bottom: var(--cg-spacing-12);
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);

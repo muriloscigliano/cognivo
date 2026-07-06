@@ -533,7 +533,7 @@ export const AiAgentCardDef = defineComponent({
   name: 'AiAgentCard', tagName: 'ai-agent-card',
   props: z.object({
     name: z.string().optional(),
-    role: z.string().optional(),
+    agentRole: z.string().optional(),
     status: z.enum(['idle', 'thinking', 'acting', 'done', 'error']).optional(),
     task: z.string().optional(),
     handoffChain: z.array(z.string()).optional(),

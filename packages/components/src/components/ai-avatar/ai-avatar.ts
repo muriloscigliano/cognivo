@@ -17,25 +17,33 @@
  */
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { hostBase } from '../../styles/index.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { hostBase, reducedMotion } from '../../styles/index.js';
 import '../cg-avatar/cg-avatar.js';
 
 let warned = false;
 
 @customElement('ai-avatar')
 export class AiAvatar extends LitElement {
-  static override styles = [hostBase, css`
+  static override styles = [hostBase, reducedMotion, css`
     :host {
       display: inline-block;
       cursor: pointer;
+      transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     :host([hidden]) { display: none; }
-    :host(:hover) { transform: scale(1.05); }
+    :host(:hover) { transform: scale(1.02); }
     :host(:active) { transform: scale(var(--cg-interaction-press-scale)); }
     :host(:focus-visible) {
       outline: none;
-      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
+      box-shadow:
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
       border-radius: var(--cg-border-radius-full);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      :host { transition-duration: 0.01ms; }
+      :host(:hover), :host(:active) { transform: none; }
     }
   `];
 
@@ -48,7 +56,7 @@ export class AiAvatar extends LitElement {
   override connectedCallback() {
     super.connectedCallback();
     if (!this.hasAttribute('tabindex')) this.tabIndex = 0;
-    this.setAttribute('role', 'button');
+    if (!this.hasAttribute('role')) this.setAttribute('role', 'button');
     this.addEventListener('click', this._handleClick);
     this.addEventListener('keydown', this._handleKeydown);
     if (!warned) {
@@ -85,11 +93,11 @@ export class AiAvatar extends LitElement {
   override render() {
     return html`
       <cg-avatar
-        src=${this.src}
+        src=${ifDefined(this.src || undefined)}
         name=${this.name}
         size=${this.size}
         type=${this.type}
-        status=${this.status || ''}
+        status=${ifDefined(this.status || undefined)}
       ></cg-avatar>
     `;
   }

@@ -123,8 +123,9 @@ export class AiAnalyticsChart extends LitElement {
 
     .tooltip {
       position: absolute;
-      background: var(--cg-color-surface-cards-emphasis);
-      border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      background: var(--cg-color-tooltip-background);
+      color: var(--cg-color-tooltip-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-tooltip-border);
       border-radius: var(--cg-border-radius-100);
       box-shadow: var(--cg-elevation-2);
       padding: var(--cg-spacing-6) var(--cg-spacing-8);
@@ -289,7 +290,7 @@ export class AiAnalyticsChart extends LitElement {
       ` : nothing}
       <div class="chart-wrap" @mouseleave=${this._onMouseLeave}>
         <svg viewBox="0 0 ${this._width} ${h}" aria-label="${this.title || 'Analytics chart'}"
-             role="img" tabindex="0">
+             role="group">
           ${this.yLabel ? svg`
             <text class="y-label" x="4" y="${m.top + ih / 2}"
                   transform="rotate(-90, 12, ${m.top + ih / 2})"

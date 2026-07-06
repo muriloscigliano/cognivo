@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import type { PropertyValues } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /** Step definition for ai-agent-steps. */
@@ -8,6 +9,14 @@ export interface AgentStep {
   status: 'pending' | 'loading' | 'complete' | 'error';
   detail?: string;
 }
+
+/** Screen-reader status text per step state. */
+const STATUS_TEXT: Record<AgentStep['status'], string> = {
+  pending: 'pending',
+  loading: 'in progress',
+  complete: 'complete',
+  error: 'failed',
+};
 
 /**
  * <ai-agent-steps> — Live task feed showing AI agent operations in progress.
@@ -46,8 +55,20 @@ export class AiAgentSteps extends LitElement {
       gap: var(--cg-spacing-12);
       padding: var(--cg-spacing-12) var(--cg-spacing-16);
       border-radius: var(--cg-border-radius-100);
-      animation: stepIn var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out) both;
+      /* backwards (not both): a forwards fill would pin transform and defeat :active press scale */
+      animation: stepIn var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out) backwards;
       animation-delay: calc(var(--step-index, 0) * 60ms);
+    }
+
+    /* Complete steps are clickable — expose the affordance */
+    .step.complete {
+      cursor: pointer;
+    }
+    .step.complete:hover {
+      background: var(--cg-color-surface-cards-hover-background);
+    }
+    .step.complete:active {
+      transform: scale(var(--cg-interaction-press-scale));
     }
 
     @keyframes stepIn {
@@ -122,6 +143,7 @@ export class AiAgentSteps extends LitElement {
     }
 
     .step-label {
+      display: block;
       font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-medium);
       line-height: var(--cg-line-height-snug);
@@ -143,6 +165,7 @@ export class AiAgentSteps extends LitElement {
     }
 
     .step-detail {
+      display: block;
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-surface-container-outlined);
       line-height: var(--cg-line-height-snug);
@@ -176,7 +199,7 @@ export class AiAgentSteps extends LitElement {
     .step:not(:last-child)::after {
       content: '';
       position: absolute;
-      left: var(--cg-spacing-16);
+      left: calc(var(--cg-spacing-16) + var(--cg-spacing-20) / 2);
       top: var(--cg-spacing-32);
       bottom: calc(-1 * var(--cg-spacing-2));
       width: var(--cg-border-width-50);
@@ -195,6 +218,19 @@ export class AiAgentSteps extends LitElement {
       padding: var(--cg-spacing-16);
     }
 
+    /* ── Visually-hidden text / live region for screen readers ── */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     @keyframes spin { to { transform: rotate(360deg); } }
 
     @media (prefers-reduced-motion: reduce) {
@@ -210,6 +246,27 @@ export class AiAgentSteps extends LitElement {
 
   /** Wrap in a card container */
   @property({ type: Boolean, reflect: true }) contained = false;
+
+  @state() private _announcement = '';
+
+  override willUpdate(changed: PropertyValues<this>) {
+    if (!changed.has('steps')) return;
+    const prev = changed.get('steps') as AgentStep[] | undefined;
+    if (!prev) return;
+    for (let i = 0; i < this.steps.length; i++) {
+      const oldStatus = prev[i]?.status;
+      const newStatus = this.steps[i]!.status;
+      if (oldStatus === newStatus) continue;
+      if (newStatus === 'complete') this._announce(`${this.steps[i]!.label} complete`);
+      else if (newStatus === 'error') this._announce(`${this.steps[i]!.label} failed`);
+    }
+  }
+
+  private _announce(message: string): void {
+    // Force change so AT re-reads even when the same message repeats.
+    this._announcement = '';
+    requestAnimationFrame(() => { this._announcement = message; });
+  }
 
   private _handleStepClick(index: number) {
     if (this.steps[index]?.status === 'complete') {
@@ -246,16 +303,18 @@ export class AiAgentSteps extends LitElement {
             style="--step-index: ${i}"
             @click=${() => this._handleStepClick(i)}
           >
-            <span class="status-icon ${step.status}">
+            <span class="status-icon ${step.status}" aria-hidden="true">
               ${this._renderStatusIcon(step.status)}
             </span>
             <div class="step-body">
               <span class="step-label">${step.label}</span>
+              <span class="sr-only">${STATUS_TEXT[step.status]}</span>
               ${step.detail ? html`<span class="step-detail">${step.detail}</span>` : nothing}
             </div>
           </div>
         `)}
       </div>
+      <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">${this._announcement}</div>
     `;
   }
 }
