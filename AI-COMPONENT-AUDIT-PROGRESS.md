@@ -50,21 +50,21 @@
 | 28 | ai-copy-button | 🔧 | A2 5/5: opacity/focus-ring tokens, icon aria-hidden, empty-value disable, aria-label only when icon-only |
 | 29 | ai-cost-dashboard | 🔧 | A2 2/2: focus-ring width tokenized, full-width row press feedback scale→background |
 | 30 | ai-data-card | 🔧 | A2 4/4: P0 dead footer buttons (@cg-click→@click), P0 missing cg-icon import (copy glyph invisible), nested-interactive rows fixed, dead code removed; +tests |
-| 31 | ai-data-lineage | ⬜ | |
-| 32 | ai-data-preview | ⬜ | |
-| 33 | ai-data-table | ⬜ | |
-| 34 | ai-debug-console | ⬜ | |
-| 35 | ai-detection-canvas | ⬜ | |
-| 36 | ai-diff-panel | ⬜ | |
-| 37 | ai-embedding-viz | ⬜ | |
-| 38 | ai-empty-state | ⬜ | |
-| 39 | ai-error-boundary | ⬜ | |
-| 40 | ai-eval-scorecard | ⬜ | |
-| 41 | ai-feature-flag | ⬜ | |
-| 42 | ai-feedback | ⬜ | |
-| 43 | ai-file-upload | ⬜ | |
-| 44 | ai-form-generator | ⬜ | |
-| 45 | ai-guardrail | ⬜ | |
+| 31 | ai-data-lineage | 🔧 | A3 4/4: focus ring tokenized, node aria-pressed + on-path context, role=list ordered flow, press state |
+| 32 | ai-data-preview | 🔧 | A3 8/8: row hover visible on dark, cancel/confirm token fixes, JSON-bool code token, empty-data disabled, region aria-labelledby |
+| 33 | ai-data-table | 🔧 | A3 6/6+bonus: sort-arrow SVG in html`` → svg`` (invisible icons), accent-text sort states, anomaly cells keyboard-operable, empty role=status, configurable label |
+| 34 | ai-debug-console | 🔧 | A3: nested-interactive toggle → native button, focus outlines/dot radius tokenized, press states |
+| 35 | ai-detection-canvas | 🔧 | A3 3/3: bbox role gated on interactive, keyboard tooltip focus, overridable imageAlt |
+| 36 | ai-diff-panel | 🔧 | A3 5/5: mode toggle aria group + aria-pressed, active-pill/track overlay tokens, hover state, unchanged lines not tab stops |
+| 37 | ai-embedding-viz | 🔧 | A3 5/5: cluster palette → chart tokens (raw hex gone), role=img→group, border-token-as-text fixed, hover accent + selected state |
+| 38 | ai-empty-state | ✅ | A3: audited clean — deprecation shim over cg-empty-state |
+| 39 | ai-error-boundary | 🔧 | A3 2/2: message → base body-text token, warning icon 24px, dead font-size removed |
+| 40 | ai-eval-scorecard | 🔧 | A3 6/6: focus-ring token, aria-expanded/controls disclosure, keyboard fires metric-click, non-expandable rows not fake buttons, unknown grades neutral |
+| 41 | ai-feature-flag | 🔧 | A3 5/5: 3 focus outlines tokenized, Space activation, letter-spacing/radius tokens, on-state track solid pill |
+| 42 | ai-feedback | 🔧 | A3 5/5: dead font-size removed, star aria-pressed, submit always-present/disabled-driven, showComment latch → internal state |
+| 43 | ai-file-upload | 🔧 | A3 2/2: AI prompt drives placeholder (visible dropzone text) not label, error/success/helper/max-files forwarded |
+| 44 | ai-form-generator | 🔧 | A3 P0×3: @cg-click→@click submit (dead), missing ai-thinking import (blank loading), missing cg-label import (invisible select errors); + error summary + focus-first-invalid |
+| 45 | ai-guardrail | 🔧 | A3 6/6: P0 blocked-content reveal keyboard/SR-operable, role=status not alert, focus-ring/blur tokens, high severity distinct |
 | 46 | ai-heatmap | ⬜ | |
 | 47 | ai-insight-card | ⬜ | |
 | 48 | ai-json-viewer | ⬜ | |
