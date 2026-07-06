@@ -208,7 +208,6 @@ export class AiFeedback extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       background: none;
       color: var(--cg-color-input-text-placeholder);
-      font-size: var(--cg-font-size-xs);
       font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-semibold);
       cursor: pointer;
@@ -371,6 +370,7 @@ export class AiFeedback extends LitElement {
   @state() private _comment: string = '';
   @state() private _submitted: boolean = false;
   @state() private _hoverStar: number = 0;
+  @state() private _autoComment: boolean = false;
 
   private _emojiLabels = ['Angry', 'Confused', 'Neutral', 'Happy', 'Very Happy'];
   private _renderEmoji(index: number): unknown {
@@ -383,17 +383,17 @@ export class AiFeedback extends LitElement {
 
   private _handleThumb(value: number) {
     this._rating = this._rating === value ? null : value;
-    if (value === 0) this.showComment = true;
+    this._autoComment = this._rating === 0;
   }
 
   private _handleStar(value: number) {
     this._rating = value;
-    if (value <= 2) this.showComment = true;
+    this._autoComment = value <= 2;
   }
 
   private _handleEmoji(index: number) {
     this._rating = index;
-    if (index <= 1) this.showComment = true;
+    this._autoComment = index <= 1;
   }
 
   private _toggleTag(tag: string) {
@@ -452,7 +452,7 @@ export class AiFeedback extends LitElement {
                 @click=${() => this._handleStar(n)}
                 @mouseenter=${() => { this._hoverStar = n; }}
                 @mouseleave=${() => { this._hoverStar = 0; }}
-                aria-label="${n} star${n > 1 ? 's' : ''}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+                aria-label="${n} star${n > 1 ? 's' : ''}" aria-pressed=${(this._rating ?? 0) >= n ? 'true' : 'false'}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
             `)}
           ` : nothing}
 
@@ -476,7 +476,7 @@ export class AiFeedback extends LitElement {
           </div>
         ` : nothing}
 
-        ${(this.showComment || this._isNegative()) ? html`
+        ${(this.showComment || this._autoComment) ? html`
           <div class="comment-area">
             <textarea placeholder="What could be improved?" aria-label="Additional feedback"
               .value=${this._comment}
@@ -484,11 +484,13 @@ export class AiFeedback extends LitElement {
           </div>
         ` : nothing}
 
-        ${this._rating !== null ? html`
-          <div class="submit-wrap">
-            <button class="submit-btn" @click=${this._handleSubmit}>Submit feedback</button>
-          </div>
-        ` : nothing}
+        <div class="submit-wrap">
+          <button
+            class="submit-btn"
+            ?disabled=${this._rating === null}
+            @click=${this._handleSubmit}
+          >Submit feedback</button>
+        </div>
       </div>
     `;
   }

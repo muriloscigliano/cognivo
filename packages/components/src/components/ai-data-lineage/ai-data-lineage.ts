@@ -73,7 +73,8 @@ export class AiDataLineage extends LitElement {
       position: relative;
       transition:
         border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+        background var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .node:hover {
       border-color: var(--cg-color-input-border-hover);
@@ -81,8 +82,11 @@ export class AiDataLineage extends LitElement {
     .node:focus-visible {
       outline: none;
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background),
-        0 0 0 4px var(--cg-color-focus-ring);
+        0 0 0 var(--cg-outline-width-default) var(--cg-color-surface-base-background),
+        0 0 0 calc(var(--cg-outline-width-default) + var(--cg-border-width-100)) var(--cg-color-focus-ring);
+    }
+    .node:active {
+      transform: scale(var(--cg-interaction-press-scale));
     }
     .node.on-path {
       border-color: var(--cg-color-surface-base-text);
@@ -201,8 +205,8 @@ export class AiDataLineage extends LitElement {
     const arrowV = html`<svg width="12" height="24" viewBox="0 0 12 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="0" x2="6" y2="18"/><path d="M2 15l4 5 4-5"/></svg>`;
 
     return html`
-      <div class="container" role="group" aria-label="Data lineage">
-        <div class="flow ${isV ? 'vertical' : ''}">
+      <div class="container">
+        <div class="flow ${isV ? 'vertical' : ''}" role="list" aria-label="Data lineage">
           ${ordered.map((node, i) => {
             const onPath = pathIds.has(node.id);
             const next = ordered[i + 1];
@@ -210,15 +214,16 @@ export class AiDataLineage extends LitElement {
             const edgeOnPath = next && pathIds.has(node.id) && pathIds.has(next.id);
 
             return html`
-              <div class="step">
+              <div class="step" role="listitem">
                 <button class="node ${onPath ? 'on-path' : ''}"
                   @click=${() => this._onNodeClick(node)}
-                  aria-label="${node.label} (${node.type})">
+                  aria-pressed=${node.id === this.highlightPath ? 'true' : 'false'}
+                  aria-label="${node.label} (${node.type})${onPath ? ', on highlighted path' : ''}">
                   <span class="node-label">${node.label}</span>
                   <span class="node-type">${node.type}</span>
                   ${node.status ? html`<span class="status-dot ${node.status}"></span>` : nothing}
                 </button>
-                ${hasEdge ? html`<span class="arrow ${edgeOnPath ? 'on-path' : ''}">${isV ? arrowV : arrowH}</span>` : nothing}
+                ${hasEdge ? html`<span class="arrow ${edgeOnPath ? 'on-path' : ''}" aria-hidden="true">${isV ? arrowV : arrowH}</span>` : nothing}
               </div>
             `;
           })}

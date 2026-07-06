@@ -14,6 +14,8 @@ import '../cg-textarea/cg-textarea.js';
 import '../cg-select/cg-select.js';
 import '../cg-checkbox/cg-checkbox.js';
 import '../cg-button/cg-button.js';
+import '../cg-label/cg-label.js';
+import '../ai-thinking/ai-thinking.js';
 
 interface FormField {
   name: string;
@@ -84,6 +86,13 @@ export class AiFormGenerator extends LitElement {
 
     .form-footer {
       padding: var(--cg-spacing-16) var(--cg-spacing-24);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+    }
+
+    .form-error-summary {
+      padding: var(--cg-spacing-8) var(--cg-spacing-24);
+      color: var(--cg-color-status-error-text-default);
+      font-size: var(--cg-font-size-xs);
     }
 
     .loading-overlay {
@@ -165,7 +174,16 @@ export class AiFormGenerator extends LitElement {
   }
 
   private _handleSubmit() {
-    if (!this._validate()) return;
+    if (!this._validate()) {
+      this.updateComplete.then(() => {
+        const firstBad = this.schema?.fields.find(f => this._errors[f.name]);
+        if (firstBad) {
+          const el = this.renderRoot.querySelector<HTMLElement>(`[data-field="${firstBad.name}"]`);
+          el?.focus?.();
+        }
+      });
+      return;
+    }
     this.dispatchEvent(new CustomEvent('ai-form-submit', {
       bubbles: true, composed: true,
       detail: { values: { ...this._values } },
@@ -179,6 +197,7 @@ export class AiFormGenerator extends LitElement {
     if (field.type === 'checkbox') {
       return html`
         <cg-checkbox
+          data-field="${field.name}"
           label="${field.label}"
           ?checked=${!!val}
           @cg-change=${(e: CustomEvent) => this._setValue(field.name, e.detail.checked)}
@@ -189,6 +208,7 @@ export class AiFormGenerator extends LitElement {
     if (field.type === 'select') {
       return html`
         <cg-select
+          data-field="${field.name}"
           label="${field.label}"
           placeholder="${field.placeholder || 'Select...'}"
           .value=${String(val)}
@@ -203,6 +223,7 @@ export class AiFormGenerator extends LitElement {
     if (field.type === 'textarea') {
       return html`
         <cg-textarea
+          data-field="${field.name}"
           label="${field.label}"
           placeholder="${field.placeholder || ''}"
           .value=${String(val)}
@@ -215,6 +236,7 @@ export class AiFormGenerator extends LitElement {
 
     return html`
       <cg-input
+        data-field="${field.name}"
         label="${field.label}"
         type="${field.type}"
         placeholder="${field.placeholder || ''}"
@@ -258,6 +280,12 @@ export class AiFormGenerator extends LitElement {
             ${fields.map(f => this._renderField(f))}
           `)}
         </div>
+
+        ${Object.keys(this._errors).length
+          ? html`<div class="form-error-summary" role="alert">
+              ${Object.keys(this._errors).length} field${Object.keys(this._errors).length === 1 ? '' : 's'} need attention.
+            </div>`
+          : nothing}
 
         <div class="form-footer">
           <cg-button variant="primary" full @click=${this._handleSubmit}>

@@ -29,8 +29,10 @@ interface EmbeddingPoint {
 }
 
 const CLUSTER_COLORS = [
-  '#dfff61', '#3b82f6', '#f472b6', '#22c55e', '#eab308',
-  '#a78bfa', '#f97316', '#06b6d4', '#ef4444', '#84cc16',
+  'var(--cg-color-chart-1-stroke)', 'var(--cg-color-chart-2-stroke)', 'var(--cg-color-chart-3-stroke)',
+  'var(--cg-color-chart-4-stroke)', 'var(--cg-color-chart-5-stroke)', 'var(--cg-color-chart-6-stroke)',
+  'var(--cg-color-chart-7-stroke)', 'var(--cg-color-chart-8-stroke)', 'var(--cg-color-chart-9-stroke)',
+  'var(--cg-color-chart-10-stroke)', 'var(--cg-color-chart-11-stroke)', 'var(--cg-color-chart-12-stroke)',
 ];
 
 @customElement('ai-embedding-viz')
@@ -82,11 +84,25 @@ export class AiEmbeddingViz extends LitElement {
 
     .point {
       cursor: pointer;
-      transition: r var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition:
+        r var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        stroke var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .point:hover { r: 7; }
+    .point:hover {
+      r: 7;
+      opacity: 1;
+      stroke: var(--cg-color-focus-ring);
+      stroke-width: var(--cg-border-width-50);
+    }
+    .point.selected {
+      r: 7;
+      opacity: 1;
+      stroke: var(--cg-color-focus-ring);
+      stroke-width: var(--cg-border-width-50);
+    }
     .point:focus-visible {
-      outline: var(--cg-border-width-100) solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-outline-width-default) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -134,14 +150,9 @@ export class AiEmbeddingViz extends LitElement {
 
     .empty-state {
       text-align: center;
-      color: var(--cg-color-input-border-hover);
+      color: var(--cg-color-input-text-placeholder);
       font-size: var(--cg-font-size-sm);
       padding: var(--cg-spacing-24) 0;
-    }
-
-    .axis-label {
-      font-size: var(--cg-font-size-xs);
-      fill: var(--cg-color-input-border-hover);
     }
   `];
   @property({ type: Array }) points: EmbeddingPoint[] = [];
@@ -149,6 +160,7 @@ export class AiEmbeddingViz extends LitElement {
   @property({ type: Boolean }) showLabels = false;
 
   @state() private _hovered: EmbeddingPoint | null = null;
+  @state() private _selected: EmbeddingPoint | null = null;
   @state() private _tooltipX = 0;
   @state() private _tooltipY = 0;
 
@@ -156,7 +168,7 @@ export class AiEmbeddingViz extends LitElement {
 
   private _getColor(point: EmbeddingPoint): string {
     if (point.color) return point.color;
-    if (!point.cluster) return '#dfff61';
+    if (!point.cluster) return 'var(--cg-color-chart-1-stroke)';
 
     if (!this._clusterColorMap.has(point.cluster)) {
       const idx = this._clusterColorMap.size % CLUSTER_COLORS.length;
@@ -196,6 +208,7 @@ export class AiEmbeddingViz extends LitElement {
   }
 
   private _handlePointClick(point: EmbeddingPoint) {
+    this._selected = point;
     this.dispatchEvent(new CustomEvent('ai-embedding-point-click', {
       detail: { label: point.label, x: point.x, y: point.y, cluster: point.cluster },
       bubbles: true,
@@ -228,10 +241,10 @@ export class AiEmbeddingViz extends LitElement {
         </div>
 
         <div class="chart-area">
-          <svg viewBox="0 0 500 300" role="img" aria-label="Scatter plot of ${this.points.length} embedding points">
+          <svg viewBox="0 0 500 300" role="group" aria-label="Scatter plot of ${this.points.length} embedding points">
             ${normalized.map(({ nx, ny, point }, i) => svg`
               <circle
-                class="point"
+                class="point ${point === this._selected ? 'selected' : ''}"
                 cx=${nx}
                 cy=${ny}
                 r="5"

@@ -56,7 +56,9 @@ export class AiEvalScorecard extends LitElement {
     .grade-dot {
       width: var(--cg-spacing-8); height: var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-full);
+      background: var(--cg-color-surface-cards-border-strong);
     }
+    .grade-badge.default { color: var(--cg-color-surface-base-text); }
     .grade-badge.A .grade-dot, .grade-badge.B .grade-dot { background: var(--cg-color-status-success-text-default); }
     .grade-badge.C .grade-dot, .grade-badge.D .grade-dot { background: var(--cg-color-status-warning-text-default); }
     .grade-badge.F .grade-dot { background: var(--cg-color-status-error-text-default); }
@@ -73,11 +75,11 @@ export class AiEvalScorecard extends LitElement {
       padding: var(--cg-spacing-16) var(--cg-spacing-12);
       border-radius: var(--cg-border-radius-100);
       border: var(--cg-border-width-50) solid transparent;
-      cursor: pointer;
       transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default), border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .metric:hover { background: var(--cg-overlay-dark-subtle); border-color: var(--cg-color-surface-cards-border); }
-    .metric:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-color-focus-ring); }
+    .metric.expandable { cursor: pointer; }
+    .metric.expandable:hover { background: var(--cg-overlay-white-subtle); border-color: var(--cg-color-surface-cards-border); }
+    .metric.expandable:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring); }
 
     /* Top row: label + value + delta */
     .metric-top {
@@ -147,6 +149,15 @@ export class AiEvalScorecard extends LitElement {
     return Math.round(this.scores.reduce((s, sc) => s + (sc.value / (sc.max || 100)) * 100, 0) / this.scores.length);
   }
 
+  private _activate(metric: string, expandable: boolean) {
+    if (expandable) {
+      this._expandedMetric = this._expandedMetric === metric ? '' : metric;
+    }
+    this.dispatchEvent(new CustomEvent('ai-eval-metric-click', {
+      bubbles: true, composed: true, detail: { metric },
+    }));
+  }
+
   override render() {
     if (!this.scores.length) return html`<div class="card"><div class="empty">No evaluation data</div></div>`;
 
@@ -157,7 +168,7 @@ export class AiEvalScorecard extends LitElement {
             <span class="header-title">${this.title}</span>
             <span class="header-subtitle">${this.scores.length} metrics · ${this._avgScore()}% avg</span>
           </div>
-          ${this.grade ? html`<span class="grade-badge ${this.grade.charAt(0)}"><span class="grade-dot"></span>${this.grade}</span>` : nothing}
+          ${this.grade ? html`<span class="grade-badge ${'ABCDF'.includes(this.grade.charAt(0).toUpperCase()) ? this.grade.charAt(0).toUpperCase() : 'default'}"><span class="grade-dot"></span>${this.grade}</span>` : nothing}
         </div>
 
         <div class="scores">
@@ -165,11 +176,16 @@ export class AiEvalScorecard extends LitElement {
             const max = s.max || 100;
             const pct = Math.min((s.value / max) * 100, 100);
             const delta = this.comparison?.[s.metric];
+            const expandable = !!s.explanation;
 
             return html`
-              <div class="metric" tabindex="0" role="button"
-                @click=${() => { this._expandedMetric = this._expandedMetric === s.metric ? '' : s.metric; this.dispatchEvent(new CustomEvent('ai-eval-metric-click', { bubbles: true, composed: true, detail: { metric: s.metric } })); }}
-                @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._expandedMetric = this._expandedMetric === s.metric ? '' : s.metric; } }}>
+              <div class="metric ${expandable ? 'expandable' : ''}"
+                role=${expandable ? 'button' : nothing}
+                tabindex=${expandable ? '0' : nothing}
+                aria-expanded=${expandable ? (this._expandedMetric === s.metric ? 'true' : 'false') : nothing}
+                aria-controls=${expandable ? `expl-${s.metric}` : nothing}
+                @click=${() => this._activate(s.metric, expandable)}
+                @keydown=${expandable ? (e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._activate(s.metric, expandable); } } : nothing}>
                 <div class="metric-top">
                   <span class="metric-label">${s.metric}</span>
                   <span class="metric-value">${s.value}</span>
@@ -181,7 +197,7 @@ export class AiEvalScorecard extends LitElement {
                   <div class="metric-fill" style="width: ${pct}%"></div>
                 </div>
                 ${this._expandedMetric === s.metric && s.explanation ? html`
-                  <div class="metric-explanation">${s.explanation}</div>
+                  <div class="metric-explanation" id="expl-${s.metric}">${s.explanation}</div>
                 ` : nothing}
               </div>
             `;

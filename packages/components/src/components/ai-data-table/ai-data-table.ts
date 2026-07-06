@@ -18,7 +18,7 @@
  * @fires {CustomEvent<{row, col, value}>} ai-data-cell-click - Cell clicked
  * @fires {CustomEvent<{row, col, severity, reason}>} ai-data-anomaly-click - Anomaly clicked
  */
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, svg, css, nothing } from 'lit';
 import { property, state, customElement, query } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { styleMap } from 'lit/directives/style-map.js';
@@ -90,10 +90,10 @@ export class AiDataTable extends LitElement {
     th[data-align="right"] { text-align: right; }
 
     th.sortable { cursor: pointer; }
-    th.sortable:hover { color: var(--cg-color-action-primary-background-default); }
+    th.sortable:hover { color: var(--cg-color-accent-text); }
     th.sortable:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 var(--cg-border-width-100) var(--cg-color-action-primary-background-default);
+      box-shadow: inset 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring);
     }
 
     .sort-icon {
@@ -104,7 +104,7 @@ export class AiDataTable extends LitElement {
     }
     th.sorted .sort-icon {
       opacity: 1;
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
     }
 
     /* ── Body — inset with inner rounding (matches cg-table) ── */
@@ -129,6 +129,10 @@ export class AiDataTable extends LitElement {
     td[data-align="center"] { text-align: center; }
     td[data-align="right"] { text-align: right; }
     td.clickable { cursor: pointer; }
+    td.anomaly-cell:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring);
+    }
 
     /* Row states */
     tbody tr { transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default); }
@@ -206,6 +210,9 @@ export class AiDataTable extends LitElement {
   @property({ type: Boolean, reflect: true }) sortable = false;
   @property({ type: Boolean, reflect: true }) striped = false;
   @property({ type: Boolean, reflect: true }) compact = false;
+
+  /** Accessible name for the table. Falls back to a generic label when unset. */
+  @property({ type: String }) label = '';
 
   /** Field name used as stable key for each row (Lit repeat directive). Improves diffing on sort/filter. */
   @property({ type: String }) rowIdKey = 'id';
@@ -343,11 +350,15 @@ export class AiDataTable extends LitElement {
           const cellId = `${ri}-${col.key}`;
           return html`
             <td
-              class="clickable ${anomalyClass}"
+              class="clickable ${anomaly ? 'anomaly-cell' : ''} ${anomalyClass}"
               data-align=${col.align || 'left'}
               role="cell"
               aria-label=${anomaly ? `Anomaly: ${anomaly.reason}` : nothing}
+              tabindex=${anomaly ? '0' : nothing}
               @click=${() => { this._handleCellClick(ri, col.key, row[col.key]); if (anomaly) this._handleAnomalyClick(anomaly); }}
+              @keydown=${anomaly ? (e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleCellClick(ri, col.key, row[col.key]); this._handleAnomalyClick(anomaly); } } : nothing}
+              @focus=${anomaly ? () => { this._hoveredAnomaly = cellId; } : nothing}
+              @blur=${anomaly ? () => { this._hoveredAnomaly = null; } : nothing}
               @mouseenter=${() => { if (anomaly) this._hoveredAnomaly = cellId; }}
               @mouseleave=${() => { this._hoveredAnomaly = null; }}
             >
@@ -397,13 +408,13 @@ export class AiDataTable extends LitElement {
 
   override render() {
     if (!this.columns.length) {
-      return html`<div class="wrapper"><div class="empty-state">No columns defined</div></div>`;
+      return html`<div class="wrapper"><div class="empty-state" role="status">No columns defined</div></div>`;
     }
 
     return html`
       <div class="wrapper">
         <div class="table-scroll">
-          <table role="table" aria-label="Data table">
+          <table role="table" aria-label=${this.label || 'Data table'}>
             <thead>
               <tr role="row">
                 ${this.columns.map(col => {
@@ -423,8 +434,8 @@ export class AiDataTable extends LitElement {
                         <span class="sort-icon">
                           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                             ${isSorted && this._sortDir === 'desc'
-                              ? html`<path d="M12 5v14m-7-7l7 7 7-7"/>`
-                              : html`<path d="M12 19V5m-7 7l7-7 7 7"/>`}
+                              ? svg`<path d="M12 5v14m-7-7l7 7 7-7"/>`
+                              : svg`<path d="M12 19V5m-7 7l7-7 7 7"/>`}
                           </svg>
                         </span>
                       ` : nothing}
@@ -438,7 +449,7 @@ export class AiDataTable extends LitElement {
             </tbody>
           </table>
         </div>
-        ${!this.data.length ? html`<div class="empty-state">No data available</div>` : nothing}
+        ${!this.data.length ? html`<div class="empty-state" role="status">No data available</div>` : nothing}
       </div>
     `;
   }

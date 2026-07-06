@@ -60,7 +60,7 @@ export class AiDiffPanel extends LitElement {
     .mode-toggle {
       display: flex;
       gap: var(--cg-spacing-2);
-      background: var(--cg-color-code-background);
+      background: var(--cg-overlay-white-subtle);
       border: var(--cg-border-width-50) solid var(--cg-color-code-border);
       border-radius: var(--cg-border-radius-100);
       padding: var(--cg-spacing-2);
@@ -79,8 +79,12 @@ export class AiDiffPanel extends LitElement {
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
+    .mode-btn:hover:not(.active) {
+      color: var(--cg-color-code-text);
+      background: var(--cg-overlay-white-subtle);
+    }
     .mode-btn.active {
-      background: var(--cg-color-code-border);
+      background: var(--cg-overlay-white-medium);
       color: var(--cg-color-code-text);
     }
 
@@ -360,32 +364,40 @@ export class AiDiffPanel extends LitElement {
       </div>
       <div class="side-by-side">
         <div class="side" role="list" aria-label="${this.labels[0]}">
-          ${left.map(l => l ? html`
+          ${left.map(l => {
+            if (!l) return html`<div class="diff-line empty" aria-hidden="true"><span class="line-num"></span><span class="line-sign"></span><span class="line-content"></span></div>`;
+            const interactive = l.type !== 'unchanged';
+            return html`
             <div class="diff-line ${l.type}"
               role="listitem"
-              tabindex="0"
+              tabindex=${interactive ? '0' : nothing}
               aria-label=${this._lineAriaLabel(l)}
-              @click=${() => this._handleLineClick(l)}
-              @keydown=${(e: KeyboardEvent) => this._handleLineKey(e, l)}>
+              @click=${interactive ? () => this._handleLineClick(l) : nothing}
+              @keydown=${interactive ? (e: KeyboardEvent) => this._handleLineKey(e, l) : nothing}>
               <span class="line-num" aria-hidden="true">${l.lineNum.before ?? ''}</span>
               <span class="line-sign" aria-hidden="true">${l.type === 'remove' ? '-' : ' '}</span>
               <span class="line-content">${l.content}</span>
             </div>
-          ` : html`<div class="diff-line empty" aria-hidden="true"><span class="line-num"></span><span class="line-sign"></span><span class="line-content"></span></div>`)}
+          `;
+          })}
         </div>
         <div class="side" role="list" aria-label="${this.labels[1]}">
-          ${right.map(r => r ? html`
+          ${right.map(r => {
+            if (!r) return html`<div class="diff-line empty" aria-hidden="true"><span class="line-num"></span><span class="line-sign"></span><span class="line-content"></span></div>`;
+            const interactive = r.type !== 'unchanged';
+            return html`
             <div class="diff-line ${r.type}"
               role="listitem"
-              tabindex="0"
+              tabindex=${interactive ? '0' : nothing}
               aria-label=${this._lineAriaLabel(r)}
-              @click=${() => this._handleLineClick(r)}
-              @keydown=${(e: KeyboardEvent) => this._handleLineKey(e, r)}>
+              @click=${interactive ? () => this._handleLineClick(r) : nothing}
+              @keydown=${interactive ? (e: KeyboardEvent) => this._handleLineKey(e, r) : nothing}>
               <span class="line-num" aria-hidden="true">${r.lineNum.after ?? ''}</span>
               <span class="line-sign" aria-hidden="true">${r.type === 'add' ? '+' : ' '}</span>
               <span class="line-content">${r.content}</span>
             </div>
-          ` : html`<div class="diff-line empty" aria-hidden="true"><span class="line-num"></span><span class="line-sign"></span><span class="line-content"></span></div>`)}
+          `;
+          })}
         </div>
       </div>
     `;
@@ -395,18 +407,21 @@ export class AiDiffPanel extends LitElement {
     const diff = this._computeDiff();
     return html`
       <div class="inline-diff" role="list" aria-label="${this.title}">
-        ${diff.map(d => html`
+        ${diff.map(d => {
+          const interactive = d.type !== 'unchanged';
+          return html`
           <div class="diff-line ${d.type}"
             role="listitem"
-            tabindex="0"
+            tabindex=${interactive ? '0' : nothing}
             aria-label=${this._lineAriaLabel(d)}
-            @click=${() => this._handleLineClick(d)}
-            @keydown=${(e: KeyboardEvent) => this._handleLineKey(e, d)}>
+            @click=${interactive ? () => this._handleLineClick(d) : nothing}
+            @keydown=${interactive ? (e: KeyboardEvent) => this._handleLineKey(e, d) : nothing}>
             <span class="prefix" aria-hidden="true">${d.type === 'add' ? '+' : d.type === 'remove' ? '-' : ' '}</span>
             <span class="line-num" aria-hidden="true">${d.lineNum.before ?? d.lineNum.after ?? ''}</span>
             <span class="line-content">${d.content}</span>
           </div>
-        `)}
+        `;
+        })}
       </div>
     `;
   }
@@ -422,10 +437,12 @@ export class AiDiffPanel extends LitElement {
       <div class="panel" role="group" aria-label="${this.title}">
         <div class="header">
           <span class="title">${this.title}</span>
-          <div class="mode-toggle">
+          <div class="mode-toggle" role="group" aria-label="Diff view mode">
             <button class="mode-btn ${this.mode === 'side-by-side' ? 'active' : ''}"
+              aria-pressed=${this.mode === 'side-by-side'}
               @click=${() => this.mode = 'side-by-side'}>Split</button>
             <button class="mode-btn ${this.mode === 'inline' ? 'active' : ''}"
+              aria-pressed=${this.mode === 'inline'}
               @click=${() => this.mode = 'inline'}>Inline</button>
           </div>
         </div>

@@ -57,7 +57,7 @@ export class AiGuardrail extends LitElement {
     }
     .severity.low { background: var(--cg-color-status-success-background-default); color: var(--cg-color-status-success-text-default); }
     .severity.medium { background: var(--cg-color-status-warning-background-default); color: var(--cg-color-status-warning-text-default); }
-    .severity.high { background: var(--cg-color-status-warning-background-default); color: var(--cg-color-status-warning-text-default); }
+    .severity.high { background: var(--cg-color-status-error-background-default); color: var(--cg-color-status-error-text-default); }
     .severity.critical { background: var(--cg-color-status-error-background-default); color: var(--cg-color-status-error-text-default); }
 
     /* ── Policy checks ── */
@@ -103,11 +103,12 @@ export class AiGuardrail extends LitElement {
       font-size: var(--cg-font-size-sm); color: var(--cg-color-surface-base-text);
       font-family: var(--cg-font-family-mono);
       line-height: var(--cg-line-height-relaxed);
-      filter: blur(4px);
+      filter: blur(var(--cg-spacing-4));
       transition: filter var(--cg-transition-duration-default) var(--cg-transition-easing-default);
       cursor: pointer;
     }
     .blocked-content.revealed { filter: none; }
+    .blocked-content:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring); }
     .blocked-hint {
       font-size: var(--cg-font-size-xs); color: var(--cg-color-surface-container-outlined);
       margin-top: var(--cg-spacing-6); text-align: center;
@@ -133,7 +134,7 @@ export class AiGuardrail extends LitElement {
     }
     .btn:hover { border-color: var(--cg-color-surface-cards-hover-border); color: var(--cg-color-surface-base-text); }
     .btn:active { transform: scale(var(--cg-interaction-press-scale)); }
-    .btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-color-focus-ring); }
+    .btn:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring); }
 
     .btn.danger {
       border-color: var(--cg-color-status-error-border-default);
@@ -158,6 +159,11 @@ export class AiGuardrail extends LitElement {
 
   @state() private _revealed = false;
 
+  private _toggleReveal() {
+    this._revealed = !this._revealed;
+    this.dispatchEvent(new CustomEvent('ai-guardrail-reveal', { bubbles: true, composed: true, detail: { revealed: this._revealed } }));
+  }
+
   private _getStatusIcon() {
     if (this.status === 'safe') return html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
     if (this.status === 'flagged') return html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>`;
@@ -178,7 +184,7 @@ export class AiGuardrail extends LitElement {
 
   override render() {
     return html`
-      <div class="panel" role="alert" aria-live="polite" aria-label="Safety filter: ${this.status}">
+      <div class="panel" role="status" aria-live="polite" aria-label="Safety filter: ${this.status}">
         <div class="status-bar ${this.status}">
           ${this._getStatusIcon()}
           <span class="status-text">${this._getStatusText()}</span>
@@ -204,7 +210,12 @@ export class AiGuardrail extends LitElement {
           <div class="blocked-section">
             <div class="blocked-label">Blocked Content</div>
             <div class="blocked-content ${this._revealed ? 'revealed' : ''}"
-              @click=${() => { this._revealed = !this._revealed; this.dispatchEvent(new CustomEvent('ai-guardrail-reveal', { bubbles: true, composed: true, detail: { revealed: this._revealed } })); }}>
+              role="button"
+              tabindex="0"
+              aria-expanded=${this._revealed}
+              aria-label="${this._revealed ? 'Hide' : 'Reveal'} blocked content"
+              @click=${() => this._toggleReveal()}
+              @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._toggleReveal(); } }}>
               ${this.blockedContent}
             </div>
             <div class="blocked-hint">${this._revealed ? 'Click to hide' : 'Click to reveal (may contain harmful content)'}</div>

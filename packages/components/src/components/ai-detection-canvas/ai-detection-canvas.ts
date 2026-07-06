@@ -145,6 +145,8 @@ export class AiDetectionCanvas extends LitElement {
 
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property() src = '';
+  /** Accessible description of the source image */
+  @property() imageAlt = '';
   @property({ type: Array }) detections: Detection[] = [];
   @property({ type: Boolean }) showLabels = true;
   @property({ type: Boolean }) showConfidence = true;
@@ -152,6 +154,7 @@ export class AiDetectionCanvas extends LitElement {
   @property({ type: Boolean }) interactive = true;
 
   @state() private _hoveredId = '';
+  @state() private _focusedId = '';
   @state() private _imgNatW = 0;
   @state() private _imgNatH = 0;
 
@@ -183,7 +186,7 @@ export class AiDetectionCanvas extends LitElement {
 
     return html`
       <div class="canvas">
-        <img src="${this.src}" alt="Detection source" @load=${this._onImgLoad} draggable="false" />
+        <img src="${this.src}" alt="${this.imageAlt || 'Image with object detections'}" @load=${this._onImgLoad} draggable="false" />
 
         ${this.detections.length > 0 ? html`
           <span class="count-badge">${this.detections.length} detection${this.detections.length > 1 ? 's' : ''}</span>
@@ -198,13 +201,16 @@ export class AiDetectionCanvas extends LitElement {
           const pctH = (h / this._imgNatH) * 100;
           const isSelected = det.id === this.selectedId;
           const isHovered = det.id === this._hoveredId;
+          const isFocused = det.id === this._focusedId;
 
           return html`
             <div class="bbox ${isSelected ? 'selected' : ''}"
               style="left:${pctL}%;top:${pctT}%;width:${pctW}%;height:${pctH}%;--det-color:${color}"
               tabindex="${this.interactive ? '0' : '-1'}"
-              role="button" aria-label="${det.label} ${Math.round(det.confidence * 100)}%"
+              role=${this.interactive ? 'button' : nothing} aria-label="${det.label} ${Math.round(det.confidence * 100)}%"
               @click=${() => this._selectDetection(det)}
+              @focus=${() => { this._focusedId = det.id; }}
+              @blur=${() => { this._focusedId = ''; }}
               @mouseenter=${() => { this._hoveredId = det.id; this.dispatchEvent(new CustomEvent('ai-detection-hover', { bubbles: true, composed: true, detail: { id: det.id, label: det.label } })); }}
               @mouseleave=${() => { this._hoveredId = ''; }}
               @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._selectDetection(det); } }}>
@@ -216,7 +222,7 @@ export class AiDetectionCanvas extends LitElement {
                 </span>
               ` : nothing}
 
-              ${isHovered && this.interactive ? html`
+              ${(isHovered || isFocused) && this.interactive ? html`
                 <div class="tooltip">${det.label} — ${Math.round(det.confidence * 100)}%</div>
               ` : nothing}
             </div>

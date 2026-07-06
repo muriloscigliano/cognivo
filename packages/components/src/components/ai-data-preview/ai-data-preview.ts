@@ -87,7 +87,7 @@ export class AiDataPreview extends LitElement {
     .json-key { color: var(--cg-color-code-keyword); }
     .json-string { color: var(--cg-color-code-string); }
     .json-number { color: var(--cg-color-code-number); }
-    .json-bool { color: var(--cg-color-status-success-text-default); }
+    .json-bool { color: var(--cg-color-code-keyword); }
     .json-null { color: var(--cg-color-input-text-placeholder); }
 
     table {
@@ -115,7 +115,7 @@ export class AiDataPreview extends LitElement {
     }
 
     tr:hover td {
-      background: var(--cg-overlay-dark-subtle);
+      background: var(--cg-color-surface-table-row-hover-background);
     }
 
     .truncated-msg {
@@ -143,18 +143,18 @@ export class AiDataPreview extends LitElement {
     }
 
     .btn:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-focus-ring-width) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
     .btn-cancel {
       background: transparent;
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
-      color: var(--cg-color-input-text-placeholder);
+      color: var(--cg-color-action-secondary-text-default);
     }
 
     .btn-cancel:hover {
-      background: var(--cg-color-surface-cards-border);
+      background: var(--cg-color-surface-cards-background);
     }
 
     .btn-confirm {
@@ -162,11 +162,20 @@ export class AiDataPreview extends LitElement {
       color: var(--cg-color-surface-container-background);
     }
     .btn-confirm:hover {
-      filter: brightness(1.1);
+      background: var(--cg-color-action-primary-background-hover);
     }
 
     .btn:active {
       transform: scale(var(--cg-interaction-press-scale));
+    }
+
+    .btn:disabled {
+      background: var(--cg-color-action-primary-background-disable);
+      color: var(--cg-color-action-primary-text-disable);
+      cursor: not-allowed;
+    }
+    .btn:disabled:hover {
+      background: var(--cg-color-action-primary-background-disable);
     }
   `];
   @property({ attribute: false }) data: unknown = null;
@@ -269,6 +278,7 @@ export class AiDataPreview extends LitElement {
   }
 
   private _onConfirm(): void {
+    if (this.data == null) return;
     this.dispatchEvent(new CustomEvent('ai-data-confirm', {
       bubbles: true, composed: true,
       detail: { data: this.data, format: this.format },
@@ -287,7 +297,7 @@ export class AiDataPreview extends LitElement {
     return html`
       <div class="header">
         <div>
-          <h3 class="title">${this.title}</h3>
+          <h3 class="title" id="adp-title">${this.title}</h3>
           <div class="meta">
             <span class="format-badge">${this.format}</span>
             ${rowCount > 0 ? html`<span>${rowCount} rows</span>` : nothing}
@@ -295,13 +305,14 @@ export class AiDataPreview extends LitElement {
           </div>
         </div>
       </div>
-      <div class="preview-area" role="region" aria-label="Data preview" tabindex="0">
+      <div class="preview-area" role="region" aria-labelledby="adp-title" tabindex="0">
         ${this._renderContent()}
       </div>
       <div class="actions">
         <button class="btn btn-cancel" @click=${this._onCancel}
                 aria-label="Cancel" tabindex="0">Cancel</button>
         <button class="btn btn-confirm" @click=${this._onConfirm}
+                ?disabled=${this.data == null}
                 aria-label="Confirm data" tabindex="0">Confirm</button>
       </div>
     `;

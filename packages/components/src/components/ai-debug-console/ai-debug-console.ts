@@ -40,6 +40,11 @@ export class AiDebugConsole extends LitElement {
     }
     :host([hidden]) { display: none; }
 
+    .bar {
+      display: flex;
+      align-items: center;
+    }
+
     .toggle-bar {
       display: flex;
       align-items: center;
@@ -63,7 +68,7 @@ export class AiDebugConsole extends LitElement {
     .toggle-bar:active { transform: scale(var(--cg-interaction-press-scale)); }
     .toggle-bar:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 2px var(--cg-overlay-accent-strong);
+      box-shadow: inset 0 0 0 var(--cg-outline-width-default) var(--cg-overlay-accent-strong);
     }
 
     .chevron {
@@ -111,9 +116,11 @@ export class AiDebugConsole extends LitElement {
     }
 
     .clear-btn:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-outline-width-default) solid var(--cg-overlay-accent-strong);
       outline-offset: var(--cg-outline-offset-default);
     }
+
+    .clear-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
 
     .panel {
       border-top: var(--cg-border-width-50) solid var(--cg-color-code-border);
@@ -154,14 +161,16 @@ export class AiDebugConsole extends LitElement {
     }
 
     .entry-header:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-outline-width-default) solid var(--cg-overlay-accent-strong);
       outline-offset: -2px;
     }
+
+    .entry-header:active { transform: scale(var(--cg-interaction-press-scale)); }
 
     .type-dot {
       width: var(--cg-spacing-8);
       height: var(--cg-spacing-8);
-      border-radius: 50%;
+      border-radius: var(--cg-border-radius-full);
       flex-shrink: 0;
     }
 
@@ -273,17 +282,17 @@ export class AiDebugConsole extends LitElement {
     const visible = this._visibleEntries;
 
     return html`
-      <div class="toggle-bar" role="button" @click=${this._onToggle}
-              @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._onToggle(); } }}
-              aria-expanded=${this.open ? 'true' : 'false'}
-              aria-label="Debug console"
-              tabindex="0">
-        <span class="chevron ${this.open ? 'open' : ''}">&#x25B6;</span>
-        <span class="title-text">Debug Console</span>
-        ${this.entries.length ? html`<span class="badge">${this.entries.length}</span>` : nothing}
+      <div class="bar">
+        <button class="toggle-bar" type="button" @click=${this._onToggle}
+                aria-expanded=${this.open ? 'true' : 'false'}
+                aria-label="Debug console">
+          <span class="chevron ${this.open ? 'open' : ''}">&#x25B6;</span>
+          <span class="title-text">Debug Console</span>
+          ${this.entries.length ? html`<span class="badge">${this.entries.length}</span>` : nothing}
+        </button>
         ${this.open && this.entries.length ? html`
-          <button class="clear-btn" @click=${this._onClear}
-                  aria-label="Clear entries" tabindex="0">Clear</button>
+          <button class="clear-btn" type="button" @click=${this._onClear}
+                  aria-label="Clear entries">Clear</button>
         ` : nothing}
       </div>
       ${this.open ? html`

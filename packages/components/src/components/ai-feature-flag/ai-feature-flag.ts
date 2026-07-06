@@ -62,7 +62,7 @@ export class AiFeatureFlag extends LitElement {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-semibold);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: var(--cg-letter-spacing-wider);
       background: var(--cg-overlay-accent-subtle);
       color: var(--cg-color-surface-base-text);
     }
@@ -88,8 +88,8 @@ export class AiFeatureFlag extends LitElement {
     }
 
     .search-input:focus-visible {
-      outline: 2px solid var(--cg-color-focus-ring);
-      outline-offset: -2px;
+      outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
+      outline-offset: calc(-1 * var(--cg-border-width-100));
     }
 
     .group-label {
@@ -97,7 +97,7 @@ export class AiFeatureFlag extends LitElement {
       font-weight: var(--cg-font-weight-semibold);
       color: var(--cg-color-input-text-placeholder);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: var(--cg-letter-spacing-wider);
       margin: var(--cg-spacing-12) 0 var(--cg-spacing-6) 0;
     }
 
@@ -126,7 +126,7 @@ export class AiFeatureFlag extends LitElement {
     }
 
     .flag-item:focus-visible {
-      outline: 2px solid var(--cg-color-focus-ring);
+      outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -188,7 +188,7 @@ export class AiFeatureFlag extends LitElement {
       position: absolute;
       width: var(--cg-spacing-12);
       height: var(--cg-spacing-12);
-      border-radius: 50%;
+      border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-toggle-thumb-off);
       top: var(--cg-spacing-2);
       left: var(--cg-spacing-2);
@@ -197,7 +197,7 @@ export class AiFeatureFlag extends LitElement {
 
     .toggle-switch input:checked + .toggle-track {
       background: var(--cg-color-toggle-background-on);
-      border-color: var(--cg-color-surface-base-text);
+      border-color: var(--cg-color-toggle-background-on);
     }
 
     .toggle-switch input:checked + .toggle-track::after {
@@ -206,7 +206,7 @@ export class AiFeatureFlag extends LitElement {
     }
 
     .toggle-switch input:focus-visible + .toggle-track {
-      outline: 2px solid var(--cg-color-focus-ring);
+      outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -275,7 +275,7 @@ export class AiFeatureFlag extends LitElement {
     return html`
       <div class="flag-item" role="listitem" tabindex="0"
            @click=${() => this._onClick(flag)}
-           @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter') this._onClick(flag); }}>
+           @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._onClick(flag); } }}>
         <div class="flag-info">
           <div class="flag-name">${flag.name}</div>
           <div class="flag-desc">${flag.description}</div>

@@ -37,6 +37,12 @@ export class AiFileUpload extends LitElement {
   @property({ type: Boolean }) multiple = false;
   @property({ type: String }) label = 'Drop training data here';
   @property({ type: Boolean, reflect: true }) disabled = false;
+  @property({ type: Boolean, reflect: true }) error = false;
+  @property({ type: Boolean, reflect: true }) success = false;
+  @property({ type: String }) helper = '';
+  @property({ type: Number, attribute: 'max-files' }) maxFiles = 0;
+  @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
+  @property({ reflect: true }) variant: 'dropzone' | 'compact' = 'dropzone';
 
   private _onChange = (e: Event) => {
     const detail = (e as CustomEvent<{ files: File[] }>).detail;
@@ -61,8 +67,14 @@ export class AiFileUpload extends LitElement {
       <cg-file-input
         accept=${this.accept}
         ?multiple=${this.multiple}
-        label=${this.label}
+        placeholder=${this.label}
         max-size=${this.maxSize}
+        max-files=${this.maxFiles}
+        helper=${this.helper}
+        size=${this.size}
+        variant=${this.variant}
+        ?error=${this.error}
+        ?success=${this.success}
         ?disabled=${this.disabled}
         @cg-file-change=${this._onChange}
         @cg-file-reject=${this._onReject}
