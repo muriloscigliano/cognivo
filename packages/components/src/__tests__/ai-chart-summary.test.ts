@@ -129,4 +129,37 @@ describe('ai-chart-summary', () => {
     await element.updateComplete;
     expect(element.shadowRoot!.querySelector('.trends')).toBeNull();
   });
+
+  it('activates a trend via Enter key (keyboard operability)', async () => {
+    element.summary = 'Some insight';
+    element.trends = [{ label: 'Revenue', direction: 'up', value: '+15%' }];
+    await element.updateComplete;
+    let detail: unknown = null;
+    element.addEventListener('ai-summary-trend-click', ((e: CustomEvent) => { detail = e.detail; }) as EventListener);
+    const trend = element.shadowRoot!.querySelector('.trend') as HTMLElement;
+    trend.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect((detail as { label: string }).label).toBe('Revenue');
+  });
+
+  it('activates a trend via Space key', async () => {
+    element.summary = 'Some insight';
+    element.trends = [{ label: 'Churn', direction: 'down', value: '-3%' }];
+    await element.updateComplete;
+    let fired = false;
+    element.addEventListener('ai-summary-trend-click', () => { fired = true; });
+    const trend = element.shadowRoot!.querySelector('.trend') as HTMLElement;
+    trend.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    expect(fired).toBe(true);
+  });
+
+  it('ignores non-activation keys on a trend', async () => {
+    element.summary = 'Some insight';
+    element.trends = [{ label: 'Revenue', direction: 'up', value: '+15%' }];
+    await element.updateComplete;
+    let fired = false;
+    element.addEventListener('ai-summary-trend-click', () => { fired = true; });
+    const trend = element.shadowRoot!.querySelector('.trend') as HTMLElement;
+    trend.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', bubbles: true }));
+    expect(fired).toBe(false);
+  });
 });

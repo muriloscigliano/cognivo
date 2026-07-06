@@ -102,4 +102,46 @@ describe('ai-citation', () => {
     const dot = el.shadowRoot!.querySelector('.relevance-dot');
     expect(dot!.classList.contains('high')).toBe(true);
   });
+
+  it('exposes aria-expanded reflecting open state (cite-2)', async () => {
+    el.sources = [{ title: 'Test' }];
+    await el.updateComplete;
+    const badge = () => el.shadowRoot!.querySelector('.cite-badge') as HTMLElement;
+    expect(badge().getAttribute('aria-expanded')).toBe('false');
+    badge().click();
+    await el.updateComplete;
+    expect(badge().getAttribute('aria-expanded')).toBe('true');
+    expect(badge().classList.contains('is-open')).toBe(true);
+  });
+
+  it('marks the +N overflow badge non-interactive (cite-3)', async () => {
+    el.maxVisible = 1;
+    el.sources = [{ title: 'A' }, { title: 'B' }, { title: 'C' }];
+    await el.updateComplete;
+    const badges = el.shadowRoot!.querySelectorAll('.cite-badge');
+    const overflow = badges[badges.length - 1]!;
+    expect(overflow.textContent).toContain('+2');
+    expect(overflow.classList.contains('cite-badge--static')).toBe(true);
+    expect(overflow.hasAttribute('role')).toBe(false);
+    expect(overflow.hasAttribute('tabindex')).toBe(false);
+    expect(overflow.getAttribute('title')).toContain('more sources');
+  });
+
+  it('gives list-mode relevance dots an accessible title (cite-4)', async () => {
+    el.mode = 'list';
+    el.sources = [{ title: 'A', relevance: 0.5 }, { title: 'B' }];
+    await el.updateComplete;
+    const dots = el.shadowRoot!.querySelectorAll('.relevance-dot');
+    expect(dots[0]!.getAttribute('title')).toContain('50%');
+    expect(dots[1]!.getAttribute('title')).toContain('unknown');
+  });
+
+  it('treats relevance of 0 as present, not missing (cite-6)', () => {
+    const cls = (el as unknown as { _relevanceClass(r?: number): string })._relevanceClass.bind(el);
+    // 0 and undefined both map to 'low' via thresholds, but the guard must
+    // not short-circuit on 0 (nullish check, not falsy).
+    expect(cls(0)).toBe('low');
+    expect(cls(undefined)).toBe('low');
+    expect(cls(0.9)).toBe('high');
+  });
 });

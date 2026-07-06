@@ -94,13 +94,13 @@ export class AiChat extends LitElement {
     .msg.user .bubble {
       background: var(--cg-overlay-accent-subtle);
       color: var(--cg-color-surface-base-text);
-      border-bottom-right-radius: var(--cg-spacing-4);
+      border-bottom-right-radius: var(--cg-border-radius-50);
       border-color: var(--cg-overlay-accent-medium);
     }
     .msg.ai .bubble {
       background: var(--cg-color-surface-cards-background);
       color: var(--cg-color-surface-base-text);
-      border-bottom-left-radius: var(--cg-spacing-4);
+      border-bottom-left-radius: var(--cg-border-radius-50);
     }
     .msg.ai .bubble.error {
       background: var(--cg-color-status-error-background-default);
@@ -142,7 +142,7 @@ export class AiChat extends LitElement {
     }
     .version-label {
       font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-input-text-placeholder);
     }
 
     /* ── Thinking ── */
@@ -254,7 +254,7 @@ export class AiChat extends LitElement {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-empty-state-text-secondary);
       gap: var(--cg-spacing-12);
       text-align: center;
     }
@@ -773,8 +773,8 @@ export class AiChat extends LitElement {
             })}
 
             ${this._isThinking ? html`
-              <div class="thinking-area" role="status" aria-label="AI is thinking">
-                <ai-thinking text="Analyzing" shimmer delay="0"></ai-thinking>
+              <div class="thinking-area">
+                <ai-thinking text="Analyzing" shimmer delay="0" aria-label="AI is thinking"></ai-thinking>
               </div>
             ` : nothing}
           </div>

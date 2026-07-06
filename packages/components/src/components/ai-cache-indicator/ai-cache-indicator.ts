@@ -10,7 +10,7 @@
  * @fires {CustomEvent} ai-cache-clear - Clear cache clicked
  * @fires {CustomEvent<{status, hitRate}>} ai-cache-detail - Detail panel toggled
  *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Accent for hit rate bar
+ * @cssprop [--cg-color-ai-cached-text] - Fill color for the hit-rate bar and hit dot
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
@@ -38,11 +38,14 @@ export class AiCacheIndicator extends LitElement {
       color: var(--cg-color-input-text-placeholder);
     }
     .pill:hover {
-      border-color: var(--cg-color-surface-cards-border);
+      border-color: var(--cg-color-surface-cards-border-strong);
     }
     .pill:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-overlay-accent-strong);
+    }
+    .pill:disabled {
+      cursor: default;
     }
 
     .dot {
@@ -55,7 +58,13 @@ export class AiCacheIndicator extends LitElement {
     .dot.miss { background: var(--cg-color-status-error-text-default); }
     .dot.stale { background: var(--cg-color-status-warning-text-default); }
     .dot.disabled { background: var(--cg-color-input-text-placeholder); }
-    .dot.loading { background: var(--cg-color-status-info-text-default); }
+    .dot.loading {
+      background: var(--cg-color-status-info-text-default);
+      animation: cachePulse var(--cg-transition-duration-slow) var(--cg-transition-easing-default) infinite;
+    }
+    @keyframes cachePulse {
+      50% { opacity: 0.4; }
+    }
 
     .status-text {
       font-weight: var(--cg-font-weight-semibold);
@@ -132,11 +141,12 @@ export class AiCacheIndicator extends LitElement {
     }
     .clear-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-overlay-accent-strong);
     }
 
     @media (prefers-reduced-motion: reduce) {
       .detail-card { animation: none; }
+      .dot.loading { animation: none; }
     }
 
     .wrapper {
@@ -152,6 +162,7 @@ export class AiCacheIndicator extends LitElement {
   @property({ type: Boolean }) showDetails = false;
 
   private _toggleDetails() {
+    if (this.status === 'disabled') return;
     this.showDetails = !this.showDetails;
     this.dispatchEvent(new CustomEvent('ai-cache-detail', {
       detail: { status: this.status, hitRate: this.hitRate },
@@ -170,6 +181,7 @@ export class AiCacheIndicator extends LitElement {
       <div class="wrapper">
         <button
           class="pill"
+          ?disabled=${this.status === 'disabled'}
           @click=${this._toggleDetails}
           aria-expanded=${this.showDetails}
           aria-label="Cache status: ${this.status}"
@@ -185,7 +197,7 @@ export class AiCacheIndicator extends LitElement {
               <span class="detail-label">Hit Rate</span>
               <span class="detail-value">${this.hitRate}%</span>
             </div>
-            <div class="rate-bar-track" role="progressbar" aria-valuenow=${this.hitRate} aria-valuemin="0" aria-valuemax="100">
+            <div class="rate-bar-track" role="progressbar" aria-label="Cache hit rate" aria-valuenow=${this.hitRate} aria-valuemin="0" aria-valuemax="100">
               <div class="rate-bar-fill" style="width:${Math.min(100, Math.max(0, this.hitRate))}%"></div>
             </div>
 

@@ -76,6 +76,12 @@ export class AiChartSummary extends LitElement {
     .icon-btn:hover { color: var(--cg-color-surface-base-text); }
     .icon-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .icon-btn svg { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
+    .icon-btn:focus-visible,
+    .trend:focus-visible {
+      outline: var(--cg-border-width-50) solid var(--cg-color-focus-ring);
+      outline-offset: var(--cg-spacing-2);
+      border-radius: var(--cg-border-radius-50);
+    }
 
     /* ── Summary text ── */
     .summary-text {
@@ -102,6 +108,7 @@ export class AiChartSummary extends LitElement {
     .trend:first-child { padding-left: 0; }
     .trend:last-child { border-right: none; padding-right: 0; }
     .trend:hover { opacity: 0.8; }
+    .trend:active { transform: scale(var(--cg-interaction-press-scale)); }
     .trend-header {
       display: flex;
       align-items: center;
@@ -118,7 +125,9 @@ export class AiChartSummary extends LitElement {
     .trend.up .trend-value { color: var(--cg-color-status-success-text-default); }
     .trend.down .trend-value { color: var(--cg-color-status-error-text-default); }
     .trend.neutral .trend-value { color: var(--cg-color-surface-base-text); }
-    .trend-icon svg { width: 10px; height: 10px; display: block; }
+    .trend.up .trend-icon { color: var(--cg-color-status-success-text-default); }
+    .trend.down .trend-icon { color: var(--cg-color-status-error-text-default); }
+    .trend-icon svg { width: var(--cg-spacing-8); height: var(--cg-spacing-8); display: block; }
 
     /* ── Footer metadata ── */
     .footer {
@@ -186,6 +195,13 @@ export class AiChartSummary extends LitElement {
     this.dispatchEvent(new CustomEvent('ai-summary-trend-click', { bubbles: true, composed: true, detail: trend }));
   }
 
+  private _handleTrendKeydown(e: KeyboardEvent, trend: Trend) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      this._handleTrendClick(trend);
+    }
+  }
+
   private _handleRefresh() {
     this.dispatchEvent(new CustomEvent('ai-summary-refresh', { bubbles: true, composed: true }));
   }
@@ -234,7 +250,7 @@ export class AiChartSummary extends LitElement {
         ${this.trends.length > 0 ? html`
           <div class="trends">
             ${this.trends.map(t => html`
-              <span class="trend ${t.direction}" @click=${() => this._handleTrendClick(t)} role="button" tabindex="0">
+              <span class="trend ${t.direction}" @click=${() => this._handleTrendClick(t)} @keydown=${(e: KeyboardEvent) => this._handleTrendKeydown(e, t)} role="button" tabindex="0">
                 <span class="trend-header">
                   <span class="trend-icon" aria-hidden="true">
                     ${t.direction === 'up'

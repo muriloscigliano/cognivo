@@ -91,14 +91,6 @@ export class AiChangelog extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-100);
       padding: var(--cg-spacing-12);
-      cursor: pointer;
-      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
-    }
-    .entry-card:hover { border-color: var(--cg-color-surface-cards-border); }
-    .entry-card:active { transform: scale(var(--cg-interaction-press-scale)); }
-    .entry-card:focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
 
     .entry-top {
@@ -109,9 +101,22 @@ export class AiChangelog extends LitElement {
     }
 
     .version {
+      appearance: none;
+      background: transparent;
+      border: none;
+      padding: 0;
+      font-family: inherit;
       font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-bold);
       color: var(--cg-color-surface-base-text);
+      cursor: pointer;
+      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+    }
+    .version:hover { color: var(--cg-color-action-primary-background-default); }
+    .version:active { transform: scale(var(--cg-interaction-press-scale)); }
+    .version:focus-visible {
+      outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
+      outline-offset: var(--cg-outline-offset-default);
     }
 
     .type-badge {
@@ -131,8 +136,8 @@ export class AiChangelog extends LitElement {
       color: var(--cg-color-surface-base-text);
     }
     .type-badge.type-config {
-      background: var(--cg-overlay-accent-light);
-      color: var(--cg-color-chart-7-stroke);
+      background: var(--cg-color-status-warning-background-default);
+      color: var(--cg-color-status-warning-text-default);
     }
     .type-badge.type-data {
       background: var(--cg-color-status-success-background-default);
@@ -141,7 +146,7 @@ export class AiChangelog extends LitElement {
 
     .entry-dot.type-model { background: var(--cg-color-status-info-text-default); }
     .entry-dot.type-prompt { background: var(--cg-color-action-primary-background-default); }
-    .entry-dot.type-config { background: var(--cg-color-chart-7-stroke); }
+    .entry-dot.type-config { background: var(--cg-color-status-warning-text-default); }
     .entry-dot.type-data { background: var(--cg-color-status-success-text-default); }
 
     .entry-meta {
@@ -263,15 +268,13 @@ export class AiChangelog extends LitElement {
             return html`
               <div class="entry" role="listitem">
                 <div class="entry-dot ${typeCls}" aria-hidden="true"></div>
-                <div
-                  class="entry-card"
-                  tabindex="0"
-                  aria-label="Version ${entry.version}, ${entry.type} change on ${entry.date}"
-                  @click=${() => this._handleClick(entry)}
-                  @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleClick(entry); } }}
-                >
+                <div class="entry-card">
                   <div class="entry-top">
-                    <span class="version">${entry.version}</span>
+                    <button
+                      class="version"
+                      @click=${() => this._handleClick(entry)}
+                      aria-label="Version ${entry.version}, ${entry.type} change on ${entry.date}"
+                    >${entry.version}</button>
                     <span
                       class="type-badge ${typeCls}"
                     >${entry.type}</span>
@@ -288,10 +291,9 @@ export class AiChangelog extends LitElement {
 
                   <button
                     class="expand-toggle"
-                    @click=${(e: Event) => { e.stopPropagation(); this._toggle(id); }}
+                    @click=${() => this._toggle(id)}
                     aria-expanded=${expanded ? 'true' : 'false'}
                     aria-label=${expanded ? 'Collapse details' : 'Expand details'}
-                    tabindex="0"
                   >${expanded ? 'Show less' : 'Show more'}</button>
 
                   <div class="entry-actions">
@@ -299,7 +301,6 @@ export class AiChangelog extends LitElement {
                       class="rollback-btn"
                       @click=${(e: Event) => this._handleRollback(e, entry)}
                       aria-label="Rollback to version ${entry.version}"
-                      tabindex="0"
                     >Rollback</button>
                   </div>
                 </div>

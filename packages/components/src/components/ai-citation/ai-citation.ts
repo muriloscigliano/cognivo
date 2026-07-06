@@ -48,6 +48,15 @@ export class AiCitation extends LitElement {
       outline: none;
       box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
     }
+    .cite-badge.is-open {
+      background: var(--cg-overlay-accent-strong);
+      border-color: var(--cg-overlay-accent-strong);
+    }
+    .cite-badge--static { cursor: default; }
+    .cite-badge--static:hover {
+      background: var(--cg-overlay-accent-light);
+      border-color: transparent;
+    }
 
     /* ── Source card (expanded) ── */
     .source-card {
@@ -56,7 +65,7 @@ export class AiCitation extends LitElement {
       border-radius: var(--cg-border-radius-100);
       padding: var(--cg-spacing-12);
       margin: var(--cg-spacing-8) 0;
-      max-width: 400px;
+      max-width: var(--cg-component-modal-width-sm);
     }
 
     .source-header {
@@ -183,7 +192,7 @@ export class AiCitation extends LitElement {
   }
 
   private _relevanceClass(r?: number): string {
-    if (!r) return 'low';
+    if (r == null) return 'low';
     return r >= 0.7 ? 'high' : r >= 0.4 ? 'medium' : 'low';
   }
 
@@ -230,7 +239,7 @@ export class AiCitation extends LitElement {
                   </div>
                   ${s.excerpt ? html`<div class="list-excerpt">${s.excerpt}</div>` : nothing}
                 </div>
-                <div class="relevance-dot ${this._relevanceClass(s.relevance)}"></div>
+                <div class="relevance-dot ${this._relevanceClass(s.relevance)}" title="Relevance: ${s.relevance != null ? Math.round(s.relevance * 100) + '%' : 'unknown'}"></div>
               </div>
             `;
           })}
@@ -244,14 +253,15 @@ export class AiCitation extends LitElement {
     return html`
       <div class="inline">
         ${visible.map((s, i) => html`
-          <span class="cite-badge" tabindex="0" role="button"
+          <span class="cite-badge ${this._expandedIndex === i ? 'is-open' : ''}" tabindex="0" role="button"
             aria-label="Source ${i + 1}: ${s.title}"
+            aria-expanded=${this._expandedIndex === i ? 'true' : 'false'}
             @click=${() => this._handleCiteClick(i)}
             @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleCiteClick(i); } }}
           >${i + 1}</span>
           ${this._expandedIndex === i ? this._renderCard(s, i) : nothing}
         `)}
-        ${remaining > 0 ? html`<span class="cite-badge" style="width:auto; padding:0 var(--cg-spacing-4);">+${remaining}</span>` : nothing}
+        ${remaining > 0 ? html`<span class="cite-badge cite-badge--static" style="width:auto; padding:0 var(--cg-spacing-4);" title="${remaining} more sources">+${remaining}</span>` : nothing}
       </div>
     `;
   }

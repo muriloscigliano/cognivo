@@ -68,11 +68,11 @@ export class AiCaptureFlow extends LitElement {
     }
     .step-dot.done {
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-base-background);
+      color: var(--cg-color-action-primary-text-default);
     }
     .step-dot.active {
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-base-background);
+      color: var(--cg-color-action-primary-text-default);
     }
     .step-dot.pending {
       background: var(--cg-color-surface-container-background);
@@ -188,7 +188,7 @@ export class AiCaptureFlow extends LitElement {
       cursor: pointer;
       border: none;
       font-family: inherit;
-      transition: filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .btn-row button:focus-visible {
       outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
@@ -196,15 +196,27 @@ export class AiCaptureFlow extends LitElement {
     }
     .btn-primary {
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-base-background);
+      color: var(--cg-color-action-primary-text-default);
     }
-    .btn-primary:hover { filter: brightness(0.9); }
+    .btn-primary:hover { background: var(--cg-color-action-primary-background-hover); }
     .btn-secondary {
       background: var(--cg-color-surface-container-background);
       color: var(--cg-color-surface-base-text);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
     }
     .btn-secondary:hover { background: var(--cg-color-surface-cards-border); }
+    .btn-row button:disabled {
+      cursor: not-allowed;
+      filter: none;
+    }
+    .btn-primary:disabled {
+      background: var(--cg-color-action-primary-background-disable);
+      color: var(--cg-color-action-primary-text-disable);
+    }
+    .btn-secondary:disabled {
+      background: var(--cg-color-surface-container-background);
+      color: var(--cg-color-action-primary-text-disable);
+    }
   `];
   @property({ type: String }) step: Step = 'upload';
   @property({ type: String }) accept = '.pdf,.jpg,.png';
@@ -253,7 +265,7 @@ export class AiCaptureFlow extends LitElement {
     const current = this._stepIndex();
     const labels = ['Upload', 'Preview', 'Process', 'Done'];
     return html`
-      <div class="steps" role="navigation" aria-label="Capture progress">
+      <div class="steps" role="group" aria-label="Capture progress">
         ${labels.map((label, i) => {
           const cls = i < current ? 'done' : i === current ? 'active' : 'pending';
           return html`
@@ -306,10 +318,10 @@ export class AiCaptureFlow extends LitElement {
     return html`
       <div class="processing">
         <div class="progress-label">Processing...</div>
-        <div class="progress-bar" role="progressbar" aria-valuenow=${this.progress} aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar" role="progressbar" aria-valuenow=${this.progress} aria-valuemin="0" aria-valuemax="100" aria-valuetext="${Math.round(this.progress)}%">
           <div class="progress-fill" style="width:${Math.min(this.progress, 100)}%"></div>
         </div>
-        <div class="progress-pct">${Math.round(this.progress)}%</div>
+        <div class="progress-pct" aria-live="polite" aria-atomic="true">${Math.round(this.progress)}%</div>
       </div>
     `;
   }

@@ -68,11 +68,11 @@ export class AiCollaborativeEditor extends LitElement {
 
     textarea:focus-visible {
       border-radius: var(--cg-border-radius-150);
-      box-shadow: inset 0 0 0 var(--cg-border-width-100) var(--cg-overlay-accent-strong);
+      box-shadow: inset 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
     }
 
-    textarea:disabled {
-      opacity: 0.5;
+    textarea:read-only {
+      opacity: var(--cg-opacity-50);
       cursor: not-allowed;
     }
 
@@ -96,19 +96,34 @@ export class AiCollaborativeEditor extends LitElement {
     }
 
     .cursor-line {
+      position: relative;
       width: var(--cg-spacing-2);
       height: var(--cg-spacing-20);
       border-radius: var(--cg-border-radius-50);
     }
 
+    .cursor-line::before {
+      content: '';
+      position: absolute;
+      top: calc(-1 * var(--cg-spacing-4));
+      left: 50%;
+      transform: translateX(-50%);
+      width: var(--cg-spacing-6);
+      height: var(--cg-spacing-6);
+      border-radius: var(--cg-border-radius-50);
+      background: inherit;
+    }
+
     .cursor-label {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-semibold);
+      line-height: var(--cg-line-height-tight);
       padding: var(--cg-spacing-1) var(--cg-spacing-4);
       border-radius: var(--cg-border-radius-50);
       white-space: nowrap;
       margin-top: var(--cg-spacing-2);
       color: var(--cg-color-surface-container-background);
+      box-shadow: var(--cg-shadow-elevation-sm);
     }
 
     .footer {
@@ -140,11 +155,6 @@ export class AiCollaborativeEditor extends LitElement {
     }
     .presence-dot:hover {
       transform: scale(1.3);
-    }
-
-    /* Basic hover transitions on interactive elements */
-    textarea:hover {
-      border-color: var(--cg-color-surface-cards-border);
     }
   `];
   @property({ type: String }) content = '';
@@ -220,13 +230,12 @@ export class AiCollaborativeEditor extends LitElement {
       <div class="editor-wrap" role="group" aria-label="Collaborative text editor">
         <textarea
           .value=${this.content}
-          ?disabled=${!this.editable}
+          ?readonly=${!this.editable}
           placeholder=${this.placeholder}
           @input=${this._onInput}
           @keyup=${this._onSelect}
           @click=${this._onSelect}
           aria-label="Editor content"
-          tabindex="0"
         ></textarea>
         <div class="cursors-overlay" aria-hidden="true">
           ${this.cursors.map(c => {
@@ -241,7 +250,7 @@ export class AiCollaborativeEditor extends LitElement {
         </div>
       </div>
       <div class="footer">
-        <div class="stats">
+        <div class="stats" role="status" aria-live="polite" aria-label="Document statistics">
           <span>${this._charCount} chars</span>
           <span>${this._wordCount} words</span>
         </div>

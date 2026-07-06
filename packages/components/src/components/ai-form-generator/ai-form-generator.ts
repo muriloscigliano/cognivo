@@ -260,7 +260,7 @@ export class AiFormGenerator extends LitElement {
         </div>
 
         <div class="form-footer">
-          <cg-button variant="primary" full @cg-click=${this._handleSubmit}>
+          <cg-button variant="primary" full @click=${this._handleSubmit}>
             ${this.schema.submitLabel || 'Submit'}
           </cg-button>
         </div>

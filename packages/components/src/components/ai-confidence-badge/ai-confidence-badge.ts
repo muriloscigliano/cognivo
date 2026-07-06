@@ -68,7 +68,7 @@ export class AiConfidenceBadge extends LitElement {
       flex-direction: column;
       align-items: stretch;
       gap: var(--cg-spacing-8);
-      min-width: 140px;
+      min-width: var(--cg-spacing-128);
     }
     :host([size="lg"]) .top-row {
       display: flex;
@@ -171,8 +171,15 @@ export class AiConfidenceBadge extends LitElement {
       font-size: var(--cg-font-size-xs);
       opacity: 0.7;
       white-space: normal;
-      max-width: 220px;
+      max-width: var(--cg-component-tooltip-max-width);
     }
+
+    :host([disabled]) .badge {
+      cursor: default;
+      opacity: var(--cg-opacity-50);
+    }
+    :host([disabled]) .badge:hover { filter: none; }
+    :host([disabled]) .badge:active { transform: none; }
 
     @media (prefers-reduced-motion: reduce) {
       .bar-fill { transition: none; }
@@ -194,6 +201,8 @@ export class AiConfidenceBadge extends LitElement {
   @property({ type: Number }) highThreshold: number = 0.8;
   /** Low confidence threshold */
   @property({ type: Number }) lowThreshold: number = 0.5;
+  /** Disable interaction */
+  @property({ type: Boolean, reflect: true }) disabled: boolean = false;
 
   @state() private _showTooltip: boolean = false;
 
@@ -211,6 +220,7 @@ export class AiConfidenceBadge extends LitElement {
   }
 
   private _handleClick() {
+    if (this.disabled) return;
     this.dispatchEvent(new CustomEvent('ai-confidence-badge-click', {
       bubbles: true, composed: true,
       detail: { score: this.score, level: this._getLevel() },
@@ -218,6 +228,7 @@ export class AiConfidenceBadge extends LitElement {
   }
 
   private _handleKeyDown(e: KeyboardEvent) {
+    if (this.disabled) return;
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       this._handleClick();
@@ -263,9 +274,10 @@ export class AiConfidenceBadge extends LitElement {
       return html`
         <div
           class="badge ${level}"
-          role="status"
-          tabindex="0"
+          role="button"
+          tabindex=${this.disabled ? '-1' : '0'}
           aria-label="AI confidence: ${pct}%, ${level}"
+          aria-disabled=${this.disabled ? 'true' : 'false'}
           @click=${this._handleClick}
           @keydown=${this._handleKeyDown}
         >
@@ -288,9 +300,10 @@ export class AiConfidenceBadge extends LitElement {
     return html`
       <div
         class="badge ${level}"
-        role="status"
-        tabindex="0"
+        role="button"
+        tabindex=${this.disabled ? '-1' : '0'}
         aria-label="AI confidence: ${pct}%, ${level}"
+        aria-disabled=${this.disabled ? 'true' : 'false'}
         @click=${this._handleClick}
         @keydown=${this._handleKeyDown}
       >

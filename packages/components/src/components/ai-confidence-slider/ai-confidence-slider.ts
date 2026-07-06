@@ -65,21 +65,21 @@ export class AiConfidenceSlider extends LitElement {
       height: var(--cg-spacing-16);
       border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-slider-thumb-background);
-      border: var(--cg-spacing-2) solid var(--cg-color-slider-thumb-border);
+      border: var(--cg-border-width-100) solid var(--cg-color-slider-thumb-border);
       cursor: pointer;
     }
     input[type="range"]:focus-visible::-webkit-slider-thumb {
-      outline: none; box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
+      outline: none; box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
     }
     /* Firefox */
     input[type="range"]::-moz-range-thumb {
       width: var(--cg-spacing-16); height: var(--cg-spacing-16); border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-slider-thumb-background);
-      border: var(--cg-spacing-2) solid var(--cg-color-slider-thumb-border);
+      border: var(--cg-border-width-100) solid var(--cg-color-slider-thumb-border);
       cursor: pointer;
     }
     input[type="range"]:focus-visible::-moz-range-thumb {
-      outline: none; box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
+      outline: none; box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
     }
     input[type="range"]::-moz-range-track {
       height: var(--cg-spacing-6); border-radius: var(--cg-border-radius-50);
@@ -112,7 +112,7 @@ export class AiConfidenceSlider extends LitElement {
     }
     .preset-btn:hover { border-color: var(--cg-color-input-border-hover); color: var(--cg-color-surface-base-text); }
     .preset-btn:focus-visible {
-      outline: none; box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
+      outline: none; box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
     }
     .preset-btn.active { border-color: var(--cg-color-surface-base-text); color: var(--cg-color-surface-base-text); background: var(--cg-overlay-accent-subtle); }
 
@@ -182,8 +182,7 @@ export class AiConfidenceSlider extends LitElement {
           <input type="range" .value=${String(this.value)}
             min="${this.min}" max="${this.max}"
             @input=${this._handleChange}
-            aria-label="Minimum confidence: ${this.value}%"
-            aria-valuemin="${this.min}" aria-valuemax="${this.max}" aria-valuenow="${this.value}" />
+            aria-label="Minimum confidence threshold" />
         </div>
 
         <div class="presets">
@@ -200,11 +199,11 @@ export class AiConfidenceSlider extends LitElement {
           return html`
           <div class="distribution" aria-hidden="true">
             ${this.distribution.map((v, i) => {
-              const h = (v / maxVal) * 32;
+              const h = (v / maxVal) * 100;
               const pct = (i / this.distribution.length) * 100;
               const isBelow = pct < this.value;
               return html`<div class="dist-bar ${isBelow ? 'below' : ''}"
-                style="height: ${Math.max(h, 2)}px; background: ${this._getBarColor(i, this.distribution.length)};"></div>`;
+                style="height: ${h}%; background: ${this._getBarColor(i, this.distribution.length)};"></div>`;
             })}
           </div>
         `;})() : nothing}

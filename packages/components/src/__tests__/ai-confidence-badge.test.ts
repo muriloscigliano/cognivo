@@ -109,9 +109,34 @@ describe('ai-confidence-badge', () => {
     expect(icon!.getAttribute('name')).toBe('warning');
   });
 
-  it('has role="status"', () => {
+  it('has role="button" (interactive control)', () => {
     const badge = element.shadowRoot!.querySelector('.badge');
-    expect(badge!.getAttribute('role')).toBe('status');
+    expect(badge!.getAttribute('role')).toBe('button');
+  });
+
+  it('is not disabled by default and is focusable', () => {
+    const badge = element.shadowRoot!.querySelector('.badge');
+    expect(element.disabled).toBe(false);
+    expect(badge!.getAttribute('tabindex')).toBe('0');
+    expect(badge!.getAttribute('aria-disabled')).toBe('false');
+  });
+
+  it('reflects disabled: sets aria-disabled and removes from tab order', async () => {
+    element.disabled = true;
+    await element.updateComplete;
+    const badge = element.shadowRoot!.querySelector('.badge');
+    expect(badge!.getAttribute('tabindex')).toBe('-1');
+    expect(badge!.getAttribute('aria-disabled')).toBe('true');
+  });
+
+  it('does not fire click event when disabled', async () => {
+    element.disabled = true;
+    await element.updateComplete;
+    let fired = false;
+    element.addEventListener('ai-confidence-badge-click', () => { fired = true; });
+    const badge = element.shadowRoot!.querySelector('.badge') as HTMLElement;
+    badge.click();
+    expect(fired).toBe(false);
   });
 
   it('has aria-label with confidence info', () => {

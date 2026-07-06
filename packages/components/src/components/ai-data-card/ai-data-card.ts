@@ -17,7 +17,6 @@
  * ```
  *
  * @fires {CustomEvent<{actionId, actionLabel}>} ai-data-card-action - Footer action clicked
- * @fires {CustomEvent<{label, value, type}>} ai-data-card-row-click - Row clicked
  *
  * @cssprop [--cg-brand-ai-accent=#dfff61] - Primary button, link, and currency text color
  */
@@ -26,6 +25,7 @@ import { property, customElement } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes } from '../../styles/index.js';
 import '../cg-button/cg-button.js';
 import '../cg-badge/cg-badge.js';
+import '../cg-icon/cg-icon.js';
 
 interface DataField {
   label: string;
@@ -102,13 +102,6 @@ export class AiDataCard extends LitElement {
     .row:last-child {
       border-bottom: none;
     }
-    .row.clickable {
-      cursor: pointer;
-    }
-    .row.clickable:focus-visible {
-      outline: none;
-      box-shadow: inset 0 0 0 2px var(--cg-overlay-accent-strong);
-    }
 
     .row-label {
       font-size: var(--cg-font-size-sm);
@@ -163,10 +156,6 @@ export class AiDataCard extends LitElement {
       flex-direction: column;
       gap: var(--cg-spacing-8);
       padding: var(--cg-spacing-16) var(--cg-spacing-12);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      :host(:hover) .card { transform: none; }
     }
 
     /* ── Compact mode ── */
@@ -259,13 +248,6 @@ export class AiDataCard extends LitElement {
     this.dispatchEvent(new CustomEvent('ai-data-card-action', {
       bubbles: true, composed: true,
       detail: { actionId: action.id, actionLabel: action.label },
-    }));
-  }
-
-  private _handleRowClick(field: DataField) {
-    this.dispatchEvent(new CustomEvent('ai-data-card-row-click', {
-      bubbles: true, composed: true,
-      detail: { label: field.label, value: field.value, type: field.type },
     }));
   }
 
@@ -362,12 +344,9 @@ export class AiDataCard extends LitElement {
         ${this.fields.length > 0 ? html`
           <div class="rows" role="list">
             ${this.fields.map(field => html`
-              <div class="row ${field.copyable || field.url ? 'clickable' : ''}"
+              <div class="row"
                 role="listitem"
-                tabindex="${field.copyable || field.url ? '0' : '-1'}"
-                aria-label="${field.label}: ${field.value}"
-                @click=${() => this._handleRowClick(field)}
-                @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleRowClick(field); } }}>
+                aria-label="${field.label}: ${field.value}">
                 <span class="row-label">${field.label}</span>
                 <span class="row-value">
                   ${this._renderValue(field)}
@@ -396,7 +375,7 @@ export class AiDataCard extends LitElement {
                 full
                 type=${action.variant === 'danger' ? 'danger' : 'normal'}
                 ?disabled=${action.disabled}
-                @cg-click=${() => this._handleAction(action)}>
+                @click=${() => this._handleAction(action)}>
                 ${action.label}
               </cg-button>
             `)}

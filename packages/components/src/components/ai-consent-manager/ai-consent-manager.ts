@@ -50,9 +50,22 @@ export class AiConsentManager extends LitElement {
 
     .items { padding: var(--cg-spacing-8) var(--cg-spacing-20); }
 
+    .empty-message {
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-empty-state-text-secondary);
+      padding: var(--cg-spacing-8) var(--cg-spacing-20) var(--cg-spacing-16);
+    }
+
     .item {
       display: flex; align-items: flex-start; gap: var(--cg-spacing-12);
       padding: var(--cg-spacing-12) 0;
+    }
+    .item + .item {
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-base-divider);
+    }
+    .item:hover,
+    .item:focus-within {
+      background: var(--cg-color-surface-cards-subtle);
     }
 
     .item-content { flex: 1; min-width: 0; }
@@ -138,6 +151,7 @@ export class AiConsentManager extends LitElement {
           <div class="item-description">${c.description}</div>
         </div>
         <cg-switch
+          aria-label=${c.label}
           ?checked=${c.checked || c.required}
           ?disabled=${c.required}
           @cg-change=${() => this._toggleConsent(c.id, !!c.required)}
@@ -147,7 +161,17 @@ export class AiConsentManager extends LitElement {
   }
 
   override render() {
-    if (!this.consents.length) return nothing;
+    if (!this.consents.length) {
+      return html`
+        <div class="panel" role="region" aria-label="${this.title}">
+          <div class="header">
+            <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span class="header-title">${this.title}</span>
+          </div>
+          <div class="empty-message">No consent options are configured.</div>
+        </div>
+      `;
+    }
     const categories = this._getCategories();
     const hasCategories = categories.length > 1 || (categories.length === 1 && categories[0] !== '');
 

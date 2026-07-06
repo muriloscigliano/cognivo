@@ -59,9 +59,18 @@ export class AiContextWindow extends LitElement {
     .segment:first-child { border-radius: var(--cg-border-radius-full) 0 0 var(--cg-border-radius-full); }
     .segment:last-child { border-radius: 0 var(--cg-border-radius-full) var(--cg-border-radius-full) 0; }
     .segment:hover { opacity: 0.8; }
+    .segment:focus-visible {
+      outline: var(--cg-focus-ring-width) solid var(--cg-focus-ring-color);
+      outline-offset: var(--cg-focus-ring-offset);
+    }
+
+    .bar.over {
+      box-shadow: inset 0 0 0 var(--cg-border-width-50) var(--cg-color-status-error-border-default);
+    }
 
     /* Tooltip */
-    .segment:hover::after {
+    .segment:hover::after,
+    .segment:focus-visible::after {
       content: attr(data-tooltip);
       position: absolute;
       bottom: calc(100% + var(--cg-spacing-6));
@@ -148,9 +157,19 @@ export class AiContextWindow extends LitElement {
     return String(n);
   }
 
+  private _emitSegmentClick(seg: ContextSegment) {
+    this.dispatchEvent(new CustomEvent('ai-context-segment-click', {
+      bubbles: true, composed: true,
+      detail: { label: seg.label, tokens: seg.tokens },
+    }));
+  }
+
   override render() {
     if (this.total <= 0) return nothing;
-    const remaining = Math.max(0, this.total - this._usedTokens);
+    const used = this._usedTokens;
+    const remaining = Math.max(0, this.total - used);
+    const overBudget = used > this.total;
+    const scale = overBudget ? this.total / used : 1;
 
     return html`
       <div class="container" role="figure" aria-label="Context window: ${this._formatTokens(this._usedTokens)} of ${this._formatTokens(this.total)} tokens">
@@ -162,15 +181,19 @@ export class AiContextWindow extends LitElement {
           </span>
         </div>
 
-        <div class="bar">
+        <div class="bar ${overBudget ? 'over' : ''}">
           ${this.segments.map((seg, i) => {
-            const pct = (seg.tokens / this.total) * 100;
+            const pct = (seg.tokens / this.total) * 100 * scale;
             const color = seg.color || this._defaultColors[i % this._defaultColors.length];
             return html`
               <div class="segment"
+                role="button"
+                tabindex="0"
+                aria-label="${seg.label}: ${this._formatTokens(seg.tokens)}"
                 style="width: ${pct}%; background: ${color};"
                 data-tooltip="${seg.label}: ${this._formatTokens(seg.tokens)}"
-                @click=${() => this.dispatchEvent(new CustomEvent('ai-context-segment-click', { bubbles: true, composed: true, detail: { label: seg.label, tokens: seg.tokens } }))}></div>
+                @click=${() => this._emitSegmentClick(seg)}
+                @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._emitSegmentClick(seg); } }}></div>
             `;
           })}
         </div>

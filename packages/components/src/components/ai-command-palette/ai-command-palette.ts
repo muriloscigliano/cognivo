@@ -1,7 +1,7 @@
 /**
  * @element ai-command-palette
  * AI-flavored command palette — thin wrapper around <cg-command> adding fuzzy
- * search, recent commands history, and category badges.
+ * search, recent-commands history, and category grouping.
  *
  * @example
  * ```html
@@ -41,10 +41,11 @@ export class AiCommandPalette extends LitElement {
     :host([hidden]) { display: none; }
   `];
 
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Array }) commands: PaletteCommand[] = [];
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String }) placeholder = 'Type a command\u2026';
+  @property({ type: Boolean, reflect: true }) loading = false;
+  @property({ attribute: 'empty-text' }) emptyText = 'No results found.';
 
   @state() private _query = '';
 
@@ -167,7 +168,9 @@ export class AiCommandPalette extends LitElement {
     return html`
       <cg-command
         ?open=${this.open}
+        ?loading=${this.loading}
         .placeholder=${this.placeholder}
+        .emptyText=${this.emptyText}
         .commands=${this._items}
         @cg-command-select=${this._onSelect}
         @cg-command-close=${this._onClose}

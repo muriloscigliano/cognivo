@@ -13,7 +13,7 @@
  *
  * @cssprop [--cg-color-accent=#dfff61] - Focus ring and copied-state text color
  */
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { hostBase, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
@@ -41,7 +41,7 @@ export class AiCopyButton extends LitElement {
       transform: scale(var(--cg-interaction-press-scale));
     }
     .copy-btn:focus-visible {
-      outline: 2px solid var(--cg-overlay-accent-strong);
+      outline: 2px solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -109,7 +109,7 @@ export class AiCopyButton extends LitElement {
 
     /* Disabled state */
     .copy-btn:disabled {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-50);
       cursor: var(--cg-cursor-not-allowed);
       pointer-events: none;
     }
@@ -194,14 +194,14 @@ export class AiCopyButton extends LitElement {
     return html`
       <button
         class="copy-btn"
-        ?disabled=${this.disabled}
+        ?disabled=${this.disabled || !this.value}
         data-copied=${this._copied ? 'true' : 'false'}
         data-error=${this._error ? 'true' : 'false'}
-        aria-label=${this._displayLabel}
-        aria-disabled=${this.disabled ? 'true' : 'false'}
+        aria-label=${this.variant === 'icon-only' ? this._displayLabel : nothing}
+        aria-disabled=${this.disabled || !this.value ? 'true' : 'false'}
         @click=${this._handleCopy}
       >
-        <span class="icon">${this._icon}</span>
+        <span class="icon" aria-hidden="true">${this._icon}</span>
         <span class="label-text">${this._displayLabel}</span>
       </button>
     `;

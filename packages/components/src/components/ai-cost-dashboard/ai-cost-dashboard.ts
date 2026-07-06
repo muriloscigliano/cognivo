@@ -138,14 +138,14 @@ export class AiCostDashboard extends LitElement {
       cursor: pointer;
       padding: var(--cg-spacing-8) 0;
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
-      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .model-row:last-of-type { border-bottom: none; }
     .model-row:hover { opacity: 0.85; }
-    .model-row:active { transform: scale(var(--cg-interaction-press-scale)); }
+    .model-row:active { background: var(--cg-color-surface-base-background); }
     .model-row:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-focus-ring-width) var(--cg-overlay-accent-strong);
     }
 
     .model-name {
