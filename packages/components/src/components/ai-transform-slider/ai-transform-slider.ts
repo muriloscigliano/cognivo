@@ -18,7 +18,7 @@
  *
  * @cssprop --cg-color-action-primary-background-default - Divider line and handle color
  */
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, svg, css } from 'lit';
 import { property, state, customElement, query } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeInKeyframes } from '../../styles/index.js';
 
@@ -120,18 +120,18 @@ export class AiTransformSlider extends LitElement {
     .container.dragging .handle {
       transform: translate(-50%, -50%) scale(1.15);
       border-color: var(--cg-color-surface-base-text);
-      box-shadow: 0 0 0 4px var(--cg-overlay-accent-light);
+      box-shadow: 0 0 0 var(--cg-spacing-4) var(--cg-overlay-accent-medium);
     }
     .handle:focus-visible {
       outline: none;
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background),
-        0 0 0 4px var(--cg-color-focus-ring);
+        0 0 0 var(--cg-spacing-2) var(--cg-color-surface-base-background),
+        0 0 0 var(--cg-spacing-4) var(--cg-color-focus-ring);
     }
     .handle svg {
       width: var(--cg-spacing-16);
       height: var(--cg-spacing-16);
-      color: var(--cg-color-surface-base-background);
+      color: var(--cg-color-action-primary-text-default);
     }
 
     /* ── Labels ── */
@@ -173,6 +173,18 @@ export class AiTransformSlider extends LitElement {
     :host([rounded="md"]) .container { border-radius: var(--cg-border-radius-100); }
     :host([rounded="lg"]) .container { border-radius: var(--cg-border-radius-200); }
 
+    /* ── Disabled state ── */
+    :host([disabled]) .container { cursor: default; }
+    :host([disabled]) .divider.horizontal,
+    :host([disabled]) .divider.vertical,
+    :host([disabled]) .handle {
+      background: var(--cg-color-action-primary-background-disable);
+    }
+    :host([disabled]) .handle:hover {
+      transform: translate(-50%, -50%);
+      border-color: var(--cg-color-surface-base-background);
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .handle, .divider { transition: none !important; }
     }
@@ -185,6 +197,7 @@ export class AiTransformSlider extends LitElement {
   @property({ type: String }) afterLabel: string = 'After';
   @property({ type: Number }) position: number = 50;
   @property({ type: String, reflect: true }) orientation: 'horizontal' | 'vertical' = 'horizontal';
+  @property({ type: Boolean, reflect: true }) disabled = false;
 
   @state() private _dragging = false;
   @query('.container') private _container!: HTMLElement;
@@ -197,6 +210,7 @@ export class AiTransformSlider extends LitElement {
   }
 
   private _onPointerDown(e: PointerEvent) {
+    if (this.disabled) return;
     this._dragging = true;
     this._container?.setPointerCapture?.(e.pointerId);
     this._updatePosition(e);
@@ -229,22 +243,34 @@ export class AiTransformSlider extends LitElement {
   }
 
   private _handleKeyDown(e: KeyboardEvent) {
-    let delta = 0;
-    if (this.orientation === 'horizontal') {
-      if (e.key === 'ArrowLeft') delta = -2;
-      if (e.key === 'ArrowRight') delta = 2;
+    if (this.disabled) return;
+    let next = this.position;
+    if (e.key === 'Home') {
+      next = 0;
+    } else if (e.key === 'End') {
+      next = 100;
+    } else if (e.key === 'PageUp') {
+      next = this.position + 10;
+    } else if (e.key === 'PageDown') {
+      next = this.position - 10;
     } else {
-      if (e.key === 'ArrowUp') delta = -2;
-      if (e.key === 'ArrowDown') delta = 2;
+      let delta = 0;
+      if (this.orientation === 'horizontal') {
+        if (e.key === 'ArrowLeft') delta = -2;
+        if (e.key === 'ArrowRight') delta = 2;
+      } else {
+        if (e.key === 'ArrowUp') delta = -2;
+        if (e.key === 'ArrowDown') delta = 2;
+      }
+      if (!delta) return;
+      next = this.position + delta;
     }
-    if (delta) {
-      e.preventDefault();
-      this.position = Math.max(0, Math.min(100, this.position + delta));
-      this.dispatchEvent(new CustomEvent('ai-transform-change', {
-        bubbles: true, composed: true,
-        detail: { position: this.position },
-      }));
-    }
+    e.preventDefault();
+    this.position = Math.max(0, Math.min(100, next));
+    this.dispatchEvent(new CustomEvent('ai-transform-change', {
+      bubbles: true, composed: true,
+      detail: { position: this.position },
+    }));
   }
 
   override render() {
@@ -280,15 +306,17 @@ export class AiTransformSlider extends LitElement {
 
         <!-- Drag handle -->
         <div class="handle" style="${handleStyle}"
-          tabindex="0" role="slider"
+          tabindex="${this.disabled ? -1 : 0}" role="slider"
           aria-label="Compare position"
           aria-valuemin="0" aria-valuemax="100"
           aria-valuenow="${this.position}"
+          aria-orientation="${this.orientation}"
+          aria-disabled="${this.disabled ? 'true' : 'false'}"
           @keydown=${this._handleKeyDown}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
             ${isH
-              ? html`<path d="M8 6l-4 6 4 6"/><path d="M16 6l4 6-4 6"/>`
-              : html`<path d="M6 8l6-4 6 4"/><path d="M6 16l6 4 6-4"/>`}
+              ? svg`<path d="M8 6l-4 6 4 6"/><path d="M16 6l4 6-4 6"/>`
+              : svg`<path d="M6 8l6-4 6 4"/><path d="M6 16l6 4 6-4"/>`}
           </svg>
         </div>
 

@@ -234,13 +234,17 @@ export class AiThinking extends LitElement {
     }
     .cancel:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-overlay-accent-strong);
+    }
+    :host([size="lg"]) .cancel {
+      align-self: flex-end;
+      margin-left: 0;
     }
 
     @media (prefers-reduced-motion: reduce) {
       .container { animation: none; }
-      .dot, .ring, .skeleton-line::after, .tool.loading .tool-icon { animation: none; }
-      .shimmer .text { animation: none; -webkit-text-fill-color: currentColor; }
+      .dot, .ring, .skeleton-line::after, .tool.loading .tool-icon, .tool { animation: none; }
+      .shimmer .text, :host([variant="shimmer"]) .text { animation: none; -webkit-text-fill-color: currentColor; }
       .dot { opacity: 0.6; }
     }
   `];
@@ -328,7 +332,7 @@ export class AiThinking extends LitElement {
     if (!this._visible) return nothing;
 
     return html`
-      <div class="container ${this.shimmer ? 'shimmer' : ''}" role="status" aria-live="polite" aria-label="${this._displayText}">
+      <div class="container ${this.shimmer ? 'shimmer' : ''}" role="status" aria-live="polite" aria-label="${this._displayText || 'Thinking'}">
 
         ${this.variant === 'skeleton' ? html`
           <div class="skeleton">

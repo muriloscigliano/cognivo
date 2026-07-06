@@ -19,8 +19,9 @@
  * @fires {CustomEvent<{id: string, rolloutPercent: number}>} ai-version-rollout-change - When rollout slider or promote button changes
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state, queryAll } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
+import { handleRovingKey } from '../../utils/roving-index.js';
 
 export interface VersionEntry {
   id: string;
@@ -71,7 +72,7 @@ export class AiVersionSelector extends LitElement {
       border-color: var(--cg-color-surface-cards-border);
     }
 
-    .version-item[aria-selected="true"] {
+    .version-item[aria-checked="true"] {
       border-color: var(--cg-color-surface-base-text);
     }
 
@@ -97,7 +98,7 @@ export class AiVersionSelector extends LitElement {
       justify-content: center;
     }
 
-    .version-item[aria-selected="true"] .radio-dot {
+    .version-item[aria-checked="true"] .radio-dot {
       border-color: var(--cg-color-surface-base-text);
     }
 
@@ -109,7 +110,7 @@ export class AiVersionSelector extends LitElement {
       display: none;
     }
 
-    .version-item[aria-selected="true"] .radio-inner {
+    .version-item[aria-checked="true"] .radio-inner {
       display: block;
     }
 
@@ -131,7 +132,7 @@ export class AiVersionSelector extends LitElement {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-semibold);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: var(--cg-letter-spacing-wider);
       flex-shrink: 0;
     }
 
@@ -243,6 +244,40 @@ export class AiVersionSelector extends LitElement {
   @property({ type: Array }) versions: VersionEntry[] = [];
   @property({ type: String }) selected = '';
 
+  @state() private _activeIndex = 0;
+  @state() private _shouldFocusActive = false;
+
+  @queryAll('.version-item') private _itemEls!: NodeListOf<HTMLElement>;
+
+  override willUpdate(changed: Map<string, unknown>): void {
+    // Seed roving focus to the selected version so there is one deterministic Tab stop.
+    if (changed.has('selected') || changed.has('versions')) {
+      const idx = this.versions.findIndex((v) => v.id === this.selected);
+      this._activeIndex = idx >= 0 ? idx : 0;
+    }
+  }
+
+  override updated(): void {
+    if (this._shouldFocusActive) {
+      this._shouldFocusActive = false;
+      this._itemEls?.[this._activeIndex]?.focus();
+    }
+  }
+
+  private _onKeyNav(e: KeyboardEvent): void {
+    const result = handleRovingKey(e, {
+      items: this.versions,
+      activeIndex: this._activeIndex,
+      onSelect: (v) => this._onSelect(v),
+    });
+    // Enter/Space are handled per-item; only move focus on arrow/Home/End.
+    if (result.handled && result.index !== this._activeIndex) {
+      e.preventDefault();
+      this._activeIndex = result.index;
+      this._shouldFocusActive = true;
+    }
+  }
+
   private _onSelect(v: VersionEntry): void {
     this.dispatchEvent(new CustomEvent('ai-version-select', {
       bubbles: true, composed: true,
@@ -269,14 +304,15 @@ export class AiVersionSelector extends LitElement {
   override render() {
     return html`
       <h3 class="title">Model Versions</h3>
-      <div class="version-list" role="radiogroup" aria-label="Select model version">
-        ${this.versions.map(v => {
+      <div class="version-list" role="radiogroup" aria-label="Select model version"
+           @keydown=${this._onKeyNav}>
+        ${this.versions.map((v, i) => {
           const isSelected = v.id === this.selected;
           return html`
             <div class="version-item" role="radio"
-                 aria-selected=${isSelected ? 'true' : 'false'}
+                 aria-checked=${isSelected ? 'true' : 'false'}
                  aria-label="${v.label} ${v.status}"
-                 tabindex="0"
+                 tabindex=${i === this._activeIndex ? '0' : '-1'}
                  @click=${() => this._onSelect(v)}
                  @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._onSelect(v); } }}>
               <div class="version-top">

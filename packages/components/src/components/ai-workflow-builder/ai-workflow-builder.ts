@@ -61,15 +61,16 @@ export class AiWorkflowBuilder extends LitElement {
       padding: var(--cg-spacing-8) var(--cg-spacing-16); border-radius: var(--cg-border-radius-100);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       background: var(--cg-color-surface-base-background);
-      min-width: var(--cg-spacing-96); cursor: pointer; transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      min-width: var(--cg-spacing-96); cursor: pointer; transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .step:hover { border-color: var(--cg-color-input-border-hover); }
-    .step:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-spacing-2) var(--cg-color-focus-ring); outline-offset: var(--cg-outline-offset-default); }
+    .step:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset), 0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring); }
     .step:active { transform: scale(var(--cg-interaction-press-scale)); }
-    .step.active { border-color: var(--cg-color-surface-base-text); background: var(--cg-overlay-accent-subtle); }
+    .step.active { border-color: var(--cg-color-action-primary-border-default); background: var(--cg-overlay-accent-subtle); }
     .step.complete { border-color: var(--cg-color-status-success-text-default); }
     .step.error { border-color: var(--cg-color-status-error-text-default); }
     .step.skipped { opacity: 0.5; }
+    .step.selected { border-color: var(--cg-color-action-primary-border-default); background: var(--cg-overlay-accent-subtle); }
 
     .step-icon {
       width: var(--cg-spacing-24); height: var(--cg-spacing-24); border-radius: var(--cg-border-radius-100);
@@ -185,7 +186,7 @@ export class AiWorkflowBuilder extends LitElement {
   }
 
   override render() {
-    if (this.steps.length === 0) return html`<div class="container"><div class="empty">No workflow defined</div></div>`;
+    if (this.steps.length === 0) return html`<div class="container" role="figure" aria-label="${this.heading}"><div class="empty">No workflow defined</div></div>`;
 
     return html`
       <div class="container" role="figure" aria-label="${this.heading}">
@@ -196,7 +197,7 @@ export class AiWorkflowBuilder extends LitElement {
         <div class="flow" role="toolbar" aria-label="${this.heading} workflow steps (vertical orientation)" aria-orientation="vertical">
           ${this.steps.map((step, i) => html`
             ${i > 0 ? html`<div class="connector ${step.status === 'active' || step.status === 'complete' ? 'active' : ''}"></div>` : nothing}
-            <div class="step ${step.status || 'pending'}"
+            <div class="step ${step.status || 'pending'} ${i === this._activeIndex ? 'selected' : ''}"
               tabindex=${i === this._activeIndex ? '0' : '-1'}
               role="button"
               aria-label="${step.label}"

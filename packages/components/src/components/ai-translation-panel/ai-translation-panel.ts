@@ -151,6 +151,9 @@ export class AiTranslationPanel extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-100);
       cursor: pointer;
+      width: 100%;
+      text-align: left;
+      font: inherit;
       transition:
         border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
@@ -160,11 +163,14 @@ export class AiTranslationPanel extends LitElement {
       background: var(--cg-color-surface-cards-hover-background);
     }
     .alt-item:active { transform: scale(var(--cg-interaction-press-scale)); }
+    .alt-item.selected {
+      border-color: var(--cg-color-action-primary-border-default);
+    }
     .alt-item:focus-visible {
       outline: none;
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background),
-        0 0 0 4px var(--cg-color-focus-ring);
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-surface-base-background),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
     .alt-text {
       font-size: var(--cg-font-size-sm);
@@ -206,6 +212,7 @@ export class AiTranslationPanel extends LitElement {
   @property({ type: Array }) alternatives: TranslationAlternative[] = [];
 
   @state() private _copiedSide: 'source' | 'target' | null = null;
+  @state() private _selectedAltIndex: number | null = null;
 
   private _languages = [
     { code: 'en', label: 'English' },
@@ -226,7 +233,8 @@ export class AiTranslationPanel extends LitElement {
     }));
   }
 
-  private _selectAlt(alt: TranslationAlternative) {
+  private _selectAlt(alt: TranslationAlternative, index: number) {
+    this._selectedAltIndex = index;
     this.dispatchEvent(new CustomEvent('ai-translation-select-alt', {
       bubbles: true, composed: true,
       detail: { text: alt.text, confidence: alt.confidence },
@@ -275,6 +283,7 @@ export class AiTranslationPanel extends LitElement {
               <cg-button variant="tertiary" size="sm"
                 status=${this._copiedSide === 'source' ? 'success' : 'idle'}
                 label="Copy source text"
+                ?disabled=${!this.sourceText}
                 @click=${() => this._copy(this.sourceText, 'source')}>
                 <cg-icon slot="prefix" name=${this._copiedSide === 'source' ? 'check' : 'copy'} size="xs"></cg-icon>
                 ${this._copiedSide === 'source' ? 'Copied' : 'Copy'}
@@ -299,6 +308,7 @@ export class AiTranslationPanel extends LitElement {
               <cg-button variant="tertiary" size="sm"
                 status=${this._copiedSide === 'target' ? 'success' : 'idle'}
                 label="Copy translation"
+                ?disabled=${!this.targetText || this.loading}
                 @click=${() => this._copy(this.targetText, 'target')}>
                 <cg-icon slot="prefix" name=${this._copiedSide === 'target' ? 'check' : 'copy'} size="xs"></cg-icon>
                 ${this._copiedSide === 'target' ? 'Copied' : 'Copy'}
@@ -319,14 +329,15 @@ export class AiTranslationPanel extends LitElement {
         ${this.alternatives.length > 0 ? html`
           <div class="alternatives">
             <div class="alt-label">Alternative translations</div>
-            <div class="alt-list" role="listbox" aria-label="Alternative translations">
-              ${this.alternatives.map(alt => html`
-                <div class="alt-item" tabindex="0" role="option"
-                  @click=${() => this._selectAlt(alt)}
-                  @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._selectAlt(alt); } }}>
+            <div class="alt-list" role="group" aria-label="Alternative translations">
+              ${this.alternatives.map((alt, i) => html`
+                <button type="button"
+                  class="alt-item ${this._selectedAltIndex === i ? 'selected' : ''}"
+                  aria-pressed=${this._selectedAltIndex === i}
+                  @click=${() => this._selectAlt(alt, i)}>
                   <span class="alt-text">${alt.text}</span>
                   <span class="alt-conf">${Math.round(alt.confidence * 100)}%</span>
-                </div>
+                </button>
               `)}
             </div>
           </div>

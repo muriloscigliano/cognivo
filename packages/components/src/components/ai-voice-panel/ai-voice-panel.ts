@@ -296,7 +296,7 @@ export class AiVoicePanel extends LitElement {
     recognition.onend = () => {
       this._clearTimeout();
       if (this._state === 'listening') {
-        this._state = this._transcript ? 'idle' : 'idle';
+        this._state = 'idle';
       }
       this.dispatchEvent(new CustomEvent('ai-voice-stop', { bubbles: true, composed: true }));
       this._recognition = null;
@@ -425,7 +425,7 @@ export class AiVoicePanel extends LitElement {
 
     return html`
       <div class="panel" role="region" aria-label="Voice input">
-        <span class="state-label ${this._state}">${this._getStateLabel()}</span>
+        <span class="state-label ${this._state}" aria-live="polite">${this._getStateLabel()}</span>
 
         <div class="mic-area ${this._state}">
           <div class="pulse-ring" aria-hidden="true"></div>

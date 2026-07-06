@@ -62,7 +62,7 @@ export class AiWebhookConfig extends LitElement {
 
     .add-btn {
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-container-background);
+      color: var(--cg-color-action-primary-text-default);
       border: none;
       border-radius: var(--cg-border-radius-100);
       padding: var(--cg-spacing-6) var(--cg-spacing-12);
@@ -78,7 +78,7 @@ export class AiWebhookConfig extends LitElement {
     }
 
     .add-btn:focus-visible {
-      outline: var(--cg-outline-width-default) solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-outline-width-default) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -109,8 +109,8 @@ export class AiWebhookConfig extends LitElement {
     }
 
     input[type="url"]:focus-visible {
-      outline: var(--cg-outline-width-default) solid var(--cg-overlay-accent-strong);
-      outline-offset: -2px;
+      outline: var(--cg-outline-width-default) solid var(--cg-color-focus-ring);
+      outline-offset: calc(-1 * var(--cg-outline-offset-default));
     }
 
     .events-select {
@@ -134,14 +134,14 @@ export class AiWebhookConfig extends LitElement {
     }
 
     .event-chip:focus-visible {
-      outline: var(--cg-outline-width-default) solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-outline-width-default) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
     .event-chip[aria-pressed="true"] {
-      background: var(--cg-overlay-accent-strong);
-      border-color: var(--cg-color-surface-base-text);
-      color: var(--cg-color-surface-base-text);
+      background: var(--cg-color-action-primary-background-default);
+      border-color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-action-primary-text-default);
     }
 
     .form-actions {
@@ -161,25 +161,30 @@ export class AiWebhookConfig extends LitElement {
       font-family: inherit;
       transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .btn-sm:hover {
+    .btn-sm:not(:disabled):hover {
       border-color: var(--cg-color-surface-base-text);
       color: var(--cg-color-surface-base-text);
       transform: translateY(calc(-1 * var(--cg-spacing-1)));
     }
 
     .btn-sm:focus-visible {
-      outline: var(--cg-outline-width-default) solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-outline-width-default) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
     .btn-sm.primary {
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-container-background);
+      color: var(--cg-color-action-primary-text-default);
       border-color: var(--cg-color-surface-base-text);
       font-weight: var(--cg-font-weight-semibold);
     }
-    .btn-sm.primary:hover {
+    .btn-sm.primary:not(:disabled):hover {
       filter: brightness(1.1);
+    }
+    .btn-sm.primary:disabled {
+      background: var(--cg-color-action-primary-background-disable);
+      color: var(--cg-color-surface-base-text);
+      cursor: not-allowed;
     }
 
     .webhook-list {
@@ -250,17 +255,17 @@ export class AiWebhookConfig extends LitElement {
     }
 
     .toggle-switch input:checked + .toggle-track {
-      background: var(--cg-overlay-accent-strong);
+      background: var(--cg-color-toggle-background-on);
       border-color: var(--cg-color-surface-base-text);
     }
 
     .toggle-switch input:checked + .toggle-track::after {
       transform: translateX(var(--cg-spacing-12));
-      background: var(--cg-color-action-primary-background-default);
+      background: var(--cg-color-toggle-thumb-on);
     }
 
     .toggle-switch input:focus-visible + .toggle-track {
-      outline: var(--cg-outline-width-default) solid var(--cg-overlay-accent-strong);
+      outline: var(--cg-outline-width-default) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -391,7 +396,7 @@ export class AiWebhookConfig extends LitElement {
           </div>
           <div class="form-actions">
             <button class="btn-sm" @click=${this._toggleForm} tabindex="0">Cancel</button>
-            <button class="btn-sm primary" @click=${this._onCreate} tabindex="0">Create</button>
+            <button class="btn-sm primary" ?disabled=${!this._newUrl} @click=${this._onCreate} tabindex="0">Create</button>
           </div>
         </div>
       ` : nothing}

@@ -93,8 +93,29 @@ describe('ai-thinking', () => {
     expect(dots!.getAttribute('aria-hidden')).toBe('true');
   });
 
-  it('marks dots as aria-hidden', () => {
-    const dots = element.shadowRoot!.querySelector('.dots');
-    expect(dots!.getAttribute('aria-hidden')).toBe('true');
+  it('falls back to a non-empty aria-label when text is blanked (F4)', async () => {
+    element.text = '';
+    await element.updateComplete;
+    const container = element.shadowRoot!.querySelector('.container');
+    expect(container!.getAttribute('aria-label')).toBe('Thinking');
+  });
+
+  it('resets the reflected shimmer variant animation under reduced motion (F1)', () => {
+    const css = (AiThinking as unknown as { styles: Array<{ cssText: string }> }).styles
+      .map((s) => s.cssText).join('\n');
+    expect(css).toContain(':host([variant="shimmer"]) .text');
+    expect(css).toMatch(/\.shimmer \.text,\s*:host\(\[variant="shimmer"\]\) \.text \{ animation: none/);
+  });
+
+  it('disables the tool materialize entrance under reduced motion (F2)', () => {
+    const css = (AiThinking as unknown as { styles: Array<{ cssText: string }> }).styles
+      .map((s) => s.cssText).join('\n');
+    expect(css).toMatch(/\.tool\.loading \.tool-icon, \.tool \{ animation: none/);
+  });
+
+  it('right-aligns the cancel button in the lg column layout (F3)', () => {
+    const css = (AiThinking as unknown as { styles: Array<{ cssText: string }> }).styles
+      .map((s) => s.cssText).join('\n');
+    expect(css).toMatch(/:host\(\[size="lg"\]\) \.cancel \{[^}]*align-self: flex-end/);
   });
 });

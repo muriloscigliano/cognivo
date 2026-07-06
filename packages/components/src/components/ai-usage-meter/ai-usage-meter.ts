@@ -16,7 +16,7 @@
  * @prop {string} label - Metric label (default 'Usage')
  * @prop {string} unit - Unit label (default 'requests')
  * @prop {string} resetDate - ISO date / human string for when quota resets
- * @prop {'default'|'compact'} size - Layout variant
+ * @prop {'default'|'compact'|'lg'} size - Layout variant (compact = 24px chip, lg = 144px hero ring)
  *
  * @slot cta - Override for the upgrade CTA (rendered only when usage ≥ 80%)
  *
@@ -285,7 +285,14 @@ export class AiUsageMeter extends LitElement {
     const showCta = targetPct >= 80;
 
     const ring = html`
-      <div class="ring-wrapper">
+      <div class="ring-wrapper"
+        role="progressbar"
+        aria-label="${this.label}"
+        aria-valuemin="0"
+        aria-valuemax=${Math.max(this.limit, this.used, 1)}
+        aria-valuenow=${this.used}
+        aria-valuetext=${valueText}
+      >
         <svg class="ring" viewBox="0 0 100 100" aria-hidden="true">
           <circle class="ring-bg" cx="50" cy="50" r=${radius} />
           <circle
@@ -304,14 +311,7 @@ export class AiUsageMeter extends LitElement {
 
     const meterBody = html`
       <div class="sr-only" aria-live="polite" aria-atomic="true">${this._announcement}</div>
-      <div class="meter"
-        role="progressbar"
-        aria-label="${this.label}"
-        aria-valuemin="0"
-        aria-valuemax=${this.limit}
-        aria-valuenow=${this.used}
-        aria-valuetext=${valueText}
-      >
+      <div class="meter">
         ${ring}
         <div class="info">
           <cg-text size="sm" weight="semibold">${this.label}</cg-text>

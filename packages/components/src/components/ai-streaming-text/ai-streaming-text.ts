@@ -37,7 +37,7 @@ export class AiStreamingText extends LitElement {
       font-size: var(--cg-font-size-sm);
       color: var(--cg-color-surface-base-text);
       line-height: var(--cg-line-height-relaxed);
-      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .empty {

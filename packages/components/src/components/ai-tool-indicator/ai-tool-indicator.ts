@@ -85,7 +85,7 @@ export class AiToolIndicator extends LitElement {
 
     /* Loading shimmer on tool name */
     .tool.loading .tool-name {
-      background: linear-gradient(110deg, var(--cg-color-surface-container-outlined) 35%, var(--cg-color-surface-base-text) 50%, var(--cg-color-surface-container-outlined) 65%);
+      background: linear-gradient(110deg, var(--cg-color-on-surface-container-default) 35%, var(--cg-color-surface-base-text) 50%, var(--cg-color-on-surface-container-default) 65%);
       background-size: 300% 100%;
       background-clip: text;
       -webkit-background-clip: text;
@@ -106,7 +106,7 @@ export class AiToolIndicator extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       font-size: var(--cg-font-size-sm);
       font-family: var(--cg-font-family-mono);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-on-surface-container-default);
       line-height: var(--cg-line-height-relaxed);
       white-space: pre-wrap;
       max-height: 200px;
@@ -121,6 +121,18 @@ export class AiToolIndicator extends LitElement {
     .tool:focus-visible {
       outline: none;
       box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: var(--cg-border-width-50);
+      height: var(--cg-border-width-50);
+      padding: 0;
+      margin: calc(-1 * var(--cg-border-width-50));
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -172,21 +184,34 @@ export class AiToolIndicator extends LitElement {
   override render() {
     if (this.tools.length === 0) return nothing;
 
+    const completeCount = this.tools.filter(t => t.status === 'complete').length;
+    const hasErrors = this.tools.some(t => t.status === 'error');
+
     return html`
-      <div class="tools" role="status" aria-label="Tool calls">
-        ${this.tools.map((t, i) => html`
-          <div class="tool ${t.status}" style="--tool-index: ${i}"
-            role="button" tabindex="0"
-            aria-label="${this._humanize(t.name)} — ${t.status}"
-            @click=${() => this._handleClick(i)}
-            @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleClick(i); } }}>
-            <span class="status-icon">${this._renderStatusIcon(t.status)}</span>
-            <span class="tool-name">${this._humanize(t.name)}</span>
+      <p class="sr-only" role="status" aria-live="polite">
+        ${completeCount} of ${this.tools.length} tools complete${hasErrors ? ', with errors' : ''}
+      </p>
+      <div class="tools" role="list" aria-label="Tool calls">
+        ${this.tools.map((t, i) => {
+          const expandable = !this.compact && !!t.result;
+          return html`
+          <div role="listitem">
+            <div class="tool ${t.status}" style="--tool-index: ${i}"
+              role="button" tabindex="0"
+              aria-label="${this._humanize(t.name)} — ${t.status}"
+              aria-expanded="${expandable ? String(this._expandedIndex === i) : nothing}"
+              aria-controls="${expandable ? `tool-result-${i}` : nothing}"
+              @click=${() => this._handleClick(i)}
+              @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleClick(i); } }}>
+              <span class="status-icon">${this._renderStatusIcon(t.status)}</span>
+              <span class="tool-name">${this._humanize(t.name)}</span>
+            </div>
+            ${expandable && this._expandedIndex === i ? html`
+              <div class="result" id="tool-result-${i}">${t.result}</div>
+            ` : nothing}
           </div>
-          ${!this.compact && this._expandedIndex === i && t.result ? html`
-            <div class="result">${t.result}</div>
-          ` : nothing}
-        `)}
+        `;
+        })}
       </div>
     `;
   }

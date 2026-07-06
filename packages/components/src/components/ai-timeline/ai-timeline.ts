@@ -28,6 +28,13 @@ export class AiTimeline extends LitElement {
       flex-direction: column;
     }
 
+    .empty-state {
+      padding: var(--cg-spacing-16);
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-empty-state-text-secondary);
+      text-align: center;
+    }
+
     /* ── Step row ── */
     .step {
       display: flex;
@@ -41,6 +48,7 @@ export class AiTimeline extends LitElement {
       animation-delay: calc(var(--step-index, 0) * 50ms);
     }
     .step:hover { background: var(--cg-overlay-dark-subtle); }
+    .step.active { background: var(--cg-overlay-accent-strong); border-radius: var(--cg-border-radius-100); }
 
     @keyframes stepIn {
       from { opacity: 0; transform: translateX(calc(-1 * var(--cg-spacing-6))); }
@@ -142,9 +150,6 @@ export class AiTimeline extends LitElement {
     .step.pending .step-label {
       color: var(--cg-color-surface-container-outlined);
       opacity: 0.5;
-    }
-    .step.complete .step-label {
-      color: var(--cg-color-surface-container-outlined);
     }
     .step.error .step-label {
       color: var(--cg-color-status-error-text-default);
@@ -248,7 +253,9 @@ export class AiTimeline extends LitElement {
     .children .step {
       padding: var(--cg-spacing-4) var(--cg-spacing-4);
       animation: none;
+      cursor: default;
     }
+    .children .step:hover { background: transparent; }
     .children .dot { width: var(--cg-spacing-16); height: var(--cg-spacing-16); }
     .children .dot svg { width: var(--cg-spacing-8); height: var(--cg-spacing-8); }
     .children .line { min-height: var(--cg-spacing-4); }
@@ -328,14 +335,16 @@ export class AiTimeline extends LitElement {
   }
 
   override render() {
-    if (this.steps.length === 0) return nothing;
+    if (this.steps.length === 0) {
+      return html`<div class="empty-state" role="status">No steps yet.</div>`;
+    }
     const maxDuration = this._getMaxDuration();
 
     return html`
       <div class="timeline" role="list" aria-label="Execution timeline">
         ${this.steps.map((step, i) => html`
           <div class="step ${step.status}" role="listitem" style="--step-index: ${i}"
-            aria-current="${step.status === 'active' ? 'step' : nothing}"
+            aria-current=${step.status === 'active' ? 'step' : nothing}
             tabindex="0"
             @click=${() => this._handleStepClick(i)}
             @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleStepClick(i); } }}>
@@ -372,9 +381,9 @@ export class AiTimeline extends LitElement {
               ` : nothing}
 
               ${step.children && step.children.length > 0 ? html`
-                <div class="children">
+                <div class="children" role="list">
                   ${step.children.map((child, ci) => html`
-                    <div class="step ${child.status}">
+                    <div class="step ${child.status}" role="listitem">
                       ${this._renderStep(child, ci === step.children!.length - 1)}
                       <div class="content">
                         <div class="step-header">

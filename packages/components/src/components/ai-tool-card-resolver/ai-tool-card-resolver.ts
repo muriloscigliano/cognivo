@@ -2,8 +2,8 @@
  * @element ai-tool-card-resolver
  * Dynamic card renderer that maps tool call names to registered web
  * components via a registry. Shows a loading skeleton while resolving,
- * falls back to raw JSON display if no match, and includes an error
- * boundary if the resolved component throws.
+ * falls back to raw JSON display if no match (or while a registered tag is
+ * still upgrading), and includes an error boundary for invalid tag names.
  *
  * @example
  * ```html
@@ -22,7 +22,7 @@
  * @fires {CustomEvent<{toolName: string, action: string}>} ai-tool-card-action - Proxied from resolved component
  * @fires {CustomEvent<{toolName: string, error: string}>} ai-tool-card-error - When resolution fails
  */
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, shimmerKeyframes, fadeSlideInKeyframes } from '../../styles/index.js';
 
@@ -89,7 +89,7 @@ export class AiToolCardResolver extends LitElement {
     .fallback-json {
       font-family: var(--cg-font-family-mono);
       font-size: var(--cg-font-size-xs);
-      line-height: 1.5;
+      line-height: var(--cg-line-height-normal);
       color: var(--cg-color-input-text-placeholder);
       background: var(--cg-color-surface-base-background);
       border-radius: var(--cg-border-radius-100);
@@ -107,6 +107,9 @@ export class AiToolCardResolver extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--cg-spacing-8);
+      background: var(--cg-color-ai-error-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-ai-error-border);
+      border-radius: var(--cg-border-radius-100);
     }
     .error-icon {
       color: var(--cg-color-ai-error-text);
@@ -148,6 +151,9 @@ export class AiToolCardResolver extends LitElement {
 
   @state() private _error = '';
 
+  /** Non-reactive failure staging, computed during resolve, read in willUpdate. */
+  private _pendingError = '';
+
   /** Cached resolved element keyed by toolName + tag */
   private _cachedEl: HTMLElement | null = null;
   private _cachedKey = '';
@@ -165,6 +171,33 @@ export class AiToolCardResolver extends LitElement {
     this._abortController?.abort();
   }
 
+  override willUpdate(changed: PropertyValues) {
+    // Compute the error state BEFORE render so render() stays pure and only
+    // reads already-settled reactive state.
+    if (
+      changed.has('toolName') || changed.has('registry') ||
+      changed.has('toolData') || changed.has('loading')
+    ) {
+      this._pendingError = '';
+      // Pre-resolve so render() only reads the cached result — no state
+      // mutation or dispatch happens inside render().
+      if (this.toolName && this.registry[this.toolName]) {
+        this._resolveComponent();
+      }
+      this._error = this._pendingError;
+    }
+  }
+
+  override updated(changed: PropertyValues) {
+    // Dispatch the error event as a side effect of a data change (post-render),
+    // not as a side effect of rendering.
+    if (changed.has('_error') && this._error) {
+      this._dispatch('ai-tool-card-error', {
+        toolName: this.toolName, error: this._error,
+      });
+    }
+  }
+
   private _resolveComponent(): HTMLElement | null {
     const tag = this.registry[this.toolName];
     if (!tag) return null;
@@ -176,6 +209,19 @@ export class AiToolCardResolver extends LitElement {
       (this._cachedEl as unknown as Record<string, unknown>)['data'] = this.toolData;
       (this._cachedEl as unknown as Record<string, unknown>)['toolData'] = this.toolData;
       return this._cachedEl;
+    }
+
+    // A registry entry pointing at a not-yet-defined custom element does NOT
+    // throw from createElement — it returns an inert upgrade-pending node. Guard
+    // against that: fall back now, and re-render once (if ever) the tag defines.
+    if (tag.includes('-') && !customElements.get(tag)) {
+      customElements.whenDefined(tag).then(() => {
+        if (!this.isConnected) return;
+        this._cachedEl = null;
+        this._cachedKey = '';
+        this.requestUpdate();
+      }).catch(() => { /* invalid tag name — surfaced via the catch below */ });
+      return null;
     }
 
     // Clean up previous listeners
@@ -198,10 +244,9 @@ export class AiToolCardResolver extends LitElement {
 
       return el;
     } catch (err) {
-      this._error = err instanceof Error ? err.message : 'Component failed to render';
-      this._dispatch('ai-tool-card-error', {
-        toolName: this.toolName, error: this._error,
-      });
+      // Genuinely invalid tag name (InvalidCharacterError). Stage the failure;
+      // willUpdate promotes it to reactive _error and updated() dispatches.
+      this._pendingError = err instanceof Error ? err.message : 'Component failed to render';
       return null;
     }
   }

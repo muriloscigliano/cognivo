@@ -47,12 +47,16 @@ export class AiTokenTracker extends LitElement {
       cursor: pointer;
       transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .compact:hover { border-color: var(--cg-color-input-border-hover); }
+    .compact:hover { border-color: var(--cg-color-surface-cards-border-strong); }
     .compact:active { transform: scale(var(--cg-interaction-press-scale)); }
     .compact .sep { color: var(--cg-color-surface-cards-border); }
     .compact .tokens { color: var(--cg-color-surface-base-text); font-weight: var(--cg-font-weight-bold); }
     .compact .cost-val { color: var(--cg-color-status-success-text-default); }
     .compact .latency-val { color: var(--cg-color-input-text-placeholder); }
+
+    .fast { color: var(--cg-color-status-success-text-default); }
+    .medium { color: var(--cg-color-status-warning-text-default); }
+    .slow { color: var(--cg-color-status-error-text-default); }
 
     /* Detailed mode */
     .detailed {
@@ -87,6 +91,8 @@ export class AiTokenTracker extends LitElement {
 
     .metrics {
       display: flex;
+      flex-wrap: wrap;
+      gap: var(--cg-spacing-16);
       margin-bottom: var(--cg-spacing-16);
     }
     .metric {
@@ -142,7 +148,7 @@ export class AiTokenTracker extends LitElement {
 
     :focus-visible {
       outline: none;
-      box-shadow: 0 0 0 var(--cg-focus-ring-width) var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring);
     }
   `];
 
@@ -186,19 +192,20 @@ export class AiTokenTracker extends LitElement {
   override render() {
     if (this.mode === 'compact') {
       return html`
-        <div class="compact" role="status" aria-live="polite" aria-label="Token usage: ${this._totalTokens} tokens, ${this._costStr}, ${this._latencyStr}"
-          @click=${this._handleClick}>
+        <div class="compact" role="button" tabindex="0" aria-label="Token usage: ${this._totalTokens} tokens, ${this._costStr}, ${this._latencyStr}"
+          @click=${this._handleClick}
+          @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleClick(); } }}>
           <span class="tokens">${this._totalTokens.toLocaleString()}</span> tokens
           <span class="sep">·</span>
           <span class="cost-val">${this._costStr}</span>
           <span class="sep">·</span>
-          <span class="latency-val">${this._latencyStr}</span>
+          <span class="latency-val ${this._latencyClass}">${this._latencyStr}</span>
         </div>
       `;
     }
 
     return html`
-      <div class="detailed" role="status" aria-live="polite" aria-label="Token usage details">
+      <div class="detailed" role="group" aria-label="Token usage details">
         <div class="detail-header">
           <span class="detail-title">Usage</span>
           ${this.model ? html`<span class="model-badge">${this.model}</span>` : nothing}
@@ -219,7 +226,7 @@ export class AiTokenTracker extends LitElement {
           </div>
           <div class="metric">
             <span class="metric-label">Latency</span>
-            <span class="metric-value">${this._latencyStr}</span>
+            <span class="metric-value ${this._latencyClass}">${this._latencyStr}</span>
           </div>
         </div>
 

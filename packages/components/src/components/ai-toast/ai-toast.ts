@@ -18,7 +18,7 @@
  * @method dismiss(id) - Dismiss a specific toast
  * @method clear() - Remove all toasts
  *
- * @fires {CustomEvent<{id, reason}>} ai-toast-dismiss - When a toast is dismissed
+ * @fires {CustomEvent<{id}>} ai-toast-dismiss - When a toast is dismissed
  */
 import { LitElement, html, css } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
@@ -44,7 +44,6 @@ export class AiToast extends LitElement {
     :host { display: contents; }
   `;
 
-  @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property({ type: String, reflect: true }) position: AiPosition = 'top-right';
   @property({ type: Number }) maxQueue: number = 6;
 
@@ -54,7 +53,11 @@ export class AiToast extends LitElement {
   show(message: string, options?: ToastOptions | string, duration?: number): string {
     let opts: ToastOptions = {};
     if (typeof options === 'string') {
-      opts = { type: options as NonNullable<ToastOptions['type']> };
+      const validTypes = ['info', 'success', 'warning', 'error', 'ai'] as const;
+      const t = (validTypes as readonly string[]).includes(options)
+        ? (options as NonNullable<ToastOptions['type']>)
+        : 'ai';
+      opts = { type: t };
       if (duration !== undefined) opts.duration = duration;
     } else if (options) {
       opts = options;
@@ -90,7 +93,7 @@ export class AiToast extends LitElement {
     this.dispatchEvent(new CustomEvent('ai-toast-dismiss', {
       bubbles: true,
       composed: true,
-      detail: { id: ce.detail.id, reason: 'auto' },
+      detail: { id: ce.detail.id },
     }));
   };
 

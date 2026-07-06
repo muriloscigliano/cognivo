@@ -132,7 +132,14 @@ export class AiTestRunner extends LitElement {
     .test-header:active { transform: scale(var(--cg-interaction-press-scale)); }
     .test-header:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: inset 0 0 0 var(--cg-border-width-300) var(--cg-overlay-accent-strong);
+    }
+
+    .test-header-static { cursor: default; }
+
+    .empty-state {
+      padding: var(--cg-spacing-16);
+      text-align: center;
     }
 
     .status-icon {
@@ -246,7 +253,7 @@ export class AiTestRunner extends LitElement {
           </cg-button>
         </div>
 
-        <div class="summary-bar" role="status" aria-label="Test summary">
+        <div class="summary-bar" role="group" aria-label="Test summary">
           <span class="summary-item">
             <span class="dot dot-pass" aria-hidden="true"></span>
             <cg-text size="xs" color="muted">${this._passCount} passed</cg-text>
@@ -274,23 +281,40 @@ export class AiTestRunner extends LitElement {
           <div class="progress-fail" style="width:${failP}%"></div>
         </div>
 
+        ${this.tests.length === 0 ? html`
+          <div class="empty-state">
+            <cg-text size="sm" color="muted">No tests yet — press Run All to start the suite.</cg-text>
+          </div>
+        ` : html`
         <div class="test-list" role="list" aria-label="Tests">
-          ${this.tests.map((t, i) => html`
+          ${this.tests.map((t, i) => {
+            const hasDetails = !!(t.expected || t.actual);
+            const meta = html`
+              ${this._statusIcon(t.status)}
+              <cg-text class="test-name" size="sm">${t.name}</cg-text>
+              <div class="test-meta">
+                ${t.score != null ? html`<cg-text size="xs" weight="semibold">${t.score}%</cg-text>` : nothing}
+                ${t.duration != null ? html`<cg-text size="xs" color="muted">${t.duration}ms</cg-text>` : nothing}
+              </div>
+            `;
+            return html`
             <div class="test-item" role="listitem">
-              <button
-                class="test-header"
-                @click=${() => this._toggle(i)}
-                aria-expanded=${this._expanded.has(i)}
-              >
-                ${this._statusIcon(t.status)}
-                <cg-text class="test-name" size="sm">${t.name}</cg-text>
-                <div class="test-meta">
-                  ${t.score != null ? html`<cg-text size="xs" weight="semibold">${t.score}%</cg-text>` : nothing}
-                  ${t.duration != null ? html`<cg-text size="xs" color="muted">${t.duration}ms</cg-text>` : nothing}
+              ${hasDetails ? html`
+                <button
+                  class="test-header"
+                  @click=${() => this._toggle(i)}
+                  aria-expanded=${this._expanded.has(i)}
+                  aria-controls="test-details-${i}"
+                >
+                  ${meta}
+                </button>
+              ` : html`
+                <div class="test-header test-header-static">
+                  ${meta}
                 </div>
-              </button>
-              ${this._expanded.has(i) && (t.expected || t.actual) ? html`
-                <div class="test-details">
+              `}
+              ${this._expanded.has(i) && hasDetails ? html`
+                <div class="test-details" id="test-details-${i}">
                   ${t.expected ? html`
                     <div class="detail-row">
                       <cg-text class="detail-label" size="xs" color="muted">Expected:</cg-text>
@@ -306,8 +330,10 @@ export class AiTestRunner extends LitElement {
                 </div>
               ` : nothing}
             </div>
-          `)}
+          `;
+          })}
         </div>
+        `}
       </cg-card>
     `;
   }

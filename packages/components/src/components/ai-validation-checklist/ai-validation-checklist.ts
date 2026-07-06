@@ -13,8 +13,6 @@
  * @fires {CustomEvent<{checks}>} ai-validation-run - Run all validations
  * @fires {CustomEvent<{passed, failed, warnings, total}>} ai-validation-complete - All checks finished
  * @fires {CustomEvent<{id, label, status}>} ai-validation-item-click - Check item clicked
- *
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Accent for run button and progress
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
@@ -57,7 +55,7 @@ export class AiValidationChecklist extends LitElement {
 
     .run-btn {
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-cards-background);
+      color: var(--cg-color-action-primary-text-default);
       border: none;
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-bold);
@@ -67,6 +65,7 @@ export class AiValidationChecklist extends LitElement {
       transition: filter var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .run-btn:hover:not(:disabled) { filter: brightness(0.9); }
+    .run-btn:active:not(:disabled) { filter: brightness(0.85); }
     .run-btn:focus-visible {
       outline: none;
       box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
@@ -113,7 +112,10 @@ export class AiValidationChecklist extends LitElement {
       transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .check-item:hover {
-      background: var(--cg-color-surface-cards-border);
+      background: var(--cg-color-surface-cards-hover-background);
+    }
+    .check-item:active {
+      background: var(--cg-color-surface-cards-active-background);
     }
     .check-item:focus-visible {
       outline: none;
@@ -162,6 +164,14 @@ export class AiValidationChecklist extends LitElement {
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-input-text-placeholder);
       margin-top: var(--cg-spacing-2);
+    }
+
+    .empty-state {
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-sm);
+      text-align: center;
+      padding: var(--cg-spacing-16) 0;
+      margin: 0;
     }
 
     /* ── Divider ── */
@@ -244,7 +254,7 @@ export class AiValidationChecklist extends LitElement {
       case 'pass': return html`<span class="status-icon pass" aria-label="Passed">&#10003;</span>`;
       case 'fail': return html`<span class="status-icon fail" aria-label="Failed">&#10007;</span>`;
       case 'warning': return html`<span class="status-icon warning" aria-label="Warning">&#9888;</span>`;
-      case 'running': return html`<span class="status-icon running"><span class="spinner"></span></span>`;
+      case 'running': return html`<span class="status-icon running" aria-label="Running"><span class="spinner"></span></span>`;
       case 'skipped': return html`<span class="status-icon skipped" aria-label="Skipped">&mdash;</span>`;
       default: return html`<span class="status-icon pending" aria-label="Pending">&#9679;</span>`;
     }
@@ -270,23 +280,28 @@ export class AiValidationChecklist extends LitElement {
           <div class="progress-fill" style="width:${s.percent}%"></div>
         </div>
 
-        <ul class="check-list" role="list">
-          ${this.checks.map(check => html`
-            <li
-              class="check-item"
-              role="listitem"
-              tabindex="0"
-              @click=${() => this._onItemClick(check)}
-              @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._onItemClick(check); } }}
-            >
-              ${this._statusIcon(check.status)}
-              <div class="check-content">
-                <div class="check-label">${check.label}</div>
-                ${check.description ? html`<div class="check-desc">${check.description}</div>` : nothing}
-              </div>
-            </li>
-          `)}
-        </ul>
+        ${this.checks.length === 0
+          ? html`<p class="empty-state">No validations configured</p>`
+          : html`
+            <ul class="check-list">
+              ${this.checks.map(check => html`
+                <li
+                  class="check-item"
+                  role="button"
+                  tabindex="0"
+                  aria-label="${check.label}, ${check.status}"
+                  @click=${() => this._onItemClick(check)}
+                  @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._onItemClick(check); } }}
+                >
+                  ${this._statusIcon(check.status)}
+                  <div class="check-content">
+                    <div class="check-label">${check.label}</div>
+                    ${check.description ? html`<div class="check-desc">${check.description}</div>` : nothing}
+                  </div>
+                </li>
+              `)}
+            </ul>
+          `}
 
         ${this.checks.length > 0 ? html`
           <div class="divider"></div>
@@ -306,6 +321,13 @@ export class AiValidationChecklist extends LitElement {
               <span class="summary-count">${s.warnings}</span>
               <span class="summary-label">warnings</span>
             </div>
+            ${s.percent < 100 && (this.checks.length - s.passed - s.failed - s.warnings) > 0 ? html`
+              <div class="summary-item">
+                <span class="summary-dot pending"></span>
+                <span class="summary-count">${this.checks.length - s.passed - s.failed - s.warnings}</span>
+                <span class="summary-label">remaining</span>
+              </div>
+            ` : nothing}
           </div>
         ` : nothing}
       </div>

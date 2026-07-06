@@ -87,11 +87,44 @@ describe('ai-tool-indicator', () => {
     expect(detail.tool.name).toBe('test');
   });
 
-  it('has role="status" on container', async () => {
+  it('uses role="list" on the interactive container (not a live region)', async () => {
     el.tools = [{ name: 'test', status: 'loading' }];
     await el.updateComplete;
     const container = el.shadowRoot!.querySelector('.tools');
-    expect(container!.getAttribute('role')).toBe('status');
+    expect(container!.getAttribute('role')).toBe('list');
+  });
+
+  it('exposes a separate visually-hidden status live region', async () => {
+    el.tools = [
+      { name: 'a', status: 'complete' },
+      { name: 'b', status: 'loading' },
+    ];
+    await el.updateComplete;
+    const live = el.shadowRoot!.querySelector('.sr-only[role="status"]');
+    expect(live).not.toBeNull();
+    expect(live!.getAttribute('aria-live')).toBe('polite');
+    expect(live!.textContent).toContain('1 of 2 tools complete');
+  });
+
+  it('sets aria-expanded on expandable rows and toggles it on click', async () => {
+    el.tools = [{ name: 'search', status: 'complete', result: 'some result' }];
+    await el.updateComplete;
+    const tool = () => el.shadowRoot!.querySelector('.tool') as HTMLElement;
+    expect(tool().getAttribute('aria-expanded')).toBe('false');
+    expect(tool().getAttribute('aria-controls')).toBe('tool-result-0');
+    tool().click();
+    await el.updateComplete;
+    expect(tool().getAttribute('aria-expanded')).toBe('true');
+    const panel = el.shadowRoot!.querySelector('#tool-result-0');
+    expect(panel).not.toBeNull();
+  });
+
+  it('omits aria-expanded on rows that cannot expand (no result)', async () => {
+    el.tools = [{ name: 'search', status: 'loading' }];
+    await el.updateComplete;
+    const tool = el.shadowRoot!.querySelector('.tool')!;
+    expect(tool.hasAttribute('aria-expanded')).toBe(false);
+    expect(tool.hasAttribute('aria-controls')).toBe(false);
   });
 
   it('tools have role="button" and tabindex', async () => {
