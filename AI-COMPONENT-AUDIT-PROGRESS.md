@@ -80,21 +80,21 @@
 | 58 | ai-personalization-dash | 🔧 | A4 6/6: 3× bg-as-fg tokens, named region + heading roles, active segment non-color cues (WCAG 1.4.1), read-only documented |
 | 59 | ai-presence | 🔧 | A4 5/6: focus-ring/tooltip tokens, orphan tooltip role dropped, empty state; deferred aria-live verbosity |
 | 60 | ai-progress-steps | 🔧 | A4 6/6: listitem wrapper, active dot out-weights complete, checkmark token, empty return, per-step aria-label + aria-current |
-| 61 | ai-prompt-editor | ⬜ | |
-| 62 | ai-prompt-template | ⬜ | |
-| 63 | ai-rag-panel | ⬜ | |
-| 64 | ai-reasoning-tree | ⬜ | |
-| 65 | ai-result-panel | ⬜ | |
-| 66 | ai-reveal-animation | ⬜ | |
-| 67 | ai-reward-signal | ⬜ | |
-| 68 | ai-rich-message | ⬜ | |
-| 69 | ai-scenario-panel | ⬜ | |
-| 70 | ai-search | ⬜ | |
-| 71 | ai-segmentation-viewer | ⬜ | |
-| 72 | ai-sidebar | ⬜ | |
-| 73 | ai-similarity-card | ⬜ | |
-| 74 | ai-source-graph | ⬜ | |
-| 75 | ai-status-page | ⬜ | |
+| 61 | ai-prompt-editor | 🔧 | A5 7/7: weak-overlay focus rings → saturated token (2×), 5-line outlined-as-text → container-text, empty landmark, textarea focus, saving/disabled state, roving listbox |
+| 62 | ai-prompt-template | 🔧 | A5 4/4: placeholder token as primary content (2×), border-as-text, radiogroup→group/aria-pressed, toggle hidden when read-only |
+| 63 | ai-rag-panel | 🔧 | A5 3/3: accent-text token, sortBy narrowed to implemented value (recency/source were dead), disclosure rows role=button + aria-expanded |
+| 64 | ai-reasoning-tree | 🔧 | A5 P0 6/6: mouse-only steps → keyboard buttons, 0% conf renders, dark hover/highlight accents, cursor pointer, aria-controls |
+| 65 | ai-result-panel | 🔧 | A5 6/6: full tablist ARIA + arrow roving, aria-level heading, sort announces, copy live region, redundant gauge hidden |
+| 66 | ai-reveal-animation | 🔧 | A5 2/2: reduced-motion completion fired on late visible toggle (was connect-only), motion constants hoisted |
+| 67 | ai-reward-signal | 🔧 | A5 4/4: focus ring tokenized, stroke-width-75, stable chip visible on dark, sparkline role=img |
+| 68 | ai-rich-message | 🔧 | A5 5/5: on-accent bubble/avatar text tokens, code-surface token, no dead tab stops, mirrored bubble radius |
+| 69 | ai-scenario-panel | 🔧 | A5 6/6: active accent identity, listbox roving + arrow nav, status text alt, solid focus ring, running pulse, dead run-event/footer removed |
+| 70 | ai-search | 🔧 | A5 5/5: filter buttons keyboard-operable (were mouse-only), recents honest buttons, listbox owns only options, aria-controls no dangle, Escape contained |
+| 71 | ai-segmentation-viewer | 🔧 | A5 P0 5/5: eye icons svg`` namespace (were invisible), border tokens/focus ring, active/empty states, canvas aria |
+| 72 | ai-sidebar | ✅ | A5: audited clean — deprecation shim over ai-app-sidebar |
+| 73 | ai-similarity-card | 🔧 | A5 5/5: feature bars/score circle role=img + data labels, image alt, saturated bar-b (no A bias), empty state |
+| 74 | ai-source-graph | 🔧 | A5 2/2: focus ring tokenized, active + disclosure chevron + aria-expanded |
+| 75 | ai-status-page | 🔧 | A5 5/5: opaque focus ring, list→group role fix, foreground token, 2 bare-px gaps tokenized |
 | 76 | ai-streaming-text | ⬜ | |
 | 77 | ai-test-runner | ⬜ | |
 | 78 | ai-thinking | ⬜ | |
