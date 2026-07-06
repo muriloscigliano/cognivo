@@ -95,19 +95,19 @@
 | 73 | ai-similarity-card | 🔧 | A5 5/5: feature bars/score circle role=img + data labels, image alt, saturated bar-b (no A bias), empty state |
 | 74 | ai-source-graph | 🔧 | A5 2/2: focus ring tokenized, active + disclosure chevron + aria-expanded |
 | 75 | ai-status-page | 🔧 | A5 5/5: opaque focus ring, list→group role fix, foreground token, 2 bare-px gaps tokenized |
-| 76 | ai-streaming-text | ⬜ | |
-| 77 | ai-test-runner | ⬜ | |
-| 78 | ai-thinking | ⬜ | |
-| 79 | ai-timeline | ⬜ | |
-| 80 | ai-toast | ⬜ | |
-| 81 | ai-token-tracker | ⬜ | |
-| 82 | ai-tool-card-resolver | ⬜ | |
-| 83 | ai-tool-indicator | ⬜ | |
-| 84 | ai-transform-slider | ⬜ | |
-| 85 | ai-translation-panel | ⬜ | |
-| 86 | ai-usage-meter | ⬜ | |
-| 87 | ai-validation-checklist | ⬜ | |
-| 88 | ai-version-selector | ⬜ | |
-| 89 | ai-voice-panel | ⬜ | |
-| 90 | ai-webhook-config | ⬜ | |
-| 91 | ai-workflow-builder | ⬜ | |
+| 76 | ai-streaming-text | 🔧 | A6 1/1: word-wrap → overflow-wrap (standards); live-region wiring was already clean |
+| 77 | ai-test-runner | 🔧 | A6 5/5: focus-ring token, detail-less rows no longer fake-expandable, aria-controls disclosure, single live region, empty state |
+| 78 | ai-thinking | 🔧 | A6 4/4: reduced-motion covers shimmer/tool variants, lg cancel layout, aria-label fallback (API kept stable) |
+| 79 | ai-timeline | 🔧 | A6 4/5: aria-current removed on non-active, children role=list, empty state, active accent + complete/pending distinct |
+| 80 | ai-toast | 🔧 | A6 3/3: dead rounded prop, fabricated reason:auto dropped, string variant validates typos |
+| 81 | ai-token-tracker | 🔧 | A6 P0 6/7: keyboard-operable badge, saturated focus ring, role=group (no re-announce spam), latency-class wired, hover de-branded, metrics wrap |
+| 82 | ai-tool-card-resolver | 🔧 | A6 4/4: render-time state mutation → willUpdate/updated (Lit anti-pattern), dead error boundary fixed, tokens |
+| 83 | ai-tool-indicator | 🔧 | A6 4/4: aria-expanded/controls, outline-token-as-text fixed, buttons out of live region into list |
+| 84 | ai-transform-slider | 🔧 | A6 P0 8/8: chevron svg`` namespace (invisible), icon color, bare-px rings, aria-orientation, Home/End/PageUp-Dn, disabled state |
+| 85 | ai-translation-panel | 🔧 | A6 4/4: focus-ring tokens, listbox→native buttons, copy disabled on empty/stream, selected alt persists |
+| 86 | ai-usage-meter | 🔧 | A6 3/4: progressbar scoped off CTA, aria-valuemax floored (unbounded quota), size docs |
+| 87 | ai-validation-checklist | 🔧 | A6 8/8: run-btn on-primary text (light-theme bug), hover token, running announced, press states, button rows, empty state, remaining tally |
+| 88 | ai-version-selector | 🔧 | A6 3/3: aria-selected→aria-checked, roving tabindex + arrow radio model, letter-spacing token |
+| 89 | ai-voice-panel | 🔧 | A6 2/2: dead ternary collapsed, state transitions announced (aria-live) |
+| 90 | ai-webhook-config | 🔧 | A6 7/7: 2× bg-as-fg labels, outline-offset token, Create disabled state, toggle/chip active de-washed, 5 focus rings saturated |
+| 91 | ai-workflow-builder | 🔧 | A6 5/5: selected step persistent affordance, 2-layer focus ring, eased press, empty figure role, active node accent |
