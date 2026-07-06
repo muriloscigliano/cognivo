@@ -1,5 +1,34 @@
 {
   "color": {
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "{green.600}",
+        "$description": "Focus ring color for all interactive elements (light theme — brand lime is invisible on white, so the accessible green is used)"
+      },
+      "ring-offset": {
+        "$type": "color",
+        "$value": "{gray.white}",
+        "$description": "Inner gap color for dual-layer focus rings"
+      }
+    },
+    "accent": {
+      "text": {
+        "$type": "color",
+        "$value": "{green.600}",
+        "$description": "Accent text color (active tabs, links, highlights) — accessible green on light surfaces"
+      },
+      "background": {
+        "$type": "color",
+        "$value": "rgba(22, 163, 74, 0.08)",
+        "$description": "Accent-tinted background"
+      },
+      "border": {
+        "$type": "color",
+        "$value": "rgba(22, 163, 74, 0.20)",
+        "$description": "Accent-tinted border"
+      }
+    },
     "action": {
       "primary": {
         "background": {
