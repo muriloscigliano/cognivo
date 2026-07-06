@@ -65,21 +65,21 @@
 | 43 | ai-file-upload | 🔧 | A3 2/2: AI prompt drives placeholder (visible dropzone text) not label, error/success/helper/max-files forwarded |
 | 44 | ai-form-generator | 🔧 | A3 P0×3: @cg-click→@click submit (dead), missing ai-thinking import (blank loading), missing cg-label import (invisible select errors); + error summary + focus-first-invalid |
 | 45 | ai-guardrail | 🔧 | A3 6/6: P0 blocked-content reveal keyboard/SR-operable, role=status not alert, focus-ring/blur tokens, high severity distinct |
-| 46 | ai-heatmap | ⬜ | |
-| 47 | ai-insight-card | ⬜ | |
-| 48 | ai-json-viewer | ⬜ | |
-| 49 | ai-keyboard-shortcuts | ⬜ | |
-| 50 | ai-kpi-grid | ⬜ | |
-| 51 | ai-labeling-board | ⬜ | |
-| 52 | ai-memory-panel | ⬜ | |
-| 53 | ai-model-comparison | ⬜ | |
-| 54 | ai-model-selector | ⬜ | |
-| 55 | ai-notification-center | ⬜ | |
-| 56 | ai-onboarding | ⬜ | |
-| 57 | ai-permission-gate | ⬜ | |
-| 58 | ai-personalization-dash | ⬜ | |
-| 59 | ai-presence | ⬜ | |
-| 60 | ai-progress-steps | ⬜ | |
+| 46 | ai-heatmap | 🔧 | A4 5/5: invalid grid ARIA → img+button cells, Space activation, keyboard tooltip, stroke-widths tokenized |
+| 47 | ai-insight-card | 🔧 | A4 4/4: role article→button (valid aria-expanded), 2-layer focus rings, reduced-motion press, confidence labeled |
+| 48 | ai-json-viewer | 🔧 | A4 7/7: role tree→group, toggle aria-expanded, Space activation, cycle-detection false-positive fixed, bool color distinct |
+| 49 | ai-keyboard-shortcuts | 🔧 | A4 7/7: P0 close icon svg`` namespace (was invisible), focus trap, tokens, invalid list roles dropped |
+| 50 | ai-kpi-grid | 🔧 | A4 3/3: empty state, 1-col focus ring survives, skeleton matches known count |
+| 51 | ai-labeling-board | 🔧 | A4 5/5: nested-button → one button per row, input surface token, named pills, list role, active-label fill |
+| 52 | ai-memory-panel | 🔧 | A4 8/8: 3× bg-as-fg → accent-text, tablist/tab roles, search label, delete-event payload bug (leaked tab scope as type), pinned rail |
+| 53 | ai-model-comparison | 🔧 | A4 3/4: hover border token, metric cells → th[scope=row], empty region; deferred low-score-red (design call) |
+| 54 | ai-model-selector | 🔧 | A4 7/7: P0 role radio/checkbox→option in listbox, roving tabindex, controlled-prop sync, disabled state |
+| 55 | ai-notification-center | 🔧 | A4 6/7: P0 nested-button restructure, listitem wrapper, 2-layer rings, icon tokens; 1 P2 polish deferred |
+| 56 | ai-onboarding | 🔧 | A4 5/5: keyed() step animation (dead .key= binding), tablist→group progress semantics, focus-ring/opacity tokens, arrow scoping |
+| 57 | ai-permission-gate | 🔧 | A4 3/3: allowed/denied announced (sr-only), role-aware region name, reason class not inline style |
+| 58 | ai-personalization-dash | 🔧 | A4 6/6: 3× bg-as-fg tokens, named region + heading roles, active segment non-color cues (WCAG 1.4.1), read-only documented |
+| 59 | ai-presence | 🔧 | A4 5/6: focus-ring/tooltip tokens, orphan tooltip role dropped, empty state; deferred aria-live verbosity |
+| 60 | ai-progress-steps | 🔧 | A4 6/6: listitem wrapper, active dot out-weights complete, checkmark token, empty return, per-step aria-label + aria-current |
 | 61 | ai-prompt-editor | ⬜ | |
 | 62 | ai-prompt-template | ⬜ | |
 | 63 | ai-rag-panel | ⬜ | |
