@@ -43,7 +43,7 @@ export class AiInsightCard extends LitElement {
     .card:active { transform: scale(var(--cg-interaction-press-scale)); }
     .card:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset), 0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
     .card:focus-within .actions { opacity: 1; }
     .card.selected {
@@ -159,7 +159,7 @@ export class AiInsightCard extends LitElement {
     .source a:hover { text-decoration: underline; }
     .source a:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset), 0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
       border-radius: var(--cg-border-radius-50);
     }
     .source-dot { width: var(--cg-spacing-4); height: var(--cg-spacing-4); border-radius: var(--cg-border-radius-full); flex-shrink: 0; }
@@ -209,6 +209,7 @@ export class AiInsightCard extends LitElement {
 
     @media (prefers-reduced-motion: reduce) {
       .card:hover { transform: none; }
+      .card:active { transform: none; }
       .detail { animation: none; }
     }
   `];
@@ -275,7 +276,7 @@ export class AiInsightCard extends LitElement {
 
     return html`
       <div class="card ${this.expanded ? 'expanded' : ''} ${this.selected ? 'selected' : ''}"
-        role="article" tabindex="0" aria-label="${this.type} insight"
+        role="button" tabindex="0" aria-label="${this.type} insight"
         aria-expanded=${this.expandable ? String(this.expanded) : nothing}
         @click=${this._handleClick} @keydown=${this._handleKeyDown}>
 
@@ -297,7 +298,7 @@ export class AiInsightCard extends LitElement {
           <div class="insight-text">${this.text}</div>
 
           <div class="meta">
-            ${this.confidence > 0 ? html`<span class="confidence">${Math.round(this.confidence * 100)}%</span>` : nothing}
+            ${this.confidence > 0 ? html`<span class="confidence" aria-label="Confidence ${Math.round(this.confidence * 100)} percent">${Math.round(this.confidence * 100)}%</span>` : nothing}
             ${this.confidence > 0 && this.timestamp ? html`<span class="meta-dot"></span>` : nothing}
             ${this.timestamp ? html`<span>${this.timestamp}</span>` : nothing}
             ${(this.confidence > 0 || this.timestamp) && this.sources.length > 0 ? html`<span class="meta-dot"></span>` : nothing}

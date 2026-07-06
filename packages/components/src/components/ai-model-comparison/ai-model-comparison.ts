@@ -66,7 +66,7 @@ export class AiModelComparison extends LitElement {
     /* Hover scoped to data rows only (not header, not action row) */
     tbody tr.data-row:hover { background: var(--cg-overlay-dark-subtle); }
 
-    th {
+    thead th {
       color: var(--cg-color-surface-container-outlined);
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-bold);
@@ -226,12 +226,20 @@ export class AiModelComparison extends LitElement {
     .select-btn:hover {
       background: var(--cg-color-action-primary-background-default);
       color: var(--cg-color-action-primary-text-default);
-      border-color: var(--cg-color-action-primary-background-default);
+      border-color: var(--cg-color-action-primary-border-default);
     }
     .select-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .select-btn:focus-visible {
       outline: none;
       box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+    }
+
+    .empty {
+      margin: 0;
+      padding: var(--cg-spacing-16);
+      color: var(--cg-color-surface-container-outlined);
+      font-size: var(--cg-font-size-sm);
+      text-align: center;
     }
   `];
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
@@ -270,7 +278,13 @@ export class AiModelComparison extends LitElement {
   }
 
   override render() {
-    if (!this.models.length) return nothing;
+    if (!this.models.length) {
+      return html`
+        <div class="wrapper" role="region" aria-label="Model comparison table">
+          <p class="empty">No models to compare</p>
+        </div>
+      `;
+    }
     const metrics = this._getMetrics();
 
     return html`
@@ -292,7 +306,7 @@ export class AiModelComparison extends LitElement {
               const best = this._bestScore(metric);
               return html`
                 <tr class="data-row">
-                  <td class="metric-label sticky-col" scope="row">${metric}</td>
+                  <th scope="row" class="metric-label sticky-col">${metric}</th>
                   ${this.models.map(m => {
                     const score = m.scores[metric] ?? 0;
                     const tier = this._scoreTier(score, best);
@@ -315,13 +329,13 @@ export class AiModelComparison extends LitElement {
               `;
             })}
             <tr class="data-row">
-              <td class="metric-label sticky-col">Cost Tier</td>
+              <th scope="row" class="metric-label sticky-col">Cost Tier</th>
               ${this.models.map(m => html`
                 <td class="meta-cell"><span class="cost-badge">${m.costTier}</span></td>
               `)}
             </tr>
             <tr class="data-row">
-              <td class="metric-label sticky-col">Context Window</td>
+              <th scope="row" class="metric-label sticky-col">Context Window</th>
               ${this.models.map(m => html`
                 <td class="meta-cell">${this._formatCtx(m.contextWindow)}</td>
               `)}

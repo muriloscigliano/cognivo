@@ -94,6 +94,7 @@ export class AiLabelingBoard extends LitElement {
     .palette-btn.active {
       border-color: var(--_label-color, var(--cg-color-surface-base-text));
       color: var(--_label-color, var(--cg-color-surface-base-text));
+      background: color-mix(in srgb, var(--_label-color, var(--cg-color-surface-base-text)) 14%, transparent);
     }
     .palette-btn:focus-visible {
       outline: none;
@@ -198,7 +199,7 @@ export class AiLabelingBoard extends LitElement {
 
     /* ── Dropdown select (list mode) ── */
     .label-select {
-      background: var(--cg-color-surface-cards-border);
+      background: var(--cg-color-input-background-default);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-50);
       color: var(--cg-color-surface-base-text);
@@ -304,11 +305,6 @@ export class AiLabelingBoard extends LitElement {
     }
   }
 
-  private _handleItemClick(item: LabelItem) {
-    if (this.mode !== 'click' || !this._activeLabel) return;
-    this._assignLabel(item.id, this._activeLabel);
-  }
-
   private _handleSelectChange(itemId: string, e: Event) {
     const value = (e.target as HTMLSelectElement).value;
     if (value) {
@@ -324,13 +320,6 @@ export class AiLabelingBoard extends LitElement {
       bubbles: true, composed: true,
       detail: { name, color },
     }));
-  }
-
-  private _handleKeyDown(e: KeyboardEvent, item: LabelItem) {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      this._handleItemClick(item);
-    }
   }
 
   override render() {
@@ -367,16 +356,14 @@ export class AiLabelingBoard extends LitElement {
           </div>
         ` : nothing}
 
-        <div class="items">
+        <div class="items" role=${this.mode === 'click' ? nothing : 'list'} aria-label="Items to label">
           ${this.items.map(item => {
             const label = this._getLabel(item.label);
             const isUnlabeled = !item.label;
             return html`
-              <div class="item-row ${this.mode === 'click' ? 'clickable' : ''} ${isUnlabeled ? 'unlabeled' : ''}"
-                tabindex=${this.mode === 'click' ? '0' : '-1'}
-                role=${this.mode === 'click' ? 'button' : 'listitem'}
-                @click=${() => this._handleItemClick(item)}
-                @keydown=${(e: KeyboardEvent) => this._handleKeyDown(e, item)}>
+              <div class="item-row ${isUnlabeled ? 'unlabeled' : ''}"
+                tabindex="-1"
+                role="listitem">
                 <div class="item-content">
                   ${item.content}
                   ${item.metadata ? html`<div class="item-meta">${item.metadata}</div>` : nothing}
@@ -384,6 +371,7 @@ export class AiLabelingBoard extends LitElement {
 
                 ${label ? html`
                   <span class="item-label-pill" role="button" tabindex="0"
+                    aria-label=${`Change label for: ${item.content}`}
                     style="background: color-mix(in srgb, ${label.color} 12%, transparent); color: ${label.color}; cursor: pointer;"
                     @click=${(e: Event) => { e.stopPropagation(); this._cycleLabel(item.id); }}
                     @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); this._cycleLabel(item.id); } }}>
@@ -392,6 +380,7 @@ export class AiLabelingBoard extends LitElement {
                   </span>
                 ` : html`
                   <span class="item-label-pill unlabeled" role="button" tabindex="0"
+                    aria-label=${`Assign label to: ${item.content}`}
                     @click=${(e: Event) => { e.stopPropagation(); this._cycleLabel(item.id); }}
                     @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); this._cycleLabel(item.id); } }}>
                     Assign

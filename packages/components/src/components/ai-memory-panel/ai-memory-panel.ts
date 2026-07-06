@@ -2,7 +2,7 @@
  * @element ai-memory-panel
  * Agent memory viewer. Three variants: default (full panel), compact (sidebar), inline (no container).
  *
- * @fires {CustomEvent<{id: string, type: string}>} ai-memory-delete
+ * @fires {CustomEvent<{id: string, type: Memory['type'], scope: 'short' | 'long'}>} ai-memory-delete
  * @fires {CustomEvent<{id: string, pinned: boolean}>} ai-memory-pin
  * @fires {CustomEvent<{query: string}>} ai-memory-search
  */
@@ -59,9 +59,13 @@ export class AiMemoryPanel extends LitElement {
       transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .tab:hover { color: var(--cg-color-surface-base-text); }
+    .tab:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 var(--cg-focus-ring-width) var(--cg-overlay-accent-strong);
+    }
     .tab.active {
-      color: var(--cg-color-action-primary-background-default);
-      border-bottom-color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
+      border-bottom-color: var(--cg-color-accent-text);
       font-weight: var(--cg-font-weight-semibold);
     }
     .tab-count {
@@ -95,7 +99,10 @@ export class AiMemoryPanel extends LitElement {
       position: relative;
     }
     .memory:hover { background: var(--cg-overlay-dark-subtle); }
-    .memory.pinned { background: var(--cg-overlay-accent-subtle); }
+    .memory.pinned {
+      background: var(--cg-overlay-accent-subtle);
+      box-shadow: inset var(--cg-border-width-100) 0 0 0 var(--cg-color-accent-text);
+    }
 
     .memory-row {
       display: flex; align-items: center; gap: var(--cg-spacing-12);
@@ -103,7 +110,7 @@ export class AiMemoryPanel extends LitElement {
 
     .memory-type {
       font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
       font-weight: var(--cg-font-weight-medium);
       flex-shrink: 0;
     }
@@ -137,7 +144,7 @@ export class AiMemoryPanel extends LitElement {
     .mem-btn svg { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
     .mem-btn:hover { color: var(--cg-color-surface-base-text); }
     .mem-btn:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-focus-ring-width) var(--cg-overlay-accent-strong); opacity: 1; }
-    .mem-btn.pinned-btn { color: var(--cg-color-action-primary-background-default); opacity: 1; }
+    .mem-btn.pinned-btn { color: var(--cg-color-accent-text); opacity: 1; }
 
     .empty {
       padding: var(--cg-spacing-24) var(--cg-spacing-20);
@@ -182,11 +189,11 @@ export class AiMemoryPanel extends LitElement {
 
     return html`
       <div class="panel" role="region" aria-label="Agent memory">
-        <div class="tabs">
-          <button class="tab ${this._activeTab === 'short' ? 'active' : ''}" @click=${() => { this._activeTab = 'short'; }}>
+        <div class="tabs" role="tablist" aria-label="Memory scope">
+          <button class="tab ${this._activeTab === 'short' ? 'active' : ''}" role="tab" aria-selected=${this._activeTab === 'short'} @click=${() => { this._activeTab = 'short'; }}>
             Short-term<span class="tab-count">${this.shortTerm.length}</span>
           </button>
-          <button class="tab ${this._activeTab === 'long' ? 'active' : ''}" @click=${() => { this._activeTab = 'long'; }}>
+          <button class="tab ${this._activeTab === 'long' ? 'active' : ''}" role="tab" aria-selected=${this._activeTab === 'long'} @click=${() => { this._activeTab = 'long'; }}>
             Long-term<span class="tab-count">${this.longTerm.length}</span>
           </button>
         </div>
@@ -194,6 +201,7 @@ export class AiMemoryPanel extends LitElement {
         ${this.searchable && this.variant !== 'compact' ? html`
           <div class="search-row">
             <input class="search-input" type="text" placeholder="Search..."
+              aria-label="Search memories"
               .value=${this._search}
               @input=${(e: Event) => {
                 this._search = (e.target as HTMLInputElement).value;
@@ -222,7 +230,7 @@ export class AiMemoryPanel extends LitElement {
                   <svg viewBox="0 0 24 24" fill="${m.pinned ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 17v5m-4-9.26a2 2 0 01.88-1.66L12 9l3.12 2.08a2 2 0 01.88 1.66V15H8v-2.26zM9 9V4a1 1 0 011-1h4a1 1 0 011 1v5"/></svg>
                 </button>
                 <button class="mem-btn"
-                  @click=${() => this.dispatchEvent(new CustomEvent('ai-memory-delete', { bubbles: true, composed: true, detail: { id: m.id, type: this._activeTab } }))}
+                  @click=${() => this.dispatchEvent(new CustomEvent('ai-memory-delete', { bubbles: true, composed: true, detail: { id: m.id, type: m.type, scope: this._activeTab } }))}
                   aria-label="Delete">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
                 </button>

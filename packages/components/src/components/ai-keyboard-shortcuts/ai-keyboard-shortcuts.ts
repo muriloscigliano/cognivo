@@ -19,7 +19,7 @@
  * @cssprop [--cg-font-family-mono] - Font for key badges
  * @cssprop [--cg-color-bg-primary] - Modal background color
  */
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css, nothing, svg } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
@@ -53,7 +53,7 @@ export class AiKeyboardShortcuts extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       border-radius: var(--cg-border-radius-150);
       padding: var(--cg-spacing-24);
-      max-width: 520px;
+      max-width: var(--cg-component-modal-width-md);
       width: 90vw;
       max-height: 70vh;
       display: flex;
@@ -85,7 +85,7 @@ export class AiKeyboardShortcuts extends LitElement {
     }
     .close-btn:hover { color: var(--cg-color-surface-base-text); }
     .close-btn:focus-visible {
-      outline: 2px solid var(--cg-color-focus-ring);
+      outline: var(--cg-outline-width-default) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -105,7 +105,7 @@ export class AiKeyboardShortcuts extends LitElement {
       color: var(--cg-color-input-text-placeholder);
     }
     .search-input:focus-visible {
-      outline: 2px solid var(--cg-color-focus-ring);
+      outline: var(--cg-outline-width-default) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-outline-offset-default);
     }
 
@@ -119,7 +119,7 @@ export class AiKeyboardShortcuts extends LitElement {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-bold);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: var(--cg-letter-spacing-wide);
       padding: var(--cg-spacing-8) 0 var(--cg-spacing-6);
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       margin-bottom: var(--cg-spacing-4);
@@ -130,6 +130,11 @@ export class AiKeyboardShortcuts extends LitElement {
       align-items: center;
       justify-content: space-between;
       padding: var(--cg-spacing-8) var(--cg-spacing-4);
+      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+    }
+    .shortcut-row:hover {
+      background: var(--cg-color-surface-container-background);
+      border-radius: var(--cg-border-radius-50);
     }
 
     .shortcut-desc {
@@ -178,6 +183,43 @@ export class AiKeyboardShortcuts extends LitElement {
   @property({ type: Boolean, reflect: true }) open = false;
 
   @state() private _search = '';
+
+  private _prevFocus: HTMLElement | null = null;
+
+  override updated(changed: Map<string, unknown>) {
+    if (changed.has('open')) {
+      if (this.open) {
+        this._prevFocus = (this.getRootNode() as Document | ShadowRoot)
+          .activeElement as HTMLElement | null;
+        const input = this.renderRoot.querySelector<HTMLElement>('.search-input');
+        (input ?? this.renderRoot.querySelector<HTMLElement>('.close-btn'))?.focus();
+      } else {
+        this._prevFocus?.focus();
+        this._prevFocus = null;
+      }
+    }
+  }
+
+  private _trapFocus = (e: KeyboardEvent) => {
+    if (e.key !== 'Tab') return;
+    const focusables = Array.from(
+      this.renderRoot.querySelectorAll<HTMLElement>(
+        'button, input, [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter((el) => !el.hasAttribute('disabled'));
+    if (focusables.length === 0) return;
+    const first = focusables[0]!;
+    const last = focusables[focusables.length - 1]!;
+    const active = (this.renderRoot as unknown as DocumentOrShadowRoot)
+      .activeElement as HTMLElement | null;
+    if (e.shiftKey && active === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && active === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
 
   private _handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape' && this.open) {
@@ -228,10 +270,10 @@ export class AiKeyboardShortcuts extends LitElement {
 
     return html`
       <div class="overlay" @click=${(e: Event) => { if (e.target === e.currentTarget) this._close(); }}>
-        <div class="modal" role="dialog" aria-label="Keyboard shortcuts" aria-modal="true">
+        <div class="modal" role="dialog" aria-label="Keyboard shortcuts" aria-modal="true" @keydown=${this._trapFocus}>
           <div class="modal-header">
             <span class="modal-title">Keyboard Shortcuts</span>
-            <button class="close-btn" aria-label="Close shortcuts" @click=${this._close}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+            <button class="close-btn" aria-label="Close shortcuts" @click=${this._close}>${svg`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>`}</button>
           </div>
           <input
             class="search-input"
@@ -241,13 +283,13 @@ export class AiKeyboardShortcuts extends LitElement {
             @input=${(e: Event) => { this._search = (e.target as HTMLInputElement).value; }}
             aria-label="Search shortcuts"
           />
-          <div class="shortcuts-list" role="list">
+          <div class="shortcuts-list">
             ${filtered.length === 0
               ? html`<div class="no-results">No shortcuts found</div>`
               : Array.from(grouped.entries()).map(([cat, items]) => html`
                 <div class="category-label">${cat}</div>
                 ${items.map(s => html`
-                  <div class="shortcut-row" role="listitem">
+                  <div class="shortcut-row">
                     <span class="shortcut-desc">${s.description}</span>
                     <span class="key-group">
                       ${s.keys.map((k, i) => html`

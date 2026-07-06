@@ -33,6 +33,7 @@
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { keyed } from 'lit/directives/keyed.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 import '../cg-card/cg-card.js';
 import '../cg-text/cg-text.js';
@@ -91,7 +92,7 @@ export class AiOnboarding extends LitElement {
     .dismiss-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .dismiss-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
     }
 
     /* ── Progress: numbered ── */
@@ -124,7 +125,7 @@ export class AiOnboarding extends LitElement {
       opacity: var(--cg-opacity-50);
       cursor: pointer;
     }
-    .dot.completed:hover { opacity: 0.85; }
+    .dot.completed:hover { opacity: var(--cg-opacity-75); }
     .dot.active {
       background: var(--cg-color-action-primary-background-default);
       transform: scale(1.3);
@@ -132,7 +133,7 @@ export class AiOnboarding extends LitElement {
     }
     .dot:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
     }
 
     /* ── Progress: bar ── */
@@ -195,7 +196,7 @@ export class AiOnboarding extends LitElement {
     }
     .stepper-node:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
     }
     .stepper-line {
       flex: 1;
@@ -278,9 +279,10 @@ export class AiOnboarding extends LitElement {
   }
 
   private _onKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && this.dismissible) { e.preventDefault(); this._dismiss(); return; }
+    if (e.target !== this) return; // only handle arrows when the card host itself has focus
     if (e.key === 'ArrowRight') { e.preventDefault(); this._next(); }
     else if (e.key === 'ArrowLeft') { e.preventDefault(); this._prev(); }
-    else if (e.key === 'Escape' && this.dismissible) { e.preventDefault(); this._dismiss(); }
   };
 
   private _emit(name: string, detail: Record<string, unknown> = {}) {
@@ -338,15 +340,14 @@ export class AiOnboarding extends LitElement {
 
     if (variant === 'dots') {
       return html`
-        <div class="progress-dots" role="tablist" aria-label="Onboarding progress">
+        <div class="progress-dots" role="group" aria-label="Onboarding progress">
           ${this.steps.map((s, i) => {
             const completed = i < this.active;
             const current = i === this.active;
             const cls = current ? 'active' : completed ? 'completed' : '';
             return html`<button
               class="dot ${cls}"
-              role="tab"
-              aria-selected=${current}
+              aria-current=${current ? 'step' : nothing}
               aria-label="Go to step ${i + 1}: ${s.title}"
               ?disabled=${!completed && !current}
               @click=${() => completed && this._goTo(i)}
@@ -370,7 +371,7 @@ export class AiOnboarding extends LitElement {
 
     // stepper
     return html`
-      <div class="progress-stepper" role="tablist" aria-label="Onboarding progress">
+      <div class="progress-stepper" role="group" aria-label="Onboarding progress">
         ${this.steps.map((s, i) => {
           const completed = i < this.active;
           const current = i === this.active;
@@ -382,8 +383,7 @@ export class AiOnboarding extends LitElement {
             ${i > 0 ? html`<span class="stepper-line ${i <= this.active ? 'completed' : ''}"></span>` : nothing}
             <button
               class="stepper-node ${cls}"
-              role="tab"
-              aria-selected=${current}
+              aria-current=${current ? 'step' : nothing}
               aria-label="Go to step ${i + 1}: ${s.title}"
               ?disabled=${!completed && !current}
               @click=${() => completed && this._goTo(i)}
@@ -412,14 +412,17 @@ export class AiOnboarding extends LitElement {
             : nothing}
         </div>
 
-        <div class="step-content" data-direction=${this._direction} .key=${this.active}>
-          <div class="media-slot"><slot name="media"></slot></div>
-          <cg-stack direction="column" gap="sm">
-            <cg-text as="h3" size="lg" weight="bold">${step.title}</cg-text>
-            <cg-text size="sm" color="muted">${step.description}</cg-text>
-          </cg-stack>
-          <div class="step-action-slot"><slot name="step-action"></slot></div>
-        </div>
+        ${keyed(
+          this.active,
+          html`<div class="step-content" data-direction=${this._direction}>
+            <div class="media-slot"><slot name="media"></slot></div>
+            <cg-stack direction="column" gap="sm">
+              <cg-text as="h3" size="lg" weight="bold">${step.title}</cg-text>
+              <cg-text size="sm" color="muted">${step.description}</cg-text>
+            </cg-stack>
+            <div class="step-action-slot"><slot name="step-action"></slot></div>
+          </div>`
+        )}
 
         <div slot="footer" class="footer-row">
           <cg-button

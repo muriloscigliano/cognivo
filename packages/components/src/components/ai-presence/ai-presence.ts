@@ -104,8 +104,8 @@ export class AiPresence extends LitElement {
     .avatar-btn:focus-visible {
       outline: none;
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background),
-        0 0 0 calc(2px + var(--cg-border-width-100)) var(--cg-color-focus-ring);
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
 
     /* ── Overflow ── */
@@ -132,7 +132,7 @@ export class AiPresence extends LitElement {
       left: 50%;
       transform: translateX(-50%) translateY(var(--cg-spacing-2));
       background: var(--cg-color-surface-tooltip-background);
-      color: var(--cg-color-surface-base-text);
+      color: var(--cg-color-surface-tooltip-text);
       padding: var(--cg-spacing-6) var(--cg-spacing-12);
       border-radius: var(--cg-border-radius-100);
       font-size: var(--cg-font-size-xs);
@@ -169,7 +169,7 @@ export class AiPresence extends LitElement {
     .tooltip-meta {
       display: block;
       margin-top: var(--cg-spacing-2);
-      color: var(--cg-color-surface-container-subtle);
+      color: var(--cg-color-surface-tooltip-text);
     }
     .avatar-wrapper:hover .tooltip,
     .avatar-wrapper:focus-within .tooltip {
@@ -204,6 +204,12 @@ export class AiPresence extends LitElement {
     }
     .skeleton:first-child { margin-left: 0; }
 
+    /* ── Empty state ── */
+    .empty {
+      color: var(--cg-color-surface-container-outlined);
+      font-size: var(--cg-font-size-xs);
+    }
+
     @media (prefers-reduced-motion: reduce) {
       :host { animation: none; }
       .avatar-wrapper { transition: none; }
@@ -235,7 +241,7 @@ export class AiPresence extends LitElement {
     const statusText = STATUS_LABEL[user.status];
     const meta = user.lastSeen ? `${statusText} • ${user.lastSeen}` : statusText;
     return html`
-      <span class="tooltip" role="tooltip">
+      <span class="tooltip" aria-hidden="true">
         <span class="tooltip-name">${user.name}</span>
         <span class="tooltip-meta">${meta}</span>
       </span>
@@ -250,6 +256,14 @@ export class AiPresence extends LitElement {
           <div class="avatar-stack">
             ${Array.from({ length: placeholders }).map(() => html`<span class="skeleton"></span>`)}
           </div>
+        </div>
+      `;
+    }
+
+    if (this.users.length === 0) {
+      return html`
+        <div class="container" role="group" aria-label="Active users" aria-live="polite">
+          <span class="empty">No active users</span>
         </div>
       `;
     }

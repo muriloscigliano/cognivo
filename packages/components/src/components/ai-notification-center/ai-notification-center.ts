@@ -48,7 +48,7 @@ export class AiNotificationCenter extends LitElement {
     }
     :host([hidden]) { display: none; }
 
-    cg-card { display: block; max-height: 480px; overflow-y: auto; }
+    cg-card { display: block; max-height: var(--cg-spacing-480); overflow-y: auto; }
 
     /* sr-only live region */
     .sr-only {
@@ -127,7 +127,9 @@ export class AiNotificationCenter extends LitElement {
     .notification:active { transform: scale(var(--cg-interaction-press-scale)); }
     .notification:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
+      box-shadow:
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-surface-cards-background),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
 
     /* Left-accent unread indicator (replaces dot + bg) */
@@ -201,7 +203,13 @@ export class AiNotificationCenter extends LitElement {
     .dismiss-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .dismiss-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
+      box-shadow:
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-surface-cards-background),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
+    }
+    .dismiss-btn svg {
+      width: var(--cg-icon-size-100);
+      height: var(--cg-icon-size-100);
     }
 
     /* ── Empty state ── */
@@ -215,8 +223,8 @@ export class AiNotificationCenter extends LitElement {
     }
     .empty-icon {
       color: var(--cg-color-status-success-text-default);
-      width: var(--cg-spacing-32);
-      height: var(--cg-spacing-32);
+      width: var(--cg-icon-size-300);
+      height: var(--cg-icon-size-300);
     }
   `];
 
@@ -348,26 +356,35 @@ export class AiNotificationCenter extends LitElement {
           <cg-text class="group-label" size="xs" weight="bold" color="muted" role="heading" aria-level="3">${bucket}</cg-text>
           <div role="list" aria-label="${bucket} notifications">
             ${items.map(n => html`
-              <button
-                class="notification ${n.read ? '' : 'unread'}"
-                role="listitem"
-                aria-label="${n.title}${n.read ? '' : ' (unread)'}"
-                ?data-just-arrived=${this._justArrivedIds.has(n.id)}
-                @click=${() => this._handleClick(n)}
-              >
-                <div class="notif-body">
-                  <cg-text data-role="title" size="sm" weight="medium">${n.title}</cg-text>
-                  <cg-text class="notif-message" size="xs" color="muted">${n.message}</cg-text>
-                  <cg-text size="xs" color="muted">${this._formatTime(n.timestamp)}</cg-text>
-                </div>
-                <button
-                  class="dismiss-btn"
-                  aria-label="Dismiss: ${n.title}"
-                  @click=${(e: Event) => this._handleDismiss(e, n)}
+              <div role="listitem">
+                <div
+                  class="notification ${n.read ? '' : 'unread'}"
+                  role="button"
+                  tabindex="0"
+                  aria-label="${n.title}${n.read ? '' : ' (unread)'}"
+                  ?data-just-arrived=${this._justArrivedIds.has(n.id)}
+                  @click=${() => this._handleClick(n)}
+                  @keydown=${(e: KeyboardEvent) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      this._handleClick(n);
+                    }
+                  }}
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                </button>
-              </button>
+                  <div class="notif-body">
+                    <cg-text data-role="title" size="sm" weight="medium">${n.title}</cg-text>
+                    <cg-text class="notif-message" size="xs" color="muted">${n.message}</cg-text>
+                    <cg-text size="xs" color="muted">${this._formatTime(n.timestamp)}</cg-text>
+                  </div>
+                  <button
+                    class="dismiss-btn"
+                    aria-label="Dismiss: ${n.title}"
+                    @click=${(e: Event) => this._handleDismiss(e, n)}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                  </button>
+                </div>
+              </div>
             `)}
           </div>
         `)}

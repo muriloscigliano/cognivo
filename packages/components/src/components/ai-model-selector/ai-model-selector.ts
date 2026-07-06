@@ -17,6 +17,7 @@ export interface AIModel {
   capabilities?: string[];
   costTier?: 'free' | 'low' | 'medium' | 'high';
   description?: string;
+  disabled?: boolean;
 }
 
 @customElement('ai-model-selector')
@@ -67,8 +68,18 @@ export class AiModelSelector extends LitElement {
     .model-card:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring); }
     .model-card.selected {
       border-color: var(--cg-color-action-primary-background-default);
-      background: var(--cg-overlay-accent-subtle);
+      border-width: var(--cg-border-width-100);
+      background: var(--cg-overlay-accent-medium);
     }
+    .model-card[aria-disabled="true"] {
+      cursor: not-allowed;
+      color: var(--cg-color-surface-container-outlined);
+    }
+    .model-card[aria-disabled="true"]:hover {
+      border-color: var(--cg-color-surface-cards-border);
+      background: var(--cg-color-surface-cards-background);
+    }
+    .model-card[aria-disabled="true"]:active { transform: none; }
 
     /* ── Check indicator ── */
     .check {
@@ -95,7 +106,6 @@ export class AiModelSelector extends LitElement {
 
     .model-footer { display: flex; justify-content: space-between; align-items: center; }
     .caps { display: flex; gap: var(--cg-spacing-4); flex-wrap: wrap; }
-    .model-footer cg-badge { --cg-badge-font-size: var(--cg-font-size-xs); }
 
     .empty { text-align: center; padding: var(--cg-spacing-48); color: var(--cg-color-surface-container-outlined); font-size: var(--cg-font-size-sm); }
 
@@ -116,8 +126,8 @@ export class AiModelSelector extends LitElement {
   @state() private _focusedIndex = -1;
 
   override updated(changed: Map<string, unknown>) {
-    if (changed.has('selected') && this.selected) {
-      this._selectedIds = new Set([this.selected]);
+    if (changed.has('selected')) {
+      this._selectedIds = this.selected ? new Set([this.selected]) : new Set();
     }
   }
 
@@ -146,7 +156,7 @@ export class AiModelSelector extends LitElement {
     } else if ((e.key === 'Enter' || e.key === ' ') && this._focusedIndex >= 0) {
       e.preventDefault();
       const model = models[this._focusedIndex];
-      if (model) this._handleSelect(model);
+      if (model && !model.disabled) this._handleSelect(model);
     }
   }
 
@@ -158,12 +168,15 @@ export class AiModelSelector extends LitElement {
   }
 
   private _handleSelect(model: AIModel) {
+    if (model.disabled) return;
+    this._focusedIndex = this._filteredModels.findIndex(fm => fm.id === model.id);
     if (this.multi) {
       if (this._selectedIds.has(model.id)) this._selectedIds.delete(model.id);
       else this._selectedIds.add(model.id);
       this._selectedIds = new Set(this._selectedIds);
     } else {
       this._selectedIds = new Set([model.id]);
+      this.selected = model.id;
     }
     this.dispatchEvent(new CustomEvent('ai-model-select', { bubbles: true, composed: true, detail: { selected: [...this._selectedIds], model } }));
     if (this.multi && this._selectedIds.size === 2) {
@@ -193,12 +206,14 @@ export class AiModelSelector extends LitElement {
       ` : nothing}
 
       <div class="grid" role="listbox" aria-label="Select a model" aria-multiselectable="${this.multi}" @keydown=${this._handleGridKeydown}>
-        ${filtered.map(m => html`
+        ${filtered.map((m, index) => html`
           <div class="model-card ${this._selectedIds.has(m.id) ? 'selected' : ''}"
-            role="${this.multi ? 'checkbox' : 'radio'}" tabindex="0"
+            role="option"
+            tabindex="${m.disabled ? -1 : (index === this._focusedIndex || (this._focusedIndex < 0 && index === 0) ? 0 : -1)}"
             aria-selected="${this._selectedIds.has(m.id)}"
+            aria-disabled=${m.disabled ? 'true' : nothing}
             @click=${() => this._handleSelect(m)}>
-            ${this._selectedIds.has(m.id) ? html`<div class="check"><cg-icon name="check" size="sm"></cg-icon></div>` : nothing}
+            ${this._selectedIds.has(m.id) ? html`<div class="check" aria-hidden="true"><cg-icon name="check" size="sm"></cg-icon></div>` : nothing}
             <div class="model-header">
               ${m.icon ? html`<span class="model-icon">${m.icon}</span>` : nothing}
               <div class="model-info">

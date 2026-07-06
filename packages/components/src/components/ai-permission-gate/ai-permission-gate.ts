@@ -123,6 +123,18 @@ export class AiPermissionGate extends LitElement {
       text-align: center;
       padding: var(--cg-spacing-24) 0;
     }
+
+    .reason { font-style: italic; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
   `];
 
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
@@ -160,7 +172,7 @@ export class AiPermissionGate extends LitElement {
     const perms = this._relevantPermissions;
 
     return html`
-      <cg-card variant="outlined" padding="md" rounded=${this.rounded} role="region" aria-label="Permission gate">
+      <cg-card variant="outlined" padding="md" rounded=${this.rounded} role="region" aria-label=${this.currentRole ? `Feature permissions for role ${this.currentRole}` : 'Feature permissions'}>
         <div slot="header" class="header-row">
           <cg-text size="sm" weight="semibold">Feature Permissions</cg-text>
           ${this.currentRole
@@ -180,9 +192,10 @@ export class AiPermissionGate extends LitElement {
                   ${p.allowed ? this._checkIcon() : this._xIcon()}
                 </span>
                 <div class="feature-info">
+                  <span class="sr-only">${p.allowed ? 'Allowed' : 'Denied'}</span>
                   <cg-text size="sm" weight="semibold">${p.feature}</cg-text>
                   <cg-text size="xs" color="muted">Role: ${p.role}</cg-text>
-                  ${p.reason ? html`<cg-text size="xs" color="muted" style="font-style:italic;">${p.reason}</cg-text>` : nothing}
+                  ${p.reason ? html`<cg-text class="reason" size="xs" color="muted">${p.reason}</cg-text>` : nothing}
                 </div>
                 ${!p.allowed ? html`
                   <cg-button

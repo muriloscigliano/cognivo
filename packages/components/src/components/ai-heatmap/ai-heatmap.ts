@@ -49,11 +49,11 @@ export class AiHeatmap extends LitElement {
       cursor: pointer;
       transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .cell:hover { opacity: 0.85; stroke: var(--cg-color-surface-base-text); stroke-width: 1.5; }
+    .cell:hover { opacity: 0.85; stroke: var(--cg-color-surface-base-text); stroke-width: var(--cg-border-width-50); }
     .cell:focus-visible {
       outline: none;
       stroke: var(--cg-color-focus-ring);
-      stroke-width: 2;
+      stroke-width: var(--cg-border-width-100);
     }
 
     .cell-text {
@@ -190,7 +190,7 @@ export class AiHeatmap extends LitElement {
     }));
   }
 
-  private _handleCellHover(e: MouseEvent, row: number, col: number) {
+  private _handleCellHover(e: MouseEvent | FocusEvent, row: number, col: number) {
     const rect = (e.target as SVGElement).getBoundingClientRect();
     const hostRect = this.getBoundingClientRect();
     this._tooltip = {
@@ -221,7 +221,7 @@ export class AiHeatmap extends LitElement {
       <div class="container">
         ${this.title ? html`<div class="title">${this.title}</div>` : nothing}
 
-        <svg width="${svgW}" height="${svgH}" role="grid" aria-label=${`${this.title || 'Heatmap'}: ${this.data.length} rows by ${this.data[0]?.length ?? 0} columns`}>
+        <svg width="${svgW}" height="${svgH}" role="img" aria-label=${`${this.title || 'Heatmap'}: ${this.data.length} rows by ${this.data[0]?.length ?? 0} columns`}>
           <!-- Column labels -->
           ${this.colLabels.map((label, i) => svg`
             <text class="axis-label" x="${ml + i * cs + cs / 2}" y="${mt - 8}"
@@ -236,7 +236,7 @@ export class AiHeatmap extends LitElement {
 
           <!-- Cells -->
           ${this.data.map((row, ri) => row.map((val, ci) => svg`
-            <rect class="cell" tabindex="0" role="gridcell"
+            <rect class="cell" tabindex="0" role="button"
               aria-label="${this.rowLabels[ri] || `Row ${ri}`}, ${this.colLabels[ci] || `Col ${ci}`}: ${val}"
               x="${ml + ci * cs}" y="${mt + ri * cs}"
               width="${cs - 1}" height="${cs - 1}" rx="3"
@@ -244,7 +244,9 @@ export class AiHeatmap extends LitElement {
               @click=${() => this._handleCellClick(ri, ci)}
               @mouseenter=${(e: MouseEvent) => this._handleCellHover(e, ri, ci)}
               @mouseleave=${this._handleCellLeave}
-              @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter') this._handleCellClick(ri, ci); }}
+              @focus=${(e: FocusEvent) => this._handleCellHover(e, ri, ci)}
+              @blur=${this._handleCellLeave}
+              @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleCellClick(ri, ci); } }}
             ></rect>
             ${this.showValues ? svg`
               <text class="cell-text" x="${ml + ci * cs + cs / 2}" y="${mt + ri * cs + cs / 2 + 4}"

@@ -83,7 +83,7 @@ export class AiKpiGrid extends LitElement {
     :host([columns="1"]) .kpi {
       box-shadow: inset 0 calc(-1 * var(--cg-border-width-50)) 0 var(--cg-color-surface-cards-border);
     }
-    :host([columns="1"]) .kpi:last-child { box-shadow: none; }
+    :host([columns="1"]) .kpi:last-child:not(:focus-visible) { box-shadow: none; }
 
 
     .kpi-label {
@@ -132,6 +132,13 @@ export class AiKpiGrid extends LitElement {
     .skel-value { width: 50%; height: var(--cg-spacing-20); margin-bottom: var(--cg-spacing-6); }
     .skel-delta { width: 40%; height: var(--cg-spacing-8); }
 
+    /* ── Empty state ── */
+    .kpi-empty {
+      padding: var(--cg-spacing-16) var(--cg-spacing-20);
+      color: var(--cg-color-input-text-placeholder);
+      font-size: var(--cg-font-size-xs);
+    }
+
   `];
   @property({ type: String }) override title = '';
   @property({ attribute: false }) kpis: KpiItem[] = [];
@@ -152,7 +159,7 @@ export class AiKpiGrid extends LitElement {
   }
 
   private _renderSkeleton() {
-    const cells = Array.from({ length: this.columns * 2 });
+    const cells = Array.from({ length: this.kpis.length || this.columns * 2 });
     return cells.map(() => html`
       <div class="skeleton-cell" aria-hidden="true">
         <div class="skel-line skel-label"></div>
@@ -167,7 +174,9 @@ export class AiKpiGrid extends LitElement {
       <div class="card" role="region" aria-label="${this.title || 'KPI Grid'}">
         ${this.title ? html`<div class="card-title">${this.title}</div>` : nothing}
         <div class="grid" style="grid-template-columns: repeat(${this.columns}, 1fr)">
-          ${this.loading ? this._renderSkeleton() : this.kpis.map(kpi => html`
+          ${!this.loading && this.kpis.length === 0
+            ? html`<div class="kpi-empty">No metrics available</div>`
+            : this.loading ? this._renderSkeleton() : this.kpis.map(kpi => html`
             <div
               class="kpi"
               role="button"

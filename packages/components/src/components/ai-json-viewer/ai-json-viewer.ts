@@ -62,7 +62,7 @@ export class AiJsonViewer extends LitElement {
 
     .string { color: var(--cg-color-status-success-text-default); }
     .number { color: var(--cg-color-surface-base-text); }
-    .boolean { color: var(--cg-color-status-success-text-default); }
+    .boolean { color: var(--cg-color-status-warning-text-default); }
     .null { color: var(--cg-color-input-text-placeholder); font-style: italic; }
 
     .toggle {
@@ -156,12 +156,11 @@ export class AiJsonViewer extends LitElement {
   private _renderValue(val: unknown, path: string, depth: number, isLast: boolean): unknown {
     const comma = isLast ? '' : ',';
 
-    // Circular reference detection
+    // Circular reference detection (path-scoped: only true ancestors count)
     if (val !== null && typeof val === 'object') {
       if (this._seen.has(val as object)) {
         return html`<span class="null">[Circular]</span>${comma}`;
       }
-      this._seen.add(val as object);
     }
 
     if (val === null) {
@@ -198,12 +197,15 @@ export class AiJsonViewer extends LitElement {
     }
 
     if (collapsed || depth >= this.maxDepth) {
-      return html`<button class="toggle" tabindex="0" aria-label="Expand array" @click=${() => this._togglePath(path)}>\u25B6</button><span class="bracket">[</span><span class="collapsed-hint"> ${count} items </span><span class="bracket">]</span>${comma}`;
+      return html`<button class="toggle" tabindex="0" aria-expanded="false" aria-label="Toggle array" @click=${() => this._togglePath(path)}>\u25B6</button><span class="bracket">[</span><span class="collapsed-hint"> ${count} items </span><span class="bracket">]</span>${comma}`;
     }
 
-    return html`<button class="toggle" tabindex="0" aria-label="Collapse array" @click=${() => this._togglePath(path)}>\u25BC</button><span class="bracket">[</span>
+    this._seen.add(arr);
+    const body = html`<button class="toggle" tabindex="0" aria-expanded="true" aria-label="Toggle array" @click=${() => this._togglePath(path)}>\u25BC</button><span class="bracket">[</span>
 ${arr.map((item, i) => html`<div class="line">${childIndent}${this._renderValue(item, `${path}[${i}]`, depth + 1, i === count - 1)}</div>`)}
 <div class="line">${indent}<span class="bracket">]</span>${comma}<span class="line-count">// ${count} items</span></div>`;
+    this._seen.delete(arr);
+    return body;
   }
 
   private _renderObject(obj: Record<string, unknown>, path: string, depth: number, comma: string): unknown {
@@ -218,22 +220,27 @@ ${arr.map((item, i) => html`<div class="line">${childIndent}${this._renderValue(
     }
 
     if (collapsed || depth >= this.maxDepth) {
-      return html`<button class="toggle" tabindex="0" aria-label="Expand object" @click=${() => this._togglePath(path)}>\u25B6</button><span class="bracket">{</span><span class="collapsed-hint"> ${count} keys </span><span class="bracket">}</span>${comma}`;
+      return html`<button class="toggle" tabindex="0" aria-expanded="false" aria-label="Toggle object" @click=${() => this._togglePath(path)}>\u25B6</button><span class="bracket">{</span><span class="collapsed-hint"> ${count} keys </span><span class="bracket">}</span>${comma}`;
     }
 
-    return html`<button class="toggle" tabindex="0" aria-label="Collapse object" @click=${() => this._togglePath(path)}>\u25BC</button><span class="bracket">{</span>
+    this._seen.add(obj);
+    const body = html`<button class="toggle" tabindex="0" aria-expanded="true" aria-label="Toggle object" @click=${() => this._togglePath(path)}>\u25BC</button><span class="bracket">{</span>
 ${keys.map((key, i) => {
   const childPath = path ? `${path}.${key}` : key;
-  return html`<div class="line">${childIndent}<span class="key" tabindex="0" role="button" aria-label="Copy path: ${childPath}" @click=${() => this._emitPathClick(childPath)} @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter') this._emitPathClick(childPath); }}>"${key}"</span>: ${this._renderValue(obj[key], childPath, depth + 1, i === count - 1)}</div>`;
+  return html`<div class="line">${childIndent}<span class="key" tabindex="0" role="button" aria-label="Select path: ${childPath}" @click=${() => this._emitPathClick(childPath)} @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._emitPathClick(childPath); } }}>"${key}"</span>: ${this._renderValue(obj[key], childPath, depth + 1, i === count - 1)}</div>`;
 })}
 <div class="line">${indent}<span class="bracket">}</span>${comma}<span class="line-count">// ${count} keys</span></div>`;
+    this._seen.delete(obj);
+    return body;
   }
 
   override render() {
     this._seen = new WeakSet(); // Reset cycle detection each render
     return html`
-      <div class="root" role="tree" aria-label="JSON viewer">
-        <div class="line">${this._renderValue(this.data, '$', 0, true)}</div>
+      <div class="root" role="group" aria-label="JSON viewer">
+        ${this.data === null || this.data === undefined
+          ? html`<div class="line"><span class="collapsed-hint">No data</span></div>`
+          : html`<div class="line">${this._renderValue(this.data, '$', 0, true)}</div>`}
       </div>
     `;
   }

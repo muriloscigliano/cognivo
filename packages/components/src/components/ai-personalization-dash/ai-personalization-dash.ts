@@ -2,6 +2,11 @@
  * @element ai-personalization-dash
  * User personalization dashboard with preference sliders, segments, and reset.
  *
+ * Segments are read-only status badges (the audience segments a user belongs to),
+ * not interactive filters — the `active` flag is display-only and dispatches no event.
+ * Active segments carry `aria-current` + visually-hidden "(active)" text so state is
+ * exposed to assistive tech without color alone.
+ *
  * @fires {CustomEvent<{id: string, value: number}>} ai-personalization-change
  * @fires {CustomEvent} ai-personalization-reset
  */
@@ -43,7 +48,7 @@ export class AiPersonalizationDash extends LitElement {
       width: var(--cg-spacing-32); height: var(--cg-spacing-32);
       border-radius: var(--cg-border-radius-full);
       background: var(--cg-overlay-accent-light);
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-action-primary-text-default);
       display: flex; align-items: center; justify-content: center;
       font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-semibold);
       flex-shrink: 0;
@@ -80,14 +85,28 @@ export class AiPersonalizationDash extends LitElement {
       background: transparent;
     }
     .seg.active {
-      border-color: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-action-primary-background-default);
+      border-color: var(--cg-color-action-primary-border-default);
+      color: var(--cg-color-action-primary-text-default);
       background: var(--cg-overlay-accent-subtle);
+      font-weight: var(--cg-font-weight-semibold);
     }
     .seg-dot {
+      display: none;
       width: var(--cg-spacing-6); height: var(--cg-spacing-6);
       border-radius: var(--cg-border-radius-full);
       background: currentColor;
+    }
+    .seg.active .seg-dot { display: inline-block; }
+    .visually-hidden {
+      position: absolute;
+      width: var(--cg-border-width-50);
+      height: var(--cg-border-width-50);
+      margin: calc(var(--cg-border-width-50) * -1);
+      padding: 0;
+      border: 0;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
 
     /* ── Footer ── */
@@ -125,7 +144,7 @@ export class AiPersonalizationDash extends LitElement {
 
   override render() {
     return html`
-      <div class="panel">
+      <div class="panel" role="region" aria-label="Personalization settings">
         <div class="profile">
           <div class="profile-avatar">${this.userName.charAt(0).toUpperCase() || '?'}</div>
           <div class="profile-info">
@@ -136,7 +155,7 @@ export class AiPersonalizationDash extends LitElement {
 
         ${this.preferences.length > 0 ? html`
           <div class="section">
-            <div class="section-title">Preferences</div>
+            <div class="section-title" role="heading" aria-level="3">Preferences</div>
             <div class="pref-list">
               ${this.preferences.map(p => html`
                 <div class="pref-item">
@@ -159,12 +178,13 @@ export class AiPersonalizationDash extends LitElement {
 
         ${this.segments.length > 0 ? html`
           <div class="section">
-            <div class="section-title">Segments</div>
+            <div class="section-title" role="heading" aria-level="3">Segments</div>
             <div class="segments">
               ${this.segments.map(s => html`
-                <span class="seg ${s.active ? 'active' : ''}">
+                <span class="seg ${s.active ? 'active' : ''}" aria-current=${s.active ? 'true' : nothing}>
                   <span class="seg-dot"></span>
                   ${s.label}
+                  ${s.active ? html`<span class="visually-hidden">(active)</span>` : nothing}
                 </span>
               `)}
             </div>

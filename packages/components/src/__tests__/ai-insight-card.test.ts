@@ -71,14 +71,35 @@ describe('ai-insight-card', () => {
     expect(iconArea!.getAttribute('aria-hidden')).toBe('true');
   });
 
-  it('has role="article" with aria-label', async () => {
+  it('has role="button" with aria-label (interactive disclosure host)', async () => {
     element.text = 'Some insight';
     element.type = 'forecast';
     await element.updateComplete;
 
     const card = element.shadowRoot!.querySelector('.card');
-    expect(card!.getAttribute('role')).toBe('article');
+    expect(card!.getAttribute('role')).toBe('button');
     expect(card!.getAttribute('aria-label')).toBe('forecast insight');
+  });
+
+  it('exposes aria-expanded only when expandable', async () => {
+    element.text = 'Some insight';
+    element.expandable = true;
+    element.expanded = false;
+    await element.updateComplete;
+
+    const card = element.shadowRoot!.querySelector('.card');
+    expect(card!.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('labels the confidence figure for screen readers', async () => {
+    element.text = 'Some insight';
+    element.confidence = 0.87;
+    await element.updateComplete;
+
+    const conf = element.shadowRoot!.querySelector('.confidence');
+    expect(conf).not.toBeNull();
+    expect(conf!.getAttribute('aria-label')).toBe('Confidence 87 percent');
+    expect(conf!.textContent).toBe('87%');
   });
 
   it('card has tabindex="0" for keyboard navigation', async () => {

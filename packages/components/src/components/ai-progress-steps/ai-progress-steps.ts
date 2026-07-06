@@ -43,6 +43,10 @@ export class AiProgressSteps extends LitElement {
       width: 100%;
     }
 
+    .step-item {
+      flex: 1;
+      display: flex;
+    }
     .step {
       display: flex;
       flex-direction: column;
@@ -104,11 +108,12 @@ export class AiProgressSteps extends LitElement {
     .dot[data-status="complete"] {
       border-color: var(--cg-color-surface-base-text);
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-container-background);
+      color: var(--cg-color-action-primary-text-default);
     }
     .dot[data-status="active"] {
-      border-color: var(--cg-color-surface-base-text);
-      color: var(--cg-color-surface-base-text);
+      border-color: var(--cg-color-action-primary-background-default);
+      background: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-action-primary-text-default);
       animation: pulse 1.5s ease-in-out infinite;
     }
     .dot[data-status="error"] {
@@ -177,31 +182,33 @@ export class AiProgressSteps extends LitElement {
 
   override render() {
     const len = this.phases.length;
+    if (!len) return nothing;
     return html`
       <div class="steps" role="list" aria-label="Progress steps">
         ${this.phases.map((phase, i) => {
           const prevDone = i > 0 && (this.phases[i - 1]!.status === 'complete');
           return html`
-            <button
-              class="step"
-              role="listitem"
-              tabindex="0"
-              data-status=${phase.status}
-              aria-label=${`${phase.label}: ${phase.status}`}
-              @click=${() => this._handlePhaseClick(phase, i)}
-            >
-              <div class="step-row">
-                <div class="line ${i === 0 ? 'hide' : ''} ${prevDone ? 'done' : ''}"></div>
-                <div class="dot" data-status=${phase.status}>
-                  ${this._statusIcon(phase.status) || html`${i + 1}`}
+            <div class="step-item" role="listitem">
+              <button
+                class="step"
+                data-status=${phase.status}
+                aria-label=${`Step ${i + 1} of ${len}: ${phase.label}, ${phase.status}`}
+                aria-current=${phase.status === 'active' ? 'step' : nothing}
+                @click=${() => this._handlePhaseClick(phase, i)}
+              >
+                <div class="step-row">
+                  <div class="line ${i === 0 ? 'hide' : ''} ${prevDone ? 'done' : ''}"></div>
+                  <div class="dot" data-status=${phase.status}>
+                    ${this._statusIcon(phase.status) || html`${i + 1}`}
+                  </div>
+                  <div class="line ${i === len - 1 ? 'hide' : ''} ${phase.status === 'complete' ? 'done' : ''}"></div>
                 </div>
-                <div class="line ${i === len - 1 ? 'hide' : ''} ${phase.status === 'complete' ? 'done' : ''}"></div>
-              </div>
-              <div class="info">
-                <div class="label">${phase.label}</div>
-                ${phase.duration ? html`<div class="duration">${phase.duration}</div>` : nothing}
-              </div>
-            </button>
+                <div class="info">
+                  <div class="label">${phase.label}</div>
+                  ${phase.duration ? html`<div class="duration">${phase.duration}</div>` : nothing}
+                </div>
+              </button>
+            </div>
           `;
         })}
       </div>
