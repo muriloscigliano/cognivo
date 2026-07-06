@@ -25,7 +25,7 @@
  * @fires {CustomEvent<{result: SearchResult}>} ai-search-select - When a result is selected
  * @fires {CustomEvent<{filters: string[]}>} ai-search-filter - When filters change
  */
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
@@ -197,11 +197,21 @@ export class AiSearch extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--cg-spacing-8);
+      width: 100%;
       padding: var(--cg-spacing-6) var(--cg-spacing-12);
+      background: none;
+      border: 0;
+      text-align: left;
+      font: inherit;
+      color: inherit;
       cursor: pointer;
       transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .recent-item:hover { background: var(--cg-overlay-dark-subtle); }
+    .recent-item:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-overlay-accent-strong);
+    }
     .recent-icon { color: var(--cg-color-input-border-hover); font-size: var(--cg-font-size-xs); }
     .recent-text { font-size: var(--cg-font-size-xs); color: var(--cg-color-input-text-placeholder); flex: 1; }
     .recent-delete {
@@ -288,7 +298,13 @@ export class AiSearch extends LitElement {
     if (e.key === 'ArrowDown') { e.preventDefault(); this._highlightIndex = Math.min(this._highlightIndex + 1, totalItems - 1); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); this._highlightIndex = Math.max(this._highlightIndex - 1, -1); }
     else if (e.key === 'Enter' && this._highlightIndex >= 0) { e.preventDefault(); this._selectHighlighted(); }
-    else if (e.key === 'Escape') { this._open = false; }
+    else if (e.key === 'Escape' && this._open) { e.stopPropagation(); this._open = false; }
+  }
+
+  protected override updated(changed: PropertyValues) {
+    if (changed.has('_highlightIndex') && this._highlightIndex >= 0) {
+      this.shadowRoot?.querySelector('.result-item.highlighted')?.scrollIntoView({ block: 'nearest' });
+    }
   }
 
   private _selectHighlighted() {
@@ -340,7 +356,7 @@ export class AiSearch extends LitElement {
             role="combobox"
             aria-expanded="${showDropdown}"
             aria-haspopup="listbox"
-            aria-controls="ai-search-listbox"
+            aria-controls=${showDropdown ? 'ai-search-listbox' : nothing}
             aria-autocomplete="list"
             aria-activedescendant=${activeId || nothing}
             .value=${this._query}
@@ -356,7 +372,7 @@ export class AiSearch extends LitElement {
         </div>
 
         ${showDropdown ? html`
-          <div id="ai-search-listbox" class="dropdown" role="listbox" aria-label="Search results">
+          <div class="dropdown">
             ${this.filters.length > 0 ? html`
               <div class="section-label" id="ai-search-filters-label">Filters</div>
               <div class="filters" role="group" aria-labelledby="ai-search-filters-label">
@@ -366,55 +382,60 @@ export class AiSearch extends LitElement {
                     <button class="filter-tag ${isActive ? 'active' : ''}"
                       role="switch"
                       aria-checked=${isActive ? 'true' : 'false'}
-                      @mousedown=${(e: Event) => { e.preventDefault(); this._toggleFilter(f); }}>${f}</button>
+                      @mousedown=${(e: Event) => e.preventDefault()}
+                      @click=${() => this._toggleFilter(f)}>${f}</button>
                   `;
                 })}
               </div>
-              <div class="divider" role="separator"></div>
+              ${this.results.length > 0 || this.suggestions.length > 0 ? html`<div class="divider" role="separator"></div>` : nothing}
             ` : nothing}
 
-            ${this.results.length > 0 ? html`
-              <div class="section-label">Results</div>
-              ${this.results.map((r, i) => html`
-                <div id="ai-search-opt-${i}" class="result-item ${i === this._highlightIndex ? 'highlighted' : ''}"
-                  role="option"
-                  aria-selected=${i === this._highlightIndex ? 'true' : 'false'}
-                  @mousedown=${(e: Event) => { e.preventDefault(); this._selectResult(r); }}>
-                  ${r.icon ? html`<span class="result-icon" aria-hidden="true">${r.icon}</span>` : nothing}
-                  <div class="result-info">
-                    <div class="result-title">${r.title}</div>
-                    ${r.description ? html`<div class="result-desc">${r.description}</div>` : nothing}
-                  </div>
-                </div>
-              `)}
-            ` : nothing}
-
-            ${this.suggestions.length > 0 ? html`
-              ${this.results.length > 0 ? html`<div class="divider" role="separator"></div>` : nothing}
-              <div class="section-label">Suggestions</div>
-              ${this.suggestions.map((s, i) => {
-                const idx = i + this.results.length;
-                return html`
-                  <div id="ai-search-opt-${idx}" class="result-item ${idx === this._highlightIndex ? 'highlighted' : ''}"
+            <div id="ai-search-listbox" role="listbox" aria-label="Search results">
+              ${this.results.length > 0 ? html`
+                <div class="section-label">Results</div>
+                ${this.results.map((r, i) => html`
+                  <div id="ai-search-opt-${i}" class="result-item ${i === this._highlightIndex ? 'highlighted' : ''}"
                     role="option"
-                    aria-selected=${idx === this._highlightIndex ? 'true' : 'false'}
-                    @mousedown=${(e: Event) => { e.preventDefault(); this._setQuery(s); }}>
-                    <span class="result-icon" aria-hidden="true"><cg-icon name="sparkle" size="xs"></cg-icon></span>
-                    <div class="result-info"><div class="result-title">${s}</div></div>
+                    aria-selected=${i === this._highlightIndex ? 'true' : 'false'}
+                    @mousedown=${(e: Event) => { e.preventDefault(); this._selectResult(r); }}>
+                    ${r.icon ? html`<span class="result-icon" aria-hidden="true">${r.icon}</span>` : nothing}
+                    <div class="result-info">
+                      <div class="result-title">${r.title}</div>
+                      ${r.description ? html`<div class="result-desc">${r.description}</div>` : nothing}
+                    </div>
                   </div>
-                `;
-              })}
-            ` : nothing}
+                `)}
+              ` : nothing}
+
+              ${this.suggestions.length > 0 ? html`
+                ${this.results.length > 0 ? html`<div class="divider" role="separator"></div>` : nothing}
+                <div class="section-label">Suggestions</div>
+                ${this.suggestions.map((s, i) => {
+                  const idx = i + this.results.length;
+                  return html`
+                    <div id="ai-search-opt-${idx}" class="result-item ${idx === this._highlightIndex ? 'highlighted' : ''}"
+                      role="option"
+                      aria-selected=${idx === this._highlightIndex ? 'true' : 'false'}
+                      @mousedown=${(e: Event) => { e.preventDefault(); this._setQuery(s); }}>
+                      <span class="result-icon" aria-hidden="true"><cg-icon name="sparkle" size="xs"></cg-icon></span>
+                      <div class="result-info"><div class="result-title">${s}</div></div>
+                    </div>
+                  `;
+                })}
+              ` : nothing}
+            </div>
 
             ${this.recentSearches.length > 0 && !this._query ? html`
               <div class="divider" role="separator"></div>
-              <div class="section-label">Recent</div>
-              ${this.recentSearches.slice(0, 10).map(r => html`
-                <div class="recent-item" role="option" aria-selected="false" @mousedown=${(e: Event) => { e.preventDefault(); this._handleRecent(r); }}>
-                  <span class="recent-icon" aria-hidden="true">↺</span>
-                  <span class="recent-text">${r}</span>
-                </div>
-              `)}
+              <div class="section-label" id="ai-search-recent-label">Recent</div>
+              <div role="group" aria-labelledby="ai-search-recent-label">
+                ${this.recentSearches.slice(0, 10).map(r => html`
+                  <button type="button" class="recent-item" @mousedown=${(e: Event) => { e.preventDefault(); this._handleRecent(r); }}>
+                    <span class="recent-icon" aria-hidden="true">↺</span>
+                    <span class="recent-text">${r}</span>
+                  </button>
+                `)}
+              </div>
             ` : nothing}
           </div>
         ` : nothing}

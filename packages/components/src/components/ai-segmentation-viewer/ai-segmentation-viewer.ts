@@ -5,7 +5,7 @@
  * @fires {CustomEvent<{id: string, label: string}>} ai-segment-select
  * @fires {CustomEvent<{id: string, visible: boolean}>} ai-segment-toggle
  */
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css, nothing, svg } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
@@ -40,12 +40,18 @@ export class AiSegmentationViewer extends LitElement {
       background: var(--cg-color-surface-base-background);
     }
     .canvas-wrap img { display: block; width: 100%; height: auto; }
+    .canvas-empty {
+      padding: var(--cg-spacing-24);
+      text-align: center;
+      color: var(--cg-color-surface-cards-text);
+      font-size: var(--cg-font-size-sm);
+    }
     .mask-overlay {
       position: absolute; inset: 0; pointer-events: none;
       transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .mask-overlay.selected {
-      outline: var(--cg-border-width-100) solid var(--cg-color-action-primary-background-default);
+      outline: var(--cg-border-width-100) solid var(--cg-color-action-primary-border-default);
       outline-offset: calc(-1 * var(--cg-spacing-2));
     }
 
@@ -77,9 +83,10 @@ export class AiSegmentationViewer extends LitElement {
       transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .legend-item:hover { border-color: var(--cg-color-surface-cards-hover-border); color: var(--cg-color-surface-base-text); }
-    .legend-item.selected { border-color: var(--cg-color-action-primary-background-default); color: var(--cg-color-surface-base-text); }
+    .legend-item.selected { border-color: var(--cg-color-action-primary-border-default); color: var(--cg-color-surface-base-text); }
     .legend-item.hidden { opacity: 0.4; }
-    .legend-item:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .legend-item:active { border-color: var(--cg-color-surface-cards-active-border); }
+    .legend-item:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-outline-width-thick) var(--cg-color-focus-ring); }
     .legend-swatch { width: var(--cg-spacing-8); height: var(--cg-spacing-8); border-radius: var(--cg-border-radius-full); flex-shrink: 0; }
     .legend-toggle {
       background: none; border: none; padding: 0; color: inherit; cursor: pointer;
@@ -116,6 +123,7 @@ export class AiSegmentationViewer extends LitElement {
 
   override render() {
     const visibleMasks = this.masks.filter(m => m.visible !== false);
+    const isEmpty = !this.src && this.masks.length === 0;
 
     return html`
       <div class="panel">
@@ -123,7 +131,8 @@ export class AiSegmentationViewer extends LitElement {
           <span class="header-title">Segmentation</span>
         </div>
 
-        <div class="canvas-wrap">
+        <div class="canvas-wrap" role="group" aria-label="Segmentation overlay">
+          ${isEmpty ? html`<div class="canvas-empty">No segmentation loaded</div>` : nothing}
           ${this.src ? html`<img src=${this.src} alt="Segmentation source" />` : nothing}
           ${visibleMasks.map(m => html`
             <div class="mask-overlay ${m.id === this.selectedMask ? 'selected' : ''}"
@@ -131,6 +140,7 @@ export class AiSegmentationViewer extends LitElement {
           `)}
         </div>
 
+        ${this.masks.length ? html`
         <div class="opacity-row">
           <cg-slider
             label="Opacity"
@@ -144,6 +154,7 @@ export class AiSegmentationViewer extends LitElement {
             @cg-change=${(e: CustomEvent) => { this.opacity = e.detail.value / 100; }}
           ></cg-slider>
         </div>
+        ` : nothing}
 
         ${this.showLegend ? html`
           <div class="legend">
@@ -151,16 +162,16 @@ export class AiSegmentationViewer extends LitElement {
             <div class="legend-items">
               ${this.masks.map(m => html`
                 <div class="legend-item ${m.id === this.selectedMask ? 'selected' : ''} ${m.visible === false ? 'hidden' : ''}"
-                  tabindex="0" role="button"
+                  tabindex="0" role="button" aria-pressed=${m.id === this.selectedMask}
                   @click=${() => this._selectMask(m)}
                   @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._selectMask(m); } }}>
                   <span class="legend-swatch" style="background: ${m.color}"></span>
                   ${m.label}
                   <button class="legend-toggle" @click=${(e: Event) => this._toggleMask(m, e)}
                     aria-label="${m.visible !== false ? 'Hide' : 'Show'} ${m.label}">
-                    ${m.visible !== false ? html`
+                    ${m.visible !== false ? svg`
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    ` : html`
+                    ` : svg`
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                     `}
                   </button>

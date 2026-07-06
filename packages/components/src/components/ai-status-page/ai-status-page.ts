@@ -152,7 +152,7 @@ export class AiStatusPage extends LitElement {
     .service-item:active { transform: scale(var(--cg-interaction-press-scale)); }
     .service-item:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 3px var(--cg-color-focus-ring);
     }
 
     .service-row {
@@ -179,7 +179,7 @@ export class AiStatusPage extends LitElement {
       align-items: center;
       gap: var(--cg-spacing-12);
       flex-shrink: 0;
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-on-surface-container-default);
       font-size: var(--cg-font-size-xs);
       font-variant-numeric: tabular-nums;
     }
@@ -190,14 +190,14 @@ export class AiStatusPage extends LitElement {
     /* ── 90-day uptime history bars: muted by default, vivid only on incident days ── */
     .history {
       display: flex;
-      gap: 1px;
+      gap: var(--cg-spacing-1);
       align-items: stretch;
       height: var(--cg-spacing-12);
       padding-left: var(--cg-spacing-20);
     }
     .history-day {
       flex: 1;
-      min-width: 2px;
+      min-width: var(--cg-spacing-2);
       max-width: var(--cg-spacing-4);
       border-radius: var(--cg-border-radius-50);
       background: var(--cg-color-surface-cards-border);
@@ -309,11 +309,10 @@ export class AiStatusPage extends LitElement {
             : nothing}
         </div>
 
-        <div class="service-list" role="list" aria-label="Service status list">
+        <div class="service-list" role="group" aria-label="Service status list">
           ${this.services.map(svc => html`
             <button
               class="service-item"
-              role="listitem"
               aria-label="${svc.name}: ${this._statusLabel(svc.status)}"
               @click=${() => this._handleClick(svc)}
             >

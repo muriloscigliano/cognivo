@@ -98,10 +98,14 @@ export class AiReasoningTree extends LitElement {
       color: var(--cg-color-surface-base-text);
       line-height: var(--cg-line-height-relaxed);
       border-radius: var(--cg-border-radius-50);
-      cursor: default;
+      cursor: pointer;
       opacity: 0.8;
     }
-    .step:hover { background: var(--cg-overlay-dark-subtle); }
+    .step:hover { background: var(--cg-overlay-accent-subtle); }
+    .step:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 var(--cg-outline-width-thick) var(--cg-color-focus-ring);
+    }
 
     .dot {
       width: var(--cg-spacing-6);
@@ -126,7 +130,11 @@ export class AiReasoningTree extends LitElement {
 
     .children { padding-left: var(--cg-spacing-20); }
 
-    .step.highlighted { background: var(--cg-overlay-accent-subtle); }
+    .step.highlighted {
+      background: var(--cg-overlay-accent-subtle);
+      box-shadow: inset var(--cg-border-width-100) 0 0 0 var(--cg-color-focus-ring);
+      opacity: 1;
+    }
 
     @media (prefers-reduced-motion: reduce) {
       .chevron { transition: none; }
@@ -148,10 +156,12 @@ export class AiReasoningTree extends LitElement {
   private _renderNodes(nodes: ReasoningNode[]): unknown {
     return nodes.map(n => html`
       <div class="step ${this.highlightPath.includes(n.id) ? 'highlighted' : ''}"
-        @click=${() => this.dispatchEvent(new CustomEvent('ai-reasoning-node-click', { bubbles: true, composed: true, detail: { id: n.id, type: n.type, content: n.content } }))}>
+        role="button" tabindex="0"
+        @click=${() => this.dispatchEvent(new CustomEvent('ai-reasoning-node-click', { bubbles: true, composed: true, detail: { id: n.id, type: n.type, content: n.content } }))}
+        @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}>
         <span class="dot ${n.type}"></span>
         <span class="step-text">${n.content}</span>
-        ${n.confidence ? html`<span class="conf">${Math.round(n.confidence * 100)}%</span>` : nothing}
+        ${n.confidence != null ? html`<span class="conf">${Math.round(n.confidence * 100)}%</span>` : nothing}
       </div>
       ${n.children?.length ? html`<div class="children">${this._renderNodes(n.children)}</div>` : nothing}
     `);
@@ -163,12 +173,12 @@ export class AiReasoningTree extends LitElement {
 
     return html`
       <div class="reasoning">
-        <button class="toggle" @click=${() => { this.collapsed = !this.collapsed; }} aria-expanded=${!this.collapsed}>
+        <button class="toggle" @click=${() => { this.collapsed = !this.collapsed; }} aria-expanded=${!this.collapsed} aria-controls="art-steps">
           <svg class="chevron" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
           <span>${this.label}</span>
           <span class="toggle-count">${total} step${total !== 1 ? 's' : ''}</span>
         </button>
-        ${!this.collapsed ? html`<div class="steps">${this._renderNodes(this.nodes)}</div>` : nothing}
+        ${!this.collapsed ? html`<div class="steps" id="art-steps">${this._renderNodes(this.nodes)}</div>` : nothing}
       </div>
     `;
   }

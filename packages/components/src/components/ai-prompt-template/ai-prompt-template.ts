@@ -89,7 +89,7 @@ export class AiPromptTemplate extends LitElement {
       min-height: 80px;
       font-size: var(--cg-font-size-sm);
       line-height: var(--cg-line-height-relaxed);
-      color: var(--cg-color-input-text-placeholder);
+      color: var(--cg-color-input-text-default);
       white-space: pre-wrap;
       word-break: break-word;
     }
@@ -105,7 +105,7 @@ export class AiPromptTemplate extends LitElement {
       font-size: var(--cg-font-size-sm);
       font-family: var(--cg-font-family-mono);
       line-height: var(--cg-line-height-relaxed);
-      color: var(--cg-color-input-text-placeholder);
+      color: var(--cg-color-input-text-default);
       resize: vertical;
     }
     .template-textarea:focus-visible {
@@ -176,7 +176,7 @@ export class AiPromptTemplate extends LitElement {
 
     .empty-state {
       text-align: center;
-      color: var(--cg-color-input-border-hover);
+      color: var(--cg-color-empty-state-text-secondary);
       font-size: var(--cg-font-size-sm);
       padding: var(--cg-spacing-16) 0;
     }
@@ -251,22 +251,22 @@ export class AiPromptTemplate extends LitElement {
       <div class="container" role="region" aria-label="Prompt template editor">
         <div class="header">
           <span class="title">Prompt Template</span>
-          <div class="mode-toggle" role="radiogroup" aria-label="View mode">
-            <button
-              class="mode-btn ${this._mode === 'edit' ? 'active' : ''}"
-              role="radio"
-              aria-checked=${this._mode === 'edit' ? 'true' : 'false'}
-              @click=${() => { this._mode = 'edit'; }}
-              tabindex="0"
-            >Edit</button>
-            <button
-              class="mode-btn ${this._mode === 'preview' ? 'active' : ''}"
-              role="radio"
-              aria-checked=${this._mode === 'preview' ? 'true' : 'false'}
-              @click=${() => { this._mode = 'preview'; }}
-              tabindex="0"
-            >Preview</button>
-          </div>
+          ${this.editable ? html`
+            <div class="mode-toggle" role="group" aria-label="View mode">
+              <button
+                class="mode-btn ${this._mode === 'edit' ? 'active' : ''}"
+                type="button"
+                aria-pressed=${this._mode === 'edit' ? 'true' : 'false'}
+                @click=${() => { this._mode = 'edit'; }}
+              >Edit</button>
+              <button
+                class="mode-btn ${this._mode === 'preview' ? 'active' : ''}"
+                type="button"
+                aria-pressed=${this._mode === 'preview' ? 'true' : 'false'}
+                @click=${() => { this._mode = 'preview'; }}
+              >Preview</button>
+            </div>
+          ` : nothing}
         </div>
 
         ${this._mode === 'edit' && this.editable ? html`

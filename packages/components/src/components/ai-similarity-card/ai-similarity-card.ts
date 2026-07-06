@@ -132,7 +132,7 @@ export class AiSimilarityCard extends LitElement {
     }
     .feature-bar-b {
       height: 100%; border-radius: var(--cg-border-radius-full);
-      background: var(--cg-color-surface-container-outlined);
+      background: var(--cg-color-status-info-text-default);
       transition: width var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     .feature-vs {
@@ -146,6 +146,13 @@ export class AiSimilarityCard extends LitElement {
       padding: var(--cg-spacing-16) var(--cg-spacing-24);
       display: flex; gap: var(--cg-spacing-8);
       justify-content: flex-end;
+    }
+
+    /* ── Empty ── */
+    .empty { padding: var(--cg-spacing-24); text-align: center; }
+    .empty-text {
+      font-size: var(--cg-font-size-sm);
+      color: var(--cg-color-surface-container-outlined);
     }
 
     /* ── Rounded ── */
@@ -162,10 +169,10 @@ export class AiSimilarityCard extends LitElement {
   @property({ type: Array }) features: SimilarityFeature[] = [];
   @property() layout: 'side-by-side' | 'stacked' = 'side-by-side';
 
-  private _renderItem(item: SimilarityItem) {
+  private _renderItem(item: SimilarityItem, fallbackLabel: string) {
     return html`
       <div class="item-card">
-        ${item.image ? html`<img class="item-image" src=${item.image} alt=${item.label} />` : nothing}
+        ${item.image ? html`<img class="item-image" src=${item.image} alt=${item.label || fallbackLabel} />` : nothing}
         <span class="item-label">${item.label}</span>
         ${item.description ? html`<span class="item-desc">${item.description}</span>` : nothing}
       </div>
@@ -175,6 +182,18 @@ export class AiSimilarityCard extends LitElement {
   override render() {
     const pct = Math.round(this.score * 100);
     const isStacked = this.layout === 'stacked';
+    const isEmpty = !this.itemA?.label && !this.itemB?.label && !this.itemA?.image && !this.itemB?.image;
+
+    if (isEmpty) {
+      return html`
+        <div class="panel">
+          <div class="header">
+            <span class="header-title">Similarity Match</span>
+          </div>
+          <div class="empty"><span class="empty-text">No items to compare</span></div>
+        </div>
+      `;
+    }
 
     return html`
       <div class="panel">
@@ -182,15 +201,15 @@ export class AiSimilarityCard extends LitElement {
           <span class="header-title">Similarity Match</span>
         </div>
 
-        <div class="items ${isStacked ? 'stacked' : ''}">
-          ${this._renderItem(this.itemA)}
+        <div class="items ${isStacked ? 'stacked' : ''}" role="group" aria-label="Item comparison">
+          ${this._renderItem(this.itemA, 'Comparison item A')}
           <div class="score-bridge ${isStacked ? 'stacked' : ''}">
-            <div class="score-circle">
+            <div class="score-circle" role="img" aria-label="${pct}% similarity match">
               <span class="score-value">${pct}%</span>
             </div>
             ${!isStacked ? html`<span class="score-label">match</span>` : nothing}
           </div>
-          ${this._renderItem(this.itemB)}
+          ${this._renderItem(this.itemB, 'Comparison item B')}
         </div>
 
         ${this.features.length > 0 ? html`
@@ -199,7 +218,7 @@ export class AiSimilarityCard extends LitElement {
             ${this.features.map(f => html`
               <div class="feature-row">
                 <span class="feature-name">${f.name}</span>
-                <div class="feature-bars">
+                <div class="feature-bars" role="img" aria-label="${f.name}: ${this.itemA.label || 'A'} ${Math.round(f.scoreA * 100)}%, ${this.itemB.label || 'B'} ${Math.round(f.scoreB * 100)}%">
                   <div class="feature-bar-wrap">
                     <div class="feature-bar-a" style="width:${Math.round(f.scoreA * 100)}%"></div>
                   </div>

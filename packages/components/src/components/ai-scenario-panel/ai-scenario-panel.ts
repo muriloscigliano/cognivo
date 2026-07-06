@@ -3,7 +3,6 @@
  * What-if scenario comparison panel. Clean list with probability, outcome, and status.
  *
  * @fires {CustomEvent<{id: string}>} ai-scenario-select
- * @fires {CustomEvent<{id: string}>} ai-scenario-run
  */
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
@@ -63,11 +62,12 @@ export class AiScenarioPanel extends LitElement {
     .scenario:last-child { border-bottom: none; }
     .scenario:hover { background: var(--cg-color-action-secondary-background-hover); }
     .scenario.active {
-      background: var(--cg-overlay-dark-subtle);
+      background: var(--cg-overlay-accent-medium);
+      box-shadow: inset var(--cg-outline-width-default) 0 0 0 var(--cg-color-action-primary-background-default);
     }
     .scenario:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 var(--cg-outline-width-default) var(--cg-overlay-accent-strong);
+      box-shadow: inset 0 0 0 var(--cg-outline-width-default) var(--cg-color-action-primary-background-default);
     }
 
     .scenario-info { flex: 1; min-width: 0; }
@@ -114,13 +114,29 @@ export class AiScenarioPanel extends LitElement {
       flex-shrink: 0;
     }
     .status-dot.idle { background: var(--cg-color-input-text-placeholder); }
-    .status-dot.running { background: var(--cg-color-status-warning-text-default); }
+    .status-dot.running {
+      background: var(--cg-color-status-warning-text-default);
+      animation: cg-scenario-pulse var(--cg-transition-duration-slow) var(--cg-transition-easing-default) infinite;
+    }
     .status-dot.complete { background: var(--cg-color-status-success-text-default); }
     .status-dot.error { background: var(--cg-color-status-error-text-default); }
 
-    /* Footer */
-    .footer {
-      padding: var(--cg-spacing-12);
+    @keyframes cg-scenario-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: var(--cg-opacity-50); }
+    }
+
+    /* Visually-hidden text for assistive tech */
+    .cg-sr-only {
+      position: absolute;
+      width: var(--cg-border-width-50);
+      height: var(--cg-border-width-50);
+      padding: 0;
+      margin: calc(-1 * var(--cg-border-width-50));
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     .empty {
@@ -135,9 +151,45 @@ export class AiScenarioPanel extends LitElement {
   @property() activeScenario = '';
   @property({ type: Boolean }) loading = false;
 
+  @state() private _focusIndex = 0;
+
   private _select(id: string) {
     this.activeScenario = id;
     this.dispatchEvent(new CustomEvent('ai-scenario-select', { bubbles: true, composed: true, detail: { id } }));
+  }
+
+  /** Index of the roving tab stop: the active scenario, else the tracked focus index. */
+  private get _tabStopIndex(): number {
+    const activeIdx = this.scenarios.findIndex(s => s.id === this.activeScenario);
+    if (activeIdx >= 0) return activeIdx;
+    return Math.min(this._focusIndex, this.scenarios.length - 1);
+  }
+
+  private _focusOption(index: number) {
+    this._focusIndex = index;
+    const options = this.shadowRoot?.querySelectorAll<HTMLElement>('.scenario');
+    options?.[index]?.focus();
+  }
+
+  private _handleListKeydown(e: KeyboardEvent) {
+    const count = this.scenarios.length;
+    if (count === 0) return;
+    const current = this._tabStopIndex;
+    let next = current;
+    switch (e.key) {
+      case 'ArrowDown': next = (current + 1) % count; break;
+      case 'ArrowUp': next = (current - 1 + count) % count; break;
+      case 'Home': next = 0; break;
+      case 'End': next = count - 1; break;
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        this._select(this.scenarios[current]!.id);
+        return;
+      default: return;
+    }
+    e.preventDefault();
+    this._focusOption(next);
   }
 
   override render() {
@@ -150,18 +202,19 @@ export class AiScenarioPanel extends LitElement {
     }
 
     return html`
-      <div class="panel" role="listbox" aria-label="Scenarios">
+      <div class="panel" role="listbox" aria-label="Scenarios" @keydown=${this._handleListKeydown}>
         <div class="header">
           <span class="header-title">Scenarios</span>
         </div>
         <div class="scenarios">
-          ${this.scenarios.map(s => html`
+          ${this.scenarios.map((s, i) => html`
             <div class="scenario ${s.id === this.activeScenario ? 'active' : ''}"
-              role="option" tabindex="0"
+              role="option"
+              tabindex=${i === this._tabStopIndex ? '0' : '-1'}
               aria-selected="${s.id === this.activeScenario}"
-              @click=${() => this._select(s.id)}
-              @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._select(s.id); } }}>
-              <span class="status-dot ${s.status || 'idle'}"></span>
+              @click=${() => { this._focusIndex = i; this._select(s.id); }}>
+              <span class="status-dot ${s.status || 'idle'}" aria-hidden="true"></span>
+              <span class="cg-sr-only">Status: ${s.status || 'idle'}</span>
               <div class="scenario-info">
                 <div class="scenario-label">${s.label}</div>
                 ${s.description ? html`<div class="scenario-desc">${s.description}</div>` : nothing}

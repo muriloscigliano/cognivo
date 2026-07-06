@@ -46,7 +46,7 @@ export class AiPromptEditor extends LitElement {
       padding: var(--cg-spacing-16);
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-semibold);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-surface-container-text);
       text-transform: uppercase;
       letter-spacing: var(--cg-letter-spacing-wide);
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
@@ -65,7 +65,7 @@ export class AiPromptEditor extends LitElement {
     }
     .version-item:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 2px var(--cg-overlay-accent-strong);
+      box-shadow: inset 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
     }
 
     .version-top { display: flex; justify-content: space-between; align-items: center; }
@@ -80,7 +80,7 @@ export class AiPromptEditor extends LitElement {
     }
     .version-meta {
       font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-surface-container-text);
       margin-top: var(--cg-spacing-2);
     }
 
@@ -101,22 +101,35 @@ export class AiPromptEditor extends LitElement {
       border-radius: var(--cg-border-radius-100);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
       background: transparent;
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-surface-container-text);
       font: inherit;
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
       transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .action-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
-    .action-btn:hover { border-color: var(--cg-color-surface-cards-hover-border); color: var(--cg-color-surface-base-text); }
-    .action-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .action-btn:not(:disabled):active { transform: scale(var(--cg-interaction-press-scale)); }
+    .action-btn:not(:disabled):hover { border-color: var(--cg-color-surface-cards-hover-border); color: var(--cg-color-surface-base-text); }
+    .action-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring-offset), 0 0 0 calc(var(--cg-border-width-100) * 2) var(--cg-color-focus-ring);
+    }
+    .action-btn:disabled {
+      cursor: not-allowed;
+      color: var(--cg-color-action-primary-text-disable);
+      border-color: var(--cg-color-surface-cards-border);
+    }
     .action-btn.primary {
       background: var(--cg-color-action-primary-background-default);
       color: var(--cg-color-action-primary-text-default);
       border-color: transparent;
     }
-    .action-btn.primary:hover { background: var(--cg-color-action-primary-background-hover); }
+    .action-btn.primary:not(:disabled):hover { background: var(--cg-color-action-primary-background-hover); }
+    .action-btn.primary:disabled {
+      background: var(--cg-color-action-primary-background-disable);
+      color: var(--cg-color-action-primary-text-disable);
+      border-color: transparent;
+    }
 
     /* ── Content ── */
     .content-area { flex: 1; overflow: auto; }
@@ -146,6 +159,10 @@ export class AiPromptEditor extends LitElement {
       outline: none;
       box-sizing: border-box;
     }
+    textarea:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
+    }
 
     /* ── Split mode ── */
     .split-pane {
@@ -157,7 +174,7 @@ export class AiPromptEditor extends LitElement {
       padding: var(--cg-spacing-12) var(--cg-spacing-20);
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-semibold);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-surface-container-text);
       text-transform: uppercase;
       letter-spacing: var(--cg-letter-spacing-wide);
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-cards-divider);
@@ -166,13 +183,14 @@ export class AiPromptEditor extends LitElement {
     .empty {
       padding: var(--cg-spacing-48) var(--cg-spacing-24);
       text-align: center;
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-surface-container-text);
       font-size: var(--cg-font-size-sm);
     }
   `];
 
   @property({ type: Array }) versions: PromptVersion[] = [];
   @property({ reflect: true }) mode: 'view' | 'edit' | 'split' = 'view';
+  @property({ type: Boolean }) saving = false;
 
   @state() private _selectedId = '';
   @state() private _editContent = '';
@@ -196,7 +214,33 @@ export class AiPromptEditor extends LitElement {
     this._selectedId = id;
   }
 
+  private _handleOptionKeydown(e: KeyboardEvent, id: string) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      this._selectVersion(id);
+      return;
+    }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End') {
+      e.preventDefault();
+      const idx = this.versions.findIndex(v => v.id === this._selectedId);
+      let next = idx;
+      if (e.key === 'ArrowDown') next = Math.min(this.versions.length - 1, idx + 1);
+      else if (e.key === 'ArrowUp') next = Math.max(0, idx - 1);
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = this.versions.length - 1;
+      const target = this.versions[next];
+      if (target) {
+        this._selectVersion(target.id);
+        void this.updateComplete.then(() => {
+          const el = this.shadowRoot?.querySelector('.version-item.selected') as HTMLElement | null;
+          el?.focus();
+        });
+      }
+    }
+  }
+
   private _handleSave() {
+    if (this.saving) return;
     this.dispatchEvent(new CustomEvent('ai-prompt-save', {
       bubbles: true, composed: true,
       detail: { versionId: this._selectedId, content: this._editContent },
@@ -221,9 +265,9 @@ export class AiPromptEditor extends LitElement {
         <div class="version-list" role="listbox" aria-label="Prompt versions">
           ${this.versions.map(v => html`
             <div class="version-item ${v.id === this._selectedId ? 'selected' : ''}"
-              role="option" tabindex="0" aria-selected="${v.id === this._selectedId}"
+              role="option" tabindex="${v.id === this._selectedId ? '0' : '-1'}" aria-selected="${v.id === this._selectedId}"
               @click=${() => this._selectVersion(v.id)}
-              @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._selectVersion(v.id); } }}>
+              @keydown=${(e: KeyboardEvent) => this._handleOptionKeydown(e, v.id)}>
               <div class="version-top">
                 <span class="version-id">${v.id}</span>
                 ${v.active ? html`<span class="active-badge">Active</span>` : nothing}
@@ -242,9 +286,11 @@ export class AiPromptEditor extends LitElement {
 
     return html`
       <div class="action-btns">
-        ${this.mode !== 'view' && hasChanges ? html`
-          <button class="action-btn" @click=${() => { if (selected) this._editContent = selected.content; }}>Revert</button>
-          <button class="action-btn primary" @click=${this._handleSave}>Save</button>
+        ${this.mode !== 'view' ? html`
+          <button class="action-btn" ?disabled=${!hasChanges || this.saving}
+            @click=${() => { if (selected) this._editContent = selected.content; }}>Revert</button>
+          <button class="action-btn primary" ?disabled=${!hasChanges || this.saving}
+            @click=${this._handleSave}>${this.saving ? 'Saving…' : 'Save'}</button>
         ` : nothing}
         ${selected && !selected.active ? html`
           <button class="action-btn primary" @click=${this._handleActivate}>Activate</button>
@@ -255,7 +301,7 @@ export class AiPromptEditor extends LitElement {
 
   override render() {
     if (this.versions.length === 0) {
-      return html`<div class="editor"><div class="empty">No prompt versions yet</div></div>`;
+      return html`<div class="editor" role="region" aria-label="Prompt editor"><div class="empty">No prompt versions yet</div></div>`;
     }
 
     const selected = this._selectedVersion;

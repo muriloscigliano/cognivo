@@ -16,7 +16,7 @@
  *
  * @fires {CustomEvent<{id, title, type, weight}>} ai-source-click - Source clicked
  */
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, svg, css, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
@@ -82,9 +82,10 @@ export class AiSourceGraph extends LitElement {
     }
     .source:last-child { border-bottom: none; }
     .source:hover { background: var(--cg-overlay-dark-subtle); }
+    .source:active { background: var(--cg-overlay-dark-strong); }
     .source:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 2px var(--cg-color-focus-ring);
+      box-shadow: inset 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring);
     }
 
     /* Footnote number */
@@ -103,6 +104,16 @@ export class AiSourceGraph extends LitElement {
       color: var(--cg-color-surface-base-text);
       font-family: var(--cg-font-family-mono);
     }
+
+    /* Disclosure chevron */
+    .chevron {
+      flex-shrink: 0;
+      width: var(--cg-spacing-16);
+      height: var(--cg-spacing-16);
+      color: var(--cg-color-input-text-placeholder);
+      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+    }
+    .source.expanded .chevron { transform: rotate(90deg); }
 
     /* Source content */
     .source-body { flex: 1; min-width: 0; }
@@ -214,6 +225,7 @@ export class AiSourceGraph extends LitElement {
             return html`
               <div class="source ${isExpanded ? 'expanded' : ''}"
                 role="listitem" tabindex="0"
+                aria-expanded=${s.excerpt ? String(isExpanded) : nothing}
                 @click=${() => this._handleSourceClick(s)}
                 @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleSourceClick(s); } }}>
                 <span class="footnote">${i + 1}</span>
@@ -230,6 +242,11 @@ export class AiSourceGraph extends LitElement {
                   <div class="weight-bar"><div class="weight-fill" style="width: ${Math.round(s.weight * 100)}%"></div></div>
                   <span class="weight-label">${Math.round(s.weight * 100)}%</span>
                 </div>
+                ${s.excerpt ? svg`
+                  <svg class="chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                ` : nothing}
               </div>
             `;
           })}

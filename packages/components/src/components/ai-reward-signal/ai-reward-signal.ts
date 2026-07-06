@@ -36,8 +36,8 @@ export class AiRewardSignal extends LitElement {
     .container:focus-visible {
       outline: none;
       box-shadow:
-        0 0 0 2px var(--cg-color-surface-base-background),
-        0 0 0 4px var(--cg-color-focus-ring);
+        0 0 0 var(--cg-focus-ring-offset) var(--cg-color-surface-base-background),
+        0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
 
     .top-row {
@@ -81,7 +81,7 @@ export class AiRewardSignal extends LitElement {
       color: var(--cg-color-status-error-text-default);
     }
     .trend.stable {
-      background: var(--cg-overlay-dark-subtle);
+      background: var(--cg-color-surface-cards-divider);
       color: var(--cg-color-input-text-placeholder);
     }
 
@@ -110,7 +110,7 @@ export class AiRewardSignal extends LitElement {
     .spark-line {
       fill: none;
       stroke: var(--cg-color-action-primary-background-default);
-      stroke-width: 1.5;
+      stroke-width: var(--cg-border-width-75);
       stroke-linecap: round;
       stroke-linejoin: round;
     }
@@ -216,7 +216,8 @@ export class AiRewardSignal extends LitElement {
         </div>
 
         ${spark.line ? html`
-          <div class="sparkline">
+          <div class="sparkline" role="img"
+            aria-label="${this.label ? this.label + ' history' : 'History'}, trending ${this.trend}">
             <svg viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true">
               <path class="spark-area" d="${spark.area}" />
               <path class="spark-line" d="${spark.line}" />

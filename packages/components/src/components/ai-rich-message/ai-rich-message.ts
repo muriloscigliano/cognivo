@@ -69,7 +69,7 @@ export class AiRichMessage extends LitElement {
     }
     .avatar.assistant {
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-base-background);
+      color: var(--cg-color-action-primary-text-default);
     }
     .avatar.user {
       background: var(--cg-color-surface-cards-border);
@@ -103,10 +103,11 @@ export class AiRichMessage extends LitElement {
     .message.assistant .bubble-body {
       background: var(--cg-color-surface-cards-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-border-radius-150) var(--cg-border-radius-150) var(--cg-border-radius-150) var(--cg-border-radius-50);
     }
     .message.user .bubble-body {
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-base-background);
+      color: var(--cg-color-action-primary-text-default);
       border-radius: var(--cg-border-radius-150) var(--cg-border-radius-150) var(--cg-border-radius-50) var(--cg-border-radius-150);
     }
     .message.system .bubble-body {
@@ -132,14 +133,11 @@ export class AiRichMessage extends LitElement {
     .text p { margin: 0 0 var(--cg-spacing-8); }
     .text p:last-child { margin-bottom: 0; }
     .text code {
-      background: var(--cg-overlay-dark-medium);
+      background: var(--cg-color-code-background);
       padding: var(--cg-spacing-1) var(--cg-spacing-6);
       border-radius: var(--cg-border-radius-50);
       font-family: var(--cg-font-family-mono);
       font-size: var(--cg-font-size-sm);
-    }
-    .message.user .text code {
-      background: var(--cg-overlay-dark-subtle);
     }
 
     /* ── Cards section ── */
@@ -306,7 +304,6 @@ export class AiRichMessage extends LitElement {
         class="message ${this.role}"
         role="article"
         aria-label="${this.role} message"
-        tabindex="0"
       >
         ${this._renderAvatar()}
         <div class="bubble">

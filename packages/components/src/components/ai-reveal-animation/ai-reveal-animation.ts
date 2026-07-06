@@ -33,6 +33,11 @@ export class AiRevealAnimation extends LitElement {
     .wrapper {
       opacity: 0;
       will-change: transform, opacity;
+      /* Motion geometry constants (not spatial/color tokens) — hoisted to
+         avoid drift between initial state and keyframe. */
+      --_scale-start: 0.85;
+      --_flip-persp: 600px;
+      --_flip-rot: -15deg;
     }
 
     /* ── Initial hidden states ── */
@@ -43,11 +48,11 @@ export class AiRevealAnimation extends LitElement {
     }
     .wrapper.scale {
       opacity: 0;
-      transform: scale(0.85);
+      transform: scale(var(--_scale-start));
     }
     .wrapper.flip {
       opacity: 0;
-      transform: perspective(600px) rotateX(-15deg);
+      transform: perspective(var(--_flip-persp)) rotateX(var(--_flip-rot));
     }
 
     /* ── Visible / animated states ── */
@@ -82,13 +87,13 @@ export class AiRevealAnimation extends LitElement {
     }
 
     @keyframes reveal-scale {
-      from { opacity: 0; transform: scale(0.85); }
+      from { opacity: 0; transform: scale(var(--_scale-start)); }
       to   { opacity: 1; transform: scale(1); }
     }
 
     @keyframes reveal-flip {
-      from { opacity: 0; transform: perspective(600px) rotateX(-15deg); }
-      to   { opacity: 1; transform: perspective(600px) rotateX(0deg); }
+      from { opacity: 0; transform: perspective(var(--_flip-persp)) rotateX(var(--_flip-rot)); }
+      to   { opacity: 1; transform: perspective(var(--_flip-persp)) rotateX(0deg); }
     }
 
   `];
@@ -118,6 +123,19 @@ export class AiRevealAnimation extends LitElement {
       this._done = false;
       // Clean up previous listener
       this._animAbort?.abort();
+      // Under reduced motion the shared style only shortens the animation to
+      // 0.01ms, which is not a guaranteed animationend across engines. Complete
+      // synchronously here (single source of truth for both connect-visible and
+      // toggle-later cases) so content reaches its final state and the event fires.
+      if (this._checkReducedMotion()) {
+        this._done = true;
+        requestAnimationFrame(() => {
+          this.dispatchEvent(new CustomEvent('ai-reveal-complete', {
+            bubbles: true, composed: true,
+          }));
+        });
+        return;
+      }
       this._animAbort = new AbortController();
       const wrapper = this.shadowRoot?.querySelector('.wrapper');
       if (wrapper) {
@@ -144,20 +162,6 @@ export class AiRevealAnimation extends LitElement {
 
   private _checkReducedMotion(): boolean {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  }
-
-  override connectedCallback() {
-    super.connectedCallback();
-    // If reduced motion and visible, mark done immediately
-    if (this.visible && this._checkReducedMotion()) {
-      this._done = true;
-      // Dispatch async so listeners can attach
-      requestAnimationFrame(() => {
-        this.dispatchEvent(new CustomEvent('ai-reveal-complete', {
-          bubbles: true, composed: true,
-        }));
-      });
-    }
   }
 
   override render() {

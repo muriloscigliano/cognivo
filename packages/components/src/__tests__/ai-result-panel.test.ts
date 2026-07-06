@@ -146,4 +146,82 @@ describe('ai-result-panel', () => {
     const emptyState = element.shadowRoot!.querySelector('.empty');
     expect(emptyState).toBeNull();
   });
+
+  it('exposes tab semantics (tablist/tab/tabpanel) when tabs are present', async () => {
+    element.explanation = 'Analysis';
+    element.data = [{ metric: 'rev', value: 1 }];
+    element.sources = [{ title: 'Src' }];
+    await element.updateComplete;
+
+    const tablist = element.shadowRoot!.querySelector('[role="tablist"]');
+    expect(tablist).not.toBeNull();
+
+    const tabs = element.shadowRoot!.querySelectorAll('[role="tab"]');
+    expect(tabs.length).toBe(3);
+    expect(tabs[0]!.getAttribute('aria-selected')).toBe('true');
+    expect(tabs[0]!.getAttribute('aria-controls')).toBe('panel-summary');
+    expect(tabs[0]!.getAttribute('tabindex')).toBe('0');
+    expect(tabs[1]!.getAttribute('tabindex')).toBe('-1');
+
+    const panel = element.shadowRoot!.querySelector('[role="tabpanel"]');
+    expect(panel!.getAttribute('id')).toBe('panel-summary');
+    expect(panel!.getAttribute('aria-labelledby')).toBe('tab-summary');
+  });
+
+  it('ArrowRight moves the active tab and roving tabindex', async () => {
+    element.explanation = 'Analysis';
+    element.data = [{ metric: 'rev', value: 1 }];
+    await element.updateComplete;
+
+    const tablist = element.shadowRoot!.querySelector('[role="tablist"]')!;
+    tablist.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await element.updateComplete;
+
+    const tabs = element.shadowRoot!.querySelectorAll('[role="tab"]');
+    expect(tabs[1]!.getAttribute('aria-selected')).toBe('true');
+  });
+
+  it('sets aria-level on the heading role when not collapsible', async () => {
+    element.explanation = 'Analysis';
+    element.collapsible = false;
+    await element.updateComplete;
+
+    const header = element.shadowRoot!.querySelector('.header')!;
+    expect(header.getAttribute('role')).toBe('heading');
+    expect(header.getAttribute('aria-level')).toBe('3');
+  });
+
+  it('omits aria-level and uses button role when collapsible', async () => {
+    element.explanation = 'Analysis';
+    element.collapsible = true;
+    await element.updateComplete;
+
+    const header = element.shadowRoot!.querySelector('.header')!;
+    expect(header.getAttribute('role')).toBe('button');
+    expect(header.getAttribute('aria-level')).toBeNull();
+  });
+
+  it('sort button conveys direction via aria-label and aria-pressed', async () => {
+    element.explanation = 'Analysis';
+    element.drivers = [{ factor: 'A', impact: 50 }];
+    await element.updateComplete;
+
+    const sortBtn = element.shadowRoot!.querySelector('.sort-btn')!;
+    expect(sortBtn.getAttribute('aria-pressed')).toBe('false');
+    expect(sortBtn.getAttribute('aria-label')).toContain('descending');
+
+    (sortBtn as HTMLButtonElement).click();
+    await element.updateComplete;
+    expect(sortBtn.getAttribute('aria-pressed')).toBe('true');
+    expect(sortBtn.getAttribute('aria-label')).toContain('ascending');
+  });
+
+  it('has a polite status live region', async () => {
+    element.explanation = 'Analysis';
+    await element.updateComplete;
+
+    const live = element.shadowRoot!.querySelector('[role="status"]');
+    expect(live).not.toBeNull();
+    expect(live!.getAttribute('aria-live')).toBe('polite');
+  });
 });

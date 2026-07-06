@@ -95,6 +95,7 @@ export class AiResultPanel extends LitElement {
     .tab.active {
       color: var(--cg-color-surface-base-text);
       border-bottom-color: var(--cg-color-action-primary-background-default);
+      font-weight: var(--cg-font-weight-semibold);
     }
     .tab:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
 
@@ -254,6 +255,18 @@ export class AiResultPanel extends LitElement {
       color: var(--cg-color-input-text-placeholder);
       font-size: var(--cg-font-size-sm);
     }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
   `];
 
   @property() override title = 'AI Analysis';
@@ -269,6 +282,33 @@ export class AiResultPanel extends LitElement {
   @state() private _collapsed = false;
   @state() private _activeTab: 'summary' | 'data' | 'sources' = 'summary';
   @state() private _sortAsc = false;
+  @state() private _announcement = '';
+
+  private _announce(message: string): void {
+    this._announcement = '';
+    requestAnimationFrame(() => { this._announcement = message; });
+  }
+
+  /** The tabs currently rendered, in DOM order. */
+  private get _availableTabs(): Array<'summary' | 'data' | 'sources'> {
+    const tabs: Array<'summary' | 'data' | 'sources'> = ['summary'];
+    if (this.data.length > 0) tabs.push('data');
+    if (this.sources.length > 0) tabs.push('sources');
+    return tabs;
+  }
+
+  private _handleTablistKeydown(e: KeyboardEvent) {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault();
+    const tabs = this._availableTabs;
+    const current = tabs.indexOf(this._activeTab);
+    const delta = e.key === 'ArrowRight' ? 1 : -1;
+    const next = (current + delta + tabs.length) % tabs.length;
+    this._activeTab = tabs[next]!;
+    this.updateComplete.then(() => {
+      this.shadowRoot?.querySelector<HTMLElement>(`#tab-${this._activeTab}`)?.focus();
+    });
+  }
 
   private get _sortedDrivers(): Driver[] {
     return [...this.drivers].sort((a, b) => this._sortAsc ? a.impact - b.impact : b.impact - a.impact);
@@ -282,7 +322,12 @@ export class AiResultPanel extends LitElement {
 
   private _handleCopy() {
     const text = `${this.title}\n\n${this.explanation}\n\n${this.bullets.map(b => `• ${b}`).join('\n')}`;
-    navigator.clipboard?.writeText(text);
+    const result = navigator.clipboard?.writeText(text);
+    if (result) {
+      result.then(() => this._announce('Copied to clipboard')).catch(() => this._announce('Copy failed'));
+    } else {
+      this._announce('Copy failed');
+    }
     this.dispatchEvent(new CustomEvent('ai-result-copy', { bubbles: true, composed: true, detail: { content: text } }));
   }
 
@@ -299,11 +344,14 @@ export class AiResultPanel extends LitElement {
       ${this.drivers.length > 0 ? html`
         <div class="drivers-header">
           <span class="drivers-label">Impact Drivers</span>
-          <button class="sort-btn" @click=${() => { this._sortAsc = !this._sortAsc; }}>
+          <button class="sort-btn"
+            aria-label=${this._sortAsc ? 'Sort drivers by impact, ascending' : 'Sort drivers by impact, descending'}
+            aria-pressed=${String(this._sortAsc)}
+            @click=${() => { this._sortAsc = !this._sortAsc; }}>
             Sort
             ${this._sortAsc
-              ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 19V5m-7 7l7-7 7 7"/></svg>`
-              : html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14m7-7l-7 7-7-7"/></svg>`}
+              ? html`<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 19V5m-7 7l7-7 7 7"/></svg>`
+              : html`<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14m7-7l-7 7-7-7"/></svg>`}
           </button>
         </div>
         <div class="drivers">
@@ -313,7 +361,7 @@ export class AiResultPanel extends LitElement {
                 <span class="driver-name">${d.factor}</span>
                 <span class="driver-value ${d.impact >= 0 ? 'positive' : 'negative'}">${d.impact >= 0 ? '+' : ''}${d.impact}%</span>
               </div>
-              <div class="driver-bar">
+              <div class="driver-bar" aria-hidden="true">
                 <div class="driver-fill ${d.impact >= 0 ? 'positive' : 'negative'}" style="width:${Math.min(Math.abs(d.impact), 100)}%"></div>
               </div>
             </div>
@@ -353,8 +401,10 @@ export class AiResultPanel extends LitElement {
 
     return html`
       <div class="panel ${this._collapsed ? 'collapsed' : ''}" role="region" aria-label="${this.title}">
+        <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">${this._announcement}</div>
         <div class="header"
           role=${this.collapsible ? 'button' : 'heading'}
+          aria-level=${this.collapsible ? nothing : '3'}
           tabindex=${this.collapsible ? '0' : '-1'}
           aria-expanded=${this.collapsible ? String(!this._collapsed) : nothing}
           @click=${this._toggleCollapse}
@@ -374,16 +424,30 @@ export class AiResultPanel extends LitElement {
           ${this.streaming ? html`<div class="streaming-indicator"><ai-thinking text="Analyzing" shimmer delay="0"></ai-thinking></div>` : nothing}
 
           ${hasTabs ? html`
-            <div class="tabs">
-              <button class="tab ${this._activeTab === 'summary' ? 'active' : ''}" @click=${() => this._activeTab = 'summary'}>Summary</button>
-              ${this.data.length > 0 ? html`<button class="tab ${this._activeTab === 'data' ? 'active' : ''}" @click=${() => this._activeTab = 'data'}>Data</button>` : nothing}
-              ${this.sources.length > 0 ? html`<button class="tab ${this._activeTab === 'sources' ? 'active' : ''}" @click=${() => this._activeTab = 'sources'}>Sources</button>` : nothing}
+            <div class="tabs" role="tablist" @keydown=${this._handleTablistKeydown}>
+              ${this._availableTabs.map(name => html`
+                <button class="tab ${this._activeTab === name ? 'active' : ''}"
+                  role="tab"
+                  id="tab-${name}"
+                  aria-selected=${this._activeTab === name ? 'true' : 'false'}
+                  aria-controls="panel-${name}"
+                  tabindex=${this._activeTab === name ? '0' : '-1'}
+                  @click=${() => this._activeTab = name}>${name === 'summary' ? 'Summary' : name === 'data' ? 'Data' : 'Sources'}</button>
+              `)}
             </div>
           ` : nothing}
 
-          ${this._activeTab === 'summary' ? this._renderSummary() : nothing}
-          ${this._activeTab === 'data' ? this._renderData() : nothing}
-          ${this._activeTab === 'sources' ? this._renderSources() : nothing}
+          ${hasTabs ? html`
+            <div role="tabpanel" id="panel-${this._activeTab}" aria-labelledby="tab-${this._activeTab}" tabindex="0">
+              ${this._activeTab === 'summary' ? this._renderSummary() : nothing}
+              ${this._activeTab === 'data' ? this._renderData() : nothing}
+              ${this._activeTab === 'sources' ? this._renderSources() : nothing}
+            </div>
+          ` : html`
+            ${this._activeTab === 'summary' ? this._renderSummary() : nothing}
+            ${this._activeTab === 'data' ? this._renderData() : nothing}
+            ${this._activeTab === 'sources' ? this._renderSources() : nothing}
+          `}
         </div>
       </div>
     `;

@@ -89,7 +89,7 @@ export class AiRagPanel extends LitElement {
       padding: var(--cg-spacing-2) var(--cg-spacing-6); border-radius: var(--cg-border-radius-full);
       text-transform: uppercase; letter-spacing: var(--cg-letter-spacing-wide);
       background: var(--cg-overlay-accent-light);
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
     }
 
     .doc-title {
@@ -141,7 +141,7 @@ export class AiRagPanel extends LitElement {
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property({ type: Array }) documents: RagDocument[] = [];
   @property() query = '';
-  @property() sortBy: 'relevance' | 'recency' | 'source' = 'relevance';
+  @property() sortBy: 'relevance' = 'relevance';
 
   @state() private _expandedIndex = -1;
   @state() private _filterType = '';
@@ -149,7 +149,7 @@ export class AiRagPanel extends LitElement {
   private get _filteredDocs(): RagDocument[] {
     let docs = [...this.documents];
     if (this._filterType) docs = docs.filter(d => d.type === this._filterType);
-    if (this.sortBy === 'relevance') docs.sort((a, b) => b.relevance - a.relevance);
+    docs.sort((a, b) => b.relevance - a.relevance);
     return docs;
   }
 
@@ -202,7 +202,10 @@ export class AiRagPanel extends LitElement {
           ${docs.map((doc, i) => html`
             <div class="doc ${this._expandedIndex === i ? 'expanded' : ''}"
               @click=${() => this._handleDocClick(i)}
-              role="article" tabindex="0"
+              role="button"
+              aria-expanded=${this._expandedIndex === i ? 'true' : 'false'}
+              aria-label=${`${doc.title}, relevance ${this._formatRelevance(doc.relevance)}`}
+              tabindex="0"
               @keydown=${(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._handleDocClick(i); } }}>
               <div class="doc-header">
                 <span class="doc-type">${doc.type || 'doc'}</span>
