@@ -1,6 +1,6 @@
 {
   "name": "@cognivo/tokens",
-  "version": "0.8.0",
+  "version": "1.0.0",
   "description": "3-tier design token system (Style Dictionary v4) for Cognivo — 1,800+ tokens, theme-ready.",
   "keywords": [
     "cognivo",
