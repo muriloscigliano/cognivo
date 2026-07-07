@@ -39,4 +39,11 @@ jobs:
           title: "chore: release Cognivo"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # setup-node (registry-url above) writes an .npmrc that reads
+          # NODE_AUTH_TOKEN — NOT NPM_TOKEN. Passing NPM_TOKEN alone left
+          # `changeset publish` unauthenticated, silently falling back to
+          # OIDC trusted publishing (which requires per-package trusted
+          # publishers on npmjs.org that aren't configured). Map the secret
+          # to the name npm actually reads so token auth works.
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
