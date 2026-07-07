@@ -1,6 +1,6 @@
 {
   "name": "@cognivo/adapter-react",
-  "version": "0.8.3",
+  "version": "1.0.0",
   "description": "React wrappers for every Cognivo web component.",
   "license": "MIT",
   "author": "Cognivo",

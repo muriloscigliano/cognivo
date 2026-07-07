@@ -1,4 +1,4 @@
-# @cognivo/adapter-react
+# @cognivo/adapter-vue
 
 ## 1.0.0
 
@@ -13,9 +13,10 @@
 - Updated dependencies
   - @cognivo/components@1.0.0
 
-## 0.8.3
+## 1.0.0
 
 ### Patch Changes
 
-- Updated dependencies [5ba2052]
-  - @cognivo/components@0.8.3
+- Re-generate the React and Vue wrappers against the audited `@cognivo/components` release, and migrate the `ai-agent-card` `role` prop to `agentRole` in both wrappers (see the components changeset for the rationale). Also brings `@cognivo/adapter-react` up to date on npm — the published version had fallen behind the local source.
+- Updated dependencies
+  - @cognivo/components@1.0.0

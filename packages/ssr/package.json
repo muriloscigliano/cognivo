@@ -1,6 +1,6 @@
 {
   "name": "@cognivo/ssr",
-  "version": "0.8.3",
+  "version": "1.0.0",
   "description": "@lit-labs/ssr integration — server-render Cognivo components with declarative shadow DOM.",
   "keywords": [
     "cognivo",
