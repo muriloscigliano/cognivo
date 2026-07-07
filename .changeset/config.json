@@ -24,13 +24,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": [
-    "@cognivo/lens-core",
-    "@cognivo/lens-pack-core",
-    "@cognivo/lens-pack-ethics",
-    "@cognivo/lens-ui",
-    "@cognivo/compose",
-    "@cognivo/compose-lit",
-    "@cognivo/docs"
-  ]
+  "ignore": []
 }

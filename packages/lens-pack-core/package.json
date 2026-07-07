@@ -1,6 +1,7 @@
 {
   "name": "@cognivo/lens-pack-core",
   "version": "0.2.0",
+  "private": true,
   "description": "Foundational a11y + system-health rule pack for Cognivo Lens. On by default.",
   "keywords": ["cognivo", "lens", "a11y", "design-system", "ui-audit"],
   "license": "MIT",

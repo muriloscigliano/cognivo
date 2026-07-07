@@ -1,6 +1,7 @@
 {
   "name": "@cognivo/lens-pack-ethics",
   "version": "0.1.0",
+  "private": true,
   "description": "Dark-pattern + transparency rules for Cognivo Lens. Cheap pattern-matching rules; LLM-judgment rules ship in a later release.",
   "keywords": ["cognivo", "lens", "dark-patterns", "ethics", "transparency"],
   "license": "MIT",

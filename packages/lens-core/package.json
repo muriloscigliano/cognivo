@@ -1,6 +1,7 @@
 {
   "name": "@cognivo/lens-core",
   "version": "0.1.0",
+  "private": true,
   "description": "Headless engine for Cognivo Lens — observer, classifier, rule engine, scorer, persona simulator, fix verifier.",
   "keywords": ["cognivo", "lens", "design-system", "ai", "ui-audit"],
   "license": "MIT",
