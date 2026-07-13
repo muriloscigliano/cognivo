@@ -56,3 +56,12 @@ describe('public API surface', () => {
     expect(typeof mod.mergeBlastRadius).toBe('function');
   });
 });
+
+describe('confidence deprecation (additive, non-breaking)', () => {
+  it('still accepts a confidence field on AiResult (not yet removed)', async () => {
+    const { } = await import('../results/types.js'); // type-only module
+    // Compile-time proof that AiResult.confidence still exists and is optional.
+    const r: import('../results/types.js').AiResult = { confidence: 0.9 };
+    expect(r.confidence).toBe(0.9);
+  });
+});
