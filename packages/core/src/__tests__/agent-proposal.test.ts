@@ -47,3 +47,12 @@ describe('ActionProposal hard-stop rule', () => {
 
 // local import kept at bottom to keep the happy-path readable
 import { assertWellFormed } from '../agent/proposal.js';
+
+describe('public API surface', () => {
+  it('re-exports the agent contract from the package root', async () => {
+    const mod = await import('../index.js');
+    expect(typeof mod.isHardStop).toBe('function');
+    expect(typeof mod.isInferenceOnly).toBe('function');
+    expect(typeof mod.mergeBlastRadius).toBe('function');
+  });
+});

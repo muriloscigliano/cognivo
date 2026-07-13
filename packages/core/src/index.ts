@@ -13,6 +13,9 @@ export { ContextBuilder } from './context/builder';
 // Export result types
 export type { AiResult, AiDriver, AiAnomaly, AiForecast, AiClassification, AiRecommendation } from './results/types';
 
+// Agent interaction contract (Plan 01: grounding provenance + reversibility)
+export * from './agent/index.js';
+
 // Export client interfaces
 export type { AiClient, AiRequestOptions } from './client/types';
 export { BaseAiClient } from './client/base';
