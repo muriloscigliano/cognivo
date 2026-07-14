@@ -174,6 +174,7 @@ import { AiCopyButton } from './components/ai-copy-button/ai-copy-button.js';
 // Wave 7: Freely-inspired production patterns
 import { AiToolCardResolver } from './components/ai-tool-card-resolver/ai-tool-card-resolver.js';
 import { AiActionPreview } from './components/ai-action-preview/ai-action-preview.js';
+import { AiActionReceipt } from './components/ai-action-receipt/ai-action-receipt.js';
 import { AiCaptureFlow } from './components/ai-capture-flow/ai-capture-flow.js';
 import { AiKpiGrid } from './components/ai-kpi-grid/ai-kpi-grid.js';
 import { AiAlertCard } from './components/ai-alert-card/ai-alert-card.js';
@@ -287,7 +288,7 @@ export {
   // Final 6: 100 Components
   AiSidebar, AiAppSidebar, AiCommandPalette, AiAvatar, AiProgressSteps, AiJsonViewer, AiCopyButton,
   // Wave 7: Freely-inspired production patterns
-  AiToolCardResolver, AiActionPreview, AiCaptureFlow, AiKpiGrid,
+  AiToolCardResolver, AiActionPreview, AiActionReceipt, AiCaptureFlow, AiKpiGrid,
   AiAlertCard, AiRevealAnimation, AiRichMessage,
   AiDataCard,
   // Phase 3 Tier 1: AI Interaction Atlas
