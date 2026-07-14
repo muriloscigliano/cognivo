@@ -18,12 +18,13 @@ export type Provenance =
   | { kind: 'inference' };
 
 /**
- * True when NOTHING in the provenance list is grounded — i.e. every entry is
- * `inference`, OR the list is empty. Fails closed: absence of stated grounding
- * counts as inference-only, because "we didn't record grounding" must never be
- * mistaken for "this was grounded".
+ * True when NOTHING in the provenance list is grounded — i.e. no entry is a
+ * `tool_result` or `document`. This includes the empty list, all-`inference`
+ * lists, AND lists whose entries carry an UNKNOWN kind (proposals are
+ * serializable, so a deserialized entry can violate the TS type). Fails closed:
+ * only a recognized grounding kind counts as grounded, because "we didn't record
+ * (recognizable) grounding" must never be mistaken for "this was grounded".
  */
 export function isInferenceOnly(provenance: readonly Provenance[]): boolean {
-  if (provenance.length === 0) return true;
-  return provenance.every((p) => p.kind === 'inference');
+  return !provenance.some((p) => p.kind === 'tool_result' || p.kind === 'document');
 }
