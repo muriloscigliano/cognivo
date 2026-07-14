@@ -35,12 +35,23 @@ describe('InMemoryTrustLedger', () => {
     expect(l.autoApprovals(p)).toBe(2);
   });
 
-  it('an edit or rejection RESETS the counter (demotion)', () => {
+  it('an edit RESETS a real non-zero counter (proves demotion, not a no-op)', () => {
     const l = new InMemoryTrustLedger();
     const p = proposal();
     l.record(p, 'approved');
     l.record(p, 'approved');
+    expect(l.autoApprovals(p)).toBe(2);   // <-- prove it was non-zero FIRST
     l.record(p, 'edited'); // human changed it → trust demotes to zero
+    expect(l.autoApprovals(p)).toBe(0);
+  });
+
+  it('a rejection also resets the counter', () => {
+    const l = new InMemoryTrustLedger();
+    const p = proposal();
+    l.record(p, 'approved');
+    l.record(p, 'approved');
+    expect(l.autoApprovals(p)).toBe(2);
+    l.record(p, 'rejected');
     expect(l.autoApprovals(p)).toBe(0);
   });
 

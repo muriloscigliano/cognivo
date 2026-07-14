@@ -77,7 +77,8 @@ describe('ai-action-receipt', () => {
       e.status = 'executed';
     });
     const text = (el.shadowRoot!.textContent ?? '').toLowerCase();
-    // copy must not promise the action never happened
-    expect(text).not.toContain('undo everything');
+    // the disclaimer must actually be rendered — asserting presence, not the
+    // absence of a phrase the component never emits (which would be vacuous)
+    expect(text).toContain('does not erase');
   });
 });

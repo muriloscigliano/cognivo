@@ -43,6 +43,16 @@ describe('ActionProposal hard-stop rule', () => {
     const p = makeProposal({ reversibility: 'compensable' });
     expect(() => assertWellFormed(p)).toThrow(/compensation/i);
   });
+
+  it('does not throw for a compensable proposal that has a compensation', () => {
+    const p = makeProposal({ reversibility: 'compensable', compensation: { tool: 'invoice.void', input: {} } });
+    expect(() => assertWellFormed(p)).not.toThrow();
+  });
+
+  it('does not throw for a reversible proposal (no compensation needed)', () => {
+    const p = makeProposal({ reversibility: 'reversible' });
+    expect(() => assertWellFormed(p)).not.toThrow();
+  });
 });
 
 // local import kept at bottom to keep the happy-path readable
