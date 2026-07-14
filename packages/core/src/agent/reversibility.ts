@@ -43,11 +43,22 @@ export function mergeBlastRadius(a: BlastRadius, b: BlastRadius): BlastRadius {
 }
 
 /**
- * A coarse magnitude bucket used as part of a TrustLedger key (correction #2).
- * "large" if it touches many entities; else "small". Combined with scope so
- * earned autonomy on cheap actions can't be spent on expensive ones.
+ * A blast bucket used as part of a TrustLedger key (correction #2, HIGH-2).
+ *
+ * Three axes so earned autonomy on cheap actions can't be spent on expensive
+ * ones:
+ *  - scope:      self | workspace | external
+ *  - magnitude:  order-of-magnitude of entity count — m0 (0), m1 (1-9),
+ *                m2 (10-99), m3 (100-999), m4 (1000+, capped).
+ *  - side-effect: x1 if it causes ANY irreversible side effect, else x0.
+ *
+ * A 1-entity harmless action (`self:m1:x0`) and a 99-entity + email.send action
+ * (`external:m2:x1`) therefore key DIFFERENTLY — cheap approvals never graduate
+ * a dangerous action.
  */
 export function blastBucket(b: BlastRadius): string {
-  const magnitude = b.entities.length >= 100 ? 'lg' : 'sm';
-  return `${b.scope}:${magnitude}`;
+  const count = b.entities.length;
+  const magnitude = count === 0 ? 'm0' : `m${Math.min(4, String(count).length)}`;
+  const sideEffectAxis = b.irreversibleSideEffects.length > 0 ? 'x1' : 'x0';
+  return `${b.scope}:${magnitude}:${sideEffectAxis}`;
 }

@@ -52,7 +52,12 @@ export function toReceipt(p: ActionProposal, outcome: ActionOutcome): ActionRece
     ts: outcome.ts,
     compensationIsDestructiveUndo: false,
   };
-  if (p.compensation) receipt.compensation = p.compensation;
+  // Only offer a "reverse this" affordance when it is both true and possible:
+  // the action must be classified `compensable` AND have actually executed. An
+  // irreversible action's compensation is a lie; a failed action never happened.
+  if (p.reversibility === 'compensable' && outcome.status === 'executed' && p.compensation) {
+    receipt.compensation = p.compensation;
+  }
   if (outcome.error !== undefined) receipt.error = outcome.error;
   return receipt;
 }

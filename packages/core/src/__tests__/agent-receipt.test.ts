@@ -52,6 +52,27 @@ describe('toReceipt', () => {
     expect(r.compensation).toBeUndefined();
   });
 
+  it('does NOT offer compensation for an irreversible action that happens to carry one', () => {
+    // #4: an irreversible proposal must never produce a "reverse this" affordance,
+    // even if a compensation was (wrongly) attached to the proposal.
+    const irreversible: ActionProposal = {
+      id: 'p3', runId: 'r1', tool: 'email.send', input: {},
+      summary: 'Send email', rationale: 'user asked',
+      reversibility: 'irreversible',
+      blastRadius: { scope: 'external', entities: ['contact-1'], irreversibleSideEffects: ['email.send'] },
+      provenance: [{ kind: 'tool_result', toolCallId: 'c1' }],
+      compensation: { tool: 'email.recall', input: {} },
+    };
+    const r = toReceipt(irreversible, { status: 'executed', ts: 1 });
+    expect(r.compensation).toBeUndefined();
+  });
+
+  it('does NOT offer compensation for a compensable action that FAILED', () => {
+    // #4: a failed action never happened — there is nothing to reverse.
+    const r = toReceipt(proposal(), { status: 'failed', ts: 1, error: 'boom' });
+    expect(r.compensation).toBeUndefined();
+  });
+
   it('preserves a failure outcome with its error', () => {
     const r = toReceipt(proposal(), { status: 'failed', ts: 5, error: 'gateway down' });
     expect(r.status).toBe('failed');
