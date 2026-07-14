@@ -58,3 +58,10 @@ describe('toReceipt', () => {
     expect(r.error).toBe('gateway down');
   });
 });
+
+describe('public API surface — receipt', () => {
+  it('re-exports toReceipt from the package root', async () => {
+    const mod = await import('../index.js');
+    expect(typeof mod.toReceipt).toBe('function');
+  });
+});

@@ -18,3 +18,6 @@ export { gate, emptyRunContext } from './gate.js';
 
 export type { TrustLedger, Decision } from './trust-ledger.js';
 export { InMemoryTrustLedger, ledgerKey } from './trust-ledger.js';
+
+export type { ActionReceipt, ActionOutcome } from './receipt.js';
+export { toReceipt } from './receipt.js';
