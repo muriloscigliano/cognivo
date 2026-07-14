@@ -88,3 +88,13 @@ describe('gate — correction #1: cumulative run blast radius escalates', () => 
     expect(gate(p, context, new InMemoryTrustLedger())).toBe('confirm');
   });
 });
+
+describe('public API surface — gate + ledger', () => {
+  it('re-exports gate, emptyRunContext, ledgerKey, InMemoryTrustLedger from root', async () => {
+    const mod = await import('../index.js');
+    expect(typeof mod.gate).toBe('function');
+    expect(typeof mod.emptyRunContext).toBe('function');
+    expect(typeof mod.ledgerKey).toBe('function');
+    expect(typeof mod.InMemoryTrustLedger).toBe('function');
+  });
+});
