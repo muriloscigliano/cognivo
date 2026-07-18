@@ -3,7 +3,13 @@
   "version": "0.3.0",
   "private": true,
   "description": "Anthropic Claude adapter for Cognivo AI components",
-  "keywords": ["anthropic", "claude", "ai", "adapter", "cognivo"],
+  "keywords": [
+    "anthropic",
+    "claude",
+    "ai",
+    "adapter",
+    "cognivo"
+  ],
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
@@ -16,7 +22,9 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "sideEffects": false,
   "repository": {
     "type": "git",

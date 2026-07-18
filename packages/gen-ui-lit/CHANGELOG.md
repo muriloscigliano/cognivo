@@ -1,5 +1,12 @@
 # @cognivo/gen-ui-lit
 
+## 1.1.0
+
+### Patch Changes
+
+- Updated dependencies [dc49b70]
+  - @cognivo/gen-ui@1.1.0
+
 ## 1.0.0
 
 ### Major Changes

@@ -3,7 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "description": "Visible product surface for Cognivo Lens — <cg-lens> web component with toolbar, pin overlay, and finding drawer.",
-  "keywords": ["cognivo", "lens", "lit", "web-component", "ui-audit"],
+  "keywords": [
+    "cognivo",
+    "lens",
+    "lit",
+    "web-component",
+    "ui-audit"
+  ],
   "license": "MIT",
   "author": "Cognivo",
   "type": "module",
@@ -20,9 +26,18 @@
       "import": "./dist/cg-lens.js"
     }
   },
-  "files": ["dist", "LICENSE", "README.md"],
-  "sideEffects": ["**/index.js", "**/cg-lens.js"],
-  "publishConfig": { "access": "public" },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "sideEffects": [
+    "**/index.js",
+    "**/cg-lens.js"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/muriloscigliano/cognivo.git",
