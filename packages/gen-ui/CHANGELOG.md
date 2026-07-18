@@ -1,5 +1,13 @@
 # @cognivo/gen-ui
 
+## 1.1.0
+
+### Minor Changes
+
+- dc49b70: Register `ai-action-receipt` in the generative component library (props schema +
+  description) so agents can compose action receipts; restores registry parity
+  with @cognivo/components.
+
 ## 1.0.0
 
 ### Major Changes

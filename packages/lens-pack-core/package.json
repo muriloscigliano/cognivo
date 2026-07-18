@@ -3,7 +3,13 @@
   "version": "0.2.0",
   "private": true,
   "description": "Foundational a11y + system-health rule pack for Cognivo Lens. On by default.",
-  "keywords": ["cognivo", "lens", "a11y", "design-system", "ui-audit"],
+  "keywords": [
+    "cognivo",
+    "lens",
+    "a11y",
+    "design-system",
+    "ui-audit"
+  ],
   "license": "MIT",
   "author": "Cognivo",
   "type": "module",
@@ -16,9 +22,15 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "LICENSE", "README.md"],
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "sideEffects": false,
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/muriloscigliano/cognivo.git",

@@ -3,7 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "description": "Dark-pattern + transparency rules for Cognivo Lens. Cheap pattern-matching rules; LLM-judgment rules ship in a later release.",
-  "keywords": ["cognivo", "lens", "dark-patterns", "ethics", "transparency"],
+  "keywords": [
+    "cognivo",
+    "lens",
+    "dark-patterns",
+    "ethics",
+    "transparency"
+  ],
   "license": "MIT",
   "author": "Cognivo",
   "type": "module",
@@ -16,9 +22,15 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "LICENSE", "README.md"],
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "sideEffects": false,
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/muriloscigliano/cognivo.git",

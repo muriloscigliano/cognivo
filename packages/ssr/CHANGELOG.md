@@ -1,5 +1,12 @@
 # @cognivo/ssr
 
+## 1.1.0
+
+### Patch Changes
+
+- Updated dependencies [b6010a8]
+  - @cognivo/components@1.1.0
+
 ## 1.0.0
 
 ### Patch Changes
