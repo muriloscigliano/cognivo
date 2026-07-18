@@ -41,7 +41,7 @@
   },
   "peerDependencies": {
     "react": ">=18.0.0",
-    "@cognivo/components": "workspace:*"
+    "@cognivo/components": "workspace:^"
   },
   "devDependencies": {
     "react": "^18.3.0",
