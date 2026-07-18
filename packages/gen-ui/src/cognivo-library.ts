@@ -529,6 +529,18 @@ export const AiActionPreviewDef = defineComponent({
   description: 'Action confirmation preview with severity, countdown, and confirm/cancel buttons',
 });
 
+export const AiActionReceiptDef = defineComponent({
+  name: 'AiActionReceipt', tagName: 'ai-action-receipt',
+  props: z.object({
+    summary: z.string().optional(),
+    touched: z.array(z.string()).optional(),
+    status: z.enum(['executed', 'failed']).optional(),
+    error: z.string().optional(),
+    compensationLabel: z.string().optional(),
+  }),
+  description: 'Receipt for an executed agent action: what ran, what it touched, and the specific compensating action (not a global undo)',
+});
+
 export const AiAgentCardDef = defineComponent({
   name: 'AiAgentCard', tagName: 'ai-agent-card',
   props: z.object({
@@ -2474,7 +2486,7 @@ const ALL_COMPONENTS = [
   // AI
   AiThinkingDef, AiBadgeDef, AiInsightCardDef, AiResultPanelDef, AiChartSummaryDef, AiChatDef,
   // AI Extended
-  AiAbTestDef, AiAccessibilityReportDef, AiActionPreviewDef, AiAgentCardDef, AiAlertCardDef,
+  AiAbTestDef, AiAccessibilityReportDef, AiActionPreviewDef, AiActionReceiptDef, AiAgentCardDef, AiAlertCardDef,
   AiAnalyticsChartDef, AiAnnotationDef, AiApiKeyManagerDef, AiAudioPlayerDef, AiAvatarDef,
   AiBatchProgressDef, AiCaptureFlowDef, AiChangelogDef, AiCitationDef, AiCollaborativeEditorDef,
   AiCommandPaletteDef, AiConfidenceSliderDef, AiContextWindowDef, AiCopyButtonDef, AiCostDashboardDef,
