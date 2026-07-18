@@ -8,7 +8,12 @@ export interface AiDriver {
   /** Impact magnitude (-100 to 100) */
   impact: number;
 
-  /** Confidence in this driver (0 to 1) */
+  /**
+   * Confidence in this driver (0 to 1).
+   * @deprecated Self-reported LLM confidence is not calibrated and manufactures
+   * trust. Prefer grounding `Provenance` (`@cognivo/core` agent module):
+   * tool_result | document | inference. Scheduled for removal in Plan 05 (2.0).
+   */
   confidence: number;
 
   /** Optional description */
@@ -31,7 +36,12 @@ export interface AiAnomaly {
   /** Severity level */
   severity: 'low' | 'medium' | 'high';
 
-  /** Confidence (0 to 1) */
+  /**
+   * Confidence (0 to 1).
+   * @deprecated Self-reported LLM confidence is not calibrated and manufactures
+   * trust. Prefer grounding `Provenance` (`@cognivo/core` agent module):
+   * tool_result | document | inference. Scheduled for removal in Plan 05 (2.0).
+   */
   confidence?: number;
 }
 
@@ -45,7 +55,12 @@ export interface AiForecast {
   /** Predicted value */
   value: number;
 
-  /** Confidence in prediction (0 to 1) */
+  /**
+   * Confidence in prediction (0 to 1).
+   * @deprecated Self-reported LLM confidence is not calibrated and manufactures
+   * trust. Prefer grounding `Provenance` (`@cognivo/core` agent module):
+   * tool_result | document | inference. Scheduled for removal in Plan 05 (2.0).
+   */
   confidence: number;
 
   /** Lower bound of prediction interval */
@@ -65,10 +80,20 @@ export interface AiClassification {
   /** Assigned category */
   category: string;
 
-  /** Confidence (0 to 1) */
+  /**
+   * Confidence (0 to 1).
+   * @deprecated Self-reported LLM confidence is not calibrated and manufactures
+   * trust. Prefer grounding `Provenance` (`@cognivo/core` agent module):
+   * tool_result | document | inference. Scheduled for removal in Plan 05 (2.0).
+   */
   confidence: number;
 
-  /** Alternative categories */
+  /**
+   * Alternative categories.
+   * @deprecated Self-reported LLM confidence is not calibrated and manufactures
+   * trust. Prefer grounding `Provenance` (`@cognivo/core` agent module):
+   * tool_result | document | inference. Scheduled for removal in Plan 05 (2.0).
+   */
   alternatives?: Array<{ category: string; confidence: number }>;
 }
 
@@ -122,7 +147,12 @@ export interface AiResult {
   /** Key drivers/factors */
   drivers?: AiDriver[];
 
-  /** Overall confidence (0 to 1) */
+  /**
+   * Overall confidence (0 to 1).
+   * @deprecated Self-reported LLM confidence is not calibrated and manufactures
+   * trust. Prefer grounding `Provenance` (`@cognivo/core` agent module):
+   * tool_result | document | inference. Scheduled for removal in Plan 05 (2.0).
+   */
   confidence?: number;
 
   /** Detected anomalies */
