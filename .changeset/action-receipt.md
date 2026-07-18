@@ -1,6 +1,8 @@
 ---
 "@cognivo/core": minor
 "@cognivo/components": minor
+"@cognivo/adapter-react": minor
+"@cognivo/adapter-vue": minor
 ---
 
 Add the Agent Interaction Contract receipt (Plan 03): `ActionReceipt` +
