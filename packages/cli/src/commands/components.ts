@@ -9,7 +9,7 @@ export interface CommandResult {
   text: string;
 }
 
-export function listComponents(opts: { category?: string } = {}): CommandResult {
+export function listComponents(opts: { category?: string; dense?: boolean } = {}): CommandResult {
   const entries = opts.category
     ? catalog.components.filter((c) => c.category === opts.category)
     : catalog.components;
@@ -22,12 +22,20 @@ export function listComponents(opts: { category?: string } = {}): CommandResult 
     };
   }
 
+  if (opts.dense) {
+    // One `tag category` line per component, no header — token-efficient for agent context.
+    return {
+      exitCode: 0,
+      text: entries.map((c) => `${c.tag} ${c.category}`).join('\n'),
+    };
+  }
+
   const lines: string[] = [`${entries.length} components:`];
   for (const c of entries) lines.push(`${c.tag} (${c.category}) — ${c.description}`);
   return { exitCode: 0, text: lines.join('\n') };
 }
 
-export function getComponent(tag: string, opts: { json?: boolean } = {}): CommandResult {
+export function getComponent(tag: string, opts: { json?: boolean; dense?: boolean } = {}): CommandResult {
   const entry = catalog.components.find((c) => c.tag === tag);
   if (!entry) {
     const suggestion = closestTag(tag);
@@ -41,6 +49,24 @@ export function getComponent(tag: string, opts: { json?: boolean } = {}): Comman
 
   if (opts.json) {
     return { exitCode: 0, text: JSON.stringify(entry, null, 2) };
+  }
+
+  if (opts.dense) {
+    // Compact form: one line per section, props inline as name:type=default.
+    // Union types collapse to `enum` to keep lines short and pipe-free.
+    const lines: string[] = [`${entry.tag} ${entry.description}`];
+    if (entry.properties.length > 0) {
+      lines.push(
+        `${entry.tag} props: ${entry.properties.map((p) => `${p.name}:${p.type.includes('|') ? 'enum' : p.type}=${p.default}`).join(' ')}`,
+      );
+    }
+    if (entry.events.length > 0) {
+      lines.push(`${entry.tag} events: ${entry.events.map((e) => e.name).join(' ')}`);
+    }
+    if (entry.slots.length > 0) {
+      lines.push(`${entry.tag} slots: ${entry.slots.map((s) => s.name || 'default').join(' ')}`);
+    }
+    return { exitCode: 0, text: lines.join('\n') };
   }
 
   const lines: string[] = [

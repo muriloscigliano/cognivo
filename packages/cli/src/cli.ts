@@ -9,12 +9,14 @@ const HELP = `cognivo — Cognivo design-system CLI
 
 Usage:
   cognivo audit <file|-> [--json]   Audit HTML against Cognivo rules ('-' = stdin)
-  cognivo components list [--category <id>]
-  cognivo components get <tag> [--json]
-  cognivo tokens find <query>
-  cognivo tokens for <css-property>
+  cognivo components list [--category <id>] [--dense]
+  cognivo components get <tag> [--json] [--dense]
+  cognivo tokens find <query> [--dense]
+  cognivo tokens for <css-property> [--dense]
   cognivo evals [run|live|replay] [flags]   (requires @cognivo/evals)
   cognivo help
+
+--dense: token-efficient one-line-per-entity output for AI context windows
 `;
 
 async function readStdin(): Promise<string> {
@@ -53,9 +55,15 @@ async function main(): Promise<number> {
       const { values } = parseArgs({
         args: subRest,
         allowPositionals: true,
-        options: { category: { type: 'string' } },
+        options: {
+          category: { type: 'string' },
+          dense: { type: 'boolean', default: false },
+        },
       });
-      const r = listComponents(values.category ? { category: values.category } : {});
+      const r = listComponents({
+        ...(values.category ? { category: values.category } : {}),
+        dense: values.dense,
+      });
       console.log(r.text);
       return r.exitCode;
     }
@@ -63,14 +71,17 @@ async function main(): Promise<number> {
       const { values, positionals } = parseArgs({
         args: subRest,
         allowPositionals: true,
-        options: { json: { type: 'boolean', default: false } },
+        options: {
+          json: { type: 'boolean', default: false },
+          dense: { type: 'boolean', default: false },
+        },
       });
       const tag = positionals[0];
       if (!tag) {
         console.error('components get: missing <tag> argument');
         return 2;
       }
-      const r = getComponent(tag, { json: values.json });
+      const r = getComponent(tag, { json: values.json, dense: values.dense });
       console.log(r.text);
       return r.exitCode;
     }
@@ -81,13 +92,17 @@ async function main(): Promise<number> {
   if (command === 'tokens') {
     const [sub, ...subRest] = rest;
     if (sub === 'find' || sub === 'for') {
-      const { positionals } = parseArgs({ args: subRest, allowPositionals: true, options: {} });
+      const { values, positionals } = parseArgs({
+        args: subRest,
+        allowPositionals: true,
+        options: { dense: { type: 'boolean', default: false } },
+      });
       const arg = positionals[0];
       if (!arg) {
         console.error(`tokens ${sub}: missing <${sub === 'find' ? 'query' : 'css-property'}> argument`);
         return 2;
       }
-      const r = sub === 'find' ? findTokens(arg) : tokenFor(arg);
+      const r = sub === 'find' ? findTokens(arg, { dense: values.dense }) : tokenFor(arg, { dense: values.dense });
       console.log(r.text);
       return r.exitCode;
     }

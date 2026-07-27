@@ -26,4 +26,39 @@ describe('cognivo components', () => {
     expect(r.exitCode).toBe(2);
     expect(r.text).toMatch(/did you mean|unknown/i);
   });
+
+  describe('dense output', () => {
+    it('getComponent dense: compact single-line-per-section form', () => {
+      const r = getComponent('cg-button', { dense: true });
+      expect(r.exitCode).toBe(0);
+      expect(r.text).toContain('cg-button');
+      // props rendered inline as name:type=default
+      expect(r.text).toMatch(/cg-button props: \w+:[^\s=]+(=\S*)?( \w+:[^\s=]+(=\S*)?)*/);
+    });
+
+    it('getComponent dense: no markdown table pipes or headers', () => {
+      const r = getComponent('cg-button', { dense: true });
+      expect(r.text).not.toContain('|');
+      expect(r.text).not.toContain('Props:');
+      expect(r.text).not.toContain('—');
+    });
+
+    it('getComponent dense: < 60% the byte length of non-dense', () => {
+      const dense = getComponent('cg-button', { dense: true });
+      const full = getComponent('cg-button');
+      expect(Buffer.byteLength(dense.text)).toBeLessThan(0.6 * Buffer.byteLength(full.text));
+    });
+
+    it('listComponents dense: one line per component, no header', () => {
+      const dense = listComponents({ dense: true });
+      const full = listComponents();
+      expect(dense.exitCode).toBe(0);
+      const lines = dense.text.split('\n');
+      // no "N components:" header line — every line is `<tag> <category>`
+      expect(dense.text).not.toMatch(/^\d+ components:/m);
+      expect(lines.every((l) => /^[a-z][a-z0-9-]* (foundation|ai)$/.test(l))).toBe(true);
+      expect(lines.length).toBe(full.text.split('\n').length - 1);
+      expect(Buffer.byteLength(dense.text)).toBeLessThan(0.6 * Buffer.byteLength(full.text));
+    });
+  });
 });

@@ -11,7 +11,7 @@ export interface CommandResult {
 
 const LIMIT = 20;
 
-export function findTokens(query: string): CommandResult {
+export function findTokens(query: string, opts: { dense?: boolean } = {}): CommandResult {
   const q = query.toLowerCase();
   const matches = catalog.tokens.filter(
     (t) =>
@@ -24,6 +24,17 @@ export function findTokens(query: string): CommandResult {
     return {
       exitCode: 2,
       text: `No tokens matching "${query}". The catalog contains ${catalog.tokens.length} tokens.`,
+    };
+  }
+
+  if (opts.dense) {
+    // One `name value` line per token, no header — token-efficient for agent context.
+    return {
+      exitCode: 0,
+      text: sortTokens(matches)
+        .slice(0, LIMIT)
+        .map((t) => `${t.name} ${t.resolvedValue}`)
+        .join('\n'),
     };
   }
 
@@ -47,7 +58,7 @@ const PROPERTY_PATTERNS: Record<string, string[]> = {
   shadow: ['shadow'],
 };
 
-export function tokenFor(property: string): CommandResult {
+export function tokenFor(property: string, opts: { dense?: boolean } = {}): CommandResult {
   const prop = property.toLowerCase().trim();
   const patterns = PROPERTY_PATTERNS[prop] ?? [prop];
 
@@ -64,6 +75,17 @@ export function tokenFor(property: string): CommandResult {
   }
 
   const sorted = sortTokens(matches);
+
+  if (opts.dense) {
+    return {
+      exitCode: 0,
+      text: sorted
+        .slice(0, LIMIT)
+        .map((t) => `${t.name} ${t.resolvedValue}`)
+        .join('\n'),
+    };
+  }
+
   const lines: string[] = [`Tokens for "${property}" (tier 3 component > tier 2 semantic > tier 1 core):`];
   for (const t of sorted.slice(0, LIMIT)) lines.push(formatToken(t));
   if (sorted.length > LIMIT) lines.push(`… and ${sorted.length - LIMIT} more.`);
