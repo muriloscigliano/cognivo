@@ -13,15 +13,26 @@ export class MockAgent implements AgentClient {
   readonly name = 'mock-agent';
 
   async generate(caseDef: EvalCase, sample: number): Promise<AgentOutput> {
-    const pick = (group: string[]): string => group[sample % group.length]!;
-    const chosen = (caseDef.expect.anyOf ?? []).map(pick);
+    // Same component choice for every sample (sample 1 only adds a harmless
+    // wrapper, per the class docstring) — the ideal agent doesn't change its
+    // mind between samples.
+    const chosen = (caseDef.expect.anyOf ?? []).map((group) => group[0]!);
     const required = caseDef.expect.mustUseTags ?? [];
-    const all = [...new Set([...chosen, ...required])];
+    // Rubric hints that name a component (and aren't just anyOf alternatives)
+    // are things the ideal output also uses — e.g. ai-chart-summary paired
+    // with a chart.
+    const choiceTags = new Set((caseDef.expect.anyOf ?? []).flat());
+    const hintTags = caseDef.rubrics
+      .flatMap((r) => r.offlineHints ?? [])
+      .filter((h) => /^(?:cg|ai|bias)-[a-z0-9-]+$/.test(h) && !choiceTags.has(h));
+    const all = [...new Set([...chosen, ...required, ...hintTags])];
 
     const inner = all
       .map((tag) => `<${tag} ${attrsFor(tag, caseDef)}>cancel ${caseDef.id}</${tag}>`)
       .join('\n  ');
-    const wrapper = sample === 1 ? '<cg-stack>\n  ' : '<section>\n  ';
+    // Token-based styling — the ideal output never hard-codes values.
+    const style = ' style="background: var(--cg-color-surface-base-background)"';
+    const wrapper = sample === 1 ? `<cg-stack${style}>\n  ` : `<section${style}>\n  `;
     const closer = sample === 1 ? '</cg-stack>' : '</section>';
 
     return {

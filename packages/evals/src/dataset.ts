@@ -117,6 +117,7 @@ export const EVAL_DATASET: EvalCase[] = [
       {
         id: 'skeleton-over-spinner',
         text: 'Prefers a content-shaped placeholder for a report over a bare spinner where layout is known.',
+        offlineHints: ['cg-skeleton', 'cg-progress-bar'],
       },
     ],
   },
