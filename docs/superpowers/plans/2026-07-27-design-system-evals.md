@@ -1888,3 +1888,371 @@ git commit -m "docs: evals package readme and CLAUDE.md index entry"
 - Full codegen of `docs/src/data/registry.ts` from the catalog — the drift gate (Task 3) is the enforcement; consolidation can follow later.
 - promptfoo adoption — custom harness chosen.
 - Per-PR live evals in CI — manual/weekly only.
+
+---
+
+## Phase D — Unified `cognivo` CLI (added post-approval, user-requested)
+
+The repo has three fragmented entry points (`cognivo-mcp`, `cognivo-theme`, `install-cognivo-skill`) and no unified CLI. Add `@cognivo/cli` with a `cognivo` bin, read-only subcommands wrapping what already exists. Scope decision (user-confirmed): read-only — no `init`, no machine-config changes.
+
+**Architecture:** thin wrapper, zero new runtime deps beyond workspace packages. Argument parsing with `node:util` `parseArgs` (no commander/yargs). Commands:
+
+- `cognivo audit <file|->` — run `auditPage` + `validateUsage` on an HTML file (or stdin), human + `--json` output. Reuses the exact scorers the eval suite uses.
+- `cognivo components list [--category X]` / `cognivo components get <tag>` — query the generated catalog.
+- `cognivo tokens find <query>` / `cognivo tokens for <css-property>` — search catalog tokens.
+- `cognivo evals [run|live|replay] [flags]` — passthrough to `@cognivo/evals` runner (dynamic import; friendly error when the package isn't installed, e.g. consumer install).
+
+**Files:**
+- `packages/cli/package.json`, `tsconfig.json`, `README.md` — NEW
+- `packages/cli/src/cli.ts` — NEW: entry (bin), arg parsing, dispatch, help
+- `packages/cli/src/commands/audit.ts` — NEW
+- `packages/cli/src/commands/components.ts` — NEW
+- `packages/cli/src/commands/tokens.ts` — NEW
+- `packages/cli/src/commands/evals.ts` — NEW
+- `packages/cli/src/__tests__/audit.test.ts`, `components.test.ts`, `tokens.test.ts` — NEW
+- Root `package.json` — MODIFY: nothing needed (bin resolves via workspace); CI smoke step optional
+
+**Catalog shape reference** (`packages/mcp-server/src/catalog/types.ts`): `CognivoCatalog { components: ComponentEntry[], tokens: TokenEntry[], ... }`; `ComponentEntry { tag, className, category, description, properties: [{name,type,default,description}], events, slots, examples }`. Token entries have `name`/`value`/`category`-style fields — READ `types.ts` before writing the tokens command and use the real field names.
+
+### Task 15: Scaffold `@cognivo/cli` + `audit` command
+
+**Files:**
+- Create: `packages/cli/package.json`
+- Create: `packages/cli/tsconfig.json`
+- Create: `packages/cli/src/cli.ts`
+- Create: `packages/cli/src/commands/audit.ts`
+- Test: `packages/cli/src/__tests__/audit.test.ts`
+
+- [ ] **Step 1: Write `packages/cli/package.json`**
+
+```json
+{
+  "name": "@cognivo/cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cognivo CLI — audit generated UI, query the component/token catalog, run design-system evals.",
+  "type": "module",
+  "bin": {
+    "cognivo": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@cognivo/mcp-server": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  },
+  "license": "MIT"
+}
+```
+
+- [ ] **Step 2: Write `packages/cli/tsconfig.json`** — same shape as `packages/evals/tsconfig.json` (extends `../../tsconfig.json`, outDir dist, rootDir src, resolveJsonModule, exclude tests).
+
+- [ ] **Step 3: Write the failing test**
+
+`packages/cli/src/__tests__/audit.test.ts`:
+
+```typescript
+import { describe, expect, it } from 'vitest';
+import { runAudit } from '../commands/audit.js';
+
+describe('cognivo audit', () => {
+  it('passes clean cognivo markup', () => {
+    const r = runAudit('<cg-card><cg-button label="Save">Save</cg-button></cg-card>');
+    expect(r.exitCode).toBe(0);
+    expect(r.text).toContain('OK');
+  });
+
+  it('fails unknown components with exit 1', () => {
+    const r = runAudit('<cg-frobnicate></cg-frobnicate>');
+    expect(r.exitCode).toBe(1);
+    expect(r.text).toContain('cg-frobnicate');
+  });
+
+  it('fails raw hex with exit 1', () => {
+    const r = runAudit('<cg-card><style>.x{color:#3b82f6}</style><cg-button label="a">a</cg-button></cg-card>');
+    expect(r.exitCode).toBe(1);
+  });
+
+  it('emits machine-readable JSON with --json shape', () => {
+    const r = runAudit('<cg-frobnicate></cg-frobnicate>', { json: true });
+    const parsed = JSON.parse(r.text) as { valid: boolean; issues: unknown[] };
+    expect(parsed.valid).toBe(false);
+    expect(parsed.issues.length).toBeGreaterThan(0);
+  });
+});
+```
+
+Run: `pnpm --filter @cognivo/cli exec vitest run` — expect FAIL (module not found).
+
+- [ ] **Step 4: Write `packages/cli/src/commands/audit.ts`**
+
+```typescript
+import { createRequire } from 'node:module';
+import { auditPage } from '@cognivo/mcp-server/audit';
+import { validateUsage } from '@cognivo/mcp-server/validate';
+import type { CognivoCatalog } from '@cognivo/mcp-server/catalog-types';
+
+const require = createRequire(import.meta.url);
+const catalog = require('@cognivo/mcp-server/catalog.json') as CognivoCatalog;
+
+export interface AuditResult {
+  exitCode: number; // 0 = pass, 1 = violations
+  text: string;
+}
+
+/** Shared with the eval suite's deterministic scorer — same rules, same truth. */
+export function runAudit(html: string, opts: { json?: boolean } = {}): AuditResult {
+  const audit = auditPage({ html, strict: false });
+  const usage = validateUsage(catalog, { html });
+  const usageHasErrors = /### Errors \([1-9]/.test(usage);
+  const valid = audit.valid && !usageHasErrors;
+
+  if (opts.json) {
+    return {
+      exitCode: valid ? 0 : 1,
+      text: JSON.stringify({ valid, issues: audit.issues, usageReport: usage }, null, 2),
+    };
+  }
+
+  const lines: string[] = [];
+  for (const i of audit.issues) lines.push(`${i.level.toUpperCase().padEnd(7)} [${i.rule}] <${i.tag}> ${i.message}`);
+  if (!usage.startsWith('All clear')) lines.push(usage);
+  lines.push(valid ? 'OK: markup follows Cognivo rules.' : 'FAIL: violations found.');
+  return { exitCode: valid ? 0 : 1, text: lines.join('\n') };
+}
+```
+
+Run test — expect PASS.
+
+- [ ] **Step 5: Write the `packages/cli/src/cli.ts` entry (audit only for now; other commands land in Task 16/17)**
+
+```typescript
+#!/usr/bin/env node
+import { readFileSync } from 'node:fs';
+import { parseArgs } from 'node:util';
+import { runAudit } from './commands/audit.js';
+
+const HELP = `cognivo — Cognivo design-system CLI
+
+Usage:
+  cognivo audit <file|-> [--json]   Audit HTML against Cognivo rules ('-' = stdin)
+  cognivo components list [--category <id>]
+  cognivo components get <tag> [--json]
+  cognivo tokens find <query>
+  cognivo tokens for <css-property>
+  cognivo evals [run|live|replay] [flags]   (requires @cognivo/evals)
+  cognivo help
+`;
+
+async function readStdin(): Promise<string> {
+  const chunks: Buffer[] = [];
+  for await (const chunk of process.stdin) chunks.push(chunk as Buffer);
+  return Buffer.concat(chunks).toString('utf8');
+}
+
+async function main(): Promise<number> {
+  const [command, ...rest] = process.argv.slice(2);
+  if (!command || command === 'help' || command === '--help') {
+    console.log(HELP);
+    return 0;
+  }
+
+  if (command === 'audit') {
+    const { values, positionals } = parseArgs({
+      args: rest,
+      allowPositionals: true,
+      options: { json: { type: 'boolean', default: false } },
+    });
+    const file = positionals[0];
+    if (!file) {
+      console.error('audit: missing <file|-> argument');
+      return 2;
+    }
+    const html = file === '-' ? await readStdin() : readFileSync(file, 'utf8');
+    const r = runAudit(html, { json: values.json });
+    console.log(r.text);
+    return r.exitCode;
+  }
+
+  console.error(`Unknown command: ${command}\n\n${HELP}`);
+  return 2;
+}
+
+main().then(
+  (code) => process.exit(code),
+  (err) => {
+    console.error(err instanceof Error ? err.message : err);
+    process.exit(1);
+  },
+);
+```
+
+- [ ] **Step 6: Verify end to end**
+
+```bash
+pnpm install
+pnpm --filter @cognivo/cli build
+echo '<cg-frobnicate></cg-frobnicate>' | node packages/cli/dist/cli.js audit -
+echo '<cg-card><cg-button label="Ok">Ok</cg-button></cg-card>' | node packages/cli/dist/cli.js audit -
+```
+
+Expected: first exits 1 with `unknown-component`; second exits 0 with `OK`.
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add packages/cli pnpm-lock.yaml
+git commit -m "feat(cli): scaffold @cognivo/cli with audit command"
+```
+
+### Task 16: `components` and `tokens` commands
+
+**Files:**
+- Create: `packages/cli/src/commands/components.ts`
+- Create: `packages/cli/src/commands/tokens.ts`
+- Modify: `packages/cli/src/cli.ts` (wire the commands)
+- Test: `packages/cli/src/__tests__/components.test.ts`, `tokens.test.ts`
+
+- [ ] **Step 1: Read `packages/mcp-server/src/catalog/types.ts` first** — use the real `ComponentEntry`/token entry field names; do not guess.
+
+- [ ] **Step 2: Write failing tests**
+
+`components.test.ts`:
+
+```typescript
+import { describe, expect, it } from 'vitest';
+import { listComponents, getComponent } from '../commands/components.js';
+
+describe('cognivo components', () => {
+  it('lists all components with count', () => {
+    const r = listComponents();
+    expect(r.text).toContain('cg-button');
+    expect(r.exitCode).toBe(0);
+  });
+
+  it('filters by category', () => {
+    const all = listComponents().text.split('\n').length;
+    const filtered = listComponents({ category: 'foundation' });
+    expect(filtered.exitCode).toBe(0);
+    expect(filtered.text.split('\n').length).toBeLessThan(all);
+  });
+
+  it('gets a single component with props', () => {
+    const r = getComponent('cg-button');
+    expect(r.exitCode).toBe(0);
+    expect(r.text).toContain('cg-button');
+  });
+
+  it('exit 2 + suggestion on unknown tag', () => {
+    const r = getComponent('cg-buttno');
+    expect(r.exitCode).toBe(2);
+    expect(r.text).toMatch(/did you mean|unknown/i);
+  });
+});
+```
+
+`tokens.test.ts`:
+
+```typescript
+import { describe, expect, it } from 'vitest';
+import { findTokens, tokenFor } from '../commands/tokens.js';
+
+describe('cognivo tokens', () => {
+  it('finds tokens by name substring', () => {
+    const r = findTokens('surface');
+    expect(r.exitCode).toBe(0);
+    expect(r.text).toContain('--cg-');
+  });
+
+  it('suggests a token for a css property', () => {
+    const r = tokenFor('color');
+    expect(r.exitCode).toBe(0);
+    expect(r.text).toContain('--cg-');
+  });
+
+  it('exit 2 when nothing matches', () => {
+    expect(findTokens('zzz-no-such-token').exitCode).toBe(2);
+  });
+});
+```
+
+Run — expect FAIL (modules not found).
+
+- [ ] **Step 3: Implement both commands** (pure functions returning `{ exitCode, text }` like `runAudit`; load the catalog via the same `createRequire` pattern). `getComponent` prints tag, category, description, and a props table (name/type/default/description). Unknown tag: suggest the closest tag by substring/prefix match. `tokenFor(property)` maps common CSS properties (`color`, `background`, `spacing`, `gap`, `padding`, `font-size`, `radius`, `shadow`) to token name patterns and prints matches from the catalog. Keep it simple — substring filtering, no fuzzy library.
+
+- [ ] **Step 4: Wire into `cli.ts`** — add `components` (sub: `list` with `--category`, `get <tag>` with `--json`) and `tokens` (sub: `find <query>`, `for <property>`) branches using `parseArgs` like the audit branch.
+
+- [ ] **Step 5: Run tests + smoke**
+
+```bash
+pnpm --filter @cognivo/cli test
+node packages/cli/dist/cli.js components list | head -5
+node packages/cli/dist/cli.js tokens find surface | head -5
+```
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add packages/cli
+git commit -m "feat(cli): components and tokens catalog commands"
+```
+
+### Task 17: `evals` passthrough + docs
+
+**Files:**
+- Create: `packages/cli/src/commands/evals.ts`
+- Modify: `packages/cli/src/cli.ts` (wire evals)
+- Create: `packages/cli/README.md`
+- Modify: `AGENTS.md` (mention the CLI), `CLAUDE.md` (package inventory line)
+
+- [ ] **Step 1: Write `packages/cli/src/commands/evals.ts`**
+
+```typescript
+/** Passthrough to @cognivo/evals. The package is private/workspace-only, so
+ *  resolve it dynamically and fail friendly when absent (consumer installs). */
+export async function runEvalsPassthrough(argv: string[]): Promise<number> {
+  let cliPath: string;
+  try {
+    cliPath = new URL(import.meta.resolve('@cognivo/evals/src/cli.ts')).pathname;
+  } catch {
+    console.error('cognivo evals: @cognivo/evals is not installed (it ships with the Cognivo repo, not the npm CLI).');
+    return 2;
+  }
+  const { spawnSync } = await import('node:child_process');
+  const r = spawnSync('node', ['--import', 'tsx', cliPath, ...argv], { stdio: 'inherit' });
+  return r.status ?? 1;
+}
+```
+
+(If `import.meta.resolve` of a TS path proves brittle, fall back to resolving `../evals/src/cli.ts` relative to the monorepo and erroring if absent. Verify by running `node packages/cli/dist/cli.js evals run --mode mock` — expect the eval gate output and exit 0.)
+
+- [ ] **Step 2: Wire `evals` into `cli.ts`** — pass through `rest` verbatim: `return runEvalsPassthrough(rest);`
+
+- [ ] **Step 3: Write `packages/cli/README.md`** — install (workspace), each command with an example, exit codes (0 pass / 1 violations / 2 usage error), and the note that `evals` requires the monorepo's evals package.
+
+- [ ] **Step 4: Update `AGENTS.md` and `CLAUDE.md`** — one line each: `packages/cli` — unified `cognivo` CLI (`audit`, `components`, `tokens`, `evals`).
+
+- [ ] **Step 5: Verify**
+
+```bash
+pnpm --filter @cognivo/cli build && pnpm --filter @cognivo/cli test
+node packages/cli/dist/cli.js help
+node packages/cli/dist/cli.js evals run --mode mock
+```
+
+Expected: help prints; evals passthrough prints the gate report, exit 0.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add packages/cli AGENTS.md CLAUDE.md
+git commit -m "feat(cli): evals passthrough command and docs"
+```
