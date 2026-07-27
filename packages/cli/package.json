@@ -1,0 +1,25 @@
+{
+  "name": "@cognivo/cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cognivo CLI — audit generated UI, query the component/token catalog, run design-system evals.",
+  "type": "module",
+  "bin": {
+    "cognivo": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@cognivo/mcp-server": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  },
+  "license": "MIT"
+}

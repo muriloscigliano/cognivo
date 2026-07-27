@@ -233,6 +233,25 @@ importers:
 
   packages/claude-code-skill: {}
 
+  packages/cli:
+    dependencies:
+      '@cognivo/mcp-server':
+        specifier: workspace:*
+        version: link:../mcp-server
+    devDependencies:
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.1
+      tsx:
+        specifier: ^4.19.0
+        version: 4.21.0
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.19.1)(happy-dom@15.11.7)(jsdom@25.0.1)(lightningcss@1.32.0)
+
   packages/components:
     dependencies:
       '@cognivo/core':
