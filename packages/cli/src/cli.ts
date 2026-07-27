@@ -4,6 +4,7 @@ import { parseArgs } from 'node:util';
 import { runAudit } from './commands/audit.js';
 import { listComponents, getComponent } from './commands/components.js';
 import { findTokens, tokenFor } from './commands/tokens.js';
+import { runEvalsPassthrough } from './commands/evals.js';
 
 const HELP = `cognivo — Cognivo design-system CLI
 
@@ -108,6 +109,10 @@ async function main(): Promise<number> {
     }
     console.error(`tokens: unknown subcommand "${sub ?? ''}" (expected find|for)`);
     return 2;
+  }
+
+  if (command === 'evals') {
+    return runEvalsPassthrough(rest);
   }
 
   console.error(`Unknown command: ${command}\n\n${HELP}`);

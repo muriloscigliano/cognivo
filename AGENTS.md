@@ -10,6 +10,8 @@ satellite rule docs it indexes:
 
 Key commands: `pnpm build`, `pnpm test`, `pnpm lint`, `pnpm type-check`.
 
+`packages/cli` — unified `cognivo` CLI (`audit`, `components`, `tokens`, `evals`).
+
 When generating UI with this system: prefer `cg-*`/`ai-*` components over raw
 HTML, never use raw hex/px values (use `var(--cg-*)` tokens), and validate
 output with the `@cognivo/mcp-server` audit tools. The eval suite in
