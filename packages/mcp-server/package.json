@@ -4,6 +4,26 @@
   "description": "Model Context Protocol server — Cognivo tools for Claude / Cursor / Windsurf.",
   "type": "module",
   "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./audit": {
+      "types": "./dist/server/tools/audit-page.d.ts",
+      "import": "./dist/server/tools/audit-page.js"
+    },
+    "./validate": {
+      "types": "./dist/server/tools/validate-usage.d.ts",
+      "import": "./dist/server/tools/validate-usage.js"
+    },
+    "./catalog-types": {
+      "types": "./dist/catalog/types.d.ts",
+      "import": "./dist/catalog/types.js"
+    },
+    "./shared": {
+      "types": "./dist/server/tools/_shared.d.ts",
+      "import": "./dist/server/tools/_shared.js"
+    },
+    "./catalog.json": "./dist/catalog/catalog.json"
+  },
   "bin": {
     "cognivo-mcp": "./dist/index.js"
   },
