@@ -2256,3 +2256,75 @@ Expected: help prints; evals passthrough prints the gate report, exit 0.
 git add packages/cli AGENTS.md CLAUDE.md
 git commit -m "feat(cli): evals passthrough command and docs"
 ```
+
+---
+
+## Phase E — Astryx-pattern adoption (added post-review of https://astryx.atmeta.com/docs/working-with-ai)
+
+User-confirmed scope revision: the CLI may write files **on explicit invocation** (`cognivo context`), still no machine-config changes. Three additions:
+
+### Task 18: `--dense` flag on catalog commands
+
+AI agents paste CLI output into context windows; every catalog command gets a token-efficient dense format.
+
+**Files:**
+- Modify: `packages/cli/src/commands/components.ts` — `listComponents({ dense })` / `getComponent(tag, { dense })`
+- Modify: `packages/cli/src/commands/tokens.ts` — `findTokens(query, { dense })` / `tokenFor(prop, { dense })`
+- Modify: `packages/cli/src/cli.ts` — `--dense` boolean flag on `components`/`tokens` branches
+- Test: extend `packages/cli/src/__tests__/components.test.ts`, `tokens.test.ts`
+
+- [ ] **Step 1: Write failing dense tests** — e.g. `getComponent('cg-button', { dense: true })` output is a single-line-per-prop compact form (`cg-button props: label:string! variant:enum=default ...`), contains no markdown table pipes, and is < 60% the byte length of the non-dense output. Same shape for tokens.
+- [ ] **Step 2: Run, watch fail.**
+- [ ] **Step 3: Implement dense formatters** — one line per entity, `name:type=default` for props, `name value` for tokens, no headers/decorations.
+- [ ] **Step 4: Run, watch pass.**
+- [ ] **Step 5: Commit** — `feat(cli): --dense token-efficient output for AI context windows`
+
+### Task 19: Agent self-check block
+
+Astryx reports probe questions have a 0% pass rate without grounding; the block makes an agent self-diagnose stale/missing context before writing code.
+
+**Files:**
+- Modify: `AGENTS.md`
+- Modify: `packages/claude-code-skill/skill/SKILL.md`
+
+- [ ] **Step 1: Add to both files** (wording may be adapted to each file's voice; content equivalent):
+
+```markdown
+## Self-check before writing Cognivo UI code
+
+Answer these before generating anything. If you can't answer all three from
+your current context, your grounding is missing or stale — read the skill
+docs (COMPONENTS.md, TOKENS.md) or query the MCP tools (`cognivo_get_component`,
+`cognivo_get_token_for`) BEFORE writing code:
+
+1. Which component confirms a destructive action, and what makes it different
+   from a generic modal?
+2. What's the correct token tier for text color — and which tier is banned in
+   component CSS?
+3. What prop does `cg-input` use for its accessible label?
+```
+
+(Answers must be TRUE at time of writing — verify against `packages/mcp-server/src/server/tools/_shared.ts`, `CLAUDE.token-guardrails.md`, and the cg-input source before committing. If any answer changed since, reword the question, don't guess.)
+
+- [ ] **Step 2: Commit** — `docs: agent self-check block in AGENTS.md and skill`
+
+### Task 20: `cognivo context` generator
+
+The `init --features agents` equivalent: generates agent context files into a **consumer's** project, derived from the installed catalog version. Explicit invocation only; writes into cwd; refuses to overwrite without `--force`.
+
+**Files:**
+- Create: `packages/cli/src/commands/context.ts`
+- Create: `packages/cli/src/templates/context-claude.md.ts`, `context-cursor.ts`, `context-agents.md.ts` (template functions, not .md files, so they embed catalog data)
+- Modify: `packages/cli/src/cli.ts` — wire `context [--agent claude|cursor|codex|all] [--force] [--path <dir>]`
+- Test: `packages/cli/src/__tests__/context.test.ts`
+
+Behavior:
+- `cognivo context` (default `--agent all`) writes `CLAUDE.md` / `.cursorrules` / `AGENTS.md` into `--path` (default cwd). If a file exists and lacks the `<!-- cognivo-context v<N> -->` marker header, skip with a warning unless `--force` (never clobber hand-written files).
+- Content = the grounding triad, generated from `catalog.json` at runtime: (a) the 3-step agent workflow (`cognivo components list` → `cognivo components get <tag>` → `cognivo tokens for <prop>`), (b) behavioral rules (no raw hex/px, prefer cg-*/ai-* over raw HTML, tier-1 tokens banned, use `cognivo audit` before finishing), (c) the self-check block from Task 19, (d) a compact component index (tag + one-line description, dense format from Task 18), (e) marker header with the catalog version so re-runs can update in place.
+
+- [ ] **Step 1: Write failing tests** — generate into a `mkdtemp` dir: all three files exist, contain the marker header, contain a real tag (e.g. `cg-alert-dialog`), contain the self-check questions; second run without `--force` skips hand-modified files; `--force` overwrites marker-bearing files.
+- [ ] **Step 2: Run, watch fail.**
+- [ ] **Step 3: Implement `context.ts` + templates.** Pure function `generateContext(agent, catalog): string` + thin file-writing wrapper for testability.
+- [ ] **Step 4: Run, watch pass + smoke:** `cd $(mktemp -d) && node $REPO/packages/cli/dist/cli.js context --agent codex && cat AGENTS.md | head -20`
+- [ ] **Step 5: Update CLI README + help text** for the new command.
+- [ ] **Step 6: Commit** — `feat(cli): cognivo context generator for consumer agent grounding`
