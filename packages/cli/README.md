@@ -63,6 +63,24 @@ cognivo evals live --record     # live run (needs ANTHROPIC_API_KEY)
 cognivo evals replay            # re-grade the latest recorded baseline
 ```
 
+### `cognivo context [--agent claude|cursor|codex|all] [--force] [--path <dir>]`
+
+Generate agent-grounding files into a consumer project, derived from the
+installed catalog version: `CLAUDE.md` (claude), `.cursorrules` (cursor),
+`AGENTS.md` (codex). Defaults: `--agent all`, `--path` = cwd.
+
+Content: the 3-step CLI workflow, behavioral rules (no raw hex/px, tier-1
+tokens banned, run `cognivo audit`), the self-check block, and a dense
+`tag description` component index — all stamped with a
+`<!-- cognivo-context v<N> -->` marker header. Re-runs regenerate
+marker-bearing files in place; a file without the marker is skipped with a
+warning unless `--force` (never clobbers hand-written files).
+
+```bash
+cognivo context                      # all three files into cwd
+cognivo context --agent codex --path ./my-app
+```
+
 ## `--dense` flag
 
 Available on `components list`, `components get`, `tokens find`, and

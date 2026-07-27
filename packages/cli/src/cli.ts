@@ -5,6 +5,7 @@ import { runAudit } from './commands/audit.js';
 import { listComponents, getComponent } from './commands/components.js';
 import { findTokens, tokenFor } from './commands/tokens.js';
 import { runEvalsPassthrough } from './commands/evals.js';
+import { runContext } from './commands/context.js';
 
 const HELP = `cognivo — Cognivo design-system CLI
 
@@ -15,6 +16,7 @@ Usage:
   cognivo tokens find <query> [--dense]
   cognivo tokens for <css-property> [--dense]
   cognivo evals [run|live|replay] [flags]   (requires @cognivo/evals)
+  cognivo context [--agent claude|cursor|codex|all] [--force] [--path <dir>]
   cognivo help
 
 --dense: token-efficient one-line-per-entity output for AI context windows
@@ -113,6 +115,25 @@ async function main(): Promise<number> {
 
   if (command === 'evals') {
     return runEvalsPassthrough(rest);
+  }
+
+  if (command === 'context') {
+    const { values } = parseArgs({
+      args: rest,
+      allowPositionals: true,
+      options: {
+        agent: { type: 'string', default: 'all' },
+        force: { type: 'boolean', default: false },
+        path: { type: 'string' },
+      },
+    });
+    const r = runContext({
+      agent: values.agent as 'claude' | 'cursor' | 'codex' | 'all',
+      force: values.force,
+      ...(values.path ? { path: values.path } : {}),
+    });
+    console.log(r.text);
+    return r.exitCode;
   }
 
   console.error(`Unknown command: ${command}\n\n${HELP}`);

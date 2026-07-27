@@ -92,6 +92,14 @@ export function getComponent(tag: string, opts: { json?: boolean; dense?: boolea
   return { exitCode: 0, text: lines.join('\n') };
 }
 
+/**
+ * Compact `tag description` index, one line per component — the dense form
+ * embedded into generated agent-context files (`cognivo context`).
+ */
+export function formatComponentIndex(cat: CognivoCatalog): string {
+  return cat.components.map((c) => `${c.tag} ${c.description}`).join('\n');
+}
+
 /** Nearest known tag by longest common prefix (simple, no fuzzy library). */
 function closestTag(tag: string): string | null {
   let best: ComponentEntry | null = null;
