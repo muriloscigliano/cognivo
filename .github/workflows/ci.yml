@@ -50,6 +50,9 @@ jobs:
       - name: Registry drift check
         run: node scripts/check-registry-drift.mjs
 
+      - name: Design-system evals (offline)
+        run: pnpm evals
+
       - name: Type check
         run: pnpm -r type-check
 
