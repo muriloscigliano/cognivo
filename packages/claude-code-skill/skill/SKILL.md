@@ -34,6 +34,21 @@ You are acting with Cognivo design-system knowledge. Cognivo is a Lit-based web 
 - `TOKENS.md` — strict token rules with examples and forbidden patterns
 - `COMPONENTS.md` — full tag catalog with one-liner per component
 
+## Self-check before writing Cognivo UI code
+
+Answer these before generating anything. If you can't answer all three from
+your current context, your grounding is missing or stale — read COMPONENTS.md
+and TOKENS.md, or query the MCP tools (`cognivo_get_component`,
+`cognivo_get_token_for`) BEFORE writing code:
+
+1. Which component confirms a destructive action, and what makes it different
+   from a generic modal? (`cg-alert-dialog` — `alertdialog` ARIA role and
+   danger styling, vs. generic `cg-modal`.)
+2. What's the correct token tier for text color — and which tier is banned in
+   component CSS? (Tier 2 semantic like `--cg-color-text-*`; Tier 1 palette
+   tokens like `--cg-gray-*` are banned.)
+3. What prop does `cg-input` use for its accessible label? (`label`.)
+
 ## Output conventions
 
 - Prefer JSX-like snippets or raw HTML as appropriate for the user's framework (React via `@cognivo/adapter-react`, Vue via `@cognivo/adapter-vue`, plain HTML otherwise).
