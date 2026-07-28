@@ -2331,14 +2331,21 @@ Behavior:
 
 ---
 
-## Addendum 2026-07-27 — LiteLLM proxy for live runs
+## Addendum 2026-07-27 — LiteLLM gateway for live runs
 
 Post-merge change (branch `muriloscigliano/evals-litellm`): the live path no
 longer calls the Anthropic API directly. `AnthropicAgent`/`AnthropicJudge`
-were replaced by `LiteLLMAgent`/`LiteLLMJudge`, both going through the shared
-LiteLLM proxy used by all projects (OpenAI-compatible `/chat/completions`,
-plain fetch, no SDK). Config: `LITELLM_BASE_URL` (default
-`http://localhost:4000`), `LITELLM_API_KEY`, `LITELLM_MODEL` (default
-`claude-opus-4-8`, a proxy-side alias). The `@anthropic-ai/sdk` dependency was
-dropped from `@cognivo/evals`. The dynamic-interfaces engine's own
-`anthropic-client.ts` is out of scope.
+were replaced by `LiteLLMAgent`/`LiteLLMJudge`, going through the shared
+LiteLLM gateway from the Freely project (`freely-litellm` Docker container,
+OpenAI-compatible `/chat/completions`, plain fetch, no SDK). Config:
+`LITELLM_BASE_URL` (default `http://localhost:4791/v1`), `LITELLM_API_KEY`
+(per-project virtual key, in gitignored repo-root `.env`, $10/30d budget),
+`LITELLM_MODEL` (default `deepseek/deepseek-v4-pro`, a gateway alias).
+`COGNIVO_EVALS_NO_DOTENV` isolates tests from a real `.env`. The
+`@anthropic-ai/sdk` dependency was dropped from `@cognivo/evals`. The
+dynamic-interfaces engine's own `anthropic-client.ts` is out of scope.
+
+**Known blocker at time of writing:** every upstream provider key in the
+gateway (Freely's `backend/.env`) is invalid or out of funds — DeepSeek/Z.ai/
+Qwen/Maritaca 401, OpenAI quota, Anthropic credit balance, Gemini 500. The
+first real live run is pending a Freely-side key fix.
