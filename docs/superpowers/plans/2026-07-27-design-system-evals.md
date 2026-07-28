@@ -2328,3 +2328,17 @@ Behavior:
 - [ ] **Step 4: Run, watch pass + smoke:** `cd $(mktemp -d) && node $REPO/packages/cli/dist/cli.js context --agent codex && cat AGENTS.md | head -20`
 - [ ] **Step 5: Update CLI README + help text** for the new command.
 - [ ] **Step 6: Commit** — `feat(cli): cognivo context generator for consumer agent grounding`
+
+---
+
+## Addendum 2026-07-27 — LiteLLM proxy for live runs
+
+Post-merge change (branch `muriloscigliano/evals-litellm`): the live path no
+longer calls the Anthropic API directly. `AnthropicAgent`/`AnthropicJudge`
+were replaced by `LiteLLMAgent`/`LiteLLMJudge`, both going through the shared
+LiteLLM proxy used by all projects (OpenAI-compatible `/chat/completions`,
+plain fetch, no SDK). Config: `LITELLM_BASE_URL` (default
+`http://localhost:4000`), `LITELLM_API_KEY`, `LITELLM_MODEL` (default
+`claude-opus-4-8`, a proxy-side alias). The `@anthropic-ai/sdk` dependency was
+dropped from `@cognivo/evals`. The dynamic-interfaces engine's own
+`anthropic-client.ts` is out of scope.

@@ -2,7 +2,8 @@
 /**
  * Cognivo design-system evals CLI.
  *   run --mode mock [--samples N]   offline gate (CI)
- *   live [--samples N] [--model M] [--record]   live run (needs ANTHROPIC_API_KEY)
+ *   live [--samples N] [--model M] [--record]   live run via LiteLLM proxy
+ *                                               (LITELLM_BASE_URL / LITELLM_API_KEY / LITELLM_MODEL)
  *   replay [baseline.json]          re-grade recorded outputs offline
  * Exit 0 on GO, 1 on NO-GO.
  */
@@ -10,8 +11,8 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { EVAL_DATASET } from './dataset.js';
 import { MockAgent } from './agents/mock-agent.js';
-import { AnthropicAgent } from './agents/anthropic-agent.js';
-import { MockJudge, AnthropicJudge } from './scorers/judge.js';
+import { LiteLLMAgent } from './agents/litellm-agent.js';
+import { MockJudge, LiteLLMJudge } from './scorers/judge.js';
 import { runEvals } from './runner.js';
 import { evaluateGate } from './gate.js';
 import { formatConsole } from './report.js';
@@ -52,8 +53,8 @@ async function main(): Promise<number> {
   }
 
   const live = command === 'live';
-  const agent = live ? new AnthropicAgent(flag('model')) : new MockAgent();
-  const judge = live ? new AnthropicJudge(flag('model')) : new MockJudge();
+  const agent = live ? new LiteLLMAgent(flag('model')) : new MockAgent();
+  const judge = live ? new LiteLLMJudge(flag('model')) : new MockJudge();
 
   const report = await runEvals(EVAL_DATASET, agent, judge, {
     samples,
