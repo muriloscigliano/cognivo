@@ -7,8 +7,8 @@ on:
         description: 'Samples per case (N for worst-of-N)'
         default: '3'
       model:
-        description: 'Model ID'
-        default: 'claude-opus-4-8'
+        description: 'LiteLLM proxy model alias'
+        default: 'deepseek/deepseek-v4-pro'
   schedule:
     - cron: '41 6 * * 1' # weekly, Monday ~06:41 UTC
 
@@ -26,8 +26,9 @@ jobs:
       - run: pnpm build
       - name: Run live evals
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: pnpm --filter @cognivo/evals live --record --json eval-report.json --samples ${{ github.event.inputs.samples || '3' }} --model ${{ github.event.inputs.model || 'claude-opus-4-8' }}
+          LITELLM_API_KEY: ${{ secrets.LITELLM_API_KEY }}
+          LITELLM_BASE_URL: ${{ vars.LITELLM_BASE_URL }}
+        run: pnpm --filter @cognivo/evals live --record --json eval-report.json --samples ${{ github.event.inputs.samples || '3' }} --model ${{ github.event.inputs.model || 'deepseek/deepseek-v4-pro' }}
       - uses: actions/upload-artifact@v4
         with:
           name: eval-report

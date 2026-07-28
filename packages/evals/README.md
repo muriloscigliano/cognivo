@@ -20,7 +20,7 @@ spelling out the answer. Each output is graded by three scorers:
    checks: did it reach for `cg-alert-dialog` over a hand-rolled `<div>`?
 3. **Judge** (`scorers/judge.ts`) — rubrics for judgement calls. `MockJudge`
    scores offline via deterministic hints (abstains at 0.5 when a rubric has
-   none); `AnthropicJudge` does real LLM-as-judge scoring on live runs.
+   none); `LiteLLMJudge` does real LLM-as-judge scoring on live runs.
 
 Each case is sampled N times (default 3); a case passes only if **every**
 sample passes (worst-of-N). The gate (`gate.ts`) requires worst-of-N ≥ 80% and
@@ -34,8 +34,23 @@ pnpm evals:live     # live run against the real model, records a baseline
 pnpm evals:replay   # re-grade the latest recorded baseline through current scorers
 ```
 
-Live runs need `ANTHROPIC_API_KEY` (env or repo-root `.env`). They also run in
-GitHub Actions via the `Evals (live)` workflow (manual dispatch or weekly).
+Live runs go through the **shared LiteLLM gateway** (Freely's
+`freely-litellm` container — OpenAI-compatible `/chat/completions`, plain
+fetch — no provider SDK). Config via env or repo-root `.env`:
+
+- `LITELLM_API_KEY` (required) — a per-project virtual key (generate one via
+  the gateway's `/key/generate`; the cognivo key is in repo-root `.env`,
+  gitignored, $10/30d hard cap)
+- `LITELLM_BASE_URL` (default `http://localhost:4791/v1`)
+- `LITELLM_MODEL` (default `deepseek/deepseek-v4-pro` — a gateway alias;
+  `--model` on the CLI overrides it). Aliases are defined in the freely
+  repo's `backend/litellm/config.yaml`; fallback chains run proxy-side.
+
+They also run in GitHub Actions via the `Evals (live)` workflow (manual
+dispatch or weekly), which reads `LITELLM_API_KEY` from secrets and
+`LITELLM_BASE_URL` from repo variables. Note: CI live runs need the gateway
+reachable from the runner — the default `localhost` URL only works for local
+runs.
 
 `replay` exists to catch validator drift offline: baselines recorded from live
 runs are re-graded whenever `audit-page`, the catalog, or the dataset changes —

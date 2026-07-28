@@ -343,9 +343,6 @@ importers:
 
   packages/evals:
     dependencies:
-      '@anthropic-ai/sdk':
-        specifier: ^0.39.0
-        version: 0.39.0
       '@cognivo/mcp-server':
         specifier: workspace:*
         version: link:../mcp-server
@@ -11088,7 +11085,7 @@ snapshots:
   vite@5.4.21(@types/node@20.19.25)(lightningcss@1.32.0):
     dependencies:
       esbuild: 0.21.5
-      postcss: 8.5.16
+      postcss: 8.5.6
       rollup: 4.53.2
     optionalDependencies:
       '@types/node': 20.19.25

@@ -13,7 +13,6 @@
     "replay": "node --import tsx src/cli.ts replay"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.39.0",
     "@cognivo/mcp-server": "workspace:*"
   },
   "devDependencies": {

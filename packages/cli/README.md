@@ -59,7 +59,7 @@ Outside a monorepo the command prints a friendly error and exits 2.
 
 ```bash
 cognivo evals run --mode mock   # offline gate (CI)
-cognivo evals live --record     # live run (needs ANTHROPIC_API_KEY)
+cognivo evals live --record     # live run via LiteLLM proxy (LITELLM_API_KEY)
 cognivo evals replay            # re-grade the latest recorded baseline
 ```
 
