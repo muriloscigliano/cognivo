@@ -2,6 +2,8 @@ import { readFileSync } from 'node:fs';
 
 /** Read repo-root .env without logging values (same approach as live-gate.ts). */
 export function loadDotEnv(): void {
+  // Tests set this to isolate from a real repo-root .env.
+  if (process.env.COGNIVO_EVALS_NO_DOTENV) return;
   try {
     // packages/evals/src/ → repo root is three levels up.
     const text = readFileSync(new URL('../../../.env', import.meta.url), 'utf8');
@@ -27,12 +29,14 @@ export interface LiteLLMConfig {
   model: string;
 }
 
-const DEFAULT_BASE_URL = 'http://localhost:4000';
-const DEFAULT_MODEL = 'claude-opus-4-8';
+const DEFAULT_BASE_URL = 'http://localhost:4791/v1';
+const DEFAULT_MODEL = 'deepseek/deepseek-v4-pro';
 
 /**
- * Resolve the shared LiteLLM proxy config. All projects hit the same gateway;
- * model names are proxy-side aliases (see your LiteLLM config.yaml).
+ * Resolve the shared LiteLLM proxy config. All projects hit the same gateway
+ * (Freely's `freely-litellm` container); model names are proxy-side aliases
+ * (e.g. deepseek/deepseek-v4-pro, zai/glm-4.6 — see the freely repo's
+ * backend/litellm/config.yaml).
  */
 export function resolveLiteLLMConfig(modelOverride?: string): LiteLLMConfig {
   loadDotEnv();

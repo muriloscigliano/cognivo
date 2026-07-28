@@ -8,7 +8,7 @@ on:
         default: '3'
       model:
         description: 'LiteLLM proxy model alias'
-        default: 'claude-opus-4-8'
+        default: 'deepseek/deepseek-v4-pro'
   schedule:
     - cron: '41 6 * * 1' # weekly, Monday ~06:41 UTC
 
@@ -28,7 +28,7 @@ jobs:
         env:
           LITELLM_API_KEY: ${{ secrets.LITELLM_API_KEY }}
           LITELLM_BASE_URL: ${{ vars.LITELLM_BASE_URL }}
-        run: pnpm --filter @cognivo/evals live --record --json eval-report.json --samples ${{ github.event.inputs.samples || '3' }} --model ${{ github.event.inputs.model || 'claude-opus-4-8' }}
+        run: pnpm --filter @cognivo/evals live --record --json eval-report.json --samples ${{ github.event.inputs.samples || '3' }} --model ${{ github.event.inputs.model || 'deepseek/deepseek-v4-pro' }}
       - uses: actions/upload-artifact@v4
         with:
           name: eval-report

@@ -23,9 +23,10 @@ function buildSystemPrompt(): string {
 }
 
 /**
- * Live agent via the shared LiteLLM proxy. Config: LITELLM_BASE_URL
- * (default http://localhost:4000), LITELLM_API_KEY, LITELLM_MODEL
- * (default claude-opus-4-8 — a proxy-side alias).
+ * Live agent via the shared LiteLLM gateway (Freely's `freely-litellm`).
+ * Config: LITELLM_BASE_URL (default http://localhost:4791/v1),
+ * LITELLM_API_KEY, LITELLM_MODEL (default deepseek/deepseek-v4-pro — a
+ * gateway alias).
  */
 export class LiteLLMAgent implements AgentClient {
   readonly name = 'litellm-agent';

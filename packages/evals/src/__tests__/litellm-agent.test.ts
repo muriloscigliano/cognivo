@@ -6,10 +6,12 @@ describe('LiteLLMAgent', () => {
   const savedKey = process.env.LITELLM_API_KEY;
 
   beforeEach(() => {
+    process.env.COGNIVO_EVALS_NO_DOTENV = '1'; // isolate from repo-root .env
     delete process.env.LITELLM_API_KEY;
   });
 
   afterEach(() => {
+    delete process.env.COGNIVO_EVALS_NO_DOTENV;
     if (savedKey !== undefined) process.env.LITELLM_API_KEY = savedKey;
   });
 

@@ -34,18 +34,23 @@ pnpm evals:live     # live run against the real model, records a baseline
 pnpm evals:replay   # re-grade the latest recorded baseline through current scorers
 ```
 
-Live runs go through the **shared LiteLLM proxy** (OpenAI-compatible
-`/chat/completions`, plain fetch — no provider SDK). Config via env or
-repo-root `.env`:
+Live runs go through the **shared LiteLLM gateway** (Freely's
+`freely-litellm` container — OpenAI-compatible `/chat/completions`, plain
+fetch — no provider SDK). Config via env or repo-root `.env`:
 
-- `LITELLM_API_KEY` (required) — proxy key
-- `LITELLM_BASE_URL` (default `http://localhost:4000`)
-- `LITELLM_MODEL` (default `claude-opus-4-8` — a proxy-side alias; `--model`
-  on the CLI overrides it)
+- `LITELLM_API_KEY` (required) — a per-project virtual key (generate one via
+  the gateway's `/key/generate`; the cognivo key is in repo-root `.env`,
+  gitignored, $10/30d hard cap)
+- `LITELLM_BASE_URL` (default `http://localhost:4791/v1`)
+- `LITELLM_MODEL` (default `deepseek/deepseek-v4-pro` — a gateway alias;
+  `--model` on the CLI overrides it). Aliases are defined in the freely
+  repo's `backend/litellm/config.yaml`; fallback chains run proxy-side.
 
 They also run in GitHub Actions via the `Evals (live)` workflow (manual
 dispatch or weekly), which reads `LITELLM_API_KEY` from secrets and
-`LITELLM_BASE_URL` from repo variables.
+`LITELLM_BASE_URL` from repo variables. Note: CI live runs need the gateway
+reachable from the runner — the default `localhost` URL only works for local
+runs.
 
 `replay` exists to catch validator drift offline: baselines recorded from live
 runs are re-graded whenever `audit-page`, the catalog, or the dataset changes —
