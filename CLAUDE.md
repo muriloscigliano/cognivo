@@ -35,7 +35,7 @@ Competes with OpenUI (Thesys) but framework-agnostic and token-governed.
 - Vitest for unit tests, Playwright for e2e + visual regression
 - Astro (docs site) with custom component hot-reload plugin
 
-## Packages (20 total — 19 public + 1 private)
+## Packages (22 total — 19 public + 3 private)
 
 Public packages ship at **0.4.0** unless noted (tokens/components/adapter-vue are at 0.8.x to match the live npm registry). Paths are under `packages/`.
 
@@ -62,6 +62,8 @@ Public packages ship at **0.4.0** unless noted (tokens/components/adapter-vue ar
 - `@cognivo/mcp-server` — MCP server exposing Cognivo tools to Claude Code / Cursor / Windsurf. Binary: `cognivo-mcp`.
 - `@cognivo/eslint-plugin` (dir `eslint-plugin-cognivo`) — Enforces token + interaction conventions.
 - `@cognivo/claude-code-skill` — Claude Code skill for design-aware UI generation. **Private.**
+- `@cognivo/evals` — Design-system eval suite; run `pnpm evals` before changing CLAUDE.md, claude-code-skill, or the MCP catalog. **Private.**
+- `@cognivo/cli` — Unified `cognivo` CLI (`audit`, `components`, `tokens`, `evals`). **Private.**
 
 ### Lens (pre-1.0 subsystem — ship-or-private decision pending)
 - `@cognivo/lens-core` (0.1.0) — Headless engine: scene-graph observer, classifier, rule engine, scorer, verifier, agent emitting `FixManifest`s.

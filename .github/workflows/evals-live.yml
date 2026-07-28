@@ -1,0 +1,36 @@
+name: Evals (live)
+
+on:
+  workflow_dispatch:
+    inputs:
+      samples:
+        description: 'Samples per case (N for worst-of-N)'
+        default: '3'
+      model:
+        description: 'Model ID'
+        default: 'claude-opus-4-8'
+  schedule:
+    - cron: '41 6 * * 1' # weekly, Monday ~06:41 UTC
+
+jobs:
+  live-evals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Run live evals
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: pnpm --filter @cognivo/evals live --record --json eval-report.json --samples ${{ github.event.inputs.samples || '3' }} --model ${{ github.event.inputs.model || 'claude-opus-4-8' }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eval-report
+          path: |
+            eval-report.json
+            packages/evals/baselines/*.json

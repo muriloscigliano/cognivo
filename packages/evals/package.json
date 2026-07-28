@@ -1,0 +1,25 @@
+{
+  "name": "@cognivo/evals",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Design-system evals — regression suite verifying AI agents use Cognivo components and tokens correctly.",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "gate": "node --import tsx src/cli.ts run --mode mock",
+    "live": "node --import tsx src/cli.ts live --record",
+    "replay": "node --import tsx src/cli.ts replay"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@cognivo/mcp-server": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  },
+  "license": "MIT"
+}
