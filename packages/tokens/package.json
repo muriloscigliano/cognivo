@@ -26,7 +26,8 @@
       "types": "./dist/manifest.d.ts",
       "import": "./dist/manifest-runtime.js"
     },
-    "./manifest.json": "./dist/manifest.json"
+    "./manifest.json": "./dist/manifest.json",
+    "./motion.css": "./dist/motion.css"
   },
   "files": [
     "dist",
@@ -45,11 +46,11 @@
   },
   "scripts": {
     "generate": "node generate-from-palette.cjs",
-    "build": "node build.js && node scripts/build-manifest.mjs && node scripts/validate-contrast.mjs",
+    "build": "node build.js && node scripts/copy-static.mjs && node scripts/build-manifest.mjs && node scripts/validate-contrast.mjs",
     "build:only": "node build.js",
     "build:manifest": "node scripts/build-manifest.mjs",
     "check:manifest": "node scripts/check-manifest-drift.mjs",
-    "test": "node --test __tests__/manifest-lib.test.mjs",
+    "test": "node --test __tests__/manifest-lib.test.mjs __tests__/motion-css.test.mjs",
     "validate:contrast": "node scripts/validate-contrast.mjs",
     "prepublishOnly": "pnpm build",
     "dev": "node build.js --watch",

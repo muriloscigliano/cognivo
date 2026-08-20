@@ -1,0 +1,280 @@
+/**
+ * Cognivo Motion Recipes — @cognivo/tokens/motion.css
+ *
+ * Fourteen reusable, framework-free CSS motion recipes. Import once, apply
+ * the `cg-motion-*` classes to any markup. Every duration and easing comes
+ * from Cognivo motion tokens; per-recipe knobs are exposed as
+ * `--cg-motion-<recipe>-*` custom properties with token-backed defaults.
+ *
+ * Convention:
+ *   .cg-motion-<recipe>          base (closed/rest) state
+ *   .cg-motion-<recipe>--open    state modifier (or --active / --error / --done)
+ *
+ * Requires @cognivo/tokens (index.css) to be loaded for the token values.
+ * Every recipe collapses gracefully under prefers-reduced-motion.
+ */
+
+/* ════════════════════════════════════════════════════════════════════════
+   CONTAINER FAMILY
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ── card-resize — smooth height/width changes on content swap ─────────── */
+.cg-motion-card-resize {
+  transition:
+    height var(--cg-motion-duration-slow) var(--cg-motion-easing-default),
+    width var(--cg-motion-duration-slow) var(--cg-motion-easing-default),
+    max-height var(--cg-motion-duration-slow) var(--cg-motion-easing-default);
+  overflow: hidden;
+}
+
+/* ── panel-reveal — side panel slides + fades in from its edge ──────────── */
+.cg-motion-panel-reveal {
+  --cg-motion-panel-reveal-distance: var(--cg-spacing-24);
+  opacity: 0;
+  transform: translateX(var(--cg-motion-panel-reveal-distance));
+  transition:
+    opacity var(--cg-motion-duration-normal) var(--cg-motion-easing-exit),
+    transform var(--cg-motion-duration-normal) var(--cg-motion-easing-exit);
+}
+.cg-motion-panel-reveal--open {
+  opacity: 1;
+  transform: translateX(0);
+  transition-timing-function: var(--cg-motion-easing-enter);
+}
+
+/* ── modal — scale + fade enter, faster exit ────────────────────────────── */
+.cg-motion-modal {
+  --cg-motion-modal-scale-from: 0.96;
+  opacity: 0;
+  transform: scale(var(--cg-motion-modal-scale-from));
+  transition:
+    opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-exit),
+    transform var(--cg-motion-duration-fast) var(--cg-motion-easing-exit);
+}
+.cg-motion-modal--open {
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity var(--cg-motion-duration-normal) var(--cg-motion-easing-enter),
+    transform var(--cg-motion-duration-normal) var(--cg-motion-easing-enter);
+}
+
+/* ── dropdown — origin-aware unfold from the trigger ────────────────────── */
+.cg-motion-dropdown {
+  --cg-motion-dropdown-distance: var(--cg-spacing-4);
+  transform-origin: top;
+  opacity: 0;
+  transform: translateY(calc(-1 * var(--cg-motion-dropdown-distance))) scaleY(0.95);
+  pointer-events: none;
+  transition:
+    opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-exit),
+    transform var(--cg-motion-duration-fast) var(--cg-motion-easing-exit);
+}
+.cg-motion-dropdown--open {
+  opacity: 1;
+  transform: translateY(0) scaleY(1);
+  pointer-events: auto;
+  transition-timing-function: var(--cg-motion-easing-enter);
+}
+
+/* ── page-nav — old view exits up, new view enters from below ───────────── */
+.cg-motion-page-nav {
+  --cg-motion-page-nav-distance: var(--cg-spacing-16);
+  animation: cg-motion-page-enter var(--cg-motion-duration-slow) var(--cg-motion-easing-enter) both;
+}
+.cg-motion-page-nav--exit {
+  animation: cg-motion-page-exit var(--cg-motion-duration-normal) var(--cg-motion-easing-exit) both;
+}
+@keyframes cg-motion-page-enter {
+  from { opacity: 0; transform: translateY(var(--cg-motion-page-nav-distance)); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes cg-motion-page-exit {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(calc(-1 * var(--cg-motion-page-nav-distance))); }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   CONTENT FAMILY
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ── text-swap — outgoing text lifts away, incoming settles in ─────────── */
+.cg-motion-text-swap {
+  --cg-motion-text-swap-distance: var(--cg-spacing-8);
+  display: inline-block;
+  animation: cg-motion-text-in var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+}
+.cg-motion-text-swap--out {
+  animation: cg-motion-text-out var(--cg-motion-duration-fast) var(--cg-motion-easing-exit) both;
+}
+@keyframes cg-motion-text-in {
+  from { opacity: 0; transform: translateY(var(--cg-motion-text-swap-distance)); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes cg-motion-text-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(calc(-1 * var(--cg-motion-text-swap-distance))); }
+}
+
+/* ── text-reveal — clipped line rises into view (pair with .cg-motion-stagger) */
+.cg-motion-text-reveal {
+  display: inline-block;
+  overflow: hidden;
+}
+.cg-motion-text-reveal > * {
+  display: inline-block;
+  animation: cg-motion-text-reveal-rise var(--cg-motion-duration-slow) var(--cg-motion-easing-enter) both;
+}
+@keyframes cg-motion-text-reveal-rise {
+  from { transform: translateY(110%); }
+  to { transform: translateY(0); }
+}
+
+/* ── number-flip — odometer-style flip-in for changing values ───────────── */
+.cg-motion-number-flip {
+  --cg-motion-number-flip-perspective: var(--cg-spacing-64);
+  display: inline-block;
+  perspective: var(--cg-motion-number-flip-perspective);
+}
+.cg-motion-number-flip--changed {
+  animation: cg-motion-number-flip-in var(--cg-motion-duration-normal) var(--cg-motion-easing-enter) both;
+}
+@keyframes cg-motion-number-flip-in {
+  from { opacity: 0; transform: rotateX(-80deg); }
+  40% { opacity: 1; }
+  to { opacity: 1; transform: rotateX(0); }
+}
+
+/* ── icon-swap — cross-fading icon pair with a quarter turn ─────────────── */
+.cg-motion-icon-swap {
+  position: relative;
+  display: inline-grid;
+}
+.cg-motion-icon-swap > * {
+  grid-area: 1 / 1;
+  transition:
+    opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
+    transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+}
+.cg-motion-icon-swap > :last-child {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.8);
+}
+.cg-motion-icon-swap--active > :first-child {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.8);
+}
+.cg-motion-icon-swap--active > :last-child {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   FEEDBACK FAMILY
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ── badge-pop — notification badge pops in with overshoot ──────────────── */
+.cg-motion-badge-pop {
+  animation: cg-motion-badge-pop-in var(--cg-motion-duration-normal) var(--cg-motion-easing-bounce) both;
+}
+@keyframes cg-motion-badge-pop-in {
+  from { opacity: 0; transform: scale(0.4); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ── success-confirm — settle-and-glow confirmation pulse ───────────────── */
+.cg-motion-success-confirm {
+  animation: cg-motion-success-settle var(--cg-motion-duration-slower) var(--cg-motion-easing-bounce) both;
+}
+@keyframes cg-motion-success-settle {
+  from { opacity: 0; transform: scale(0.85); }
+  55% { opacity: 1; transform: scale(1.04); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ── error-shake — horizontal refusal shake for invalid input ───────────── */
+.cg-motion-error-shake {
+  --cg-motion-error-shake-distance: var(--cg-spacing-4);
+  animation: cg-motion-error-shake-x var(--cg-motion-duration-slow) var(--cg-motion-easing-default) both;
+}
+@keyframes cg-motion-error-shake-x {
+  10%, 50%, 90% { transform: translateX(calc(-1 * var(--cg-motion-error-shake-distance))); }
+  30%, 70% { transform: translateX(var(--cg-motion-error-shake-distance)); }
+  from, to { transform: translateX(0); }
+}
+
+/* ── avatar-group — overlapped avatars spread apart on hover ────────────── */
+.cg-motion-avatar-group {
+  --cg-motion-avatar-group-overlap: var(--cg-spacing-8);
+  display: inline-flex;
+}
+.cg-motion-avatar-group > * {
+  transition:
+    margin-inline-start var(--cg-motion-duration-fast) var(--cg-motion-easing-default),
+    transform var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+}
+.cg-motion-avatar-group > * + * {
+  margin-inline-start: calc(-1 * var(--cg-motion-avatar-group-overlap));
+}
+.cg-motion-avatar-group:hover > * + * {
+  margin-inline-start: var(--cg-spacing-2, 0);
+}
+.cg-motion-avatar-group:hover > * {
+  transform: translateY(calc(-1 * var(--cg-spacing-2, 0)));
+}
+
+/* ── stagger — helper: delays children by their --cg-motion-stagger-index ─ */
+.cg-motion-stagger {
+  --cg-motion-stagger-step: calc(var(--cg-motion-duration-fast) / 2);
+}
+.cg-motion-stagger > * {
+  --cg-motion-stagger-index: 0;
+  animation-delay: calc(var(--cg-motion-stagger-index) * var(--cg-motion-stagger-step));
+  transition-delay: calc(var(--cg-motion-stagger-index) * var(--cg-motion-stagger-step));
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   REDUCED MOTION — every recipe collapses to opacity-only or none
+   ════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .cg-motion-card-resize {
+    transition: none;
+  }
+  .cg-motion-panel-reveal,
+  .cg-motion-modal,
+  .cg-motion-dropdown {
+    transform: none;
+    transition:
+      opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+  }
+  .cg-motion-panel-reveal--open,
+  .cg-motion-modal--open,
+  .cg-motion-dropdown--open {
+    transform: none;
+  }
+  .cg-motion-page-nav,
+  .cg-motion-page-nav--exit,
+  .cg-motion-text-swap,
+  .cg-motion-text-swap--out,
+  .cg-motion-text-reveal > *,
+  .cg-motion-number-flip--changed,
+  .cg-motion-badge-pop,
+  .cg-motion-success-confirm,
+  .cg-motion-error-shake {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+  }
+  .cg-motion-icon-swap > *,
+  .cg-motion-avatar-group > * {
+    transition: opacity var(--cg-motion-duration-fast) var(--cg-motion-easing-default);
+    transform: none;
+  }
+  .cg-motion-icon-swap > :last-child,
+  .cg-motion-icon-swap--active > :first-child {
+    transform: none;
+  }
+  .cg-motion-stagger > * {
+    animation-delay: 0.01ms;
+    transition-delay: 0.01ms;
+  }
+}
