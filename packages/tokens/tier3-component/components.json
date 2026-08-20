@@ -939,6 +939,23 @@
         "$type": "dimension",
         "$value": "{border.radius.150}"
       }
+    },
+    "border-beam": {
+      "color": {
+        "$type": "color",
+        "$value": "{color.action.primary.background.default}",
+        "$description": "Traveling beam color; defaults to the primary action color"
+      },
+      "width": {
+        "$type": "dimension",
+        "$value": "{border.width.100}",
+        "$description": "Thickness of the beam ring"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{border.radius.200}",
+        "$description": "Corner radius of the beam ring; match the wrapped element"
+      }
     }
   }
 }
