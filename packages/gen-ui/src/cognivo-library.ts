@@ -1,5 +1,5 @@
 /**
- * Cognivo Component Library — 197 components registered for gen-ui.
+ * Cognivo Component Library — 198 components registered for gen-ui.
  * (Keep this count in sync — see __tests__/registry-parity.test.ts, which
  * asserts registry ⇄ packages/components directory parity.)
  *
@@ -2403,6 +2403,19 @@ export const BorderBeamDef = defineComponent({
   biasHints: ['attentional-bias'],
 });
 
+export const AiThinkingOrbDef = defineComponent({
+  name: 'AiThinkingOrb', tagName: 'ai-thinking-orb',
+  props: z.object({
+    state: z.enum(['thinking', 'searching', 'solving', 'listening', 'connecting', 'streaming', 'composing', 'idle', 'done']).optional(),
+    size: z.enum(['sm', 'md', 'lg']).optional(),
+    speed: z.number().optional(),
+    paused: z.boolean().optional(),
+    label: z.string().optional(),
+  }),
+  description: 'Canvas-drawn dotted thought-orb agent status indicator with nine named activity states (thinking/searching/solving/...)',
+  biasHints: ['zeigarnik-effect'],
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Bias Wrappers (6 components) — cognitive-bias building blocks
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2545,14 +2558,14 @@ const ALL_COMPONENTS = [
   // Wave 11: AI coverage
   AiAppSidebarDef, AiConfidenceBadgeDef,
   // Wave 12: Motion & Effects
-  BorderBeamDef,
+  BorderBeamDef, AiThinkingOrbDef,
   // Bias Wrappers
   BiasAnchoringDef, BiasAuthorityDef, BiasCommitmentDef,
   BiasReciprocityDef, BiasScarcityDef, BiasSocialProofDef,
 ];
 
 /**
- * Full Cognivo library — 197 components registered for LLM generation.
+ * Full Cognivo library — 198 components registered for LLM generation.
  * Keep in sync — see __tests__/registry-parity.test.ts.
  */
 export const cognivoLibrary: Library = createLibrary({
@@ -2666,9 +2679,10 @@ export const cognivoLibrary: Library = createLibrary({
     },
     {
       name: 'Motion & Effects',
-      components: ['BorderBeam'],
+      components: ['BorderBeam', 'AiThinkingOrb'],
       notes: [
         '- BorderBeam: decorative traveling-light border wrapper (beam/line/pulse) — use sparingly to spotlight ONE element',
+        '- AiThinkingOrb: canvas dotted orb showing agent activity (9 states) — prefer over AiThinking for avatar/inline agent presence',
         '- All effects honor prefers-reduced-motion and are non-interactive overlays',
       ],
     },

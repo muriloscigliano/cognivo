@@ -121,3 +121,6 @@ export * from './components/ai-cache-indicator/ai-cache-indicator.js';
 export * from './components/ai-data-lineage/ai-data-lineage.js';
 export * from './components/ai-reward-signal/ai-reward-signal.js';
 export * from './components/ai-assistant-widget/ai-assistant-widget.js';
+
+// ── Motion & Effects ─────────────────────────────────────────────────────────
+export * from './components/ai-thinking-orb/ai-thinking-orb.js';

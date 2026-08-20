@@ -240,6 +240,7 @@ import { CgLightbox } from './components/cg-lightbox/cg-lightbox.js';
 import { CgAppShell } from './components/cg-app-shell/cg-app-shell.js';
 // ── Wave 12: Motion & Effects ───────────────────────────────────────────────
 import { CgBorderBeam } from './components/cg-border-beam/cg-border-beam.js';
+import { AiThinkingOrb } from './components/ai-thinking-orb/ai-thinking-orb.js';
 
 export {
   // Wave 1: Foundation
@@ -311,7 +312,7 @@ export {
   CgToolbar, CgGrid, CgCenter, CgStatusDot, CgTimestamp, CgBlockquote, CgThumbnail,
   CgOverflowList, CgLightbox, CgAppShell,
   // Wave 12: Motion & Effects
-  CgBorderBeam,
+  CgBorderBeam, AiThinkingOrb,
   // Bias Wrappers — composable behavioral primitives
   BiasAnchoring, BiasScarcity, BiasSocialProof,
   BiasAuthority, BiasCommitment, BiasReciprocity,
