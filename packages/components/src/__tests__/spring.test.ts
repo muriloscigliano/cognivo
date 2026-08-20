@@ -61,4 +61,18 @@ describe('spring', () => {
     const results = PRESETS.map((p) => springToLinearEasing(p).easing);
     expect(new Set(results).size).toBe(PRESETS.length);
   });
+
+  it('overdamped configs use the two-pole solution: monotonic and slower than critical', () => {
+    const overdamped = { stiffness: 100, damping: 40 }; // zeta = 2
+    const critical = { stiffness: 100, damping: 20 };   // zeta = 1
+    expect(sampleSpring(overdamped, 0)).toBeCloseTo(0, 5);
+    const samples = Array.from({ length: 400 }, (_, i) => sampleSpring(overdamped, (i / 400) * 4));
+    for (let i = 1; i < samples.length; i++) {
+      expect(samples[i]!).toBeGreaterThanOrEqual(samples[i - 1]! - 1e-9); // monotonic
+      expect(samples[i]!).toBeLessThanOrEqual(1.001);                    // no overshoot
+    }
+    expect(sampleSpring(overdamped, 20)).toBeCloseTo(1, 3);
+    // The slow pole decays ~4x slower than the critical envelope.
+    expect(springDurationMs(overdamped)).toBeGreaterThan(springDurationMs(critical) * 2);
+  });
 });

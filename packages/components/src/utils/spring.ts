@@ -38,9 +38,14 @@ export function sampleSpring(cfg: SpringConfig, tSec: number): number {
     const omegaD = omega0 * Math.sqrt(1 - zeta * zeta);
     displacement = Math.exp(-zeta * omega0 * tSec)
       * (Math.cos(omegaD * tSec) + ((zeta * omega0) / omegaD) * Math.sin(omegaD * tSec));
-  } else {
-    // Critically damped / overdamped: no oscillation.
+  } else if (zeta === 1) {
+    // Critically damped.
     displacement = Math.exp(-omega0 * tSec) * (1 + omega0 * tSec);
+  } else {
+    // Overdamped: two real poles, no oscillation.
+    const omegaD = omega0 * Math.sqrt(zeta * zeta - 1);
+    displacement = Math.exp(-zeta * omega0 * tSec)
+      * (Math.cosh(omegaD * tSec) + ((zeta * omega0) / omegaD) * Math.sinh(omegaD * tSec));
   }
   return 1 - displacement;
 }
@@ -49,9 +54,12 @@ export function sampleSpring(cfg: SpringConfig, tSec: number): number {
 export function springDurationMs(cfg: SpringConfig): number {
   const mass = cfg.mass ?? 1;
   const omega0 = Math.sqrt(cfg.stiffness / mass);
-  const zeta = Math.min(cfg.damping / (2 * Math.sqrt(cfg.stiffness * mass)), 1);
-  // The decay envelope is exp(-zeta * omega0 * t); solve for the threshold.
-  const settleSec = Math.log(1 / SETTLE_THRESHOLD) / (zeta * omega0);
+  const zeta = cfg.damping / (2 * Math.sqrt(cfg.stiffness * mass));
+  // Slowest decay rate: the envelope for zeta <= 1, the slow pole above it.
+  const decayRate = zeta <= 1
+    ? zeta * omega0
+    : omega0 * (zeta - Math.sqrt(zeta * zeta - 1));
+  const settleSec = Math.log(1 / SETTLE_THRESHOLD) / decayRate;
   return Math.ceil(settleSec * 1000);
 }
 

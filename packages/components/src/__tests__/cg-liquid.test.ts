@@ -146,6 +146,30 @@ describe('cg-liquid-item', () => {
     expect(group.shadowRoot!.querySelectorAll('rect.blob').length).toBe(0);
   });
 
+  it('move suppresses the spring under prefers-reduced-motion', async () => {
+    const { vi } = await import('vitest');
+    const mm = vi.spyOn(window, 'matchMedia').mockImplementation((query: string) => ({
+      matches: query.includes('prefers-reduced-motion'),
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      onchange: null,
+      dispatchEvent: () => false,
+    }) as unknown as MediaQueryList);
+    try {
+      await createInGroup();
+      item.effect = 'move';
+      item.x = 40;
+      await item.updateComplete;
+      expect(item.style.transition).toBe('none');
+      expect(item.style.transform).toBe('translate(40px, 0px) scale(1)');
+    } finally {
+      mm.mockRestore();
+    }
+  });
+
   it('radius flows through to the blob rx', async () => {
     await createInGroup();
     item.radius = 14;

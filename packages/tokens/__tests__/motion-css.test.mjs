@@ -42,24 +42,55 @@ test('all fourteen recipes are present', () => {
   }
 });
 
-test('every recipe has a reduced-motion collapse', () => {
-  const reducedBlocks = MOTION_CSS.split('@media (prefers-reduced-motion: reduce)').slice(1);
-  const reducedCss = reducedBlocks.join('\n');
+function stripComments(css) {
+  return css.replace(/\/\*[\s\S]*?\*\//g, '');
+}
+
+/** Extract the brace-matched contents of every matching @media block. */
+function extractMediaBlocks(css, query) {
+  const blocks = [];
+  let idx = 0;
+  while ((idx = css.indexOf(query, idx)) !== -1) {
+    const open = css.indexOf('{', idx);
+    let depth = 1;
+    let i = open + 1;
+    while (i < css.length && depth > 0) {
+      if (css[i] === '{') depth += 1;
+      else if (css[i] === '}') depth -= 1;
+      i += 1;
+    }
+    blocks.push(css.slice(open + 1, i - 1));
+    idx = i;
+  }
+  return blocks;
+}
+
+test('every recipe has a reduced-motion collapse (selector-level, comments ignored)', () => {
+  const reducedCss = stripComments(
+    extractMediaBlocks(MOTION_CSS, '@media (prefers-reduced-motion: reduce)').join('\n'),
+  );
+  assert.ok(reducedCss.length > 0, 'no prefers-reduced-motion block found');
   for (const recipe of RECIPES) {
+    // Must appear as an actual rule selector inside the block, not a comment
+    // or a knob custom-property name.
     assert.match(
       reducedCss,
-      new RegExp(`cg-motion-${recipe}`),
-      `.cg-motion-${recipe} has no prefers-reduced-motion guard`,
+      new RegExp(`\\.cg-motion-${recipe}(--[a-z-]+)?[^{};]*\\{`),
+      `.cg-motion-${recipe} has no rule inside the prefers-reduced-motion block`,
     );
   }
 });
 
-test('transition: all is banned', () => {
-  assert.doesNotMatch(MOTION_CSS, /transition:\s*all[\s;,]/);
+test('transition: all is banned in every form', () => {
+  const css = stripComments(MOTION_CSS);
+  assert.doesNotMatch(css, /transition\s*:[^;{}]*\ball\b/);
+  assert.doesNotMatch(css, /transition-property\s*:\s*[^;{}]*\ball\b/);
 });
 
-test('no raw hex colors', () => {
-  assert.doesNotMatch(MOTION_CSS, /#[0-9a-fA-F]{3,8}\b/);
+test('no raw hex or rgb()/rgba() colors', () => {
+  const css = stripComments(MOTION_CSS);
+  assert.doesNotMatch(css, /#[0-9a-fA-F]{3,8}\b/);
+  assert.doesNotMatch(css, /\brgba?\(/);
 });
 
 test('every referenced token exists (knobs excluded)', () => {

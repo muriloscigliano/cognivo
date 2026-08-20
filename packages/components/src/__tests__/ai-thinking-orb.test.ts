@@ -86,13 +86,16 @@ describe('ai-thinking-orb', () => {
     expect(rafSpy).not.toHaveBeenCalled();
   });
 
-  it('pausing after start stops scheduling', async () => {
+  it('pausing after start cancels the scheduled frame', async () => {
     await create();
-    rafSpy.mockClear();
+    expect(cancelAnimationFrame).not.toHaveBeenCalled();
     el.paused = true;
     await el.updateComplete;
-    const callsAfterPause = rafSpy.mock.calls.length;
-    expect(callsAfterPause).toBe(0);
+    expect(cancelAnimationFrame).toHaveBeenCalled();
+    rafSpy.mockClear();
+    el.state = 'searching'; // unrelated updates must not restart the loop
+    await el.updateComplete;
+    expect(rafSpy).not.toHaveBeenCalled();
   });
 
   it('disconnect cancels the loop', async () => {
@@ -120,5 +123,94 @@ describe('ai-thinking-orb', () => {
   it('speed defaults to 1', async () => {
     await create();
     expect(el.speed).toBe(1);
+  });
+
+  function fakeContext() {
+    return {
+      canvas: { width: 40, height: 40 },
+      clearRect: vi.fn(),
+      beginPath: vi.fn(),
+      arc: vi.fn(),
+      fill: vi.fn(),
+      save: vi.fn(),
+      restore: vi.fn(),
+      setTransform: vi.fn(),
+      fillStyle: '',
+      globalAlpha: 1,
+    };
+  }
+
+  it('the loop actually runs: draws every frame, advances time, reschedules', async () => {
+    const pending: FrameRequestCallback[] = [];
+    rafSpy.mockImplementation((cb: FrameRequestCallback) => {
+      pending.push(cb);
+      return pending.length;
+    });
+    await create();
+    const ctx = fakeContext();
+    const canvas = el.shadowRoot!.querySelector('canvas')!;
+    canvas.getContext = (() => ctx) as unknown as typeof canvas.getContext;
+
+    expect(pending.length).toBe(1);
+    pending.shift()!(1000);            // first tick: establishes the clock
+    expect(ctx.clearRect).toHaveBeenCalledTimes(1);
+    expect(ctx.arc.mock.calls.length).toBeGreaterThan(0);
+    expect(pending.length).toBe(1);    // rescheduled itself
+
+    const firstFrameArcs = ctx.arc.mock.calls.map((c) => c.slice(0, 2));
+    pending.shift()!(1500);            // +0.5s: clock advanced, dots moved
+    expect(ctx.clearRect).toHaveBeenCalledTimes(2);
+    const secondFrameArcs = ctx.arc.mock.calls.slice(firstFrameArcs.length).map((c) => c.slice(0, 2));
+    expect(secondFrameArcs).not.toEqual(firstFrameArcs);
+    expect(pending.length).toBe(1);    // still looping
+  });
+
+  it('renders one static frame (no loop) under prefers-reduced-motion', async () => {
+    const mm = vi.spyOn(window, 'matchMedia').mockImplementation((query: string) => ({
+      matches: query.includes('prefers-reduced-motion'),
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      onchange: null,
+      dispatchEvent: () => false,
+    }) as unknown as MediaQueryList);
+    const ctx = fakeContext();
+    const original = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = (() => ctx) as unknown as typeof original;
+    try {
+      await create();
+      expect(rafSpy).not.toHaveBeenCalled();
+      expect(ctx.clearRect).toHaveBeenCalled();   // the static frame drew
+      expect(ctx.arc.mock.calls.length).toBeGreaterThan(0);
+    } finally {
+      HTMLCanvasElement.prototype.getContext = original;
+      mm.mockRestore();
+    }
+  });
+
+  it('going offscreen pauses the loop via IntersectionObserver', async () => {
+    const observers: Array<(entries: Array<{ isIntersecting: boolean }>) => void> = [];
+    vi.stubGlobal('IntersectionObserver', class {
+      constructor(cb: (entries: Array<{ isIntersecting: boolean }>) => void) {
+        observers.push(cb);
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    });
+    try {
+      await create();
+      expect(observers.length).toBe(1);
+      expect(cancelAnimationFrame).not.toHaveBeenCalled();
+      observers[0]!([{ isIntersecting: false }]);
+      expect(cancelAnimationFrame).toHaveBeenCalled();
+      rafSpy.mockClear();
+      observers[0]!([{ isIntersecting: true }]);
+      expect(rafSpy).toHaveBeenCalled();          // resumes when visible again
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });

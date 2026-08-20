@@ -1,6 +1,7 @@
 /**
  * @element cg-liquid-item
- * A child of <cg-liquid>. Registers itself with the nearest group so the
+ * A DIRECT child of <cg-liquid> (a positioned wrapper in between would skew
+ * the silhouette coordinates). Registers itself with the nearest group so the
  * silhouette layer mirrors it as a goo blob. `effect="morph"` gives the blob
  * a gentle breathing undulation; `effect="move"` translates the item with a
  * spring (compiled to a CSS linear() easing) while the blob trails behind.
@@ -69,8 +70,16 @@ export class CgLiquidItem extends LitElement {
     if (this.effect === 'move'
       && (changed.has('x') || changed.has('y') || changed.has('scale')
         || changed.has('effect') || changed.has('transition'))) {
-      const { easing, durationMs } = springToLinearEasing(this.transition);
-      this.style.transition = `transform ${durationMs}ms ${easing}`;
+      // The shared reducedMotion stylesheet can't reach host inline styles,
+      // so the spring must be suppressed here explicitly.
+      const reduced = typeof window.matchMedia === 'function'
+        && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) {
+        this.style.transition = 'none';
+      } else {
+        const { easing, durationMs } = springToLinearEasing(this.transition);
+        this.style.transition = `transform ${durationMs}ms ${easing}`;
+      }
       this.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
     }
     if (changed.has('effect') && this.effect === 'morph') {

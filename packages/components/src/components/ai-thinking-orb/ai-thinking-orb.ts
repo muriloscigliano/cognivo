@@ -76,7 +76,18 @@ export class AiThinkingOrb extends LitElement {
   private _dotColor = '';
   private _io: IntersectionObserver | null = null;
   private _themeObserver: MutationObserver | null = null;
+  private _canvasDpr = 0;
+  private _reducedMotionQuery: MediaQueryList | null = null;
+  private _colorSchemeQuery: MediaQueryList | null = null;
   private _onVisibility = (): void => this._syncLoop();
+  private _onReducedMotionChange = (): void => {
+    this._syncLoop();
+    this._drawStaticFrame();
+  };
+  private _onColorSchemeChange = (): void => {
+    this._dotColor = '';
+    this._drawStaticFrame();
+  };
 
   // ─── Lifecycle ──────────────────────────────────────────────────────────────
 
@@ -103,6 +114,12 @@ export class AiThinkingOrb extends LitElement {
         attributeFilter: ['data-theme', 'class'],
       });
     }
+    if (typeof window.matchMedia === 'function') {
+      this._reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      this._reducedMotionQuery.addEventListener?.('change', this._onReducedMotionChange);
+      this._colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      this._colorSchemeQuery.addEventListener?.('change', this._onColorSchemeChange);
+    }
   }
 
   override disconnectedCallback(): void {
@@ -112,6 +129,10 @@ export class AiThinkingOrb extends LitElement {
     this._io = null;
     this._themeObserver?.disconnect();
     this._themeObserver = null;
+    this._reducedMotionQuery?.removeEventListener?.('change', this._onReducedMotionChange);
+    this._reducedMotionQuery = null;
+    this._colorSchemeQuery?.removeEventListener?.('change', this._onColorSchemeChange);
+    this._colorSchemeQuery = null;
     this._stopLoop();
   }
 
@@ -197,6 +218,8 @@ export class AiThinkingOrb extends LitElement {
       MAX_DPR,
       typeof devicePixelRatio === 'number' ? devicePixelRatio : 1,
     );
+    // Window dragged between displays: re-scale the backing store.
+    if (dpr !== this._canvasDpr) this._resizeCanvas();
     const dots = computeOrbDots(this._effectiveState, t, this.pixelSize);
     drawOrbFrame(ctx, dots, this._resolveDotColor(), dpr);
   }
@@ -219,6 +242,7 @@ export class AiThinkingOrb extends LitElement {
     canvas.height = this.pixelSize * dpr;
     canvas.style.width = `${this.pixelSize}px`;
     canvas.style.height = `${this.pixelSize}px`;
+    this._canvasDpr = dpr;
   }
 
   // ─── Render ─────────────────────────────────────────────────────────────────

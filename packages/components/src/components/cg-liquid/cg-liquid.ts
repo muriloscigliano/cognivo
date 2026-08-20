@@ -127,12 +127,14 @@ export class CgLiquid extends LitElement {
     const fill = this.fill || 'var(--cg-color-surface-cards-background)';
     const isMorph = item.effect === 'morph';
 
-    let style = '';
+    // fill lives in style, not the presentation attribute — var() substitution
+    // in SVG presentation attributes is a cross-browser interop gap.
+    let style = `fill: ${fill};`;
     if (item.effect === 'move') {
       const { easing, durationMs } = springToLinearEasing(item.transition);
       const trailMs = Math.round(durationMs * BLOB_TRAIL_FACTOR);
-      style = `transform: translate(${item.x}px, ${item.y}px) scale(${item.scale}); `
-        + `transition: transform ${trailMs}ms ${easing};`;
+      style += ` transform: translate(${item.x}px, ${item.y}px) scale(${item.scale});`
+        + ` transition: transform ${trailMs}ms ${easing};`;
     }
 
     return svg`<rect
@@ -142,7 +144,6 @@ export class CgLiquid extends LitElement {
       width=${width}
       height=${height}
       rx=${rx}
-      fill=${fill}
       style=${style}
     ></rect>`;
   }

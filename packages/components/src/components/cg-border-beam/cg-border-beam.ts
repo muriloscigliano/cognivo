@@ -33,6 +33,23 @@ const VARIANT_DEFAULT_DURATION_MS: Record<string, number> = {
   pulse: 2000,
 };
 
+// @property inside a shadow-DOM stylesheet is ignored by every engine
+// (w3c/csswg-drafts#10541), so the animated angle must be registered
+// document-wide from JS. Where registerProperty is unavailable the beam
+// degrades to a static arc (the :host fallback below keeps it valid CSS).
+try {
+  if (typeof CSS !== 'undefined' && 'registerProperty' in CSS) {
+    CSS.registerProperty({
+      name: '--cg-beam-angle',
+      syntax: '<angle>',
+      initialValue: '0deg',
+      inherits: false,
+    });
+  }
+} catch {
+  // Already registered by another copy of this module.
+}
+
 @customElement('cg-border-beam')
 export class CgBorderBeam extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
@@ -42,16 +59,12 @@ export class CgBorderBeam extends LitElement {
       --cg-beam-intensity: 1;
       --cg-beam-pulse: 1;
       --cg-beam-duration: 4000ms;
+      /* Fallback for engines without CSS.registerProperty: static arc. */
+      --cg-beam-angle: 0deg;
     }
 
     :host([variant='line']) {
       --cg-beam-duration: 2500ms;
-    }
-
-    @property --cg-beam-angle {
-      syntax: '<angle>';
-      initial-value: 0deg;
-      inherits: false;
     }
 
     .content {
@@ -66,13 +79,15 @@ export class CgBorderBeam extends LitElement {
       border-radius: var(--cg-component-border-beam-radius);
       padding: var(--cg-component-border-beam-width);
       opacity: var(--cg-beam-intensity);
-      /* Show only the ring: two opaque masks XORed leave the padding band. */
+      /* Show only the ring: two opaque masks XORed leave the padding band.
+         Masks consume alpha only — the keyword must be a literal so a missing
+         token stylesheet can't invalidate the whole mask. */
       -webkit-mask:
-        linear-gradient(var(--cg-color-surface-base-text) 0 0) content-box,
-        linear-gradient(var(--cg-color-surface-base-text) 0 0);
+        linear-gradient(black 0 0) content-box,
+        linear-gradient(black 0 0);
       mask:
-        linear-gradient(var(--cg-color-surface-base-text) 0 0) content-box,
-        linear-gradient(var(--cg-color-surface-base-text) 0 0);
+        linear-gradient(black 0 0) content-box,
+        linear-gradient(black 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
       transition: opacity var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
@@ -111,7 +126,9 @@ export class CgBorderBeam extends LitElement {
       }
     }
 
-    .beam.idle {
+    /* After the variant rules and with matching specificity so idle always
+       wins (the pulse variant rule also sets opacity). */
+    :host .beam.idle {
       animation-play-state: paused;
       opacity: 0;
     }
@@ -151,6 +168,7 @@ export class CgBorderBeam extends LitElement {
   @property({ type: Number }) radius?: number;
 
   private _unsubscribePulse: (() => void) | null = null;
+  private _pulsePeriod = 0;
 
   // ─── Lifecycle ──────────────────────────────────────────────────────────────
 
@@ -184,17 +202,29 @@ export class CgBorderBeam extends LitElement {
         { bubbles: true, composed: true },
       ));
     }
-    if (changed.has('active') || changed.has('variant')) {
+    if (changed.has('active') || changed.has('variant') || changed.has('duration')) {
       this._syncPulseSubscription();
     }
   }
 
   // ─── Private ────────────────────────────────────────────────────────────────
 
+  private get _reducedMotion(): boolean {
+    return typeof window.matchMedia === 'function'
+      && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
   private _syncPulseSubscription(): void {
-    const shouldPulse = this.isConnected && this.active && this.variant === 'pulse';
+    const shouldPulse = this.isConnected
+      && this.active
+      && this.variant === 'pulse'
+      && !this._reducedMotion;
+    if (shouldPulse && this._unsubscribePulse && this._pulsePeriod !== this._targetPeriod()) {
+      this._teardownPulse();
+    }
     if (shouldPulse && !this._unsubscribePulse) {
-      const period = this.duration ?? VARIANT_DEFAULT_DURATION_MS['pulse']!;
+      const period = this._targetPeriod();
+      this._pulsePeriod = period;
       this._unsubscribePulse = subscribePulse(period, (phase) => {
         // Breathe between 0.35 and 1 with a smooth cosine curve.
         const level = 0.675 + 0.325 * Math.cos(phase * Math.PI * 2);
@@ -205,9 +235,15 @@ export class CgBorderBeam extends LitElement {
     }
   }
 
+  private _targetPeriod(): number {
+    return this.duration ?? VARIANT_DEFAULT_DURATION_MS['pulse']!;
+  }
+
   private _teardownPulse(): void {
     this._unsubscribePulse?.();
     this._unsubscribePulse = null;
+    // Don't leave the ring frozen mid-breath (or visible while idle).
+    this.style.removeProperty('--cg-beam-pulse');
   }
 
   // ─── Render ─────────────────────────────────────────────────────────────────

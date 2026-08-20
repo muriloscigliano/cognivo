@@ -121,4 +121,77 @@ describe('cg-border-beam', () => {
     await el.updateComplete;
     expect(_pulseDriverInternals.subscriberCount()).toBe(0);
   });
+
+  it('the pulse loop actually drives --cg-beam-pulse', async () => {
+    const pending: FrameRequestCallback[] = [];
+    let now = 0;
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      pending.push(cb);
+      return pending.length;
+    });
+    vi.stubGlobal('cancelAnimationFrame', () => { pending.length = 0; });
+    vi.spyOn(performance, 'now').mockImplementation(() => now);
+    try {
+      await create({ variant: 'pulse', duration: 1000 });
+      now = 500; // half a cycle → cosine trough → dimmest point
+      pending.shift()!(now);
+      const level = Number(el.style.getPropertyValue('--cg-beam-pulse'));
+      expect(level).toBeCloseTo(0.35, 2);
+      expect(level).toBeGreaterThanOrEqual(0.35 - 0.001);
+      expect(level).toBeLessThanOrEqual(1);
+    } finally {
+      vi.unstubAllGlobals();
+      vi.restoreAllMocks();
+    }
+  });
+
+  it('teardown clears the pulse property so an idle ring cannot stay lit', async () => {
+    const pending: FrameRequestCallback[] = [];
+    let now = 0;
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      pending.push(cb);
+      return pending.length;
+    });
+    vi.stubGlobal('cancelAnimationFrame', () => { pending.length = 0; });
+    vi.spyOn(performance, 'now').mockImplementation(() => now);
+    try {
+      await create({ variant: 'pulse', duration: 1000 });
+      now = 250;
+      pending.shift()!(now);
+      expect(el.style.getPropertyValue('--cg-beam-pulse')).not.toBe('');
+      el.active = false;
+      await el.updateComplete;
+      expect(el.style.getPropertyValue('--cg-beam-pulse')).toBe('');
+    } finally {
+      vi.unstubAllGlobals();
+      vi.restoreAllMocks();
+    }
+  });
+
+  it('changing duration while pulsing resubscribes with the new period', async () => {
+    await create({ variant: 'pulse', duration: 1000 });
+    expect(_pulseDriverInternals.subscriberCount()).toBe(1);
+    el.duration = 400;
+    await el.updateComplete;
+    expect(_pulseDriverInternals.subscriberCount()).toBe(1); // new subscription, not zero, not two
+  });
+
+  it('pulse respects prefers-reduced-motion: no subscription', async () => {
+    const mm = vi.spyOn(window, 'matchMedia').mockImplementation((query: string) => ({
+      matches: query.includes('prefers-reduced-motion'),
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      onchange: null,
+      dispatchEvent: () => false,
+    }) as unknown as MediaQueryList);
+    try {
+      await create({ variant: 'pulse' });
+      expect(_pulseDriverInternals.subscriberCount()).toBe(0);
+    } finally {
+      mm.mockRestore();
+    }
+  });
 });
