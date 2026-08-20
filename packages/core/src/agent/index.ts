@@ -40,3 +40,6 @@ export { AGENT_EVENT_TYPES, isAgentEvent } from './events.js';
 
 export type { AgentEventListener } from './event-stream.js';
 export { AgentEventStream } from './event-stream.js';
+
+export type { AgentRun, AgentRunOptions } from './run-session.js';
+export { createAgentRun } from './run-session.js';
