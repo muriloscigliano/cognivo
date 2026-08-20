@@ -326,6 +326,7 @@ export { CgThumbnail } from './components/CgThumbnail.js';
 export { CgOverflowList } from './components/CgOverflowList.js';
 export { CgLightbox } from './components/CgLightbox.js';
 export { CgAppShell } from './components/CgAppShell.js';
+export { CgBorderBeam } from './components/CgBorderBeam.js';
 
 // Bias wrappers (cognitive-pattern primitives)
 export { BiasAnchoring } from './components/BiasAnchoring.js';

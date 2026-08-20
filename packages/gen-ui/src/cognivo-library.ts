@@ -1,5 +1,5 @@
 /**
- * Cognivo Component Library — 196 components registered for gen-ui.
+ * Cognivo Component Library — 197 components registered for gen-ui.
  * (Keep this count in sync — see __tests__/registry-parity.test.ts, which
  * asserts registry ⇄ packages/components directory parity.)
  *
@@ -2386,6 +2386,24 @@ export const AiConfidenceBadgeDef = defineComponent({
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Wave 12: Motion & Effects
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const BorderBeamDef = defineComponent({
+  name: 'BorderBeam', tagName: 'cg-border-beam',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    variant: z.enum(['beam', 'line', 'pulse']).optional(),
+    active: z.boolean().optional(),
+    intensity: z.number().optional(),
+    duration: z.number().optional(),
+    radius: z.number().optional(),
+  }),
+  description: 'Decorative wrapper animating a beam of light traveling around the border of its content; beam/line/pulse variants',
+  biasHints: ['attentional-bias'],
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Bias Wrappers (6 components) — cognitive-bias building blocks
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -2526,13 +2544,15 @@ const ALL_COMPONENTS = [
   PhoneInputDef, SplitButtonDef,
   // Wave 11: AI coverage
   AiAppSidebarDef, AiConfidenceBadgeDef,
+  // Wave 12: Motion & Effects
+  BorderBeamDef,
   // Bias Wrappers
   BiasAnchoringDef, BiasAuthorityDef, BiasCommitmentDef,
   BiasReciprocityDef, BiasScarcityDef, BiasSocialProofDef,
 ];
 
 /**
- * Full Cognivo library — 196 components registered for LLM generation.
+ * Full Cognivo library — 197 components registered for LLM generation.
  * Keep in sync — see __tests__/registry-parity.test.ts.
  */
 export const cognivoLibrary: Library = createLibrary({
@@ -2642,6 +2662,14 @@ export const cognivoLibrary: Library = createLibrary({
         '- VisuallyHidden: hides content visually but keeps it in the a11y tree (sr-only)',
         '- Portal: moves slotted children into a target element (default: document.body)',
         '- FocusScope: traps Tab focus within the wrapped region when active',
+      ],
+    },
+    {
+      name: 'Motion & Effects',
+      components: ['BorderBeam'],
+      notes: [
+        '- BorderBeam: decorative traveling-light border wrapper (beam/line/pulse) — use sparingly to spotlight ONE element',
+        '- All effects honor prefers-reduced-motion and are non-interactive overlays',
       ],
     },
     {
