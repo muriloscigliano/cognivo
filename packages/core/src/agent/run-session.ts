@@ -4,8 +4,16 @@
  * caller-supplied (ms); the engine never calls Date.now() itself.
  *
  * Correction #1 lives here: every executed action's blast radius is merged
- * into the run's cumulative context, and every subsequent gate() call reads
- * that context — ten individually-cheap actions escalate as a run.
+ * into the run's cumulative context BEFORE action.executed is dispatched, so
+ * a listener that reacts to an execution by proposing the next step gates
+ * against the post-damage context — ten individually-cheap actions escalate
+ * as a run, with no one-event-wide stale window.
+ *
+ * Trust accounting is guarded: a proposal must have been propose()d before it
+ * can be resolve()d or executed(), a proposal can be resolved once per
+ * emission (a double-click cannot double-count), and 'approved' only earns
+ * ledger trust when a human actually stood at the gate (confirm /
+ * confirm_typed). Edits and rejections always record — they only reduce trust.
  */
 import { AgentEventStream } from './event-stream.js';
 import type { RunStartedEvent } from './events.js';
@@ -17,7 +25,7 @@ import type { Decision, TrustLedger } from './trust-ledger.js';
 
 export interface AgentRunOptions {
   runId: string;
-  /** Human-readable goal, carried on run.started. */
+  /** Human-readable goal, carried on the startedEvent. */
   goal: string;
   ledger: TrustLedger;
   /** Timestamp (ms) for run.started. */
@@ -28,26 +36,39 @@ export interface AgentRun {
   readonly runId: string;
   readonly events: AgentEventStream;
   /**
-   * The run.started event, kept for consumers that subscribe after creation
-   * (the stream itself is live-only and does not replay).
+   * The run.started event. The stream is live-only (no replay) and nothing
+   * can subscribe before createAgentRun returns, so run.started is NOT
+   * dispatched through the stream — serialize this property as the first
+   * frame when bridging to a transport.
    */
   readonly startedEvent: RunStartedEvent;
-  /** Snapshot of the run state accrued so far. */
+  /** Snapshot (copy) of the run state accrued so far. */
   checkpoint(): RunContext;
   startStep(stepId: string, summary: string, ts: number): void;
   /** Gate the proposal against the CUMULATIVE run context, emit, return the gate. */
   propose(proposal: ActionProposal, ts: number): Gate;
-  /** Record the human decision into the ledger and emit proposal.resolved. */
+  /**
+   * Record the human decision and emit proposal.resolved. Throws on a
+   * proposal that was never propose()d or was already resolved for its
+   * current emission (fail closed on trust inflation).
+   */
   resolve(proposal: ActionProposal, decision: Decision, ts: number, patch?: unknown): void;
   /**
-   * Record an execution attempt: emits action.executed with the receipt,
-   * merges the proposal's blast radius into the run (even on failure —
-   * fail closed: a failed action may still have caused its effects), and
-   * emits run.checkpoint.
+   * Record an execution attempt: merges the proposal's blast radius into the
+   * run (even on failure — fail closed: a failed action may still have caused
+   * its effects), then emits action.executed and run.checkpoint. Throws on a
+   * proposal that was never propose()d. The session does not verify the gate
+   * outcome was honored — executing only what the gate/human allowed is the
+   * executor's contract.
    */
   executed(proposal: ActionProposal, outcome: ActionOutcome): ActionReceipt;
   fail(error: string, recoverable: boolean, ts: number, extra?: { stepId?: string; partialRecovery?: string }): void;
   complete(ts: number): void;
+}
+
+interface ProposalState {
+  gate: Gate;
+  resolved: boolean;
 }
 
 export function createAgentRun(options: AgentRunOptions): AgentRun {
@@ -55,6 +76,7 @@ export function createAgentRun(options: AgentRunOptions): AgentRun {
   const events = new AgentEventStream();
   let context = emptyRunContext(runId);
   const receipts: ActionReceipt[] = [];
+  const proposals = new Map<string, ProposalState>();
 
   const startedEvent: RunStartedEvent = {
     type: 'run.started',
@@ -62,23 +84,32 @@ export function createAgentRun(options: AgentRunOptions): AgentRun {
     ts: options.ts,
     goal: options.goal,
   };
-  events.emit(startedEvent);
+
+  function snapshot(): RunContext {
+    return {
+      runId,
+      cumulativeBlastRadius: {
+        scope: context.cumulativeBlastRadius.scope,
+        entities: [...context.cumulativeBlastRadius.entities],
+        irreversibleSideEffects: [...context.cumulativeBlastRadius.irreversibleSideEffects],
+      },
+    };
+  }
+
+  function stateOf(proposal: ActionProposal, verb: string): ProposalState {
+    const state = proposals.get(proposal.id);
+    if (!state) {
+      throw new Error(`Cannot ${verb} proposal "${proposal.id}": it was never proposed on run "${runId}"`);
+    }
+    return state;
+  }
 
   return {
     runId,
     events,
     startedEvent,
 
-    checkpoint(): RunContext {
-      return {
-        runId,
-        cumulativeBlastRadius: {
-          scope: context.cumulativeBlastRadius.scope,
-          entities: [...context.cumulativeBlastRadius.entities],
-          irreversibleSideEffects: [...context.cumulativeBlastRadius.irreversibleSideEffects],
-        },
-      };
-    },
+    checkpoint: snapshot,
 
     startStep(stepId: string, summary: string, ts: number): void {
       events.emit({ type: 'step.started', runId, ts, stepId, summary });
@@ -86,12 +117,24 @@ export function createAgentRun(options: AgentRunOptions): AgentRun {
 
     propose(proposal: ActionProposal, ts: number): Gate {
       const decision = gate(proposal, context, ledger);
+      proposals.set(proposal.id, { gate: decision, resolved: false });
       events.emit({ type: 'proposal.emitted', runId, ts, proposal, gate: decision });
       return decision;
     },
 
     resolve(proposal: ActionProposal, decision: Decision, ts: number, patch?: unknown): void {
-      ledger.record(proposal, decision);
+      const state = stateOf(proposal, 'resolve');
+      if (state.resolved) {
+        throw new Error(`Proposal "${proposal.id}" is already resolved for its current emission`);
+      }
+      state.resolved = true;
+      // 'approved' earns trust only when a human actually decided at a
+      // confirm gate; auto/notify approvals must not mint graduation credit.
+      // Edits and rejections always record — they only ever reduce trust.
+      const humanGated = state.gate === 'confirm' || state.gate === 'confirm_typed';
+      if (decision !== 'approved' || humanGated) {
+        ledger.record(proposal, decision);
+      }
       events.emit({
         type: 'proposal.resolved',
         runId,
@@ -103,14 +146,17 @@ export function createAgentRun(options: AgentRunOptions): AgentRun {
     },
 
     executed(proposal: ActionProposal, outcome: ActionOutcome): ActionReceipt {
+      stateOf(proposal, 'execute');
       const receipt = toReceipt(proposal, outcome);
       receipts.push(receipt);
-      events.emit({ type: 'action.executed', runId, ts: outcome.ts, receipt });
+      // Correction #1: merge BEFORE dispatching, so listeners reacting to
+      // action.executed gate their next proposal against the new context.
       context = {
         runId,
         cumulativeBlastRadius: mergeBlastRadius(context.cumulativeBlastRadius, proposal.blastRadius),
       };
-      events.emit({ type: 'run.checkpoint', runId, ts: outcome.ts, checkpoint: this.checkpoint() });
+      events.emit({ type: 'action.executed', runId, ts: outcome.ts, receipt });
+      events.emit({ type: 'run.checkpoint', runId, ts: outcome.ts, checkpoint: snapshot() });
       return receipt;
     },
 

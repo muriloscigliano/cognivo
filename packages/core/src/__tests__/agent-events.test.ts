@@ -76,6 +76,19 @@ describe('AgentEvent union', () => {
     expect(isAgentEvent({ type: 'run.started', runId: 'r', goal: 'g' })).toBe(false); // no ts
     expect(isAgentEvent({ type: 'run.started', runId: 'r', ts: '1', goal: 'g' })).toBe(false);
   });
+
+  it('isAgentEvent rejects hostile-but-plausible frames (wire-shape hardening)', () => {
+    const p = proposal();
+    const base = { runId: 'r', ts: 1 };
+    expect(isAgentEvent({ ...base, type: 'run.started', ts: Infinity, goal: 'g' })).toBe(false);
+    expect(isAgentEvent({ ...base, type: 'proposal.emitted', proposal: p, gate: 'banana' })).toBe(false);
+    expect(isAgentEvent({ ...base, type: 'proposal.emitted', proposal: {}, gate: 'auto' })).toBe(false);
+    expect(isAgentEvent({ ...base, type: 'proposal.resolved', proposalId: 'p', decision: 'lgtm' })).toBe(false);
+    expect(isAgentEvent({ ...base, type: 'action.executed', receipt: {} })).toBe(false);
+    expect(isAgentEvent({ ...base, type: 'action.executed', receipt: [] })).toBe(false);
+    expect(isAgentEvent({ ...base, type: 'run.checkpoint', checkpoint: {} })).toBe(false);
+    expect(isAgentEvent({ ...base, type: 'run.completed', receipts: ['junk', 42] })).toBe(false);
+  });
 });
 
 describe('AgentEventStream', () => {
@@ -160,6 +173,58 @@ describe('AgentEventStream', () => {
     expect(() => stream.emit({ type: 'nonsense' } as unknown as AgentEvent)).toThrow();
     expect(spy).not.toHaveBeenCalled();
     stream.close();
+  });
+
+  it('iterator.return() settles a pending next() instead of leaking it', async () => {
+    const stream = new AgentEventStream();
+    const iterator = stream[Symbol.asyncIterator]();
+    const pending = iterator.next();          // parked on an empty queue
+    await iterator.return!();
+    const result = await pending;             // must settle, not hang
+    expect(result.done).toBe(true);
+    stream.close();
+  });
+
+  it('two concurrent next() calls on one iterator both settle, in order', async () => {
+    const stream = new AgentEventStream();
+    const iterator = stream[Symbol.asyncIterator]();
+    const first = iterator.next();
+    const second = iterator.next();
+    stream.emit(started(1));
+    stream.emit(started(2));
+    const [a, b] = await Promise.all([first, second]);
+    expect((a.value as AgentEvent).ts).toBe(1);
+    expect((b.value as AgentEvent).ts).toBe(2);
+    stream.close();
+  });
+
+  it('a nested emit (from inside a listener) is dispatched in causal order', async () => {
+    const stream = new AgentEventStream();
+    const listenerOrder: number[] = [];
+    const collected: number[] = [];
+    const consumer = (async () => {
+      for await (const e of stream) collected.push(e.ts);
+    })();
+    stream.on((e) => {
+      listenerOrder.push(e.ts);
+      if (e.ts === 1) stream.emit(started(2));
+    });
+    stream.emit(started(1));
+    stream.close();
+    await consumer;
+    expect(listenerOrder).toEqual([1, 2]);
+    expect(collected).toEqual([1, 2]);
+  });
+
+  it('events queued before close() are drained by iterators after close()', async () => {
+    const stream = new AgentEventStream();
+    const iterator = stream[Symbol.asyncIterator]();
+    stream.emit(started(1));
+    stream.emit(started(2));
+    stream.close();
+    expect(((await iterator.next()).value as AgentEvent).ts).toBe(1);
+    expect(((await iterator.next()).value as AgentEvent).ts).toBe(2);
+    expect((await iterator.next()).done).toBe(true);
   });
 });
 

@@ -7,8 +7,10 @@
  * demotes it back to zero. This is the mechanism the "autonomy is earned over
  * time" idea gestures at and never names.
  *
- * The key is `tool + blast-bucket` (NOT tool alone): trust earned on cheap
- * actions must never be spendable on expensive ones (correction #2).
+ * The key is `tool + reversibility + blast-bucket` (NOT tool alone): trust
+ * earned on cheap actions must never be spendable on expensive ones
+ * (correction #2), and approvals recorded against a reversible shape must
+ * never graduate the compensable shape of the same tool.
  */
 import type { ActionProposal } from './proposal.js';
 import { blastBucket } from './reversibility.js';
@@ -16,9 +18,9 @@ import { blastBucket } from './reversibility.js';
 /** The human's decision on a proposal. */
 export type Decision = 'approved' | 'edited' | 'rejected';
 
-/** `${tool}:${blastBucket}` — the unit trust is earned and spent against. */
+/** `${tool}:${reversibility}:${blastBucket}` — the unit trust is earned and spent against. */
 export function ledgerKey(p: ActionProposal): string {
-  return `${p.tool}:${blastBucket(p.blastRadius)}`;
+  return `${p.tool}:${p.reversibility}:${blastBucket(p.blastRadius)}`;
 }
 
 export interface TrustLedger {

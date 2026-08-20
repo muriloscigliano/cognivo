@@ -20,9 +20,15 @@ describe('ledgerKey', () => {
     const pricey = proposal({
       blastRadius: { scope: 'external', entities: Array.from({ length: 200 }, (_, i) => `c${i}`), irreversibleSideEffects: [] },
     });
-    expect(ledgerKey(cheap)).toBe('invoice.create:self:m1:x0');
-    expect(ledgerKey(pricey)).toBe('invoice.create:external:m3:x0');
+    expect(ledgerKey(cheap)).toBe('invoice.create:compensable:self:m1:x0');
+    expect(ledgerKey(pricey)).toBe('invoice.create:compensable:external:m3:x0');
     expect(ledgerKey(cheap)).not.toBe(ledgerKey(pricey));
+  });
+
+  it('separates reversibility classes: reversible trust cannot pay for compensable actions', () => {
+    const reversible = proposal({ reversibility: 'reversible' });
+    const comp = proposal();
+    expect(ledgerKey(reversible)).not.toBe(ledgerKey(comp));
   });
 });
 

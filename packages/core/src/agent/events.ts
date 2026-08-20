@@ -105,36 +105,64 @@ export const AGENT_EVENT_TYPES = [
 
 export type AgentEventType = (typeof AGENT_EVENT_TYPES)[number];
 
-/** Per-type required fields beyond the shared envelope. Fails closed. */
-const REQUIRED_FIELDS: Record<AgentEventType, Array<[key: string, kind: string]>> = {
-  'run.started': [['goal', 'string']],
-  'step.started': [['stepId', 'string'], ['summary', 'string']],
-  'proposal.emitted': [['proposal', 'object'], ['gate', 'string']],
-  'proposal.resolved': [['proposalId', 'string'], ['decision', 'string']],
-  'action.executed': [['receipt', 'object']],
-  'run.checkpoint': [['checkpoint', 'object']],
-  'run.failed': [['error', 'string'], ['recoverable', 'boolean']],
-  'run.completed': [['receipts', 'array']],
-};
+const GATES = ['auto', 'notify', 'confirm', 'confirm_typed'] as const;
+const DECISIONS = ['approved', 'edited', 'rejected'] as const;
 
-function fieldMatches(value: unknown, kind: string): boolean {
-  if (kind === 'array') return Array.isArray(value);
-  if (kind === 'object') return typeof value === 'object' && value !== null;
-  return typeof value === kind;
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
+
+/** Shallow envelope check on a wire proposal: identity + classification fields. */
+function looksLikeProposal(value: unknown): boolean {
+  return isRecord(value)
+    && typeof value['id'] === 'string'
+    && typeof value['tool'] === 'string'
+    && typeof value['summary'] === 'string'
+    && Array.isArray(value['provenance']);
+}
+
+/** Shallow envelope check on a wire receipt. */
+function looksLikeReceipt(value: unknown): boolean {
+  return isRecord(value)
+    && typeof value['proposalId'] === 'string'
+    && typeof value['tool'] === 'string'
+    && (value['status'] === 'executed' || value['status'] === 'failed');
+}
+
+function looksLikeRunContext(value: unknown): boolean {
+  return isRecord(value)
+    && typeof value['runId'] === 'string'
+    && isRecord(value['cumulativeBlastRadius']);
+}
+
+/** Per-type payload validation beyond the shared envelope. Fails closed. */
+const PAYLOAD_CHECKS: Record<AgentEventType, (e: Record<string, unknown>) => boolean> = {
+  'run.started': (e) => typeof e['goal'] === 'string',
+  'step.started': (e) => typeof e['stepId'] === 'string' && typeof e['summary'] === 'string',
+  'proposal.emitted': (e) =>
+    looksLikeProposal(e['proposal']) && (GATES as readonly string[]).includes(e['gate'] as string),
+  'proposal.resolved': (e) =>
+    typeof e['proposalId'] === 'string' && (DECISIONS as readonly string[]).includes(e['decision'] as string),
+  'action.executed': (e) => looksLikeReceipt(e['receipt']),
+  'run.checkpoint': (e) => looksLikeRunContext(e['checkpoint']),
+  'run.failed': (e) => typeof e['error'] === 'string' && typeof e['recoverable'] === 'boolean',
+  'run.completed': (e) => Array.isArray(e['receipts']) && (e['receipts'] as unknown[]).every(looksLikeReceipt),
+};
 
 /**
  * Structural runtime guard for untrusted event payloads (SSE frames, worker
- * messages). Fails closed: unknown types and malformed envelopes are refused.
+ * messages). Fails closed: unknown types, malformed envelopes, out-of-enum
+ * gate/decision values, non-finite timestamps, and payloads whose nested
+ * proposal/receipt/checkpoint lack their identity fields are all refused.
+ * Deep semantic validation (e.g. assertWellFormed) remains the consumer's
+ * job — this is the wire-shape gate.
  */
 export function isAgentEvent(value: unknown): value is AgentEvent {
-  if (typeof value !== 'object' || value === null) return false;
-  const candidate = value as Record<string, unknown>;
-  const type = candidate['type'];
+  if (!isRecord(value)) return false;
+  const type = value['type'];
   if (typeof type !== 'string') return false;
   if (!(AGENT_EVENT_TYPES as readonly string[]).includes(type)) return false;
-  if (typeof candidate['runId'] !== 'string') return false;
-  if (typeof candidate['ts'] !== 'number' || Number.isNaN(candidate['ts'])) return false;
-  const required = REQUIRED_FIELDS[type as AgentEventType];
-  return required.every(([key, kind]) => fieldMatches(candidate[key], kind));
+  if (typeof value['runId'] !== 'string') return false;
+  if (typeof value['ts'] !== 'number' || !Number.isFinite(value['ts'])) return false;
+  return PAYLOAD_CHECKS[type as AgentEventType](value);
 }
