@@ -1,0 +1,77 @@
+{
+  "name": "@cognivo/compose-lit",
+  "version": "0.1.1",
+  "private": true,
+  "description": "Lit surface for @cognivo/compose — ghost-diff preview renderer and <cg-compose-canvas> modify loop.",
+  "keywords": [
+    "cognivo",
+    "design-system",
+    "generative-ui",
+    "composition",
+    "lit",
+    "ghost-diff",
+    "llm"
+  ],
+  "license": "MIT",
+  "author": "Cognivo",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "sideEffects": [
+    "**/cg-compose-canvas.js",
+    "**/cg-compose-canvas.ts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/murisd/cognivo.git",
+    "directory": "packages/compose-lit"
+  },
+  "homepage": "https://cognivo.dev",
+  "bugs": "https://github.com/murisd/cognivo/issues",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vite build",
+    "prepublishOnly": "pnpm build",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@cognivo/compose": "workspace:*",
+    "@cognivo/gen-ui": "workspace:*",
+    "@cognivo/gen-ui-lit": "workspace:*",
+    "lit": "^3.2.0"
+  },
+  "peerDependencies": {
+    "@anthropic-ai/sdk": "^0.39.0"
+  },
+  "peerDependenciesMeta": {
+    "@anthropic-ai/sdk": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "vite-plugin-dts": "^4.0.0",
+    "vitest": "^2.1.0",
+    "jsdom": "^25.0.1"
+  }
+}

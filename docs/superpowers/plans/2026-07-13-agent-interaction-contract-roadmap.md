@@ -52,7 +52,7 @@ Each is its own plan file under `docs/superpowers/plans/`. Dependencies are stri
 | **04** | Run/proposal/action event union (SSE contract) — **SHIPPED 2026-08-20** (`src/agent/events.ts` + `event-stream.ts` + `run-session.ts`; adapter translation deferred until an adapter grows an agent loop) | `@cognivo/core` | Discriminated `AgentEvent` union + typed emitter + `createAgentRun` session | No | 01, 02, 03 |
 | **05** | Kill `confidence` → provenance migration | `@cognivo/core` + adapters + `ai-*` | Remove `confidence` from public API; codemod; MAJOR bump | **Yes** | 01–04 |
 | **06** | Checkpoint/resume (fork-not-restart) | `@cognivo/core` | `RunCheckpoint`, `resume(cp, {correction})`, fork semantics on `patterns` loop | No | 04 |
-| **07** | `ActionProposal<UISpec>` compose bridge (Weft wedge) | `@cognivo/compose(-lit)` | Wrap a compose `CompositionDiff` as an `ActionProposal`; linter = gate; ghost = preview | No | 01, 02 |
+| **07** | `ActionProposal<UISpec>` compose bridge (Weft wedge) — **SHIPPED 2026-08-20** (`compose/src/bridge/action-proposal.ts`; `<cg-compose-canvas>` emits `composition-proposal`; no changeset — both packages private. Deferred: bounded modify-retry loop needs a `feedback` param on `ComposeClient.modify`) | `@cognivo/compose(-lit)` | Wrap a compose `CompositionDiff` as an `ActionProposal`; linter = gate; ghost = preview | No | 01, 02 |
 
 **Ship boundary:** Plans 01–04 + 06–07 are all additive and can land in a 1.x minor. Plan 05 is the only breaking change and gates the 2.0 major. Recommendation: ship 01–04 and 07 first (immediate value, non-breaking), run 05 as the 2.0 milestone once at least one product (Weft) consumes the additive path and proves the shape.
 

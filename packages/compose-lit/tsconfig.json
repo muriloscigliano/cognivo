@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "composite": true,
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false
+  },
+  "references": [
+    { "path": "../compose" },
+    { "path": "../gen-ui" },
+    { "path": "../gen-ui-lit" }
+  ],
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "**/__tests__/**"]
+}
