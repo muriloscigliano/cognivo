@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   COMPOSITION_MODIFY_TOOL,
+  GRAMMAR_BLOCKED_PREFIX,
   proposeComposition,
   summarizeDiff,
   touchedEntities,
@@ -128,6 +129,20 @@ describe('proposeComposition', () => {
     expect(proposal.tool).toBe(COMPOSITION_MODIFY_TOOL); // still constructed — UI shows WHY it was blocked
   });
 
+  it('a blocked proposal is stamped so it survives serialization distinguishably', () => {
+    const target = dashboardEdited();
+    (target.props['children'] as unknown[]).push(el('MetricCard', { title: 'x', value: 1, span: 6 }));
+    const { proposal, violations } = propose({ target });
+    expect(proposal.summary.startsWith(GRAMMAR_BLOCKED_PREFIX)).toBe(true);
+    expect(
+      proposal.blastRadius.entities.filter((e) => e.startsWith('grammar-violation:')).length,
+    ).toBe(violations.length);
+    // clean proposals carry neither marker
+    const clean = propose();
+    expect(clean.proposal.summary.startsWith(GRAMMAR_BLOCKED_PREFIX)).toBe(false);
+    expect(clean.proposal.blastRadius.entities.some((e) => e.startsWith('grammar-violation:'))).toBe(false);
+  });
+
   it('a stale diff throws StaleDiffError (concurrency guard intact)', () => {
     const d = diff(dashboard(), dashboardEdited());
     const otherTree = el('Stack', { children: [el('Badge', { label: 'x' })] });
@@ -152,7 +167,7 @@ describe('composition proposals through the core gate', () => {
     expect(gate(proposal, emptyRunContext('r1'), new InMemoryTrustLedger())).toBe('auto');
   });
 
-  it("correction #1 reaches compositions: a run with irreversible damage gates 'confirm'", () => {
+  it("a damaged RunContext gates a composition 'confirm' (host must thread the context — see composition-resolved)", () => {
     const { proposal } = propose();
     const damaged: RunContext = {
       runId: 'r1',

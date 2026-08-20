@@ -7,6 +7,19 @@
  * APPLIED candidate, never the raw ops), the ghost renderer is the preview,
  * and `StaleDiffError` is the concurrency guard (propagated, not swallowed).
  *
+ * Honesty caveats (read before trusting the labels):
+ * - `reversibility: 'reversible'` and `blastRadius.scope: 'self'` describe the
+ *   COMPOSITION TREE, not arbitrary component behavior. A ghost preview mounts
+ *   real custom elements — a component whose connectedCallback fetches or
+ *   mutates shared state has acted at preview time, and discard() does not
+ *   un-fetch. Hosts embedding side-effectful components should gate BEFORE
+ *   previewing (call proposeComposition first, drive the renderer after the
+ *   decision) rather than relying on discard as containment.
+ * - A grammar-BLOCKED proposal is stamped (summary prefix + violation entries
+ *   in blastRadius.entities) so a serialized proposal stays distinguishable
+ *   from a clean one: core's gate() knows nothing about layout grammar, and a
+ *   persisted blocked proposal must never read as gate-approvable.
+ *
  * Two provenance axes meet here and MUST stay separate:
  * - core's GROUNDING provenance (what the diff's content rests on) goes on the
  *   proposal: the base tree it rewrites (`document`) plus the model's layout
@@ -18,7 +31,6 @@ import type { ElementNode } from '@cognivo/gen-ui';
 import type { ActionProposal } from '@cognivo/core';
 import type { CompositionDiff, DiffOp } from '../diff/types.js';
 import { apply } from '../diff/apply.js';
-import { hashTree } from '../tree/hash.js';
 import { lint } from '../grammar/linter.js';
 import type { LayoutGrammar, GrammarViolation } from '../grammar/types.js';
 import { formatPath } from '../tree/path.js';
@@ -84,26 +96,37 @@ export function touchedEntities(diff: CompositionDiff): string[] {
  * surface it as a proposal invalidation (recompose against the current tree),
  * never as a crash.
  */
+/** Summary prefix stamped on grammar-blocked proposals (serialization-safe marker). */
+export const GRAMMAR_BLOCKED_PREFIX = '[grammar-blocked] ';
+
 export function proposeComposition(input: CompositionProposalInput): CompositionProposalResult {
   const candidate = apply(input.baseTree, input.diff); // throws StaleDiffError when stale
   const violations = lint(candidate, input.grammar);
+
+  const blocked = violations.length > 0;
+  const summary = (blocked ? GRAMMAR_BLOCKED_PREFIX : '') + summarizeDiff(input.diff);
+  const entities = blocked
+    ? [...touchedEntities(input.diff), ...violations.map((v) => `grammar-violation: ${v.message}`)]
+    : touchedEntities(input.diff);
 
   const proposal: ActionProposal<CompositionDiff> = {
     id: input.id,
     runId: input.runId,
     tool: COMPOSITION_MODIFY_TOOL,
     input: input.diff,
-    summary: summarizeDiff(input.diff),
+    summary,
     rationale: input.prompt,
-    // The base tree + discard() is a perfect undo: nothing leaves the surface.
+    // Reversible at the TREE level: base tree + discard restores the
+    // composition. See the module docblock for the live-DOM caveats.
     reversibility: 'reversible',
     blastRadius: {
       scope: 'self',
-      entities: touchedEntities(input.diff),
+      entities,
       irreversibleSideEffects: [],
     },
     provenance: [
-      { kind: 'document', docId: `tree:${hashTree(input.baseTree)}` },
+      // apply() above proved hashTree(baseTree) === diff.baseHash.
+      { kind: 'document', docId: `tree:${input.diff.baseHash}` },
       { kind: 'inference' },
     ],
   };

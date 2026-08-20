@@ -48,5 +48,6 @@ export {
   summarizeDiff,
   touchedEntities,
   COMPOSITION_MODIFY_TOOL,
+  GRAMMAR_BLOCKED_PREFIX,
 } from './bridge/action-proposal.js';
 export type { CompositionProposalInput, CompositionProposalResult } from './bridge/action-proposal.js';

@@ -20,6 +20,7 @@ import {
   hashTree,
   ProvenanceLog,
   proposeComposition,
+  StaleDiffError,
 } from '@cognivo/compose';
 import type {
   CompositionDiff,
@@ -28,6 +29,9 @@ import type {
   ComposeClient,
 } from '@cognivo/compose';
 import { GhostRenderer } from './ghost-renderer.js';
+
+/** Per-page-load instance counter so proposal ids never collide across canvases. */
+let canvasSeq = 0;
 
 @customElement('cg-compose-canvas')
 export class CgComposeCanvas extends LitElement {
@@ -136,46 +140,90 @@ export class CgComposeCanvas extends LitElement {
    * Propose a modification: ask the client for a diff, wrap it as a governed
    * ActionProposal (agent-contract bridge — emitted as `composition-proposal`
    * whether it lints clean or not, so consumers see WHY a change was blocked),
-   * and if clean render it as a ghost preview awaiting commit/discard. Lint
-   * failures on a modify are surfaced (not auto-retried here — the caller
-   * decides).
+   * and if clean render it as a ghost preview awaiting commit/discard.
+   *
+   * Loop closure contract: on a clean modify the ghost + pending state exist
+   * BEFORE `composition-proposal` dispatches, so a listener may synchronously
+   * `commit(now)` (approve) or `discard()` (reject) and both take effect.
+   * `commit`/`discard` emit `composition-resolved` with the proposal id so a
+   * host can feed the decision into a core run session (`run.resolve`).
+   *
+   * A stale diff (the tree moved while the client was thinking) is surfaced as
+   * a `composition-stale` event + `{ stale: true }`, never as a throw. Empty
+   * diffs are a no-op (`{ noop: true }`). Lint failures on a modify are
+   * surfaced (not auto-retried here — the caller decides).
    */
-  async proposeModify(prompt: string): Promise<{ ok: boolean; violations: GrammarViolation[] }> {
+  async proposeModify(prompt: string): Promise<{
+    ok: boolean;
+    violations: GrammarViolation[];
+    stale?: boolean;
+    noop?: boolean;
+  }> {
     if (!this.baseTree || !this.renderer) throw new Error('proposeModify before compose');
     const diff = await this.client.modify(prompt, this.baseTree);
-    // Throws StaleDiffError (before any ghost render) when the tree moved.
-    const { proposal, violations } = proposeComposition({
-      id: `p${this.proposalSeq++}`,
-      runId: this.runId,
-      prompt,
-      baseTree: this.baseTree,
-      diff,
-      grammar: this.grammar,
-    });
+    if (diff.ops.length === 0) {
+      return { ok: false, violations: [], noop: true };
+    }
+
+    let proposal;
+    let violations: GrammarViolation[];
+    try {
+      ({ proposal, violations } = proposeComposition({
+        id: `${this.canvasToken}-p${this.proposalSeq++}`,
+        runId: this.runId,
+        prompt,
+        baseTree: this.baseTree,
+        diff,
+        grammar: this.grammar,
+      }));
+    } catch (error) {
+      if (error instanceof StaleDiffError) {
+        this.dispatchEvent(new CustomEvent('composition-stale', {
+          detail: { message: error.message },
+          bubbles: true,
+          composed: true,
+        }));
+        return { ok: false, violations: [], stale: true };
+      }
+      throw error;
+    }
+
+    if (violations.length > 0) {
+      this.dispatchEvent(new CustomEvent('composition-proposal', {
+        detail: { proposal, violations },
+        bubbles: true,
+        composed: true,
+      }));
+      this.emitViolations(violations);
+      return { ok: false, violations };
+    }
+
+    // Preview + pending state FIRST — the event's listeners must be able to
+    // commit (pending exists) or discard (and have it stick).
+    const candidate = this.renderer.previewDiff(diff);
+    this.pendingCandidate = candidate;
+    this.pendingDiff = diff;
+    this.pendingPrompt = prompt;
+    this.pendingProposalId = proposal.id;
     this.dispatchEvent(new CustomEvent('composition-proposal', {
       detail: { proposal, violations },
       bubbles: true,
       composed: true,
     }));
-    if (violations.length > 0) {
-      this.emitViolations(violations);
-      return { ok: false, violations };
-    }
-    const candidate = this.renderer.previewDiff(diff);
-    this.pendingCandidate = candidate;
-    this.pendingDiff = diff;
-    this.pendingPrompt = prompt;
     return { ok: true, violations: [] };
   }
 
   private pendingDiff: CompositionDiff | null = null;
   private pendingPrompt = '';
+  private pendingProposalId: string | null = null;
   private proposalSeq = 0;
+  private readonly canvasToken = `c${canvasSeq++}`;
 
   /** Commit the previewed candidate: it becomes the new base and is logged. */
   commit(now: number): void {
     if (!this.pendingCandidate || !this.renderer || !this.pendingDiff) return;
     const candidate = this.pendingCandidate;
+    const proposalId = this.pendingProposalId;
     this.renderer.commit(candidate);
     this.baseTree = candidate;
     this.log.record({
@@ -185,19 +233,35 @@ export class CgComposeCanvas extends LitElement {
       ts: now,
     });
     this.clearPending();
-    this.dispatchEvent(new CustomEvent('composition-committed', { detail: { tree: candidate } }));
+    this.dispatchEvent(new CustomEvent('composition-committed', {
+      detail: { tree: candidate, proposalId },
+    }));
+    this.emitResolved(proposalId, 'approved');
   }
 
   /** Discard the previewed candidate and restore the base. */
   discard(): void {
+    const proposalId = this.pendingProposalId;
+    const hadPending = this.pendingCandidate !== null;
     this.renderer?.discard();
     this.clearPending();
+    if (hadPending) this.emitResolved(proposalId, 'rejected');
+  }
+
+  private emitResolved(proposalId: string | null, decision: 'approved' | 'rejected'): void {
+    if (proposalId === null) return;
+    this.dispatchEvent(new CustomEvent('composition-resolved', {
+      detail: { proposalId, decision },
+      bubbles: true,
+      composed: true,
+    }));
   }
 
   private clearPending(): void {
     this.pendingCandidate = null;
     this.pendingDiff = null;
     this.pendingPrompt = '';
+    this.pendingProposalId = null;
   }
 
   private emitViolations(violations: GrammarViolation[]): void {

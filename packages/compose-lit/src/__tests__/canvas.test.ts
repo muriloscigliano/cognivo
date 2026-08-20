@@ -126,7 +126,7 @@ describe('cg-compose-canvas', () => {
     expect(details).toHaveLength(1);
     const { proposal, violations } = details[0]!;
     expect(violations).toEqual([]);
-    expect(proposal.id).toBe('p0');
+    expect(proposal.id).toMatch(/^c\d+-p0$/);
     expect(proposal.runId).toBe('run-42');
     expect(proposal.tool).toBe('composition.modify');
     expect(proposal.rationale).toBe('bump the value');
@@ -135,9 +135,119 @@ describe('cg-compose-canvas', () => {
       { kind: 'document', docId: `tree:${hashTree(base)}` },
       { kind: 'inference' },
     ]);
-    // ids are deterministic per canvas
+    // ids are sequential per canvas; the second proposal supersedes the first
+    canvas.discard();
     await canvas.proposeModify('bump the value');
-    expect(details[1]!.proposal.id).toBe('p1');
+    expect(details[1]!.proposal.id).toMatch(/^c\d+-p1$/);
+  });
+
+  it('proposal ids never collide across two canvases sharing a runId', async () => {
+    const base = el('Stack', { region: 'main', children: [el('MetricCard', { value: 1 })] });
+    const after = el('Stack', { region: 'main', children: [el('MetricCard', { value: 9 })] });
+    const client: ComposeClient = { compose: async () => base, modify: async (_p, b) => diff(b, after) };
+    const a = await mount(client);
+    const b = await mount(client);
+    const ids: string[] = [];
+    for (const canvas of [a, b]) {
+      canvas.addEventListener('composition-proposal', (e) =>
+        ids.push((e as CustomEvent).detail.proposal.id));
+      await canvas.compose('start', 1000);
+      await canvas.proposeModify('bump');
+    }
+    expect(new Set(ids).size).toBe(2);
+  });
+
+  it('a listener can synchronously commit() the proposal (approve path is real)', async () => {
+    const base = el('Stack', { region: 'main', children: [el('MetricCard', { value: 1 })] });
+    const after = el('Stack', { region: 'main', children: [el('MetricCard', { value: 9 })] });
+    const canvas = await mount({ compose: async () => base, modify: async (_p, b) => diff(b, after) });
+    canvas.addEventListener('composition-proposal', () => canvas.commit(2000));
+    await canvas.compose('start', 1000);
+    await canvas.proposeModify('bump');
+    expect(canvas.tree).toEqual(after);
+    expect(canvas.provenance.all()).toHaveLength(2);
+  });
+
+  it("a listener's discard() sticks — the rejected candidate never becomes committable", async () => {
+    const base = el('Stack', { region: 'main', children: [el('MetricCard', { value: 1 })] });
+    const after = el('Stack', { region: 'main', children: [el('MetricCard', { value: 9 })] });
+    const canvas = await mount({ compose: async () => base, modify: async (_p, b) => diff(b, after) });
+    canvas.addEventListener('composition-proposal', () => canvas.discard());
+    await canvas.compose('start', 1000);
+    await canvas.proposeModify('bump');
+    canvas.commit(3000); // must be a no-op: nothing pending
+    expect(canvas.tree).toEqual(base);
+    expect(canvas.provenance.all()).toHaveLength(1);
+  });
+
+  it('commit and discard emit composition-resolved with the proposal id', async () => {
+    const base = el('Stack', { region: 'main', children: [el('MetricCard', { value: 1 })] });
+    const bump = (b: ElementNode): ElementNode => el('Stack', {
+      region: 'main',
+      children: [el('MetricCard', {
+        value: (((b.props['children'] as ElementNode[])[0]!.props['value'] as number) ?? 0) + 1,
+      })],
+    });
+    const canvas = await mount({ compose: async () => base, modify: async (_p, b) => diff(b, bump(b)) });
+    const resolved: Array<{ proposalId: string; decision: string }> = [];
+    let emittedId = '';
+    canvas.addEventListener('composition-proposal', (e) => {
+      emittedId = (e as CustomEvent).detail.proposal.id;
+    });
+    canvas.addEventListener('composition-resolved', (e) => resolved.push((e as CustomEvent).detail));
+    await canvas.compose('start', 1000);
+
+    await canvas.proposeModify('bump');
+    canvas.commit(2000);
+    expect(resolved[0]).toEqual({ proposalId: emittedId, decision: 'approved' });
+
+    await canvas.proposeModify('bump');
+    canvas.discard();
+    expect(resolved[1]).toEqual({ proposalId: emittedId, decision: 'rejected' });
+    // committed event also carries the proposal id now
+  });
+
+  it('a stale diff surfaces as composition-stale + { stale: true }, never a throw', async () => {
+    const base = el('Stack', { region: 'main', children: [el('MetricCard', { value: 1 })] });
+    const other = el('Stack', { region: 'main', children: [el('MetricCard', { value: 5 })] });
+    const after = el('Stack', { region: 'main', children: [el('MetricCard', { value: 9 })] });
+    // Client computes the diff against a DIFFERENT tree than the canvas base.
+    const canvas = await mount({ compose: async () => base, modify: async () => diff(other, after) });
+    const staleEvents: unknown[] = [];
+    canvas.addEventListener('composition-stale', (e) => staleEvents.push((e as CustomEvent).detail));
+    await canvas.compose('start', 1000);
+    const res = await canvas.proposeModify('bump');
+    expect(res).toMatchObject({ ok: false, stale: true, violations: [] });
+    expect(staleEvents).toHaveLength(1);
+    expect(canvas.tree).toEqual(base);
+  });
+
+  it('an empty diff is a no-op: no proposal, no ghost, { noop: true }', async () => {
+    const base = el('Stack', { region: 'main', children: [el('MetricCard', { value: 1 })] });
+    const canvas = await mount({ compose: async () => base, modify: async (_p, b) => diff(b, b) });
+    const proposals: unknown[] = [];
+    canvas.addEventListener('composition-proposal', (e) => proposals.push(e));
+    await canvas.compose('start', 1000);
+    const res = await canvas.proposeModify('do nothing');
+    expect(res).toMatchObject({ ok: false, noop: true });
+    expect(proposals).toHaveLength(0);
+  });
+
+  it('a lint-blocked modify never renders a ghost — the surface stays untouched', async () => {
+    const base = el('Stack', { region: 'main', children: [el('MetricCard', {}), el('MetricCard', {})] });
+    const overLimit = el('Stack', {
+      region: 'main',
+      children: [el('MetricCard', {}), el('MetricCard', {}), el('MetricCard', {})],
+    });
+    const canvas = await mount({
+      compose: async () => base,
+      modify: async (_p, b) => diff(b, overLimit),
+    });
+    await canvas.compose('start', 1000);
+    const surface = canvas.shadowRoot!.querySelector('.surface') as HTMLElement;
+    const htmlBefore = surface.innerHTML;
+    await canvas.proposeModify('add another metric');
+    expect(surface.innerHTML).toBe(htmlBefore);
   });
 
   it('a lint-blocked modify still emits the proposal WITH its violations', async () => {
