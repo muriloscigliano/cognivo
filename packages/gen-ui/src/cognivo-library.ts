@@ -1,5 +1,5 @@
 /**
- * Cognivo Component Library — 198 components registered for gen-ui.
+ * Cognivo Component Library — 200 components registered for gen-ui.
  * (Keep this count in sync — see __tests__/registry-parity.test.ts, which
  * asserts registry ⇄ packages/components directory parity.)
  *
@@ -2416,6 +2416,32 @@ export const AiThinkingOrbDef = defineComponent({
   biasHints: ['zeigarnik-effect'],
 });
 
+export const LiquidDef = defineComponent({
+  name: 'Liquid', tagName: 'cg-liquid',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    blurRadius: z.number().optional(),
+    contrast: z.number().optional(),
+    fill: z.string().optional(),
+  }),
+  description: 'Liquid/gooey effect group — SVG silhouette layer merges LiquidItem children into one liquid surface while content stays crisp',
+  biasHints: ['halo-effect'],
+});
+
+export const LiquidItemDef = defineComponent({
+  name: 'LiquidItem', tagName: 'cg-liquid-item',
+  props: z.object({
+    children: z.array(z.any()).optional(),
+    effect: z.enum(['morph', 'move']).optional(),
+    x: z.number().optional(),
+    y: z.number().optional(),
+    scale: z.number().optional(),
+    transition: z.enum(['snappy', 'smooth', 'bouncy']).optional(),
+    radius: z.number().optional(),
+  }),
+  description: 'Child of Liquid: morph (breathing blob) or move (spring-driven translation with trailing goo silhouette)',
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Bias Wrappers (6 components) — cognitive-bias building blocks
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2558,14 +2584,14 @@ const ALL_COMPONENTS = [
   // Wave 11: AI coverage
   AiAppSidebarDef, AiConfidenceBadgeDef,
   // Wave 12: Motion & Effects
-  BorderBeamDef, AiThinkingOrbDef,
+  BorderBeamDef, AiThinkingOrbDef, LiquidDef, LiquidItemDef,
   // Bias Wrappers
   BiasAnchoringDef, BiasAuthorityDef, BiasCommitmentDef,
   BiasReciprocityDef, BiasScarcityDef, BiasSocialProofDef,
 ];
 
 /**
- * Full Cognivo library — 198 components registered for LLM generation.
+ * Full Cognivo library — 200 components registered for LLM generation.
  * Keep in sync — see __tests__/registry-parity.test.ts.
  */
 export const cognivoLibrary: Library = createLibrary({
@@ -2679,10 +2705,11 @@ export const cognivoLibrary: Library = createLibrary({
     },
     {
       name: 'Motion & Effects',
-      components: ['BorderBeam', 'AiThinkingOrb'],
+      components: ['BorderBeam', 'AiThinkingOrb', 'Liquid', 'LiquidItem'],
       notes: [
         '- BorderBeam: decorative traveling-light border wrapper (beam/line/pulse) — use sparingly to spotlight ONE element',
         '- AiThinkingOrb: canvas dotted orb showing agent activity (9 states) — prefer over AiThinking for avatar/inline agent presence',
+        '- Liquid + LiquidItem: gooey merged-silhouette effects — LiquidItem MUST be a direct child of Liquid',
         '- All effects honor prefers-reduced-motion and are non-interactive overlays',
       ],
     },

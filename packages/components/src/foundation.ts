@@ -134,3 +134,5 @@ export * from './components/cg-app-shell/cg-app-shell.js';
 
 // ── Motion & Effects ─────────────────────────────────────────────────────────
 export * from './components/cg-border-beam/cg-border-beam.js';
+export * from './components/cg-liquid/cg-liquid.js';
+export * from './components/cg-liquid-item/cg-liquid-item.js';
