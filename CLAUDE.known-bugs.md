@@ -19,6 +19,8 @@
 | Card-in-card visual when wrapping `<cg-calendar>` in a bordered dropdown | manual review (composition rule) | cg-date-range-picker (pre-refactor) |
 | Prop value with no CSS path (`type="always"` defined but unused) | manual review (spec-vs-impl audit) | cg-scroll-area |
 | Duplicate calendar grid in cg-date-picker (instead of using `<cg-calendar mode="single">`) | manual review (composition rule) | cg-date-picker (pre-refactor) |
+| `@property` at-rule in a shadow-DOM stylesheet is silently ignored — animated custom properties never interpolate | manual review (browser check; untestable in happy-dom) | cg-border-beam |
+| JS-driven animation (inline styles / rAF) bypasses the shared `reducedMotion` stylesheet | manual review (a11y audit) | cg-border-beam pulse, cg-liquid-item, ai-thinking-orb |
 
 ---
 
@@ -75,6 +77,19 @@
 - **Found in**: cg-date-picker had ~150 lines of inline calendar CSS + ~40 lines of date math, instead of using `<cg-calendar mode="single">` like cg-date-range-picker did.
 - **Fix**: refactored to use `<cg-calendar>`. Bundle dropped ~5 KB.
 - **Prevention rule**: composition over duplication. Before writing date/list/menu CSS, search for `<cg-calendar>`, `<cg-listbox>`, `<cg-menu>`, etc.
+
+### 2026-08 — `@property` inside a shadow-DOM stylesheet is ignored by every engine
+- **Found in**: cg-border-beam (`@property --cg-beam-angle` for the rotating conic gradient).
+- **Symptom**: the beam never rotates — unregistered custom properties animate discretely, so the arc blinks or sits static. Invisible to happy-dom tests; pure cascade/paint behavior.
+- **Root cause**: the CSS Properties & Values spec disallows `@property` in shadow trees (w3c/csswg-drafts#10541); no engine registers it from a shadow/constructed stylesheet.
+- **Fix**: register once at module load via `CSS.registerProperty({...})` in a try/catch, and declare a static `:host { --the-prop: <initial>; }` fallback so the CSS stays valid where registerProperty is missing.
+- **Prevention rule**: never put `@property` in component styles. If a custom property must interpolate, use the module-level `CSS.registerProperty` pattern (see cg-border-beam.ts).
+
+### 2026-08 — Shared `reducedMotion` stylesheet cannot suppress JS-driven animation
+- **Found in**: cg-border-beam (pulse loop), cg-liquid-item (inline spring transition on the HOST element), ai-thinking-orb (rAF canvas loop).
+- **Symptom**: `prefers-reduced-motion: reduce` had no effect — the shared `reducedMotion` css helper only reaches elements *inside* the component's shadow root, never host inline styles, rAF loops, or custom-property writes from JS.
+- **Fix**: every JS-driven animation must check `matchMedia('(prefers-reduced-motion: reduce)')` itself — gate the loop/subscription, and listen for `change` so a live toggle takes effect.
+- **Prevention rule**: audit checklist — for any component with rAF, inline `style.transition`, or JS-written animation custom properties, verify an explicit matchMedia gate + change listener. The CSS helper is not enough.
 
 ---
 

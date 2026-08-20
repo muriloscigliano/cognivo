@@ -87,15 +87,27 @@ describe('ai-thinking-orb', () => {
   });
 
   it('pausing after start cancels the scheduled frame', async () => {
+    const pending: FrameRequestCallback[] = [];
+    rafSpy.mockImplementation((cb: FrameRequestCallback) => {
+      pending.push(cb);
+      return pending.length;
+    });
     await create();
     expect(cancelAnimationFrame).not.toHaveBeenCalled();
     el.paused = true;
     await el.updateComplete;
     expect(cancelAnimationFrame).toHaveBeenCalled();
-    rafSpy.mockClear();
-    el.state = 'searching'; // unrelated updates must not restart the loop
+
+    // A state change while paused announces (one rAF) but must NOT restart
+    // the render loop: flushing every pending frame schedules nothing new.
+    pending.length = 0;
+    el.state = 'searching';
     await el.updateComplete;
-    expect(rafSpy).not.toHaveBeenCalled();
+    while (pending.length > 0) {
+      pending.shift()!(0);
+      await el.updateComplete;
+    }
+    expect(pending.length).toBe(0);
   });
 
   it('disconnect cancels the loop', async () => {
@@ -123,6 +135,25 @@ describe('ai-thinking-orb', () => {
   it('speed defaults to 1', async () => {
     await create();
     expect(el.speed).toBe(1);
+  });
+
+  it('announces state changes via the polite live region (not on first render)', async () => {
+    const pending: FrameRequestCallback[] = [];
+    rafSpy.mockImplementation((cb: FrameRequestCallback) => {
+      pending.push(cb);
+      return pending.length;
+    });
+    await create();
+    const region = el.shadowRoot!.querySelector('[role="status"]')!;
+    expect(region.getAttribute('aria-live')).toBe('polite');
+    expect(region.textContent).toBe('');
+    el.state = 'searching';
+    await el.updateComplete;
+    // _announce clears then re-fills on the next animation frame
+    const announceFrame = pending.pop()!;
+    announceFrame(0);
+    await el.updateComplete;
+    expect(region.textContent).toContain('searching');
   });
 
   function fakeContext() {

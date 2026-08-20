@@ -176,6 +176,33 @@ describe('cg-border-beam', () => {
     expect(_pulseDriverInternals.subscriberCount()).toBe(1); // new subscription, not zero, not two
   });
 
+  it('toggling reduced-motion on while pulsing tears the subscription down', async () => {
+    let matches = false;
+    let changeListener: (() => void) | null = null;
+    const mm = vi.spyOn(window, 'matchMedia').mockImplementation((query: string) => ({
+      get matches() { return query.includes('prefers-reduced-motion') && matches; },
+      media: query,
+      addEventListener: (_type: string, cb: () => void) => { changeListener = cb; },
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      onchange: null,
+      dispatchEvent: () => false,
+    }) as unknown as MediaQueryList);
+    try {
+      await create({ variant: 'pulse' });
+      expect(_pulseDriverInternals.subscriberCount()).toBe(1);
+      matches = true;
+      changeListener!();
+      expect(_pulseDriverInternals.subscriberCount()).toBe(0);
+      matches = false;
+      changeListener!();
+      expect(_pulseDriverInternals.subscriberCount()).toBe(1);
+    } finally {
+      mm.mockRestore();
+    }
+  });
+
   it('pulse respects prefers-reduced-motion: no subscription', async () => {
     const mm = vi.spyOn(window, 'matchMedia').mockImplementation((query: string) => ({
       matches: query.includes('prefers-reduced-motion'),

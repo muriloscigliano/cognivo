@@ -15,7 +15,7 @@
  *
  * @slot - cg-liquid-item children (plus any static content).
  *
- * @cssprop [--cg-color-surface-cards-background] - Default liquid surface color
+ * @cssprop [--cg-component-liquid-fill] - Liquid surface color (defaults to the card surface)
  */
 import { LitElement, html, svg, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
@@ -124,7 +124,7 @@ export class CgLiquid extends LitElement {
     const width = item.offsetWidth;
     const height = item.offsetHeight;
     const rx = item.radius ?? Math.min(width, height) / 2;
-    const fill = this.fill || 'var(--cg-color-surface-cards-background)';
+    const fill = this.fill || 'var(--cg-component-liquid-fill)';
     const isMorph = item.effect === 'morph';
 
     // fill lives in style, not the presentation attribute — var() substitution

@@ -16,7 +16,7 @@
  * @cssprop [--cg-color-surface-base-text] - Dot color (resolved at draw time)
  */
 import { LitElement, html, css } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
+import { customElement, property, query, state } from 'lit/decorators.js';
 import { hostBase } from '../../styles/index.js';
 import {
   ORB_STATES,
@@ -40,6 +40,12 @@ export class AiThinkingOrb extends LitElement {
 
     canvas {
       display: block;
+    }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
     }
   `];
 
@@ -68,6 +74,8 @@ export class AiThinkingOrb extends LitElement {
   // ─── Internals ──────────────────────────────────────────────────────────────
 
   @query('canvas') private _canvas?: HTMLCanvasElement;
+
+  @state() private _announcement = '';
 
   private _rafHandle: number | null = null;
   private _clock = 0;
@@ -144,6 +152,16 @@ export class AiThinkingOrb extends LitElement {
     if (changed.has('state') || changed.has('size')) {
       this._drawStaticFrame();
     }
+    // Announce state changes (not the initial render) — an aria-label swap on
+    // a role="img" is not reliably read by screen readers.
+    if (changed.has('state') && changed.get('state') !== undefined) {
+      this._announce(this.label || ORB_STATE_LABELS[this._effectiveState]);
+    }
+  }
+
+  private _announce(message: string): void {
+    this._announcement = '';
+    requestAnimationFrame(() => { this._announcement = message; });
   }
 
   // ─── Animation loop ─────────────────────────────────────────────────────────
@@ -256,6 +274,7 @@ export class AiThinkingOrb extends LitElement {
         width=${this.pixelSize}
         height=${this.pixelSize}
       ></canvas>
+      <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">${this._announcement}</div>
     `;
   }
 }

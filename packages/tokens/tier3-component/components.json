@@ -940,6 +940,13 @@
         "$value": "{border.radius.150}"
       }
     },
+    "liquid": {
+      "fill": {
+        "$type": "color",
+        "$value": "{color.surface.cards.background}",
+        "$description": "Default liquid/goo surface color for cg-liquid silhouettes"
+      }
+    },
     "border-beam": {
       "color": {
         "$type": "color",

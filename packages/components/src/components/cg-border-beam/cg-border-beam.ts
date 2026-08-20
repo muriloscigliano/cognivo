@@ -27,11 +27,8 @@ import { customElement, property } from 'lit/decorators.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { subscribePulse } from '../../utils/pulse-driver.js';
 
-const VARIANT_DEFAULT_DURATION_MS: Record<string, number> = {
-  beam: 4000,
-  line: 2500,
-  pulse: 2000,
-};
+/** beam/line default durations live in CSS (:host); only pulse is JS-driven. */
+const PULSE_DEFAULT_PERIOD_MS = 2000;
 
 // @property inside a shadow-DOM stylesheet is ignored by every engine
 // (w3c/csswg-drafts#10541), so the animated angle must be registered
@@ -169,11 +166,23 @@ export class CgBorderBeam extends LitElement {
 
   private _unsubscribePulse: (() => void) | null = null;
   private _pulsePeriod = 0;
+  private _reducedMotionQuery: MediaQueryList | null = null;
+  private _onReducedMotionChange = (): void => this._syncPulseSubscription();
 
   // ─── Lifecycle ──────────────────────────────────────────────────────────────
 
+  override connectedCallback(): void {
+    super.connectedCallback();
+    if (typeof window.matchMedia === 'function') {
+      this._reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      this._reducedMotionQuery.addEventListener?.('change', this._onReducedMotionChange);
+    }
+  }
+
   override disconnectedCallback(): void {
     super.disconnectedCallback();
+    this._reducedMotionQuery?.removeEventListener?.('change', this._onReducedMotionChange);
+    this._reducedMotionQuery = null;
     this._teardownPulse();
   }
 
@@ -236,7 +245,7 @@ export class CgBorderBeam extends LitElement {
   }
 
   private _targetPeriod(): number {
-    return this.duration ?? VARIANT_DEFAULT_DURATION_MS['pulse']!;
+    return this.duration ?? PULSE_DEFAULT_PERIOD_MS;
   }
 
   private _teardownPulse(): void {
