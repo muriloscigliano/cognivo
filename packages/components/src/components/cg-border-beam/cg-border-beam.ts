@@ -39,6 +39,13 @@ export class CgBorderBeam extends LitElement {
     :host {
       display: inline-block;
       position: relative;
+      --cg-beam-intensity: 1;
+      --cg-beam-pulse: 1;
+      --cg-beam-duration: 4000ms;
+    }
+
+    :host([variant='line']) {
+      --cg-beam-duration: 2500ms;
     }
 
     @property --cg-beam-angle {
@@ -58,7 +65,7 @@ export class CgBorderBeam extends LitElement {
       pointer-events: none;
       border-radius: var(--cg-component-border-beam-radius);
       padding: var(--cg-component-border-beam-width);
-      opacity: var(--cg-beam-intensity, 1);
+      opacity: var(--cg-beam-intensity);
       /* Show only the ring: two opaque masks XORed leave the padding band. */
       -webkit-mask:
         linear-gradient(var(--cg-color-surface-base-text) 0 0) content-box,
@@ -78,7 +85,7 @@ export class CgBorderBeam extends LitElement {
         var(--cg-component-border-beam-color) 12%,
         transparent 24%
       );
-      animation: beam-rotate var(--cg-beam-duration, 4000ms) linear infinite;
+      animation: beam-rotate var(--cg-beam-duration) linear infinite;
     }
 
     :host([variant='line']) .beam {
@@ -88,13 +95,13 @@ export class CgBorderBeam extends LitElement {
         var(--cg-component-border-beam-color) 4%,
         transparent 8%
       );
-      animation: beam-rotate var(--cg-beam-duration, 2500ms) linear infinite;
+      animation: beam-rotate var(--cg-beam-duration) linear infinite;
     }
 
     :host([variant='pulse']) .beam {
       /* Whole-perimeter ring; brightness driven by the shared pulse loop. */
       background: var(--cg-component-border-beam-color);
-      opacity: calc(var(--cg-beam-intensity, 1) * var(--cg-beam-pulse, 1));
+      opacity: calc(var(--cg-beam-intensity) * var(--cg-beam-pulse));
       animation: none;
     }
 

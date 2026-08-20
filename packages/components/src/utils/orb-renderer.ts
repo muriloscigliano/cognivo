@@ -159,7 +159,7 @@ const STATE_FIELDS: Record<OrbState, StateFn> = {
   },
 
   // Lanes of dots flowing left-to-right, fading at the edges.
-  streaming: (g, t, i, frac) => {
+  streaming: (g, t, i, _frac) => {
     const lanes = 3;
     const lane = i % lanes;
     const usable = g.size - 2 * g.dotR - 1;

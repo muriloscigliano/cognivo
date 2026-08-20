@@ -32,6 +32,8 @@ export class CgLiquid extends LitElement {
     :host {
       display: block;
       position: relative;
+      /* Slow breathing cycle for morph blobs, derived from the motion scale. */
+      --cg-liquid-morph-duration: calc(var(--cg-transition-duration-slow) * 8);
     }
 
     .goo {
@@ -57,7 +59,7 @@ export class CgLiquid extends LitElement {
     }
 
     .blob.morph {
-      animation: blob-morph var(--cg-motion-duration-slower) var(--cg-transition-easing-ease-in-out) infinite alternate;
+      animation: blob-morph var(--cg-liquid-morph-duration) var(--cg-transition-easing-ease-in-out) infinite alternate;
     }
 
     @keyframes blob-morph {

@@ -106,6 +106,7 @@ export const sidebars: Record<string, SidebarItem[]> = {
   '/patterns': [
     { label: 'Overview', href: '/patterns' },
     { label: 'Social Proof & Trust', href: '/patterns/social-proof' },
+    { label: 'Motion Recipes', href: '/patterns/motion' },
     { label: 'Guardrails', href: '/patterns#p0' },
     { label: 'Fallback', href: '/patterns#p1' },
     { label: 'Caching', href: '/patterns#p2' },

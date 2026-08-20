@@ -1,0 +1,161 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import '@cognivo/tokens/motion.css';
+---
+
+<DocsLayout title="Motion Recipes — UI Pattern" description="Fourteen reusable, token-governed CSS motion recipes — modal, dropdown, text swap, error shake and more — importable from @cognivo/tokens/motion.css and usable on any markup, in any framework.">
+  <h1>Motion Recipes</h1>
+  <p class="subtitle">
+    Fourteen reusable CSS motion effects, shipped as one stylesheet:
+    <code>@cognivo/tokens/motion.css</code>. Pure CSS — no JavaScript, no framework,
+    no components required. Every duration and easing resolves to a
+    <code>--cg-motion-*</code> token, and every recipe collapses under
+    <code>prefers-reduced-motion</code>.
+  </p>
+
+  <pre><code>{`import '@cognivo/tokens';            // token values
+import '@cognivo/tokens/motion.css'; // the recipes`}</code></pre>
+
+  <p>
+    Convention: a base class holds the rest state, a modifier switches it —
+    <code>.cg-motion-modal</code> → <code>.cg-motion-modal--open</code>. Per-recipe knobs
+    are custom properties like <code>--cg-motion-panel-reveal-distance</code>.
+  </p>
+
+  <!-- ── Catalog ──────────────────────────────────────────────────────────── -->
+  <section class="pattern" id="catalog">
+    <div class="pattern-header">
+      <span class="pattern-num">01</span>
+      <h2>Catalog</h2>
+      <code class="pattern-mod">reference</code>
+    </div>
+    <table>
+      <thead><tr><th>Recipe</th><th>Family</th><th>Trigger class</th><th>Use for</th></tr></thead>
+      <tbody>
+        <tr><td><code>cg-motion-card-resize</code></td><td>Container</td><td>—</td><td>Smooth size changes on content swap</td></tr>
+        <tr><td><code>cg-motion-panel-reveal</code></td><td>Container</td><td><code>--open</code></td><td>Side panels sliding in from their edge</td></tr>
+        <tr><td><code>cg-motion-modal</code></td><td>Container</td><td><code>--open</code></td><td>Dialog scale + fade (fast exit)</td></tr>
+        <tr><td><code>cg-motion-dropdown</code></td><td>Container</td><td><code>--open</code></td><td>Origin-aware menu unfold</td></tr>
+        <tr><td><code>cg-motion-page-nav</code></td><td>Container</td><td><code>--exit</code></td><td>View transitions between routes</td></tr>
+        <tr><td><code>cg-motion-text-swap</code></td><td>Content</td><td><code>--out</code></td><td>Replacing labels or status text</td></tr>
+        <tr><td><code>cg-motion-text-reveal</code></td><td>Content</td><td>—</td><td>Headline lines rising into view</td></tr>
+        <tr><td><code>cg-motion-number-flip</code></td><td>Content</td><td><code>--changed</code></td><td>Odometer-style value changes</td></tr>
+        <tr><td><code>cg-motion-icon-swap</code></td><td>Content</td><td><code>--active</code></td><td>Cross-fading icon pairs (play/pause)</td></tr>
+        <tr><td><code>cg-motion-badge-pop</code></td><td>Feedback</td><td>—</td><td>Notification badges popping in</td></tr>
+        <tr><td><code>cg-motion-success-confirm</code></td><td>Feedback</td><td>—</td><td>Settle-and-glow confirmations</td></tr>
+        <tr><td><code>cg-motion-error-shake</code></td><td>Feedback</td><td>—</td><td>Invalid input refusal shake</td></tr>
+        <tr><td><code>cg-motion-avatar-group</code></td><td>Feedback</td><td><code>:hover</code></td><td>Overlapped avatars spreading apart</td></tr>
+        <tr><td><code>cg-motion-stagger</code></td><td>Helper</td><td>—</td><td>Per-child delays via <code>--cg-motion-stagger-index</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── Live demos ───────────────────────────────────────────────────────── -->
+  <section class="pattern" id="modal">
+    <div class="pattern-header">
+      <span class="pattern-num">02</span>
+      <h2>Modal + dropdown</h2>
+      <code class="pattern-mod">container</code>
+    </div>
+    <p>Toggle the modifier class from your framework of choice — that is the entire API.</p>
+    <div class="demo">
+      <cg-button variant="secondary" id="modal-toggle">Toggle modal</cg-button>
+      <div class="demo-modal cg-motion-modal" id="modal-demo">Saved changes</div>
+    </div>
+    <pre><code>{`<div class="cg-motion-modal" id="dialog">…</div>
+<script>
+  dialog.classList.toggle('cg-motion-modal--open', isOpen);
+</script>`}</code></pre>
+  </section>
+
+  <section class="pattern" id="feedback">
+    <div class="pattern-header">
+      <span class="pattern-num">03</span>
+      <h2>Feedback: shake + pop</h2>
+      <code class="pattern-mod">feedback</code>
+    </div>
+    <p>
+      Animation recipes replay when the class is re-added. Remove, force a reflow,
+      re-add — or key the element in your framework.
+    </p>
+    <div class="demo">
+      <cg-button variant="secondary" id="shake-trigger">Shake it</cg-button>
+      <cg-input id="shake-target" placeholder="Invalid field" style="max-width: 220px;"></cg-input>
+      <cg-button variant="secondary" id="pop-trigger">Pop badge</cg-button>
+      <cg-badge id="pop-target" color="danger">3</cg-badge>
+    </div>
+    <pre><code>{`field.classList.remove('cg-motion-error-shake');
+void field.offsetWidth; // restart the animation
+field.classList.add('cg-motion-error-shake');`}</code></pre>
+  </section>
+
+  <section class="pattern" id="stagger">
+    <div class="pattern-header">
+      <span class="pattern-num">04</span>
+      <h2>Staggered entrance</h2>
+      <code class="pattern-mod">helper</code>
+    </div>
+    <p>
+      Combine <code>cg-motion-stagger</code> with any animation recipe and set
+      <code>--cg-motion-stagger-index</code> per child.
+    </p>
+    <div class="demo">
+      <cg-button variant="secondary" id="stagger-trigger">Replay</cg-button>
+      <div class="cg-motion-stagger" id="stagger-target" style="display:flex; gap: var(--cg-spacing-8);">
+        <cg-badge class="cg-motion-badge-pop" style="--cg-motion-stagger-index: 0;">one</cg-badge>
+        <cg-badge class="cg-motion-badge-pop" style="--cg-motion-stagger-index: 1;">two</cg-badge>
+        <cg-badge class="cg-motion-badge-pop" style="--cg-motion-stagger-index: 2;">three</cg-badge>
+      </div>
+    </div>
+    <pre><code>{`<ul class="cg-motion-stagger">
+  <li class="cg-motion-badge-pop" style="--cg-motion-stagger-index: 0">…</li>
+  <li class="cg-motion-badge-pop" style="--cg-motion-stagger-index: 1">…</li>
+</ul>`}</code></pre>
+  </section>
+
+  <script>
+    const modal = document.getElementById('modal-demo');
+    document.getElementById('modal-toggle')?.addEventListener('click', () => {
+      modal?.classList.toggle('cg-motion-modal--open');
+    });
+
+    function replay(el: HTMLElement | null, cls: string) {
+      if (!el) return;
+      el.classList.remove(cls);
+      void el.offsetWidth;
+      el.classList.add(cls);
+    }
+    document.getElementById('shake-trigger')?.addEventListener('click', () => {
+      replay(document.getElementById('shake-target'), 'cg-motion-error-shake');
+    });
+    document.getElementById('pop-trigger')?.addEventListener('click', () => {
+      replay(document.getElementById('pop-target'), 'cg-motion-badge-pop');
+    });
+    document.getElementById('stagger-trigger')?.addEventListener('click', () => {
+      document.querySelectorAll('#stagger-target > *').forEach((child) => {
+        replay(child as HTMLElement, 'cg-motion-badge-pop');
+      });
+    });
+  </script>
+
+  <style>
+    .demo-modal {
+      margin-top: var(--cg-spacing-12);
+      padding: var(--cg-spacing-16) var(--cg-spacing-20);
+      background: var(--cg-color-surface-cards-background);
+      border: 1px solid var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
+      max-width: 240px;
+    }
+    .demo {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-12);
+      flex-wrap: wrap;
+      padding: var(--cg-spacing-16);
+      border: 1px dashed var(--cg-color-surface-cards-border);
+      border-radius: var(--cg-component-card-radius);
+      margin: var(--cg-spacing-12) 0;
+    }
+  </style>
+</DocsLayout>
