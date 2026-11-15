@@ -61,8 +61,8 @@
     "clean": "rm -rf dist"
   },
   "peerDependencies": {
-    "@cognivo/core": "workspace:*",
-    "@cognivo/tokens": "workspace:*"
+    "@cognivo/core": "workspace:^",
+    "@cognivo/tokens": "workspace:^"
   },
   "devDependencies": {
     "@cognivo/core": "workspace:*",

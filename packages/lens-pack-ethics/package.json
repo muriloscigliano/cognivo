@@ -48,7 +48,7 @@
     "clean": "rm -rf dist"
   },
   "peerDependencies": {
-    "@cognivo/lens-core": "workspace:*"
+    "@cognivo/lens-core": "workspace:^"
   },
   "devDependencies": {
     "@cognivo/lens-core": "workspace:*",
