@@ -22,10 +22,18 @@ export interface CgTableProps {
   /** Fired when a column header sort is triggered. */
   onSort?: (e: CustomEvent<{ key: string; direction: 'asc' | 'desc' }>) => void;
   className?: string;
+  /** Fired as `cg-select`. */
+  onSelect?: (e: CustomEvent) => void;
+  /** Fired as `cg-row-click`. */
+  onRowClick?: (e: CustomEvent) => void;
 }
 
-export const CgTable = createWrapper<CgTableProps>(
+export const CgTable = createWrapper<CgTableProps, 'cg-table'>(
   'cg-table',
   ['columns', 'rows', 'striped', 'compact', 'emptyText'],
-  { onSort: 'cg-sort' }
+  {
+    onSort: 'cg-sort',
+    onSelect: 'cg-select',
+    onRowClick: 'cg-row-click',
+  }
 );

@@ -16,7 +16,7 @@ export interface CgRadioGroupProps {
   className?: string;
 }
 
-export const CgRadioGroup = createWrapper<CgRadioGroupProps>(
+export const CgRadioGroup = createWrapper<CgRadioGroupProps, 'cg-radio-group'>(
   'cg-radio-group',
   ['name', 'value', 'label', 'disabled', 'orientation'],
   { onCgChange: 'cg-change' }

@@ -10,7 +10,7 @@ export interface CgSeparatorProps {
   className?: string;
 }
 
-export const CgSeparator = createWrapper<CgSeparatorProps>(
+export const CgSeparator = createWrapper<CgSeparatorProps, 'cg-separator'>(
   'cg-separator',
   ['orientation', 'label', 'spacing'],
   {}

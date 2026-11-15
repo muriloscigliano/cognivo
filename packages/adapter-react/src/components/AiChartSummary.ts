@@ -10,10 +10,18 @@ export interface AiChartSummaryProps {
   /** Fired when the summary is toggled (collapsed/expanded). Detail: { collapsed }. */
   onSummaryToggle?: (e: CustomEvent<{ collapsed: boolean }>) => void;
   className?: string;
+  /** Fired as `ai-summary-trend-click`. */
+  onSummaryTrendClick?: (e: CustomEvent) => void;
+  /** Fired as `ai-summary-refresh`. */
+  onSummaryRefresh?: (e: CustomEvent) => void;
 }
 
-export const AiChartSummary = createWrapper<AiChartSummaryProps>(
+export const AiChartSummary = createWrapper<AiChartSummaryProps, 'ai-chart-summary'>(
   'ai-chart-summary',
   ['summary', 'trends', 'collapsible'],
-  { onSummaryToggle: 'ai-summary-toggle' }
+  {
+    onSummaryToggle: 'ai-summary-toggle',
+    onSummaryTrendClick: 'ai-summary-trend-click',
+    onSummaryRefresh: 'ai-summary-refresh',
+  }
 );

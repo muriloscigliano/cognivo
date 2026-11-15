@@ -20,7 +20,7 @@ export interface CgCheckboxProps {
   className?: string;
 }
 
-export const CgCheckbox = createWrapper<CgCheckboxProps>(
+export const CgCheckbox = createWrapper<CgCheckboxProps, 'cg-checkbox'>(
   'cg-checkbox',
   ['label', 'description', 'name', 'value', 'checked', 'indeterminate', 'disabled'],
   { onChange: 'cg-change' }

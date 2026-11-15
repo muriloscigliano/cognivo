@@ -1,2 +1,6 @@
 import { createWrapper } from '../create-wrapper.js';
-export const AiKpiGrid = createWrapper('ai-kpi-grid', ['title', 'kpis', 'columns', 'loading'], {});
+export const AiKpiGrid = createWrapper('ai-kpi-grid', ['title', 'kpis', 'columns', 'loading'],
+  {
+    onKpiClick: 'ai-kpi-click',
+  }
+);

@@ -24,7 +24,7 @@ export interface CgTextareaProps {
   className?: string;
 }
 
-export const CgTextarea = createWrapper<CgTextareaProps>(
+export const CgTextarea = createWrapper<CgTextareaProps, 'cg-textarea'>(
   'cg-textarea',
   ['value', 'placeholder', 'name', 'rows', 'maxlength', 'disabled', 'readonly', 'error', 'autoresize'],
   { onInput: 'cg-input' }

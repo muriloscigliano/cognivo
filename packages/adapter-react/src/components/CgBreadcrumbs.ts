@@ -1,2 +1,6 @@
 import { createWrapper } from '../create-wrapper.js';
-export const CgBreadcrumbs = createWrapper('cg-breadcrumbs', ['items', 'separator'], {});
+export const CgBreadcrumbs = createWrapper('cg-breadcrumbs', ['items', 'separator'],
+  {
+    onBreadcrumbClick: 'cg-breadcrumb-click',
+  }
+);

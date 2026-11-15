@@ -2,11 +2,11 @@ import { createWrapper } from '../create-wrapper.js';
 
 export interface CgButtonProps {
   /** Button visual variant. */
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline';
+  variant?: 'primary' | 'secondary' | 'tertiary';
   /** Button size. */
   size?: 'sm' | 'md' | 'lg';
-  /** HTML button type. */
-  type?: 'button' | 'submit' | 'reset';
+  /** `submit` / `reset` act on the owning form; `danger` is a visual intent. */
+  type?: 'normal' | 'danger' | 'button' | 'submit' | 'reset';
   /** Whether the button is disabled. */
   disabled?: boolean;
   /** Whether to show a loading spinner. */
@@ -20,7 +20,7 @@ export interface CgButtonProps {
   className?: string;
 }
 
-export const CgButton = createWrapper<CgButtonProps>(
+export const CgButton = createWrapper<CgButtonProps, 'cg-button'>(
   'cg-button',
   ['variant', 'size', 'type', 'disabled', 'loading', 'full', 'label'],
   {}

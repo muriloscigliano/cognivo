@@ -18,7 +18,7 @@ export interface CgAvatarProps {
   className?: string;
 }
 
-export const CgAvatar = createWrapper<CgAvatarProps>(
+export const CgAvatar = createWrapper<CgAvatarProps, 'cg-avatar'>(
   'cg-avatar',
   ['src', 'alt', 'name', 'size', 'shape', 'status', 'fallbackIcon'],
   { fallbackIcon: 'fallback-icon' }

@@ -16,7 +16,7 @@ export interface CgSidebarProps {
   className?: string;
 }
 
-export const CgSidebar = createWrapper<CgSidebarProps>(
+export const CgSidebar = createWrapper<CgSidebarProps, 'cg-sidebar'>(
   'cg-sidebar',
   ['collapsed', 'collapsible', 'side', 'sticky', 'width'],
   { onCgSidebarToggle: 'cg-sidebar-toggle' }

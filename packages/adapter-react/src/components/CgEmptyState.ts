@@ -12,7 +12,7 @@ export interface CgEmptyStateProps {
   className?: string;
 }
 
-export const CgEmptyState = createWrapper<CgEmptyStateProps>(
+export const CgEmptyState = createWrapper<CgEmptyStateProps, 'cg-empty-state'>(
   'cg-empty-state',
   ['variant', 'title', 'description', 'icon'],
   {}

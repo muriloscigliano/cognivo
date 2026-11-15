@@ -18,7 +18,7 @@ export interface CgSectionProps {
   className?: string;
 }
 
-export const CgSection = createWrapper<CgSectionProps>(
+export const CgSection = createWrapper<CgSectionProps, 'cg-section'>(
   'cg-section',
   ['title', 'description', 'foldable', 'open', 'bordered', 'count'],
   { onToggle: 'cg-section-toggle' }

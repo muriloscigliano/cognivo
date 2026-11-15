@@ -22,7 +22,7 @@ export interface CgFollowUpProps {
   className?: string;
 }
 
-export const CgFollowUp = createWrapper<CgFollowUpProps>(
+export const CgFollowUp = createWrapper<CgFollowUpProps, 'cg-follow-up'>(
   'cg-follow-up',
   ['items', 'label', 'disabled', 'loading', 'hideLabel'],
   { onFollowUpClick: 'cg-follow-up-click' }

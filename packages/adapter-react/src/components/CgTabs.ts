@@ -19,7 +19,7 @@ export interface CgTabsProps {
   className?: string;
 }
 
-export const CgTabs = createWrapper<CgTabsProps>(
+export const CgTabs = createWrapper<CgTabsProps, 'cg-tabs'>(
   'cg-tabs',
   ['tabs', 'value', 'variant'],
   { onTabChange: 'cg-tab-change' }

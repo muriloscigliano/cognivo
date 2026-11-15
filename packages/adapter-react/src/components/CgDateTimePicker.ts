@@ -16,7 +16,7 @@ export interface CgDateTimePickerProps {
   className?: string;
 }
 
-export const CgDateTimePicker = createWrapper<CgDateTimePickerProps>(
+export const CgDateTimePicker = createWrapper<CgDateTimePickerProps, 'cg-date-time-picker'>(
   'cg-date-time-picker',
   ['label', 'value', 'placeholder', 'helper', 'min', 'max', 'size', 'rounded', 'disabled', 'error'],
   { onChange: 'cg-change' }

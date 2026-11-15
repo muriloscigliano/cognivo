@@ -10,7 +10,7 @@ export interface AiConfidenceBadgeProps {
   className?: string;
 }
 
-export const AiConfidenceBadge = createWrapper<AiConfidenceBadgeProps>(
+export const AiConfidenceBadge = createWrapper<AiConfidenceBadgeProps, 'ai-confidence-badge'>(
   'ai-confidence-badge',
   ['score', 'showPercentage'],
   { onBadgeClick: 'ai-confidence-badge-click' }

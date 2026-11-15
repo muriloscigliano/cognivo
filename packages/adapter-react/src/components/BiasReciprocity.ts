@@ -10,7 +10,7 @@ export interface BiasReciprocityProps {
   className?: string;
 }
 
-export const BiasReciprocity = createWrapper<BiasReciprocityProps>(
+export const BiasReciprocity = createWrapper<BiasReciprocityProps, 'bias-reciprocity'>(
   'bias-reciprocity',
   ['gift', 'icon', 'prominence'],
   {}

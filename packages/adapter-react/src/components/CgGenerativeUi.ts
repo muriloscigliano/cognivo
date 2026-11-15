@@ -15,7 +15,7 @@ export interface CgGenerativeUiProps {
   className?: string;
 }
 
-export const CgGenerativeUi = createWrapper<CgGenerativeUiProps>(
+export const CgGenerativeUi = createWrapper<CgGenerativeUiProps, 'cg-generative-ui'>(
   'cg-generative-ui',
   ['response', 'library', 'isStreaming'],
   {

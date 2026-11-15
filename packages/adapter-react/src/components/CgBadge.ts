@@ -12,7 +12,7 @@ export interface CgBadgeProps {
   className?: string;
 }
 
-export const CgBadge = createWrapper<CgBadgeProps>(
+export const CgBadge = createWrapper<CgBadgeProps, 'cg-badge'>(
   'cg-badge',
   ['variant', 'size', 'label', 'dot'],
   {}

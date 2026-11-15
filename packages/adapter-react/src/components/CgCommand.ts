@@ -1,2 +1,9 @@
 import { createWrapper } from '../create-wrapper.js';
-export const CgCommand = createWrapper('cg-command', ['open', 'placeholder', 'commands', 'value', 'emptyText', 'loading'], {});
+export const CgCommand = createWrapper('cg-command', ['open', 'placeholder', 'commands', 'value', 'emptyText', 'loading'],
+  {
+    onOpen: 'cg-command-open',
+    onClose: 'cg-command-close',
+    onInput: 'cg-command-input',
+    onSelect: 'cg-command-select',
+  }
+);

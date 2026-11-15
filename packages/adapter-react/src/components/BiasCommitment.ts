@@ -14,7 +14,7 @@ export interface BiasCommitmentProps {
   className?: string;
 }
 
-export const BiasCommitment = createWrapper<BiasCommitmentProps>(
+export const BiasCommitment = createWrapper<BiasCommitmentProps, 'bias-commitment'>(
   'bias-commitment',
   ['step', 'total', 'showProgress'],
   {

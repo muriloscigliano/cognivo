@@ -12,7 +12,7 @@ export interface CgButtonGroupProps {
   className?: string;
 }
 
-export const CgButtonGroup = createWrapper<CgButtonGroupProps>(
+export const CgButtonGroup = createWrapper<CgButtonGroupProps, 'cg-button-group'>(
   'cg-button-group',
   ['direction', 'gap', 'align', 'attached'],
   {}

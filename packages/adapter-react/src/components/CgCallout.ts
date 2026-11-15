@@ -14,7 +14,7 @@ export interface CgCalloutProps {
   className?: string;
 }
 
-export const CgCallout = createWrapper<CgCalloutProps>(
+export const CgCallout = createWrapper<CgCalloutProps, 'cg-callout'>(
   'cg-callout',
   ['variant', 'title', 'description', 'dismissible'],
   { onDismiss: 'cg-callout-dismiss' }

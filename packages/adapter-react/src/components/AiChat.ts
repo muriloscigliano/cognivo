@@ -12,14 +12,26 @@ export interface AiChatProps {
   /** Fired when the AI encounters an error. Detail: { error, timestamp }. */
   onError?: (e: CustomEvent<{ error: string; timestamp: number }>) => void;
   className?: string;
+  /** Fired as `ai-chat-stop`. */
+  onStop?: (e: CustomEvent) => void;
+  /** Fired as `ai-chat-copy`. */
+  onCopy?: (e: CustomEvent) => void;
+  /** Fired as `ai-chat-regenerate`. */
+  onRegenerate?: (e: CustomEvent) => void;
+  /** Fired as `ai-chat-rate`. */
+  onRate?: (e: CustomEvent) => void;
 }
 
-export const AiChat = createWrapper<AiChatProps>(
+export const AiChat = createWrapper<AiChatProps, 'ai-chat'>(
   'ai-chat',
   ['aiClient', 'dataset'],
   {
     onMessageSent: 'ai-message-sent',
     onResponseReceived: 'ai-response-received',
     onError: 'ai-error',
+    onStop: 'ai-chat-stop',
+    onCopy: 'ai-chat-copy',
+    onRegenerate: 'ai-chat-regenerate',
+    onRate: 'ai-chat-rate',
   }
 );

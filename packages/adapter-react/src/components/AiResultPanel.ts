@@ -12,10 +12,17 @@ export interface AiResultPanelProps {
   /** Confidence score between 0 and 1. */
   confidence?: number;
   className?: string;
+  /** Fired as `ai-result-export`. */
+  onResultExport?: (e: CustomEvent) => void;
+  /** Fired as `ai-result-copy`. */
+  onResultCopy?: (e: CustomEvent) => void;
 }
 
-export const AiResultPanel = createWrapper<AiResultPanelProps>(
+export const AiResultPanel = createWrapper<AiResultPanelProps, 'ai-result-panel'>(
   'ai-result-panel',
   ['title', 'explanation', 'bullets', 'drivers', 'confidence'],
-  {}
+  {
+    onResultExport: 'ai-result-export',
+    onResultCopy: 'ai-result-copy',
+  }
 );

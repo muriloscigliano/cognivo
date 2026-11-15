@@ -48,7 +48,7 @@ export interface CgPhoneInputProps {
   className?: string;
 }
 
-export const CgPhoneInput = createWrapper<CgPhoneInputProps>(
+export const CgPhoneInput = createWrapper<CgPhoneInputProps, 'cg-phone-input'>(
   'cg-phone-input',
   [
     'value',

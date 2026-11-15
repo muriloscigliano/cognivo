@@ -1,2 +1,7 @@
 import { createWrapper } from '../create-wrapper.js';
-export const AiAgentCard = createWrapper('ai-agent-card', ['name', 'agentRole', 'status', 'task', 'handoffChain', 'capabilities', 'avatar'], {});
+export const AiAgentCard = createWrapper('ai-agent-card', ['name', 'agentRole', 'status', 'task', 'handoffChain', 'capabilities', 'avatar'],
+  {
+    onAgentPause: 'ai-agent-pause',
+    onAgentCancel: 'ai-agent-cancel',
+  }
+);

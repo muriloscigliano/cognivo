@@ -12,10 +12,21 @@ export interface AiInsightCardProps {
   /** Fired when the card is clicked. Detail: { type, text, confidence }. */
   onInsightClick?: (e: CustomEvent<{ type: string; text: string; confidence: number }>) => void;
   className?: string;
+  /** Fired as `ai-insight-expand`. */
+  onInsightExpand?: (e: CustomEvent) => void;
+  /** Fired as `ai-insight-dismiss`. */
+  onInsightDismiss?: (e: CustomEvent) => void;
+  /** Fired as `ai-insight-bookmark`. */
+  onInsightBookmark?: (e: CustomEvent) => void;
 }
 
-export const AiInsightCard = createWrapper<AiInsightCardProps>(
+export const AiInsightCard = createWrapper<AiInsightCardProps, 'ai-insight-card'>(
   'ai-insight-card',
   ['type', 'text', 'confidence', 'timestamp'],
-  { onInsightClick: 'ai-insight-click' }
+  {
+    onInsightClick: 'ai-insight-click',
+    onInsightExpand: 'ai-insight-expand',
+    onInsightDismiss: 'ai-insight-dismiss',
+    onInsightBookmark: 'ai-insight-bookmark',
+  }
 );

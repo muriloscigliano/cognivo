@@ -1,2 +1,7 @@
 import { createWrapper } from '../create-wrapper.js';
-export const AiDetectionCanvas = createWrapper('ai-detection-canvas', ['rounded', 'src', 'detections', 'showLabels', 'showConfidence', 'selectedId', 'interactive'], {});
+export const AiDetectionCanvas = createWrapper('ai-detection-canvas', ['rounded', 'src', 'detections', 'showLabels', 'showConfidence', 'selectedId', 'interactive'],
+  {
+    onDetectionSelect: 'ai-detection-select',
+    onDetectionHover: 'ai-detection-hover',
+  }
+);

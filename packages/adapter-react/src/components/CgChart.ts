@@ -28,7 +28,7 @@ export interface CgChartProps {
   className?: string;
 }
 
-export const CgChart = createWrapper<CgChartProps>(
+export const CgChart = createWrapper<CgChartProps, 'cg-chart'>(
   'cg-chart',
   ['data', 'type', 'title', 'subtitle', 'height', 'showLegend', 'showValues', 'showGrid', 'emptyText'],
   {}

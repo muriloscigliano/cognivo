@@ -16,7 +16,7 @@ export interface CgLabelProps {
   className?: string;
 }
 
-export const CgLabel = createWrapper<CgLabelProps>(
+export const CgLabel = createWrapper<CgLabelProps, 'cg-label'>(
   'cg-label',
   ['text', 'hint', 'error', 'htmlFor', 'required', 'disabled'],
   {}

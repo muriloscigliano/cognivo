@@ -10,10 +10,14 @@ export interface CgMetricCardProps {
   /** Trend direction. */
   trend?: 'up' | 'down' | 'flat';
   className?: string;
+  /** Fired as `cg-metric-click`. */
+  onMetricClick?: (e: CustomEvent) => void;
 }
 
-export const CgMetricCard = createWrapper<CgMetricCardProps>(
+export const CgMetricCard = createWrapper<CgMetricCardProps, 'cg-metric-card'>(
   'cg-metric-card',
   ['title', 'value', 'delta', 'trend'],
-  {}
+  {
+    onMetricClick: 'cg-metric-click',
+  }
 );

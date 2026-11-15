@@ -5,10 +5,14 @@ export interface AiCitationProps {
   mode?: 'inline' | 'list';
   maxVisible?: number;
   className?: string;
+  /** Fired as `ai-citation-click`. */
+  onClick?: (e: CustomEvent) => void;
 }
 
-export const AiCitation = createWrapper<AiCitationProps>(
+export const AiCitation = createWrapper<AiCitationProps, 'ai-citation'>(
   'ai-citation',
   ['sources', 'mode', 'maxVisible'],
-  {}
+  {
+    onClick: 'ai-citation-click',
+  }
 );

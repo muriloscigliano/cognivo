@@ -6,10 +6,14 @@ export interface CgCarouselProps {
   /** Whether to show previous/next arrows. */
   showArrows?: boolean;
   className?: string;
+  /** Fired as `cg-slide-click`. */
+  onSlideClick?: (e: CustomEvent) => void;
 }
 
-export const CgCarousel = createWrapper<CgCarouselProps>(
+export const CgCarousel = createWrapper<CgCarouselProps, 'cg-carousel'>(
   'cg-carousel',
   ['showDots', 'showArrows'],
-  {}
+  {
+    onSlideClick: 'cg-slide-click',
+  }
 );

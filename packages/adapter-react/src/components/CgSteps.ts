@@ -20,7 +20,7 @@ export interface CgStepsProps {
   className?: string;
 }
 
-export const CgSteps = createWrapper<CgStepsProps>(
+export const CgSteps = createWrapper<CgStepsProps, 'cg-steps'>(
   'cg-steps',
   ['items', 'direction', 'clickable', 'compact'],
   { onStepClick: 'cg-step-click' }

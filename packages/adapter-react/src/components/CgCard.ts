@@ -12,7 +12,7 @@ export interface CgCardProps {
   className?: string;
 }
 
-export const CgCard = createWrapper<CgCardProps>(
+export const CgCard = createWrapper<CgCardProps, 'cg-card'>(
   'cg-card',
   ['variant', 'padding', 'clickable'],
   { onCardClick: 'cg-card-click' }

@@ -1,2 +1,6 @@
 import { createWrapper } from '../create-wrapper.js';
-export const AiReasoningTree = createWrapper('ai-reasoning-tree', ['nodes', 'highlightPath'], {});
+export const AiReasoningTree = createWrapper('ai-reasoning-tree', ['nodes', 'highlightPath'],
+  {
+    onReasoningNodeClick: 'ai-reasoning-node-click',
+  }
+);

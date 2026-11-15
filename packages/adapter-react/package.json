@@ -31,7 +31,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "vite build && tsc --emitDeclarationOnly",
+    "build": "vite build && tsc --emitDeclarationOnly --composite false --incremental false",
     "prepublishOnly": "node ../../scripts/guard-pnpm-publish.mjs && pnpm build",
     "dev": "vite build --watch",
     "test": "vitest run",
@@ -41,7 +41,13 @@
   },
   "peerDependencies": {
     "react": ">=18.0.0",
-    "@cognivo/components": "workspace:^"
+    "@cognivo/components": "workspace:^",
+    "@cognivo/gen-ui": "workspace:^"
+  },
+  "peerDependenciesMeta": {
+    "@cognivo/gen-ui": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "react": "^18.3.0",
