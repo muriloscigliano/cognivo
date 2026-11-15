@@ -68,6 +68,13 @@ export class CgModal extends LitElement {
       pointer-events: auto;
     }
 
+    /* Closed (and not animating out): out of the tab order and the
+       accessibility tree, slotted light-DOM fields included — inert covers
+       the flat tree, visibility hides it from AT and pointer alike. */
+    .modal-container[inert] {
+      visibility: hidden;
+    }
+
     .modal {
       position: relative;
       isolation: isolate;
@@ -379,7 +386,11 @@ export class CgModal extends LitElement {
         class="backdrop ${this._closing ? 'closing' : ''}"
         aria-hidden="true"
       ></div>
-      <div class="modal-container" @click="${this._handleContainerClick}">
+      <div
+        class="modal-container"
+        ?inert=${!this.open && !this._closing}
+        @click="${this._handleContainerClick}"
+      >
         <div
           class="modal ${this._closing ? 'closing' : ''}"
           role="dialog"

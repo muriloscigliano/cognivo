@@ -43,9 +43,37 @@ export function getFocusableElements(root: HTMLElement | ShadowRoot): HTMLElemen
 
   return out.filter(el => {
     if (el.closest('[hidden]')) return false;
+    // Prefer checkVisibility(): offsetParent is retargeted across shadow
+    // boundaries and reads null for every slotted host inside a fixed shadow
+    // container (cg-modal), which silently emptied the trap.
+    if (typeof el.checkVisibility === 'function') return el.checkVisibility({ visibilityProperty: true });
     if (el.offsetParent === null && el.tagName !== 'INPUT' && getComputedStyle(el).position !== 'fixed') return false;
     return true;
   });
+}
+
+/**
+ * Focus a trap entry. A custom-element host (e.g. a slotted cg-input) is
+ * usually not focusable itself — calling .focus() on it is a no-op — so
+ * fall through to the first focusable control in its shadow tree.
+ */
+export function focusEntry(el: HTMLElement): void {
+  el.focus();
+  if (!el.shadowRoot || deepContains(el, getDeepActiveElement())) return;
+  const inner = getFocusableElements(el.shadowRoot);
+  if (inner.length > 0) focusEntry(inner[0]!);
+}
+
+/** Focus the last control of an entry (Shift+Tab wrapping into a host). */
+function focusEntryLast(el: HTMLElement): void {
+  if (el.shadowRoot && !el.matches(FOCUSABLE_SELECTOR)) {
+    const inner = getFocusableElements(el.shadowRoot);
+    if (inner.length > 0) {
+      focusEntryLast(inner[inner.length - 1]!);
+      return;
+    }
+  }
+  el.focus();
 }
 
 /**
@@ -105,7 +133,9 @@ export class FocusTrap {
 
     this._root = root;
     this._options = { returnFocus: true, handleEscape: true, ...options };
-    this._previousFocus = document.activeElement as HTMLElement | null;
+    // The DEEP active element: document.activeElement stops at the outermost
+    // shadow host, and re-focusing a non-focusable host (a cg-button) is a no-op.
+    this._previousFocus = getDeepActiveElement();
     this._active = true;
 
     root.addEventListener('keydown', this._handleKeydown);
@@ -115,10 +145,10 @@ export class FocusTrap {
       if (!this._active || !this._root) return;
       const initial = this._options.initialFocus;
       if (initial) {
-        initial.focus();
+        focusEntry(initial);
       } else {
         const focusable = getFocusableElements(this._root);
-        if (focusable.length > 0) focusable[0]!.focus();
+        if (focusable.length > 0) focusEntry(focusable[0]!);
       }
     });
   }
@@ -168,12 +198,12 @@ export class FocusTrap {
     if (e.shiftKey) {
       if (active === null || active === first) {
         e.preventDefault();
-        last.focus();
+        focusEntryLast(last);
       }
     } else {
       if (active === null || active === last) {
         e.preventDefault();
-        first.focus();
+        focusEntry(first);
       }
     }
   };
