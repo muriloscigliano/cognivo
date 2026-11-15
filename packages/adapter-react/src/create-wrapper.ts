@@ -30,13 +30,15 @@ type TagProps<Tag extends string> = Tag extends keyof HTMLElementTagNameMap
 type EventProps<Events> = { [K in keyof Events]?: (e: CustomEvent) => void };
 
 /**
- * Props of a wrapper: hand-written `Props` (event detail types, docs) win,
- * then the element's own properties, the mapped events, and finally React's
- * standard HTML attributes (children, id, style, aria-*, …).
+ * Props of a wrapper: the element's own properties are the truth for data
+ * props (a hand-written interface can drift — CgTableProps once typed `rows`
+ * as objects while the element takes arrays of cells); hand-written `Props`
+ * add what the class cannot express (event detail types, className); then the
+ * mapped events and React's HTML attributes (children, id, style, aria-*, …).
  */
-export type WrapperProps<Props, Tag extends string, Events> = Props &
-  Omit<TagProps<Tag>, keyof Props> &
-  Omit<EventProps<Events>, keyof Props> &
+export type WrapperProps<Props, Tag extends string, Events> = TagProps<Tag> &
+  Omit<Props, keyof TagProps<Tag>> &
+  Omit<EventProps<Events>, keyof Props | keyof TagProps<Tag>> &
   Omit<HTMLAttributes<HTMLElement>, keyof Props | keyof TagProps<Tag> | keyof Events>;
 
 export type CognivoWrapper<Props, Tag extends string = string, Events = object> = ForwardRefExoticComponent<
