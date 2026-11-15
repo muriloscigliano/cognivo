@@ -206,7 +206,7 @@ export class CgCheckbox extends LitElement {
    *  forwarded to the internal control, which carries the role). */
   @property({ attribute: 'aria-label' }) override ariaLabel: string | null = null;
   @property() description = '';
-  @property() name = '';
+  @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property() value = '';
   @property({ type: Boolean }) checked = false;
   @property({ type: Boolean }) indeterminate = false;

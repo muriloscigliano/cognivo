@@ -178,7 +178,7 @@ export class CgSelect extends LitElement {
   @property() value = '';
   @property() label = '';
   @property() placeholder = 'Select...';
-  @property() name = '';
+  @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property({ type: Boolean }) disabled = false;
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;

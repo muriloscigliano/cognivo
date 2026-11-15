@@ -308,7 +308,7 @@ export class CgInput extends LitElement {
   @property({ reflect: true }) label = '';
   @property() value = '';
   @property() placeholder = '';
-  @property() name = '';
+  @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property() helper = '';
   @property({ reflect: true }) type: 'text' | 'email' | 'password' | 'number' | 'url' | 'search' | 'tel' = 'text';
   @property({ reflect: true }) size: 'md' | 'lg' = 'md';

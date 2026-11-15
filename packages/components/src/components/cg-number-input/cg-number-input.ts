@@ -144,7 +144,7 @@ export class CgNumberInput extends LitElement {
   @property({ type: Boolean, reflect: true }) loading = false;
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
-  @property() name = '';
+  @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property({ type: Boolean }) required = false;
 
   override updated(changed: PropertyValues) {

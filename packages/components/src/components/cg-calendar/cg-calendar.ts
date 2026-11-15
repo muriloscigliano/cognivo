@@ -169,7 +169,7 @@ export class CgCalendar extends LitElement {
   @property() min = '';
   @property() max = '';
   @property({ type: Number, attribute: 'week-starts-on' }) weekStartsOn: 0 | 1 = 0;
-  @property() name = '';
+  @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
 
   @state() private _displayYear = new Date().getFullYear();
   @state() private _displayMonth = new Date().getMonth();

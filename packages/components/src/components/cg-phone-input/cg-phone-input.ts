@@ -390,7 +390,7 @@ export class CgPhoneInput extends LitElement {
   @property() value = '';
   @property({ reflect: true }) country = 'US';
   @property({ attribute: 'default-country' }) defaultCountry = 'US';
-  @property() name = '';
+  @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property() label = '';
   @property() placeholder = '';
   @property() helper = '';

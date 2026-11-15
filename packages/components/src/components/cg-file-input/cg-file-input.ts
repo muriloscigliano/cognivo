@@ -364,7 +364,7 @@ export class CgFileInput extends LitElement {
   @property() placeholder = 'Drop files here or click to browse';
   @property() helper = '';
   @property() accept = '';
-  @property() name = '';
+  @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property({ type: Boolean }) multiple = false;
   @property({ type: Number, attribute: 'max-size' }) maxSize = 0;
   @property({ type: Number, attribute: 'max-files' }) maxFiles = 0;

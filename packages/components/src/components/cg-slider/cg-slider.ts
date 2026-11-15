@@ -237,7 +237,7 @@ export class CgSlider extends LitElement {
   @property({ reflect: true }) variant: 'default' | 'simple' | 'toggle' = 'default';
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property() label = '';
-  @property() name = '';
+  @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property({ type: Number }) value = 50;
   @property({ type: Number }) min = 0;
   @property({ type: Number }) max = 100;

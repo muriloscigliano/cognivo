@@ -198,7 +198,7 @@ export class CgTagInput extends LitElement {
   @property() label = '';
   @property() placeholder = '';
   @property() helper = '';
-  @property() name = '';
+  @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property() delimiter = ',';
   @property({ type: Number }) max = 0;
   @property({ type: Boolean, attribute: 'allow-duplicates' }) allowDuplicates = false;

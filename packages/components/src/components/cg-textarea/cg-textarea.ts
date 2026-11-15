@@ -208,7 +208,7 @@ export class CgTextarea extends LitElement {
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property() value = '';
   @property() placeholder = '';
-  @property() name = '';
+  @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property({ type: Number }) rows = 3;
   @property({ type: Number }) maxlength = 0;
   @property({ type: Boolean, reflect: true }) disabled = false;

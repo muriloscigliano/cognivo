@@ -207,7 +207,7 @@ export class CgCombobox extends LitElement {
   @property({ type: Boolean }) clearable = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
   @property({ type: Boolean }) loading = false;
-  @property() name = '';
+  @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;

@@ -95,7 +95,7 @@ export class CgRating extends LitElement {
   @property({ type: Boolean, reflect: true }) readonly = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
-  @property() name = '';
+  @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
 
   @state() private _hoverValue = 0;
 

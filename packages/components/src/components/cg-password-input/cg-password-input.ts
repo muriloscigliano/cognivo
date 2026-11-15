@@ -165,7 +165,7 @@ export class CgPasswordInput extends LitElement {
   @property() label = '';
   @property() placeholder = '';
   @property() helper = '';
-  @property() name = '';
+  @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property({ type: Boolean, reflect: true }) required = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
   @property({ type: Boolean, reflect: true }) error = false;
