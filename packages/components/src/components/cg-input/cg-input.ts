@@ -20,7 +20,7 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
  * @fires {CustomEvent} cg-clear - When the clear button is clicked
  *
  * @cssprop [--cg-color-input-border-default=#3f3f46] - Default border color
- * @cssprop [--cg-brand-ai-accent=#dfff61] - Focus ring and floating label color
+ * @cssprop --cg-color-focus-ring - Focus ring color (offset band: --cg-color-focus-ring-offset)
  * @cssprop [--cg-component-input-height-md=44px] - Input height (md size)
  * @cssprop [--cg-color-input-background-default=#18181b] - Input background
  */
@@ -89,10 +89,14 @@ export class CgInput extends LitElement {
       to { transform: rotate(360deg); }
     }
 
-    /* Focus — border change + subtle glow */
+    /* Focus — border change + the themed dual focus ring. (The old 15%-alpha
+       accent glow was invisible on light pages; the ring tokens are defined
+       and contrast-gated in BOTH themes.) */
     .wrapper.focused {
       border-color: var(--cg-color-input-border-focus);
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow:
+        0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring-offset),
+        0 0 0 calc(var(--cg-border-width-100) * 2) var(--cg-color-focus-ring);
     }
 
     /* Error */

@@ -169,7 +169,26 @@ const PAIRS = [
   { label: 'on-secondary', fg: 'color-on-secondary-default', bg: 'color-action-secondary-background-default' },
   { label: 'on-surface-base', fg: 'color-on-surface-base-default', bg: 'color-surface-base-background' },
   { label: 'on-surface-cards', fg: 'color-on-surface-cards-default', bg: 'color-surface-cards-background' },
+
+  // form fields — the resting floating label / placeholder sits on the input
+  // background and is the only visible name of an empty field (text: 4.5:1)
+  { label: 'input-label-resting', fg: 'color-input-text-placeholder', bg: 'color-input-background-default' },
+
+  // focus indicators (WCAG 2.2 SC 1.4.11 / 2.4.11: non-text contrast 3:1).
+  // The ring must exist in BOTH themes and be visible against the page, the
+  // field it surrounds, and its own offset band.
+  { label: 'focus-ring-on-page', fg: 'color-focus-ring', bg: 'color-surface-base-background', min: 3 },
+  { label: 'focus-ring-on-field', fg: 'color-focus-ring', bg: 'color-input-background-default', min: 3 },
+  { label: 'focus-ring-on-offset', fg: 'color-focus-ring', bg: 'color-focus-ring-offset', min: 3 },
 ]
+
+// Pairs whose tokens MUST resolve in both themes (unresolved = failure).
+const REQUIRED = new Set([
+  'input-label-resting',
+  'focus-ring-on-page',
+  'focus-ring-on-field',
+  'focus-ring-on-offset',
+])
 
 const MIN_AA = 4.5
 const MIN_AA_LARGE = 3.0 // we still warn, but the hard gate is 4.5
@@ -201,7 +220,8 @@ function evaluate(decls, themeLabel) {
     const bgFlat = flatten(bg, backdrop)
     const fgFlat = flatten(fg, bgFlat)
     const ratio = contrastRatio(fgFlat, bgFlat)
-    const status = ratio >= MIN_AA ? 'PASS' : ratio >= MIN_AA_LARGE ? 'AA-LARGE' : 'FAIL'
+    const min = pair.min ?? MIN_AA
+    const status = ratio >= min ? 'PASS' : ratio >= MIN_AA_LARGE ? 'AA-LARGE' : 'FAIL'
     rows.push({
       label: pair.label,
       theme: themeLabel,
@@ -232,7 +252,12 @@ function main() {
 
   for (const row of rows) {
     if (row.status === 'UNRESOLVED') unresolved++
+    // A required pair whose tokens are missing in a theme is a failure, not a
+    // warning: an undefined focus-ring token renders no ring at all.
+    if (row.status === 'UNRESOLVED' && REQUIRED.has(row.label)) failures++
     if (row.status === 'FAIL') failures++
+    // Required pairs are hard gates at their own minimum (AA-LARGE is not a pass).
+    else if (row.status === 'AA-LARGE' && REQUIRED.has(row.label)) failures++
     if (typeof row.ratio === 'number' && row.ratio < lowest.ratio) {
       lowest = { ...row }
     }

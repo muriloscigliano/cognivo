@@ -220,3 +220,18 @@ describe('cg-input', () => {
     expect(input.readOnly).toBe(true);
   });
 });
+
+describe('cg-input focus indicator (light theme)', () => {
+  // The old ring was a 15%-alpha lime glow (--cg-overlay-accent-strong):
+  // invisible on a white page. The focused field must draw the themed ring.
+  const cssText = (CgInput.styles as unknown as Array<{ cssText: string }>)
+    .map((s) => s.cssText)
+    .join('\n');
+
+  it('the focused wrapper paints --cg-color-focus-ring with its offset band', () => {
+    const rule = cssText.match(/\.wrapper\.focused\s*\{[^}]*\}/)?.[0] ?? '';
+    expect(rule).toContain('var(--cg-color-focus-ring)');
+    expect(rule).toContain('var(--cg-color-focus-ring-offset)');
+    expect(rule).not.toContain('--cg-overlay-accent-strong');
+  });
+});

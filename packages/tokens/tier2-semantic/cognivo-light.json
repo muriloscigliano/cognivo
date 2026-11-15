@@ -3,8 +3,8 @@
     "focus": {
       "ring": {
         "$type": "color",
-        "$value": "{green.600}",
-        "$description": "Focus ring color for all interactive elements (light theme — brand lime is invisible on white, so the accessible green is used)"
+        "$value": "{green.700}",
+        "$description": "Focus ring color for all interactive elements (light theme — brand lime is invisible on white, so an accessible green is used; green.700 keeps >= 3:1 on gray.100 pages, green.600 measured 3.00:1)"
       },
       "ring-offset": {
         "$type": "color",
