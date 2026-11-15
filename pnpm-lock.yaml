@@ -68,12 +68,6 @@ importers:
       '@cognivo/components':
         specifier: workspace:*
         version: link:../packages/components
-      '@cognivo/compose':
-        specifier: workspace:*
-        version: link:../packages/compose
-      '@cognivo/compose-lit':
-        specifier: workspace:*
-        version: link:../packages/compose-lit
       '@cognivo/design-advisor':
         specifier: workspace:*
         version: link:../packages/design-advisor
@@ -251,6 +245,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^2.1.0
         version: 2.1.9(vitest@2.1.9(@types/node@22.19.1)(happy-dom@16.8.1)(jsdom@25.0.1)(lightningcss@1.32.0))
+      esbuild:
+        specifier: ^0.25.12
+        version: 0.25.12
       happy-dom:
         specifier: ^16.3.0
         version: 16.8.1

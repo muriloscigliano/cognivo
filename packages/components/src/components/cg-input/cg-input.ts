@@ -361,6 +361,17 @@ export class CgInput extends LitElement {
     this.dispatchEvent(new CustomEvent('cg-input', { detail: { value: this.value }, bubbles: true, composed: true }));
   }
 
+  /** Implicit submission: Enter in the field submits the owning form, as it
+   *  does for a native <input> (the real input lives in our shadow root, so
+   *  the browser cannot do this for us). */
+  private _handleKeydown(e: KeyboardEvent) {
+    if (e.key !== 'Enter' || e.isComposing) return;
+    const form = this._internals?.form;
+    if (!form) return;
+    e.preventDefault();
+    HTMLFormElement.prototype.requestSubmit.call(form);
+  }
+
   private _handleFocus() { this._focused = true; }
   private _handleBlur() { this._focused = false; }
 
@@ -405,6 +416,7 @@ export class CgInput extends LitElement {
             aria-label=${this.label || this.placeholder || nothing}
             aria-describedby=${this.helper ? 'helper' : nothing}
             @input=${this._handleInput}
+            @keydown=${this._handleKeydown}
             @focus=${this._handleFocus}
             @blur=${this._handleBlur}
           />

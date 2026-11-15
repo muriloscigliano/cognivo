@@ -12,7 +12,12 @@ import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
  * <cg-button variant="primary" size="md">Click me</cg-button>
  * <cg-button variant="secondary" loading>Saving...</cg-button>
  * <cg-button type="danger"><span slot="prefix">[trash icon]</span>Delete</cg-button>
+ * <form><cg-input name="email"></cg-input><cg-button type="submit">Send</cg-button></form>
  * ```
+ *
+ * Form behaviour: `type="submit"` calls `requestSubmit()` on the owning form
+ * (runs constraint validation and fires `submit`), `type="reset"` resets it.
+ * Any other type (default `normal`, `danger`, `button`) never submits.
  *
  * @slot - Default slot for button text/content
  * @slot prefix - Icon or content before the label
@@ -25,6 +30,18 @@ import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
  */
 @customElement('cg-button')
 export class CgButton extends LitElement {
+  /** Form-associated so `type="submit"` / `"reset"` find their owning form
+   *  (ElementInternals.form works across shadow boundaries). */
+  static formAssociated = true;
+  private _internals: ElementInternals | undefined;
+
+  constructor() {
+    super();
+    if (typeof this.attachInternals === 'function') {
+      this._internals = this.attachInternals();
+    }
+  }
+
   static override styles = [hostBase, reducedMotion, spinKeyframes, css`
     button {
       display: inline-flex;
@@ -213,17 +230,31 @@ export class CgButton extends LitElement {
   @property({ reflect: true }) variant: 'primary' | 'secondary' | 'tertiary' = 'primary';
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
-  @property({ reflect: true }) type: 'normal' | 'danger' = 'normal';
+  /** `danger` is a visual intent; `submit` / `reset` are form actions. */
+  @property({ reflect: true }) type: 'normal' | 'danger' | 'submit' | 'reset' | 'button' = 'normal';
   @property({ type: Boolean, reflect: true }) disabled = false;
   @property({ type: Boolean, reflect: true }) loading = false;
   @property({ type: Boolean, reflect: true }) full = false;
   @property({ reflect: true }) status: 'idle' | 'error' | 'success' = 'idle';
   @property() label = '';
 
+  private _handleClick() {
+    if (this.disabled || this.loading) return;
+    if (this.type !== 'submit' && this.type !== 'reset') return;
+    const form = this._internals?.form ?? this.closest('form');
+    if (!form) return;
+    // Call through the prototype: a control named/id'd "submit" or "reset"
+    // shadows form.requestSubmit / form.reset (named-property access).
+    if (this.type === 'submit') HTMLFormElement.prototype.requestSubmit.call(form);
+    else HTMLFormElement.prototype.reset.call(form);
+  }
+
   override render() {
     return html`
       <button
         part="button"
+        type="button"
+        @click=${this._handleClick}
         ?disabled=${this.disabled || this.loading}
         aria-busy=${this.loading ? 'true' : 'false'}
         aria-label=${this.label || nothing}
