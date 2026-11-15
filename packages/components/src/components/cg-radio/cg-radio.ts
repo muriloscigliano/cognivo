@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { setValueMissing, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
@@ -206,17 +207,25 @@ export class CgRadio extends LitElement {
   /** Roving tabindex slot managed by cg-radio-group; standalone radios stay tabbable. */
   @property({ type: Number }) groupTabIndex = 0;
 
+  /** Per-element validation texts (JSON in the `validation-messages` attribute
+   *  or a property). Falls back to `setValidationMessages()` then to the
+   *  browser's own localised message. */
+  @property({ type: Object, attribute: 'validation-messages' }) validationMessages: ValidationMessages | null = null;
+
+  /** Native-like constraint validation API (delegates to ElementInternals). */
+  get validity(): ValidityState | undefined { return this._internals?.validity; }
+  get validationMessage(): string { return this._internals?.validationMessage ?? ''; }
+  get willValidate(): boolean { return this._internals?.willValidate ?? false; }
+  checkValidity(): boolean { return this._internals?.checkValidity() ?? true; }
+  reportValidity(): boolean { return this._internals?.reportValidity() ?? true; }
+
   override updated(changed: PropertyValues) {
     super.updated(changed);
     if (changed.has('checked') || changed.has('value')) {
       this._internals?.setFormValue(this.checked ? this.value : null);
     }
     if (changed.has('required') || changed.has('checked')) {
-      if (this.required && !this.checked) {
-        this._internals?.setValidity({ valueMissing: true }, 'This field is required');
-      } else {
-        this._internals?.setValidity({});
-      }
+      setValueMissing(this._internals, this.required && !this.checked, this.validationMessages, 'radio');
     }
   }
 

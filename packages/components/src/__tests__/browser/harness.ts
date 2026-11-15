@@ -26,12 +26,19 @@ export const browserAvailable = (() => {
 
 const bundleCache = new Map<string, string>();
 
-/** Bundle `src/components/<tag>/<tag>.ts` for each tag (plus Lit) into one ES module string. */
-export async function bundleComponents(tags: string[]): Promise<string> {
-  const key = tags.join(',');
+/**
+ * Bundle `src/components/<tag>/<tag>.ts` for each tag (plus Lit) into one ES
+ * module string. `modules` (src-relative paths) are bundled too and their
+ * exports merged onto `window.__cg` for the test to call.
+ */
+export async function bundleComponents(tags: string[], modules: string[] = []): Promise<string> {
+  const key = [...tags, ...modules].join(',');
   const cached = bundleCache.get(key);
   if (cached) return cached;
-  const contents = tags.map((t) => `import './components/${t}/${t}.ts';`).join('\n');
+  const contents = [
+    ...tags.map((t) => `import './components/${t}/${t}.ts';`),
+    ...modules.map((m, i) => `import * as m${i} from './${m}'; window.__cg = Object.assign(window.__cg || {}, m${i});`),
+  ].join('\n');
   const out = await build({
     stdin: { contents, resolveDir: SRC, loader: 'ts' },
     bundle: true,
@@ -62,12 +69,12 @@ export async function closeBrowser(): Promise<void> {
  * Open a page with `tags` registered, then set `body` as the document body.
  * Resolves once every requested element is defined and has rendered.
  */
-export async function openPage(tags: string[], body: string): Promise<Page> {
+export async function openPage(tags: string[], body: string, modules: string[] = []): Promise<Page> {
   const b = await launch();
   // A dedicated context per page (axe-core's AxeBuilder requires one).
   const context = await b.newContext();
   const page = await context.newPage(); // contexts close with the browser
-  const code = await bundleComponents(tags);
+  const code = await bundleComponents(tags, modules);
   await page.setContent(`<!doctype html><html lang="en"><head><title>t</title></head><body></body></html>`);
   await page.addScriptTag({ type: 'module', content: code });
   await page.evaluate(async ({ tags, body }) => {

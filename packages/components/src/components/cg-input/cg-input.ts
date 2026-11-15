@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { mirrorValidity, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
@@ -329,18 +330,25 @@ export class CgInput extends LitElement {
 
   @query('input') private _input!: HTMLInputElement;
 
+  /** Per-element validation texts (JSON in the `validation-messages` attribute
+   *  or a property). Falls back to `setValidationMessages()` then to the
+   *  browser's own localised message. */
+  @property({ type: Object, attribute: 'validation-messages' }) validationMessages: ValidationMessages | null = null;
+
+  /** Native-like constraint validation API (delegates to ElementInternals). */
+  get validity(): ValidityState | undefined { return this._internals?.validity; }
+  get validationMessage(): string { return this._internals?.validationMessage ?? ''; }
+  get willValidate(): boolean { return this._internals?.willValidate ?? false; }
+  checkValidity(): boolean { return this._internals?.checkValidity() ?? true; }
+  reportValidity(): boolean { return this._internals?.reportValidity() ?? true; }
+
   override updated(changed: PropertyValues) {
     super.updated(changed);
     if (changed.has('value')) {
       this._internals?.setFormValue(this.value);
     }
-    if (changed.has('required') || changed.has('value')) {
-      if (this.required && !this.value) {
-        this._internals?.setValidity({ valueMissing: true }, 'This field is required');
-      } else {
-        this._internals?.setValidity({});
-      }
-    }
+    // Mirror the native input: required, type="email"/"url" typeMismatch, maxlength.
+    mirrorValidity(this._internals, this._input, this.validationMessages);
   }
 
   formResetCallback() {
@@ -408,6 +416,7 @@ export class CgInput extends LitElement {
             placeholder=${this.placeholder || (this.label ? ' ' : nothing)}
             ?disabled=${this.disabled || this.loading}
             ?readonly=${this.readonly}
+            ?required=${this.required}
             maxlength=${this.maxlength || nothing}
             autocomplete=${this.autocomplete}
             aria-invalid=${this.error ? 'true' : 'false'}

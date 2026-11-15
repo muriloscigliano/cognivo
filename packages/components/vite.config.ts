@@ -72,6 +72,8 @@ export default defineConfig(({ mode }) => {
           bias: resolve(__dirname, 'src/bias.ts'),
           // On-demand custom-element registration helper (tree-shakable).
           lazy: resolve(__dirname, 'src/lazy.ts'),
+          // Page-wide validation message map, importable without a barrel.
+          validation: resolve(__dirname, 'src/utils/validation.ts'),
           ...componentEntries,
         },
         formats: ['es'],

@@ -345,3 +345,7 @@ export type { GalleryImage } from './components/cg-image-gallery/cg-image-galler
 export type { ChartSeries } from './components/cg-chart/cg-chart.js';
 export type { DropdownItem } from './components/cg-dropdown/cg-dropdown.js';
 export type { BreadcrumbItem } from './components/cg-breadcrumbs/cg-breadcrumbs.js';
+
+// Translatable validation texts (page-wide locale map) and guarded registration.
+export { setValidationMessages, type ValidationMessages, type ValidityKey } from './utils/validation.js';
+export { defineElement } from './utils/define.js';

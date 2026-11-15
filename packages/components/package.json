@@ -27,6 +27,10 @@
       "types": "./dist/lazy.d.ts",
       "import": "./dist/lazy.js"
     },
+    "./validation": {
+      "types": "./dist/utils/validation.d.ts",
+      "import": "./dist/validation.js"
+    },
     "./package.json": "./package.json",
     "./*": {
       "types": "./dist/components/*/*.d.ts",

@@ -136,3 +136,7 @@ export * from './components/cg-app-shell/cg-app-shell.js';
 export * from './components/cg-border-beam/cg-border-beam.js';
 export * from './components/cg-liquid/cg-liquid.js';
 export * from './components/cg-liquid-item/cg-liquid-item.js';
+
+// Translatable validation texts (page-wide locale map) and guarded registration.
+export { setValidationMessages, type ValidationMessages, type ValidityKey } from './utils/validation.js';
+export { defineElement } from './utils/define.js';

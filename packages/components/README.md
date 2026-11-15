@@ -34,6 +34,21 @@ pnpm add @cognivo/components @cognivo/tokens
 <ai-chat .messages=${[]} placeholder="Ask anything..."></ai-chat>
 ```
 
+## Forms and validation messages
+
+Form fields are form-associated: they submit with a native `<form>`, appear in
+`FormData` under their `name`, and expose `validity`, `validationMessage`,
+`checkValidity()` and `reportValidity()`. `cg-input type="email"`/`"url"`
+validate natively. Components contain no validation text of their own: a message
+comes from the element (`validation-messages='{"typeMismatch":"E-mail inválido"}'`
+or the `validationMessages` property), then the page-wide map, then the
+browser's own localised message.
+
+```ts
+import { setValidationMessages } from '@cognivo/components/validation';
+setValidationMessages({ valueMissing: 'Campo obrigatório', typeMismatch: 'Formato inválido' });
+```
+
 ## Registering twice (embeds, micro-frontends)
 
 Every component registers through a guarded `customElements.define`: the first

@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { messageFor, setValueMissing, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 /**
@@ -175,13 +176,27 @@ export class CgPasswordInput extends LitElement {
 
   @state() private _visible = false;
 
+  /** Per-element validation texts (JSON in the `validation-messages` attribute
+   *  or a property). Falls back to `setValidationMessages()` then to the
+   *  browser's own localised message. */
+  @property({ type: Object, attribute: 'validation-messages' }) validationMessages: ValidationMessages | null = null;
+
+  /** Native-like constraint validation API (delegates to ElementInternals). */
+  get validity(): ValidityState | undefined { return this._internals?.validity; }
+  get validationMessage(): string { return this._internals?.validationMessage ?? ''; }
+  get willValidate(): boolean { return this._internals?.willValidate ?? false; }
+  checkValidity(): boolean { return this._internals?.checkValidity() ?? true; }
+  reportValidity(): boolean { return this._internals?.reportValidity() ?? true; }
+
   override updated(changed: Map<string, unknown>): void {
-    if (changed.has('value') || changed.has('required') || changed.has('minLength')) {
+    if (changed.has('value') || changed.has('required') || changed.has('minLength') || changed.has('validationMessages')) {
       this._internals?.setFormValue(this.value);
       if (this.required && !this.value) {
-        this._internals?.setValidity({ valueMissing: true }, 'Password is required');
+        setValueMissing(this._internals, true, this.validationMessages, 'text');
       } else if (this.minLength > 0 && this.value.length < this.minLength) {
-        this._internals?.setValidity({ tooShort: true }, `Minimum length is ${this.minLength}`);
+        // No browser fallback exists for a programmatic tooShort: supply it via
+        // validation-messages / setValidationMessages({ tooShort }).
+        this._internals?.setValidity({ tooShort: true }, messageFor('tooShort', this.validationMessages, ''));
       } else {
         this._internals?.setValidity({});
       }

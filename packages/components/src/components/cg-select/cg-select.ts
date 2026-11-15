@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { setValueMissing, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { bindOutsideClick } from '../../utils/outside-click.js';
 
@@ -186,17 +187,25 @@ export class CgSelect extends LitElement {
   @property({ type: Boolean }) searchable = false;
   @property({ type: Boolean }) required = false;
 
+  /** Per-element validation texts (JSON in the `validation-messages` attribute
+   *  or a property). Falls back to `setValidationMessages()` then to the
+   *  browser's own localised message. */
+  @property({ type: Object, attribute: 'validation-messages' }) validationMessages: ValidationMessages | null = null;
+
+  /** Native-like constraint validation API (delegates to ElementInternals). */
+  get validity(): ValidityState | undefined { return this._internals?.validity; }
+  get validationMessage(): string { return this._internals?.validationMessage ?? ''; }
+  get willValidate(): boolean { return this._internals?.willValidate ?? false; }
+  checkValidity(): boolean { return this._internals?.checkValidity() ?? true; }
+  reportValidity(): boolean { return this._internals?.reportValidity() ?? true; }
+
   override updated(changed: PropertyValues) {
     super.updated(changed);
     if (changed.has('value')) {
       this._internals?.setFormValue(this.value);
     }
     if (changed.has('required') || changed.has('value')) {
-      if (this.required && !this.value) {
-        this._internals?.setValidity({ valueMissing: true }, 'This field is required');
-      } else {
-        this._internals?.setValidity({});
-      }
+      setValueMissing(this._internals, this.required && !this.value, this.validationMessages, 'select');
     }
   }
 
