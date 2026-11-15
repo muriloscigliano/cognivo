@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 
 /**
  * @element cg-visually-hidden

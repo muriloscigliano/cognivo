@@ -25,7 +25,8 @@
  * @fires {CustomEvent<{user: PresenceUser}>} ai-presence-user-click - Avatar clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 import '../cg-avatar/cg-avatar.js';
 

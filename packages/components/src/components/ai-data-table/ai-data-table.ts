@@ -19,7 +19,8 @@
  * @fires {CustomEvent<{row, col, severity, reason}>} ai-data-anomaly-click - Anomaly clicked
  */
 import { LitElement, html, svg, css, nothing } from 'lit';
-import { property, state, customElement, query } from 'lit/decorators.js';
+import { property, state, query } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';

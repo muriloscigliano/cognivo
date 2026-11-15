@@ -20,7 +20,8 @@
  * @cssprop [--cg-color-accent] - Accent color for number values
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 @customElement('ai-json-viewer')

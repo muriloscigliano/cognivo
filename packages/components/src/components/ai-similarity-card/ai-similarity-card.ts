@@ -6,7 +6,8 @@
  * @fires {CustomEvent<{score: number}>} ai-similarity-reject
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface SimilarityItem {

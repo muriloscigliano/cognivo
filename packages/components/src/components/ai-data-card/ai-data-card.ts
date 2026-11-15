@@ -21,7 +21,8 @@
  * @cssprop [--cg-brand-ai-accent=#dfff61] - Primary button, link, and currency text color
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes } from '../../styles/index.js';
 import '../cg-button/cg-button.js';
 import '../cg-badge/cg-badge.js';

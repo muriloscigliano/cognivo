@@ -16,7 +16,8 @@
  * @fires {CustomEvent<{name: string, type: string}>} ai-avatar-click - Avatar clicked (legacy event, preserved)
  */
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 import '../cg-avatar/cg-avatar.js';

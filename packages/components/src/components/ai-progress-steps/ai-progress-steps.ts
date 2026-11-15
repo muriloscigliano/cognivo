@@ -19,7 +19,8 @@
  * @fires {CustomEvent<{label: string, status: string, index: number}>} ai-progress-phase-click - When a phase is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 export interface ProgressPhase {

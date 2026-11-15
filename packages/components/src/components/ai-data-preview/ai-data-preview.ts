@@ -18,7 +18,8 @@
  * @cssprop [--cg-color-accent=#dfff61] - Confirm button and JSON key color
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 @customElement('ai-data-preview')

@@ -34,6 +34,15 @@ pnpm add @cognivo/components @cognivo/tokens
 <ai-chat .messages=${[]} placeholder="Ask anything..."></ai-chat>
 ```
 
+## Registering twice (embeds, micro-frontends)
+
+Every component registers through a guarded `customElements.define`: the first
+registration of a tag wins and later ones never throw. Importing the same module
+twice is a silent no-op; a second *copy* of the package (for example an embed
+bundle on a page that also ships Cognivo) keeps the first definition and logs one
+`console.warn` naming the tag. Keep both copies on compatible versions, because
+elements behave like the copy that registered first.
+
 ## TypeScript
 
 Full `.d.ts` declarations are generated on build. All component props, events, and interfaces are typed.

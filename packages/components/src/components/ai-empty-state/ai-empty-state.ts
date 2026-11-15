@@ -18,7 +18,8 @@
  * @fires {CustomEvent} ai-empty-action - Action button clicked (legacy event, preserved)
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { hostBlock } from '../../styles/index.js';
 import '../cg-empty-state/cg-empty-state.js';

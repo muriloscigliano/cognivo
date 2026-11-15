@@ -16,7 +16,8 @@
  * @cssprop [--cg-color-surface-base-text] - Dot color (resolved at draw time)
  */
 import { LitElement, html, css } from 'lit';
-import { customElement, property, query, state } from 'lit/decorators.js';
+import { property, query, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBase } from '../../styles/index.js';
 import {
   ORB_STATES,

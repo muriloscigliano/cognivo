@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state, query } from 'lit/decorators.js';
+import { property, state, query } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { applyFloatingPosition, autoUpdate, type Placement } from '../../utils/floating.js';
 import { bindOutsideClick } from '../../utils/outside-click.js';

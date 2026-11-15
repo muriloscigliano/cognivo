@@ -5,7 +5,8 @@
  * @fires {CustomEvent<{label: string, tokens: number}>} ai-context-segment-click
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface ContextSegment {

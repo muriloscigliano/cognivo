@@ -8,7 +8,8 @@
  * @fires {CustomEvent<{type, text}>} ai-insight-bookmark
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
 
 interface Source {

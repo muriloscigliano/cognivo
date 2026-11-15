@@ -22,7 +22,8 @@
  * @fires {CustomEvent<{content: string}>} ai-streaming-complete - When streaming completes
  */
 import { LitElement, html, css } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 import '../cg-markdown/cg-markdown.js';
 

@@ -18,7 +18,8 @@
  * @cssprop [--cg-component-liquid-fill] - Liquid surface color (defaults to the card surface)
  */
 import { LitElement, html, svg, css } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import type { CgLiquidItem } from '../cg-liquid-item/cg-liquid-item.js';
 import { springToLinearEasing } from '../../utils/spring.js';

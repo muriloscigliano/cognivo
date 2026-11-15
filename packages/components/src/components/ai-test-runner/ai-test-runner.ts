@@ -21,7 +21,8 @@
  * @fires {CustomEvent<{index: number, test: TestEntry}>} ai-test-click - Test row toggled
  */
 import { LitElement, html, css, nothing, svg } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, spinKeyframes, fadeSlideInKeyframes } from '../../styles/index.js';
 import '../cg-card/cg-card.js';
 import '../cg-text/cg-text.js';

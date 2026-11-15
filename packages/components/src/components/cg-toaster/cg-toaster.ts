@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { svg } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { reducedMotion } from '../../styles/index.js';
 
 export type ToastVariant = 'default' | 'success' | 'warning' | 'error' | 'info' | 'ai';

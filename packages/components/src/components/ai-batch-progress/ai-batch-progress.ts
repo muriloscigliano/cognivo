@@ -16,7 +16,8 @@
  * @fires {CustomEvent<{total, completed, failed, status}>} ai-batch-retry - Retry/Resume clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, pulseKeyframes, fadeSlideInKeyframes } from '../../styles/index.js';
 
 @customElement('ai-batch-progress')

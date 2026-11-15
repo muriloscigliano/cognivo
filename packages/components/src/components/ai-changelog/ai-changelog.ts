@@ -14,7 +14,8 @@
  * @fires {CustomEvent<{version, type}>} ai-changelog-rollback - Rollback button clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, state, customElement } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 interface ChangelogEntry {

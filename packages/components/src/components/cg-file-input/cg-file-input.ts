@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing, svg } from 'lit';
-import { customElement, property, state, query } from 'lit/decorators.js';
+import { property, state, query } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, focusRingSingle } from '../../styles/index.js';
 
 /** Per-file upload status driven by the consumer via `setFileStatus()`. */

@@ -19,7 +19,8 @@
  * @cssprop --cg-color-action-primary-background-default - Divider line and handle color
  */
 import { LitElement, html, svg, css } from 'lit';
-import { property, state, customElement, query } from 'lit/decorators.js';
+import { property, state, query } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeInKeyframes } from '../../styles/index.js';
 
 @customElement('ai-transform-slider')

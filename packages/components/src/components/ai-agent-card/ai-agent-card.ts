@@ -21,7 +21,8 @@
  * @fires {CustomEvent<{name}>} ai-agent-cancel - Cancel button clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, state, customElement } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import type { PropertyValues } from 'lit';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 

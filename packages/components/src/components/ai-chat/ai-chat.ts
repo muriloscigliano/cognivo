@@ -25,7 +25,8 @@
  * @cssprop --cg-color-action-primary-background-default - Send button, links, AI avatar
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, state, customElement, query } from 'lit/decorators.js';
+import { property, state, query } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { AiIntent } from '@cognivo/core';
 import type { AiClient, AiContext, AiRequestOptions, AiResult } from '@cognivo/core';
 import { hostBlock, reducedMotion } from '../../styles/index.js';

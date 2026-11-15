@@ -21,13 +21,12 @@
  * @fires {CustomEvent<{id}>} ai-toast-dismiss - When a toast is dismissed
  */
 import { LitElement, html, css } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
+import { property, query } from 'lit/decorators.js';
+import { customElement, defineElement } from '../../utils/define.js';
 import { CgToaster, type ToastVariant } from '../cg-toaster/cg-toaster.js';
 
 // Ensure foundation element is registered.
-if (!customElements.get('cg-toaster')) {
-  customElements.define('cg-toaster', CgToaster);
-}
+defineElement('cg-toaster', CgToaster);
 
 interface ToastOptions {
   type?: 'info' | 'success' | 'warning' | 'error' | 'ai';

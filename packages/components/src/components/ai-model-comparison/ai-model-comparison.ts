@@ -17,7 +17,8 @@
  * @fires {CustomEvent<{model: ComparisonModel}>} ai-comparison-select - When a model's Select button is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 export interface ComparisonModel {

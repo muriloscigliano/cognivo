@@ -20,7 +20,8 @@
  * @cssprop --cg-color-focus-ring - Focus ring color
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 type Urgency = 'info' | 'warning' | 'urgent' | 'critical';

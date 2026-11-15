@@ -17,7 +17,8 @@
  * @fires {CustomEvent<{score: number, level: string}>} ai-badge-click - Badge clicked (legacy event, preserved)
  */
 import { LitElement, html, css } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBase } from '../../styles/index.js';
 import '../ai-confidence-badge/ai-confidence-badge.js';
 

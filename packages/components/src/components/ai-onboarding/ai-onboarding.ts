@@ -32,7 +32,8 @@
  * @fires {CustomEvent<{step: number}>} ai-onboarding-dismiss - When dismissed
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, state, customElement } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { keyed } from 'lit/directives/keyed.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 import '../cg-card/cg-card.js';

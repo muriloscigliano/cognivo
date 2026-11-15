@@ -18,7 +18,8 @@
  * @fires {CustomEvent} ai-command-close - Palette closed (Escape or overlay click)
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock } from '../../styles/index.js';
 import '../cg-command/cg-command.js';
 import type { CommandItem } from '../cg-command/cg-command.js';

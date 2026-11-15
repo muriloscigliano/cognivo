@@ -18,7 +18,8 @@
  * @fires {CustomEvent<{collapsed: boolean}>} ai-sidebar-collapse - Collapse toggled (legacy event, preserved)
  */
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock } from '../../styles/index.js';
 import '../ai-app-sidebar/ai-app-sidebar.js';
 import type { SidebarSection } from '../ai-app-sidebar/ai-app-sidebar.js';

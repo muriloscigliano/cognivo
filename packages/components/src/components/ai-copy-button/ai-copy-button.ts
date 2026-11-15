@@ -14,7 +14,8 @@
  * @cssprop [--cg-color-accent=#dfff61] - Focus ring and copied-state text color
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 @customElement('ai-copy-button')

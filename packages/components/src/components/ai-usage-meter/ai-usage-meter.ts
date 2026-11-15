@@ -24,7 +24,8 @@
  * @fires {CustomEvent<{tier: 'normal'|'warning'|'danger'}>} ai-usage-threshold - Crossed a threshold
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, state, customElement } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 import '../cg-card/cg-card.js';
 import '../cg-text/cg-text.js';

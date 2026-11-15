@@ -23,7 +23,8 @@
  * @fires {CustomEvent<{toolName: string, error: string}>} ai-tool-card-error - When resolution fails
  */
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, shimmerKeyframes, fadeSlideInKeyframes } from '../../styles/index.js';
 
 @customElement('ai-tool-card-resolver')

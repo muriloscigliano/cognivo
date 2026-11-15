@@ -7,7 +7,8 @@
  * @fires {CustomEvent<{valid, errors}>} ai-form-validate
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, state, customElement } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import '../cg-input/cg-input.js';
 import '../cg-textarea/cg-textarea.js';

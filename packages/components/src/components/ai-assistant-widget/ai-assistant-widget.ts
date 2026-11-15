@@ -18,7 +18,8 @@
  * @cssprop --cg-color-action-primary-background-default - FAB and send button background
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, state, customElement, query } from 'lit/decorators.js';
+import { property, state, query } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes, scaleInKeyframes } from '../../styles/index.js';
 
 export interface AssistantMessage {

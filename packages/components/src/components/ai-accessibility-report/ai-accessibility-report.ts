@@ -17,7 +17,8 @@
  * @fires {CustomEvent<{issue: A11yIssue, index: number}>} ai-a11y-issue-click - Issue row clicked/expanded
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 import '../cg-card/cg-card.js';
 import '../cg-icon/cg-icon.js';

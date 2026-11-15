@@ -6,7 +6,8 @@
  * @fires {CustomEvent<{content: string}>} ai-result-copy
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, state, customElement } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface Driver { factor: string; impact: number; }

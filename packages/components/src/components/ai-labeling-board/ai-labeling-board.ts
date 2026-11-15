@@ -18,7 +18,8 @@
  * @fires {CustomEvent<{name: string, color: string}>} ai-label-create - New custom label created
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, customElement, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeInKeyframes } from '../../styles/index.js';
 
 interface LabelItem {

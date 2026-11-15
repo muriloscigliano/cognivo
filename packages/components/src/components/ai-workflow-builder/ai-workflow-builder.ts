@@ -20,7 +20,8 @@
  * @fires {CustomEvent<{id: string, label: string, type: string, status: string}>} ai-workflow-step-click - When a step is clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, state, customElement, queryAll } from 'lit/decorators.js';
+import { property, state, queryAll } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 interface WorkflowStep {

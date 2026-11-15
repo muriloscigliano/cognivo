@@ -19,7 +19,8 @@
  * @fires {CustomEvent<{id: string, rolloutPercent: number}>} ai-version-rollout-change - When rollout slider or promote button changes
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state, queryAll } from 'lit/decorators.js';
+import { property, state, queryAll } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 import { handleRovingKey } from '../../utils/roving-index.js';
 

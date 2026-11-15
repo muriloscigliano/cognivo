@@ -1,5 +1,6 @@
 import { LitElement, html, css, svg, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, focusRingDual } from '../../styles/index.js';
 import { FocusTrap } from '../../utils/focus-trap.js';
 

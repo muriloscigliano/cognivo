@@ -17,7 +17,8 @@
  * @fires {CustomEvent} ai-audio-error - Audio source failed to load
  */
 import { LitElement, html, css } from 'lit';
-import { property, state, customElement } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 @customElement('ai-audio-player')

@@ -17,7 +17,8 @@
  * @cssprop --cg-color-status-error-text-default - Low confidence color
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, state, customElement } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 
 @customElement('ai-confidence-badge')

@@ -5,7 +5,8 @@
  * @fires {CustomEvent<{index: number, document: object}>} ai-rag-document-click - Document clicked
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, state, customElement } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface RagDocument {

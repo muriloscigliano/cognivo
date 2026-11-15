@@ -1,5 +1,6 @@
 import { LitElement, html, css, svg } from 'lit';
-import { customElement, property, state, query, queryAssignedElements } from 'lit/decorators.js';
+import { property, state, query, queryAssignedElements } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, focusRingDual } from '../../styles/index.js';
 
 /**

@@ -17,7 +17,8 @@
  * @cssprop [--cg-color-surface-cards-border] - Card border + grid line color
  */
 import { LitElement, html, css, svg, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 export interface AnalyticsSeries {

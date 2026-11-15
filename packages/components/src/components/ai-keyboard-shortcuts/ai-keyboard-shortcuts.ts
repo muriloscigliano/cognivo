@@ -20,7 +20,8 @@
  * @cssprop [--cg-color-bg-primary] - Modal background color
  */
 import { LitElement, html, css, nothing, svg } from 'lit';
-import { property, state, customElement } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 export interface ShortcutEntry {

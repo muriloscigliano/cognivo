@@ -27,7 +27,8 @@
  * @fires {CustomEvent<{collapsed: boolean}>} ai-app-sidebar-collapse - When collapse state toggles
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 export interface SidebarItem {

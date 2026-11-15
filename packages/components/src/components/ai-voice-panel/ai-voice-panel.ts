@@ -23,7 +23,8 @@
  * @cssprop --cg-color-action-primary-background-default - Listening pulse ring color
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, state, customElement } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeInKeyframes } from '../../styles/index.js';
 
 // Browser-compat SpeechRecognition

@@ -23,7 +23,8 @@
  * @cssprop [--cg-component-border-beam-radius] - Ring corner radius
  */
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { subscribePulse } from '../../utils/pulse-driver.js';
 

@@ -21,7 +21,8 @@
  * @fires {CustomEvent<{feature: string, role: string}>} ai-permission-request - Request Access clicked
  */
 import { LitElement, html, css, nothing, svg } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 import '../cg-card/cg-card.js';
 import '../cg-text/cg-text.js';

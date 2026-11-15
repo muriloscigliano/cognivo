@@ -6,7 +6,8 @@
  * @fires {CustomEvent<{consents: Record<string, boolean>}>} ai-consent-save
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface ConsentItem {

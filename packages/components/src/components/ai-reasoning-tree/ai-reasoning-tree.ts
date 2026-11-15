@@ -7,7 +7,8 @@
  * @fires {CustomEvent<{id: string, type: string, content: string}>} ai-reasoning-node-click
  */
 import { LitElement, html, css, nothing } from 'lit';
-import { property, state, customElement } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface ReasoningNode {

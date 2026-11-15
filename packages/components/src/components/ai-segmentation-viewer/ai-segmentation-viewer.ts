@@ -6,7 +6,8 @@
  * @fires {CustomEvent<{id: string, visible: boolean}>} ai-segment-toggle
  */
 import { LitElement, html, css, nothing, svg } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 export interface SegmentMask {

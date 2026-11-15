@@ -16,7 +16,8 @@
  * @slot - The crisp content rendered above the liquid silhouette.
  */
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 import { springToLinearEasing, type SpringPreset } from '../../utils/spring.js';
 import type { CgLiquid } from '../cg-liquid/cg-liquid.js';
