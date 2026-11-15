@@ -103,21 +103,9 @@ describe('cg-checkbox', () => {
     expect((eventDetail as { value: string }).value).toBe('terms');
   });
 
-  it('keyboard: Space toggles', async () => {
-    const label = el.shadowRoot!.querySelector('label') as HTMLElement;
-    label.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
-    await el.updateComplete;
-
-    expect(el.checked).toBe(true);
-  });
-
-  it('keyboard: Enter toggles', async () => {
-    const label = el.shadowRoot!.querySelector('label') as HTMLElement;
-    label.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
-    await el.updateComplete;
-
-    expect(el.checked).toBe(true);
-  });
+  // Space-to-toggle and Tab order are native now (a real <input type="checkbox">);
+  // they are exercised in a real browser in browser/checkbox-a11y.browser.test.ts.
+  // Enter no longer toggles — it does not on a native checkbox either.
 
   it('disabled: click does not toggle', async () => {
     el.disabled = true;
@@ -130,30 +118,30 @@ describe('cg-checkbox', () => {
     expect(el.checked).toBe(false);
   });
 
-  it('has proper role="checkbox"', () => {
-    const label = el.shadowRoot!.querySelector('label');
-    expect(label!.getAttribute('role')).toBe('checkbox');
+  it('renders a native checkbox input and no ARIA role override', () => {
+    const input = el.shadowRoot!.querySelector('input[type="checkbox"]');
+    expect(input).not.toBeNull();
+    expect(el.shadowRoot!.querySelector('[role="checkbox"]')).toBeNull();
+    expect(el.shadowRoot!.querySelector('label')!.hasAttribute('tabindex')).toBe(false);
   });
 
-  it('has aria-checked="false" by default', () => {
-    const label = el.shadowRoot!.querySelector('label');
-    expect(label!.getAttribute('aria-checked')).toBe('false');
+  it('native input is unchecked by default', () => {
+    const input = el.shadowRoot!.querySelector('input') as HTMLInputElement;
+    expect(input.checked).toBe(false);
   });
 
-  it('has aria-checked="true" when checked', async () => {
+  it('native input is checked when checked', async () => {
     el.checked = true;
     await el.updateComplete;
-
-    const label = el.shadowRoot!.querySelector('label');
-    expect(label!.getAttribute('aria-checked')).toBe('true');
+    const input = el.shadowRoot!.querySelector('input') as HTMLInputElement;
+    expect(input.checked).toBe(true);
   });
 
-  it('has aria-checked="mixed" when indeterminate', async () => {
+  it('native input is indeterminate (mixed) when indeterminate', async () => {
     el.indeterminate = true;
     await el.updateComplete;
-
-    const label = el.shadowRoot!.querySelector('label');
-    expect(label!.getAttribute('aria-checked')).toBe('mixed');
+    const input = el.shadowRoot!.querySelector('input') as HTMLInputElement;
+    expect(input.indeterminate).toBe(true);
   });
 
   it('clears indeterminate state on toggle', async () => {

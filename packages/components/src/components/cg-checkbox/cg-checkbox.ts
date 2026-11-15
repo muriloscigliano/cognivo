@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
+import { live } from 'lit/directives/live.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
@@ -16,6 +17,10 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
  * ```
  *
  * @fires {CustomEvent<{checked: boolean, value: string}>} cg-change - When toggled
+ *
+ * Renders a real `<input type="checkbox">` (visually replaced by the animated
+ * box): native focus, Space to toggle, checkbox role/state and validity.
+ * Enter does not toggle, as with a native checkbox.
  */
 @customElement('cg-checkbox')
 export class CgCheckbox extends LitElement {
@@ -86,8 +91,28 @@ export class CgCheckbox extends LitElement {
       transform: scale(var(--cg-interaction-press-scale));
     }
 
+    /* Native control: a real <input type="checkbox"> laid exactly over the
+       box — it owns focus, keyboard (Space), the accessible role/state and
+       form validity; the box is only its picture. */
+    .control {
+      position: relative;
+      display: inline-flex;
+      flex-shrink: 0;
+    }
+    .native {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      opacity: 0;
+      cursor: inherit;
+      z-index: 1;
+    }
+
     /* Focus ring */
-    label:focus-visible .box {
+    .native:focus-visible + .box,
+    .native:focus-visible + .loading-spinner {
       border-color: var(--cg-color-checkbox-border-focus);
       box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring-offset), 0 0 0 calc(var(--cg-border-width-100) * 2) var(--cg-color-focus-ring);
     }
@@ -141,8 +166,6 @@ export class CgCheckbox extends LitElement {
       80% { transform: scale(0.97); }
       100% { transform: scale(1); }
     }
-
-    /* Hidden native input */
 
     /* ── Error state ── */
     :host([error]) .box {
@@ -239,10 +262,9 @@ export class CgCheckbox extends LitElement {
     this.checked = state === (this.value || 'on');
   }
 
-  private _toggle(e: Event) {
-    e.preventDefault();
-    if (this.disabled || this.loading) return;
-    this.checked = !this.checked;
+  private _handleChange(e: Event) {
+    const input = e.target as HTMLInputElement;
+    this.checked = input.checked;
     this.indeterminate = false;
     this.dispatchEvent(new CustomEvent('cg-change', {
       detail: { checked: this.checked, value: this.value },
@@ -252,37 +274,44 @@ export class CgCheckbox extends LitElement {
 
   override render() {
     const state = this.indeterminate ? 'indeterminate' : this.checked ? 'checked' : '';
+    const ariaLabel = !this.label && this.ariaLabel ? this.ariaLabel : nothing;
 
     return html`
-      <label
-        tabindex=${this.disabled ? '-1' : '0'}
-        role="checkbox"
-        aria-label=${!this.label && this.ariaLabel ? this.ariaLabel : nothing}
-        aria-checked=${this.indeterminate ? 'mixed' : String(this.checked)}
-        aria-disabled=${String(this.disabled)}
-        aria-required=${this.required ? 'true' : 'false'}
-        aria-invalid=${this.error ? 'true' : 'false'}
-        aria-busy=${this.loading ? 'true' : 'false'}
-        @click=${this._toggle}
-        @keydown=${(e: KeyboardEvent) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); this._toggle(e); } }}
-      >
-        ${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : html`<span class="box ${state}">
-          ${this.checked ? html`
-            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-              <path class="tick" d="M4 12L9 17L20 6"></path>
-            </svg>
-          ` : nothing}
-          ${this.indeterminate ? html`
-            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
-              <path class="dash" d="M5 12h14"></path>
-            </svg>
-          ` : nothing}
-        </span>`}
+      <label>
+        <span class="control">
+          <input
+            class="native"
+            type="checkbox"
+            .checked=${live(this.checked)}
+            .indeterminate=${this.indeterminate}
+            .value=${this.value || 'on'}
+            ?disabled=${this.disabled || this.loading}
+            ?required=${this.required}
+            aria-label=${ariaLabel}
+            aria-labelledby=${this.label ? 'label-text' : nothing}
+            aria-describedby=${this.label && this.description ? 'description' : nothing}
+            aria-invalid=${this.error ? 'true' : 'false'}
+            aria-busy=${this.loading ? 'true' : nothing}
+            @change=${this._handleChange}
+          />
+          ${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : html`<span class="box ${state}" aria-hidden="true">
+            ${this.checked && !this.indeterminate ? html`
+              <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path class="tick" d="M4 12L9 17L20 6"></path>
+              </svg>
+            ` : nothing}
+            ${this.indeterminate ? html`
+              <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                <path class="dash" d="M5 12h14"></path>
+              </svg>
+            ` : nothing}
+          </span>`}
+        </span>
 
         ${this.label ? html`
           <span class="text-group">
-            <span class="label-text">${this.label}</span>
-            ${this.description ? html`<span class="description">${this.description}</span>` : nothing}
+            <span class="label-text" id="label-text">${this.label}</span>
+            ${this.description ? html`<span class="description" id="description">${this.description}</span>` : nothing}
           </span>
         ` : nothing}
       </label>

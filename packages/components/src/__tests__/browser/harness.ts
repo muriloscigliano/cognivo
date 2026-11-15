@@ -12,6 +12,7 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { build } from 'esbuild';
 import { chromium, type Browser, type Page } from '@playwright/test';
+import { AxeBuilder } from '@axe-core/playwright';
 
 const SRC = resolve(__dirname, '..', '..');
 
@@ -63,7 +64,9 @@ export async function closeBrowser(): Promise<void> {
  */
 export async function openPage(tags: string[], body: string): Promise<Page> {
   const b = await launch();
-  const page = await b.newPage();
+  // A dedicated context per page (axe-core's AxeBuilder requires one).
+  const context = await b.newContext();
+  const page = await context.newPage(); // contexts close with the browser
   const code = await bundleComponents(tags);
   await page.setContent(`<!doctype html><html lang="en"><head><title>t</title></head><body></body></html>`);
   await page.addScriptTag({ type: 'module', content: code });
@@ -82,4 +85,15 @@ export async function settle(page: Page): Promise<void> {
     const all = Array.from(document.querySelectorAll('*')) as Array<Element & { updateComplete?: Promise<unknown> }>;
     await Promise.all(all.map((el) => el.updateComplete));
   });
+}
+
+/**
+ * axe-core violations as `"rule-id: target, target"` strings. Page-structure
+ * rules (one h1, landmarks) are off: fixtures are component snippets, not pages.
+ */
+export async function axeViolations(page: Page): Promise<string[]> {
+  const { violations } = await new AxeBuilder({ page })
+    .disableRules(['page-has-heading-one', 'region', 'landmark-one-main'])
+    .analyze();
+  return violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`);
 }
