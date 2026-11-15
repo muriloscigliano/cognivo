@@ -123,7 +123,7 @@ export class CgToaster extends LitElement {
     }
     .toast-desc {
       font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-on-surface-container-default);
     }
 
     .toast-action, .toast-close {

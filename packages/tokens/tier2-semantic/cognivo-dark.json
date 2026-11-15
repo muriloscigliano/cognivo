@@ -2057,7 +2057,7 @@
         "default": { "$type": "color", "$value": "{color.surface.cards.text}" }
       },
       "surface-container": {
-        "default": { "$type": "color", "$value": "{color.surface.container.outlined}" }
+        "default": { "$type": "color", "$value": "{gray.400}" }
       },
       "status-success": {
         "default": { "$type": "color", "$value": "{color.status.success.text.default}" }

@@ -23,9 +23,9 @@ test('dark theme defines the focus-ring and accent-text tokens', () => {
   for (const name of REQUIRED) assert.ok(dark[name] ?? themes[':root'][name], `${name} missing in dark`);
 });
 
-test('contrast gate passes: focus ring >= 3:1, resting field label >= 4.5:1, both themes', () => {
+test('contrast gate passes: focus ring >= 3:1, resting field label, table header and toast description >= 4.5:1, both themes', () => {
   const run = spawnSync(process.execPath, [`${root}scripts/validate-contrast.mjs`], { encoding: 'utf8' });
-  for (const label of ['input-label-resting', 'focus-ring-on-page', 'focus-ring-on-field', 'focus-ring-on-offset']) {
+  for (const label of ['input-label-resting', 'table-header-text', 'toast-description', 'focus-ring-on-page', 'focus-ring-on-field', 'focus-ring-on-offset']) {
     assert.match(run.stdout, new RegExp(`light\\s+${label}`), `${label} not audited (light)`);
     assert.match(run.stdout, new RegExp(`dark\\s+${label}`), `${label} not audited (dark)`);
   }
