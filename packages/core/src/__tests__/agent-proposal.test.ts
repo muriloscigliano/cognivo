@@ -69,7 +69,7 @@ describe('public API surface', () => {
 
 describe('confidence deprecation (additive, non-breaking)', () => {
   it('still accepts a confidence field on AiResult (not yet removed)', async () => {
-    const { } = await import('../results/types.js'); // type-only module
+    await import('../results/types.js'); // type-only module: must still load
     // Compile-time proof that AiResult.confidence still exists and is optional.
     const r: import('../results/types.js').AiResult = { confidence: 0.9 };
     expect(r.confidence).toBe(0.9);
