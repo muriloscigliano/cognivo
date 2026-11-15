@@ -1,6 +1,5 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
-import { live } from 'lit/directives/live.js';
 import { customElement } from '../../utils/define.js';
 import { mirrorValidity, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
@@ -289,7 +288,7 @@ export class CgCheckbox extends LitElement {
           <input
             class="native"
             type="checkbox"
-            .checked=${live(this.checked)}
+            .checked=${this.checked}
             .indeterminate=${this.indeterminate}
             .value=${this.value || 'on'}
             ?disabled=${this.disabled || this.loading}

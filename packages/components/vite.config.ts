@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import { resolve } from 'path';
 import { readdirSync, existsSync, statSync } from 'node:fs';
 import dts from 'vite-plugin-dts';
@@ -29,6 +29,33 @@ function collectComponentEntries(): Record<string, string> {
 
 const componentEntries = collectComponentEntries();
 
+/**
+ * Minify the static CSS inside Lit `css\`…\`` templates at build time
+ * (comments, indentation, spaces around { } ; ,). Templates with `${…}`
+ * interpolations are left untouched. Spaces next to `:` are kept — they can
+ * be descendant combinators (`.a :focus`).
+ */
+export function minifyCssTemplates(): Plugin {
+  const minify = (cssText: string): string =>
+    cssText
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/\s+/g, ' ')
+      .replace(/\s*([{};,])\s*/g, '$1')
+      .replace(/;}/g, '}')
+      .trim();
+  return {
+    name: 'cognivo-minify-css-templates',
+    enforce: 'pre',
+    transform(code, id) {
+      if (!/\/src\/.*\.ts$/.test(id) || id.includes('__tests__') || !code.includes('css`')) return null;
+      const out = code.replace(/\bcss`([^`]*)`/g, (whole, body: string) =>
+        body.includes('${') ? whole : `css\`${minify(body)}\``,
+      );
+      return out === code ? null : { code: out, map: null };
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   // The legacy IIFE build (single `cognivo.min.js`) is kept as a separate mode
   // so it can be invoked with `vite build --mode iife` if ever needed for a
@@ -52,6 +79,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [
+      minifyCssTemplates(),
       dts({
         insertTypesEntry: true,
         // Don't roll up types — we want one .d.ts per component entry so that
@@ -79,6 +107,8 @@ export default defineConfig(({ mode }) => {
         formats: ['es'],
       },
       rollupOptions: {
+        // Lit's `css` tag is side-effect free: lets rollup drop unused styles.
+        treeshake: { manualPureFunctions: ['css'] },
         // Keep Lit external so per-component chunks stay small and consumers
         // dedupe a single Lit instance across the app. The full barrel
         // (`index.js`) also benefits — no Lit duplication inside the bundle.

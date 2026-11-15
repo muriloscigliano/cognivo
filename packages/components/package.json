@@ -41,7 +41,20 @@
     "dist",
     "LICENSE"
   ],
-  "sideEffects": true,
+  "sideEffects": [
+    "./dist/components/*/*.js",
+    "./dist/chunks/*.js",
+    "./dist/index.js",
+    "./dist/foundation.js",
+    "./dist/ai.js",
+    "./dist/bias.js",
+    "./dist/cognivo.min.js",
+    "./src/components/*/*.ts",
+    "./src/index.ts",
+    "./src/foundation.ts",
+    "./src/ai.ts",
+    "./src/bias.ts"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/murisd/cognivo.git",

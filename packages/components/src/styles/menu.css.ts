@@ -1,5 +1,9 @@
 import { css } from 'lit';
 
+// Each style is wrapped in a /* @__PURE__ */ IIFE: bundlers cannot drop an
+// unused tagged template (css`…` might have side effects), but they do drop
+// an unused pure call — so a component pays only for the styles it imports.
+
 /**
  * Shared menu-list styling used by cg-dropdown, cg-split-button, and any
  * component that renders a list of keyboard-navigable menu items.
@@ -12,7 +16,7 @@ import { css } from 'lit';
  * Positioning (absolute vs fixed, top/left placement) is intentionally NOT
  * included — each consumer owns its own positioning strategy.
  */
-export const menuListStyles = css`
+export const menuListStyles = /* @__PURE__ */ (() => css`
   .menu {
     display: flex;
     flex-direction: column;
@@ -152,4 +156,4 @@ export const menuListStyles = css`
     background: var(--cg-color-modal-container-border);
     border: none;
   }
-`;
+`)();
