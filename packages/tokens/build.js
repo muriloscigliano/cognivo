@@ -420,8 +420,9 @@ async function buildTokens() {
   darkCSS = filterTier23CSS(darkCSS, true)  // dark theme: include ALL tokens (they're overrides)
 
   // Native controls (date picker icon, scrollbars, select popups) follow
-  // `color-scheme`, not our tokens — set it with each theme's block.
-  lightCSS = lightCSS.replace(':root {', ':root {\n  color-scheme: light;')
+  // `color-scheme`, not our tokens — set it with each theme. The light rule
+  // has zero specificity (:where) so a page's own `html { color-scheme }` wins.
+  lightCSS = ':where(:root) {\n  color-scheme: light;\n}\n\n' + lightCSS
   darkCSS = darkCSS.replace('[data-theme="dark"] {', '[data-theme="dark"] {\n  color-scheme: dark;')
 
   // Combine: Tier 1 (base) + Tier 2/3 (semantic + component) for light theme

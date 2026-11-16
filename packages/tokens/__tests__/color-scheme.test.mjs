@@ -23,19 +23,23 @@ function blocks(selector) {
   return out;
 }
 
-test('light theme (:root) sets color-scheme: light', () => {
-  const rootBlocks = blocks(':root');
-  assert.ok(rootBlocks.length > 0, 'no :root block');
-  assert.ok(rootBlocks.some((b) => /^\s*color-scheme:\s*light;/m.test(b)), 'no color-scheme: light in :root');
+// A light rule with zero specificity, so a consumer's own
+// `html { color-scheme: ... }` (or `:root`) wins over ours.
+test('light theme: `:where(:root) { color-scheme: light }` (zero specificity), never a plain :root rule', () => {
+  const light = blocks(':where(:root)');
+  assert.equal(light.length, 1, 'expected exactly one :where(:root) block');
+  assert.match(light[0], /^\s*color-scheme:\s*light;\s*$/);
+  for (const b of blocks(':root')) assert.doesNotMatch(b, /color-scheme/, 'color-scheme in a plain :root block would beat html { color-scheme }');
 });
 
-test('dark theme ([data-theme="dark"]) sets color-scheme: dark', () => {
+test('dark theme: `[data-theme="dark"]` sets color-scheme: dark', () => {
   const dark = blocks('[data-theme="dark"]');
   assert.ok(dark.length > 0, 'no [data-theme="dark"] block');
-  for (const b of dark) assert.match(b, /^\s*color-scheme:\s*dark;/m);
+  assert.ok(dark.some((b) => /^\s*color-scheme:\s*dark;/m.test(b)), 'no color-scheme: dark in [data-theme="dark"]');
 });
 
-test('every prefers-color-scheme: dark media block sets color-scheme: dark', () => {
-  const re = /@media[^{]*prefers-color-scheme:\s*dark[^{]*\{([\s\S]*?)\}\s*\}/g;
-  for (const m of css.matchAll(re)) assert.match(m[1], /^\s*color-scheme:\s*dark;/m);
+test('no prefers-color-scheme block is generated today (dark is opt-in via data-theme)', () => {
+  // If one is ever added, it must also set color-scheme: dark; replace this
+  // test with that check then.
+  assert.equal([...css.matchAll(/prefers-color-scheme/g)].length, 0);
 });
