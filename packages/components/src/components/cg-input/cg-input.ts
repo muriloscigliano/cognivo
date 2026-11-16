@@ -21,7 +21,13 @@ const MESSAGES = defineMessages('cg-input', {
  * <cg-input label="Search" clearable><span slot="prefix">[search icon]</span></cg-input>
  * <cg-input label="Bio" maxlength="200" error helper="Too long"></cg-input>
  * <cg-input label="Close date" type="date" name="close" min="2026-01-01"></cg-input>
+ * <cg-input size="sm" affix="plain" placeholder="Search"><cg-icon slot="prefix" name="search" size="sm"></cg-icon></cg-input>
  * ```
+ *
+ * Without a `label` the placeholder is always visible (with one, the label
+ * stands in for it until it floats). `affix="plain"` draws prefix / suffix
+ * content inside the field with no box or divider; `size="sm"` is the
+ * compact toolbar height (`--cg-component-input-height-sm`).
  *
  * @slot prefix - Icon or content before the input field
  * @slot suffix - Icon or content after the input field
@@ -48,12 +54,9 @@ export class CgInput extends LitElement {
   }
 
   static override styles = [hostBlock, reducedMotion, spinKeyframes, css`
-    :host { display: block; }
-
     .wrapper {
       display: flex;
       align-items: center;
-      gap: 0;
       padding: 0 var(--cg-spacing-4);
       border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
       border-radius: var(--cg-component-input-radius);
@@ -63,16 +66,17 @@ export class CgInput extends LitElement {
         box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       height: var(--cg-component-input-height-md);
       position: relative;
+      overflow: hidden; /* clips a boxed prefix / suffix to the field's corners */
     }
 
     /* Size variants */
     :host([size="lg"]) .wrapper { height: var(--cg-component-input-height-lg); border-radius: var(--cg-border-radius-150); }
+    :host([size="sm"]) .wrapper { height: var(--cg-component-input-height-sm); }
 
     /* Rounded variants */
     :host([rounded="none"]) .wrapper { border-radius: 0; }
     :host([rounded="sm"]) .wrapper { border-radius: var(--cg-border-radius-50); }
     :host([rounded="md"]) .wrapper { border-radius: var(--cg-border-radius-100); }
-    :host([rounded="lg"]) .wrapper { border-radius: var(--cg-component-input-radius); }
 
     /* Hover */
     .wrapper:hover:not(.disabled):not(.readonly):not(.focused) {
@@ -83,7 +87,6 @@ export class CgInput extends LitElement {
 
     /* Loading */
     :host([loading]) .wrapper {
-      position: relative;
       pointer-events: none;
       opacity: 0.7;
     }
@@ -161,23 +164,24 @@ export class CgInput extends LitElement {
     }
     :host([size="lg"]) input { font-size: var(--cg-font-size-base); padding: var(--cg-spacing-12) 0; }
 
-    /* When floating label is active, shift input down to make room */
-    :host([label]) input {
+    /* When floating label is active, shift input down to make room.
+       (The label element, not :host([label]): label reflects, so the attribute is there even when empty.) */
+    .floating-label+input {
       padding-top: var(--cg-spacing-20);
       padding-bottom: var(--cg-spacing-2);
     }
-    :host([label][size="lg"]) input {
+    :host([size="lg"]) .floating-label+input {
       padding-top: var(--cg-spacing-24);
       padding-bottom: var(--cg-spacing-4);
     }
 
     input::placeholder {
-      color: transparent;
-    }
-    /* Show placeholder only when label is floated (focused or has value) */
-    .field.floated input::placeholder {
       color: var(--cg-color-input-text-placeholder);
       transition: color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
+    }
+    /* A floating label stands in for the placeholder until it floats (focus or a value). */
+    .field:not(.floated) .floating-label+input::placeholder {
+      color: transparent;
     }
 
     input:disabled { cursor: not-allowed; }
@@ -246,13 +250,19 @@ export class CgInput extends LitElement {
     }
     .prefix {
       border-right: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
-      border-radius: var(--cg-component-input-radius) 0 0 var(--cg-component-input-radius);
       margin-left: calc(-1 * var(--cg-spacing-4));
     }
     .suffix {
       border-left: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
-      border-radius: 0 var(--cg-component-input-radius) var(--cg-component-input-radius) 0;
       margin-right: calc(-1 * var(--cg-spacing-4));
+    }
+    /* Plain affixes: the icon sits inside the field — no box, no divider. */
+    :host([affix="plain"]) :is(.prefix, .suffix) {
+      width: auto;
+      margin: 0;
+      padding: 0 var(--cg-spacing-4);
+      border: 0;
+      background: none;
     }
 
     /* ── Clear button ── */
@@ -317,7 +327,10 @@ export class CgInput extends LitElement {
    *  validated natively (rangeUnderflow / rangeOverflow). */
   @property() min = '';
   @property() max = '';
-  @property({ reflect: true }) size: 'md' | 'lg' = 'md';
+  /** `sm` is the compact toolbar height. */
+  @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
+  /** `plain`: prefix / suffix content sits inside the field, with no box or divider. */
+  @property({ reflect: true }) affix: 'boxed' | 'plain' = 'boxed';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property({ type: Boolean, reflect: true }) disabled = false;
   /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
@@ -408,22 +421,13 @@ export class CgInput extends LitElement {
   }
 
   override render() {
-    const wrapperClasses = [
-      'wrapper',
-      this._focused ? 'focused' : '',
-      this._effectivelyDisabled ? 'disabled' : '',
-      this.readonly ? 'readonly' : '',
-    ].filter(Boolean).join(' ');
-
-    const fieldClasses = ['field', this._isFloated ? 'floated' : ''].filter(Boolean).join(' ');
-
     return html`
-      <div class=${wrapperClasses}>
+      <div class="wrapper ${this._focused ? 'focused' : ''} ${this._effectivelyDisabled ? 'disabled' : ''} ${this.readonly ? 'readonly' : ''}">
         <span class="prefix ${this._hasPrefix ? 'has-content' : ''}">
           <slot name="prefix" @slotchange=${(e: Event) => { this._hasPrefix = (e.target as HTMLSlotElement).assignedNodes().length > 0; }}></slot>
         </span>
 
-        <div class=${fieldClasses}>
+        <div class="field ${this._isFloated ? 'floated' : ''}">
           ${this.label ? html`<span class="floating-label">${this.label}</span>` : nothing}
           <input
             .value=${this.value}
@@ -439,7 +443,6 @@ export class CgInput extends LitElement {
             autocomplete=${this.autocomplete}
             aria-invalid=${this.error ? 'true' : 'false'}
             aria-busy=${this.loading ? 'true' : 'false'}
-            aria-required=${this.required ? 'true' : 'false'}
             aria-label=${this.label || this.placeholder || nothing}
             aria-describedby=${this.helper ? 'helper' : nothing}
             @input=${this._handleInput}

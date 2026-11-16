@@ -10,7 +10,7 @@
  * to move variants out of these components. Measured: 12.2 KB, then 12.67 KB
  * (12,972 B) after HTML implicit submission (shared helper), fieldset
  * disabling, version stamping and the cross-copy message stores — hence the
- * 13 KB gate. 12,986 B with the library build minified again (2026-11-16). 13,308 B with primary's own hover / pressed tokens (2026-11-16; paid for by reusing the shared `spin` keyframes in cg-input / cg-checkbox and dropping duplicate declarations, not by minifier changes). 13,302 B with hover moved into @media (hover:hover) at build time, disabled at 40% and the shared isSafeHref (2026-11-16; paid for by one shared stroke keyframe in cg-checkbox). A floor and required-code checks catch a bundle that lost the
+ * 13 KB gate. 12,986 B with the library build minified again (2026-11-16). 13,308 B with primary's own hover / pressed tokens (2026-11-16; paid for by reusing the shared `spin` keyframes in cg-input / cg-checkbox and dropping duplicate declarations, not by minifier changes). 13,302 B with hover moved into @media (hover:hover) at build time, disabled at 40% and the shared isSafeHref (2026-11-16; paid for by one shared stroke keyframe in cg-checkbox). 13,296 B with cg-input's visible placeholder, `size="sm"` and `affix="plain"` (2026-11-16; paid for by class strings instead of array joins, the wrapper clipping its boxed affixes instead of per-side radii, and dropping duplicate / redundant rules and `aria-required`, which native `required` already exposes). A floor and required-code checks catch a bundle that lost the
  * components (e.g. a sideEffects mistake tree-shaking them away).
  * Requires `pnpm build` first (turbo runs build before test).
  */
