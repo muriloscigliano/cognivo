@@ -181,9 +181,9 @@ export function hoverOnlyWhereHoverInSource(code) {
     const parts = [];
     const masked = body.replace(/\$\{[^}]*\}/g, (m) => {
       parts.push(m);
-      return `\u0000${parts.length - 1}\u0000`;
+      return `\uE000${parts.length - 1}\uE000`;
     });
-    const out = hoverOnlyWhereHover(masked).replace(/\u0000(\d+)\u0000/g, (_, n) => parts[Number(n)]);
+    const out = hoverOnlyWhereHover(masked).replace(/\uE000(\d+)\uE000/g, (_, n) => parts[Number(n)]);
     return `css\`${out}\``;
   });
 }
