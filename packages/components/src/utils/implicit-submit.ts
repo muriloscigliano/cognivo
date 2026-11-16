@@ -39,31 +39,42 @@ type Control = Element & { type?: unknown; disabled?: unknown; loading?: unknown
 const elementsOf = (form: HTMLFormElement): Control[] =>
   Array.from(Object.getOwnPropertyDescriptor(HTMLFormElement.prototype, 'elements')!.get!.call(form) as HTMLFormControlsCollection);
 
-function isSubmitButton(el: Control): boolean {
+/** A submit button: `<button type=submit>`, `<input type=submit|image>`, or a custom element with `type="submit"`. */
+export function isSubmitButton(el: Element): boolean {
   if (el instanceof HTMLInputElement) return el.type === 'submit' || el.type === 'image';
-  return el.type === 'submit' && (el instanceof HTMLButtonElement || el.localName.includes('-'));
+  return (el as Control).type === 'submit' && (el instanceof HTMLButtonElement || el.localName.includes('-'));
 }
 
-function blocksImplicitSubmission(el: Control): boolean {
+/** A field that blocks implicit submission (a single-line text field). */
+export function blocksImplicitSubmission(el: Element): boolean {
   if (el instanceof HTMLInputElement) return BLOCKING_INPUT_TYPES.has(el.type);
   return (el.constructor as { blocksImplicitSubmission?: boolean }).blocksImplicitSubmission === true;
 }
 
-function isDisabled(el: Control): boolean {
-  return el.matches(':disabled') || el.disabled === true || el.loading === true;
+/** Disabled (own attribute/property or an ancestor `<fieldset disabled>`) or `loading`. */
+export function isDisabled(el: Element): boolean {
+  const c = el as Control;
+  return el.matches(':disabled') || c.disabled === true || c.loading === true;
 }
 
-/** Run implicit submission for `form` (no-op when `form` is null). */
-export function implicitlySubmit(form: HTMLFormElement | null | undefined): void {
-  if (!form) return;
-  const controls = elementsOf(form);
+/**
+ * The algorithm over a form's controls (in tree order). `submitWithoutButton`
+ * submits "from the form itself" when there is no submit button.
+ */
+export function runImplicitSubmission(controls: Element[], submitWithoutButton: () => void): void {
   const defaultButton = controls.find(isSubmitButton);
   if (defaultButton) {
     if (!isDisabled(defaultButton)) (defaultButton as HTMLElement).click();
     return;
   }
   if (controls.filter(blocksImplicitSubmission).length > 1) return;
-  HTMLFormElement.prototype.requestSubmit.call(form);
+  submitWithoutButton();
+}
+
+/** Run implicit submission for `form` (no-op when `form` is null). */
+export function implicitlySubmit(form: HTMLFormElement | null | undefined): void {
+  if (!form) return;
+  runImplicitSubmission(elementsOf(form), () => HTMLFormElement.prototype.requestSubmit.call(form));
 }
 
 /**

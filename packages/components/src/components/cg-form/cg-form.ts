@@ -3,6 +3,7 @@ import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
+import { blocksImplicitSubmission, isDisabled, isSubmitButton, runImplicitSubmission } from '../../utils/implicit-submit.js';
 
 const MESSAGES = defineMessages('cg-form', {
   errorSummary: 'Please fix the following:',
@@ -16,7 +17,11 @@ const MESSAGES = defineMessages('cg-form', {
  * - Loading state disables submit
  * - Configurable gap between fields
  * - Reset method
- * - Keyboard submit on Enter
+ * - Slotted controls work as in a native form: a submit button
+ *   (`cg-button type="submit"`, `<button>`) fires `cg-submit`, a reset button
+ *   resets, and Enter in a slotted text field follows HTML implicit
+ *   submission (utils/implicit-submit). The shadow `<form>` cannot own
+ *   slotted controls, so cg-form drives them itself.
  */
 @customElement('cg-form')
 export class CgForm extends LitElement {
@@ -80,8 +85,18 @@ export class CgForm extends LitElement {
   /** List of error messages to show in summary. */
   @property({ type: Array }) errors: string[] = [];
 
+  constructor() {
+    super();
+    this.addEventListener('click', this._onClick);
+    this.addEventListener('keydown', this._onKeydown);
+  }
+
   private _handleSubmit(e: Event) {
     e.preventDefault();
+    this._submit();
+  }
+
+  private _submit() {
     if (this.loading) return;
     this.dispatchEvent(new CustomEvent('cg-submit', {
       detail: { name: this.name },
@@ -89,6 +104,36 @@ export class CgForm extends LitElement {
       composed: true,
     }));
   }
+
+  /** Slotted form controls this cg-form owns, in tree order (not those of a nested <form> or cg-form). */
+  private _controls(): Element[] {
+    return Array.from(this.querySelectorAll('*')).filter((el) =>
+      (el instanceof HTMLButtonElement || el instanceof HTMLInputElement ||
+        el instanceof HTMLSelectElement || el instanceof HTMLTextAreaElement ||
+        (el.constructor as { formAssociated?: boolean }).formAssociated === true) &&
+      !el.closest('form') && el.parentElement?.closest('cg-form') === this);
+  }
+
+  /** The control of ours on the event's path (the slotted element, not its shadow internals). */
+  private _controlOf(e: Event): Element | undefined {
+    const controls = new Set(this._controls());
+    return e.composedPath().find((n): n is Element => n instanceof Element && controls.has(n));
+  }
+
+  private _onClick = (e: Event) => {
+    const button = this._controlOf(e);
+    if (!button || isDisabled(button)) return;
+    if (isSubmitButton(button)) this._submit();
+    else if ((button as { type?: unknown }).type === 'reset') this.reset();
+  };
+
+  private _onKeydown = (e: KeyboardEvent) => {
+    if (e.key !== 'Enter' || e.isComposing || e.defaultPrevented) return;
+    const field = this._controlOf(e);
+    if (!field || !blocksImplicitSubmission(field)) return;
+    e.preventDefault();
+    runImplicitSubmission(this._controls(), () => this._submit());
+  };
 
   /** Programmatic reset — clears inputs via native form reset and slotted custom elements. */
   reset() {
