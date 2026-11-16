@@ -2,7 +2,8 @@
 // (dist/), resolved through the package's own `exports` — exactly what a
 // consumer's TypeScript sees. Lines marked @ts-expect-error MUST fail.
 import type { MouseEvent } from 'react';
-import { CgButton, CgCheckbox, CgChip, CgCombobox, CgInput, CgLink, CgModal, CgSelect, CgTable, AiCommandPalette } from '@cognivo/adapter-react';
+import { CgButton, CgCheckbox, CgChip, CgCombobox, CgInput, CgLink, CgModal, CgPagination, CgSelect, CgTable, AiCommandPalette } from '@cognivo/adapter-react';
+import type { CgTableColumn, CgTableSort, CgPageChangeDetail } from '@cognivo/adapter-react';
 
 export const ok = [
   <CgInput key="1" name="email" type="email" label="E-mail" required value="x" onCgInput={(e) => e.detail.value} />,
@@ -17,7 +18,42 @@ export const ok = [
   // onClick is React's native click everywhere; the custom event has its own name.
   <CgLink key="9" href="/" onClick={(e: MouseEvent<HTMLElement>) => e.clientX} onLinkClick={(e: CustomEvent) => e.detail} />,
   <CgChip key="10" onClick={(e: MouseEvent<HTMLElement>) => e.button} onChipClick={(e: CustomEvent) => e.detail} />,
+  // cg-table: name, row headers, sorting (accessor/compare, controlled + manual), rich cells.
+  <CgTable
+    key="11"
+    caption="Open deals"
+    captionHidden
+    label="Deals"
+    labelledby="deals-heading"
+    manualSort
+    sort={{ key: 'amount', direction: 'desc' }}
+    columns={[
+      { key: 'company', label: 'Company', rowHeader: true, slotted: true, sortable: true, accessor: (cell: unknown) => String(cell) },
+      { key: 'amount', label: 'Amount', sortable: true, align: 'right', compare: (a: unknown, b: unknown) => Number(a) - Number(b) },
+    ]}
+    rows={[['Acme', 300]]}
+    onSortChange={(e) => { const s: CgTableSort = e.detail; return s.direction === 'asc'; }}
+    onSort={(e) => e.detail.key}
+  >
+    <a slot="cell-0-company" href="/deals/1">Acme</a>
+  </CgTable>,
+  <CgTable key="12" sort={null} />,
+  // cg-pagination cursor mode.
+  <CgPagination
+    key="13"
+    mode="cursor"
+    hasPrevious
+    hasNext={false}
+    messages={{ previousLabel: 'Anterior', nextLabel: 'Próxima' }}
+    onPageChange={(e) => { const d: CgPageChangeDetail = e.detail; return 'direction' in d ? d.direction : d.page; }}
+  />,
+  <CgPagination key="14" total={10} current={2} onPageChange={(e) => ('page' in e.detail ? e.detail.page : 0)} />,
+  // cg-input type="date" with min/max.
+  <CgInput key="15" type="date" name="close" label="Close date" min="2026-01-01" max="2026-12-31" />,
 ];
+
+export const column: CgTableColumn = { key: 'x', label: 'X', rowHeader: true };
+
 
 export const bad = [
   // @ts-expect-error unknown prop (typo) on a typed wrapper
@@ -32,4 +68,16 @@ export const bad = [
   <CgTable key="b5" rows={[{ name: 'Ana' }]} />,
   // @ts-expect-error onClick is the native MouseEvent handler, not a CustomEvent one
   <CgLink key="b6" onClick={(e: CustomEvent<{ href: string }>) => e.detail.href} />,
+  // @ts-expect-error sort direction is asc | desc
+  <CgTable key="b7" sort={{ key: 'name', direction: 'up' }} />,
+  // @ts-expect-error onSortChange's detail is a TableSort
+  <CgTable key="b8" onSortChange={(e: CustomEvent<{ page: number }>) => e.detail.page} />,
+  // @ts-expect-error pagination mode is pages | cursor
+  <CgPagination key="b9" mode="infinite" />,
+  // @ts-expect-error onPageChange's detail is { page } | { direction }
+  <CgPagination key="b10" onPageChange={(e: CustomEvent<{ cursor: string }>) => e.detail.cursor} />,
+  // @ts-expect-error hasNext is a boolean
+  <CgPagination key="b11" hasNext="yes" />,
+  // @ts-expect-error cg-input types are a closed union
+  <CgInput key="b12" type="datetime" />,
 ];

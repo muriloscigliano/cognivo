@@ -15,8 +15,9 @@ const BUDGETS = [
   // kit-fixes adds 2,495 B, almost all event maps (48 → 271 events, every
   // CustomEvent mapped: ~2.3 KB gzipped alone) plus ~0.25 KB wrapper code
   // (props not reset on re-render).
-  // Limit = measured 2026-11-16: 10,268 B (10.03 KB). See its README.
-  { name: '@cognivo/adapter-react', file: 'packages/adapter-react/dist/index.js',  maxKbGz: 10.03 },
+  // Limit = measured 2026-11-16: 10,268 B (10.03 KB); kit-fixes-2 maps
+  // cg-table's cg-sort-change (+8 B): 10,276 B (10.04 KB). See its README.
+  { name: '@cognivo/adapter-react', file: 'packages/adapter-react/dist/index.js',  maxKbGz: 10.04 },
   { name: '@cognivo/adapter-vue',   file: 'packages/adapter-vue/dist/index.js',    maxKbGz: 10  },
   // design-advisor bias category chunks (hashed filenames, matched by prefix)
   { name: 'design-advisor · biases-cognitive',       dir: 'packages/design-advisor/dist', prefix: 'biases-cognitive-',       maxKbGz: 920 },

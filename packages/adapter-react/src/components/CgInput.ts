@@ -8,7 +8,11 @@ export interface CgInputProps {
   /** Form field name. */
   name?: string;
   /** Input type. */
-  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search';
+  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search' | 'date';
+  /** Lowest allowed value (`date`: YYYY-MM-DD; `number`). */
+  min?: string;
+  /** Highest allowed value (`date`: YYYY-MM-DD; `number`). */
+  max?: string;
   /** Input size. */
   size?: 'sm' | 'md' | 'lg';
   /** Whether the input is disabled. */

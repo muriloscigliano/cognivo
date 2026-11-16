@@ -13,8 +13,8 @@ const cssOf = (styles: unknown) =>
 const rule = (css: string, selector: RegExp) => css.match(new RegExp(`${selector.source}\\s*\\{[^}]*\\}`))?.[0] ?? '';
 
 describe('secondary text uses the contrast-gated token', () => {
-  it('cg-table th text is --cg-color-on-surface-container-default on the container background', () => {
-    const th = rule(cssOf(CgTable.styles), /(?:^|\n|\})\s*th/);
+  it('cg-table column header (thead th) text is --cg-color-on-surface-container-default on the container background', () => {
+    const th = rule(cssOf(CgTable.styles), /(?:^|\n|\})\s*thead th/);
     expect(th).toContain('color: var(--cg-color-on-surface-container-default)');
     expect(th).toContain('background: var(--cg-color-surface-container-background)');
   });

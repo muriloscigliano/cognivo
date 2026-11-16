@@ -156,7 +156,7 @@ export type { CgCarouselProps } from './components/CgCarousel.js';
 
 // Data Display
 export { CgTable } from './components/CgTable.js';
-export type { CgTableProps, CgTableColumn } from './components/CgTable.js';
+export type { CgTableProps, CgTableColumn, CgTableSort } from './components/CgTable.js';
 
 export { CgList } from './components/CgList.js';
 export type { CgListProps, CgListItem } from './components/CgList.js';
@@ -246,6 +246,7 @@ export { CgSkeleton } from './components/CgSkeleton.js';
 export { CgDrawer } from './components/CgDrawer.js';
 export { CgBreadcrumbs } from './components/CgBreadcrumbs.js';
 export { CgPagination } from './components/CgPagination.js';
+export type { CgPaginationProps, CgPageChangeDetail } from './components/CgPagination.js';
 export { CgChip } from './components/CgChip.js';
 
 // Final Foundation

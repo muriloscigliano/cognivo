@@ -427,19 +427,15 @@ export class CgTable extends LitElement {
     return this._sortKey ? { key: this._sortKey, direction: this._sortDir } : null;
   }
 
-  private _emit(name: string, detail: unknown) {
-    this.dispatchEvent(new CustomEvent(name, { detail, bubbles: true, composed: true }));
-  }
-
   private _handleSort(col: TableColumn) {
     if (!col.sortable) return;
     const cur = this._sort;
     const next: TableSort = { key: col.key, direction: cur?.key === col.key && cur.direction === 'asc' ? 'desc' : 'asc' };
-    this._emit('cg-sort-change', next);
+    this.dispatchEvent(new CustomEvent('cg-sort-change', { detail: next, bubbles: true, composed: true }));
     if (this.sort !== undefined) return;
     this._sortKey = next.key;
     this._sortDir = next.direction;
-    this._emit('cg-sort', next);
+    this.dispatchEvent(new CustomEvent('cg-sort', { detail: next, bubbles: true, composed: true }));
   }
 
   private _toggleRow(index: number) {
