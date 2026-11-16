@@ -3,6 +3,7 @@ import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
+import { slotHasContent, observeLightDom } from '../../utils/slot-content.js';
 
 const MESSAGES = defineMessages('cg-table', {
   empty: 'No data',
@@ -367,6 +368,7 @@ export class CgTable extends LitElement {
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-on-surface-container-default);
     }
+    .table-footer[hidden] { display: none; }
     .table-footer ::slotted(*) {
       display: flex;
       align-items: center;
@@ -423,15 +425,21 @@ export class CgTable extends LitElement {
   @state() private _selected = new Set<number>();
   @state() private _hasFooter = false;
 
+  private _unobserveLight: (() => void) | null = null;
+
   override connectedCallback() {
     super.connectedCallback();
     this._resolveLabelledBy();
+    // slotchange misses edits inside a slotted footer wrapper.
+    this._unobserveLight = observeLightDom(this, () => this._syncFooter());
   }
 
   override disconnectedCallback() {
     super.disconnectedCallback();
     this._labelObserver?.disconnect();
     this._labelObserver = undefined;
+    this._unobserveLight?.();
+    this._unobserveLight = null;
   }
 
   override willUpdate(changed: PropertyValues) {
@@ -520,9 +528,14 @@ export class CgTable extends LitElement {
     }
   }
 
-  private _handleFooterSlotChange(e: Event) {
-    const slot = e.target as HTMLSlotElement;
-    this._hasFooter = slot.assignedNodes({ flatten: true }).length > 0;
+  private _handleFooterSlotChange() {
+    this._syncFooter();
+  }
+
+  /** The footer shows only when it has content (an empty wrapper takes no space). */
+  private _syncFooter() {
+    const slot = this.renderRoot?.querySelector?.<HTMLSlotElement>('slot[name="footer"]');
+    if (slot) this._hasFooter = slotHasContent(slot);
   }
 
   /** Rows paired with their ORIGINAL index so selection/click events stay stable under sorting. */

@@ -3,6 +3,7 @@ import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
+import { slotHasContent, observeLightDom } from '../../utils/slot-content.js';
 
 const MESSAGES = defineMessages('cg-sidebar', {
   label: 'Primary navigation',
@@ -37,9 +38,10 @@ const MESSAGES = defineMessages('cg-sidebar', {
  * </cg-sidebar>
  * ```
  *
- * @slot header - Branding/header area (auto-hides when empty)
+ * @slot header - Branding/header area (collapses when empty: nothing slotted, or an
+ *   empty wrapper — unless it holds the `collapsible` toggle)
  * @slot - Navigation content (`<a>` / `<button>` get modern default styling)
- * @slot footer - Footer area (auto-hides when empty)
+ * @slot footer - Footer area (collapses when empty)
  *
  * @fires {CustomEvent<{collapsed: boolean}>} cg-sidebar-toggle
  */
@@ -300,14 +302,37 @@ export class CgSidebar extends LitElement {
   @state() private _headerEmpty = false;
   @state() private _footerEmpty = false;
 
+  private _unobserve: (() => void) | null = null;
+
   override connectedCallback(): void {
     super.connectedCallback();
     if (this.width) {
       this.style.setProperty('--cg-component-sidebar-width', this.width);
     }
+    // slotchange misses an unused slot and edits inside a slotted wrapper.
+    this._unobserve = observeLightDom(this, () => this._syncSlots());
+  }
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this._unobserve?.();
+    this._unobserve = null;
+  }
+
+  override firstUpdated(): void {
+    this._syncSlots();
+  }
+
+  /** Header is empty when it shows nothing and there is no toggle button. */
+  private _syncSlots(): void {
+    const root = this.renderRoot as ShadowRoot | undefined;
+    if (!root?.querySelector) return;
+    this._headerEmpty = !slotHasContent(root.querySelector<HTMLSlotElement>('slot[name="header"]')) && !this.collapsible;
+    this._footerEmpty = !slotHasContent(root.querySelector<HTMLSlotElement>('slot[name="footer"]'));
   }
 
   override updated(changed: Map<string, unknown>) {
+    if (changed.has('collapsible') && this.hasUpdated) this._syncSlots();
     if (changed.has('width') && this.width) {
       this.style.setProperty('--cg-component-sidebar-width', this.width);
     }
@@ -328,16 +353,9 @@ export class CgSidebar extends LitElement {
     }));
   }
 
-  private _onHeaderSlotChange = (e: Event) => {
-    const slot = e.target as HTMLSlotElement;
-    // Header is "empty" only when slot has no content AND there's no toggle button.
-    this._headerEmpty = slot.assignedNodes({ flatten: true }).length === 0 && !this.collapsible;
-  };
+  private _onHeaderSlotChange = () => this._syncSlots();
 
-  private _onFooterSlotChange = (e: Event) => {
-    const slot = e.target as HTMLSlotElement;
-    this._footerEmpty = slot.assignedNodes({ flatten: true }).length === 0;
-  };
+  private _onFooterSlotChange = () => this._syncSlots();
 
   override render() {
     return html`

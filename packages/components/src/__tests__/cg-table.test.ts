@@ -230,19 +230,8 @@ describe('cg-table', () => {
     expect(sorted).toEqual([{ row: [1], i: 0 }, { row: [2], i: 1 }]);
   });
 
-  it('_handleFooterSlotChange with nodes sets _hasFooter=true', () => {
-    const el2 = make();
-    const slot = { assignedNodes: () => [document.createElement('span')] } as unknown as HTMLSlotElement;
-    (el2 as any)._handleFooterSlotChange({ target: slot });
-    expect((el2 as any)._hasFooter).toBe(true);
-  });
-
-  it('_handleFooterSlotChange with no nodes sets _hasFooter=false', () => {
-    const el2 = make();
-    const slot = { assignedNodes: () => [] } as unknown as HTMLSlotElement;
-    (el2 as any)._handleFooterSlotChange({ target: slot });
-    expect((el2 as any)._hasFooter).toBe(false);
-  });
+  // Footer collapse (empty slot, empty wrapper, content added later) is
+  // covered in a real browser: browser/empty-slots.browser.test.ts.
 
   // ── Sorting: accessor, comparator, controlled, manual ──
 
