@@ -33,7 +33,7 @@ export interface CgSelectProps {
 
 export const CgSelect = createWrapper<CgSelectProps, 'cg-select'>(
   'cg-select',
-  ['options', 'value', 'placeholder', 'name', 'disabled', 'error', 'searchable', 'label', 'accessibleLabel'],
+  ['options', 'value', 'placeholder', 'name', 'disabled', 'error', 'searchable'],
   {
     onCgChange: 'cg-change',
   }

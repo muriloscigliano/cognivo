@@ -31,6 +31,6 @@ export interface CgButtonProps {
 
 export const CgButton = createWrapper<CgButtonProps, 'cg-button'>(
   'cg-button',
-  ['variant', 'size', 'type', 'disabled', 'loading', 'full', 'label', 'href', 'target', 'rel', 'download'],
+  ['variant', 'size', 'type', 'disabled', 'loading', 'full', 'label'],
   {}
 );
