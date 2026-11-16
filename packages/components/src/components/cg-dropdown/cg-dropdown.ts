@@ -71,6 +71,9 @@ export class CgDropdown extends LitElement {
       display: inline-flex;
       align-items: center;
     }
+    /* block: full width, the slotted trigger stretched across it (a grid item stretches). */
+    :host([block]) { display: block; }
+    :host([block]) .trigger { display: grid; }
 
     /* Positioning — unique to cg-dropdown (absolute to host, not fixed) */
     .menu {
@@ -148,6 +151,8 @@ export class CgDropdown extends LitElement {
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property({ type: Array }) items: DropdownItem[] = [];
   @property({ type: Boolean, reflect: true }) loading = false;
+  /** Full width: the element is a block and the slotted trigger spans it. */
+  @property({ type: Boolean, reflect: true }) block = false;
   /** Accessible name of the menu. Default: the trigger's text, then "Dropdown menu". */
   @property() label = '';
 

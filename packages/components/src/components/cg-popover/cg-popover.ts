@@ -18,7 +18,7 @@ import { FocusTrap } from '../../utils/focus-trap.js';
  * </cg-popover>
  * ```
  *
- * @slot - Trigger element
+ * @slot - Trigger element (with `block`, stretched to the full width)
  * @slot content - Popover content
  *
  * @fires {CustomEvent} cg-popover-open - When the popover opens
@@ -36,6 +36,9 @@ export class CgPopover extends LitElement {
       display: inline-flex;
       cursor: pointer;
     }
+    /* block: full width, the slotted trigger stretched across it (a grid item stretches). */
+    :host([block]) { display: block; }
+    :host([block]) .trigger { display: grid; }
 
     .popover {
       position: fixed;
@@ -125,6 +128,8 @@ export class CgPopover extends LitElement {
   @property({ type: Boolean }) closable = true;
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
+  /** Full width: the element is a block and the slotted trigger spans it. */
+  @property({ type: Boolean, reflect: true }) block = false;
 
   @state() private _actualSide: 'top' | 'bottom' | 'left' | 'right' = 'bottom';
   @state() private _arrowOffset = 0;
