@@ -23,7 +23,9 @@ const PHONE_QUERY = '(max-width: 768px)';
  * panel (`--cg-color-surface-panel-*`, radius
  * `--cg-component-app-shell-panel-radius`, inset
  * `--cg-component-app-shell-panel-inset`), separated by surfaces and a
- * hairline instead of divider lines.
+ * hairline instead of divider lines. Without a top bar (nothing in the
+ * header slot) the header row takes no space and the panel sits
+ * `--cg-component-app-shell-panel-top` (default: the inset) from the top.
  *
  * Phone (≤ 768px): the sidebar is an overlay drawer, open when not
  * `sidebar-collapsed`. It starts closed: on first load at phone width, and
@@ -142,6 +144,14 @@ export class CgAppShell extends LitElement {
     :host([panel][sidebar-position="end"]) main {
       margin-inline: var(--cg-component-app-shell-panel-inset) 0;
     }
+    /* No top bar (empty header slot): the header row takes no space, and the
+       panel sits --cg-component-app-shell-panel-top from the window top. */
+    :host([panel]) .shell.no-header {
+      --_cg-shell-header-h: 0px;
+      --_cg-shell-sidebar-top: 0px;
+    }
+    :host([panel]) .no-header header { display: none; }
+    :host([panel]) .no-header main { margin-top: var(--cg-component-app-shell-panel-top); }
 
     /* Empty regions collapse so they don't reserve borders */
     footer.empty { display: none; }
@@ -258,6 +268,7 @@ export class CgAppShell extends LitElement {
   @state() private _phone = false;
 
   private _hasFooter = false;
+  @state() private _hasHeader = false;
   private _media: MediaQueryList | null = null;
   /** The desktop column's collapsed state before the window narrowed to a phone. */
   private _desktopCollapsed: boolean | null = null;
@@ -397,12 +408,16 @@ export class CgAppShell extends LitElement {
     }
   }
 
+  private _onHeaderSlotChange(e: Event): void {
+    this._hasHeader = (e.target as HTMLSlotElement).assignedNodes({ flatten: true }).length > 0;
+  }
+
   override render() {
     // While the phone drawer is open, the rest of the page is inert: focus stays in the drawer.
     const behind = this._drawerOpen;
     return html`
-      <div class="shell">
-        <header ?inert=${behind}><slot name="header"></slot></header>
+      <div class="shell ${this._hasHeader ? '' : 'no-header'}">
+        <header ?inert=${behind}><slot name="header" @slotchange=${this._onHeaderSlotChange}></slot></header>
         <div class="backdrop" @click=${() => this._setCollapsed(true)}></div>
         <aside ?inert=${this.sidebarCollapsed}>
           <slot name="sidebar"></slot>
