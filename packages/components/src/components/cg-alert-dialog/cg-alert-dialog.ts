@@ -3,6 +3,7 @@ import { property, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { FocusTrap } from '../../utils/focus-trap.js';
+import { lockBodyScroll, unlockBodyScroll } from '../../utils/scroll-lock.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
 const MESSAGES = defineMessages('cg-alert-dialog', {
@@ -160,12 +161,11 @@ export class CgAlertDialog extends LitElement {
   @query('.dialog') private _dialogEl!: HTMLElement;
 
   private _focusTrap = new FocusTrap();
-  private _previousOverflow = '';
 
   override disconnectedCallback(): void {
     super.disconnectedCallback();
     this._focusTrap.deactivate();
-    document.body.style.overflow = this._previousOverflow;
+    unlockBodyScroll(this);
   }
 
   override updated(changed: Map<string, unknown>): void {
@@ -176,8 +176,7 @@ export class CgAlertDialog extends LitElement {
   }
 
   private _onOpen(): void {
-    this._previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    lockBodyScroll(this);
     this.dispatchEvent(new CustomEvent('cg-alert-open', { bubbles: true, composed: true }));
 
     requestAnimationFrame(() => {
@@ -194,7 +193,7 @@ export class CgAlertDialog extends LitElement {
   }
 
   private _onClose(): void {
-    document.body.style.overflow = this._previousOverflow;
+    unlockBodyScroll(this);
     this._focusTrap.deactivate();
     this.dispatchEvent(new CustomEvent('cg-alert-close', { bubbles: true, composed: true }));
   }

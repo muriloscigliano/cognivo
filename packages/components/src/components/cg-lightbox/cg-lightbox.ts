@@ -3,6 +3,7 @@ import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, focusRingDual } from '../../styles/index.js';
 import { FocusTrap } from '../../utils/focus-trap.js';
+import { lockBodyScroll, unlockBodyScroll } from '../../utils/scroll-lock.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
 const MESSAGES = defineMessages('cg-lightbox', {
@@ -133,11 +134,10 @@ export class CgLightbox extends LitElement {
   @property({ type: Boolean }) closable = true;
 
   private _focusTrap = new FocusTrap();
-  private _previousOverflow = '';
 
   override disconnectedCallback(): void {
     super.disconnectedCallback();
-    if (this.open) document.body.style.overflow = this._previousOverflow || '';
+    unlockBodyScroll(this);
     this._focusTrap.deactivate();
   }
 
@@ -164,8 +164,7 @@ export class CgLightbox extends LitElement {
   }
 
   private _onOpen(): void {
-    this._previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    lockBodyScroll(this);
     this.dispatchEvent(new CustomEvent('cg-lightbox-open', { bubbles: true, composed: true }));
     // Activate the trap after the overlay renders.
     requestAnimationFrame(() => {
@@ -185,7 +184,7 @@ export class CgLightbox extends LitElement {
   }
 
   private _onClose(wasOpen: boolean): void {
-    document.body.style.overflow = this._previousOverflow;
+    unlockBodyScroll(this);
     this._focusTrap.deactivate();
     if (wasOpen) {
       this.dispatchEvent(new CustomEvent('cg-lightbox-close', { bubbles: true, composed: true }));

@@ -3,6 +3,7 @@ import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { spinKeyframes, reducedMotion } from '../../styles/index.js';
 import { FocusTrap } from '../../utils/focus-trap.js';
+import { lockBodyScroll, unlockBodyScroll } from '../../utils/scroll-lock.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
 const MESSAGES = defineMessages('cg-drawer', {
@@ -332,7 +333,6 @@ export class CgDrawer extends LitElement {
   @state() private _hasFooter = false;
   @state() private _closing = false;
 
-  private _previousOverflow = '';
   private _focusTrap = new FocusTrap();
 
   override updated(changed: Map<string, unknown>) {
@@ -350,8 +350,7 @@ export class CgDrawer extends LitElement {
   }
 
   private _onOpen() {
-    this._previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    lockBodyScroll(this);
     this.dispatchEvent(new CustomEvent('cg-drawer-open', { bubbles: true, composed: true }));
 
     // Activate the shared focus trap synchronously — by the time `updated()`
@@ -369,7 +368,7 @@ export class CgDrawer extends LitElement {
   }
 
   private _onClose() {
-    document.body.style.overflow = this._previousOverflow;
+    unlockBodyScroll(this);
     this._focusTrap.deactivate();
     this.dispatchEvent(new CustomEvent('cg-drawer-close', { bubbles: true, composed: true }));
   }
@@ -377,10 +376,8 @@ export class CgDrawer extends LitElement {
   override disconnectedCallback() {
     super.disconnectedCallback();
     this._focusTrap.deactivate();
-    // Only restore body overflow if we actually locked it
-    if (this.open) {
-      document.body.style.overflow = this._previousOverflow || '';
-    }
+    // Release the page scroll lock if destroyed while open
+    unlockBodyScroll(this);
   }
 
   private _handleBack() {

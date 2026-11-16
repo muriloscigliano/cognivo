@@ -3,6 +3,7 @@ import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { reducedMotion } from '../../styles/index.js';
 import { FocusTrap } from '../../utils/focus-trap.js';
+import { lockBodyScroll, unlockBodyScroll } from '../../utils/scroll-lock.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
 const MESSAGES = defineMessages('cg-sheet', {
@@ -146,25 +147,22 @@ export class CgSheet extends LitElement {
   override disconnectedCallback(): void {
     super.disconnectedCallback();
     // An unmount while open must not leave the page scroll-locked.
-    if (this.open) document.body.style.overflow = this._previousOverflow;
+    unlockBodyScroll(this);
     this._focusTrap.deactivate();
   }
 
   override updated(changed: Map<string, unknown>): void {
     if (changed.has('open')) {
       // First render with open=false is not a close — no spurious event,
-      // no clobbering document.body.style.overflow on mount.
+      // no touching the page scroll lock on mount.
       if (changed.get('open') === undefined && !this.open) return;
       if (this.open) this._onOpen();
       else this._onClose();
     }
   }
 
-  private _previousOverflow = '';
-
   private _onOpen(): void {
-    this._previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    lockBodyScroll(this);
     this.dispatchEvent(new CustomEvent('cg-sheet-open', { bubbles: true, composed: true }));
     requestAnimationFrame(() => {
       const panel = this.shadowRoot?.querySelector<HTMLElement>('.panel');
@@ -177,7 +175,7 @@ export class CgSheet extends LitElement {
   }
 
   private _onClose(): void {
-    document.body.style.overflow = this._previousOverflow;
+    unlockBodyScroll(this);
     this.dispatchEvent(new CustomEvent('cg-sheet-close', { bubbles: true, composed: true }));
     this._focusTrap.deactivate();
     this._dragOffset = 0;

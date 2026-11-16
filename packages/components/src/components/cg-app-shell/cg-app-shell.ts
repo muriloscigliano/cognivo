@@ -3,6 +3,7 @@ import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { getDeepActiveElement, getFocusableElements, focusEntry } from '../../utils/focus-trap.js';
+import { lockBodyScroll, unlockBodyScroll } from '../../utils/scroll-lock.js';
 
 /** Below this width the sidebar is an overlay drawer, not a column. */
 const PHONE_QUERY = '(max-width: 768px)';
@@ -246,8 +247,6 @@ export class CgAppShell extends LitElement {
   private _media: MediaQueryList | null = null;
   /** Focus to restore when the phone drawer closes. */
   private _returnFocus: HTMLElement | null = null;
-  /** body.style.overflow before the phone drawer locked scrolling; null when not locked. */
-  private _lockedOverflow: string | null = null;
 
   /** The phone drawer is showing. */
   private get _drawerOpen(): boolean {
@@ -266,7 +265,7 @@ export class CgAppShell extends LitElement {
     super.disconnectedCallback();
     this._media?.removeEventListener('change', this._onMediaChange);
     document.removeEventListener('keydown', this._onKeydown);
-    this._unlockScroll();
+    unlockBodyScroll(this);
   }
 
   override updated(changed: Map<string, unknown>): void {
@@ -277,8 +276,8 @@ export class CgAppShell extends LitElement {
       this.style.setProperty('--_cg-shell-header-h', this.headerHeight || '56px');
     }
     if (changed.has('sidebarCollapsed') || changed.has('_phone')) {
-      if (this._drawerOpen) this._lockScroll();
-      else this._unlockScroll();
+      if (this._drawerOpen) lockBodyScroll(this);
+      else unlockBodyScroll(this);
     }
     // Focus follows the drawer only when it opens or closes on a phone (not on
     // first render, and not when a desktop column collapses).
@@ -352,18 +351,6 @@ export class CgAppShell extends LitElement {
       el = el instanceof ShadowRoot ? el.host : el.parentNode;
     }
     return false;
-  }
-
-  private _lockScroll(): void {
-    if (this._lockedOverflow !== null) return;
-    this._lockedOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-  }
-
-  private _unlockScroll(): void {
-    if (this._lockedOverflow === null) return;
-    document.body.style.overflow = this._lockedOverflow;
-    this._lockedOverflow = null;
   }
 
   private _onFooterSlotChange(e: Event): void {

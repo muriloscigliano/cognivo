@@ -3,6 +3,7 @@ import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { spinKeyframes, reducedMotion } from '../../styles/index.js';
 import { FocusTrap } from '../../utils/focus-trap.js';
+import { lockBodyScroll, unlockBodyScroll } from '../../utils/scroll-lock.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
 const MESSAGES = defineMessages('cg-modal', {
@@ -315,22 +316,19 @@ export class CgModal extends LitElement {
   @state() private _hasFooter = false;
   @state() private _closing = false;
 
-  private _previousOverflow = '';
   private _focusTrap = new FocusTrap();
 
   override disconnectedCallback() {
     super.disconnectedCallback();
-    // Always restore body scroll if destroyed while open
-    if (this.open) {
-      document.body.style.overflow = this._previousOverflow || '';
-    }
+    // Release the page scroll lock if destroyed while open
+    unlockBodyScroll(this);
     this._focusTrap.deactivate();
   }
 
   override updated(changed: Map<string, unknown>) {
     if (changed.has('open')) {
       // First render with open=false is NOT a close — don't fire a spurious
-      // cg-modal-close or clobber document.body.style.overflow on mount.
+      // cg-modal-close on mount.
       if (changed.get('open') === undefined && !this.open) return;
       if (this.open) {
         this._onOpen();
@@ -349,8 +347,7 @@ export class CgModal extends LitElement {
   }
 
   private _onOpen() {
-    this._previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    lockBodyScroll(this);
 
     this.dispatchEvent(new CustomEvent('cg-modal-open', { bubbles: true, composed: true }));
 
@@ -365,7 +362,7 @@ export class CgModal extends LitElement {
   }
 
   private _onClose() {
-    document.body.style.overflow = this._previousOverflow;
+    unlockBodyScroll(this);
     this._focusTrap.deactivate();
     this.dispatchEvent(new CustomEvent('cg-modal-close', { bubbles: true, composed: true }));
   }
