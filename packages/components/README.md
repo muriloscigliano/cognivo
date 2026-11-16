@@ -49,6 +49,27 @@ import { setValidationMessages } from '@cognivo/components/validation';
 setValidationMessages({ valueMissing: 'Campo obrigatório', typeMismatch: 'Formato inválido' });
 ```
 
+### Dates
+
+`cg-input type="date"` wraps the browser's date control: its picker and
+keyboard entry, an ISO `YYYY-MM-DD` value in `FormData`, and native `min` /
+`max` validation (`rangeUnderflow` / `rangeOverflow`, with messages from the
+same element / page-wide / browser chain). A date range is two fields that
+bound each other:
+
+```html
+<cg-input id="from" type="date" name="from" label="From"></cg-input>
+<cg-input id="to" type="date" name="to" label="To"></cg-input>
+<script>
+  from.addEventListener('cg-input', () => { to.min = from.value; });
+  to.addEventListener('cg-input', () => { from.max = to.value; });
+</script>
+```
+
+The control's calendar icon and popup follow the page's `color-scheme`: in the
+dark theme set `color-scheme: dark` on the page (e.g. next to
+`data-theme="dark"`), or the icon draws dark on dark.
+
 ### Unit tests in jsdom
 
 jsdom (the default for Jest, Vitest and React Testing Library) has

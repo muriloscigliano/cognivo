@@ -20,6 +20,7 @@ const MESSAGES = defineMessages('cg-input', {
  * <cg-input label="Email" type="email" placeholder="you@example.com"></cg-input>
  * <cg-input label="Search" clearable><span slot="prefix">[search icon]</span></cg-input>
  * <cg-input label="Bio" maxlength="200" error helper="Too long"></cg-input>
+ * <cg-input label="Close date" type="date" name="close" min="2026-01-01"></cg-input>
  * ```
  *
  * @slot prefix - Icon or content before the input field
@@ -319,7 +320,12 @@ export class CgInput extends LitElement {
   @property() placeholder = '';
   @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property() helper = '';
-  @property({ reflect: true }) type: 'text' | 'email' | 'password' | 'number' | 'url' | 'search' | 'tel' = 'text';
+  /** `date` renders the browser's date control; its value is ISO `YYYY-MM-DD`. */
+  @property({ reflect: true }) type: 'text' | 'email' | 'password' | 'number' | 'url' | 'search' | 'tel' | 'date' = 'text';
+  /** Lowest / highest allowed value (`type="date"`: `YYYY-MM-DD`; `number`):
+   *  validated natively (rangeUnderflow / rangeOverflow). */
+  @property() min = '';
+  @property() max = '';
   @property({ reflect: true }) size: 'md' | 'lg' = 'md';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property({ type: Boolean, reflect: true }) disabled = false;
@@ -377,7 +383,8 @@ export class CgInput extends LitElement {
   }
 
   private get _isFloated() {
-    return this._focused || !!this.value;
+    // A date control always shows its own format text, so its label stays up.
+    return this._focused || !!this.value || this.type === 'date';
   }
 
   private _handleInput(e: Event) {
@@ -431,6 +438,8 @@ export class CgInput extends LitElement {
             ?readonly=${this.readonly}
             ?required=${this.required}
             maxlength=${this.maxlength || nothing}
+            min=${this.min || nothing}
+            max=${this.max || nothing}
             autocomplete=${this.autocomplete}
             aria-invalid=${this.error ? 'true' : 'false'}
             aria-busy=${this.loading ? 'true' : 'false'}
