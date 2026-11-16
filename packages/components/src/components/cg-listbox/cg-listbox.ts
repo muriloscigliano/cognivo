@@ -66,6 +66,7 @@ export class CgListbox extends LitElement {
     }
 
     .option.selected {
+      background: var(--cg-color-state-selected);
       color: var(--cg-color-state-text);
       font-weight: var(--cg-font-weight-semibold);
     }
@@ -85,7 +86,7 @@ export class CgListbox extends LitElement {
       width: var(--cg-icon-size-100);
       height: var(--cg-icon-size-100);
       flex-shrink: 0;
-      color: var(--cg-color-accent-text);
+      color: var(--cg-color-current-text);
       opacity: 0;
       transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }

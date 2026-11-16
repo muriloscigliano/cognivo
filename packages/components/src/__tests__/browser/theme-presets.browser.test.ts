@@ -161,11 +161,35 @@ describe.skipIf(!browserAvailable)('theme presets (real browser)', { timeout: 60
             const expected = await tokens(page, preset === 'default'
               ? ['--cg-color-action-primary-background-default', '--cg-color-action-primary-text-default', '--cg-overlay-accent-light',
                   '--cg-color-action-primary-border-default', '--cg-color-accent-text']
-              : ['--cg-color-state-selected', '--cg-color-state-text', '--cg-color-state-hover', '--cg-color-state-text', '--cg-color-state-text']);
+              : ['--cg-color-action-primary-background-default', '--cg-color-action-primary-text-default', '--cg-color-state-selected',
+                  '--cg-color-state-text', '--cg-color-state-text']);
             expect(actual).toEqual(expected);
             if (preset === 'neutral') for (const v of actual) expect(neutral(v), v).toBe(true);
             await page.close();
           });
+
+          if (preset === 'neutral') {
+            it('neutral calendar: a selected day / range end is solid primary (opaque), in-range days an opaque grey distinct from hover, today a ring only; hover never replaces a selection', async () => {
+              const page = await open(preset, theme);
+              const [primary, onPrimary, hover] = await tokens(page, ['--cg-color-action-primary-background-default', '--cg-color-action-primary-text-default', '--cg-color-state-hover']);
+              const opaque = (c: string) => c.startsWith('rgb(');
+              const day = await style(page, IN('single', '.day.selected'), ['background-color', 'color']);
+              expect(day).toEqual({ 'background-color': primary, color: onPrimary });
+              expect(opaque(primary), primary).toBe(true);
+              const inRange = (await style(page, IN('range', '.day.in-range'), ['background-color']))['background-color']!;
+              expect(opaque(inRange), inRange).toBe(true);
+              expect(inRange).not.toBe(hover);
+              const today = await style(page, IN('single', '.day.today:not(.selected)'), ['background-color', 'box-shadow']);
+              expect(today['background-color']).toBe('rgba(0, 0, 0, 0)');
+              expect(today['box-shadow']).not.toBe('none');
+              for (const [id, sel] of [['single', '.day.selected'], ['range', '.day.range-start'], ['range', '.day.range-end']] as const) {
+                await page.locator(`#${id}`).locator(sel).hover();
+                await settleStyles(page);
+                expect((await style(page, IN(id, sel), ['background-color']))['background-color'], `${id} ${sel} hovered`).toBe(primary);
+              }
+              await page.close();
+            });
+          }
 
           it('calendar: the selected day, range ends and in-range days, and today use the selection tokens', async () => {
             const page = await open(preset, theme);

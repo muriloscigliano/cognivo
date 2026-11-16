@@ -10,9 +10,12 @@
  *   chips, split buttons): near-black with white text in light, white with
  *   near-black text in dark. Hover and pressed are one and two grey steps
  *   away from it.
- * - Selection: selected days and ranges, the current page and step, the active
- *   tab, selected time options use the neutral state tokens
- *   (--cg-color-state-selected / -text / -hover) instead of the accent.
+ * - Selection: a selected day and range ends, the current page and step and a
+ *   selected time option are solid primary (near-black with white text; dark:
+ *   inverted). Days inside a range are the opaque selected grey
+ *   (--cg-color-state-selected, distinct from hover); today, the active tab
+ *   and the current step's marker use the near-black state text colour (a
+ *   ring / line, weaker than a filled selection) instead of the accent.
  *
  * Without this file the default preset applies: the brand lime primary and
  * accent selection (unchanged). Hover and focus states are neutral in both.
@@ -41,9 +44,9 @@
 /* Selection (both themes: the state tokens already change with the theme). */
 :root,
 [data-theme="dark"] {
-  --cg-color-selected-background: var(--cg-color-state-selected);
-  --cg-color-selected-text: var(--cg-color-state-text);
-  --cg-color-selected-subtle: var(--cg-color-state-hover);
+  --cg-color-selected-background: var(--cg-color-action-primary-background-default);
+  --cg-color-selected-text: var(--cg-color-action-primary-text-default);
+  --cg-color-selected-subtle: var(--cg-color-state-selected);
   --cg-color-current-indicator: var(--cg-color-state-text);
   --cg-color-current-text: var(--cg-color-state-text);
 }

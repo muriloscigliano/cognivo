@@ -75,7 +75,7 @@ export class CgTreeView extends LitElement {
     /* Hover and selected share the same chrome for now — list-row bg shift
        (theme-aware via surface-cards tokens) plus a 1px container outline.
        The transparent border at rest prevents any layout shift. */
-    .node:hover:not(.disabled) {
+    .node:hover:not(.disabled):not(.selected) {
       background: var(--cg-color-surface-cards-hover-background);
       border-color: var(--cg-color-surface-cards-hover-border);
     }

@@ -337,9 +337,13 @@ export class CgTable extends LitElement {
       background: var(--cg-color-action-tertiary-background-hover);
     }
     @media (hover: hover) {
-      :host([striped]) tbody tr:nth-child(even):hover > * {
+      :host([striped]) tbody tr:nth-child(even):hover:not(.selected) > * {
         background: var(--cg-color-action-tertiary-background-hover);
       }
+    }
+    /* Selection wins over stripes (and their hover). */
+    :host([striped]) tbody tr.selected > * {
+      background: var(--cg-color-state-selected);
     }
 
     /* ── Empty state ── */

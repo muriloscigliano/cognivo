@@ -13,8 +13,8 @@
       },
       "selected": {
         "$type": "color",
-        "$value": "{overlay.dark.light}",
-        "$description": "Selected / checked row fill (lists, tables): a neutral step, never a coloured row."
+        "$value": "{gray.300}",
+        "$description": "Selected / checked row fill (lists, tables) and, in the neutral preset, days inside a selected range: an OPAQUE grey, clearly stronger than hover (>= 1.2:1 from the hover fill on every page surface), never a coloured row. Light gray.300, dark gray.700."
       },
       "text": {
         "$type": "color",
@@ -62,17 +62,17 @@
       "background": {
         "$type": "color",
         "$value": "{color.action.primary.background.default}",
-        "$description": "Selected item fill: a selected calendar day and range ends, a selected time option, the current page, the current step. Default preset: the primary fill (accent); the neutral preset (themes/neutral.css) sets it to --cg-color-state-selected."
+        "$description": "Selected item fill: a selected calendar day and range ends, a selected time option, the current page, the current step. The primary fill in both presets: accent by default, solid near-black (dark: white) in the neutral preset (themes/neutral.css)."
       },
       "text": {
         "$type": "color",
         "$value": "{color.action.primary.text.default}",
-        "$description": "Text on --cg-color-selected-background. Neutral preset: --cg-color-state-text."
+        "$description": "Text on --cg-color-selected-background. Neutral preset: the primary text colour too."
       },
       "subtle": {
         "$type": "color",
         "$value": "{overlay.accent.light}",
-        "$description": "Soft selected fill: days inside a selected range, the active tab's count. Neutral preset: --cg-color-state-hover."
+        "$description": "Soft selected fill: days inside a selected range, the active tab's count. Neutral preset: --cg-color-state-selected (opaque grey, distinct from hover)."
       }
     },
     "current": {

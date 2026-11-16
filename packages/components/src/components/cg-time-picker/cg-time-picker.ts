@@ -185,15 +185,12 @@ export class CgTimePicker extends LitElement {
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .time-option:hover { background: var(--cg-color-action-secondary-background-hover); }
+    .time-option:hover:not(.selected) { background: var(--cg-color-action-secondary-background-hover); }
     .time-option:active { transform: scale(var(--cg-interaction-press-scale)); }
     .time-option.selected {
       background: var(--cg-color-selected-background);
       color: var(--cg-color-selected-text);
       font-weight: var(--cg-font-weight-semibold);
-    }
-    .time-option.selected:hover {
-      background: var(--cg-color-selected-background);
     }
     .time-option:focus-visible {
       outline: none;

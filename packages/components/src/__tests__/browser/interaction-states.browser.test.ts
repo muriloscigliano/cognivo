@@ -119,6 +119,39 @@ describe.skipIf(!browserAvailable)('interaction states (real browser)', { timeou
         await page.close();
       });
 
+      it('selected is an opaque grey, clearly stronger than hover on every page surface (>= 1.2:1 apart)', async () => {
+        const page = await open(theme);
+        const ratios = await page.evaluate(() => {
+          const probe = document.createElement('div');
+          document.body.append(probe);
+          const rgb = (bg: string, over?: string) => {
+            probe.style.background = '';
+            probe.style.backgroundColor = `var(${bg})`;
+            const base = getComputedStyle(probe).backgroundColor.match(/[\d.]+/g)!.map(Number);
+            if (!over) return base;
+            probe.style.backgroundColor = `var(${over})`;
+            const [r, g, b, a = 1] = getComputedStyle(probe).backgroundColor.match(/[\d.]+/g)!.map(Number);
+            return [r!, g!, b!].map((v, i) => v * a + base[i]! * (1 - a));
+          };
+          const lum = (c: number[]) => {
+            const [R, G, B] = c.map((v) => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; });
+            return 0.2126 * R! + 0.7152 * G! + 0.0722 * B!;
+          };
+          const ratio = (a: number[], b: number[]) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => m - n); return (y! + 0.05) / (x! + 0.05); };
+          probe.style.backgroundColor = 'var(--cg-color-state-selected)';
+          const alpha = Number(getComputedStyle(probe).backgroundColor.match(/[\d.]+/g)![3] ?? 1);
+          const out: Record<string, number> = { alpha };
+          for (const surface of ['--cg-color-surface-base-background', '--cg-color-surface-cards-background', '--cg-color-surface-container-background']) {
+            out[surface] = ratio(rgb(surface, '--cg-color-state-hover'), rgb(surface, '--cg-color-state-selected'));
+          }
+          probe.remove();
+          return out;
+        });
+        expect(ratios.alpha).toBe(1);
+        for (const [surface, r] of Object.entries(ratios)) if (surface !== 'alpha') expect(r, surface).toBeGreaterThanOrEqual(1.2);
+        await page.close();
+      });
+
       it('table: a hovered row gets the neutral hover fill, a selected (checked) row the neutral selected fill', async () => {
         const page = await open(theme);
         const [hover, selected] = await Promise.all([token(page, '--cg-color-state-hover'), token(page, '--cg-color-state-selected')]);
@@ -130,6 +163,25 @@ describe.skipIf(!browserAvailable)('interaction states (real browser)', { timeou
         await page.locator('#table').locator('tbody tr').nth(2).hover();
         await settleStyles(page);
         expect((await style(page, ROW_CELL(2), ['background-color']))['background-color']).toBe(hover);
+        // Hovering the selected row keeps the selected fill; its checkbox stays checked (not colour alone).
+        await page.locator('#table').locator('tbody tr').nth(1).hover();
+        await settleStyles(page);
+        expect((await style(page, ROW_CELL(1), ['background-color']))['background-color']).toBe(selected);
+        expect(await page.locator('#table').locator('tbody tr').nth(1).locator('cg-checkbox').evaluate((c) => (c as HTMLInputElement).checked)).toBe(true);
+        await page.close();
+      });
+
+      it('striped table: a selected even row shows the selected fill, not the stripe (also while hovered)', async () => {
+        const page = await open(theme);
+        const selected = await token(page, '--cg-color-state-selected');
+        await page.evaluate(() => document.getElementById('table')!.setAttribute('striped', ''));
+        await page.locator('#table').locator('tbody tr').nth(1).locator('cg-checkbox').click();
+        await page.mouse.move(0, 0);
+        await settleStyles(page);
+        expect((await style(page, ROW_CELL(1), ['background-color']))['background-color']).toBe(selected);
+        await page.locator('#table').locator('tbody tr').nth(1).hover();
+        await settleStyles(page);
+        expect((await style(page, ROW_CELL(1), ['background-color']))['background-color']).toBe(selected);
         await page.close();
       });
 

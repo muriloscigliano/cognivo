@@ -113,7 +113,7 @@ export class CgCalendar extends LitElement {
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .day:hover:not(:disabled) {
+    .day:hover:not(:disabled):not(.selected):not(.range-start):not(.range-end) {
       background: var(--cg-color-action-tertiary-background-hover);
     }
     .day:active:not(:disabled) {

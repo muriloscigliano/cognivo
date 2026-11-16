@@ -53,7 +53,9 @@ test('neutral preset: primary is near-black on white text in light, white on nea
   assert.equal(dark.get('--cg-color-action-primary-background-default'), 'var(--cg-gray-white)');
   assert.equal(dark.get('--cg-color-action-primary-text-default'), 'var(--cg-gray-950)');
   for (const t of [light, dark]) {
-    assert.equal(t.get('--cg-color-selected-background'), 'var(--cg-color-state-selected)');
+    assert.equal(t.get('--cg-color-selected-background'), 'var(--cg-color-action-primary-background-default)');
+    assert.equal(t.get('--cg-color-selected-text'), 'var(--cg-color-action-primary-text-default)');
+    assert.equal(t.get('--cg-color-selected-subtle'), 'var(--cg-color-state-selected)');
     assert.equal(t.get('--cg-color-current-indicator'), 'var(--cg-color-state-text)');
   }
 });

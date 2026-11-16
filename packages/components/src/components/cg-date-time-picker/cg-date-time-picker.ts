@@ -164,11 +164,10 @@ export class CgDateTimePicker extends LitElement {
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .cal-day:hover { background: var(--cg-color-action-secondary-background-hover); }
+    .cal-day:hover:not(.selected) { background: var(--cg-color-action-secondary-background-hover); }
     .cal-day:active { transform: scale(var(--cg-interaction-press-scale)); }
     .cal-day.today { border: var(--cg-border-width-50) solid var(--cg-color-input-border-focus); font-weight: var(--cg-font-weight-semibold); }
     .cal-day.selected { background: var(--cg-color-selected-background); color: var(--cg-color-selected-text); font-weight: var(--cg-font-weight-semibold); }
-    .cal-day.selected:hover { background: var(--cg-color-selected-background); }
     .cal-day.outside { color: var(--cg-color-input-text-placeholder); opacity: 0.5; }
     .cal-day.disabled-day { opacity: var(--cg-opacity-40); pointer-events: none; }
     .cal-day:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--cg-color-state-focus-halo); }
@@ -209,10 +208,9 @@ export class CgDateTimePicker extends LitElement {
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .time-option:hover { background: var(--cg-color-action-secondary-background-hover); }
+    .time-option:hover:not(.selected) { background: var(--cg-color-action-secondary-background-hover); }
     .time-option:active { transform: scale(var(--cg-interaction-press-scale)); }
     .time-option.selected { background: var(--cg-color-selected-background); color: var(--cg-color-selected-text); font-weight: var(--cg-font-weight-semibold); }
-    .time-option.selected:hover { background: var(--cg-color-selected-background); }
     .time-option:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--cg-color-state-focus-halo); }
 
     .time-col-divider {
