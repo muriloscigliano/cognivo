@@ -36,16 +36,26 @@ const KEYS: ValidityKey[] = [
   'customError',
 ];
 
-let pageMessages: ValidationMessages = {};
+/**
+ * The page-wide map lives on `globalThis` under a `Symbol.for` key, so every
+ * copy of `@cognivo/components` on the page (an embed + the host app) shares
+ * it: elements run the first copy's code, and a map private to the second
+ * copy would never be read.
+ */
+const STORE = Symbol.for('cognivo.validationMessages.v1');
+type Store = { messages: ValidationMessages };
+const store = (): Store =>
+  ((globalThis as Record<symbol, Store | undefined>)[STORE] ??= { messages: {} });
 
 /** Set (merge) the page-wide validation message map, e.g. once per locale. */
 export function setValidationMessages(messages: ValidationMessages): void {
-  pageMessages = { ...pageMessages, ...messages };
+  const s = store();
+  s.messages = { ...s.messages, ...messages };
 }
 
 /** Resolve a message: element override → page map → browser fallback. */
 export function messageFor(key: ValidityKey, own: ValidationMessages | null | undefined, fallback: string): string {
-  return own?.[key] ?? pageMessages[key] ?? fallback;
+  return own?.[key] ?? store().messages[key] ?? fallback;
 }
 
 /**

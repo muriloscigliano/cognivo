@@ -1,6 +1,6 @@
 import { defineConfig, type Plugin } from 'vite';
 import { resolve } from 'path';
-import { readdirSync, existsSync, statSync } from 'node:fs';
+import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import dts from 'vite-plugin-dts';
 
 const componentsDir = resolve(__dirname, 'src/components');
@@ -28,6 +28,13 @@ function collectComponentEntries(): Record<string, string> {
 }
 
 const componentEntries = collectComponentEntries();
+
+/** `src/utils/version.ts` reads this: the version stamped on every element class. */
+const define = {
+  __COGNIVO_VERSION__: JSON.stringify(
+    (JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf8')) as { version: string }).version,
+  ),
+};
 
 /**
  * Minify the static CSS inside Lit `css\`…\`` templates at build time
@@ -63,6 +70,7 @@ export default defineConfig(({ mode }) => {
   // chunks alongside the barrel.
   if (mode === 'iife') {
     return {
+      define,
       build: {
         emptyOutDir: false,
         lib: {
@@ -78,6 +86,7 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
+    define,
     plugins: [
       minifyCssTemplates(),
       dts({

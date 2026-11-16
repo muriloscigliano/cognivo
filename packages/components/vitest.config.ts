@@ -1,6 +1,11 @@
 import { defineConfig } from 'vitest/config';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+const { version } = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf8')) as { version: string };
 
 export default defineConfig({
+  define: { __COGNIVO_VERSION__: JSON.stringify(version) },
   test: {
     environment: 'happy-dom',
     include: ['src/**/*.test.ts'],

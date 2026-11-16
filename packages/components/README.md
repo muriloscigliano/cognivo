@@ -80,8 +80,30 @@ Every component registers through a guarded `customElements.define`: the first
 registration of a tag wins and later ones never throw. Importing the same module
 twice is a silent no-op; a second *copy* of the package (for example an embed
 bundle on a page that also ships Cognivo) keeps the first definition and logs one
-`console.warn` naming the tag. Keep both copies on compatible versions, because
-elements behave like the copy that registered first.
+`console.warn` naming the tag and both versions. Keep both copies on compatible
+versions, because elements behave like the copy that registered first.
+
+The page-wide maps (`setMessages()`, `setValidationMessages()`) are shared by
+every copy on the page (they live on `globalThis` under `Symbol.for` keys), so a
+translation set through either copy reaches every element.
+
+**Detecting the host's copy from an embed.** Every registered class carries its
+copy's version under `Symbol.for('cognivo.version')`. Check before you import:
+
+```ts
+const host = customElements.get('cg-input') as
+  (CustomElementConstructor & { [k: symbol]: string | undefined }) | undefined;
+const hostVersion = host?.[Symbol.for('cognivo.version')];
+if (!host) {
+  // No Cognivo on the page: import your own copy.
+} else if (hostVersion === undefined) {
+  // An older host copy (before 1.2): it does not share the message maps, and
+  // elements run its older behaviour. Call setMessages / setValidationMessages
+  // on the host's copy too, or render in an iframe / scoped registry.
+} else {
+  // A stamped host copy: compare hostVersion with the range you support.
+}
+```
 
 ## TypeScript
 

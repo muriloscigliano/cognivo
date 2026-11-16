@@ -31,8 +31,17 @@ type Host = ReactiveControllerHost & HTMLElement & { messages?: MessageMap | nul
 
 const english: LocaleMessages = {};
 const tags = new WeakMap<object, string>();
-let page: LocaleMessages = {};
-const live = new Set<Host>();
+
+/**
+ * The page-wide map and the set of live elements live on `globalThis` under a
+ * `Symbol.for` key, so every copy of `@cognivo/components` on the page (an
+ * embed + the host app) shares them: `setMessages()` from either copy reaches
+ * and re-renders the elements of both.
+ */
+const STORE = Symbol.for('cognivo.messages.v1');
+type Store = { page: LocaleMessages; live: Set<Host> };
+const store = (): Store =>
+  ((globalThis as Record<symbol, Store | undefined>)[STORE] ??= { page: {}, live: new Set() });
 
 /** Declare a component's English text. The only place component strings may live. */
 export function defineMessages<T extends MessageMap>(tag: string, en: T): T {
@@ -43,14 +52,16 @@ export function defineMessages<T extends MessageMap>(tag: string, en: T): T {
 
 /** Set (merge) the page-wide messages, e.g. once per locale. Live elements re-render. */
 export function setMessages(messages: LocaleMessages): void {
+  const { page, live } = store();
   for (const tag in messages) page[tag] = { ...page[tag], ...messages[tag] };
   for (const host of live) host.requestUpdate();
 }
 
 /** Drop every page-wide message (back to English). Live elements re-render. */
 export function clearMessages(): void {
-  page = {};
-  for (const host of live) host.requestUpdate();
+  const s = store();
+  s.page = {};
+  for (const host of s.live) host.requestUpdate();
 }
 
 /** The English defaults of every component loaded so far (for translators and tests). */
@@ -66,14 +77,14 @@ export class Messages<T extends MessageMap> implements ReactiveController {
     host.addController(this);
   }
   hostConnected(): void {
-    live.add(this.host);
+    store().live.add(this.host);
   }
   hostDisconnected(): void {
-    live.delete(this.host);
+    store().live.delete(this.host);
   }
   /** Text for `key`; `{name}` placeholders are filled from `vars`. */
   t(key: keyof T & string, vars?: Record<string, string | number>): string {
-    const s = this.host.messages?.[key] ?? page[this.tag]?.[key] ?? this.en[key] ?? key;
+    const s = this.host.messages?.[key] ?? store().page[this.tag]?.[key] ?? this.en[key] ?? key;
     return vars ? s.replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? String(vars[k]) : m)) : s;
   }
   /** BCP 47 locale for `Intl`: the nearest `lang` attribute, across shadow roots; `en` otherwise. */

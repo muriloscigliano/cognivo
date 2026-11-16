@@ -1,3 +1,7 @@
+import { VERSION } from './version.js';
+
+const VERSION_KEY = Symbol.for('cognivo.version');
+
 /**
  * Safe custom-element registration — used by every Cognivo component instead
  * of Lit's `@customElement`, which calls `customElements.define` unguarded.
@@ -14,17 +18,26 @@
  *
  * The browser registry has no way to replace a definition, so "first wins" is
  * the only non-throwing option; this just makes it explicit.
+ *
+ * Every class is stamped with its copy's version under
+ * `Symbol.for('cognivo.version')`, so the warning names both versions and an
+ * embed can detect the host's copy (no stamp = a copy older than 1.2):
+ * `customElements.get('cg-input')?.[Symbol.for('cognivo.version')]`.
  */
 export function defineElement(tagName: string, ctor: CustomElementConstructor): void {
+  if (!Object.prototype.hasOwnProperty.call(ctor, VERSION_KEY)) {
+    Object.defineProperty(ctor, VERSION_KEY, { value: VERSION });
+  }
   const existing = customElements.get(tagName);
   if (!existing) {
     customElements.define(tagName, ctor);
     return;
   }
   if (existing === ctor) return;
+  const running = (existing as unknown as Record<symbol, string | undefined>)[VERSION_KEY] ?? 'unknown (older than 1.2)';
   console.warn(
-    `[cognivo] <${tagName}> is already defined by another copy of @cognivo/components; ` +
-      'keeping the first definition. Load one copy (or compatible versions) per page.',
+    `[cognivo] <${tagName}> is already defined by another copy of @cognivo/components (version ${running}); ` +
+      `keeping it and ignoring this copy (version ${VERSION}). Load one copy (or compatible versions) per page.`,
   );
 }
 

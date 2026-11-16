@@ -10,7 +10,7 @@
  * CI (`CI` set) a missing Chromium is an error, so the suites can never be
  * skipped silently there.
  */
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { build } from 'esbuild';
 import { chromium, type Browser, type Page } from '@playwright/test';
@@ -67,6 +67,7 @@ export async function bundleComponents(tags: string[], modules: string[] = []): 
     write: false,
     target: 'es2022',
     tsconfig: resolve(SRC, '..', 'tsconfig.json'),
+    define: { __COGNIVO_VERSION__: JSON.stringify((JSON.parse(readFileSync(resolve(SRC, '..', 'package.json'), 'utf8')) as { version: string }).version) },
     logLevel: 'silent',
   });
   const code = out.outputFiles[0]!.text;
