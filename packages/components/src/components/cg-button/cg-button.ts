@@ -14,7 +14,13 @@ import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
  * <cg-button variant="secondary" loading>Saving...</cg-button>
  * <cg-button type="danger"><span slot="prefix">[trash icon]</span>Delete</cg-button>
  * <form><cg-input name="email"></cg-input><cg-button type="submit">Send</cg-button></form>
+ * <cg-button href="/deals/new" variant="secondary">New deal</cg-button>
  * ```
+ *
+ * Link mode: with `href` it renders an `<a>` styled as the button (keeps
+ * `target`, `rel`, `download`); disabled or loading, it is a disabled link
+ * (`aria-disabled`, no `href`, out of the tab order). Form types do nothing
+ * in link mode.
  *
  * Form behaviour: `type="submit"` calls `requestSubmit()` on the owning form
  * (runs constraint validation and fires `submit`), `type="reset"` resets it.
@@ -48,7 +54,7 @@ export class CgButton extends LitElement {
   }
 
   static override styles = [hostBase, reducedMotion, spinKeyframes, css`
-    button {
+    .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -70,12 +76,12 @@ export class CgButton extends LitElement {
     }
 
     /* Press scale */
-    button:active:not(:disabled) {
+    .btn:active:not(:disabled, [aria-disabled="true"]) {
       transform: scale(var(--cg-interaction-press-scale));
     }
 
     /* Focus ring — dual-layer */
-    button:focus-visible {
+    .btn:focus-visible {
       box-shadow:
         0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring-offset),
         0 0 0 calc(var(--cg-border-width-100) * 2) var(--cg-color-focus-ring);
@@ -83,19 +89,19 @@ export class CgButton extends LitElement {
     }
 
     /* ── Sizes ── */
-    :host([size="sm"]) button {
+    :host([size="sm"]) .btn {
       padding: 0 var(--cg-spacing-12);
       font-size: var(--cg-font-size-xs);
       border-radius: var(--cg-component-button-radius-sm);
       height: var(--cg-component-button-height-sm);
     }
-    :host([size="md"]) button {
+    :host([size="md"]) .btn {
       padding: 0 var(--cg-spacing-16);
       font-size: var(--cg-font-size-sm);
       border-radius: var(--cg-component-button-radius-md);
       height: var(--cg-component-button-height-md);
     }
-    :host([size="lg"]) button {
+    :host([size="lg"]) .btn {
       padding: 0 var(--cg-spacing-24);
       font-size: var(--cg-font-size-base);
       border-radius: var(--cg-component-button-radius-lg);
@@ -103,87 +109,87 @@ export class CgButton extends LitElement {
     }
 
     /* ── Rounded overrides ── */
-    :host([rounded="none"]) button { border-radius: 0; }
-    :host([rounded="sm"]) button { border-radius: var(--cg-component-button-radius-sm); }
-    :host([rounded="md"]) button { border-radius: var(--cg-component-button-radius-md); }
-    :host([rounded="lg"]) button { border-radius: var(--cg-component-button-radius-lg); }
-    :host([rounded="full"]) button { border-radius: var(--cg-border-radius-full); }
+    :host([rounded="none"]) .btn { border-radius: 0; }
+    :host([rounded="sm"]) .btn { border-radius: var(--cg-component-button-radius-sm); }
+    :host([rounded="md"]) .btn { border-radius: var(--cg-component-button-radius-md); }
+    :host([rounded="lg"]) .btn { border-radius: var(--cg-component-button-radius-lg); }
+    :host([rounded="full"]) .btn { border-radius: var(--cg-border-radius-full); }
 
     /* ── Primary variant ── */
-    :host([variant="primary"]) button {
+    :host([variant="primary"]) .btn {
       background: var(--cg-color-action-primary-background-default);
       color: var(--cg-color-action-primary-text-default);
       border-color: var(--cg-color-action-primary-border-default);
     }
-    :host([variant="primary"]) button:not(:disabled):hover {
+    :host([variant="primary"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
       background: var(--cg-color-action-primary-background-hover);
     }
 
     /* ── Secondary variant ── */
-    :host([variant="secondary"]) button {
+    :host([variant="secondary"]) .btn {
       background: var(--cg-color-action-secondary-background-default);
       color: var(--cg-color-action-secondary-text-default);
       border-color: var(--cg-color-action-secondary-border-default);
     }
-    :host([variant="secondary"]) button:not(:disabled):hover {
+    :host([variant="secondary"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
       background: var(--cg-color-action-secondary-background-hover);
     }
 
     /* ── Tertiary (ghost) variant ── */
-    :host([variant="tertiary"]) button {
+    :host([variant="tertiary"]) .btn {
       background: transparent;
       color: var(--cg-color-action-tertiary-text-default);
       border-color: transparent;
     }
-    :host([variant="tertiary"]) button:not(:disabled):hover {
+    :host([variant="tertiary"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
       background: var(--cg-color-action-tertiary-background-hover);
     }
 
     /* ── Danger type ── */
-    :host([type="danger"]) button {
+    :host([type="danger"]) .btn {
       background: var(--cg-color-status-error-background-default);
       color: var(--cg-color-status-error-text-default);
       border-color: var(--cg-color-status-error-border-default);
     }
-    :host([type="danger"][variant="primary"]) button {
+    :host([type="danger"][variant="primary"]) .btn {
       background: var(--cg-color-status-error-text-default);
       color: var(--cg-color-status-error-text-inverse);
       border-color: transparent;
     }
-    :host([type="danger"]) button:not(:disabled):hover {
+    :host([type="danger"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
       background: var(--cg-color-status-error-background-hover);
     }
-    :host([type="danger"][variant="primary"]) button:not(:disabled):hover {
+    :host([type="danger"][variant="primary"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
       background: var(--cg-color-status-error-background-hover-strong);
     }
 
     /* ── Disabled ──
        Themeable per-variant disabled colors (no opacity smudge on re-pointed brands).
        Scoped with :host so these win over the variant/type/status background rules. */
-    button:disabled {
+    .btn:is(:disabled, [aria-disabled="true"]) {
       pointer-events: none;
     }
-    :host([variant="primary"]) button:disabled,
-    :host([type="danger"][variant="primary"]) button:disabled,
-    :host([status="error"]) button:disabled,
-    :host([status="success"]) button:disabled {
+    :host([variant="primary"]) .btn:is(:disabled, [aria-disabled="true"]),
+    :host([type="danger"][variant="primary"]) .btn:is(:disabled, [aria-disabled="true"]),
+    :host([status="error"]) .btn:is(:disabled, [aria-disabled="true"]),
+    :host([status="success"]) .btn:is(:disabled, [aria-disabled="true"]) {
       background: var(--cg-color-action-primary-background-disable);
       color: var(--cg-color-action-primary-text-disable);
       border-color: var(--cg-color-action-primary-border-disable);
     }
-    :host([variant="secondary"]) button:disabled {
+    :host([variant="secondary"]) .btn:is(:disabled, [aria-disabled="true"]) {
       background: var(--cg-color-action-secondary-background-disable);
       color: var(--cg-color-action-secondary-text-disable);
       border-color: var(--cg-color-action-secondary-border-disable);
     }
-    :host([variant="tertiary"]) button:disabled {
+    :host([variant="tertiary"]) .btn:is(:disabled, [aria-disabled="true"]) {
       background: var(--cg-color-action-tertiary-background-disable);
       color: var(--cg-color-action-tertiary-text-disable);
       border-color: var(--cg-color-action-tertiary-border-disable);
     }
 
     /* ── Loading ── */
-    :host([loading]) button {
+    :host([loading]) .btn {
       color: transparent;
       pointer-events: none;
     }
@@ -201,23 +207,23 @@ export class CgButton extends LitElement {
     :host([loading][variant="tertiary"]) .spinner { color: var(--cg-color-action-tertiary-text-default); }
 
     /* ── Error state ── */
-    :host([status="error"]) button {
+    :host([status="error"]) .btn {
       background: var(--cg-color-status-error-background-default);
       color: var(--cg-color-status-error-text-default);
       border-color: var(--cg-color-status-error-border-default);
     }
-    :host([status="error"]) button:not(:disabled):hover {
+    :host([status="error"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
       background: var(--cg-color-status-error-background-hover);
     }
     :host([status="error"]) .spinner { color: var(--cg-color-status-error-text-default); }
 
     /* ── Success state ── */
-    :host([status="success"]) button {
+    :host([status="success"]) .btn {
       background: var(--cg-color-status-success-background-default);
       color: var(--cg-color-status-success-text-default);
       border-color: var(--cg-color-status-success-border-default);
     }
-    :host([status="success"]) button:not(:disabled):hover {
+    :host([status="success"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
       background: var(--cg-color-status-success-background-hover);
     }
     :host([status="success"]) .spinner { color: var(--cg-color-status-success-text-default); }
@@ -227,7 +233,7 @@ export class CgButton extends LitElement {
       display: block;
       width: 100%;
     }
-    :host([full]) button {
+    :host([full]) .btn {
       width: 100%;
     }
   `];
@@ -242,6 +248,16 @@ export class CgButton extends LitElement {
   @property({ type: Boolean, reflect: true }) full = false;
   @property({ reflect: true }) status: 'idle' | 'error' | 'success' = 'idle';
   @property() label = '';
+  /** Link mode: renders an `<a href>` with the button's look (navigation,
+   *  middle-click, "open in new tab" all work). Disabled or loading, it is a
+   *  disabled link: no `href`, `aria-disabled="true"`, not focusable. */
+  @property({ reflect: true }) href = '';
+  /** Link mode: the `<a>`'s `target` (e.g. `_blank`). */
+  @property() target = '';
+  /** Link mode: the `<a>`'s `rel` (e.g. `noopener noreferrer`). */
+  @property() rel = '';
+  /** Link mode: the `<a>`'s `download` (a file name). */
+  @property() download = '';
 
   /** Disabled by an ancestor `<fieldset disabled>` (or the own attribute). */
   @state() private _formDisabled = false;
@@ -251,7 +267,7 @@ export class CgButton extends LitElement {
   }
 
   private _handleClick = () => {
-    if (this.disabled || this._formDisabled || this.loading) return;
+    if (this.href || this.disabled || this._formDisabled || this.loading) return;
     if (this.type !== 'submit' && this.type !== 'reset') return;
     const form = this._internals?.form ?? this.closest('form');
     if (!form) return;
@@ -262,19 +278,39 @@ export class CgButton extends LitElement {
   };
 
   override render() {
-    return html`
-      <button
-        part="button"
-        type="button"
-        ?disabled=${this.disabled || this._formDisabled || this.loading}
-        aria-busy=${this.loading ? 'true' : 'false'}
-        aria-label=${this.label || nothing}
-      >
+    const content = html`
         ${this.loading ? html`<span class="spinner"></span>` : nothing}
         <slot name="prefix"></slot>
         <slot>${this.label}</slot>
         <slot name="suffix"></slot>
-      </button>
+    `;
+    if (this.href) {
+      // Disabled link: no href (so not focusable and not followable), still a link.
+      const inactive = this.disabled || this._formDisabled || this.loading;
+      return html`
+        <a
+          part="button"
+          class="btn"
+          href=${inactive ? nothing : this.href}
+          role=${inactive ? 'link' : nothing}
+          aria-disabled=${inactive ? 'true' : nothing}
+          aria-busy=${this.loading ? 'true' : nothing}
+          aria-label=${this.label || nothing}
+          target=${this.target || nothing}
+          rel=${this.rel || nothing}
+          download=${this.download || nothing}
+        >${content}</a>
+      `;
+    }
+    return html`
+      <button
+        part="button"
+        class="btn"
+        type="button"
+        ?disabled=${this.disabled || this._formDisabled || this.loading}
+        aria-busy=${this.loading ? 'true' : 'false'}
+        aria-label=${this.label || nothing}
+      >${content}</button>
     `;
   }
 }
