@@ -130,6 +130,7 @@ export async function settleStyles(page: Page): Promise<void> {
   await settle(page);
   await page.evaluate(async () => {
     const frame = () => new Promise((r) => requestAnimationFrame(() => r(null)));
+    let quiet = 0;
     for (let round = 0; round < 20; round++) {
       await frame();
       await frame();
@@ -137,7 +138,14 @@ export async function settleStyles(page: Page): Promise<void> {
       const running = document
         .getAnimations()
         .filter((a) => (a.playState === 'running' || a.pending) && a.effect?.getTiming().iterations !== Infinity);
-      if (running.length === 0) return;
+      if (running.length === 0) {
+        // Quiet twice in a row (a frame and a task apart) before trusting it:
+        // under load a just-finished near-zero transition can still be applied.
+        if (quiet++) return;
+        await new Promise((r) => setTimeout(r, 16));
+        continue;
+      }
+      quiet = 0;
       await Promise.all(running.map((a) => a.finished.catch(() => undefined)));
     }
   });

@@ -90,7 +90,7 @@ const displayed = (page: Page) =>
   });
 
 describe.skipIf(!installed)('CgTable in React (real browser)', { timeout: 30_000 }, () => {
-  afterAll(async () => { await browser?.close(); });
+  afterAll(async () => { await browser?.close(); }, 30_000); // closing Chromium can take >10s while other suites load the machine
 
   it('slotted links render in their cells; a header click calls onSortChange and the controlled sort reorders rows with their links', async () => {
     const page = await openApp();

@@ -53,6 +53,8 @@ async function drawerWith(c: Case): Promise<Page> {
   await settleStyles(page); // the phone breakpoint has applied (the drawer starts closed)
   await page.evaluate((props) => Object.assign(document.getElementById('popup')!, props ?? {}), c.props);
   await page.evaluate(() => { (document.querySelector('cg-app-shell') as HTMLElement & { sidebarCollapsed: boolean }).sidebarCollapsed = false; });
+  // Opening moves focus to the drawer's first control (after a frame or two); let that land first.
+  await page.waitForFunction(() => document.activeElement?.id === 'first');
   await settleStyles(page);
   return page;
 }
