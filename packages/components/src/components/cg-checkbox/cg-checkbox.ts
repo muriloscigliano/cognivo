@@ -117,8 +117,7 @@ export class CgCheckbox extends LitElement {
     }
 
     /* ── Checked / indeterminate (same spring entry for consistent feedback) ── */
-    .box.checked,
-    .box.indeterminate {
+    .box:is(.checked, .indeterminate) {
       background: var(--cg-color-checkbox-background-checked);
       border-color: var(--cg-color-checkbox-border-checked);
       animation: boxPop var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out);
@@ -161,8 +160,7 @@ export class CgCheckbox extends LitElement {
     :host([error]) .box {
       border-color: var(--cg-color-status-error-text-default);
     }
-    :host([error]) .box.checked,
-    :host([error]) .box.indeterminate {
+    :host([error]) .box:is(.checked, .indeterminate) {
       background: var(--cg-color-status-error-text-default);
       border-color: var(--cg-color-status-error-text-default);
     }
@@ -174,8 +172,7 @@ export class CgCheckbox extends LitElement {
     :host([success]) .box {
       border-color: var(--cg-color-status-success-text-default);
     }
-    :host([success]) .box.checked,
-    :host([success]) .box.indeterminate {
+    :host([success]) .box:is(.checked, .indeterminate) {
       background: var(--cg-color-status-success-text-default);
       border-color: var(--cg-color-status-success-text-default);
     }

@@ -27,7 +27,8 @@ const MESSAGES = defineMessages('cg-input', {
  * Without a `label` the placeholder is always visible (with one, the label
  * stands in for it until it floats). `affix="plain"` draws prefix / suffix
  * content inside the field with no box or divider; `size="sm"` is the
- * compact toolbar height (`--cg-component-input-height-sm`).
+ * compact toolbar height (`--cg-component-input-height-sm`) and has no
+ * floating label (it would not fit): `label` only names the field.
  *
  * @slot prefix - Icon or content before the input field
  * @slot suffix - Icon or content after the input field
@@ -70,13 +71,14 @@ export class CgInput extends LitElement {
     }
 
     /* Size variants */
-    :host([size="lg"]) .wrapper { height: var(--cg-component-input-height-lg); border-radius: var(--cg-border-radius-150); }
+    :host([size="lg"]) .wrapper { height: var(--cg-component-input-height-lg); }
     :host([size="sm"]) .wrapper { height: var(--cg-component-input-height-sm); }
 
     /* Rounded variants */
     :host([rounded="none"]) .wrapper { border-radius: 0; }
     :host([rounded="sm"]) .wrapper { border-radius: var(--cg-border-radius-50); }
     :host([rounded="md"]) .wrapper { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .wrapper { border-radius: var(--cg-component-input-radius); }
 
     /* Hover */
     .wrapper:hover:not(.disabled):not(.readonly):not(.focused) {
@@ -189,14 +191,12 @@ export class CgInput extends LitElement {
     /* ── Floating label ── */
     .floating-label {
       position: absolute;
-      left: var(--cg-spacing-8);
-      right: var(--cg-spacing-8);
+      inset-inline: var(--cg-spacing-8);
       top: 50%;
       transform: translateY(-50%);
       font-size: var(--cg-font-size-sm);
       color: var(--cg-color-input-text-placeholder);
       pointer-events: none;
-      transform-origin: left top;
       transition:
         top var(--cg-transition-duration-default) var(--cg-transition-easing-default),
         transform var(--cg-transition-duration-default) var(--cg-transition-easing-default),
@@ -219,13 +219,11 @@ export class CgInput extends LitElement {
     }
     :host([size="lg"]) .field.floated .floating-label { top: var(--cg-spacing-8); }
 
-    /* Error state label color */
-    :host([error]) .field.floated .floating-label {
+    /* Error / success: the floated label, the count and the helper take the status colour. */
+    :host([error]) :is(.field.floated .floating-label, .count, .helper) {
       color: var(--cg-color-status-error-text-default);
     }
-
-    /* Success state label color */
-    :host([success]) .field.floated .floating-label {
+    :host([success]) :is(.field.floated .floating-label, .helper) {
       color: var(--cg-color-status-success-text-default);
     }
 
@@ -245,9 +243,7 @@ export class CgInput extends LitElement {
       align-self: stretch;
       background: var(--cg-overlay-dark-subtle);
     }
-    .prefix.has-content, .suffix.has-content {
-      display: flex;
-    }
+    .has-content { display: flex; }
     .prefix {
       border-right: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
       margin-left: calc(-1 * var(--cg-spacing-4));
@@ -304,7 +300,6 @@ export class CgInput extends LitElement {
       font-variant-numeric: tabular-nums;
       transition: color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
-    :host([error]) .count { color: var(--cg-color-status-error-text-default); }
 
     /* ── Helper text ── */
     .helper {
@@ -312,8 +307,6 @@ export class CgInput extends LitElement {
       color: var(--cg-color-input-text-placeholder);
       padding: var(--cg-spacing-8) var(--cg-spacing-12) 0;
     }
-    :host([error]) .helper { color: var(--cg-color-status-error-text-default); }
-    :host([success]) .helper { color: var(--cg-color-status-success-text-default); }
   `];
 
   @property({ reflect: true }) label = '';
@@ -327,7 +320,9 @@ export class CgInput extends LitElement {
    *  validated natively (rangeUnderflow / rangeOverflow). */
   @property() min = '';
   @property() max = '';
-  /** `sm` is the compact toolbar height. */
+  /** `sm` is the compact toolbar height: label-less (a toolbar field) — `label`
+   *  still names it (aria-label) but draws no floating label; the placeholder
+   *  shows. For a visible label, put one outside the field. */
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   /** `plain`: prefix / suffix content sits inside the field, with no box or divider. */
   @property({ reflect: true }) affix: 'boxed' | 'plain' = 'boxed';
@@ -428,7 +423,7 @@ export class CgInput extends LitElement {
         </span>
 
         <div class="field ${this._isFloated ? 'floated' : ''}">
-          ${this.label ? html`<span class="floating-label">${this.label}</span>` : nothing}
+          ${this.label && this.size !== 'sm' ? html`<span class="floating-label">${this.label}</span>` : nothing}
           <input
             .value=${this.value}
             type=${this.type}

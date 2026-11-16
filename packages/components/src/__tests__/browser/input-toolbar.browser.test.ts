@@ -78,4 +78,37 @@ describe.skipIf(!browserAvailable)('cg-input in a toolbar (real browser)', { tim
     expect(h).toBeLessThanOrEqual(36);
     await page.close();
   });
+  it('size="sm" with a label: no floating label to clip — the label names the field and the placeholder shows', async () => {
+    const page = await field('size="sm" label="Search contacts" placeholder="Search"');
+    const r = await page.evaluate(() => {
+      const root = document.getElementById('f')!.shadowRoot!;
+      const input = root.querySelector('input')!;
+      const wrap = root.querySelector('.wrapper')!.getBoundingClientRect();
+      const box = input.getBoundingClientRect();
+      const cs = getComputedStyle(input);
+      // The text line: the content box between the paddings must fit the line height.
+      const content = box.height - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      return { label: !!root.querySelector('.floating-label'), content, lineHeight: parseFloat(cs.fontSize) * 1.15, inside: box.top >= wrap.top - 1 && box.bottom <= wrap.bottom + 1 };
+    });
+    expect(r.label).toBe(false);
+    expect(r.content).toBeGreaterThanOrEqual(r.lineHeight);
+    expect(r.inside).toBe(true);
+    expect(transparent(await placeholderColour(page))).toBe(false);
+    expect(await page.getByRole('textbox', { name: 'Search contacts' }).count()).toBe(1);
+    expect(await axeViolations(page)).toEqual([]);
+    await page.close();
+  });
+
+  it('rounded="lg" uses the input radius token, also at size="lg"', async () => {
+    const page = await field('size="lg" rounded="lg" label="Name"');
+    const r = await page.evaluate(() => {
+      const f = document.getElementById('f')!;
+      const probe = document.createElement('div');
+      probe.style.borderRadius = 'var(--cg-component-input-radius)';
+      document.body.append(probe);
+      return { wrapper: getComputedStyle(f.shadowRoot!.querySelector('.wrapper')!).borderTopLeftRadius, token: getComputedStyle(probe).borderTopLeftRadius };
+    });
+    expect(r.wrapper).toBe(r.token);
+    await page.close();
+  });
 });
