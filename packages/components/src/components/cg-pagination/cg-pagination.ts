@@ -9,6 +9,9 @@ const MESSAGES = defineMessages('cg-pagination', {
   previous: 'Previous page',
   next: 'Next page',
   page: 'Page {page}',
+  /** Visible text of the cursor-mode buttons. */
+  previousLabel: 'Previous',
+  nextLabel: 'Next',
 });
 
 /**
@@ -18,9 +21,11 @@ const MESSAGES = defineMessages('cg-pagination', {
  * @example
  * ```html
  * <cg-pagination total="20" current="5"></cg-pagination>
+ * <!-- Cursor-based data (no page count): Previous / Next only -->
+ * <cg-pagination mode="cursor" has-next></cg-pagination>
  * ```
  *
- * @fires {CustomEvent<{page: number}>} cg-page-change - When a page button is clicked
+ * @fires {CustomEvent<{page: number} | {direction: 'previous' | 'next'}>} cg-page-change - A page was requested: `{page}` in pages mode, `{direction}` in cursor mode
  *
  * @cssprop --cg-component-pagination-button-size - Button size (36px)
  * @cssprop --cg-color-action-primary-background-default - Active page background
@@ -48,6 +53,7 @@ export class CgPagination extends LitElement {
       min-width: var(--cg-component-pagination-button-size);
       height: var(--cg-component-pagination-button-size);
       padding: 0 var(--cg-spacing-8);
+      gap: var(--cg-spacing-4);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-base-border);
       border-radius: var(--cg-border-radius-100);
       background: transparent;
@@ -158,6 +164,13 @@ export class CgPagination extends LitElement {
 
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
+  /** `pages` (numbered, needs `total`) or `cursor` (Previous / Next only,
+   *  for APIs that page with cursors and know no page count). */
+  @property({ reflect: true }) mode: 'pages' | 'cursor' = 'pages';
+  /** Cursor mode: there is a previous page. */
+  @property({ type: Boolean, attribute: 'has-previous' }) hasPrevious = false;
+  /** Cursor mode: there is a next page. */
+  @property({ type: Boolean, attribute: 'has-next' }) hasNext = false;
   @property({ type: Number }) total = 1;
   @property({ type: Number }) current = 1;
   @property({ type: Number }) siblings = 1;
@@ -212,7 +225,31 @@ export class CgPagination extends LitElement {
     return pages;
   }
 
+  private _step(direction: 'previous' | 'next', enabled: boolean) {
+    if (enabled) this.dispatchEvent(new CustomEvent('cg-page-change', { bubbles: true, composed: true, detail: { direction } }));
+  }
+
+  private _renderCursor() {
+    const step = (direction: 'previous' | 'next', enabled: boolean, icon: string) => html`
+      <li>
+        <button class="page-btn" aria-disabled=${enabled ? 'false' : 'true'} @click=${() => this._step(direction, enabled)}>
+          ${direction === 'next' ? this.i18n.t('nextLabel') : nothing}
+          <cg-icon name=${icon} size="sm" aria-hidden="true"></cg-icon>
+          ${direction === 'previous' ? this.i18n.t('previousLabel') : nothing}
+        </button>
+      </li>`;
+    return html`
+      <nav aria-label=${this.i18n.t('label')}>
+        <ul class="pagination">
+          ${step('previous', this.hasPrevious, 'chevron-left')}
+          ${step('next', this.hasNext, 'chevron-right')}
+        </ul>
+      </nav>
+    `;
+  }
+
   override render() {
+    if (this.mode === 'cursor') return this._renderCursor();
     const pages = this._getPages();
     const isFirstPage = this.current <= 1;
     const isLastPage = this.current >= this.total;

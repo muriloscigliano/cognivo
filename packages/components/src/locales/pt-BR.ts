@@ -263,6 +263,8 @@ export const ptBR: LocaleMessages = {
     previous: 'Página anterior',
     next: 'Próxima página',
     page: 'Página {page}',
+    previousLabel: 'Anterior',
+    nextLabel: 'Próxima',
   },
   'cg-password-input': {
     label: 'Senha',
