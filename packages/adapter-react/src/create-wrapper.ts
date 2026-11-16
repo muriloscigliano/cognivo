@@ -67,11 +67,20 @@ export function createWrapper<
   propNames: readonly string[],
   eventMap: Events, // React prop name -> CustomEvent name, e.g. { onBadgeClick: 'ai-badge-click' }
 ): CognivoWrapper<Props, Tag, Events> {
+  /** Does the element (or, before mount, its registered class) define `key`? */
+  const definesProp = (el: HTMLElement | null, key: string): boolean => {
+    const target = el ?? (typeof customElements === 'undefined' ? undefined : customElements.get(tagName)?.prototype);
+    return !!target && key in target;
+  };
   const isElementProp = (el: HTMLElement | null, key: string): boolean =>
-    propNames.includes(key) || (!!el && !HTML_ONLY.has(key) && !(key in eventMap) && key in el);
+    propNames.includes(key) || (!HTML_ONLY.has(key) && !(key in eventMap) && definesProp(el, key));
 
   const Component = forwardRef<HTMLElement, Record<string, unknown>>((props, ref) => {
     const innerRef = useRef<HTMLElement>(null);
+    // Keys rendered as attributes once stay attributes: dropping one on a
+    // later render makes React remove the attribute, which resets the
+    // property (label → null) until the effect sets it again.
+    const attributeKeys = useRef(new Set<string>());
 
     // Sync properties to the web component
     useEffect(() => {
@@ -118,12 +127,15 @@ export function createWrapper<
     }, [ref]);
 
     // Filter out event handlers and element properties from HTML attributes.
-    // Before mount we cannot ask the element, so only the listed props are
-    // held back on the first render; the effect above sets the rest.
+    // Before mount the registered class answers; if the tag is not defined
+    // yet, the prop goes out as an attribute and stays one (the effect above
+    // also sets it as a property).
     const htmlProps: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(props)) {
-      if (!(key in eventMap) && !isElementProp(innerRef.current, key)) {
+      if (key in eventMap) continue;
+      if (attributeKeys.current.has(key) || !isElementProp(innerRef.current, key)) {
         htmlProps[key] = value;
+        attributeKeys.current.add(key);
       }
     }
 
