@@ -57,3 +57,19 @@ test('neutral preset: primary is near-black on white text in light, white on nea
     assert.equal(t.get('--cg-color-current-indicator'), 'var(--cg-color-state-text)');
   }
 });
+
+test('contrast gate: a preset failure is known only when it is baselined under its own preset theme (neutral-light / neutral-dark), never via another theme', async () => {
+  const { execFileSync } = await import('node:child_process');
+  let out;
+  try {
+    out = execFileSync('node', [`${root}scripts/validate-contrast.mjs`], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  } catch (e) {
+    out = `${e.stdout}${e.stderr}`;
+  }
+  const baseline = JSON.parse(readFileSync(`${root}scripts/contrast-baseline.json`, 'utf8'));
+  const keys = Object.keys(baseline.entries);
+  const known = [...out.matchAll(/^(neutral-(?:light|dark))(.+?)\s+[\d.]+\s+KNOWN\s*$/gm)].map(([, theme, label]) => [theme, label.trim()]);
+  for (const [theme, label] of known) {
+    assert.ok(keys.some((k) => k.startsWith(`${theme} ${label} @ `)), `[${theme}] ${label} passes as KNOWN without a ${theme} baseline entry`);
+  }
+});

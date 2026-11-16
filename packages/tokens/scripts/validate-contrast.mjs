@@ -23,17 +23,18 @@
  *  6. The neutral theme preset (css/themes/neutral.css, loaded after the
  *     tokens) is audited too: every pair above is re-evaluated with the
  *     preset's overrides on top of each theme, and each pair whose colours
- *     differ from the default preset is gated the same way. A component pair
- *     already listed in the baseline (either theme: a preset can move a
- *     failure from one theme to the other) stays known in the preset; any
- *     other preset failure fails the gate.
+ *     differ from the default preset is gated the same way. Component pairs go
+ *     through the same baseline, keyed by the preset theme (`neutral-light`,
+ *     `neutral-dark`): capped by the same `maxEntries`, may not get worse,
+ *     stale when fixed. A pair baselined in another theme is not known here.
+ *     Any other preset failure fails the gate.
  */
 
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { deriveComponentPairs } from './component-pairs.mjs'
-import { checkBaseline, baselineKey } from './contrast-baseline.mjs'
+import { checkBaseline } from './contrast-baseline.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const CSS_PATH = path.resolve(__dirname, '..', 'dist', 'index.css')
@@ -310,7 +311,6 @@ function main() {
   const all = [...PAIRS, ...derived]
   const rows = [...evaluate(light, 'light', all), ...evaluate(dark, 'dark', all)]
   const baseline = JSON.parse(fs.readFileSync(BASELINE_PATH, 'utf-8'))
-  const { errors: baselineErrors, known: knownCount } = checkBaseline(rows, baseline)
 
   // Presets: only the pairs whose colours the preset changes.
   const presetErrors = []
@@ -332,18 +332,16 @@ function main() {
         const min = row.pair.min ?? MIN_AA
         if (row.status === 'PASS') continue
         if (row.status === 'UNRESOLVED' && !row.pair.component && !REQUIRED.has(row.label)) continue
-        // Known: the same component pair is already a listed failure in the default preset (either theme — the
-        // preset can move a failure from one theme to the other, e.g. primary text on the page).
-        const listed = (w) => ['light', 'dark'].some((t) => baseline.entries?.[baselineKey(t, row.label, w)])
-        if (row.pair.component && row.pair.usedBy.every(listed)) {
-          row.status = 'KNOWN'
-          continue
-        }
+        // Component pairs: gated through the baseline under the preset theme (below).
+        if (row.pair.component) continue
         const measured = row.ratio == null ? 'unresolved' : row.ratio.toFixed(2)
         presetErrors.push(`FAIL [${preset}-${theme}] ${row.label} = ${measured} (min ${min})${row.pair.usedBy ? ` @ ${row.pair.usedBy.join(', ')}` : ''}`)
       }
     }
   }
+
+  // Every component row, default and preset themes, through one capped baseline.
+  const { errors: baselineErrors, known: knownCount } = checkBaseline(rows, baseline)
 
   let failures = 0
   let unresolved = 0
@@ -387,7 +385,7 @@ function main() {
     )
   }
 
-  console.log(`component pairs: ${derived.length} derived from component styles, ${derived.length * 2} checks, ${knownCount} known failure(s) in contrast-baseline.json`)
+  console.log(`component pairs: ${derived.length} derived from component styles, ${derived.length * 2} checks, ${knownCount} known failure(s) in contrast-baseline.json (all presets)`)
   for (const e of baselineErrors) console.error(`  ${e}`)
   failures += baselineErrors.length
   console.log(`presets: ${Object.keys(PRESETS).join(', ')} — ${presetChecks} pair(s) whose colours the preset changes, gated`)

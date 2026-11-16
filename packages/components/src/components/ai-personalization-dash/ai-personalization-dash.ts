@@ -49,7 +49,7 @@ export class AiPersonalizationDash extends LitElement {
       width: var(--cg-spacing-32); height: var(--cg-spacing-32);
       border-radius: var(--cg-border-radius-full);
       background: var(--cg-overlay-accent-light);
-      color: var(--cg-color-action-primary-text-default);
+      color: var(--cg-color-surface-base-text);
       display: flex; align-items: center; justify-content: center;
       font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-semibold);
       flex-shrink: 0;
@@ -86,9 +86,9 @@ export class AiPersonalizationDash extends LitElement {
       background: transparent;
     }
     .seg.active {
-      border-color: var(--cg-color-action-primary-border-default);
-      color: var(--cg-color-action-primary-text-default);
-      background: var(--cg-overlay-accent-subtle);
+      border-color: var(--cg-color-current-indicator);
+      color: var(--cg-color-current-text);
+      background: var(--cg-color-selected-subtle);
       font-weight: var(--cg-font-weight-semibold);
     }
     .seg-dot {
