@@ -281,6 +281,9 @@ export class CgAppShell extends LitElement {
     }
     this._media?.addEventListener('change', this._onMediaChange);
     document.addEventListener('keydown', this._onKeydown);
+    // Moved in the page while the phone drawer is open: disconnectedCallback
+    // released the lock; take it back.
+    if (this.hasUpdated && this._drawerOpen) lockBodyScroll(this);
   }
 
   override disconnectedCallback(): void {

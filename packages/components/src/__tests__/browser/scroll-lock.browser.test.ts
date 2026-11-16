@@ -88,6 +88,38 @@ describe.skipIf(!browserAvailable)('shared body scroll lock (real browser)', { t
     await page.close();
   });
 
+  it('an overlay moved in the page while open (disconnect + connect) takes its hold again', async () => {
+    const page = await phone();
+    for (const w of ['shell', 'modal', 'drawer', 'sheet', 'alert', 'lightbox']) {
+      await set(page, w, true);
+      await page.evaluate((w) => {
+        const el = w === 'shell' ? document.querySelector('cg-app-shell')! : document.getElementById(w)!;
+        const box = document.createElement('div');
+        document.body.append(box);
+        box.append(el); // a move: disconnectedCallback, then connectedCallback
+      }, w);
+      await settle(page);
+      expect(await overflow(page), `${w} moved while open`).toBe('hidden');
+      await set(page, w, false);
+      expect(await overflow(page), `${w} closed after the move`).toBe('clip');
+    }
+    await page.close();
+  });
+
+  it('a modal moved while open still closes on Escape (its focus trap is back)', async () => {
+    const page = await phone();
+    await page.evaluate(() => { const b = document.createElement('button'); b.textContent = 'OK'; document.getElementById('modal')!.append(b); });
+    await set(page, 'modal', true);
+    await page.evaluate(() => { const box = document.createElement('div'); document.body.append(box); box.append(document.getElementById('modal')!); });
+    await settle(page);
+    await page.locator('#modal button', { hasText: 'OK' }).focus();
+    await page.keyboard.press('Escape');
+    await settle(page);
+    expect(await page.evaluate(() => (document.getElementById('modal') as HTMLElement & Opener).open)).toBe(false);
+    expect(await overflow(page)).toBe('clip');
+    await page.close();
+  });
+
   it('an overlay removed from the page while open releases its hold', async () => {
     const page = await phone();
     await set(page, 'modal', true);

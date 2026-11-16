@@ -144,6 +144,16 @@ export class CgSheet extends LitElement {
   private _dragStart = 0;
   private _dragging = false;
 
+  override connectedCallback(): void {
+    super.connectedCallback();
+    // Moved in the page while open: disconnectedCallback released the lock
+    // and the focus trap; take them back.
+    if (this.open && this.hasUpdated) {
+      lockBodyScroll(this);
+      this._trap();
+    }
+  }
+
   override disconnectedCallback(): void {
     super.disconnectedCallback();
     // An unmount while open must not leave the page scroll-locked.
@@ -164,6 +174,10 @@ export class CgSheet extends LitElement {
   private _onOpen(): void {
     lockBodyScroll(this);
     this.dispatchEvent(new CustomEvent('cg-sheet-open', { bubbles: true, composed: true }));
+    this._trap();
+  }
+
+  private _trap(): void {
     requestAnimationFrame(() => {
       const panel = this.shadowRoot?.querySelector<HTMLElement>('.panel');
       if (panel) {

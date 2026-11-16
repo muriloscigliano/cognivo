@@ -318,6 +318,16 @@ export class CgModal extends LitElement {
 
   private _focusTrap = new FocusTrap();
 
+  override connectedCallback(): void {
+    super.connectedCallback();
+    // Moved in the page while open: disconnectedCallback released the lock
+    // and the focus trap; take them back.
+    if (this.open && this.hasUpdated) {
+      lockBodyScroll(this);
+      this._trap();
+    }
+  }
+
   override disconnectedCallback() {
     super.disconnectedCallback();
     // Release the page scroll lock if destroyed while open
@@ -350,7 +360,10 @@ export class CgModal extends LitElement {
     lockBodyScroll(this);
 
     this.dispatchEvent(new CustomEvent('cg-modal-open', { bubbles: true, composed: true }));
+    this._trap();
+  }
 
+  private _trap() {
     const container = this.shadowRoot?.querySelector<HTMLElement>('.modal-container');
     if (container) {
       this._focusTrap.activate(container, {
