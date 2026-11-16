@@ -103,10 +103,21 @@ describe.skipIf(!browserAvailable)('cg-app-shell (real browser)', { timeout: 30_
       await page.close();
     });
 
-    it('uses the theme surface, not black, in the light theme', async () => {
+    it('paints the sidebar surface token in each theme (light: gray.100, dark: gray.950), not black', async () => {
       const page = await shell(DESKTOP);
-      const bg = await page.evaluate((js) => getComputedStyle(new Function(`return ${js}`)() as Element).backgroundColor, ASIDE);
-      expect(bg).not.toBe('rgb(0, 0, 0)');
+      const read = () => page.evaluate((js) => {
+        const aside = getComputedStyle(new Function(`return ${js}`)() as Element).backgroundColor;
+        const probe = document.createElement('div');
+        probe.style.background = 'var(--cg-color-surface-sidebar-background)';
+        document.body.append(probe);
+        const token = getComputedStyle(probe).backgroundColor;
+        probe.remove();
+        return { aside, token };
+      }, ASIDE);
+      expect(await read()).toEqual({ aside: 'rgb(244, 244, 245)', token: 'rgb(244, 244, 245)' }); // gray.100 #f4f4f5
+      await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+      await frames(page);
+      expect(await read()).toEqual({ aside: 'rgb(9, 9, 11)', token: 'rgb(9, 9, 11)' }); // gray.950 #09090b
       await page.close();
     });
 
