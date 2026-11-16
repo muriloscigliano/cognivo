@@ -1,7 +1,7 @@
 {
   "name": "@cognivo/eslint-plugin",
   "version": "0.4.0",
-  "description": "ESLint plugin enforcing Cognivo's token and interaction conventions.",
+  "description": "ESLint plugin enforcing Cognivo's token and interaction conventions (Lit css, plain .css files, React style objects).",
   "keywords": [
     "cognivo",
     "design-system",
@@ -41,7 +41,8 @@
     "build": "tsc -p tsconfig.json",
     "prepublishOnly": "pnpm build",
     "type-check": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "test": "vitest run"
   },
   "peerDependencies": {
     "eslint": "^9.0.0"
@@ -49,7 +50,9 @@
   "devDependencies": {
     "@types/eslint": "^9.6.0",
     "@types/estree": "^1.0.6",
+    "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^9.15.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
   }
 }

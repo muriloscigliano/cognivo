@@ -8,6 +8,7 @@ import noTokenFallbacks from './rules/no-token-fallbacks.js';
 import cgTokenPrefix from './rules/cg-token-prefix.js';
 import noOrphanTokens from './rules/no-orphan-tokens.js';
 import noBackgroundAsForeground from './rules/no-background-as-foreground.js';
+import cssProcessor from './processors/css.js';
 
 const rules: Record<string, Rule.RuleModule> = {
   'no-raw-hex': noRawHex,
@@ -21,11 +22,19 @@ const rules: Record<string, Rule.RuleModule> = {
 };
 
 // Flat-config-shaped plugin object.
-const plugin = {
+interface CognivoPlugin extends ESLint.Plugin {
+  meta: { name: string; version: string };
+  rules: Record<string, Rule.RuleModule>;
+  processors: Record<string, Linter.Processor>;
+  configs: Record<string, Linter.Config | Linter.Config[]>;
+}
+
+const plugin: CognivoPlugin = {
   meta: { name: '@cognivo/eslint-plugin', version: '0.1.0' },
   rules,
-  configs: {} as Record<string, Linter.Config>,
-} satisfies ESLint.Plugin;
+  processors: { css: cssProcessor },
+  configs: {},
+};
 
 plugin.configs.recommended = {
   plugins: { '@cognivo': plugin },
@@ -40,5 +49,24 @@ plugin.configs.recommended = {
     '@cognivo/no-background-as-foreground': 'error',
   },
 };
+
+/**
+ * Raw colours in plain `.css` files: the `@cognivo/css` processor hands each
+ * `.css` file to `no-raw-hex` / `no-raw-rgba` as one `css` template. Two
+ * config objects (the file, then the template the processor makes of it,
+ * `app.css/0.js`); add the array next to `recommended`. Files that define
+ * colours on purpose (a theme's token overrides) belong in `ignores`.
+ */
+plugin.configs.css = [
+  { files: ['**/*.css'], plugins: { '@cognivo': plugin }, processor: '@cognivo/css' },
+  {
+    files: ['**/*.css/*.js'],
+    plugins: { '@cognivo': plugin },
+    rules: {
+      '@cognivo/no-raw-hex': 'error',
+      '@cognivo/no-raw-rgba': 'error',
+    },
+  },
+];
 
 export default plugin;

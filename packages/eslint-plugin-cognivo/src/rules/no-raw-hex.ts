@@ -1,5 +1,5 @@
 import type { Rule } from 'eslint';
-import { isCssTag, reportMatch } from './utils.js';
+import { rawColorVisitors } from './raw-color.js';
 
 // Match #RGB, #RGBA, #RRGGBB, #RRGGBBAA hex color literals.
 // Must be preceded by non-word (start-of-string, whitespace, `:`, `,`, `(`, etc.)
@@ -12,31 +12,16 @@ const rule: Rule.RuleModule = {
     type: 'problem',
     docs: {
       description:
-        'Forbid raw hex color literals inside Lit `css` template literals. Use semantic tier-2 color tokens instead.',
+        'Forbid raw hex color literals in Lit `css` templates, plain `.css` files (with the `@cognivo/css` processor) and React style objects. Use semantic tier-2 color tokens instead.',
     },
     messages: {
       forbidden:
-        'Raw hex color `#{{hex}}` is forbidden in component CSS. Use a tier-2 semantic color token (e.g., `var(--cg-color-surface-*)`).',
+        'Raw hex color `#{{hex}}` is forbidden. Use a tier-2 semantic color token (e.g., `var(--cg-color-surface-*)`).',
     },
     schema: [],
   },
   create(context) {
-    return {
-      TaggedTemplateExpression(node) {
-        if (!isCssTag(node)) return;
-        for (const quasi of node.quasi.quasis) {
-          const raw = quasi.value.raw;
-          // Skip CSS selectors targeting IDs only (rare inside Shadow DOM, but safe).
-          // We run a global scan to catch multiple occurrences.
-          const globalRe = new RegExp(HEX_REGEX.source, 'g');
-          let match: RegExpExecArray | null;
-          while ((match = globalRe.exec(raw)) !== null) {
-            const hex = match[2] ?? '';
-            reportMatch(context, quasi, match, 'forbidden', { hex });
-          }
-        }
-      },
-    };
+    return rawColorVisitors(context, HEX_REGEX, 'forbidden', (m) => ({ hex: m[2] ?? '' }), (m) => (m[1] ?? '').length);
   },
 };
 

@@ -4,7 +4,7 @@ import DocsLayout from '../../../layouts/DocsLayout.astro';
 
 <DocsLayout title="@cognivo/eslint-plugin">
   <h1>@cognivo/eslint-plugin</h1>
-  <p class="subtitle">Six ESLint rules that enforce the Cognivo token system inside Lit <code>css</code> template literals. Blocks raw hex, <code>rgba()</code>, <code>transition: all</code>, references to nonexistent tokens, and token fallbacks. CI fails on violations.</p>
+  <p class="subtitle">ESLint rules that enforce the Cognivo token system inside Lit <code>css</code> template literals — and, for raw colours, in plain <code>.css</code> files and React <code>style</code> objects too. Blocks raw hex, <code>rgba()</code>, <code>transition: all</code>, references to nonexistent tokens, and token fallbacks. CI fails on violations.</p>
 
   <section>
     <h2 id="installation">Installation</h2>
@@ -25,13 +25,43 @@ export default [
   </section>
 
   <section>
+    <h2 id="css-files">Plain CSS files and React styles</h2>
+    <p><code>no-raw-hex</code> and <code>no-raw-rgba</code> also check:</p>
+    <ul class="caveats">
+      <li><strong>React <code>style</code> objects</strong> — <code>style={{ color: '#fff' }}</code> in JSX (string and template values, both branches of a ternary), and object literals typed, <code>satisfies</code>-checked or cast as <code>CSSProperties</code> / <code>React.CSSProperties</code>. On with <code>recommended</code> for any file your config parses as TSX/JSX.</li>
+      <li><strong>Plain <code>.css</code> files</strong> — add <code>configs.css</code> (an array: the <code>@cognivo/css</code> processor on <code>**/*.css</code>, and the two rules on the template it makes of each file). Messages point at the line and column in the <code>.css</code> file.</li>
+    </ul>
+    <pre><code>{`import cognivo from '@cognivo/eslint-plugin';
+
+export default [
+  cognivo.configs.recommended,
+  ...cognivo.configs.css,
+  // A theme file that defines colours on purpose:
+  { ignores: ['src/theme/tokens.css'] },
+];`}</code></pre>
+    <pre><code>{[
+`/* ✗ app.css:2:10 — Raw hex color #ff0000 is forbidden */`,
+`.card {`,
+`  color: #ff0000;`,
+`}`,
+``,
+`// ✗ Deals.tsx — rgba(...) color function is forbidden`,
+`<div style={{ background: 'rgba(0, 0, 0, 0.5)' }} />`,
+``,
+`// ✓ Pass`,
+`<div style={{ background: 'var(--cg-color-surface-overlay-scrim-dark)' }} />`,
+].join('\n')}</code></pre>
+    <p>Why a processor and not Stylelint: the same two rules, messages and token advice cover templates, CSS files and style objects, with no second linter to install or configure.</p>
+  </section>
+
+  <section>
     <h2 id="api">Rules</h2>
     <div class="table-wrap">
       <table class="ref-table">
         <thead><tr><th>Rule</th><th>Level</th><th>Catches</th></tr></thead>
         <tbody>
-          <tr><td><code>@cognivo/no-raw-hex</code></td><td>error</td><td>Raw hex literals like <code>#fff</code> / <code>#2d2d30</code> inside <code>css`…`</code>.</td></tr>
-          <tr><td><code>@cognivo/no-raw-rgba</code></td><td>error</td><td>Raw <code>rgba()</code> / <code>rgb()</code> calls — use surface or overlay tokens.</td></tr>
+          <tr><td><code>@cognivo/no-raw-hex</code></td><td>error</td><td>Raw hex literals like <code>#fff</code> / <code>#2d2d30</code> inside <code>css`…`</code>, React style objects, and <code>.css</code> files (with <code>configs.css</code>).</td></tr>
+          <tr><td><code>@cognivo/no-raw-rgba</code></td><td>error</td><td>Raw <code>rgba()</code> / <code>rgb()</code> / <code>hsl()</code> calls in the same places — use surface or overlay tokens.</td></tr>
           <tr><td><code>@cognivo/no-transition-all</code></td><td>error</td><td><code>transition: all</code> — always specify an explicit property list.</td></tr>
           <tr><td><code>@cognivo/no-fake-tokens</code></td><td>error</td><td>References to <code>--cg-*</code> names that don't exist in <code>@cognivo/tokens</code>.</td></tr>
           <tr><td><code>@cognivo/no-token-fallbacks</code></td><td>warn</td><td><code>var(--cg-x, fallback)</code> — tokens are guaranteed to resolve.</td></tr>
@@ -110,7 +140,7 @@ export default [
   <section>
     <h2 id="caveats">Caveats</h2>
     <ul class="caveats">
-      <li><strong>Scope is Lit <code>css</code> tagged templates.</strong> The rules only scan content inside <code>css`…`</code>. Plain <code>.css</code> / <code>.scss</code> files are out of scope.</li>
+      <li><strong>Scope is Lit <code>css</code> tagged templates</strong>, plus — for the two raw-colour rules — React style objects and plain <code>.css</code> files (<code>configs.css</code>). <code>.scss</code> and CSS-in-JS libraries other than <code>style</code> objects are out of scope. Style objects are recognised by the <code>style</code> attribute or a <code>CSSProperties</code> type; an untyped object passed in from elsewhere is not checked.</li>
       <li><strong>Requires the flat config.</strong> ESLint 9+ only; the legacy <code>.eslintrc</code> format is not supported.</li>
       <li><strong>Token list is bundled.</strong> <code>no-fake-tokens</code> uses a snapshot of <code>@cognivo/tokens</code> at build time — bump the plugin after adding new tokens.</li>
       <li><strong>Override any rule.</strong> Spread <code>cognivo.configs.recommended</code> and set an individual rule to <code>off</code> / <code>warn</code> if your codebase needs a different bar.</li>
