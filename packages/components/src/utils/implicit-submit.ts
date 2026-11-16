@@ -42,7 +42,10 @@ const elementsOf = (form: HTMLFormElement): Control[] =>
 /** A submit button: `<button type=submit>`, `<input type=submit|image>`, or a custom element with `type="submit"`. */
 export function isSubmitButton(el: Element): boolean {
   if (el instanceof HTMLInputElement) return el.type === 'submit' || el.type === 'image';
-  return (el as Control).type === 'submit' && (el instanceof HTMLButtonElement || el.localName.includes('-'));
+  if (el instanceof HTMLButtonElement) return el.type === 'submit';
+  // A custom element with type="submit" — unless it is a link (cg-button with
+  // `href`), which navigates and is never a form's default button.
+  return (el as Control).type === 'submit' && el.localName.includes('-') && !(el as Control & { href?: unknown }).href;
 }
 
 /** A field that blocks implicit submission (a single-line text field). */

@@ -92,4 +92,66 @@ describe.skipIf(!browserAvailable)('cg-button link mode (real browser)', { timeo
     expect((await inner(page, '#l')).tag).toBe('button');
     await page.close();
   });
+
+  it('a bare `download` attribute is kept (the browser picks the file name); a value names the file', async () => {
+    const page = await open(`<cg-button id="bare" href="/report.csv" download>Export</cg-button><cg-button id="named" href="/r" download="deals.csv">Export</cg-button><cg-button id="none" href="/r">Open</cg-button>`);
+    const attr = (sel: string) => page.evaluate((sel) => document.querySelector(sel)!.shadowRoot!.querySelector('a')!.getAttribute('download'), sel);
+    expect(await attr('#bare')).toBe('');
+    expect(await attr('#named')).toBe('deals.csv');
+    expect(await attr('#none')).toBeNull();
+    await page.evaluate(() => document.querySelector('#bare')!.removeAttribute('download'));
+    await settleStyles(page);
+    expect(await attr('#bare')).toBeNull();
+    await page.close();
+  });
+
+  for (const href of ['javascript:alert(1)', ' JaVaScRiPt:alert(1)', 'java\tscript:alert(1)', 'data:text/html,<script>alert(1)</script>', 'vbscript:msgbox(1)']) {
+    it(`refuses a dangerous href (${JSON.stringify(href)}): rendered as a disabled link, nothing runs`, async () => {
+      const page = await open(`<button id="before">Before</button><cg-button id="l">Go</cg-button><button id="after">After</button>`);
+      await page.evaluate((href) => {
+        (window as unknown as { ran: boolean }).ran = false;
+        (window as unknown as { alert: () => void }).alert = () => { (window as unknown as { ran: boolean }).ran = true; };
+        (document.querySelector('#l') as HTMLElement & { href: string }).href = href.replace('\\t', '\t');
+      }, href);
+      await settleStyles(page);
+      const a = await inner(page, '#l');
+      expect(a).toMatchObject({ tag: 'a', href: null, ariaDisabled: 'true' });
+      await page.locator('#before').focus();
+      await page.keyboard.press('Tab');
+      await expect(page.evaluate(() => document.activeElement?.id)).resolves.toBe('after');
+      await page.locator('#l').click({ force: true });
+      await expect(page.evaluate(() => (window as unknown as { ran: boolean }).ran)).resolves.toBe(false);
+      await page.close();
+    });
+  }
+
+  it('target="_blank" gets rel="noopener noreferrer" unless a rel is given', async () => {
+    const page = await open(`
+      <cg-button id="blank" href="/x" target="_blank">A</cg-button>
+      <cg-button id="own" href="/x" target="_blank" rel="external">B</cg-button>
+      <cg-button id="self" href="/x">C</cg-button>`);
+    expect((await inner(page, '#blank')).rel).toBe('noopener noreferrer');
+    expect((await inner(page, '#own')).rel).toBe('external');
+    expect((await inner(page, '#self')).rel).toBeNull();
+    await page.close();
+  });
+
+  it('a link-mode button is never the form\'s default button: Enter in a field does not follow or submit through it', async () => {
+    const page = await openPage(['cg-button', 'cg-input'], `
+      <form id="f">
+        <cg-input id="q" name="q" label="Search"></cg-input>
+        <cg-button id="l" href="#followed" type="submit">Help</cg-button>
+      </form>`);
+    await page.evaluate(() => {
+      (window as unknown as { submits: number }).submits = 0;
+      document.getElementById('f')!.addEventListener('submit', (e) => { e.preventDefault(); (window as unknown as { submits: number }).submits++; });
+    });
+    await page.locator('#q input').focus();
+    await page.keyboard.press('Enter');
+    await settleStyles(page);
+    await expect(page.evaluate(() => location.hash)).resolves.toBe('');
+    // With no submit button, a single field submits the form itself (HTML implicit submission).
+    await expect(page.evaluate(() => (window as unknown as { submits: number }).submits)).resolves.toBe(1);
+    await page.close();
+  });
 });

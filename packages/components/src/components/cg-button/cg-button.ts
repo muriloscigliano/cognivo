@@ -18,8 +18,11 @@ import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
  * ```
  *
  * Link mode: with `href` it renders an `<a>` styled as the button (keeps
- * `target`, `rel`, `download`); disabled or loading, it is a disabled link
- * (`aria-disabled`, no `href`, out of the tab order). Form types do nothing
+ * `target`, `rel`, `download` — a bare `download` too); disabled or loading,
+ * it is a disabled link (`aria-disabled`, no `href`, out of the tab order).
+ * A `javascript:`, `data:` or `vbscript:` href is refused: the link renders
+ * disabled. `target="_blank"` gets `rel="noopener noreferrer"` unless `rel`
+ * is set. A link-mode button is never a form's default (submit) button. Form types do nothing
  * in link mode.
  *
  * Form behaviour: `type="submit"` calls `requestSubmit()` on the owning form
@@ -37,6 +40,16 @@ import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
  * @cssprop --cg-interaction-press-scale - Scale on press/active (0.97)
  * @cssprop --cg-transition-duration-fast - Color transition speed
  */
+/** Schemes that run code or smuggle content when followed. */
+const UNSAFE_SCHEME = /^(?:javascript|data|vbscript):/i;
+
+/** An href is safe unless it uses a script/data scheme (browsers ignore
+ *  leading spaces/control characters and tabs/newlines inside the scheme). */
+function isSafeHref(href: string): boolean {
+  // eslint-disable-next-line no-control-regex
+  return !UNSAFE_SCHEME.test(href.replace(/[\u0000-\u0020\u007f]/g, ''));
+}
+
 @customElement('cg-button')
 export class CgButton extends LitElement {
   /** Form-associated so `type="submit"` / `"reset"` find their owning form
@@ -254,10 +267,11 @@ export class CgButton extends LitElement {
   @property() href = '';
   /** Link mode: the `<a>`'s `target` (e.g. `_blank`). */
   @property() target = '';
-  /** Link mode: the `<a>`'s `rel` (e.g. `noopener noreferrer`). */
+  /** Link mode: the `<a>`'s `rel`. Default with `target="_blank"`: `noopener noreferrer`. */
   @property() rel = '';
-  /** Link mode: the `<a>`'s `download` (a file name). */
-  @property() download = '';
+  /** Link mode: the `<a>`'s `download`: a file name, or `''` (a bare
+   *  `download` attribute) to let the browser name it; `null` for none. */
+  @property() download: string | null = null;
 
   /** Disabled by an ancestor `<fieldset disabled>` (or the own attribute). */
   @state() private _formDisabled = false;
@@ -292,8 +306,10 @@ export class CgButton extends LitElement {
         <slot name="suffix"></slot>
     `;
     if (this.href) {
-      // Disabled link: no href (so not focusable and not followable), still a link.
-      const inactive = this.disabled || this._formDisabled || this.loading;
+      // Disabled link: no href (so not focusable and not followable), still a
+      // link. A script/data URL is refused the same way.
+      const inactive = this.disabled || this._formDisabled || this.loading || !isSafeHref(this.href);
+      const rel = this.rel || (this.target === '_blank' ? 'noopener noreferrer' : '');
       return html`
         <a
           part="button"
@@ -304,8 +320,8 @@ export class CgButton extends LitElement {
           aria-busy=${this.loading ? 'true' : nothing}
           aria-label=${this.label || nothing}
           target=${this.target || nothing}
-          rel=${this.rel || nothing}
-          download=${this.download || nothing}
+          rel=${rel || nothing}
+          download=${this.download ?? nothing}
         >${content}</a>
       `;
     }
