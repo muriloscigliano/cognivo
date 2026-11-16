@@ -42,7 +42,7 @@ export interface CgPhoneInputProps {
   /** Whether the country dropdown is open (reflected). */
   open?: boolean;
   /** Fired when the phone value changes. */
-  onChange?: (e: CustomEvent<{ value: string; country: string }>) => void;
+  onPhoneInputChange?: (e: CustomEvent<{ value: string; country: string }>) => void;
   /** Fired when the selected country changes. */
   onCountryChange?: (e: CustomEvent<{ country: string }>) => void;
   className?: string;
@@ -73,7 +73,7 @@ export const CgPhoneInput = createWrapper<CgPhoneInputProps, 'cg-phone-input'>(
     'open',
   ],
   {
-    onChange: 'cg-phone-input-change',
+    onPhoneInputChange: 'cg-phone-input-change',
     onCountryChange: 'cg-phone-input-country-change',
   }
 );

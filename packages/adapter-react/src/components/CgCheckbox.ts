@@ -16,12 +16,14 @@ export interface CgCheckboxProps {
   /** Whether the checkbox is disabled. */
   disabled?: boolean;
   /** Fired when the checked state changes. */
-  onChange?: (e: CustomEvent<{ checked: boolean; value: string }>) => void;
+  onCgChange?: (e: CustomEvent<{ checked: boolean; value: string }>) => void;
   className?: string;
 }
 
 export const CgCheckbox = createWrapper<CgCheckboxProps, 'cg-checkbox'>(
   'cg-checkbox',
   ['label', 'description', 'name', 'value', 'checked', 'indeterminate', 'disabled'],
-  { onChange: 'cg-change' }
+  {
+    onCgChange: 'cg-change',
+  }
 );

@@ -22,12 +22,14 @@ export interface CgSelectProps {
   /** Whether the options are searchable. */
   searchable?: boolean;
   /** Fired when the selection changes. */
-  onChange?: (e: CustomEvent<{ value: string }>) => void;
+  onCgChange?: (e: CustomEvent<{ value: string }>) => void;
   className?: string;
 }
 
 export const CgSelect = createWrapper<CgSelectProps, 'cg-select'>(
   'cg-select',
   ['options', 'value', 'placeholder', 'name', 'disabled', 'error', 'searchable'],
-  { onChange: 'cg-change' }
+  {
+    onCgChange: 'cg-change',
+  }
 );

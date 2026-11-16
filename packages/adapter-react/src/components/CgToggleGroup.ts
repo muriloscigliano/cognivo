@@ -1,6 +1,6 @@
 import { createWrapper } from '../create-wrapper.js';
 export const CgToggleGroup = createWrapper('cg-toggle-group', ['type', 'value', 'disabled', 'orientation', 'size', 'variant'],
   {
-    onChange: 'cg-toggle-group-change',
+    onToggleGroupChange: 'cg-toggle-group-change',
   }
 );

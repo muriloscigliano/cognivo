@@ -1,6 +1,6 @@
 import { createWrapper } from '../create-wrapper.js';
 export const AiAvatar = createWrapper('ai-avatar', ['src', 'name', 'size', 'status', 'type'],
   {
-    onClick: 'ai-avatar-click',
+    onAvatarClick: 'ai-avatar-click',
   }
 );

@@ -17,12 +17,14 @@ export interface CgAccordionProps {
   /** Values of items that should be open by default. */
   defaultOpen?: string[];
   /** Fired when an accordion item is toggled. */
-  onChange?: (e: CustomEvent<{ value: string; open: boolean }>) => void;
+  onAccordionChange?: (e: CustomEvent<{ value: string; open: boolean }>) => void;
   className?: string;
 }
 
 export const CgAccordion = createWrapper<CgAccordionProps, 'cg-accordion'>(
   'cg-accordion',
   ['items', 'multiple', 'variant', 'defaultOpen'],
-  { onChange: 'cg-accordion-change' }
+  {
+    onAccordionChange: 'cg-accordion-change',
+  }
 );

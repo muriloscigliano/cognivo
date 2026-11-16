@@ -5,7 +5,7 @@ export const AiSearch = createWrapper(
   ['placeholder', 'suggestions', 'filters', 'recentSearches', 'results'],
   {
     onQuery: 'ai-search-query',
-    onSelect: 'ai-search-select',
+    onSearchSelect: 'ai-search-select',
     onFilter: 'ai-search-filter',
   }
 );

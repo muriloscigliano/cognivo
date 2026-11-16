@@ -10,14 +10,17 @@ export interface CgFormProps {
   /** Map of field names to error messages. */
   errors?: Record<string, string>;
   /** Fired when the form is submitted. */
-  onSubmit?: (e: CustomEvent<{ values: Record<string, unknown> }>) => void;
+  onCgSubmit?: (e: CustomEvent<{ values: Record<string, unknown> }>) => void;
   /** Fired when the form is reset. */
-  onReset?: (e: CustomEvent) => void;
+  onCgReset?: (e: CustomEvent) => void;
   className?: string;
 }
 
 export const CgForm = createWrapper<CgFormProps, 'cg-form'>(
   'cg-form',
   ['name', 'gap', 'loading', 'errors'],
-  { onSubmit: 'cg-submit', onReset: 'cg-reset' }
+  {
+    onCgSubmit: 'cg-submit',
+    onCgReset: 'cg-reset',
+  }
 );

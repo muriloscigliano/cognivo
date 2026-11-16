@@ -14,12 +14,14 @@ export interface CgRadioProps {
   /** Whether the radio is disabled. */
   disabled?: boolean;
   /** Fired when the selection changes. */
-  onChange?: (e: CustomEvent<{ value: string }>) => void;
+  onCgChange?: (e: CustomEvent<{ value: string }>) => void;
   className?: string;
 }
 
 export const CgRadio = createWrapper<CgRadioProps, 'cg-radio'>(
   'cg-radio',
   ['label', 'description', 'name', 'value', 'checked', 'disabled'],
-  { onChange: 'cg-change' }
+  {
+    onCgChange: 'cg-change',
+  }
 );

@@ -3,7 +3,7 @@ export const CgCommand = createWrapper('cg-command', ['open', 'placeholder', 'co
   {
     onOpen: 'cg-command-open',
     onClose: 'cg-command-close',
-    onInput: 'cg-command-input',
-    onSelect: 'cg-command-select',
+    onCommandInput: 'cg-command-input',
+    onCommandSelect: 'cg-command-select',
   }
 );

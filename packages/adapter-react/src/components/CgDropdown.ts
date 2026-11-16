@@ -3,6 +3,6 @@ export const CgDropdown = createWrapper('cg-dropdown', ['open', 'position', 'ite
   {
     onOpen: 'cg-dropdown-open',
     onClose: 'cg-dropdown-close',
-    onSelect: 'cg-dropdown-select',
+    onDropdownSelect: 'cg-dropdown-select',
   }
 );

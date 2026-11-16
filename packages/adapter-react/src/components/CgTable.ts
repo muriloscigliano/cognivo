@@ -23,7 +23,7 @@ export interface CgTableProps {
   onSort?: (e: CustomEvent<{ key: string; direction: 'asc' | 'desc' }>) => void;
   className?: string;
   /** Fired as `cg-select`. */
-  onSelect?: (e: CustomEvent) => void;
+  onCgSelect?: (e: CustomEvent) => void;
   /** Fired as `cg-row-click`. */
   onRowClick?: (e: CustomEvent) => void;
 }
@@ -33,7 +33,7 @@ export const CgTable = createWrapper<CgTableProps, 'cg-table'>(
   ['columns', 'rows', 'striped', 'compact', 'emptyText'],
   {
     onSort: 'cg-sort',
-    onSelect: 'cg-select',
+    onCgSelect: 'cg-select',
     onRowClick: 'cg-row-click',
   }
 );

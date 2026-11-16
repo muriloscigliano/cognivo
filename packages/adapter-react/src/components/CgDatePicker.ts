@@ -14,12 +14,14 @@ export interface CgDatePickerProps {
   /** Error message or boolean. */
   error?: string | boolean;
   /** Fired when the selected date changes. */
-  onChange?: (e: CustomEvent<{ value: string }>) => void;
+  onCgChange?: (e: CustomEvent<{ value: string }>) => void;
   className?: string;
 }
 
 export const CgDatePicker = createWrapper<CgDatePickerProps, 'cg-date-picker'>(
   'cg-date-picker',
   ['value', 'name', 'min', 'max', 'disabled', 'error'],
-  { onChange: 'cg-change' }
+  {
+    onCgChange: 'cg-change',
+  }
 );

@@ -4,6 +4,6 @@ export const AiFeedback = createWrapper(
   'ai-feedback',
   ['mode', 'tags', 'messageId', 'showComment'],
   {
-    onSubmit: 'ai-feedback-submit',
+    onFeedbackSubmit: 'ai-feedback-submit',
   }
 );

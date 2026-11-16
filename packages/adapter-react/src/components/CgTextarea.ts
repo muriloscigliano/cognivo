@@ -20,12 +20,14 @@ export interface CgTextareaProps {
   /** Whether to auto-resize based on content. */
   autoresize?: boolean;
   /** Fired on input change. */
-  onInput?: (e: CustomEvent<{ value: string }>) => void;
+  onCgInput?: (e: CustomEvent<{ value: string }>) => void;
   className?: string;
 }
 
 export const CgTextarea = createWrapper<CgTextareaProps, 'cg-textarea'>(
   'cg-textarea',
   ['value', 'placeholder', 'name', 'rows', 'maxlength', 'disabled', 'readonly', 'error', 'autoresize'],
-  { onInput: 'cg-input' }
+  {
+    onCgInput: 'cg-input',
+  }
 );

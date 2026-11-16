@@ -22,12 +22,14 @@ export interface CgSliderProps {
   /** Whether the slider is disabled. */
   disabled?: boolean;
   /** Fired when the slider value changes. */
-  onChange?: (e: CustomEvent<{ value: number }>) => void;
+  onCgChange?: (e: CustomEvent<{ value: number }>) => void;
   className?: string;
 }
 
 export const CgSlider = createWrapper<CgSliderProps, 'cg-slider'>(
   'cg-slider',
   ['label', 'name', 'value', 'min', 'max', 'step', 'unit', 'showValue', 'showRange', 'disabled'],
-  { onChange: 'cg-change' }
+  {
+    onCgChange: 'cg-change',
+  }
 );

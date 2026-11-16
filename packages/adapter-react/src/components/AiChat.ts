@@ -10,12 +10,12 @@ export interface AiChatProps {
   /** Fired when an AI response is received. Detail: { message, confidence?, timestamp }. */
   onResponseReceived?: (e: CustomEvent<{ message: string; confidence?: number; timestamp: number }>) => void;
   /** Fired when the AI encounters an error. Detail: { error, timestamp }. */
-  onError?: (e: CustomEvent<{ error: string; timestamp: number }>) => void;
+  onAiError?: (e: CustomEvent<{ error: string; timestamp: number }>) => void;
   className?: string;
   /** Fired as `ai-chat-stop`. */
   onStop?: (e: CustomEvent) => void;
   /** Fired as `ai-chat-copy`. */
-  onCopy?: (e: CustomEvent) => void;
+  onChatCopy?: (e: CustomEvent) => void;
   /** Fired as `ai-chat-regenerate`. */
   onRegenerate?: (e: CustomEvent) => void;
   /** Fired as `ai-chat-rate`. */
@@ -28,9 +28,9 @@ export const AiChat = createWrapper<AiChatProps, 'ai-chat'>(
   {
     onMessageSent: 'ai-message-sent',
     onResponseReceived: 'ai-response-received',
-    onError: 'ai-error',
+    onAiError: 'ai-error',
     onStop: 'ai-chat-stop',
-    onCopy: 'ai-chat-copy',
+    onChatCopy: 'ai-chat-copy',
     onRegenerate: 'ai-chat-regenerate',
     onRate: 'ai-chat-rate',
   }

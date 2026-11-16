@@ -3,6 +3,6 @@ export const CgContextMenu = createWrapper('cg-context-menu', ['open', 'items', 
   {
     onOpen: 'cg-context-menu-open',
     onClose: 'cg-context-menu-close',
-    onSelect: 'cg-context-menu-select',
+    onContextMenuSelect: 'cg-context-menu-select',
   }
 );

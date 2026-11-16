@@ -12,12 +12,14 @@ export interface CgSwitchProps {
   /** Whether the switch is disabled. */
   disabled?: boolean;
   /** Fired when the switch is toggled. */
-  onChange?: (e: CustomEvent<{ checked: boolean }>) => void;
+  onCgChange?: (e: CustomEvent<{ checked: boolean }>) => void;
   className?: string;
 }
 
 export const CgSwitch = createWrapper<CgSwitchProps, 'cg-switch'>(
   'cg-switch',
   ['label', 'description', 'name', 'checked', 'disabled'],
-  { onChange: 'cg-change' }
+  {
+    onCgChange: 'cg-change',
+  }
 );

@@ -4,7 +4,7 @@ export const AiAnnotation = createWrapper(
   'ai-annotation',
   ['content', 'annotations', 'labels', 'editable'],
   {
-    onSelect: 'ai-annotation-select',
+    onAnnotationSelect: 'ai-annotation-select',
     onRemove: 'ai-annotation-remove',
     onAdd: 'ai-annotation-add',
   }

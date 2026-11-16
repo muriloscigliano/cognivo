@@ -13,16 +13,16 @@ export interface CgImageProps {
   lazy?: boolean;
   className?: string;
   /** Fired as `cg-image-load`. */
-  onLoad?: (e: CustomEvent) => void;
+  onImageLoad?: (e: CustomEvent) => void;
   /** Fired as `cg-image-error`. */
-  onError?: (e: CustomEvent) => void;
+  onImageError?: (e: CustomEvent) => void;
 }
 
 export const CgImage = createWrapper<CgImageProps, 'cg-image'>(
   'cg-image',
   ['src', 'alt', 'ratio', 'fit', 'lazy'],
   {
-    onLoad: 'cg-image-load',
-    onError: 'cg-image-error',
+    onImageLoad: 'cg-image-load',
+    onImageError: 'cg-image-error',
   }
 );
