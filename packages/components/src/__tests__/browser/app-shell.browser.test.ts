@@ -202,6 +202,29 @@ describe.skipIf(!browserAvailable)('cg-app-shell (real browser)', { timeout: 30_
       await page.close();
     });
 
+    it('the first-load close on a phone fires cg-app-shell-toggle, like a breakpoint change does', async () => {
+      const page = await shell(DESKTOP);
+      await page.evaluate(() => {
+        const w = window as unknown as { events: unknown[] };
+        w.events = [];
+        document.addEventListener('cg-app-shell-toggle', (e) => w.events.push((e as CustomEvent).detail));
+      });
+      // Breakpoint change: desktop → phone.
+      await page.setViewportSize(PHONE);
+      await frames(page);
+      expect(await page.evaluate(() => (window as unknown as { events: unknown[] }).events)).toEqual([{ collapsed: true }]);
+      // First load at phone width: the same event.
+      await page.evaluate((html) => { (window as unknown as { events: unknown[] }).events = []; document.body.innerHTML = html; }, SHELL());
+      await frames(page);
+      expect(await collapsed(page)).toBe(true);
+      expect(await page.evaluate(() => (window as unknown as { events: unknown[] }).events)).toEqual([{ collapsed: true }]);
+      // Already collapsed by the author: nothing changes, no event.
+      await page.evaluate((html) => { (window as unknown as { events: unknown[] }).events = []; document.body.innerHTML = html; }, SHELL('sidebar-collapsed'));
+      await frames(page);
+      expect(await page.evaluate(() => (window as unknown as { events: unknown[] }).events)).toEqual([]);
+      await page.close();
+    });
+
     it('widening back to desktop restores the desktop column as it was', async () => {
       const page = await shell(DESKTOP);
       await page.setViewportSize(PHONE);

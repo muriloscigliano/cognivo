@@ -274,10 +274,11 @@ export class CgAppShell extends LitElement {
     this._media = window.matchMedia?.(PHONE_QUERY) ?? null;
     this._phone = this._media?.matches ?? false;
     // A phone drawer starts closed (not covering the page on first load);
-    // widening to desktop later restores the column as authored.
+    // widening to desktop later restores the column as authored. Closing it
+    // fires cg-app-shell-toggle, the same as a breakpoint change.
     if (this._phone && this._desktopCollapsed === null) {
       this._desktopCollapsed = this.sidebarCollapsed;
-      this.sidebarCollapsed = true;
+      this._setCollapsed(true);
     }
     this._media?.addEventListener('change', this._onMediaChange);
     document.addEventListener('keydown', this._onKeydown);
