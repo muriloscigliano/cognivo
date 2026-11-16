@@ -58,17 +58,22 @@ describe('cg-toaster', () => {
     expect(el.shadowRoot!.querySelectorAll('.toast').length).toBe(2);
   });
 
-  it('region has no aria-live; each toast is its own live region via role=status', async () => {
+  it('announces through two persistent live regions; the landmark and the cards are not live regions', async () => {
     await create();
     const region = el.shadowRoot!.querySelector('[role="region"]')!;
-    // aria-live on the wrapper + role=status on children = nested live
-    // regions → double announcements. The toast's role=status is the
-    // single announcement mechanism.
+    // A live region per toast (role=status inserted with its content) is
+    // often not announced, and nested regions double-announce. Two regions
+    // that exist up front carry the announcements instead.
     expect(region.hasAttribute('aria-live')).toBe(false);
     expect(region.getAttribute('aria-label')).toBe('Notifications');
+    const polite = el.shadowRoot!.querySelector('[role="status"][aria-live="polite"]')!;
+    const assertive = el.shadowRoot!.querySelector('[role="alert"][aria-live="assertive"]')!;
     el.show({ title: 'Announce me', duration: 0 });
+    el.show({ title: 'Failed', variant: 'error', duration: 0 });
     await el.updateComplete;
-    expect(el.shadowRoot!.querySelector('.toast')!.getAttribute('role')).toBe('status');
+    expect(el.shadowRoot!.querySelector('.toast')!.hasAttribute('role')).toBe(false);
+    expect(polite.textContent!.trim()).toBe('Announce me');
+    expect(assertive.textContent!.trim()).toBe('Failed');
   });
 
   it('evicted toasts dispatch cg-toaster-dismiss', async () => {

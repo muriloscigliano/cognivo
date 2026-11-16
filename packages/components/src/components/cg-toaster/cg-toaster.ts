@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { svg } from 'lit';
 import { property, state } from 'lit/decorators.js';
+import { repeat } from 'lit/directives/repeat.js';
 import { customElement } from '../../utils/define.js';
 import { reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
@@ -35,6 +36,11 @@ interface ToastEntry extends ToastOptions {
  * @element cg-toaster
  * Manages a stack of auto-dismissing toast notifications.
  *
+ * Screen readers: each toast is announced once, through live regions that
+ * exist before any toast does — polite (`role="status"`) for most variants,
+ * assertive (`role="alert"`) for `error`. The visible cards are not live
+ * regions, so a message is not read twice.
+ *
  * @fires {CustomEvent<{id:string}>} cg-toaster-dismiss
  * @fires {CustomEvent<{id:string,actionId?:string}>} cg-toaster-action
  */
@@ -58,6 +64,18 @@ export class CgToaster extends LitElement {
     :host([position="bottom-left"]) { bottom: 0; left: 0; }
     :host([position="top-center"]) { top: 0; left: 50%; transform: translateX(-50%); }
     :host([position="bottom-center"]) { bottom: 0; left: 50%; transform: translateX(-50%); }
+
+    /* Live regions: read by screen readers, not shown. */
+    .announcer {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
 
     .toast {
       pointer-events: auto;
@@ -171,6 +189,9 @@ export class CgToaster extends LitElement {
   @property({ type: Number }) max = 5;
 
   @state() private _toasts: ToastEntry[] = [];
+  /** Messages in the live regions, one node per toast (a repeated message is
+   *  a new node, so it is announced again). Removed with their toast. */
+  @state() private _announcements: Array<{ id: string; text: string; assertive: boolean }> = [];
 
   public show(opts: ToastOptions): string {
     const id = `t_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
@@ -193,6 +214,10 @@ export class CgToaster extends LitElement {
       next = next.slice(next.length - this.max);
     }
     this._toasts = next;
+    this._announcements = [
+      ...this._announcements.filter((a) => next.some((t) => t.id === a.id)),
+      { id, text: [opts.title, opts.description].filter(Boolean).join('. '), assertive: opts.variant === 'error' },
+    ];
     if (duration > 0) {
       this._armTimer(entry);
     }
@@ -250,6 +275,7 @@ export class CgToaster extends LitElement {
     const toast = this._toasts.find(t => t.id === id);
     if (toast?.timer) clearTimeout(toast.timer);
     this._toasts = this._toasts.filter(t => t.id !== id);
+    this._announcements = this._announcements.filter(a => a.id !== id);
     this.dispatchEvent(new CustomEvent('cg-toaster-dismiss', {
       bubbles: true, composed: true, detail: { id },
     }));
@@ -258,6 +284,7 @@ export class CgToaster extends LitElement {
   public clear(): void {
     for (const t of this._toasts) if (t.timer) clearTimeout(t.timer);
     this._toasts = [];
+    this._announcements = [];
   }
 
   override disconnectedCallback(): void {
@@ -297,7 +324,14 @@ export class CgToaster extends LitElement {
   }
 
   override render() {
+    const announce = (assertive: boolean) => repeat(
+      this._announcements.filter((a) => a.assertive === assertive),
+      (a) => a.id,
+      (a) => html`<div>${a.text}</div>`,
+    );
     return html`
+      <div class="announcer" role="status" aria-live="polite">${announce(false)}</div>
+      <div class="announcer" role="alert" aria-live="assertive">${announce(true)}</div>
       <div role="region" aria-label=${this.i18n.t('label')} style="display: contents;">
         ${this._toasts.map(toast => {
           const iconPath = this._iconFor(toast.variant);
@@ -306,7 +340,6 @@ export class CgToaster extends LitElement {
           return html`
           <div
             class="toast ${toast.variant ?? 'default'}"
-            role="status"
             @mouseenter=${() => this._onToastEnter(toast)}
             @mouseleave=${() => this._onToastLeave(toast)}
             @focusin=${() => this._onToastFocusIn(toast)}
