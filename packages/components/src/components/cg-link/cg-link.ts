@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { safeHref } from '../../utils/safe-href.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 
 /**
@@ -113,7 +114,7 @@ export class CgLink extends LitElement {
   override render() {
     return html`
       <a
-        href=${this.href || nothing}
+        href=${safeHref(this.href) ?? nothing}
         target=${this.external ? '_blank' : nothing}
         rel=${this.external ? 'noopener noreferrer' : nothing}
         aria-disabled=${this.disabled ? 'true' : nothing}

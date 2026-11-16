@@ -7,6 +7,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { isSafeHref } from '../../utils/safe-href.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface CitationSource {
@@ -183,8 +184,8 @@ export class AiCitation extends LitElement {
     if (!url) return undefined;
     const trimmed = url.trim();
     if (!trimmed) return undefined;
-    const lower = trimmed.toLowerCase().replace(/[\s\u0000-\u001f]/g, '');
-    if (lower.startsWith('javascript:') || lower.startsWith('data:') || lower.startsWith('vbscript:')) return undefined;
+    if (!isSafeHref(trimmed)) return undefined;
+    const lower = trimmed.toLowerCase();
     if (lower.startsWith('http:') || lower.startsWith('https:') || lower.startsWith('//')) return trimmed;
     const colonIndex = trimmed.indexOf(':');
     const slashIndex = trimmed.indexOf('/');

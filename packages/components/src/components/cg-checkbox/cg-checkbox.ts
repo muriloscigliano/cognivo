@@ -135,20 +135,17 @@ export class CgCheckbox extends LitElement {
     .check-icon .tick {
       stroke-dasharray: 24;
       stroke-dashoffset: 24;
-      animation: drawTick var(--cg-transition-duration-slow) 60ms var(--cg-transition-easing-ease-out) forwards;
+      animation: draw var(--cg-transition-duration-slow) 60ms var(--cg-transition-easing-ease-out) forwards;
     }
 
     .check-icon .dash {
       stroke-dasharray: 14;
       stroke-dashoffset: 14;
-      animation: drawDash var(--cg-transition-duration-default) 40ms var(--cg-transition-easing-ease-out) forwards;
+      animation: draw var(--cg-transition-duration-default) 40ms var(--cg-transition-easing-ease-out) forwards;
     }
 
-    @keyframes drawTick {
-      to { stroke-dashoffset: 0; }
-    }
-
-    @keyframes drawDash {
+    /* Tick and dash share one stroke reveal. */
+    @keyframes draw {
       to { stroke-dashoffset: 0; }
     }
 

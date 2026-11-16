@@ -10,6 +10,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { safeHref } from '../../utils/safe-href.js';
 import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
 
 interface Source {
@@ -312,7 +313,7 @@ export class AiInsightCard extends LitElement {
               ${this.sources.map(s => html`
                 <div class="source">
                   <div class="source-dot ${this._relevanceClass(s.relevance)}"></div>
-                  ${s.url ? html`<a href="${s.url}" target="_blank" rel="noopener">${s.title}</a>` : html`<span>${s.title}</span>`}
+                  ${safeHref(s.url) ? html`<a href="${s.url}" target="_blank" rel="noopener">${s.title}</a>` : html`<span>${s.title}</span>`}
                 </div>
               `)}
             </div>

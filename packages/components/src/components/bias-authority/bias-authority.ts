@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing, svg } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { safeHref } from '../../utils/safe-href.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 
 /**
@@ -99,7 +100,7 @@ export class BiasAuthority extends LitElement {
       <slot name="icon">${this._iconSvg()}</slot>
       <span aria-hidden="true"><span class="source">${this.source}</span></span>
     `;
-    const badge = this.href
+    const badge = safeHref(this.href)
       ? html`<a class="badge" href=${this.href} role="note" aria-label=${ariaLabel}>${inner}</a>`
       : html`<span class="badge" role="note" aria-label=${ariaLabel} tabindex="0">${inner}</span>`;
 

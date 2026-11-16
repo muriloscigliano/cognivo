@@ -8,6 +8,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { safeHref } from '../../utils/safe-href.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 
 interface Driver { factor: string; impact: number; }
@@ -387,7 +388,7 @@ export class AiResultPanel extends LitElement {
     if (!this.sources.length) return html`<div class="empty">No sources available</div>`;
     return html`${this.sources.map(s => html`
       <div class="source-item">
-        ${s.url ? html`<a class="source-title" href="${s.url}" target="_blank" rel="noopener">${s.title}</a>` : html`<span class="source-title">${s.title}</span>`}
+        ${safeHref(s.url) ? html`<a class="source-title" href="${s.url}" target="_blank" rel="noopener">${s.title}</a>` : html`<span class="source-title">${s.title}</span>`}
         ${s.excerpt ? html`<div class="source-excerpt">${s.excerpt}</div>` : nothing}
       </div>
     `)}`;

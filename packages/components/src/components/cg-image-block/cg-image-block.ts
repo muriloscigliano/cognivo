@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { safeHref } from '../../utils/safe-href.js';
 import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -199,7 +200,7 @@ export class CgImageBlock extends LitElement {
         ${this.caption || this.source ? html`
           <figcaption>
             ${this.caption}
-            ${this.source ? html` — <a class="source" href=${this.sourceUrl || '#'} target="_blank" rel="noopener">${this.source}</a>` : nothing}
+            ${this.source ? html` — <a class="source" href=${safeHref(this.sourceUrl) ?? '#'} target="_blank" rel="noopener">${this.source}</a>` : nothing}
           </figcaption>
         ` : nothing}
       </figure>

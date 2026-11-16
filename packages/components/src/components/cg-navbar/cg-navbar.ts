@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { safeHref } from '../../utils/safe-href.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -528,7 +529,7 @@ export class CgNavbar extends LitElement {
     return html`
       <a
         class=${cls}
-        href=${item.href}
+        href=${safeHref(item.href) ?? nothing}
         target=${item.external ? '_blank' : nothing}
         rel=${item.external ? 'noopener noreferrer' : nothing}
         role=${mobile ? nothing : 'tab'}
@@ -551,7 +552,7 @@ export class CgNavbar extends LitElement {
     const hasItems = this.items.length > 0;
     return html`
       <nav role="navigation" aria-label=${this.i18n.t('label')}>
-        ${this.brandHref
+        ${safeHref(this.brandHref)
           ? html`<a class="brand" href=${this.brandHref}><slot name="brand"></slot></a>`
           : html`<div class="brand"><slot name="brand"></slot></div>`}
         ${hasItems ? html`

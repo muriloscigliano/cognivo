@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { safeHref } from '../../utils/safe-href.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -237,11 +238,12 @@ export class CgBreadcrumbs extends LitElement {
       `;
     }
 
-    if (item.href) {
+    const href = safeHref(item.href);
+    if (href) {
       return html`
         <a
           class="crumb-link"
-          href="${item.href}"
+          href="${href}"
           @click="${(e: Event) => { e.preventDefault(); this._handleClick(item, index); }}"
         >
           ${item.icon ? html`<span class="crumb-icon">${item.icon}</span>` : nothing}

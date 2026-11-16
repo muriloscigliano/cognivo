@@ -23,6 +23,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { safeHref } from '../../utils/safe-href.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes, shimmerKeyframes } from '../../styles/index.js';
 import '../cg-button/cg-button.js';
 import '../cg-badge/cg-badge.js';
@@ -239,9 +240,7 @@ export class AiDataCard extends LitElement {
   }
 
   private _sanitizeUrl(url: string): string {
-    const trimmed = url.trim().toLowerCase();
-    if (trimmed.startsWith('javascript:') || trimmed.startsWith('data:') || trimmed.startsWith('vbscript:')) return '#';
-    return url;
+    return safeHref(url) ?? '#';
   }
 
   private _handleAction(action: CardAction) {

@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { isSafeHref } from '../../utils/safe-href.js';
 import { formInternals } from '../../utils/form-internals.js';
 import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
 
@@ -40,10 +41,6 @@ import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
  * @cssprop --cg-interaction-press-scale - Scale on press/active (0.97)
  * @cssprop --cg-transition-duration-fast - Color transition speed
  */
-/** An href is safe unless it uses a script/data scheme (javascript:,
- *  data:, vbscript:). Browsers ignore leading spaces/control characters and
- *  tabs/newlines inside the scheme, so those are dropped before the check. */
-const isSafeHref = (href: string): boolean => !/^(javascript|data|vbscript):/i.test(href.replace(/[\0- \x7f]/g, ''));
 
 @customElement('cg-button')
 export class CgButton extends LitElement {

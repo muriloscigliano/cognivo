@@ -19,6 +19,7 @@
 import { LitElement, html, svg, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { safeHref } from '../../utils/safe-href.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
 
 interface SourceNode {
@@ -233,7 +234,7 @@ export class AiSourceGraph extends LitElement {
                 <div class="source-body">
                   <div class="source-top">
                     <span class="source-title">
-                      ${s.url ? html`<a href=${s.url} target="_blank" rel="noopener" @click=${(e: Event) => e.stopPropagation()}>${s.title}</a>` : s.title}
+                      ${safeHref(s.url) ? html`<a href=${s.url} target="_blank" rel="noopener" @click=${(e: Event) => e.stopPropagation()}>${s.title}</a>` : s.title}
                     </span>
                     <cg-badge variant=${TYPE_BADGE} label=${s.type} size="sm" rounded="full"></cg-badge>
                   </div>
