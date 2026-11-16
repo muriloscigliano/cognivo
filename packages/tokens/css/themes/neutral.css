@@ -49,4 +49,6 @@
   --cg-color-selected-subtle: var(--cg-color-state-selected);
   --cg-color-current-indicator: var(--cg-color-state-text);
   --cg-color-current-text: var(--cg-color-state-text);
+  /* Links: neutral, like the text (underline and hover carry the affordance). */
+  --cg-color-link-text: var(--cg-color-state-text);
 }

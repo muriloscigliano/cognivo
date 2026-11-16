@@ -99,6 +99,18 @@
         "$description": "Inner gap color for dual-layer focus rings"
       }
     },
+    "link": {
+      "text": {
+        "$type": "color",
+        "$value": "{color.accent.text}",
+        "$description": "Text links (a tip card's link, inline links). Neutral (state text) in the neutral preset."
+      },
+      "hover": {
+        "$type": "color",
+        "$value": "{color.state.text}",
+        "$description": "Text link on hover: near-black (dark: white)."
+      }
+    },
     "accent": {
       "text": {
         "$type": "color",

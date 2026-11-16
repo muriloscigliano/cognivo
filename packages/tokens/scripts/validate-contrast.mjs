@@ -217,6 +217,12 @@ const PAIRS = [
   { label: 'table-header-text', fg: 'color-on-surface-container-default', bg: 'color-surface-container-background' },
   { label: 'toast-description', fg: 'color-on-surface-container-default', bg: 'color-modal-container-background' },
 
+  // text links (--cg-color-link-*): on the page, a raised panel and the app canvas
+  { label: 'link-on-page', fg: 'color-link-text', bg: 'color-surface-base-background' },
+  { label: 'link-on-panel', fg: 'color-link-text', bg: 'color-surface-panel-background' },
+  { label: 'link-on-canvas', fg: 'color-link-text', bg: 'color-surface-canvas-background' },
+  { label: 'link-hover-on-page', fg: 'color-link-hover', bg: 'color-surface-base-background' },
+
   // text selection (::selection): opaque, so the pair is the whole story on any fill
   { label: 'text-selection', fg: 'color-selection-text', bg: 'color-selection-background' },
 
@@ -231,6 +237,10 @@ const PAIRS = [
 // Pairs whose tokens MUST resolve in both themes (unresolved = failure).
 const REQUIRED = new Set([
   'text-selection',
+  'link-on-page',
+  'link-on-panel',
+  'link-on-canvas',
+  'link-hover-on-page',
   'input-label-resting',
   'table-header-text',
   'toast-description',

@@ -702,6 +702,11 @@
         "$type": "dimension",
         "$value": "{spacing.8}",
         "$description": "Gap between the content panel and the window edge"
+      },
+      "panel-top": {
+        "$type": "dimension",
+        "$value": "{component.app-shell.panel-inset}",
+        "$description": "Gap between the content panel and the window top when there is no top bar (an empty header slot)"
       }
     },
     "sidebar": {

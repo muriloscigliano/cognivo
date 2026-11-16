@@ -355,10 +355,20 @@
         "$value": "12px",
         "$description": "Extra small text (captions, helper text)"
       },
+      "13": {
+        "$type": "dimension",
+        "$value": "13px",
+        "$description": "Between xs and sm: secondary text, descriptions, table meta (dashboard direction)"
+      },
       "sm": {
         "$type": "dimension",
         "$value": "14px",
         "$description": "Small text (labels, secondary content)"
+      },
+      "15": {
+        "$type": "dimension",
+        "$value": "15px",
+        "$description": "Between sm and base: workspace and section names (dashboard direction)"
       },
       "base": {
         "$type": "dimension",
@@ -385,10 +395,20 @@
         "$value": "30px",
         "$description": "2x extra large (h2)"
       },
+      "34": {
+        "$type": "dimension",
+        "$value": "34px",
+        "$description": "Between 2xl and 3xl: big metric numbers (dashboard direction)"
+      },
       "3xl": {
         "$type": "dimension",
         "$value": "36px",
         "$description": "3x extra large (h1)"
+      },
+      "47": {
+        "$type": "dimension",
+        "$value": "47px",
+        "$description": "Between 3xl and 4xl: chart headline numbers (dashboard direction)"
       },
       "4xl": {
         "$type": "dimension",
