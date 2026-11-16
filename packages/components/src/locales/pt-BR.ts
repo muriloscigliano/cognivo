@@ -368,6 +368,9 @@ export const ptBR: LocaleMessages = {
 
 export const ptBRValidation: ValidationMessages = {
   valueMissing: 'Preencha este campo.',
+  valueMissingCheckbox: 'Marque esta caixa se quiser continuar.',
+  valueMissingRadio: 'Selecione uma das opções.',
+  valueMissingSelect: 'Selecione um item da lista.',
   typeMismatch: 'Digite um valor no formato esperado.',
   patternMismatch: 'Use o formato solicitado.',
   tooLong: 'O texto está longo demais.',

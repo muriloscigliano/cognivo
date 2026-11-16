@@ -7,8 +7,8 @@
 import { describe, it, expect, afterAll } from 'vitest';
 import { browserAvailable, openPage, closeBrowser, settle } from './harness.js';
 
-const TAGS = ['cg-input', 'cg-checkbox', 'cg-select', 'cg-textarea'];
-const MODULES = ['utils/validation.ts'];
+const TAGS = ['cg-input', 'cg-checkbox', 'cg-select', 'cg-textarea', 'cg-radio'];
+const MODULES = ['utils/validation.ts', 'locales/pt-BR.ts'];
 
 type Field = HTMLElement & { value: string; validity: ValidityState; validationMessage: string; checkValidity(): boolean };
 
@@ -76,7 +76,7 @@ describe.skipIf(!browserAvailable)('validation (real browser)', { timeout: 30_00
     const mismatch = await page.evaluate(() => (document.getElementById('email') as Field).validationMessage);
     const pageWide = await page.evaluate(async () => {
       (window as unknown as { __cg: { setValidationMessages(m: Record<string, string>): void } }).__cg
-        .setValidationMessages({ valueMissing: 'Marque para continuar' });
+        .setValidationMessages({ valueMissingCheckbox: 'Marque para continuar' });
       const cb = document.getElementById('cb') as Field & { required: boolean; updateComplete: Promise<unknown> };
       cb.required = false; await cb.updateComplete; cb.required = true; await cb.updateComplete;
       return cb.validationMessage;
@@ -86,6 +86,49 @@ describe.skipIf(!browserAvailable)('validation (real browser)', { timeout: 30_00
       mismatch: 'E-mail inválido',
       pageWide: 'Marque para continuar',
     });
+    await page.close();
+  });
+
+  it('a page-wide (pt-BR) valueMissing is for text fields: checkbox, radio and select keep a message of their own kind', async () => {
+    const page = await openPage(TAGS, `
+      <cg-input id="t" required label="Nome"></cg-input>
+      <cg-checkbox id="cb" required label="Aceito"></cg-checkbox>
+      <cg-radio id="r" name="r" value="a" required label="A"></cg-radio>
+      <cg-select id="s" required label="Estado"></cg-select>
+      <cg-checkbox id="own" required label="Termos" validation-messages='{"valueMissing":"Aceite os termos"}'></cg-checkbox>`, MODULES);
+    type Cg = { setValidationMessages(m: Record<string, string>): void; ptBRValidation: Record<string, string> };
+    const refresh = async () => {
+      for (const id of ['t', 'cb', 'r', 's', 'own']) {
+        const el = document.getElementById(id) as HTMLElement & { required: boolean; updateComplete: Promise<unknown> };
+        el.required = false; await el.updateComplete; el.required = true; await el.updateComplete;
+      }
+    };
+    const read = () => Object.fromEntries(['t', 'cb', 'r', 's', 'own'].map((id) => [id, (document.getElementById(id) as unknown as Field).validationMessage]));
+    const native = await page.evaluate(read);
+
+    // An app's generic page-wide message: text fields only; the others keep the browser's own.
+    const generic = await page.evaluate(async ({ refreshSrc, readSrc }) => {
+      (window as unknown as { __cg: Cg }).__cg.setValidationMessages({ valueMissing: 'Campo obrigatório' });
+      await (0, eval)(refreshSrc)();
+      return (0, eval)(readSrc)();
+    }, { refreshSrc: `(${refresh.toString()})`, readSrc: `(${read.toString()})` });
+    expect(generic).toEqual({ t: 'Campo obrigatório', cb: native.cb, r: native.r, s: native.s, own: 'Aceite os termos' });
+
+    // The pt-BR locale: a message of each control's own kind.
+    const ptBR = await page.evaluate(async ({ refreshSrc, readSrc }) => {
+      const cg = (window as unknown as { __cg: Cg }).__cg;
+      cg.setValidationMessages(cg.ptBRValidation);
+      await (0, eval)(refreshSrc)();
+      return { got: (0, eval)(readSrc)(), want: cg.ptBRValidation };
+    }, { refreshSrc: `(${refresh.toString()})`, readSrc: `(${read.toString()})` });
+    expect(ptBR.got).toEqual({
+      t: ptBR.want.valueMissing,
+      cb: ptBR.want.valueMissingCheckbox,
+      r: ptBR.want.valueMissingRadio,
+      s: ptBR.want.valueMissingSelect,
+      own: 'Aceite os termos',
+    });
+    expect(new Set([ptBR.got.t, ptBR.got.cb, ptBR.got.r, ptBR.got.s]).size).toBe(4);
     await page.close();
   });
 });

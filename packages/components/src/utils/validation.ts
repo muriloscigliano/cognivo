@@ -21,7 +21,14 @@
  */
 
 export type ValidityKey = keyof ValidityStateFlags;
-export type ValidationMessages = Partial<Record<ValidityKey, string>>;
+/**
+ * `valueMissing` is worded for text fields ("Fill in this field"). A checkbox,
+ * radio or select has its own key, so a page-wide text-field message never
+ * replaces the browser's type-specific one ("Check this box…"). An element's
+ * own `valueMissing` still applies to that element, whatever its kind.
+ */
+export type KindValueMissingKey = 'valueMissingCheckbox' | 'valueMissingRadio' | 'valueMissingSelect';
+export type ValidationMessages = Partial<Record<ValidityKey | KindValueMissingKey, string>>;
 
 const KEYS: ValidityKey[] = [
   'valueMissing',
@@ -53,9 +60,30 @@ export function setValidationMessages(messages: ValidationMessages): void {
   s.messages = { ...s.messages, ...messages };
 }
 
-/** Resolve a message: element override → page map → browser fallback. */
-export function messageFor(key: ValidityKey, own: ValidationMessages | null | undefined, fallback: string): string {
-  return own?.[key] ?? store().messages[key] ?? fallback;
+type ProbeKind = 'text' | 'checkbox' | 'radio' | 'select';
+const KIND_KEY: Record<Exclude<ProbeKind, 'text'>, KindValueMissingKey> = {
+  checkbox: 'valueMissingCheckbox',
+  radio: 'valueMissingRadio',
+  select: 'valueMissingSelect',
+};
+
+/**
+ * Resolve a message: element override → page map → browser fallback. For
+ * `valueMissing` on a checkbox/radio/select, the kind's own key is used and
+ * the page-wide (text-field) `valueMissing` is skipped.
+ */
+export function messageFor(
+  key: ValidityKey,
+  own: ValidationMessages | null | undefined,
+  fallback: string,
+  kind: ProbeKind = 'text',
+): string {
+  const page = store().messages;
+  if (key === 'valueMissing' && kind !== 'text') {
+    const k = KIND_KEY[kind];
+    return own?.[k] ?? own?.valueMissing ?? page[k] ?? fallback;
+  }
+  return own?.[key] ?? page[key] ?? fallback;
 }
 
 /**
@@ -82,10 +110,10 @@ export function mirrorValidity(
       first ??= k;
     }
   }
-  internals.setValidity(flags, messageFor(first ?? 'customError', own, control.validationMessage), control);
+  const kind: ProbeKind = control instanceof HTMLInputElement && (control.type === 'checkbox' || control.type === 'radio') ? control.type : 'text';
+  internals.setValidity(flags, messageFor(first ?? 'customError', own, control.validationMessage, kind), control);
 }
 
-type ProbeKind = 'text' | 'checkbox' | 'radio' | 'select';
 const probeCache = new Map<ProbeKind, string>();
 
 /** The browser's localised "value missing" message for a kind of control. */
@@ -96,6 +124,8 @@ export function nativeValueMissing(kind: ProbeKind): string {
   if (typeof document !== 'undefined') {
     const probe = kind === 'select' ? document.createElement('select') : document.createElement('input');
     if (probe instanceof HTMLInputElement) probe.type = kind;
+    // A radio without a name is in no group and is never valueMissing.
+    if (kind === 'radio') probe.name = 'cg-probe';
     probe.required = true;
     message = probe.validationMessage ?? '';
   }
@@ -116,7 +146,7 @@ export function setValueMissing(
     internals.setValidity({});
     return;
   }
-  const message = messageFor('valueMissing', own, nativeValueMissing(kind));
+  const message = messageFor('valueMissing', own, nativeValueMissing(kind), kind);
   if (anchor) internals.setValidity({ valueMissing: true }, message, anchor);
   else internals.setValidity({ valueMissing: true }, message);
 }
