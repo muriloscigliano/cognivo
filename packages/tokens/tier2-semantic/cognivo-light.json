@@ -50,7 +50,7 @@
       "background": {
         "$type": "color",
         "$value": "{gray.200}",
-        "$description": "Text selection (::selection) background: neutral grey (dark: white ≈ 20%)."
+        "$description": "Text selection (::selection) background: an OPAQUE neutral grey (light gray.200, dark gray.700), so selected text stays readable on any fill under it (a lime badge, a white primary); selection text on it >= 4.5:1."
       },
       "text": {
         "$type": "color",

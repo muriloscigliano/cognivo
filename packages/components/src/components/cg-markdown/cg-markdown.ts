@@ -424,7 +424,7 @@ export class CgMarkdown extends LitElement {
       margin: var(--cg-spacing-32) 0;
     }
 
-    /* ── Selection highlight ── matches the brand accent. */
+    /* ── Selection highlight ── the page selection tokens (opaque neutral grey). */
     .md ::selection {
       background: var(--cg-color-selection-background);
       color: var(--cg-color-selection-text);

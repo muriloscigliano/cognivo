@@ -423,7 +423,7 @@ async function buildTokens() {
   // `color-scheme`, not our tokens — set it with each theme. The light rule
   // has zero specificity (:where) so a page's own `html { color-scheme }` wins.
   lightCSS = ':where(:root) {\n  color-scheme: light;\n}\n\n' + lightCSS
-  // Text selection: neutral grey with near-black text (dark: white ≈ 20%).
+  // Text selection: opaque neutral grey with near-black text (dark: gray.700, white text).
   // One page-level rule; selection highlights inherit into shadow roots, so
   // component text gets it too without shipping it in every component.
   lightCSS = '::selection {\n  background: var(--cg-color-selection-background);\n  color: var(--cg-color-selection-text);\n}\n\n' + lightCSS

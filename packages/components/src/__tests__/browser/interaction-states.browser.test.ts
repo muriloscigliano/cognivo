@@ -16,7 +16,7 @@ import type { Page } from '@playwright/test';
 import { browserAvailable, openPage, closeBrowser, settleStyles } from './harness.js';
 
 const TOKENS_CSS = resolve(__dirname, '..', '..', '..', '..', 'tokens', 'dist', 'index.css');
-const TAGS = ['cg-button', 'cg-sidebar', 'cg-table', 'cg-checkbox', 'cg-input', 'cg-segmented-control', 'cg-select', 'cg-link'];
+const TAGS = ['cg-button', 'cg-sidebar', 'cg-table', 'cg-checkbox', 'cg-input', 'cg-segmented-control', 'cg-select', 'cg-link', 'cg-badge'];
 const BODY = `
   <div style="padding: 24px; display: grid; gap: 16px; justify-items: start">
     <cg-button id="primary">Save</cg-button>
@@ -32,6 +32,7 @@ const BODY = `
     <cg-segmented-control id="seg"></cg-segmented-control>
     <cg-select id="select" label="Stage"></cg-select>
     <cg-link id="link" href="#x" variant="muted">View all</cg-link>
+    <cg-badge id="badge" variant="accent">New</cg-badge>
   </div>`;
 
 async function open(theme: 'light' | 'dark', reduced = true): Promise<Page> {
@@ -251,6 +252,20 @@ describe.skipIf(!browserAvailable)('interaction states (real browser)', { timeou
         const [bg, text] = await Promise.all([token(page, '--cg-color-selection-background'), token(page, '--cg-color-selection-text')]);
         const sel = await style(page, BTN('secondary'), ['background-color', 'color'], '::selection');
         expect(sel).toEqual({ 'background-color': bg, color: text });
+        // Opaque (a translucent highlight takes the colour of a lime badge or a white primary under it), and
+        // readable on any fill: >= 4.5:1. Dark: gray.700.
+        expect(bg.startsWith('rgb('), bg).toBe(true);
+        if (theme === 'dark') expect(bg).toBe(await token(page, '--cg-gray-700'));
+        const lum = (c: string) => {
+          const [R, G, B] = c.match(/[\d.]+/g)!.slice(0, 3).map(Number).map((v) => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; });
+          return 0.2126 * R! + 0.7152 * G! + 0.0722 * B!;
+        };
+        for (const js of [BTN('primary'), `document.getElementById('badge').shadowRoot.querySelector('.badge')`]) {
+          const s = await style(page, js, ['background-color', 'color'], '::selection');
+          expect(s, js).toEqual({ 'background-color': bg, color: text });
+          const [lo, hi] = [lum(s['background-color']!), lum(s.color!)].sort((a, b) => a - b);
+          expect((hi! + 0.05) / (lo! + 0.05), js).toBeGreaterThanOrEqual(4.5);
+        }
         await page.close();
       });
     });

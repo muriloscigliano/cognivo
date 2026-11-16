@@ -217,6 +217,9 @@ const PAIRS = [
   { label: 'table-header-text', fg: 'color-on-surface-container-default', bg: 'color-surface-container-background' },
   { label: 'toast-description', fg: 'color-on-surface-container-default', bg: 'color-modal-container-background' },
 
+  // text selection (::selection): opaque, so the pair is the whole story on any fill
+  { label: 'text-selection', fg: 'color-selection-text', bg: 'color-selection-background' },
+
   // focus indicators (WCAG 2.2 SC 1.4.11 / 2.4.11: non-text contrast 3:1).
   // The ring must exist in BOTH themes and be visible against the page, the
   // field it surrounds, and its own offset band.
@@ -227,6 +230,7 @@ const PAIRS = [
 
 // Pairs whose tokens MUST resolve in both themes (unresolved = failure).
 const REQUIRED = new Set([
+  'text-selection',
   'input-label-resting',
   'table-header-text',
   'toast-description',
