@@ -574,6 +574,16 @@
           "$type": "color",
           "$value": "{gray.900}"
         },
+        "edge": {
+          "$type": "color",
+          "$value": "{color.surface.sidebar.border}",
+          "$description": "cg-sidebar's outer edge (the line between the sidebar and the page). Set it transparent when the sidebar sits on the canvas; the sub-item guide line keeps its own token."
+        },
+        "guide": {
+          "$type": "color",
+          "$value": "{color.surface.sidebar.border}",
+          "$description": "The thin guide line beside cg-sidebar's sub-items (data-sub)."
+        },
         "hover": {
           "background": {
             "$type": "color",

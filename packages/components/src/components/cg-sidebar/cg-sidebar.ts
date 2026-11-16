@@ -15,7 +15,10 @@ const MESSAGES = defineMessages('cg-sidebar', {
  * @element cg-sidebar
  * Modern collapsible side navigation panel. Sits on the app canvas
  * (`--cg-color-surface-sidebar-*`); the active item is a subtle filled pill;
- * items marked `data-sub` are indented under their parent with a thin guide line. Two states (expanded ↔ icon-only),
+ * items marked `data-sub` are indented under their parent with a thin guide line
+ * (`--cg-color-surface-sidebar-guide`); the outer edge is
+ * `--cg-color-surface-sidebar-edge` (set it `transparent` on the canvas — the
+ * guide line stays). Two states (expanded ↔ icon-only),
  * smooth 200ms width transition, full-row hit targets on slotted `<a>` / `<button>`
  * items, `aria-current` active state, and section headers via `.section-title`.
  *
@@ -76,11 +79,11 @@ export class CgSidebar extends LitElement {
       height: 100%;
       background: var(--cg-color-surface-sidebar-background);
       color: var(--cg-color-surface-sidebar-text);
-      border-right: var(--cg-border-width-50) solid var(--cg-color-surface-sidebar-border);
+      border-right: var(--cg-border-width-50) solid var(--cg-color-surface-sidebar-edge);
     }
     :host([side="right"]) .nav {
       border-right: none;
-      border-left: var(--cg-border-width-50) solid var(--cg-color-surface-sidebar-border);
+      border-left: var(--cg-border-width-50) solid var(--cg-color-surface-sidebar-edge);
     }
 
     /* ── Header ── */
@@ -246,7 +249,7 @@ export class CgSidebar extends LitElement {
       top: calc(-1 * var(--cg-spacing-2));
       bottom: 0;
       width: var(--cg-border-width-50);
-      background: var(--cg-color-surface-sidebar-border);
+      background: var(--cg-color-surface-sidebar-guide);
     }
     :host([collapsed]) ::slotted([data-sub]) { margin-left: auto; }
     :host([collapsed]) ::slotted([data-sub])::before { display: none; }
