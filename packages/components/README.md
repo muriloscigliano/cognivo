@@ -66,10 +66,6 @@ bound each other:
 </script>
 ```
 
-The control's calendar icon and popup follow the page's `color-scheme`: in the
-dark theme set `color-scheme: dark` on the page (e.g. next to
-`data-theme="dark"`), or the icon draws dark on dark.
-
 ### Unit tests in jsdom
 
 jsdom (the default for Jest, Vitest and React Testing Library) has

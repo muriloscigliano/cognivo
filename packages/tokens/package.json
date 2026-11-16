@@ -50,7 +50,7 @@
     "build:only": "node build.js",
     "build:manifest": "node scripts/build-manifest.mjs",
     "check:manifest": "node scripts/check-manifest-drift.mjs",
-    "test": "node --test __tests__/manifest-lib.test.mjs __tests__/motion-css.test.mjs __tests__/focus-and-field-contrast.test.mjs",
+    "test": "node --test __tests__/manifest-lib.test.mjs __tests__/motion-css.test.mjs __tests__/focus-and-field-contrast.test.mjs __tests__/color-scheme.test.mjs",
     "validate:contrast": "node scripts/validate-contrast.mjs",
     "prepublishOnly": "pnpm build",
     "dev": "node build.js --watch",
