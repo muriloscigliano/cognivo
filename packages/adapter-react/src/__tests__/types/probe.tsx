@@ -68,7 +68,7 @@ export const ok = [
   // cg-table truncating column.
   <CgTable key="19" columns={[{ key: 'notes', label: 'Notes', truncate: true, width: '240px' }]} rows={[['…']]} />,
   <CgTextarea key="20" ref={textareaRef} name="body" />,
-  <CgAppShell key="21" sidebarCollapsed onToggle={(e: CustomEvent) => e.detail} />,
+  <CgAppShell key="21" sidebarCollapsed panel onToggle={(e: CustomEvent) => e.detail} />,
 ];
 
 export const column: CgTableColumn = { key: 'x', label: 'X', rowHeader: true };

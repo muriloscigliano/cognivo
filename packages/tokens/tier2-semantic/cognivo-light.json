@@ -450,10 +450,29 @@
           "$value": "{gray.white}"
         }
       },
+      "canvas": {
+        "background": {
+          "$type": "color",
+          "$value": "{gray.100}",
+          "$description": "App canvas: the surface the sidebar and the raised content panel sit on (cg-app-shell)"
+        }
+      },
+      "panel": {
+        "background": {
+          "$type": "color",
+          "$value": "{gray.white}",
+          "$description": "The one raised content panel on the canvas (cg-app-shell[panel])"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{gray.200}",
+          "$description": "Hairline around the content panel"
+        }
+      },
       "sidebar": {
         "background": {
           "$type": "color",
-          "$value": "{gray.50}"
+          "$value": "{color.surface.canvas.background}"
         },
         "text": {
           "$type": "color",

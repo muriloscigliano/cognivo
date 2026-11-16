@@ -13,7 +13,9 @@ const MESSAGES = defineMessages('cg-sidebar', {
 
 /**
  * @element cg-sidebar
- * Modern collapsible side navigation panel. Two states (expanded ↔ icon-only),
+ * Modern collapsible side navigation panel. Sits on the app canvas
+ * (`--cg-color-surface-sidebar-*`); the active item is a subtle filled pill;
+ * items marked `data-sub` are indented under their parent with a thin guide line. Two states (expanded ↔ icon-only),
  * smooth 200ms width transition, full-row hit targets on slotted `<a>` / `<button>`
  * items, `aria-current` active state, and section headers via `.section-title`.
  *
@@ -33,6 +35,8 @@ const MESSAGES = defineMessages('cg-sidebar', {
  *   <a href="/settings" title="Settings">
  *     <span aria-hidden="true">⚙</span><span data-label>Settings</span>
  *   </a>
+ *
+ *   <a href="/settings/team" data-sub>Team</a>
  *
  *   <div slot="footer">User</div>
  * </cg-sidebar>
@@ -70,13 +74,13 @@ export class CgSidebar extends LitElement {
       display: flex;
       flex-direction: column;
       height: 100%;
-      background: var(--cg-color-surface-container-background);
-      color: var(--cg-color-surface-container-text);
-      border-right: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
+      background: var(--cg-color-surface-sidebar-background);
+      color: var(--cg-color-surface-sidebar-text);
+      border-right: var(--cg-border-width-50) solid var(--cg-color-surface-sidebar-border);
     }
     :host([side="right"]) .nav {
       border-right: none;
-      border-left: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
+      border-left: var(--cg-border-width-50) solid var(--cg-color-surface-sidebar-border);
     }
 
     /* ── Header ── */
@@ -88,7 +92,7 @@ export class CgSidebar extends LitElement {
       gap: var(--cg-spacing-8);
       min-height: var(--cg-spacing-56);
       padding: var(--cg-spacing-12) var(--cg-spacing-16);
-      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-sidebar-border);
     }
     :host([collapsed]) .header {
       padding: var(--cg-spacing-12) var(--cg-spacing-8);
@@ -114,7 +118,7 @@ export class CgSidebar extends LitElement {
     .footer {
       flex-shrink: 0;
       padding: var(--cg-spacing-12) var(--cg-spacing-16);
-      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-container-border);
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-sidebar-border);
     }
     :host([collapsed]) .footer {
       padding: var(--cg-spacing-12) var(--cg-spacing-8);
@@ -182,8 +186,8 @@ export class CgSidebar extends LitElement {
     }
     ::slotted(a:hover),
     ::slotted(button:hover) {
-      background: var(--cg-color-action-tertiary-background-hover);
-      color: var(--cg-color-surface-base-text);
+      background: var(--cg-color-surface-sidebar-hover-background);
+      color: var(--cg-color-surface-sidebar-text);
     }
     /* Icon sizing contract: the leading icon (aria-hidden span or [data-icon])
        gets a fixed square box so every row's label starts at the same x —
@@ -199,34 +203,33 @@ export class CgSidebar extends LitElement {
       flex-shrink: 0;
       text-align: center;
     }
+    /* Active: a subtle filled pill — a surface step, not a coloured bar. */
     ::slotted(a[aria-current]),
     ::slotted(button[aria-current]),
     ::slotted(a.active),
     ::slotted(button.active) {
-      background: var(--cg-color-surface-cards-active-background);
-      /* Accent the active item with the brand: a crisp left bar + accent
-         text. The bar is a square-cornered left border (the rounding is
-         removed on the left edge so it reads as a clean vertical rule, the
-         Linear/Notion convention) — not an inset shadow, which would curve
-         along the corner radius. This is the "where am I?" signal the bare
-         fill was missing, and the one place the brand should surface in chrome. */
-      color: var(--cg-color-accent-text);
-      border-left: var(--cg-spacing-2) solid var(--cg-color-action-primary-border-default);
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-      /* Compensate the left border so the icon doesn't shift vs. inactive rows. */
-      padding-left: calc(var(--cg-spacing-12) - var(--cg-spacing-2));
+      background: var(--cg-color-surface-sidebar-selected-background);
+      color: var(--cg-color-surface-sidebar-text);
     }
-    /* Collapsed rail: a left bar would clip on a centered icon button, so
-       signal active with an accent ring instead. */
-    :host([collapsed]) ::slotted(a[aria-current]),
-    :host([collapsed]) ::slotted(button[aria-current]),
-    :host([collapsed]) ::slotted(a.active),
-    :host([collapsed]) ::slotted(button.active) {
-      border-left: none;
-      padding: 0;
-      box-shadow: inset 0 0 0 var(--cg-border-width-100) var(--cg-color-action-primary-border-default);
+
+    /* Sub-items: indented under their parent, joined by a thin guide line. */
+    ::slotted([data-sub]) {
+      position: relative;
+      margin-left: var(--cg-spacing-24);
+      width: calc(100% - var(--cg-spacing-24));
     }
+    ::slotted([data-sub])::before {
+      content: '';
+      position: absolute;
+      left: calc(-1 * var(--cg-spacing-4));
+      top: calc(-1 * var(--cg-spacing-2));
+      bottom: 0;
+      width: var(--cg-border-width-50);
+      background: var(--cg-color-surface-sidebar-border);
+    }
+    :host([collapsed]) ::slotted([data-sub]) { margin-left: auto; }
+    :host([collapsed]) ::slotted([data-sub])::before { display: none; }
+
     ::slotted(a:focus-visible),
     ::slotted(button:focus-visible) {
       outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);

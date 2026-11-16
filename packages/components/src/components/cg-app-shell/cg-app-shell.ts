@@ -17,6 +17,13 @@ const PHONE_QUERY = '(max-width: 768px)';
  * content and a slotted sidebar's bottom footer work inside it. Collapsed,
  * the column is `inert`.
  *
+ * `panel`: the dashboard layout — the header and sidebar sit on the canvas
+ * (`--cg-color-surface-canvas-background`) and the content is one raised
+ * panel (`--cg-color-surface-panel-*`, radius
+ * `--cg-component-app-shell-panel-radius`, inset
+ * `--cg-component-app-shell-panel-inset`), separated by surfaces and a
+ * hairline instead of divider lines.
+ *
  * Phone (≤ 768px): the sidebar is an overlay drawer, open when not
  * `sidebar-collapsed`. While open: a backdrop covers the page (click closes),
  * Escape closes, the page behind does not scroll, and focus moves into the
@@ -105,6 +112,23 @@ export class CgAppShell extends LitElement {
       min-width: 0;
     }
 
+    /* ── panel: canvas + one raised content panel ── */
+    :host([panel]) .shell {
+      background: var(--cg-color-surface-canvas-background);
+    }
+    :host([panel]) header,
+    :host([panel]) footer { border: none; }
+    :host([panel]) main {
+      margin: 0 var(--cg-component-app-shell-panel-inset) var(--cg-component-app-shell-panel-inset);
+      background: var(--cg-color-surface-panel-background);
+      color: var(--cg-color-surface-base-text);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-panel-border);
+      border-radius: var(--cg-component-app-shell-panel-radius);
+    }
+    :host([panel][sidebar-position="end"]) main {
+      margin: 0 0 var(--cg-component-app-shell-panel-inset) var(--cg-component-app-shell-panel-inset);
+    }
+
     /* Empty regions collapse so they don't reserve borders */
     footer.empty { display: none; }
 
@@ -152,6 +176,7 @@ export class CgAppShell extends LitElement {
       }
       /* Collapsed: out of sight, the tab order and the accessibility tree (also inert). */
       :host([sidebar-collapsed]) aside { border: none; visibility: hidden; }
+      :host([panel]) aside { border: none; }
     }
 
     /* ── Phone: the sidebar is an overlay drawer ── */
@@ -211,6 +236,8 @@ export class CgAppShell extends LitElement {
   @property({ type: Boolean, attribute: 'sidebar-collapsed', reflect: true }) sidebarCollapsed = false;
   @property({ attribute: 'header-height', reflect: true }) headerHeight = '56px';
   @property({ type: Boolean, attribute: 'sticky-header', reflect: true }) stickyHeader = true;
+  /** Dashboard layout: canvas with the sidebar on it + one raised content panel. */
+  @property({ type: Boolean, reflect: true }) panel = false;
 
   /** True below the phone breakpoint, where the sidebar is an overlay drawer. */
   @state() private _phone = false;

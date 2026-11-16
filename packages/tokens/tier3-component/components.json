@@ -692,6 +692,18 @@
         "$value": "{border.radius.150}"
       }
     },
+    "app-shell": {
+      "panel-radius": {
+        "$type": "dimension",
+        "$value": "{border.radius.125}",
+        "$description": "Corner radius of the raised content panel (cg-app-shell[panel])"
+      },
+      "panel-inset": {
+        "$type": "dimension",
+        "$value": "{spacing.8}",
+        "$description": "Gap between the content panel and the window edge"
+      }
+    },
     "sidebar": {
       "width": {
         "$type": "dimension",
