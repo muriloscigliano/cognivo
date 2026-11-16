@@ -330,8 +330,8 @@ export class CgToaster extends LitElement {
       (a) => html`<div>${a.text}</div>`,
     );
     return html`
-      <div class="announcer" role="status" aria-live="polite">${announce(false)}</div>
-      <div class="announcer" role="alert" aria-live="assertive">${announce(true)}</div>
+      <div class="announcer" role="status">${announce(false)}</div>
+      <div class="announcer" role="alert">${announce(true)}</div>
       <div role="region" aria-label=${this.i18n.t('label')} style="display: contents;">
         ${this._toasts.map(toast => {
           const iconPath = this._iconFor(toast.variant);

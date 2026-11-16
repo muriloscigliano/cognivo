@@ -31,9 +31,13 @@ describe.skipIf(!browserAvailable)('cg-toaster live announcements (real browser,
 
   it('the live regions exist (empty) before any toast, so the first toast is announced', async () => {
     const page = await openPage(['cg-toaster'], '<cg-toaster></cg-toaster>');
-    const live = await page.evaluate(() =>
-      [...document.querySelector('cg-toaster')!.shadowRoot!.querySelectorAll('[aria-live]')].map((el) => el.getAttribute('aria-live')).sort());
-    expect(live).toEqual(['assertive', 'polite']);
+    // The roles imply the politeness (status → polite, alert → assertive); no redundant aria-live.
+    const live = await page.evaluate(() => {
+      const root = document.querySelector('cg-toaster')!.shadowRoot!;
+      return { roles: [...root.querySelectorAll('[role="status"], [role="alert"]')].map((el) => el.getAttribute('role')).sort(), ariaLive: root.querySelectorAll('[aria-live]').length };
+    });
+    expect(live).toEqual({ roles: ['alert', 'status'], ariaLive: 0 });
+    expect(await liveRegions(page)).toEqual({ status: [''], alert: [''] });
     await page.close();
   });
 
@@ -62,7 +66,7 @@ describe.skipIf(!browserAvailable)('cg-toaster live announcements (real browser,
     const page = await openPage(['cg-toaster'], '<cg-toaster></cg-toaster>');
     await show(page, { title: 'Copied', duration: 0 });
     await page.evaluate(() => {
-      const region = document.querySelector('cg-toaster')!.shadowRoot!.querySelector('[aria-live="polite"]')!;
+      const region = document.querySelector('cg-toaster')!.shadowRoot!.querySelector('[role="status"]')!;
       (window as unknown as { added: number }).added = 0;
       new MutationObserver((ms) => { for (const m of ms) (window as unknown as { added: number }).added += m.addedNodes.length; })
         .observe(region, { childList: true, subtree: true });

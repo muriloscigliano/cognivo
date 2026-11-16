@@ -66,8 +66,10 @@ describe('cg-toaster', () => {
     // that exist up front carry the announcements instead.
     expect(region.hasAttribute('aria-live')).toBe(false);
     expect(region.getAttribute('aria-label')).toBe('Notifications');
-    const polite = el.shadowRoot!.querySelector('[role="status"][aria-live="polite"]')!;
-    const assertive = el.shadowRoot!.querySelector('[role="alert"][aria-live="assertive"]')!;
+    // role=status / role=alert imply polite / assertive; no redundant aria-live.
+    expect(el.shadowRoot!.querySelectorAll('[aria-live]').length).toBe(0);
+    const polite = el.shadowRoot!.querySelector('[role="status"]')!;
+    const assertive = el.shadowRoot!.querySelector('[role="alert"]')!;
     el.show({ title: 'Announce me', duration: 0 });
     el.show({ title: 'Failed', variant: 'error', duration: 0 });
     await el.updateComplete;
