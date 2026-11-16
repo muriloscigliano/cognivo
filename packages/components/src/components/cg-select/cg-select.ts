@@ -189,6 +189,13 @@ export class CgSelect extends LitElement {
   @property({ type: Array }) options: SelectOption[] = [];
   @property() value = '';
   @property() label = '';
+  /** Accessible name of the field when it should differ from the visible
+   *  `label` (e.g. "Deal stage" for a label that just says "Stage"). It names
+   *  the combobox and its listbox. Keep the visible label's words in it
+   *  (WCAG 2.5.3, label in name). `aria-label` on the host works too. */
+  @property({ attribute: 'accessible-label' }) accessibleLabel = '';
+  /** `aria-label` set on the host, forwarded to the inner combobox. */
+  @property({ attribute: 'aria-label' }) private _hostAriaLabel: string | null = null;
   @property() placeholder?: string;
   @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property({ type: Boolean }) disabled = false;
@@ -332,6 +339,8 @@ export class CgSelect extends LitElement {
   override render() {
     const selected = this.options.find(o => o.value === this.value);
     const filtered = this._filteredOptions();
+    const accessibleName = this.accessibleLabel || this._hostAriaLabel || '';
+    const labelledby = accessibleName ? undefined : this.label ? 'select-label' : undefined;
 
     return html`
       ${this.label ? html`<span class="label" id="select-label">${this.label}</span>` : nothing}
@@ -342,8 +351,8 @@ export class CgSelect extends LitElement {
         aria-expanded=${this._open}
         aria-haspopup="listbox"
         aria-controls="select-listbox"
-        aria-labelledby=${this.label ? 'select-label' : nothing}
-        aria-label=${this.label ? nothing : this.placeholder ?? this.i18n.t('placeholder')}
+        aria-labelledby=${labelledby ?? nothing}
+        aria-label=${labelledby ? nothing : accessibleName || (this.placeholder ?? this.i18n.t('placeholder'))}
         aria-activedescendant=${this._open && this._highlighted >= 0 && this._highlighted < filtered.length ? `select-option-${this._highlighted}` : nothing}
         aria-required=${this.required ? 'true' : 'false'}
         aria-invalid=${this.error ? 'true' : 'false'}
@@ -360,7 +369,9 @@ export class CgSelect extends LitElement {
         </svg>`}
       </div>
 
-      <div class="dropdown ${this._open ? 'open' : ''}" ?hidden=${!this._open} role="listbox" id="select-listbox">
+      <div class="dropdown ${this._open ? 'open' : ''}" ?hidden=${!this._open} role="listbox" id="select-listbox"
+        aria-labelledby=${labelledby ?? nothing}
+        aria-label=${!labelledby && accessibleName ? accessibleName : nothing}>
         ${this.searchable ? html`
           <div class="search">
             <input

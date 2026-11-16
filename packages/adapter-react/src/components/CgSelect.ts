@@ -21,6 +21,11 @@ export interface CgSelectProps {
   error?: string | boolean;
   /** Whether the options are searchable. */
   searchable?: boolean;
+  /** Visible label above the field. */
+  label?: string;
+  /** Accessible name when it should differ from the visible `label`; names
+   *  the combobox and its listbox (`aria-label` works too). */
+  accessibleLabel?: string;
   /** Fired when the selection changes. */
   onCgChange?: (e: CustomEvent<{ value: string }>) => void;
   className?: string;
@@ -28,7 +33,7 @@ export interface CgSelectProps {
 
 export const CgSelect = createWrapper<CgSelectProps, 'cg-select'>(
   'cg-select',
-  ['options', 'value', 'placeholder', 'name', 'disabled', 'error', 'searchable'],
+  ['options', 'value', 'placeholder', 'name', 'disabled', 'error', 'searchable', 'label', 'accessibleLabel'],
   {
     onCgChange: 'cg-change',
   }
