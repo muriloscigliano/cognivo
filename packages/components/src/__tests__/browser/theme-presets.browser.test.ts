@@ -247,27 +247,36 @@ describe.skipIf(!browserAvailable)('theme presets (real browser)', { timeout: 60
             await page.close();
           });
 
-          it('no cg-* component paints an accent colour in a hover, focus or keyboard-highlight rule', async () => {
+          it(`no cg-* component paints an accent colour (colour, shadow or outline token) in a hover, focus or keyboard-highlight rule${preset === 'neutral' ? ', nor in a selected / active / open / current / expanded state' : ''}`, async () => {
             const cg = readdirSync(resolve(__dirname, '..', '..', 'components')).filter((d) => d.startsWith('cg-'));
             const page = await openPage(cg, '');
             await page.addStyleTag({ path: TOKENS_CSS });
             if (preset === 'neutral') await page.addStyleTag({ path: NEUTRAL_CSS });
             if (theme === 'dark') await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
-            const offenders = await page.evaluate((tags) => {
+            const offenders = await page.evaluate(({ tags, neutralPreset }) => {
               // Allowed: status colours (error / success fields), and an element that is primary / checked / selected / current
-              // keeping its own colour or stepping it on hover — that is not an accent added by the state.
+              // keeping its own colour or stepping it on hover — that is not an accent added by the state. In the neutral
+              // preset the selection and primary tokens are themselves neutral, so the selected states are checked too.
               const OWN = /^--cg-(color-status-|shadow-focus-(error|success)$|color-action-primary-background-(hover|active)$|color-checkbox-background-hover$|color-slider-thumb-hover$|color-selected-|color-current-)/;
-              const STATE = /:hover|:focus|\[data-active\]|\.option\.active/;
+              const STATE = neutralPreset
+                ? /:hover|:focus|\[data-active\]|\.option\.active|\.selected|\.active|\.open\b|\[aria-current|\[aria-selected="?true|\[aria-expanded="?true/
+                : /:hover|:focus|\[data-active\]|\.option\.active/;
               const probe = document.createElement('div');
               document.body.append(probe);
-              const resolve = (name: string) => {
-                probe.style.backgroundColor = '';
-                probe.style.backgroundColor = `var(${name})`;
-                return getComputedStyle(probe).backgroundColor;
+              /** Every colour a token paints: a colour token, or the colours inside a shadow / outline / gradient token. */
+              const colours = (name: string): string[] => {
+                probe.style.setProperty('--probe', `var(${name})`);
+                const text = getComputedStyle(probe).getPropertyValue('--probe');
+                const found = text.match(/#[0-9a-f]{3,8}\b|(?:rgba?|hsla?|oklch|oklab|color-mix)\((?:[^()]|\([^()]*\))*\)/gi) ?? [];
+                return found.map((c) => {
+                  probe.style.backgroundColor = '';
+                  probe.style.backgroundColor = c;
+                  return getComputedStyle(probe).backgroundColor;
+                });
               };
               const isNeutral = (c: string) => {
-                const [r, g, b] = c.match(/[\d.]+/g)!.map(Number);
-                return Math.max(r!, g!, b!) - Math.min(r!, g!, b!) <= 12;
+                const [r, g, b, a = 1] = c.match(/[\d.]+/g)!.map(Number);
+                return a === 0 || Math.max(r!, g!, b!) - Math.min(r!, g!, b!) <= 12;
               };
               const out: string[] = [];
               const visit = (rules: CSSRuleList, tag: string) => {
@@ -276,9 +285,9 @@ describe.skipIf(!browserAvailable)('theme presets (real browser)', { timeout: 60
                   else if (r instanceof CSSStyleRule && STATE.test(r.selectorText)) {
                     const body = r.cssText.slice(r.cssText.indexOf('{'));
                     for (const [, name] of body.matchAll(/var\((--cg-[\w-]+)/g)) {
-                      if (OWN.test(name!)) continue;
-                      const c = resolve(name!);
-                      if (!isNeutral(c)) out.push(`${tag} ${r.selectorText} → ${name} = ${c}`);
+                      if (!neutralPreset && OWN.test(name!)) continue;
+                      if (neutralPreset && /^--cg-(color-status-|shadow-focus-(error|success)$)/.test(name!)) continue;
+                      for (const c of colours(name!)) if (!isNeutral(c)) out.push(`${tag} ${r.selectorText} → ${name} = ${c}`);
                     }
                   }
                 }
@@ -292,7 +301,7 @@ describe.skipIf(!browserAvailable)('theme presets (real browser)', { timeout: 60
               }
               probe.remove();
               return [...new Set(out)];
-            }, cg);
+            }, { tags: cg, neutralPreset: preset === 'neutral' });
             expect(offenders).toEqual([]);
             await page.close();
           });

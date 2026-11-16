@@ -131,7 +131,7 @@ export class CgTreeView extends LitElement {
     }
     .node:hover .leading-icon { color: var(--cg-color-state-text); }
     .node.selected .leading-icon {
-      color: var(--cg-color-surface-container-icon);
+      color: var(--cg-color-current-text);
     }
 
     .label {

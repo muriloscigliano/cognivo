@@ -110,7 +110,7 @@ export class CgAccordion extends LitElement {
        The chevron flip alone was the only signal; add a faint accent wash +
        a brand leading edge + brighter title text. */
     .item.open .trigger {
-      background: var(--cg-overlay-accent-subtle);
+      background: var(--cg-color-state-hover);
       color: var(--cg-color-surface-base-text);
       box-shadow: inset var(--cg-border-width-100) 0 0 0 var(--cg-color-current-indicator);
     }
