@@ -9,7 +9,8 @@ export interface SegmentOption {
   value: string;
   icon?: string;
   disabled?: boolean;
-  /** Accessible name when it should differ from the visible label (e.g. "12m" read as "12 months"). */
+  /** Accessible name when it should say more than the visible label. Start it
+   *  with the visible text (WCAG 2.5.3 label in name): "12m" → "12m, last 12 months". */
   ariaLabel?: string;
 }
 
@@ -31,7 +32,8 @@ export interface SegmentOption {
  * ```
  *
  * Options never wrap or shrink below their label; when the space is too
- * narrow the track scrolls sideways (the host never grows past its container).
+ * narrow the track scrolls sideways (the host never grows past its container)
+ * and setting `value` scrolls the selected option into view.
  *
  * @fires {CustomEvent<{value: string}>} cg-segmented-change
  * @attr {string} label - Accessible name for the radiogroup. Always provide one.
@@ -178,8 +180,25 @@ export class CgSegmentedControl extends LitElement {
     }
     if (changed.has('value') || changed.has('options') || changed.has('size')) {
       // Wait for DOM to settle before measuring
-      requestAnimationFrame(() => this._updateIndicator());
+      requestAnimationFrame(() => {
+        this._updateIndicator();
+        if (changed.has('value') || changed.has('options')) this._revealSelected();
+      });
     }
+  }
+
+  /** A narrow (scrolling) track brings the selected option into view —
+   *  sideways only, inside the track (scrollIntoView could scroll the page). */
+  private _revealSelected(): void {
+    const seg = this.shadowRoot?.querySelector<HTMLElement>('.segment[aria-checked="true"]');
+    const track = seg?.parentElement;
+    if (!seg || !track) return;
+    // Keep the track's own padding around it.
+    const pad = parseFloat(getComputedStyle(track).paddingLeft) || 0;
+    const left = seg.offsetLeft - pad;
+    const right = seg.offsetLeft + seg.offsetWidth + pad;
+    if (left < track.scrollLeft) track.scrollLeft = left;
+    else if (right > track.scrollLeft + track.clientWidth) track.scrollLeft = right - track.clientWidth;
   }
 
   override firstUpdated(): void {

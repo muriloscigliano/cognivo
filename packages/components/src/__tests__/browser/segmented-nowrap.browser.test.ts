@@ -3,7 +3,8 @@
  * Issues: cg-segmented-control's options were `flex: 1` without `nowrap`, so
  * in a narrow space the control shrank below its labels and they wrapped onto
  * two lines; and an option could not have an accessible name other than its
- * visible text (a short "12m" read aloud as "12 months"). Now options never
+ * visible text (a short "12m" read aloud as "12m, last 12 months" — the name
+ * starts with the visible text, WCAG 2.5.3 label in name). Now options never
  * wrap or shrink below their text — the track scrolls sideways when the space
  * is too small — and an option's `ariaLabel` names it for assistive tech.
  */
@@ -15,8 +16,8 @@ import { browserAvailable, openPage, closeBrowser, settleStyles, axeViolations }
 const TOKENS_CSS = resolve(__dirname, '..', '..', '..', '..', 'tokens', 'dist', 'index.css');
 const OPTIONS = [
   { value: 'all', label: 'All time' },
-  { value: '12m', label: '12m', ariaLabel: '12 months' },
-  { value: '3m', label: '3m', ariaLabel: '3 months' },
+  { value: '12m', label: '12m', ariaLabel: '12m, last 12 months' },
+  { value: '3m', label: '3m', ariaLabel: '3m, last 3 months' },
   { value: '30d', label: '30 days' },
   { value: 'today', label: 'Today' },
 ];
@@ -58,10 +59,29 @@ describe.skipIf(!browserAvailable)('cg-segmented-control in a narrow space (real
 
   it('an option with ariaLabel is named by it; the others by their text', async () => {
     const page = await control('600px');
-    await expect(page.getByRole('radio', { name: '12 months' }).count()).resolves.toBe(1);
-    await expect(page.getByRole('radio', { name: '3 months' }).count()).resolves.toBe(1);
+    await expect(page.getByRole('radio', { name: '12m, last 12 months' }).count()).resolves.toBe(1);
+    await expect(page.getByRole('radio', { name: '3m, last 3 months' }).count()).resolves.toBe(1);
     await expect(page.getByRole('radio', { name: '30 days' }).count()).resolves.toBe(1);
     expect(await axeViolations(page)).toEqual([]);
+    await page.close();
+  });
+  it('setting value scrolls the selected option into view in a narrow track', async () => {
+    const page = await control('200px');
+    const visible = () => page.evaluate(() => {
+      const host = document.querySelector('cg-segmented-control')!;
+      const track = host.shadowRoot!.querySelector('.track')!.getBoundingClientRect();
+      const seg = host.shadowRoot!.querySelector('[aria-checked="true"]')!.getBoundingClientRect();
+      return seg.left >= track.left - 1 && seg.right <= track.right + 1;
+    });
+    // The initial value (30d, fourth) is already brought into view.
+    expect(await visible()).toBe(true);
+    await page.evaluate(() => { (document.querySelector('cg-segmented-control') as HTMLElement & { value: string }).value = 'today'; });
+    await settleStyles(page);
+    expect(await visible()).toBe(true);
+    await page.evaluate(() => { (document.querySelector('cg-segmented-control') as HTMLElement & { value: string }).value = 'all'; });
+    await settleStyles(page);
+    expect(await visible()).toBe(true);
+    expect(await page.evaluate(() => document.querySelector('cg-segmented-control')!.shadowRoot!.querySelector('.track')!.scrollLeft)).toBe(0);
     await page.close();
   });
 });
