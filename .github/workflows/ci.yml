@@ -41,6 +41,12 @@ jobs:
           restore-keys: |
             turbo-${{ runner.os }}-node${{ matrix.node-version }}-
 
+      # The components package runs real-Chromium test suites (form
+      # association, implicit submission, focus traps). The harness fails
+      # when CI is set and Chromium is missing, so this step is required.
+      - name: Install Playwright Chromium (browser test suites)
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Build all packages
         run: pnpm build
 

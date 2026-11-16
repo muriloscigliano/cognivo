@@ -20,7 +20,9 @@
     "test": {
       "dependsOn": ["build"],
       "outputs": [],
-      "inputs": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "test/**"]
+      "inputs": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "test/**"],
+      "env": ["CI"],
+      "passThroughEnv": ["PLAYWRIGHT_BROWSERS_PATH"]
     },
     "lint": {
       "outputs": []

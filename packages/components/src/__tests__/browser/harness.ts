@@ -5,8 +5,10 @@
  *
  * Bundles component SOURCES with esbuild (same decorators/tsconfig as the
  * build), loads them into a blank Chromium page via Playwright, and hands the
- * page to the test. Suites skip (not fail) when no Playwright Chromium is
- * installed — run `npx playwright install chromium` to enable them.
+ * page to the test. Locally, suites skip when no Playwright Chromium is
+ * installed — run `pnpm exec playwright install chromium` to enable them. In
+ * CI (`CI` set) a missing Chromium is an error, so the suites can never be
+ * skipped silently there.
  */
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -16,13 +18,32 @@ import { AxeBuilder } from '@axe-core/playwright';
 
 const SRC = resolve(__dirname, '..', '..');
 
-export const browserAvailable = (() => {
-  try {
-    return existsSync(chromium.executablePath());
-  } catch {
-    return false;
+/**
+ * Whether the browser suites run. `true` when Chromium is installed; `false`
+ * (skip) when it is missing locally; throws when it is missing in CI.
+ */
+export function browserGate(env: Record<string, string | undefined>, installed: boolean): boolean {
+  if (installed) return true;
+  const ci = env.CI;
+  if (ci && ci !== 'false' && ci !== '0') {
+    throw new Error(
+      'Browser test suites need Playwright Chromium in CI, and it is not installed. ' +
+        'Add `pnpm exec playwright install --with-deps chromium` before the test step.',
+    );
   }
-})();
+  return false;
+}
+
+export const browserAvailable = browserGate(
+  process.env,
+  (() => {
+    try {
+      return existsSync(chromium.executablePath());
+    } catch {
+      return false;
+    }
+  })(),
+);
 
 const bundleCache = new Map<string, string>();
 
