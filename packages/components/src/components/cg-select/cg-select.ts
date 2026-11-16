@@ -286,7 +286,11 @@ export class CgSelect extends LitElement {
   private _handleKeydown(e: KeyboardEvent) {
     if (e.key === ' ' && e.target instanceof HTMLInputElement) return;
     const filtered = this._filteredOptions();
-    if (e.key === 'Escape') { this._close(); return; }
+    if (e.key === 'Escape') {
+      // An open popup consumes its Escape, so an enclosing drawer or dialog stays open.
+      if (this._open) { e.preventDefault(); e.stopPropagation(); this._close(); }
+      return;
+    }
     if (e.key === 'Enter' || e.key === ' ') {
       if (!this._open) { this._toggle(); e.preventDefault(); return; }
       e.preventDefault();

@@ -678,7 +678,9 @@ export class CgPhoneInput extends LitElement {
       const c = flat[this._activeIndex];
       if (c) this._selectCountry(c);
     } else if (e.key === 'Escape') {
+      // An open popup consumes its Escape, so an enclosing drawer or dialog stays open.
       e.preventDefault();
+      e.stopPropagation();
       this._close();
       this._telInput?.focus();
     }
@@ -770,6 +772,11 @@ export class CgPhoneInput extends LitElement {
             if (e.key === 'ArrowDown') {
               e.preventDefault();
               this.open = true;
+            } else if (e.key === 'Escape' && this.open) {
+              // An open popup consumes its Escape, so an enclosing drawer or dialog stays open.
+              e.preventDefault();
+              e.stopPropagation();
+              this._close();
             }
           }}
           @focus=${() => { this._focused = true; }}

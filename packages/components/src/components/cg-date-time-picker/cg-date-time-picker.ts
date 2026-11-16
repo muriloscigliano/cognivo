@@ -430,7 +430,11 @@ export class CgDateTimePicker extends LitElement {
 
   private _handleClickOutside = (e: Event) => { if (!e.composedPath().includes(this)) this._close(); };
   private _handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape') { this._close(); return; }
+    if (e.key === 'Escape') {
+      // An open popup consumes its Escape, so an enclosing drawer or dialog stays open.
+      if (this._open) { e.preventDefault(); e.stopPropagation(); this._close(); }
+      return;
+    }
     if ((e.key === 'Enter' || e.key === ' ') && !this._open) { e.preventDefault(); this._toggle(); }
   }
 

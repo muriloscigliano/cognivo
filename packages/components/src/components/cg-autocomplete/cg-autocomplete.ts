@@ -243,7 +243,8 @@ export class CgAutocomplete extends LitElement {
       this._select(list[this._activeIndex]!);
       return;
     } else if (e.key === 'Escape') {
-      this._open = false;
+      // An open popup consumes its Escape, so an enclosing drawer or dialog stays open.
+      if (this._open) { e.preventDefault(); e.stopPropagation(); this._open = false; }
       return;
     } else {
       return;

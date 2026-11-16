@@ -220,7 +220,9 @@ export class CgNavigationMenu extends LitElement {
 
   private _onKeydown(e: KeyboardEvent): void {
     if (e.key === 'Escape' && this._openIndex !== -1) {
+      // An open popup consumes its Escape, so an enclosing drawer or dialog stays open.
       e.preventDefault();
+      e.stopPropagation();
       this._openIndex = -1;
     }
   }

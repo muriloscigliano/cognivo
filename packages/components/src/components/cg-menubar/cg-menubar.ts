@@ -277,7 +277,10 @@ export class CgMenubar extends LitElement {
         });
         break;
       case 'Escape':
+        // An open popup consumes its Escape, so an enclosing drawer or dialog stays open.
+        if (this._openIndex === -1) break;
         e.preventDefault();
+        e.stopPropagation();
         this._openIndex = -1;
         break;
       default:
@@ -296,7 +299,9 @@ export class CgMenubar extends LitElement {
   private _onSubmenuKeydown(e: KeyboardEvent, triggerIdx: number): void {
     const n = this.items.length;
     if (e.key === 'Escape') {
+      // An open popup consumes its Escape, so an enclosing drawer or dialog stays open.
       e.preventDefault();
+      e.stopPropagation();
       this._openIndex = -1;
       this.updateComplete.then(() => {
         const btns = this.shadowRoot?.querySelectorAll<HTMLButtonElement>('.top-trigger');

@@ -235,7 +235,11 @@ describe.skipIf(!browserAvailable)('cg-app-shell (real browser)', { timeout: 30_
   describe('right-to-left (dir="rtl")', () => {
     async function rtl(viewport: { width: number; height: number }, attrs = ''): Promise<Page> {
       const page = await shell(viewport, attrs);
-      await page.evaluate(() => document.documentElement.setAttribute('dir', 'rtl'));
+      // An RTL page: the shell is created under dir="rtl" (it starts closed on a phone).
+      await page.evaluate((html) => {
+        document.documentElement.setAttribute('dir', 'rtl');
+        document.body.innerHTML = html;
+      }, SHELL(attrs));
       await frames(page);
       return page;
     }

@@ -184,7 +184,11 @@ export class CgDatePicker extends LitElement {
   };
 
   private _handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape') { this._close(); return; }
+    if (e.key === 'Escape') {
+      // An open popup consumes its Escape, so an enclosing drawer or dialog stays open.
+      if (this._open) { e.preventDefault(); e.stopPropagation(); this._close(); }
+      return;
+    }
     if (e.key === 'Enter' || e.key === ' ') {
       if (!this._open) { e.preventDefault(); this._toggle(); }
     }

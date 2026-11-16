@@ -343,7 +343,10 @@ export class CgCombobox extends LitElement {
       } else {
         handleImplicitSubmit(e, this._internals);
       }
-    } else if (e.key === 'Escape') {
+    } else if (e.key === 'Escape' && this.open) {
+      // An open popup consumes its Escape, so an enclosing drawer or dialog stays open.
+      e.preventDefault();
+      e.stopPropagation();
       this.open = false;
     }
   }
