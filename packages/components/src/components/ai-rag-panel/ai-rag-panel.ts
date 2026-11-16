@@ -66,7 +66,7 @@ export class AiRagPanel extends LitElement {
     .control-btn:hover { border-color: var(--cg-color-surface-cards-hover-border); color: var(--cg-color-surface-base-text); }
     .control-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .control-btn:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-focus-ring-width) var(--cg-overlay-accent-strong); }
-    .control-btn.active { border-color: var(--cg-color-action-primary-background-default); color: var(--cg-color-action-primary-background-default); background: var(--cg-overlay-accent-subtle); }
+    .control-btn.active { border-color: var(--cg-color-action-primary-background-default); color: var(--cg-color-accent-text); background: var(--cg-overlay-accent-subtle); }
 
     /* ── Documents ── */
     .documents { max-height: 400px; overflow-y: auto; }

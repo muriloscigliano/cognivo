@@ -15,7 +15,7 @@
     "accent": {
       "text": {
         "$type": "color",
-        "$value": "{green.600}",
+        "$value": "{green.800}",
         "$description": "Accent text color (active tabs, links, highlights) — accessible green on light surfaces"
       },
       "background": {
@@ -172,13 +172,13 @@
           },
           "hover": {
             "$type": "color",
-            "$value": "{green.300}"
+            "$value": "{green.200}"
           }
         },
         "text": {
           "default": {
             "$type": "color",
-            "$value": "{green.700}"
+            "$value": "{green.800}"
           },
           "inverse": {
             "$type": "color",
@@ -200,13 +200,13 @@
           },
           "hover": {
             "$type": "color",
-            "$value": "{yellow.300}"
+            "$value": "{yellow.200}"
           }
         },
         "text": {
           "default": {
             "$type": "color",
-            "$value": "{yellow.700}"
+            "$value": "{yellow.800}"
           },
           "inverse": {
             "$type": "color",
@@ -228,21 +228,21 @@
           },
           "hover": {
             "$type": "color",
-            "$value": "{red.300}"
+            "$value": "{red.200}"
           },
           "hover-strong": {
             "$type": "color",
-            "$value": "{red.800}"
+            "$value": "{red.900}"
           }
         },
         "text": {
           "default": {
             "$type": "color",
-            "$value": "{red.700}"
+            "$value": "{red.800}"
           },
           "inverse": {
             "$type": "color",
-            "$value": "{gray.900}"
+            "$value": "{gray.white}"
           }
         },
         "border": {
@@ -260,7 +260,7 @@
           },
           "hover": {
             "$type": "color",
-            "$value": "{blue.300}"
+            "$value": "{blue.200}"
           }
         },
         "text": {
@@ -327,7 +327,7 @@
         },
         "outlined": {
           "$type": "color",
-          "$value": "{gray.500}"
+          "$value": "{gray.600}"
         },
         "subtle": {
           "$type": "color",
@@ -453,36 +453,36 @@
       "sidebar": {
         "background": {
           "$type": "color",
-          "$value": "{gray.black}"
+          "$value": "{gray.50}"
         },
         "text": {
           "$type": "color",
-          "$value": "{gray.100}"
+          "$value": "{gray.900}"
         },
         "icon": {
           "$type": "color",
-          "$value": "{gray.400}"
+          "$value": "{gray.500}"
         },
         "border": {
           "$type": "color",
-          "$value": "{gray.900}"
+          "$value": "{gray.200}"
         },
         "hover": {
           "background": {
             "$type": "color",
-            "$value": "{gray.700}"
+            "$value": "{gray.200}"
           }
         },
         "active": {
           "background": {
             "$type": "color",
-            "$value": "{gray.800}"
+            "$value": "{gray.300}"
           }
         },
         "selected": {
           "background": {
             "$type": "color",
-            "$value": "{gray.800}"
+            "$value": "{gray.200}"
           }
         }
       },
@@ -1357,7 +1357,7 @@
         },
         "placeholder": {
           "$type": "color",
-          "$value": "{gray.500}"
+          "$value": "{gray.600}"
         },
         "disabled": {
           "$type": "color",
@@ -1712,7 +1712,7 @@
     "empty-state": {
       "icon": {
         "$type": "color",
-        "$value": "{gray.400}"
+        "$value": "{gray.500}"
       },
       "text": {
         "primary": {
@@ -1721,7 +1721,7 @@
         },
         "secondary": {
           "$type": "color",
-          "$value": "{gray.500}"
+          "$value": "{gray.600}"
         }
       }
     },
@@ -1820,7 +1820,7 @@
       },
       "comment": {
         "$type": "color",
-        "$value": "{gray.500}"
+        "$value": "{gray.400}"
       },
       "number": {
         "$type": "color",
@@ -2226,6 +2226,11 @@
       "strong": {
         "$type": "color",
         "$value": "rgba(0, 0, 0, 0.4)"
+      },
+      "text": {
+        "$type": "color",
+        "$value": "{gray.white}",
+        "$description": "Text on a dark overlay (was defined in the dark theme only)"
       }
     },
     "white": {

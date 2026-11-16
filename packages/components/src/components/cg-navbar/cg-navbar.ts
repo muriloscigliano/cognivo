@@ -239,7 +239,7 @@ export class CgNavbar extends LitElement {
       align-items: center;
       padding: 0 var(--cg-spacing-6);
       height: var(--cg-spacing-16);
-      background: var(--cg-color-accent-text);
+      background: var(--cg-color-action-primary-background-default);
       color: var(--cg-color-action-primary-text-default);
       border-radius: var(--cg-border-radius-full);
       font-size: var(--cg-font-size-xs);

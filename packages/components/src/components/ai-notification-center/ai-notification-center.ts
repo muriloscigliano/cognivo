@@ -185,7 +185,7 @@ export class AiNotificationCenter extends LitElement {
       flex-shrink: 0;
       background: transparent;
       border: none;
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-surface-container-outlined); /* contrast: non-text */
       cursor: pointer;
       padding: var(--cg-spacing-4);
       border-radius: var(--cg-border-radius-50);
@@ -198,7 +198,7 @@ export class AiNotificationCenter extends LitElement {
         background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .dismiss-btn:hover {
-      color: var(--cg-color-status-error-text-default);
+      color: var(--cg-color-status-error-text-default); /* contrast: non-text */
       background: var(--cg-color-action-secondary-background-hover);
     }
     .dismiss-btn:active { transform: scale(var(--cg-interaction-press-scale)); }

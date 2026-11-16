@@ -71,7 +71,7 @@ export class AiPromptTemplate extends LitElement {
     .mode-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .mode-btn.active {
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-container-background);
+      color: var(--cg-color-action-primary-text-default);
       border-color: var(--cg-color-surface-base-text);
       font-weight: var(--cg-font-weight-semibold);
     }

@@ -113,7 +113,7 @@ export class AiChangelog extends LitElement {
       cursor: pointer;
       transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .version:hover { color: var(--cg-color-action-primary-background-default); }
+    .version:hover { color: var(--cg-color-accent-text); }
     .version:active { transform: scale(var(--cg-interaction-press-scale)); }
     .version:focus-visible {
       outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);

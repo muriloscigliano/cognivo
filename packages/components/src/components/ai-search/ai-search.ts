@@ -213,12 +213,12 @@ export class AiSearch extends LitElement {
       outline: none;
       box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-overlay-accent-strong);
     }
-    .recent-icon { color: var(--cg-color-input-border-hover); font-size: var(--cg-font-size-xs); }
+    .recent-icon { color: var(--cg-color-input-icon-default); font-size: var(--cg-font-size-xs); }
     .recent-text { font-size: var(--cg-font-size-xs); color: var(--cg-color-input-text-placeholder); flex: 1; }
     .recent-delete {
       background: none;
       border: none;
-      color: var(--cg-color-input-border-hover);
+      color: var(--cg-color-input-icon-default);
       cursor: pointer;
       font-size: var(--cg-font-size-xs);
       opacity: 0;

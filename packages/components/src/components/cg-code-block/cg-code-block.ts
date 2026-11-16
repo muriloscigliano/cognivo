@@ -100,7 +100,7 @@ export class CgCodeBlock extends LitElement {
       font-family: var(--cg-font-family-mono);
       font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-medium);
-      color: var(--cg-color-code-text);
+      color: var(--cg-color-code-text); /* contrast: on --cg-color-code-background */
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -119,7 +119,7 @@ export class CgCodeBlock extends LitElement {
       align-items: center;
       padding: var(--cg-spacing-2) var(--cg-spacing-8);
       border-radius: var(--cg-border-radius-50);
-      background: var(--cg-color-action-tertiary-background-hover);
+      background: var(--cg-color-code-surface);
       color: var(--cg-color-code-muted);
       font-family: var(--cg-font-family-mono);
       font-size: var(--cg-font-size-xs);
@@ -137,7 +137,7 @@ export class CgCodeBlock extends LitElement {
       border-radius: var(--cg-border-radius-50);
       background: transparent;
       border: none;
-      color: var(--cg-color-code-muted);
+      color: var(--cg-color-code-muted); /* contrast: on --cg-color-code-background */
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
@@ -148,14 +148,14 @@ export class CgCodeBlock extends LitElement {
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .copy-btn:hover {
-      background: var(--cg-color-action-tertiary-background-hover);
+      background: var(--cg-color-code-surface);
       color: var(--cg-color-code-text);
     }
     .copy-btn:active {
       transform: scale(var(--cg-interaction-press-scale));
     }
     .copy-btn.copied {
-      color: var(--cg-color-status-success-text-default);
+      color: var(--cg-color-code-text); /* contrast: on --cg-color-code-background */
     }
     .copy-btn:focus-visible {
       outline: none;
@@ -175,7 +175,7 @@ export class CgCodeBlock extends LitElement {
       font-family: var(--cg-font-family-mono);
       font-size: var(--cg-font-size-sm);
       line-height: var(--cg-line-height-relaxed);
-      color: var(--cg-color-code-text);
+      color: var(--cg-color-code-text); /* contrast: on --cg-color-code-background */
       tab-size: 2;
       counter-reset: line;
       font-variant-numeric: tabular-nums;
@@ -195,18 +195,18 @@ export class CgCodeBlock extends LitElement {
       padding-right: var(--cg-spacing-16);
       margin-right: var(--cg-spacing-16);
       border-right: var(--cg-border-width-50) solid var(--cg-color-code-border);
-      color: var(--cg-color-code-muted);
+      color: var(--cg-color-code-muted); /* contrast: on --cg-color-code-background */
       text-align: right;
       user-select: none;
       opacity: 0.6;
     }
 
     /* ── Syntax highlighting ── */
-    .hl-keyword { color: var(--cg-color-code-keyword); font-weight: var(--cg-font-weight-medium); }
-    .hl-string { color: var(--cg-color-code-string); }
-    .hl-comment { color: var(--cg-color-code-comment); font-style: italic; }
-    .hl-number { color: var(--cg-color-code-number); }
-    .hl-function { color: var(--cg-color-code-function); }
+    .hl-keyword { color: var(--cg-color-code-keyword); font-weight: var(--cg-font-weight-medium); /* contrast: on --cg-color-code-background */ }
+    .hl-string { color: var(--cg-color-code-string); /* contrast: on --cg-color-code-background */ }
+    .hl-comment { color: var(--cg-color-code-comment); font-style: italic; /* contrast: on --cg-color-code-background */ }
+    .hl-number { color: var(--cg-color-code-number); /* contrast: on --cg-color-code-background */ }
+    .hl-function { color: var(--cg-color-code-function); /* contrast: on --cg-color-code-background */ }
 
     /* ── Expand button ── */
     .expand-bar {
@@ -238,7 +238,7 @@ export class CgCodeBlock extends LitElement {
     }
     .expand-btn:hover {
       color: var(--cg-color-code-text);
-      background: var(--cg-color-action-tertiary-background-hover);
+      background: var(--cg-color-code-surface);
     }
     .expand-btn:active {
       transform: scale(var(--cg-interaction-press-scale));

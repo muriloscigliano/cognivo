@@ -202,7 +202,7 @@ export class CgCommand extends LitElement {
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .item[data-active] .item-icon {
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
       opacity: 1;
     }
     .item-label { flex: 1; }

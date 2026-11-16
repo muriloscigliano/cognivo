@@ -100,7 +100,7 @@ export class AiTimeline extends LitElement {
     .dot.active {
       background: var(--cg-overlay-accent-strong);
       border: var(--cg-border-width-100) solid var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
       box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
       animation: ringPulse 2s var(--cg-transition-easing-ease-in-out) infinite;
     }

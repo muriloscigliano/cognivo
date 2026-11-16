@@ -134,7 +134,7 @@ export class CgCheckbox extends LitElement {
     .check-icon {
       width: var(--cg-spacing-12);
       height: var(--cg-spacing-12);
-      color: var(--cg-color-checkbox-checkmark-default);
+      color: var(--cg-color-checkbox-checkmark-default); /* contrast: on --cg-color-checkbox-background-checked */
       overflow: visible;
     }
 

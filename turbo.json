@@ -13,6 +13,11 @@
         "src/catalog/bias-full.json"
       ]
     },
+    "@cognivo/tokens#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/components/src/components/**/*.ts"]
+    },
     "dev": {
       "cache": false,
       "persistent": true

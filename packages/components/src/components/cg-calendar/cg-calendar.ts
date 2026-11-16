@@ -132,7 +132,7 @@ export class CgCalendar extends LitElement {
     }
     .day.today:not(.selected):not(.range-start):not(.range-end) {
       box-shadow: inset 0 0 0 var(--cg-border-width-50) var(--cg-color-action-primary-border-default);
-      color: var(--cg-color-action-primary-border-default);
+      color: var(--cg-color-accent-text);
       font-weight: var(--cg-font-weight-semibold);
     }
     .day.selected {

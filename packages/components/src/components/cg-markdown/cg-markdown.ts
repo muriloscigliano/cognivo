@@ -255,7 +255,7 @@ export class CgMarkdown extends LitElement {
     }
     .md pre {
       background: transparent;
-      color: var(--cg-color-code-text);
+      color: var(--cg-color-code-text); /* contrast: on --cg-color-code-background */
       padding: var(--cg-spacing-16);
       border: 0;
       border-radius: 0;
@@ -352,7 +352,7 @@ export class CgMarkdown extends LitElement {
     }
     .md .task-check-on::after {
       content: '✓';
-      color: var(--cg-color-action-primary-text-default);
+      color: var(--cg-color-action-primary-text-default); /* contrast: non-text on --cg-color-action-primary-background-default */
       font-size: 0.75em;
       font-weight: var(--cg-font-weight-bold);
       line-height: 1;

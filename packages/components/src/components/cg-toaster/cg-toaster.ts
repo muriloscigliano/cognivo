@@ -159,7 +159,7 @@ export class CgToaster extends LitElement {
         0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
     .toast-close {
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-surface-container-outlined); /* contrast: non-text */
     }
   `];
 

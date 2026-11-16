@@ -13,14 +13,22 @@
  *  3. For a predefined list of foreground↔background pairs, compute contrast.
  *  4. Run twice: once against the :root (light) layer, once with data-theme="dark"
  *     overrides applied on top.
+ *  5. Every text/background pair the components paint, derived from their
+ *     Lit `css` templates (scripts/component-pairs.mjs), is a hard gate too.
+ *     Known failures not fixed yet are listed, one per component, in
+ *     scripts/contrast-baseline.json; the list can only shrink (an entry
+ *     that passes, or is no longer painted, fails the gate until removed).
  */
 
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { deriveComponentPairs } from './component-pairs.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const CSS_PATH = path.resolve(__dirname, '..', 'dist', 'index.css')
+const COMPONENTS_DIR = path.resolve(__dirname, '..', '..', 'components', 'src', 'components')
+const BASELINE_PATH = path.resolve(__dirname, 'contrast-baseline.json')
 
 // ---------- color math ----------
 function hexToRgb(hex) {
@@ -198,16 +206,32 @@ const REQUIRED = new Set([
   'focus-ring-on-offset',
 ])
 
+// ---------- pairs derived from component styles ----------
+function componentPairs() {
+  if (!fs.existsSync(COMPONENTS_DIR)) {
+    console.error(`[validate-contrast] component sources not found at ${COMPONENTS_DIR}; the component-pair audit cannot run.`)
+    process.exit(2)
+  }
+  return deriveComponentPairs(COMPONENTS_DIR).map((p) => ({
+    label: `${p.fg} on ${p.bg}`,
+    fg: p.fg,
+    bg: p.bg,
+    min: p.min,
+    usedBy: p.usedBy,
+    component: true,
+  }))
+}
+
 const MIN_AA = 4.5
 const MIN_AA_LARGE = 3.0 // we still warn, but the hard gate is 4.5
 
-function evaluate(decls, themeLabel) {
+function evaluate(decls, themeLabel, pairs) {
   const rows = []
   const backdrop = themeLabel === 'dark'
     ? { r: 9, g: 9, b: 11, a: 1 } // approx gray-950
     : { r: 255, g: 255, b: 255, a: 1 }
 
-  for (const pair of PAIRS) {
+  for (const pair of pairs) {
     const fgRaw = resolveValue(pair.fg, decls)
     const bgRaw = resolveValue(pair.bg, decls)
     const fg = toRgb(fgRaw)
@@ -222,6 +246,7 @@ function evaluate(decls, themeLabel) {
         bgValue: bgRaw,
         ratio: null,
         status: 'UNRESOLVED',
+        pair,
       })
       continue
     }
@@ -239,6 +264,7 @@ function evaluate(decls, themeLabel) {
       bgValue: bgRaw,
       ratio,
       status,
+      pair,
     })
   }
   return rows
@@ -252,13 +278,31 @@ function main() {
   const css = fs.readFileSync(CSS_PATH, 'utf-8')
   const { light, dark } = parseCSS(css)
 
-  const rows = [...evaluate(light, 'light'), ...evaluate(dark, 'dark')]
+  const derived = componentPairs()
+  const all = [...PAIRS, ...derived]
+  const rows = [...evaluate(light, 'light', all), ...evaluate(dark, 'dark', all)]
+  const baseline = JSON.parse(fs.readFileSync(BASELINE_PATH, 'utf-8'))
+  const baselineUsed = new Set()
+  const componentFailures = []
 
   let failures = 0
   let unresolved = 0
   let lowest = { label: null, theme: null, ratio: Infinity }
 
   for (const row of rows) {
+    if (row.pair.component) {
+      // Hard gate at the pair's own minimum, per component that paints it.
+      if (row.status === 'PASS') continue
+      const components = [...new Set(row.pair.usedBy.map((u) => u.split(' ')[0]))]
+      const known = []
+      for (const c of components) {
+        const key = `${row.theme} ${row.label} @ ${c}`
+        if (key in baseline) { baselineUsed.add(key); known.push(c) }
+        else componentFailures.push(`${key} = ${row.ratio ? row.ratio.toFixed(2) : 'unresolved'} (min ${row.pair.min}; ${row.pair.usedBy.filter((u) => u.startsWith(`${c} `)).join(', ')})`)
+      }
+      if (known.length === components.length) row.status = 'KNOWN'
+      continue
+    }
     if (row.status === 'UNRESOLVED') unresolved++
     // A required pair whose tokens are missing in a theme is a failure, not a
     // warning: an undefined focus-ring token renders no ring at all.
@@ -274,12 +318,13 @@ function main() {
   // print table
   console.log('\nWCAG 2.1 AA contrast audit — packages/tokens/dist/index.css')
   console.log('=' .repeat(80))
-  const header = ['theme', 'pair', 'ratio', 'status'].map((c) => c.padEnd(18)).join('')
+  const labelWidth = Math.max(...rows.map((r) => r.label.length)) + 2
+  const header = ['theme', 'pair', 'ratio', 'status'].map((c, i) => c.padEnd(i === 1 ? Math.max(18, labelWidth) : 18)).join('')
   console.log(header)
   console.log('-'.repeat(80))
   for (const row of rows) {
     const ratio = row.ratio ? row.ratio.toFixed(2) : 'n/a'
-    const line = [row.theme, row.label, ratio, row.status].map((c, i) => String(c).padEnd(i === 0 ? 8 : 18)).join('')
+    const line = [row.theme, row.label, ratio, row.status].map((c, i) => String(c).padEnd(i === 0 ? 8 : i === 1 ? Math.max(18, labelWidth) : 18)).join('')
     console.log(line)
   }
   console.log('-'.repeat(80))
@@ -290,6 +335,13 @@ function main() {
         `(fg ${lowest.fgValue} / bg ${lowest.bgValue})`,
     )
   }
+
+  const stale = Object.keys(baseline).filter((k) => !baselineUsed.has(k))
+  const knownCount = baselineUsed.size
+  console.log(`component pairs: ${derived.length} derived from component styles, ${derived.length * 2} checks, ${knownCount} known failure(s) in contrast-baseline.json`)
+  for (const f of componentFailures) console.error(`  FAIL ${f}`)
+  for (const k of stale) console.error(`  STALE baseline entry (passes now or no longer painted; delete it): ${k}`)
+  failures += componentFailures.length + stale.length
 
   if (unresolved > 0) {
     console.warn(`[validate-contrast] ${unresolved} pair(s) could not be resolved (missing tokens or unresolvable refs).`)

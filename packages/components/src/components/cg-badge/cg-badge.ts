@@ -92,7 +92,7 @@ export class CgBadge extends LitElement {
     }
     :host([variant="accent"]) .badge {
       background: var(--cg-overlay-accent-light);
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
       border-color: var(--cg-overlay-accent-strong);
     }
 

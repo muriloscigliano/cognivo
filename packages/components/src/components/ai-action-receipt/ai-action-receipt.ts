@@ -53,7 +53,7 @@ export class AiActionReceipt extends LitElement {
       align-self: flex-start;
       font: inherit;
       font-size: var(--cg-font-size-xs);
-      color: var(--cg-color-action-primary-text-default);
+      color: var(--cg-color-accent-text);
       background: transparent;
       border: var(--cg-border-width-50) solid var(--cg-color-action-primary-border-default);
       border-radius: var(--cg-component-card-radius);

@@ -37,12 +37,12 @@ export class CgFollowUp extends LitElement {
       margin-bottom: var(--cg-spacing-8);
     }
     .header-icon {
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
     }
     .label {
       font-size: var(--cg-font-size-xs);
       font-weight: var(--cg-font-weight-bold);
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
       text-transform: uppercase;
       letter-spacing: 0.06em;
     }
@@ -85,7 +85,7 @@ export class CgFollowUp extends LitElement {
 
     button:hover:not(:disabled) {
       border-color: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
       background: var(--cg-color-action-tertiary-background-hover);
     }
     button:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
@@ -98,7 +98,7 @@ export class CgFollowUp extends LitElement {
       color: var(--cg-color-surface-container-outlined);
     }
     button:hover:not(:disabled) .icon {
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
     }
 
     /* ── Card variant ── */
@@ -113,7 +113,7 @@ export class CgFollowUp extends LitElement {
       min-width: 140px;
     }
     :host([variant="cards"]) .icon {
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
       opacity: 0.7;
     }
 
@@ -142,7 +142,7 @@ export class CgFollowUp extends LitElement {
     }
     .more-badge:hover {
       border-color: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
     }
 
     /* ── Loading shimmer ── */

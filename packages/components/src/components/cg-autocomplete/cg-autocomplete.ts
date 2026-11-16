@@ -160,7 +160,7 @@ export class CgAutocomplete extends LitElement {
       background: var(--cg-color-action-tertiary-background-hover);
     }
     .option .match {
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
       font-weight: var(--cg-font-weight-semibold);
     }
 

@@ -45,7 +45,7 @@ export class CgBlockquote extends LitElement {
       font-size: var(--cg-font-size-5xl);
       line-height: 1;
       font-weight: var(--cg-font-weight-bold);
-      color: var(--cg-color-surface-base-divider);
+      color: var(--cg-color-surface-base-divider); /* contrast: decorative */
       pointer-events: none;
       user-select: none;
     }
@@ -54,7 +54,7 @@ export class CgBlockquote extends LitElement {
 
     /* Accent: the glyph adopts the brand accent, quote gains slight scale. */
     :host([variant="accent"]) blockquote::before {
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
     }
     :host([variant="accent"]) blockquote {
       font-size: var(--cg-font-size-xl);
@@ -71,7 +71,7 @@ export class CgBlockquote extends LitElement {
     :host([variant="muted"]) blockquote::before {
       top: var(--cg-spacing-4);
       left: var(--cg-spacing-16);
-      color: var(--cg-color-surface-base-divider);
+      color: var(--cg-color-surface-base-divider); /* contrast: decorative */
     }
 
     footer {
@@ -84,7 +84,7 @@ export class CgBlockquote extends LitElement {
     /* Em-dash lead-in for attribution, so authors slot just the name. */
     footer::before {
       content: '\\2014\\00A0';
-      color: var(--cg-color-surface-base-divider);
+      color: var(--cg-color-surface-base-divider); /* contrast: decorative */
     }
 
     /* Hide footer wrapper when nothing is slotted */

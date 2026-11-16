@@ -128,7 +128,7 @@ export class CgRadio extends LitElement {
     .tick-icon {
       width: var(--cg-spacing-12);
       height: var(--cg-spacing-12);
-      color: var(--cg-color-radio-dot-default);
+      color: var(--cg-color-radio-dot-default); /* contrast: on --cg-color-radio-background-checked */
       overflow: visible;
     }
 

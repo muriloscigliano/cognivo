@@ -45,7 +45,7 @@ export class AiModelSelector extends LitElement {
     }
     .filter-chip:hover { border-color: var(--cg-color-surface-cards-hover-border); color: var(--cg-color-surface-base-text); }
     .filter-chip:focus-visible { outline: none; box-shadow: 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring); }
-    .filter-chip.active { border-color: var(--cg-color-action-primary-background-default); color: var(--cg-color-action-primary-background-default); background: var(--cg-overlay-accent-subtle); }
+    .filter-chip.active { border-color: var(--cg-color-action-primary-background-default); color: var(--cg-color-accent-text); background: var(--cg-overlay-accent-subtle); }
 
     /* ── Grid ── */
     .grid {

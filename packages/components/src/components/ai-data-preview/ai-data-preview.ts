@@ -160,7 +160,7 @@ export class AiDataPreview extends LitElement {
 
     .btn-confirm {
       background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-surface-container-background);
+      color: var(--cg-color-action-primary-text-default);
     }
     .btn-confirm:hover {
       background: var(--cg-color-action-primary-background-hover);

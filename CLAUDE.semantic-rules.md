@@ -180,6 +180,16 @@ Reference implementations: `cg-file-input._removeFile`, `cg-file-input.clearAll`
 
 ---
 
+## Rule 12 — Every colour pair you paint is contrast-gated
+
+`packages/tokens/scripts/validate-contrast.mjs` (tokens build, and `contrast-gate.test.ts` in components) derives the text/background pairs from every component's `css` template and fails below 4.5:1 (text) or 3:1 (icons: tokens named `icon`, `border`, `dot`, …), in both themes. Text with no background on its element is checked against the page surfaces (base, cards, container) or the `:host` background.
+
+- Muted text is `--cg-color-on-surface-container-default` / `--cg-color-input-text-placeholder`; accent text is `--cg-color-accent-text` — never `--cg-color-action-primary-background-default` (lime on white is 1.03:1).
+- When the background comes from an ancestor the rule can't show, say so next to the colour: `/* contrast: on --cg-color-code-background */`. Icon-only control: `/* contrast: non-text */`. A purely decorative glyph: `/* contrast: decorative */`.
+- Known failures not yet fixed live in `packages/tokens/scripts/contrast-baseline.json` (one entry per theme + pair + component, with the reason). The list only shrinks: an entry that passes or is no longer painted fails the gate until it is deleted. Don't add to it to get a build green — fix the pair.
+
+---
+
 ## When in doubt
 
 1. Check `CLAUDE.token-guardrails.md` for the tier rules.

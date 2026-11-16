@@ -328,7 +328,7 @@
         },
         "outlined": {
           "$type": "color",
-          "$value": "{gray.600}"
+          "$value": "{gray.400}"
         },
         "subtle": {
           "$type": "color",
@@ -1722,7 +1722,7 @@
         },
         "secondary": {
           "$type": "color",
-          "$value": "{gray.500}"
+          "$value": "{gray.400}"
         }
       }
     },
@@ -1821,7 +1821,7 @@
       },
       "comment": {
         "$type": "color",
-        "$value": "{gray.500}"
+        "$value": "{gray.400}"
       },
       "number": {
         "$type": "color",

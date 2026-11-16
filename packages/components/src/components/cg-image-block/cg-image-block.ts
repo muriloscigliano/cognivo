@@ -116,7 +116,7 @@ export class CgImageBlock extends LitElement {
       line-height: var(--cg-line-height-snug);
     }
     .source {
-      color: var(--cg-color-action-primary-background-default);
+      color: var(--cg-color-accent-text);
       text-decoration: none;
       font-weight: var(--cg-font-weight-medium);
     }

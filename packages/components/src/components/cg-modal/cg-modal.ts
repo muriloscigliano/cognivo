@@ -191,7 +191,7 @@ export class CgModal extends LitElement {
       border: none;
       border-radius: var(--cg-border-radius-full);
       background: var(--cg-color-action-tertiary-background-default);
-      color: var(--cg-color-surface-container-outlined);
+      color: var(--cg-color-surface-container-outlined); /* contrast: non-text */
       cursor: pointer;
       font-size: var(--cg-font-size-sm);
       line-height: 1;

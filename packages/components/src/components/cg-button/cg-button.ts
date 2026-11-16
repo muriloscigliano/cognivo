@@ -196,8 +196,8 @@ export class CgButton extends LitElement {
       border-radius: var(--cg-border-radius-full);
       animation: spin var(--cg-transition-duration-slow) linear infinite;
     }
-    :host([loading]) .spinner { color: var(--cg-color-action-primary-text-default); }
-    :host([loading][variant="secondary"]) .spinner { color: var(--cg-color-action-secondary-text-default); }
+    :host([loading]) .spinner { color: var(--cg-color-action-primary-text-default); /* contrast: non-text on --cg-color-action-primary-background-default */ }
+    :host([loading][variant="secondary"]) .spinner { color: var(--cg-color-action-secondary-text-default); /* contrast: non-text on --cg-color-action-secondary-background-default */ }
     :host([loading][variant="tertiary"]) .spinner { color: var(--cg-color-action-tertiary-text-default); }
 
     /* ── Error state ── */

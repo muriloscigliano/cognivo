@@ -183,7 +183,7 @@ export class CgTooltip extends LitElement {
     :host([variant="error"]) .tooltip {
       background: var(--cg-color-tooltip-background);
       border: var(--cg-border-width-50) solid var(--cg-color-status-error-border-default);
-      color: var(--cg-color-status-error-text-default);
+      color: var(--cg-color-tooltip-text);
     }
     :host([variant="error"]) .arrow {
       background: var(--cg-color-tooltip-background);
@@ -194,7 +194,7 @@ export class CgTooltip extends LitElement {
     :host([variant="success"]) .tooltip {
       background: var(--cg-color-tooltip-background);
       border: var(--cg-border-width-50) solid var(--cg-color-status-success-border-default);
-      color: var(--cg-color-status-success-text-default);
+      color: var(--cg-color-tooltip-text);
     }
     :host([variant="success"]) .arrow {
       background: var(--cg-color-tooltip-background);
