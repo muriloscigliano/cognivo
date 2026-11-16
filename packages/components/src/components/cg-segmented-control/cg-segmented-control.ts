@@ -9,6 +9,8 @@ export interface SegmentOption {
   value: string;
   icon?: string;
   disabled?: boolean;
+  /** Accessible name when it should differ from the visible label (e.g. "12m" read as "12 months"). */
+  ariaLabel?: string;
 }
 
 /**
@@ -28,6 +30,9 @@ export interface SegmentOption {
  * ></cg-segmented-control>
  * ```
  *
+ * Options never wrap or shrink below their label; when the space is too
+ * narrow the track scrolls sideways (the host never grows past its container).
+ *
  * @fires {CustomEvent<{value: string}>} cg-segmented-change
  * @attr {string} label - Accessible name for the radiogroup. Always provide one.
  */
@@ -36,11 +41,16 @@ export class CgSegmentedControl extends LitElement {
   static override styles = [hostBase, reducedMotion, css`
     :host {
       display: inline-flex;
+      max-width: 100%;
     }
 
     .track {
       display: inline-flex;
       position: relative;
+      box-sizing: border-box;
+      max-width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none;
       padding: var(--cg-component-segmented-control-padding);
       background: var(--cg-color-action-secondary-background-default);
       border: var(--cg-border-width-50) solid var(--cg-color-action-secondary-border-default);
@@ -85,7 +95,9 @@ export class CgSegmentedControl extends LitElement {
       transition: color var(--cg-transition-duration-state) var(--cg-transition-easing-ease-out);
       z-index: 1;
       border-radius: inherit;
-      flex: 1;
+      /* Grow to share a wide track, never shrink below the label, never wrap. */
+      flex: 1 0 auto;
+      white-space: nowrap;
     }
     @media (hover: hover) {
       .segment:hover:not(:disabled) {
@@ -261,6 +273,7 @@ export class CgSegmentedControl extends LitElement {
             class="segment"
             role="radio"
             aria-checked=${option.value === this.value ? 'true' : 'false'}
+            aria-label=${option.ariaLabel || nothing}
             tabindex=${i === focusIdx ? '0' : '-1'}
             ?disabled=${option.disabled || this._effectivelyDisabled}
             @click=${() => this._select(option)}
