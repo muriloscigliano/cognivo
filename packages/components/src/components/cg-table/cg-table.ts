@@ -45,6 +45,12 @@ export interface TableColumn {
    *  (`<html lang>`) with digit runs compared as numbers ('item 9' before
    *  'item 10'). Empty values (null, undefined, '') always sort last. */
   compare?: (a: unknown, b: unknown) => number;
+  /** Cells stay on one line, cut with an ellipsis to fit the column (long
+   *  names, notes, emails). The full text shows on hover (`title`) and stays
+   *  whole in the accessibility tree, so screen readers read all of it. Set
+   *  `width` to choose where it cuts; without it the column takes the width
+   *  the other columns leave. Works with `render`, `slotted` and `rowHeader`. */
+  truncate?: boolean;
 }
 
 const plain = (v: unknown): unknown => (v instanceof Date ? v.getTime() : v instanceof Node ? v.textContent : v);
@@ -287,6 +293,16 @@ export class CgTable extends LitElement {
     }
 
     tbody th { font-weight: var(--cg-font-weight-medium); }
+
+    /* Truncating column: the cell may shrink below its content (max-width: 0
+       lets the table give it the remaining width) and the text is cut on one line. */
+    td.truncate, tbody th.truncate { max-width: 0; }
+    .cell-truncate {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     td[data-align="center"], tbody th[data-align="center"] { text-align: center; }
     td[data-align="right"], tbody th[data-align="right"] { text-align: right; }
 
@@ -431,7 +447,10 @@ export class CgTable extends LitElement {
     super.connectedCallback();
     this._resolveLabelledBy();
     // slotchange misses edits inside a slotted footer wrapper.
-    this._unobserveLight = observeLightDom(this, () => this._syncFooter());
+    this._unobserveLight = observeLightDom(this, () => {
+      this._syncFooter();
+      this._syncTruncateTitles();
+    });
   }
 
   override disconnectedCallback() {
@@ -532,6 +551,29 @@ export class CgTable extends LitElement {
     this._syncFooter();
   }
 
+  override updated() {
+    this._syncTruncateTitles();
+  }
+
+  /** Each truncated cell's title is its full text (slotted content included). */
+  private _syncTruncateTitles() {
+    const cells = this.renderRoot?.querySelectorAll?.<HTMLElement>('.cell-truncate');
+    if (!cells) return;
+    const text = (n: Node): string => {
+      if (n.nodeType === Node.TEXT_NODE) return n.textContent ?? '';
+      if (!(n instanceof Element)) return ''; // Lit's comment markers
+      if (n instanceof HTMLSlotElement) {
+        const assigned = n.assignedNodes({ flatten: true });
+        return (assigned.length ? assigned : Array.from(n.childNodes)).map(text).join('');
+      }
+      return Array.from(n.childNodes).map(text).join('');
+    };
+    for (const cell of cells) {
+      const full = text(cell).replace(/\s+/g, ' ').trim();
+      if (cell.title !== full) cell.title = full;
+    }
+  }
+
   /** The footer shows only when it has content (an empty wrapper takes no space). */
   private _syncFooter() {
     const slot = this.renderRoot?.querySelector?.<HTMLSlotElement>('slot[name="footer"]');
@@ -561,7 +603,9 @@ export class CgTable extends LitElement {
 
   private _cell(col: TableColumn, row: unknown[], ci: number, rowIndex: number): unknown {
     const value = col.render ? col.render(row[ci], row, rowIndex) : row[ci] ?? '';
-    return col.slotted ? html`<slot name="cell-${rowIndex}-${col.key}">${value}</slot>` : value;
+    const content = col.slotted ? html`<slot name="cell-${rowIndex}-${col.key}">${value}</slot>` : value;
+    // The title (full text on hover) is filled in after render: see _syncTruncateTitles.
+    return col.truncate ? html`<span class="cell-truncate">${content}</span>` : content;
   }
 
   override render() {
@@ -630,8 +674,8 @@ export class CgTable extends LitElement {
                   </td>
                 ` : nothing}
                 ${this.columns.map((col, ci) => col.rowHeader
-                  ? html`<th scope="row" data-align=${col.align ?? 'left'}>${this._cell(col, row, ci, origIdx)}</th>`
-                  : html`<td data-align=${col.align ?? 'left'}>${this._cell(col, row, ci, origIdx)}</td>`)}
+                  ? html`<th scope="row" class=${col.truncate ? 'truncate' : ''} data-align=${col.align ?? 'left'}>${this._cell(col, row, ci, origIdx)}</th>`
+                  : html`<td class=${col.truncate ? 'truncate' : ''} data-align=${col.align ?? 'left'}>${this._cell(col, row, ci, origIdx)}</td>`)}
               </tr>
             `)}
           </tbody>
