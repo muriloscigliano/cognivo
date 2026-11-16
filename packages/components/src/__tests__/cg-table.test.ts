@@ -243,4 +243,86 @@ describe('cg-table', () => {
     (el2 as any)._handleFooterSlotChange({ target: slot });
     expect((el2 as any)._hasFooter).toBe(false);
   });
+
+  // ── Sorting: accessor, comparator, controlled, manual ──
+
+  const names = (el2: CgTable) => (el2 as any)._getSortedRows().map((e: { row: unknown[] }) => e.row[0]);
+  const deal = (name: string, amount: number) => ({ name, amount, toString: () => `<a>${name}</a>` });
+
+  it('accessor: cells holding objects (links, badges) sort by the value it returns, not "[object Object]"', () => {
+    const el2 = make({
+      columns: [{ key: 'deal', label: 'Deal', sortable: true, accessor: (cell: unknown) => (cell as { amount: number }).amount }],
+      rows: [[deal('B', 300)], [deal('A', 1200)], [deal('C', 50)]],
+    });
+    (el2 as any)._handleSort(el2.columns[0]);
+    expect(names(el2).map((d: { name: string }) => d.name)).toEqual(['C', 'B', 'A']);
+  });
+
+  it('accessor receives the whole row, so a column can sort by another field', () => {
+    const el2 = make({
+      columns: [{ key: 'name', label: 'Name', sortable: true, accessor: (_c: unknown, row: unknown[]) => row[1] }],
+      rows: [['x', 3], ['y', 1], ['z', 2]],
+    });
+    (el2 as any)._handleSort(el2.columns[0]);
+    expect(names(el2)).toEqual(['y', 'z', 'x']);
+  });
+
+  it('compare: a per-column comparator orders ascending; descending is its inverse', () => {
+    const rank = { Qualified: 0, Lead: 1, Won: 2 } as Record<string, number>;
+    const col = { key: 'stage', label: 'Stage', sortable: true, compare: (a: unknown, b: unknown) => rank[a as string]! - rank[b as string]! };
+    const el2 = make({ columns: [col], rows: [['Won'], ['Lead'], ['Qualified']] });
+    (el2 as any)._handleSort(col);
+    expect(names(el2)).toEqual(['Qualified', 'Lead', 'Won']);
+    (el2 as any)._handleSort(col);
+    expect(names(el2)).toEqual(['Won', 'Lead', 'Qualified']);
+  });
+
+  it('descending keeps equal rows in their original order (stable), and empty values sort last', () => {
+    const col = { key: 'n', label: 'N', sortable: true };
+    const el2 = make({ columns: [col, { key: 'id', label: 'Id' }], rows: [[1, 'a'], [null, 'e'], [2, 'b'], [1, 'c'], [2, 'd']] });
+    (el2 as any)._handleSort(col);
+    expect((el2 as any)._getSortedRows().map((e: { row: unknown[] }) => e.row[1])).toEqual(['a', 'c', 'b', 'd', 'e']);
+    (el2 as any)._handleSort(col);
+    expect((el2 as any)._getSortedRows().map((e: { row: unknown[] }) => e.row[1])).toEqual(['b', 'd', 'a', 'c', 'e']);
+  });
+
+  it('Dates sort chronologically', () => {
+    const col = { key: 'd', label: 'D', sortable: true };
+    const el2 = make({ columns: [col], rows: [[new Date('2026-03-01')], [new Date('2025-12-31')], [new Date('2026-01-15')]] });
+    (el2 as any)._handleSort(col);
+    expect(names(el2).map((d: Date) => d.toISOString().slice(0, 10))).toEqual(['2025-12-31', '2026-01-15', '2026-03-01']);
+  });
+
+  it('controlled: with `sort` set, a header click emits cg-sort-change with the next sort and leaves the shown sort alone', () => {
+    const col = { key: 'name', label: 'Name', sortable: true };
+    const el2 = make({ columns: [col, { key: 'age', label: 'Age', sortable: true }], rows: [['b'], ['a']], sort: { key: 'name', direction: 'asc' } });
+    const changes: unknown[] = [];
+    const sorts: unknown[] = [];
+    el2.addEventListener('cg-sort-change', (e) => changes.push((e as CustomEvent).detail));
+    el2.addEventListener('cg-sort', (e) => sorts.push((e as CustomEvent).detail));
+    (el2 as any)._handleSort(col);
+    (el2 as any)._handleSort(el2.columns[1]);
+    expect(changes).toEqual([{ key: 'name', direction: 'desc' }, { key: 'age', direction: 'asc' }]);
+    expect(sorts).toEqual([]); // nothing was sorted by the table
+    expect(names(el2)).toEqual(['a', 'b']); // client-sorted by the controlled sort (no manual-sort)
+    el2.sort = { key: 'name', direction: 'desc' };
+    expect(names(el2)).toEqual(['b', 'a']);
+  });
+
+  it('manual-sort: rows render in the given order whatever the sort', () => {
+    const col = { key: 'name', label: 'Name', sortable: true };
+    const el2 = make({ columns: [col], rows: [['b'], ['c'], ['a']], manualSort: true, sort: { key: 'name', direction: 'asc' } });
+    expect(names(el2)).toEqual(['b', 'c', 'a']);
+  });
+
+  it('uncontrolled: a header click sorts, fires cg-sort and cg-sort-change with the same detail', () => {
+    const col = { key: 'name', label: 'Name', sortable: true };
+    const el2 = make({ columns: [col], rows: [['b'], ['a']] });
+    const got: string[] = [];
+    el2.addEventListener('cg-sort-change', (e) => got.push(`change:${JSON.stringify((e as CustomEvent).detail)}`));
+    el2.addEventListener('cg-sort', (e) => got.push(`sort:${JSON.stringify((e as CustomEvent).detail)}`));
+    (el2 as any)._handleSort(col);
+    expect(got).toEqual(['change:{"key":"name","direction":"asc"}', 'sort:{"key":"name","direction":"asc"}']);
+    expect(names(el2)).toEqual(['a', 'b']);
+  });
 });

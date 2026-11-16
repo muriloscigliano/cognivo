@@ -10,6 +10,12 @@ const MESSAGES = defineMessages('cg-table', {
   selectRow: 'Select row {row}',
 });
 
+/** A column sort: the column `key` and its direction. */
+export interface TableSort {
+  key: string;
+  direction: 'asc' | 'desc';
+}
+
 /** Column definition for cg-table. */
 export interface TableColumn {
   key: string;
@@ -17,7 +23,36 @@ export interface TableColumn {
   align?: 'left' | 'center' | 'right';
   sortable?: boolean;
   width?: string;
+  /** Cells of this column are row headers (`<th scope="row">`): the column
+   *  that names each row (company, contact). Screen readers announce it with
+   *  every other cell of the row. */
+  rowHeader?: boolean;
+  /** Each cell is a `<slot name="cell-{rowIndex}-{key}">` (`rowIndex` = the
+   *  row's index in `rows`, stable under sorting). Light-DOM children with that
+   *  slot — links, badges, buttons, framework components — replace the cell;
+   *  the row value shows where nothing is slotted. Their tab order follows the
+   *  displayed (sorted) rows. */
+  slotted?: boolean;
+  /** Cell content from the value: a Lit template, a DOM node or text. */
+  render?: (cell: unknown, row: unknown[], rowIndex: number) => unknown;
+  /** The value this column sorts by (default: the cell). Use it when cells
+   *  hold objects or templates (a link, a badge), so they sort by their data. */
+  accessor?: (cell: unknown, row: unknown[]) => unknown;
+  /** Ascending comparator of accessor values (descending is its inverse).
+   *  Default: numbers and dates by value, nodes by text, the rest as text in
+   *  the page locale. Empty values (null, undefined, '') always sort last. */
+  compare?: (a: unknown, b: unknown) => number;
 }
+
+const plain = (v: unknown): unknown => (v instanceof Date ? v.getTime() : v instanceof Node ? v.textContent : v);
+const compareValues = (a: unknown, b: unknown): number => {
+  const pa = plain(a);
+  const pb = plain(b);
+  return typeof pa === 'number' && typeof pb === 'number' ? pa - pb : String(pa).localeCompare(String(pb));
+};
+const isEmpty = (v: unknown): boolean => v == null || v === '';
+/** Elements whose own click/Enter must not also activate a clickable row. */
+const CONTROL = 'a[href],button,input,select,textarea,summary,label,[role=button],[role=link],[contenteditable]';
 
 /**
  * <cg-table> — Data table with sorting, selection, loading, and pagination.
@@ -31,9 +66,21 @@ export interface TableColumn {
  * ></cg-table>
  * ```
  *
- * @slot footer - Footer area for pagination or summary
+ * Accessible name: `caption` (add `caption-hidden` to hide it visually),
+ * `label`, or `labelledby` (ids of page elements; their text names the
+ * table and follows text changes).
  *
- * @fires {CustomEvent<{key, direction}>} cg-sort - Column sorted
+ * Sorting: sortable headers are buttons; the sorted header has `aria-sort`.
+ * Uncontrolled by default. Set `sort` to control it (the table shows `sort`
+ * and asks for changes with `cg-sort-change`); add `manual-sort` when the
+ * rows arrive sorted (server-side or cursor data) so the table never
+ * reorders them.
+ *
+ * @slot footer - Footer area for pagination or summary
+ * @slot cell-{rowIndex}-{key} - Content of one cell of a `slotted` column
+ *
+ * @fires {CustomEvent<TableSort>} cg-sort-change - A header asked for this sort (always; in controlled mode nothing changes until `sort` does)
+ * @fires {CustomEvent<TableSort>} cg-sort - Uncontrolled only: the table sorted
  * @fires {CustomEvent<{indices: number[]}>} cg-select - Row selection changed
  * @fires {CustomEvent<{index, row}>} cg-row-click - Row clicked
  *
@@ -58,49 +105,49 @@ export class CgTable extends LitElement {
     tbody {
       background: var(--cg-overlay-dark-subtle);
     }
-    tbody tr:first-child td {
+    tbody tr:first-child > * {
       border-top: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
     }
-    tbody tr:last-child td {
+    tbody tr:last-child > * {
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
     }
-    tbody td:first-child {
+    tbody tr > :first-child {
       border-left: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
     }
-    tbody td:last-child {
+    tbody tr > :last-child {
       border-right: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
     }
-    tbody tr:first-child td:first-child {
+    tbody tr:first-child > :first-child {
       border-top-left-radius: var(--cg-border-radius-150);
     }
-    tbody tr:first-child td:last-child {
+    tbody tr:first-child > :last-child {
       border-top-right-radius: var(--cg-border-radius-150);
     }
-    tbody tr:last-child td:first-child {
+    tbody tr:last-child > :first-child {
       border-bottom-left-radius: var(--cg-border-radius-150);
     }
-    tbody tr:last-child td:last-child {
+    tbody tr:last-child > :last-child {
       border-bottom-right-radius: var(--cg-border-radius-150);
     }
 
     /* Rounded variants — outer wrapper + inner tbody corners */
     :host([rounded="none"]) .table-wrapper { border-radius: 0; }
-    :host([rounded="none"]) tbody tr:first-child td:first-child,
-    :host([rounded="none"]) tbody tr:first-child td:last-child,
-    :host([rounded="none"]) tbody tr:last-child td:first-child,
-    :host([rounded="none"]) tbody tr:last-child td:last-child { border-radius: 0; }
+    :host([rounded="none"]) tbody tr:first-child > :first-child,
+    :host([rounded="none"]) tbody tr:first-child > :last-child,
+    :host([rounded="none"]) tbody tr:last-child > :first-child,
+    :host([rounded="none"]) tbody tr:last-child > :last-child { border-radius: 0; }
 
     :host([rounded="sm"]) .table-wrapper { border-radius: var(--cg-border-radius-100); }
-    :host([rounded="sm"]) tbody tr:first-child td:first-child { border-top-left-radius: var(--cg-border-radius-50); }
-    :host([rounded="sm"]) tbody tr:first-child td:last-child { border-top-right-radius: var(--cg-border-radius-50); }
-    :host([rounded="sm"]) tbody tr:last-child td:first-child { border-bottom-left-radius: var(--cg-border-radius-50); }
-    :host([rounded="sm"]) tbody tr:last-child td:last-child { border-bottom-right-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"]) tbody tr:first-child > :first-child { border-top-left-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"]) tbody tr:first-child > :last-child { border-top-right-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"]) tbody tr:last-child > :first-child { border-bottom-left-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"]) tbody tr:last-child > :last-child { border-bottom-right-radius: var(--cg-border-radius-50); }
 
     :host([rounded="md"]) .table-wrapper { border-radius: var(--cg-border-radius-150); }
-    :host([rounded="md"]) tbody tr:first-child td:first-child { border-top-left-radius: var(--cg-border-radius-100); }
-    :host([rounded="md"]) tbody tr:first-child td:last-child { border-top-right-radius: var(--cg-border-radius-100); }
-    :host([rounded="md"]) tbody tr:last-child td:first-child { border-bottom-left-radius: var(--cg-border-radius-100); }
-    :host([rounded="md"]) tbody tr:last-child td:last-child { border-bottom-right-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"]) tbody tr:first-child > :first-child { border-top-left-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"]) tbody tr:first-child > :last-child { border-top-right-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"]) tbody tr:last-child > :first-child { border-bottom-left-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"]) tbody tr:last-child > :last-child { border-bottom-right-radius: var(--cg-border-radius-100); }
 
     :host([rounded="lg"]) .table-wrapper { border-radius: var(--cg-component-table-radius); }
 
@@ -116,7 +163,25 @@ export class CgTable extends LitElement {
     /* ── Header ── */
     thead { position: sticky; top: 0; z-index: 1; }
 
-    th {
+    caption {
+      padding: 0 var(--cg-spacing-16) var(--cg-spacing-12);
+      text-align: left;
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-surface-table-text);
+    }
+    /* Canonical visually-hidden recipe (functional values, see cg-visually-hidden). */
+    caption.sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    thead th {
       padding: var(--cg-spacing-12) var(--cg-spacing-16);
       text-align: left;
       font-weight: var(--cg-font-weight-medium);
@@ -127,19 +192,31 @@ export class CgTable extends LitElement {
       white-space: nowrap;
       user-select: none;
     }
-    :host([compact]) th {
+    :host([compact]) thead th {
       padding: var(--cg-spacing-6) var(--cg-spacing-12);
     }
 
-    th.sortable { cursor: pointer; }
-    th.sortable:hover { color: var(--cg-color-accent-text); }
-    th.sortable:active {
+    /* Sortable header: a real button that reads as header text. */
+    .sort-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: var(--cg-border-radius-50);
+      background: none;
+      color: inherit;
+      font: inherit;
+      text-align: inherit;
+      cursor: pointer;
+    }
+    .sort-btn:hover { color: var(--cg-color-accent-text); }
+    .sort-btn:active {
       transform: scale(var(--cg-interaction-press-scale));
       transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    th.sortable:focus-visible {
+    .sort-btn:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring);
     }
 
     th .sort-icon {
@@ -166,19 +243,21 @@ export class CgTable extends LitElement {
       min-height: 0;
     }
 
-    /* ── Cells ── */
-    td {
+    /* ── Cells (row-header cells are th in tbody) ── */
+    td, tbody th {
+      text-align: left;
       padding: var(--cg-spacing-12) var(--cg-spacing-16);
       color: var(--cg-color-surface-table-text);
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
       vertical-align: middle;
     }
-    :host([compact]) td {
+    :host([compact]) td, :host([compact]) tbody th {
       padding: var(--cg-spacing-6) var(--cg-spacing-12);
     }
 
-    td[data-align="center"] { text-align: center; }
-    td[data-align="right"] { text-align: right; }
+    tbody th { font-weight: var(--cg-font-weight-medium); }
+    td[data-align="center"], tbody th[data-align="center"] { text-align: center; }
+    td[data-align="right"], tbody th[data-align="right"] { text-align: right; }
 
     /* Row dividers — last row keeps its content border from the tbody border rules */
 
@@ -186,10 +265,10 @@ export class CgTable extends LitElement {
     tbody tr {
       transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    tbody tr:hover td {
+    tbody tr:hover > * {
       background: var(--cg-color-action-tertiary-background-hover);
     }
-    tbody tr.selected td {
+    tbody tr.selected > * {
       background: var(--cg-color-action-tertiary-background-hover);
     }
     :host([clickable]) tbody tr {
@@ -198,15 +277,15 @@ export class CgTable extends LitElement {
     :host([clickable]) tbody tr:focus-visible {
       outline: none;
     }
-    :host([clickable]) tbody tr:focus-visible td {
+    :host([clickable]) tbody tr:focus-visible > * {
       box-shadow: inset 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring);
     }
 
     /* ── Striped ── */
-    :host([striped]) tbody tr:nth-child(even) td {
+    :host([striped]) tbody tr:nth-child(even) > * {
       background: var(--cg-color-action-tertiary-background-hover);
     }
-    :host([striped]) tbody tr:nth-child(even):hover td {
+    :host([striped]) tbody tr:nth-child(even):hover > * {
       background: var(--cg-color-action-tertiary-background-hover);
     }
 
@@ -286,29 +365,81 @@ export class CgTable extends LitElement {
   private i18n = new Messages(this, MESSAGES);
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
 
+  /** Caption (names the table). */
+  @property() caption = '';
+  /** Hide the caption visually; it still names the table. */
+  @property({ type: Boolean, reflect: true, attribute: 'caption-hidden' }) captionHidden = false;
+  /** Accessible name of the inner table (wins over `caption`). */
+  @property() label = '';
+  /** Space-separated ids of elements in the table's document or shadow root
+   *  whose text names the table. */
+  @property() labelledby = '';
+  /** Controlled sort. `undefined` (default): the table keeps its own sort.
+   *  Set (a sort, or `null` for none): the table shows it and only asks for
+   *  changes with `cg-sort-change`. */
+  @property({ type: Object }) sort: TableSort | null | undefined = undefined;
+  /** Rows arrive sorted (server-side, cursor data): never reorder them. */
+  @property({ type: Boolean, reflect: true, attribute: 'manual-sort' }) manualSort = false;
+
+  @state() private _labelledText = '';
+  private _labelObserver: MutationObserver | undefined;
+
   @state() private _sortKey = '';
   @state() private _sortDir: 'asc' | 'desc' = 'asc';
   @state() private _selected = new Set<number>();
   @state() private _hasFooter = false;
 
+  override connectedCallback() {
+    super.connectedCallback();
+    this._resolveLabelledBy();
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    this._labelObserver?.disconnect();
+  }
+
   override willUpdate(changed: PropertyValues) {
     if (changed.has('rows')) {
       this._selected = new Set([...this._selected].filter(i => i < this.rows.length));
     }
+    if (changed.has('labelledby')) this._resolveLabelledBy();
+  }
+
+  /** `aria-labelledby` cannot reach out of the shadow root, so the referenced
+   *  elements' text becomes the inner table's label, kept in sync by an observer. */
+  private _resolveLabelledBy() {
+    this._labelObserver?.disconnect();
+    const root = this.getRootNode() as Partial<Document>;
+    const els = this.isConnected && this.labelledby && root.getElementById
+      ? this.labelledby.split(/\s+/).map(id => root.getElementById!(id)).filter((el): el is HTMLElement => !!el)
+      : [];
+    this._labelledText = els.map(el => el.textContent!.trim()).join(' ');
+    if (els.length && typeof MutationObserver === 'function') {
+      this._labelObserver ??= new MutationObserver(() => this._resolveLabelledBy());
+      for (const el of els) this._labelObserver.observe(el, { subtree: true, childList: true, characterData: true });
+    }
+  }
+
+  /** The shown sort: the controlled `sort`, else the table's own. */
+  private get _sort(): TableSort | null {
+    if (this.sort !== undefined) return this.sort;
+    return this._sortKey ? { key: this._sortKey, direction: this._sortDir } : null;
+  }
+
+  private _emit(name: string, detail: unknown) {
+    this.dispatchEvent(new CustomEvent(name, { detail, bubbles: true, composed: true }));
   }
 
   private _handleSort(col: TableColumn) {
     if (!col.sortable) return;
-    if (this._sortKey === col.key) {
-      this._sortDir = this._sortDir === 'asc' ? 'desc' : 'asc';
-    } else {
-      this._sortKey = col.key;
-      this._sortDir = 'asc';
-    }
-    this.dispatchEvent(new CustomEvent('cg-sort', {
-      detail: { key: this._sortKey, direction: this._sortDir },
-      bubbles: true, composed: true,
-    }));
+    const cur = this._sort;
+    const next: TableSort = { key: col.key, direction: cur?.key === col.key && cur.direction === 'asc' ? 'desc' : 'asc' };
+    this._emit('cg-sort-change', next);
+    if (this.sort !== undefined) return;
+    this._sortKey = next.key;
+    this._sortDir = next.direction;
+    this._emit('cg-sort', next);
   }
 
   private _toggleRow(index: number) {
@@ -334,6 +465,15 @@ export class CgTable extends LitElement {
     }));
   }
 
+  /** Did the event start on a link, button or field inside the row? */
+  private _fromControl(e: Event): boolean {
+    for (const n of e.composedPath()) {
+      if (n === e.currentTarget) return false;
+      if (n instanceof HTMLElement && (n.matches(CONTROL) || n.tabIndex >= 0 || (n.constructor as { formAssociated?: boolean }).formAssociated)) return true;
+    }
+    return false;
+  }
+
   private _handleRowClick(index: number, row: unknown[]) {
     if (this.clickable) {
       this.dispatchEvent(new CustomEvent('cg-row-click', {
@@ -351,31 +491,44 @@ export class CgTable extends LitElement {
   /** Rows paired with their ORIGINAL index so selection/click events stay stable under sorting. */
   private _getSortedRows(): Array<{ row: unknown[]; i: number }> {
     const entries = this.rows.map((row, i) => ({ row, i }));
-    if (!this._sortKey) return entries;
-    const idx = this.columns.findIndex(c => c.key === this._sortKey);
+    const sort = this._sort;
+    if (!sort || this.manualSort) return entries;
+    const idx = this.columns.findIndex(c => c.key === sort.key);
     if (idx === -1) return entries;
-    const sorted = [...entries].sort((a, b) => {
-      const va = a.row[idx];
-      const vb = b.row[idx];
-      if (typeof va === 'number' && typeof vb === 'number') return va - vb;
-      return String(va ?? '').localeCompare(String(vb ?? ''));
+    const col = this.columns[idx]!;
+    const cmp = col.compare ?? compareValues;
+    const dir = sort.direction === 'desc' ? -1 : 1;
+    const keyed = entries.map(e => ({ ...e, v: col.accessor ? col.accessor(e.row[idx], e.row) : e.row[idx] }));
+    // Stable in both directions (ties keep row order); empty values last.
+    keyed.sort((a, b) => {
+      const ea = isEmpty(a.v);
+      const eb = isEmpty(b.v);
+      if (ea || eb) return ea === eb ? a.i - b.i : ea ? 1 : -1;
+      return dir * cmp(a.v, b.v) || a.i - b.i;
     });
-    return this._sortDir === 'desc' ? sorted.reverse() : sorted;
+    return keyed.map(({ row, i }) => ({ row, i }));
+  }
+
+  private _cell(col: TableColumn, row: unknown[], ci: number, rowIndex: number): unknown {
+    const value = col.render ? col.render(row[ci], row, rowIndex) : row[ci] ?? '';
+    return col.slotted ? html`<slot name="cell-${rowIndex}-${col.key}">${value}</slot>` : value;
   }
 
   override render() {
     const sortedRows = this._getSortedRows();
+    const sort = this._sort;
     const allSelected = this.rows.length > 0 && this._selected.size === this.rows.length;
     const widths = ['short', 'long', 'med', 'short'];
 
     return html`
       <div class="table-wrapper">
         <div class="table-scroll">
-        <table role="table" aria-busy=${this.loading ? 'true' : nothing}>
+        <table aria-label=${this.label || this._labelledText || nothing} aria-busy=${this.loading ? 'true' : nothing}>
+          ${this.caption ? html`<caption class=${this.captionHidden ? 'sr-only' : ''}>${this.caption}</caption>` : nothing}
           <thead>
             <tr>
               ${this.selectable ? html`
-                <th class="select-col">
+                <th scope="col" class="select-col">
                   <cg-checkbox
                     ?checked=${allSelected}
                     .indeterminate=${this._selected.size > 0 && !allSelected}
@@ -384,20 +537,18 @@ export class CgTable extends LitElement {
                     aria-label=${this.i18n.t('selectAll')}></cg-checkbox>
                 </th>
               ` : nothing}
-              ${this.columns.map(col => html`
+              ${this.columns.map(col => {
+                const dir = sort?.key === col.key ? sort.direction : undefined;
+                return html`
                 <th
-                  class="${col.sortable ? 'sortable' : ''} ${this._sortKey === col.key ? 'sorted' : ''}"
+                  scope="col"
+                  class=${dir ? 'sorted' : ''}
                   data-align=${col.align ?? 'left'}
                   style=${col.width ? `width: ${col.width}` : ''}
-                  tabindex=${col.sortable ? '0' : nothing}
-                  @click=${() => this._handleSort(col)}
-                  @keydown=${(e: KeyboardEvent) => { if (col.sortable && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); this._handleSort(col); } }}
-                  aria-sort=${this._sortKey === col.key ? (this._sortDir === 'asc' ? 'ascending' : 'descending') : nothing}
-                >
-                  ${col.label}
-                  ${col.sortable ? html`<span class="sort-icon"><cg-icon name="${this._sortKey === col.key ? (this._sortDir === 'asc' ? 'arrow-up' : 'arrow-down') : 'sort'}" size="xs"></cg-icon></span>` : nothing}
-                </th>
-              `)}
+                  aria-sort=${dir ? (dir === 'asc' ? 'ascending' : 'descending') : nothing}
+                >${col.sortable ? html`<button type="button" class="sort-btn" @click=${() => this._handleSort(col)}>${col.label}<span class="sort-icon" aria-hidden="true"><cg-icon name=${dir ? (dir === 'asc' ? 'arrow-up' : 'arrow-down') : 'sort'} size="xs"></cg-icon></span></button>` : col.label}</th>
+              `;
+              })}
             </tr>
           </thead>
           <tbody>
@@ -417,8 +568,8 @@ export class CgTable extends LitElement {
             ` : sortedRows.map(({ row, i: origIdx }) => html`
               <tr class="${this._selected.has(origIdx) ? 'selected' : ''}"
                 tabindex=${this.clickable ? '0' : nothing}
-                @click=${() => this._handleRowClick(origIdx, row)}
-                @keydown=${(e: KeyboardEvent) => { if (this.clickable && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); this._handleRowClick(origIdx, row); } }}>
+                @click=${(e: Event) => { if (!this._fromControl(e)) this._handleRowClick(origIdx, row); }}
+                @keydown=${(e: KeyboardEvent) => { if (this.clickable && e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); this._handleRowClick(origIdx, row); } }}>
                 ${this.selectable ? html`
                   <td class="select-col" @click=${(e: Event) => e.stopPropagation()}>
                     <cg-checkbox
@@ -428,9 +579,9 @@ export class CgTable extends LitElement {
                       aria-label=${this.i18n.t('selectRow', { row: origIdx + 1 })}></cg-checkbox>
                   </td>
                 ` : nothing}
-                ${this.columns.map((col, ci) => html`
-                  <td data-align=${col.align ?? 'left'}>${row[ci] ?? ''}</td>
-                `)}
+                ${this.columns.map((col, ci) => col.rowHeader
+                  ? html`<th scope="row" data-align=${col.align ?? 'left'}>${this._cell(col, row, ci, origIdx)}</th>`
+                  : html`<td data-align=${col.align ?? 'left'}>${this._cell(col, row, ci, origIdx)}</td>`)}
               </tr>
             `)}
           </tbody>
