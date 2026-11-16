@@ -3,6 +3,13 @@ import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { spinKeyframes, reducedMotion } from '../../styles/index.js';
 import { FocusTrap } from '../../utils/focus-trap.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-modal', {
+  label: 'Dialog',
+  close: 'Close dialog',
+  loading: 'Loading…',
+});
 
 /**
  * @element cg-modal
@@ -291,6 +298,10 @@ export class CgModal extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String }) override title = '';
   @property({ type: String }) icon = '';
@@ -395,7 +406,7 @@ export class CgModal extends LitElement {
           class="modal ${this._closing ? 'closing' : ''}"
           role="dialog"
           aria-modal="true"
-          aria-label="${this.title ? nothing : 'Dialog'}"
+          aria-label="${this.title ? nothing : this.i18n.t('label')}"
           aria-labelledby="${this.title ? 'modal-title' : nothing}"
           tabindex="-1"
         >
@@ -412,7 +423,7 @@ export class CgModal extends LitElement {
               ${this.closable ? html`
                 <button
                   class="close-btn"
-                  aria-label="Close dialog"
+                  aria-label=${this.i18n.t('close')}
                   @click="${this._requestClose}"
                 >
                   <cg-icon name="x" size="xs"></cg-icon>
@@ -433,7 +444,7 @@ export class CgModal extends LitElement {
             ${this.loading ? html`
               <div class="modal-loading-overlay" role="status" aria-live="polite">
                 <span class="modal-spinner"></span>
-                <span class="modal-loading-text">Loading...</span>
+                <span class="modal-loading-text">${this.i18n.t('loading')}</span>
               </div>
             ` : nothing}
           </div>

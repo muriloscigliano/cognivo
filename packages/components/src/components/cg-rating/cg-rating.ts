@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-rating', {
+  label: 'Rating',
+});
 
 /**
  * @element cg-rating
@@ -88,6 +93,11 @@ export class CgRating extends LitElement {
       this._internals = this.attachInternals();
     }
   }
+
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
 
   @property({ type: Number }) value = 0;
   @property({ type: Number }) max = 5;
@@ -188,7 +198,7 @@ export class CgRating extends LitElement {
         class="rating"
         role="slider"
         tabindex=${this.disabled ? '-1' : '0'}
-        aria-label="Rating"
+        aria-label=${this.i18n.t('label')}
         aria-valuenow=${this.value}
         aria-valuemin="0"
         aria-valuemax=${this.max}

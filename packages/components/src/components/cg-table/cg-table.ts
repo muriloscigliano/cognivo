@@ -2,6 +2,13 @@ import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-table', {
+  empty: 'No data',
+  selectAll: 'Select all rows',
+  selectRow: 'Select row {row}',
+});
 
 /** Column definition for cg-table. */
 export interface TableColumn {
@@ -271,7 +278,12 @@ export class CgTable extends LitElement {
   @property({ type: Boolean, reflect: true }) selectable = false;
   @property({ type: Boolean, reflect: true }) loading = false;
   @property({ type: Number }) loadingRows = 5;
-  @property() emptyText = 'No data';
+  /** Empty-state text; defaults to the `empty` message. */
+  @property() emptyText?: string;
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
 
   @state() private _sortKey = '';
@@ -369,7 +381,7 @@ export class CgTable extends LitElement {
                     .indeterminate=${this._selected.size > 0 && !allSelected}
                     @cg-change=${this._toggleAll}
                     label=""
-                    aria-label="Select all rows"></cg-checkbox>
+                    aria-label=${this.i18n.t('selectAll')}></cg-checkbox>
                 </th>
               ` : nothing}
               ${this.columns.map(col => html`
@@ -399,7 +411,7 @@ export class CgTable extends LitElement {
             `) : sortedRows.length === 0 ? html`
               <tr>
                 <td class="empty-cell" colspan=${this.columns.length + (this.selectable ? 1 : 0)}>
-                  <div class="empty-state">${this.emptyText}</div>
+                  <div class="empty-state">${this.emptyText ?? this.i18n.t('empty')}</div>
                 </td>
               </tr>
             ` : sortedRows.map(({ row, i: origIdx }) => html`
@@ -413,7 +425,7 @@ export class CgTable extends LitElement {
                       ?checked=${this._selected.has(origIdx)}
                       @cg-change=${() => this._toggleRow(origIdx)}
                       label=""
-                      aria-label=${`Select row ${origIdx + 1}`}></cg-checkbox>
+                      aria-label=${this.i18n.t('selectRow', { row: origIdx + 1 })}></cg-checkbox>
                   </td>
                 ` : nothing}
                 ${this.columns.map((col, ci) => html`

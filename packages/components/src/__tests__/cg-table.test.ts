@@ -45,8 +45,10 @@ describe('cg-table', () => {
     expect(make().rows).toEqual([]);
   });
 
-  it('default emptyText is "No data"', () => {
-    expect(make().emptyText).toBe('No data');
+  it('emptyText is unset by default; the empty state falls back to the "No data" message', () => {
+    const t = make();
+    expect(t.emptyText).toBeUndefined();
+    expect((t as any).i18n.t('empty')).toBe('No data');
   });
 
   it('default striped is false', () => {

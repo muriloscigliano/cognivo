@@ -3,6 +3,14 @@ import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { spinKeyframes, reducedMotion } from '../../styles/index.js';
 import { FocusTrap } from '../../utils/focus-trap.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-drawer', {
+  label: 'Side panel',
+  back: 'Go back',
+  close: 'Close panel',
+  loading: 'Loading…',
+});
 
 /**
  * @element cg-drawer
@@ -295,6 +303,10 @@ export class CgDrawer extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String, reflect: true }) side: 'left' | 'right' = 'right';
   @property({ type: String, reflect: true }) size: 'sm' | 'md' | 'lg' | 'full' = 'md';
@@ -391,7 +403,7 @@ export class CgDrawer extends LitElement {
         class="panel ${this._closing ? 'closing' : ''}"
         role="dialog"
         aria-modal="true"
-        aria-label="${this.title ? nothing : 'Side panel'}"
+        aria-label="${this.title ? nothing : this.i18n.t('label')}"
         aria-labelledby="${this.title ? 'drawer-title' : nothing}"
         tabindex="-1"
       >
@@ -399,7 +411,7 @@ export class CgDrawer extends LitElement {
           <div class="drawer-header">
             <div class="drawer-header-left">
               ${this.back ? html`
-                <button class="back-btn" aria-label="Go back" @click="${this._handleBack}">
+                <button class="back-btn" aria-label=${this.i18n.t('back')} @click="${this._handleBack}">
                   <cg-icon name="chevron-left" size="sm"></cg-icon>
                 </button>
               ` : nothing}
@@ -411,7 +423,7 @@ export class CgDrawer extends LitElement {
             ${this.closable ? html`
               <button
                 class="close-btn"
-                aria-label="Close panel"
+                aria-label=${this.i18n.t('close')}
                 @click="${this._requestClose}"
               >
                 <cg-icon name="x" size="xs"></cg-icon>
@@ -430,9 +442,9 @@ export class CgDrawer extends LitElement {
         <div class="drawer-body">
           <slot></slot>
           ${this.loading ? html`
-            <div class="drawer-loading-overlay" aria-busy="true" aria-label="Loading">
+            <div class="drawer-loading-overlay" aria-busy="true" aria-label=${this.i18n.t('loading')}>
               <span class="drawer-spinner"></span>
-              <span class="drawer-loading-text">Loading...</span>
+              <span class="drawer-loading-text">${this.i18n.t('loading')}</span>
             </div>
           ` : nothing}
         </div>

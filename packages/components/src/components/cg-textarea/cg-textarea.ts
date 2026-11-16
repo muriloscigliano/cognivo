@@ -3,6 +3,11 @@ import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { mirrorValidity, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-textarea', {
+  loading: 'Loading',
+});
 
 /**
  * @element cg-textarea
@@ -203,6 +208,10 @@ export class CgTextarea extends LitElement {
     :host([rounded="lg"]) textarea { border-radius: var(--cg-component-input-radius); }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ reflect: true }) label = '';
   @property() helper = '';
   @property({ reflect: true }) size: 'md' | 'lg' = 'md';
@@ -298,7 +307,7 @@ export class CgTextarea extends LitElement {
             @focus=${this._handleFocus}
             @blur=${this._handleBlur}
           ></textarea>
-          ${this.loading ? html`<div class="loading-overlay" role="status" aria-label="Loading"><span class="loading-spinner" aria-hidden="true"></span></div>` : nothing}
+          ${this.loading ? html`<div class="loading-overlay" role="status" aria-label=${this.i18n.t('loading')}><span class="loading-spinner" aria-hidden="true"></span></div>` : nothing}
         </div>
         ${this.maxlength ? html`<div class="footer"><span class="count" id="count">${this.value.length}/${this.maxlength}</span></div>` : nothing}
       </div>

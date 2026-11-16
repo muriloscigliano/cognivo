@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-tree-view', {
+  empty: 'No items',
+});
 
 export interface TreeItem {
   label: string;
@@ -136,6 +141,10 @@ export class CgTreeView extends LitElement {
       white-space: nowrap;
     }
   `];
+
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
 
   @property({ type: Array }) items: TreeItem[] = [];
   /** Accessible name for the tree widget (host aria-label can't reach the
@@ -279,7 +288,7 @@ export class CgTreeView extends LitElement {
   override render() {
     const flat = this._flatten();
     if (flat.length === 0) {
-      return html`<p class="empty">No items</p>`;
+      return html`<p class="empty">${this.i18n.t('empty')}</p>`;
     }
     // Roving stop must exist in the current flat list, or keyboard users
     // are stranded after an items replacement.

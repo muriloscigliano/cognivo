@@ -2,6 +2,12 @@ import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-navbar', {
+  label: 'Main navigation',
+  toggle: 'Toggle menu',
+});
 
 export interface NavItem {
   /** Stable identifier — what `active` matches against. */
@@ -361,6 +367,10 @@ export class CgNavbar extends LitElement {
 
   // ─── Public API ─────────────────────────────────────────────────
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Array }) items: NavItem[] = [];
   @property() active = '';
   @property({ reflect: true }) variant: 'solid' | 'glass' | 'floating' = 'solid';
@@ -540,7 +550,7 @@ export class CgNavbar extends LitElement {
   override render() {
     const hasItems = this.items.length > 0;
     return html`
-      <nav role="navigation" aria-label="Main navigation">
+      <nav role="navigation" aria-label=${this.i18n.t('label')}>
         ${this.brandHref
           ? html`<a class="brand" href=${this.brandHref}><slot name="brand"></slot></a>`
           : html`<div class="brand"><slot name="brand"></slot></div>`}
@@ -556,7 +566,7 @@ export class CgNavbar extends LitElement {
           <button
             class="menu-btn"
             type="button"
-            aria-label="Toggle menu"
+            aria-label=${this.i18n.t('toggle')}
             aria-expanded=${this.mobileOpen ? 'true' : 'false'}
             aria-controls="cg-navbar-mobile-panel"
             @click=${this._toggleMobile}

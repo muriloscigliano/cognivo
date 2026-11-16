@@ -2,6 +2,19 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-time-picker', {
+  placeholder: 'Select time',
+  label: 'Time picker',
+  dialog: 'Time selector',
+  hour: 'Hour',
+  minute: 'Min',
+  hours: '{n} hours',
+  minutes: '{n} minutes',
+  am: 'AM',
+  pm: 'PM',
+});
 
 /**
  * @element cg-time-picker
@@ -244,9 +257,14 @@ export class CgTimePicker extends LitElement {
     :host([success]) .helper { color: var(--cg-color-status-success-text-default); }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
+
   @property() label = '';
   @property() value = '';
-  @property() placeholder = 'Select time';
+  @property() placeholder?: string;
   @property() name = '';
   @property() helper = '';
   @property({ reflect: true }) size: 'md' | 'lg' = 'md';
@@ -320,7 +338,7 @@ export class CgTimePicker extends LitElement {
     if (this.use12h) {
       const period = h! >= 12 ? 'PM' : 'AM';
       const h12 = h! === 0 ? 12 : h! > 12 ? h! - 12 : h!;
-      return `${h12}:${String(m).padStart(2, '0')} ${period}`;
+      return `${h12}:${String(m).padStart(2, '0')} ${this.i18n.t(period === 'AM' ? 'am' : 'pm')}`;
     }
     return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
   }
@@ -363,7 +381,7 @@ export class CgTimePicker extends LitElement {
         aria-expanded=${this._open}
         aria-haspopup="dialog"
         aria-controls="cg-tp-popover"
-        aria-label=${this.label || 'Time picker'}
+        aria-label=${this.label || this.i18n.t('label')}
         @click=${this._toggle}
         @keydown=${this._handleKeydown}
       >
@@ -374,20 +392,20 @@ export class CgTimePicker extends LitElement {
           </svg>
         </span>
         <span class="trigger-text ${!display ? 'placeholder' : ''}">
-          ${display || this.placeholder}
+          ${display || (this.placeholder ?? this.i18n.t('placeholder'))}
         </span>
       </div>
 
-      <div class="dropdown ${this._open ? 'open' : ''}" id="cg-tp-popover" role="dialog" aria-label="Time selector">
+      <div class="dropdown ${this._open ? 'open' : ''}" id="cg-tp-popover" role="dialog" aria-label=${this.i18n.t('dialog')}>
         <div class="time-columns">
           <div class="time-column">
-            <span class="time-column-label">Hour</span>
+            <span class="time-column-label">${this.i18n.t('hour')}</span>
             <div class="time-scroll">
               ${hours.map(h => html`
                 <button
                   class="time-option ${this._selectedHour === h ? 'selected' : ''}"
                   @click=${(e: Event) => { e.stopPropagation(); this._selectHour(h); }}
-                  aria-label="${h} hours"
+                  aria-label=${this.i18n.t('hours', { n: h })}
                   aria-pressed=${this._selectedHour === h ? 'true' : 'false'}
                 >${this.use12h ? h : String(h).padStart(2, '0')}</button>
               `)}
@@ -397,13 +415,13 @@ export class CgTimePicker extends LitElement {
           <div class="time-divider"></div>
 
           <div class="time-column">
-            <span class="time-column-label">Min</span>
+            <span class="time-column-label">${this.i18n.t('minute')}</span>
             <div class="time-scroll">
               ${minutes.map(m => html`
                 <button
                   class="time-option ${this._selectedMinute === m ? 'selected' : ''}"
                   @click=${(e: Event) => { e.stopPropagation(); this._selectMinute(m); }}
-                  aria-label="${m} minutes"
+                  aria-label=${this.i18n.t('minutes', { n: m })}
                   aria-pressed=${this._selectedMinute === m ? 'true' : 'false'}
                 >${String(m).padStart(2, '0')}</button>
               `)}
@@ -412,8 +430,8 @@ export class CgTimePicker extends LitElement {
 
           ${this.use12h ? html`
             <div class="period-toggle">
-              <button class="period-btn ${this._period === 'AM' ? 'active' : ''}" aria-pressed=${this._period === 'AM' ? 'true' : 'false'} @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('AM'); }}>AM</button>
-              <button class="period-btn ${this._period === 'PM' ? 'active' : ''}" aria-pressed=${this._period === 'PM' ? 'true' : 'false'} @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('PM'); }}>PM</button>
+              <button class="period-btn ${this._period === 'AM' ? 'active' : ''}" aria-pressed=${this._period === 'AM' ? 'true' : 'false'} @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('AM'); }}>${this.i18n.t('am')}</button>
+              <button class="period-btn ${this._period === 'PM' ? 'active' : ''}" aria-pressed=${this._period === 'PM' ? 'true' : 'false'} @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('PM'); }}>${this.i18n.t('pm')}</button>
             </div>
           ` : nothing}
         </div>

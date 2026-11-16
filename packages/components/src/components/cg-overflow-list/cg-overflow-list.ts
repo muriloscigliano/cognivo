@@ -2,6 +2,12 @@ import { LitElement, html, css, svg } from 'lit';
 import { property, state, query, queryAssignedElements } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, focusRingDual } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-overflow-list', {
+  more: 'More',
+  item: 'Item {n}',
+});
 
 /**
  * @element cg-overflow-list
@@ -102,8 +108,13 @@ export class CgOverflowList extends LitElement {
     .menu-item:focus-visible { ${focusRingDual} }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ reflect: true }) gap: 'none' | 'xs' | 'sm' | 'md' | 'lg' = 'sm';
-  @property({ attribute: 'more-label' }) moreLabel = 'More';
+  /** Overflow trigger's accessible name; defaults to the `more` message. */
+  @property({ attribute: 'more-label' }) moreLabel?: string;
   @property({ type: Number, reflect: true, attribute: 'min-visible' }) minVisible = 0;
 
   @state() private _hiddenIndices: number[] = [];
@@ -209,7 +220,7 @@ export class CgOverflowList extends LitElement {
 
   private _hiddenLabel(index: number): string {
     const el = this._items?.[index];
-    return (el?.textContent || '').trim() || `Item ${index + 1}`;
+    return (el?.textContent || '').trim() || this.i18n.t('item', { n: index + 1 });
   }
 
   override render() {
@@ -224,7 +235,7 @@ export class CgOverflowList extends LitElement {
             ?hidden=${!hasOverflow}
             aria-haspopup="menu"
             aria-expanded=${this._menuOpen ? 'true' : 'false'}
-            aria-label=${this.moreLabel}
+            aria-label=${this.moreLabel ?? this.i18n.t('more')}
             @click=${this._toggleMenu}
           >
             <slot name="more">

@@ -2,6 +2,13 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-autocomplete', {
+  label: 'Autocomplete',
+  clear: 'Clear',
+  noResults: 'No results found',
+});
 
 export interface AutocompleteOption {
   value: string;
@@ -177,6 +184,10 @@ export class CgAutocomplete extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Array }) options: AutocompleteOption[] = [];
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property() value = '';
@@ -274,14 +285,14 @@ export class CgAutocomplete extends LitElement {
           aria-controls=${`${this._uid}-listbox`}
           aria-activedescendant=${this._open && this._activeIndex >= 0 ? `${this._uid}-opt-${this._activeIndex}` : nothing}
           aria-invalid=${this.error ? 'true' : nothing}
-          aria-label=${this.label || 'Autocomplete'}
+          aria-label=${this.label || this.i18n.t('label')}
           @input=${this._onInput}
           @keydown=${this._onKeyDown}
           @focus=${() => { this._focused = true; this._open = true; }}
           @blur=${() => { this._focused = false; this._open = false; }}
         />
         ${this.clearable && this._query ? html`
-          <button class="clear" @mousedown=${(e: Event) => e.preventDefault()} @click=${this._clear} aria-label="Clear">
+          <button class="clear" @mousedown=${(e: Event) => e.preventDefault()} @click=${this._clear} aria-label=${this.i18n.t('clear')}>
             <cg-icon name="x" size="xs"></cg-icon>
           </button>
         ` : nothing}
@@ -291,7 +302,7 @@ export class CgAutocomplete extends LitElement {
       </div>
       ${this._open ? html`
         <div class="dropdown" role="listbox" id=${`${this._uid}-listbox`}>
-          ${filtered.length === 0 ? html`<div class="empty">No results found</div>` :
+          ${filtered.length === 0 ? html`<div class="empty">${this.i18n.t('noResults')}</div>` :
             filtered.map((opt, i) => html`
               <div class="option ${i === this._activeIndex ? 'active' : ''}"
                 role="option"

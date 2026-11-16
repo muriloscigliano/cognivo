@@ -4,7 +4,7 @@ export const CgFollowUp = createVueWrapper(
   'cg-follow-up',
   {
     items: { type: Array, default: () => [] },
-    label: { type: String, default: 'Suggested' },
+    label: { type: String, default: undefined },
     disabled: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     hideLabel: { type: Boolean, default: false },

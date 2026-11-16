@@ -5,5 +5,5 @@ export const CgListbox = createVueWrapper('cg-listbox', {
   multiple: { type: Boolean, default: false },
   checkPosition: { type: String, default: 'right' },
   label: { type: String, default: '' },
-  emptyText: { type: String, default: 'No options' },
+  emptyText: { type: String, default: undefined },
 }, {});

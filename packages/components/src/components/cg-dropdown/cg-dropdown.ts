@@ -4,6 +4,13 @@ import { customElement } from '../../utils/define.js';
 import { entranceStagger, menuListStyles } from '../../styles/index.js';
 import { bindOutsideClick } from '../../utils/outside-click.js';
 import { handleRovingKey } from '../../utils/roving-index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-dropdown', {
+  label: 'Dropdown menu',
+  loading: 'Loading…',
+  empty: 'No items',
+});
 
 /** Menu item for cg-dropdown, with id, label, optional icon, keyboard shortcut, disabled state, and divider flag. */
 export interface DropdownItem {
@@ -116,6 +123,10 @@ export class CgDropdown extends LitElement {
 
     /* Rounded variants — inherited from menuListStyles */
   `];
+
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
 
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: String, reflect: true }) position: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' = 'bottom-start';
@@ -261,16 +272,16 @@ export class CgDropdown extends LitElement {
       <div
         class="menu ${this._closing ? 'closing' : ''}"
         role="menu"
-        aria-label="Dropdown menu"
+        aria-label=${this.i18n.t('label')}
         @keydown="${this._handleKeydown}"
       >
         ${this.loading ? html`
           <div class="menu-loading" aria-busy="true">
             <span class="menu-loading-spinner"></span>
-            <span>Loading...</span>
+            <span>${this.i18n.t('loading')}</span>
           </div>
         ` : this.items.length === 0 ? html`
-          <div class="menu-empty">No items</div>
+          <div class="menu-empty">${this.i18n.t('empty')}</div>
         ` : nothing}
         ${!this.loading ? this.items.map((item, index) => {
           if (item.divider) {

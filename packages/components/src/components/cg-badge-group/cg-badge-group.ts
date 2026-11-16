@@ -2,6 +2,12 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-badge-group', {
+  label: 'Badge group',
+  more: '{n} more items',
+});
 
 /**
  * <cg-badge-group> — Container for a group of badges/tags.
@@ -53,6 +59,10 @@ export class CgBadgeGroup extends LitElement {
   `];
 
   /** Optional label displayed above the badge group. */
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property() label = '';
 
   /** Gap between badges. */
@@ -69,9 +79,9 @@ export class CgBadgeGroup extends LitElement {
 
     return html`
       ${this.label ? html`<div class="label">${this.label}</div>` : nothing}
-      <div class="badges" role="group" aria-label=${this.label || 'Badge group'}>
+      <div class="badges" role="group" aria-label=${this.label || this.i18n.t('label')}>
         <slot></slot>
-        ${overflowCount > 0 ? html`<span class="overflow" aria-label="${overflowCount} more items">+${overflowCount}</span>` : nothing}
+        ${overflowCount > 0 ? html`<span class="overflow" aria-label=${this.i18n.t('more', { n: overflowCount })}>+${overflowCount}</span>` : nothing}
       </div>
     `;
   }

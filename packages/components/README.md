@@ -49,6 +49,31 @@ import { setValidationMessages } from '@cognivo/components/validation';
 setValidationMessages({ valueMissing: 'Campo obrigatório', typeMismatch: 'Formato inválido' });
 ```
 
+## Translating interface text
+
+Foundation (`cg-*`) and `bias-*` components contain no hard-coded English. Every
+text they render by themselves (aria-labels, close and clear buttons, empty
+states, pagination, pickers, announcements) is a message with an English
+default. A message comes from the element (`messages='{"selectAll":"Selecionar tudo"}'`
+or the `messages` property), then the page-wide map keyed by tag, then English.
+Text properties such as `placeholder` or `emptyText` still win when you set them.
+Dates, weekdays, months and country names follow the nearest `lang` attribute
+through `Intl` (English when there is none).
+
+```ts
+import { setMessages } from '@cognivo/components/messages';
+import { setValidationMessages } from '@cognivo/components/validation';
+import { ptBR, ptBRValidation } from '@cognivo/components/locales/pt-BR';
+setMessages(ptBR);                    // or { 'cg-table': { empty: 'Sem dados' } }
+setValidationMessages(ptBRValidation);
+document.documentElement.lang = 'pt-BR';
+```
+
+`englishMessages()` lists every key with its English text. A test scans
+component sources and fails on any new user-visible literal outside
+`defineMessages(...)`. `ai-*` components are not converted yet: they are held
+by a ratchet so they cannot gain new literals.
+
 ## Registering twice (embeds, micro-frontends)
 
 Every component registers through a guarded `customElements.define`: the first

@@ -2,6 +2,13 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-sidebar', {
+  label: 'Primary navigation',
+  expand: 'Expand sidebar',
+  collapse: 'Collapse sidebar',
+});
 
 /**
  * @element cg-sidebar
@@ -279,6 +286,10 @@ export class CgSidebar extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Boolean, reflect: true }) collapsed = false;
   @property({ type: Boolean }) collapsible = false;
   @property({ reflect: true }) side: 'left' | 'right' = 'left';
@@ -330,14 +341,14 @@ export class CgSidebar extends LitElement {
 
   override render() {
     return html`
-      <nav class="nav" role="navigation" aria-label="Primary navigation">
+      <nav class="nav" role="navigation" aria-label=${this.i18n.t('label')}>
         <div class="header">
           <slot name="header" @slotchange=${this._onHeaderSlotChange}></slot>
           ${this.collapsible ? html`
             <button
               class="toggle"
               type="button"
-              aria-label=${this.collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              aria-label=${this.collapsed ? this.i18n.t('expand') : this.i18n.t('collapse')}
               aria-expanded=${this.collapsed ? 'false' : 'true'}
               aria-controls="sidebar-body"
               @click=${this._toggle}

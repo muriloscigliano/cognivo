@@ -2,6 +2,11 @@ import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBase, pulseKeyframes, reducedMotion, spinKeyframes } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-spinner', {
+  label: 'Loading',
+});
 
 /**
  * <cg-spinner> — Spinning loading indicator.
@@ -94,14 +99,19 @@ export class CgSpinner extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: String, reflect: true }) size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
   @property({ type: String, reflect: true }) color: 'default' | 'accent' | 'white' = 'default';
-  @property({ type: String }) label = 'Loading';
+  @property({ type: String }) label?: string;
 
   override render() {
     return html`
       <div class="spinner" role="status">
-        <span class="sr-only">${this.label}</span>
+        <span class="sr-only">${this.label ?? this.i18n.t('label')}</span>
       </div>
     `;
   }

@@ -2,6 +2,13 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-image-block', {
+  view: 'View image: {alt}',
+  unavailable: 'Image unavailable',
+  retry: 'Retry',
+});
 
 /**
  * <cg-image-block> — Image with caption, loading state, and error fallback.
@@ -127,6 +134,10 @@ export class CgImageBlock extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property() src = '';
   @property() alt = '';
   @property() caption = '';
@@ -163,15 +174,15 @@ export class CgImageBlock extends LitElement {
         @keydown=${this.clickable ? this._handleKeydown : nothing}
         tabindex=${this.clickable ? '0' : nothing}
         role=${this.clickable ? 'button' : nothing}
-        aria-label=${this.clickable ? `View image: ${this.alt}` : nothing}
+        aria-label=${this.clickable ? this.i18n.t('view', { alt: this.alt }) : nothing}
       >
         <div class="image-container">
           ${this._loading && !this._error ? html`<div class="skeleton"></div>` : nothing}
           ${this._error ? html`
             <div class="error-state">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-              <span>Image unavailable</span>
-              <button class="retry-btn" @click=${this._retry}>Retry</button>
+              <span>${this.i18n.t('unavailable')}</span>
+              <button class="retry-btn" @click=${this._retry}>${this.i18n.t('retry')}</button>
             </div>
           ` : nothing}
           ${!this._error ? html`

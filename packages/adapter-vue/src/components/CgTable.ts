@@ -7,7 +7,7 @@ export const CgTable = createVueWrapper(
     rows: { type: Array, default: () => [] },
     striped: { type: Boolean, default: false },
     compact: { type: Boolean, default: false },
-    emptyText: { type: String, default: 'No data' },
+    emptyText: { type: String, default: undefined },
   },
   {
     'sort': 'cg-sort',

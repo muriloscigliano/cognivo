@@ -2,6 +2,17 @@ import { LitElement, html, css, nothing, svg } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('bias-scarcity', {
+  ended: 'Ended',
+  endsIn: 'Ends in {duration}',
+  stock: 'Only {n} left',
+  popularity: 'Viewed {n} times today',
+  days: '{d}d {h}h',
+  hours: '{h}h {m}m',
+  minutes: '{m}m',
+});
 
 /**
  * @element bias-scarcity
@@ -70,6 +81,10 @@ export class BiasScarcity extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property() type: 'time' | 'stock' | 'popularity' = 'stock';
   @property() deadline = '';
   @property({ type: Number }) remaining = 0;
@@ -93,7 +108,7 @@ export class BiasScarcity extends LitElement {
   }
 
   override updated(changed: Map<string, unknown>) {
-    if (changed.has('type') || changed.has('deadline') || changed.has('remaining') || changed.has('threshold')) {
+    if (changed.has('type') || changed.has('deadline') || changed.has('remaining') || changed.has('threshold') || changed.has('messages')) {
       this._tick();
     }
   }
@@ -107,16 +122,16 @@ export class BiasScarcity extends LitElement {
       const end = Date.parse(this.deadline);
       if (!Number.isNaN(end)) {
         const diff = end - Date.now();
-        label = diff <= 0 ? 'Ended' : `Ends in ${this._formatDuration(diff)}`;
+        label = diff <= 0 ? this.i18n.t('ended') : this.i18n.t('endsIn', { duration: this._formatDuration(diff) });
         critical = diff > 0 && diff < 3_600_000; // < 1h
         warning = diff >= 3_600_000 && diff < 24 * 3_600_000; // < 24h
       }
     } else if (this.type === 'stock') {
-      label = `Only ${this.remaining} left`;
+      label = this.i18n.t('stock', { n: this.remaining });
       critical = this.remaining > 0 && this.remaining < 3;
       warning = this.remaining >= 3 && this.remaining < this.threshold;
     } else if (this.type === 'popularity') {
-      label = `Viewed ${this.remaining} times today`;
+      label = this.i18n.t('popularity', { n: this.remaining });
       warning = this.remaining >= this.threshold;
     }
 
@@ -130,9 +145,9 @@ export class BiasScarcity extends LitElement {
     const days = Math.floor(totalMinutes / (60 * 24));
     const hours = Math.floor((totalMinutes - days * 60 * 24) / 60);
     const minutes = totalMinutes - days * 60 * 24 - hours * 60;
-    if (days > 0) return `${days}d ${hours}h`;
-    if (hours > 0) return `${hours}h ${minutes}m`;
-    return `${minutes}m`;
+    if (days > 0) return this.i18n.t('days', { d: days, h: hours });
+    if (hours > 0) return this.i18n.t('hours', { h: hours, m: minutes });
+    return this.i18n.t('minutes', { m: minutes });
   }
 
   override render() {

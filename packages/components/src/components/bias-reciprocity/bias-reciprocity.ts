@@ -2,6 +2,12 @@ import { LitElement, html, css, svg } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('bias-reciprocity', {
+  gift: "You're getting: {gift}",
+  giftLabel: 'You are getting: {gift}',
+});
 
 /**
  * @element bias-reciprocity
@@ -70,6 +76,10 @@ export class BiasReciprocity extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property() gift = '';
   @property() icon = '';
   @property({ reflect: true }) prominence: 'subtle' | 'standard' | 'hero' = 'standard';
@@ -78,8 +88,8 @@ export class BiasReciprocity extends LitElement {
     const giftIcon = svg`<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H8a2 2 0 01-2-2 2 2 0 012-2c3 0 4 4 4 4z M12 7h4a2 2 0 002-2 2 2 0 00-2-2c-3 0-4 4-4 4z"></path></svg>`;
 
     return html`
-      <div class="wrap" role="group" aria-label=${`You are getting: ${this.gift}`}>
-        ${this.gift ? html`<span class="gift">${giftIcon}<span>You're getting: ${this.gift}</span></span>` : ''}
+      <div class="wrap" role="group" aria-label=${this.i18n.t('giftLabel', { gift: this.gift })}>
+        ${this.gift ? html`<span class="gift">${giftIcon}<span>${this.i18n.t('gift', { gift: this.gift })}</span></span>` : ''}
         <slot></slot>
       </div>
     `;

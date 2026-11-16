@@ -2,6 +2,13 @@ import { LitElement, html, css, nothing, svg } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-chart', {
+  label: 'Chart',
+  empty: 'No data',
+  total: 'Total',
+});
 
 /** Data point for cg-chart */
 export interface ChartSeries {
@@ -114,6 +121,10 @@ export class CgChart extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Array }) data: ChartSeries[] = [];
   @property() type: 'bar' | 'horizontal-bar' | 'line' | 'area' | 'pie' | 'donut' = 'bar';
   @property() override title = '';
@@ -124,7 +135,8 @@ export class CgChart extends LitElement {
   /** Wrap chart in a card container */
   @property({ type: Boolean }) contained = false;
   @property({ type: Boolean }) showGrid = true;
-  @property() emptyText = 'No data';
+  /** Empty-state text; defaults to the `empty` message. */
+  @property() emptyText?: string;
 
   @state() private _tipX = 0;
   @state() private _tipY = 0;
@@ -387,7 +399,7 @@ export class CgChart extends LitElement {
       ${donut ? svg`
         <circle cx="${cx}" cy="${cy}" r="${r * 0.55}" fill="${this._bg}" />
         <text x="${cx}" y="${cy - 4}" text-anchor="middle" fill="${this._text}" font-size="16" font-weight="700">${this._fmt(total)}</text>
-        <text x="${cx}" y="${cy + 12}" text-anchor="middle" fill="${this._axis}" font-size="9">Total</text>
+        <text x="${cx}" y="${cy + 12}" text-anchor="middle" fill="${this._axis}" font-size="9">${this.i18n.t('total')}</text>
       ` : nothing}
     `;
   }
@@ -404,7 +416,7 @@ export class CgChart extends LitElement {
   }
 
   override render() {
-    if (!this.data.length) return html`<div class="wrap ${this.contained ? 'contained' : ''}"><div class="empty">${this.emptyText}</div></div>`;
+    if (!this.data.length) return html`<div class="wrap ${this.contained ? 'contained' : ''}"><div class="empty">${this.emptyText ?? this.i18n.t('empty')}</div></div>`;
 
     const vw = this._svgWidth();
     const vh = this._svgHeight();
@@ -432,7 +444,7 @@ export class CgChart extends LitElement {
         <div class="svg-wrap">
           <svg
             role="img"
-            aria-label=${`${this.title || 'Chart'}: ${this.data.map((d) => `${d.label} ${this._fmt(d.value)}`).join(', ')}`}
+            aria-label=${`${this.title || this.i18n.t('label')}: ${this.data.map((d) => `${d.label} ${this._fmt(d.value)}`).join(', ')}`}
             viewBox="0 0 ${vw} ${vh}"
             style="${isPie ? `max-width:${vw}px; margin:0 auto;` : ''}"
           >

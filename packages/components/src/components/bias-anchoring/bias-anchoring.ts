@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('bias-anchoring', {
+  label: 'Original {anchor}, now {current}',
+});
 
 /**
  * @element bias-anchoring
@@ -82,6 +87,10 @@ export class BiasAnchoring extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property() anchor = '';
   @property() current = '';
   @property() label = '';
@@ -89,7 +98,7 @@ export class BiasAnchoring extends LitElement {
   @property({ reflect: true }) variant: 'default' | 'subtle' | 'emphasized' = 'default';
 
   private get _ariaLabel(): string {
-    const base = `Original ${this.anchor}, now ${this.current}`;
+    const base = this.i18n.t('label', { anchor: this.anchor, current: this.current });
     return this.label ? `${base}. ${this.label}` : base;
   }
 

@@ -3,6 +3,11 @@ import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { mirrorValidity, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-input', {
+  clear: 'Clear input',
+});
 
 /**
  * @element cg-input
@@ -334,6 +339,10 @@ export class CgInput extends LitElement {
    *  or a property). Falls back to `setValidationMessages()` then to the
    *  browser's own localised message. */
   @property({ type: Object, attribute: 'validation-messages' }) validationMessages: ValidationMessages | null = null;
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
 
   /** Native-like constraint validation API (delegates to ElementInternals). */
   get validity(): ValidityState | undefined { return this._internals?.validity; }
@@ -433,7 +442,7 @@ export class CgInput extends LitElement {
 
         ${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : nothing}
         ${this.clearable && this.value && !this.loading ? html`
-          <button class="clear" @click=${this._handleClear} aria-label="Clear input" tabindex="-1">
+          <button class="clear" @click=${this._handleClear} aria-label=${this.i18n.t('clear')} tabindex="-1">
             <cg-icon name="x" size="xs"></cg-icon>
           </button>
         ` : nothing}

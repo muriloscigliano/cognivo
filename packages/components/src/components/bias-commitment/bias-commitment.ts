@@ -2,6 +2,12 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('bias-commitment', {
+  progressLabel: 'Step {step} of {total}',
+  progress: 'Step {step}/{total}',
+});
 
 /**
  * @element bias-commitment
@@ -70,6 +76,10 @@ export class BiasCommitment extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Number, reflect: true }) step = 1;
   @property({ type: Number }) total = 1;
   @property({ type: Boolean, attribute: 'show-progress' }) showProgress = false;
@@ -111,10 +121,10 @@ export class BiasCommitment extends LitElement {
           aria-valuemin="0"
           aria-valuemax=${this.total}
           aria-valuenow=${this.step}
-          aria-label="Step ${this.step} of ${this.total}">
+          aria-label=${this.i18n.t('progressLabel', { step: this.step, total: this.total })}>
           <div class="progress-fill" style="width:${this._pct}%"></div>
         </div>
-        <span class="progress-label">Step ${this.step}/${this.total}</span>
+        <span class="progress-label">${this.i18n.t('progress', { step: this.step, total: this.total })}</span>
       </div>
     ` : nothing;
 

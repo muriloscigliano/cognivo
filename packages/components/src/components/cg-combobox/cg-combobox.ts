@@ -2,6 +2,14 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-combobox', {
+  remove: 'Remove {label}',
+  clear: 'Clear selection',
+  loading: 'Loading…',
+  noOptions: 'No options',
+});
 
 export interface ComboOption {
   label: string;
@@ -199,6 +207,10 @@ export class CgCombobox extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Array }) options: ComboOption[] = [];
   @property() value: string | string[] = '';
   @property({ type: Boolean }) multiple = false;
@@ -347,7 +359,7 @@ export class CgCombobox extends LitElement {
           ? values.map(v => html`
               <span class="chip">
                 ${this._labelFor(v)}
-                <button class="chip-remove" aria-label=${`Remove ${this._labelFor(v)}`} @click=${(e: MouseEvent) => { e.stopPropagation(); this._removeChip(v); }}>×</button>
+                <button class="chip-remove" aria-label=${this.i18n.t('remove', { label: this._labelFor(v) })} @click=${(e: MouseEvent) => { e.stopPropagation(); this._removeChip(v); }}>×</button>
               </span>
             `)
           : nothing}
@@ -367,7 +379,7 @@ export class CgCombobox extends LitElement {
           @focus=${() => { this.open = true; }}
         />
         ${this.clearable && hasValue ? html`
-          <button class="clear-btn" aria-label="Clear selection" @click=${(e: MouseEvent) => { e.stopPropagation(); this._clear(); }}>×</button>
+          <button class="clear-btn" aria-label=${this.i18n.t('clear')} @click=${(e: MouseEvent) => { e.stopPropagation(); this._clear(); }}>×</button>
         ` : nothing}
       </div>
       <div
@@ -377,8 +389,8 @@ export class CgCombobox extends LitElement {
         aria-multiselectable=${this.multiple ? 'true' : 'false'}
         aria-busy=${this.loading ? 'true' : 'false'}
       >
-        ${this.loading ? html`<div class="empty">Loading…</div>` :
-          filtered.length === 0 ? html`<div class="empty">No options</div>` :
+        ${this.loading ? html`<div class="empty">${this.i18n.t('loading')}</div>` :
+          filtered.length === 0 ? html`<div class="empty">${this.i18n.t('noOptions')}</div>` :
           filtered.map((opt, i) => html`
             <div
               class="option ${opt.disabled ? 'disabled' : ''} ${values.includes(opt.value) ? 'selected' : ''} ${i === this._activeIndex ? 'active' : ''}"

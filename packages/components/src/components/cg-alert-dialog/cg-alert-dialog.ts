@@ -3,6 +3,12 @@ import { property, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { FocusTrap } from '../../utils/focus-trap.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-alert-dialog', {
+  confirm: 'Confirm',
+  cancel: 'Cancel',
+});
 
 /**
  * @element cg-alert-dialog
@@ -127,11 +133,17 @@ export class CgAlertDialog extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Boolean, reflect: true }) open = false;
   @property() override title = '';
   @property() description = '';
-  @property({ attribute: 'confirm-label' }) confirmLabel = 'Confirm';
-  @property({ attribute: 'cancel-label' }) cancelLabel = 'Cancel';
+  /** Confirm button text; defaults to the `confirm` message. */
+  @property({ attribute: 'confirm-label' }) confirmLabel?: string;
+  /** Cancel button text; defaults to the `cancel` message. */
+  @property({ attribute: 'cancel-label' }) cancelLabel?: string;
   @property({ type: Boolean, reflect: true }) destructive = false;
   @property({ type: Boolean, reflect: true }) loading = false;
   @property({ type: Boolean }) closable = false;
@@ -224,7 +236,7 @@ export class CgAlertDialog extends LitElement {
               data-cancel
               @click=${this._cancel}
               ?disabled=${this.loading}
-            >${this.cancelLabel}</cg-button>
+            >${this.cancelLabel ?? this.i18n.t('cancel')}</cg-button>
             <cg-button
               variant="primary"
               type="${this.destructive ? 'danger' : 'normal'}"
@@ -232,7 +244,7 @@ export class CgAlertDialog extends LitElement {
               data-confirm
               @click=${this._confirm}
               ?loading=${this.loading}
-            >${this.confirmLabel}</cg-button>
+            >${this.confirmLabel ?? this.i18n.t('confirm')}</cg-button>
           </slot>
         </div>
       </div>

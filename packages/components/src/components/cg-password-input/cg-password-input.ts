@@ -3,6 +3,17 @@ import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { messageFor, setValueMissing, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-password-input', {
+  label: 'Password',
+  show: 'Show password',
+  hide: 'Hide password',
+  weak: 'Weak',
+  fair: 'Fair',
+  good: 'Good',
+  strong: 'Strong',
+});
 
 /**
  * @element cg-password-input
@@ -162,6 +173,10 @@ export class CgPasswordInput extends LitElement {
     }
   }
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property() value = '';
   @property() label = '';
   @property() placeholder = '';
@@ -217,10 +232,7 @@ export class CgPasswordInput extends LitElement {
   private _strengthLabel(): string {
     const score = this._strengthScore();
     if (score === 0) return '';
-    if (score === 1) return 'Weak';
-    if (score === 2) return 'Fair';
-    if (score === 3) return 'Good';
-    return 'Strong';
+    return this.i18n.t(score === 1 ? 'weak' : score === 2 ? 'fair' : score === 3 ? 'good' : 'strong');
   }
 
   private _handleInput(e: Event): void {
@@ -255,7 +267,7 @@ export class CgPasswordInput extends LitElement {
             name=${this.name}
             ?disabled=${this.disabled}
             ?required=${this.required}
-            aria-label=${this.label ? nothing : (this.placeholder || 'Password')}
+            aria-label=${this.label ? nothing : (this.placeholder || this.i18n.t('label'))}
             aria-describedby=${this.helper ? 'helper' : nothing}
             aria-invalid=${this.error ? 'true' : 'false'}
             aria-required=${this.required ? 'true' : 'false'}
@@ -265,7 +277,7 @@ export class CgPasswordInput extends LitElement {
             type="button"
             class="toggle"
             ?disabled=${this.disabled}
-            aria-label=${this._visible ? 'Hide password' : 'Show password'}
+            aria-label=${this.i18n.t(this._visible ? 'hide' : 'show')}
             @click=${this._toggleVisibility}
           >
             ${this._visible ? html`

@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, focusRingSingle } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-listbox', {
+  empty: 'No options',
+});
 
 /** Option for cg-listbox. */
 export interface ListboxOption {
@@ -138,12 +143,16 @@ export class CgListbox extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Array }) options: ListboxOption[] = [];
   @property() value: string | string[] = '';
   @property({ type: Boolean, reflect: true }) multiple = false;
   @property({ reflect: true }) checkPosition: 'left' | 'right' = 'right';
   @property() label = '';
-  @property() emptyText = 'No options';
+  @property() emptyText?: string;
 
   @state() private _highlightedIndex = -1;
   private _typeBuffer = '';
@@ -246,7 +255,7 @@ export class CgListbox extends LitElement {
 
   override render() {
     if (this.options.length === 0) {
-      return html`<div class="empty">${this.emptyText}</div>`;
+      return html`<div class="empty">${this.emptyText ?? this.i18n.t('empty')}</div>`;
     }
 
     const selected = this._getSelected();

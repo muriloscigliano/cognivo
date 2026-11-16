@@ -2,6 +2,11 @@ import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, pulseKeyframes, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-skeleton', {
+  loading: 'Loading content',
+});
 
 /**
  * <cg-skeleton> — Loading placeholder with pulse animation.
@@ -68,6 +73,11 @@ export class CgSkeleton extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: String, reflect: true }) variant: 'text' | 'circular' | 'rectangular' = 'rectangular';
   @property({ type: String }) width = '100%';
   @property({ type: String }) height = '';
@@ -94,7 +104,7 @@ export class CgSkeleton extends LitElement {
     if (this.variant === 'text') {
       const lineCount = Math.max(1, Math.min(20, this.lines));
       return html`
-        <div class="lines-container" role="status" aria-label="Loading content" aria-busy="true">
+        <div class="lines-container" role="status" aria-label=${this.i18n.t('loading')} aria-busy="true">
           ${Array.from({ length: lineCount }, (_, i) => {
             // Varying widths for realism, unless the user set an explicit width.
             const w = this.width !== '100%'
@@ -121,7 +131,7 @@ export class CgSkeleton extends LitElement {
       <div
         class="skeleton ${shapeClass}"
         role="status"
-        aria-label="Loading content"
+        aria-label=${this.i18n.t('loading')}
         aria-busy="true"
         style="width: ${this.width}; height: ${this._getDefaultHeight()}"
       ></div>

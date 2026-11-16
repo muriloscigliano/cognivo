@@ -20,7 +20,7 @@ export const CgDateRangePicker = createVueWrapper(
     to: { type: String, default: '' },
     min: { type: String, default: '' },
     max: { type: String, default: '' },
-    placeholder: { type: String, default: 'Select date range' },
+    placeholder: { type: String, default: undefined },
     format: { type: String, default: 'MMM dd, yyyy' },
     disabled: { type: Boolean, default: false },
     open: { type: Boolean, default: false },

@@ -2,6 +2,20 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-date-time-picker', {
+  placeholder: 'Select date & time',
+  label: 'Date and time picker',
+  dialog: 'Date and time selector',
+  previousMonth: 'Previous month',
+  nextMonth: 'Next month',
+  time: 'Time',
+  hour: 'Hr',
+  minute: 'Min',
+  am: 'AM',
+  pm: 'PM',
+});
 
 /**
  * @element cg-date-time-picker
@@ -238,9 +252,14 @@ export class CgDateTimePicker extends LitElement {
     :host([success]) .helper { color: var(--cg-color-status-success-text-default); }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
+
   @property() label = '';
   @property() value = '';
-  @property() placeholder = 'Select date & time';
+  @property() placeholder?: string;
   @property() helper = '';
   @property() min = '';
   @property() max = '';
@@ -259,8 +278,16 @@ export class CgDateTimePicker extends LitElement {
   @state() private _selectedMinute = -1;
   @state() private _period: 'AM' | 'PM' = 'AM';
 
-  private _weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-  private _monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  /** Short weekday names (Sunday first) in the element's locale. */
+  private get _weekdays(): string[] {
+    const fmt = new Intl.DateTimeFormat(this.i18n.locale, { weekday: 'short' });
+    return Array.from({ length: 7 }, (_, i) => fmt.format(new Date(2023, 0, 1 + i))); // 2023-01-01 was a Sunday
+  }
+  /** Long month names in the element's locale. */
+  private get _monthNames(): string[] {
+    const fmt = new Intl.DateTimeFormat(this.i18n.locale, { month: 'long' });
+    return Array.from({ length: 12 }, (_, i) => fmt.format(new Date(2023, i, 1)));
+  }
 
   // ── Parsing ──
   private get _date(): string {
@@ -386,14 +413,14 @@ export class CgDateTimePicker extends LitElement {
     const parts: string[] = [];
     if (this._date) {
       const d = new Date(this._date + 'T00:00:00');
-      parts.push(d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }));
+      parts.push(d.toLocaleDateString(this.i18n.locale, { month: 'short', day: 'numeric', year: 'numeric' }));
     }
     if (this._time) {
       const [h, m] = this._time.split(':').map(Number);
       if (this.use12h) {
         const period = h! >= 12 ? 'PM' : 'AM';
         const h12 = h! === 0 ? 12 : h! > 12 ? h! - 12 : h!;
-        parts.push(`${h12}:${String(m).padStart(2, '0')} ${period}`);
+        parts.push(`${h12}:${String(m).padStart(2, '0')} ${this.i18n.t(period === 'AM' ? 'am' : 'pm')}`);
       } else {
         parts.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
       }
@@ -426,7 +453,7 @@ export class CgDateTimePicker extends LitElement {
         aria-disabled=${this.disabled ? 'true' : nothing}
         aria-invalid=${this.error ? 'true' : nothing}
         aria-haspopup="dialog"
-        aria-label=${this.label || 'Date and time picker'}
+        aria-label=${this.label || this.i18n.t('label')}
         @click=${this._toggle}
         @keydown=${this._handleKeydown}
       >
@@ -440,19 +467,19 @@ export class CgDateTimePicker extends LitElement {
             <polyline points="16 14.5 16 16 17 16.5"></polyline>
           </svg>
         </span>
-        <span class="trigger-text ${!display ? 'placeholder' : ''}">${display || this.placeholder}</span>
+        <span class="trigger-text ${!display ? 'placeholder' : ''}">${display || (this.placeholder ?? this.i18n.t('placeholder'))}</span>
       </div>
 
-      <div class="dropdown ${this._open ? 'open' : ''}" role="dialog" aria-label="Date and time selector">
+      <div class="dropdown ${this._open ? 'open' : ''}" role="dialog" aria-label=${this.i18n.t('dialog')}>
         <div class="dropdown-inner">
           <!-- Calendar -->
           <div class="cal-side">
             <div class="cal-header">
-              <button class="cal-btn" @click=${this._prevMonth} aria-label="Previous month">
+              <button class="cal-btn" @click=${this._prevMonth} aria-label=${this.i18n.t('previousMonth')}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"></path></svg>
               </button>
               <span class="cal-title">${this._monthNames[this._viewMonth]} ${this._viewYear}</span>
-              <button class="cal-btn" @click=${this._nextMonth} aria-label="Next month">
+              <button class="cal-btn" @click=${this._nextMonth} aria-label=${this.i18n.t('nextMonth')}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"></path></svg>
               </button>
             </div>
@@ -471,10 +498,10 @@ export class CgDateTimePicker extends LitElement {
 
           <!-- Time -->
           <div class="time-side">
-            <span class="time-side-label">Time</span>
+            <span class="time-side-label">${this.i18n.t('time')}</span>
             <div class="time-columns">
               <div class="time-column">
-                <span class="time-column-label">Hr</span>
+                <span class="time-column-label">${this.i18n.t('hour')}</span>
                 <div class="time-scroll">
                   ${hours.map(h => html`
                     <button class="time-option ${this._selectedHour === h ? 'selected' : ''}"
@@ -486,7 +513,7 @@ export class CgDateTimePicker extends LitElement {
               </div>
               <div class="time-col-divider"></div>
               <div class="time-column">
-                <span class="time-column-label">Min</span>
+                <span class="time-column-label">${this.i18n.t('minute')}</span>
                 <div class="time-scroll">
                   ${minutes.map(m => html`
                     <button class="time-option ${this._selectedMinute === m ? 'selected' : ''}"
@@ -498,8 +525,8 @@ export class CgDateTimePicker extends LitElement {
               </div>
               ${this.use12h ? html`
                 <div class="period-toggle">
-                  <button class="period-btn ${this._period === 'AM' ? 'active' : ''}" @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('AM'); }}>AM</button>
-                  <button class="period-btn ${this._period === 'PM' ? 'active' : ''}" @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('PM'); }}>PM</button>
+                  <button class="period-btn ${this._period === 'AM' ? 'active' : ''}" @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('AM'); }}>${this.i18n.t('am')}</button>
+                  <button class="period-btn ${this._period === 'PM' ? 'active' : ''}" @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('PM'); }}>${this.i18n.t('pm')}</button>
                 </div>
               ` : nothing}
             </div>

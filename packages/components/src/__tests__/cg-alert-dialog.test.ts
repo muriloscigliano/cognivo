@@ -81,13 +81,15 @@ describe('cg-alert-dialog', () => {
     expect(d.getAttribute('aria-modal')).toBe('true');
   });
 
-  it('default confirmLabel is "Confirm"', async () => {
+  it('confirmLabel is unset by default; the button falls back to the "Confirm" message', async () => {
     await create();
-    expect(el.confirmLabel).toBe('Confirm');
+    expect(el.confirmLabel).toBeUndefined();
+    expect(el.shadowRoot!.querySelector('[data-confirm]')!.textContent!.trim()).toBe('Confirm');
   });
 
-  it('default cancelLabel is "Cancel"', async () => {
+  it('cancelLabel is unset by default; the button falls back to the "Cancel" message', async () => {
     await create();
-    expect(el.cancelLabel).toBe('Cancel');
+    expect(el.cancelLabel).toBeUndefined();
+    expect(el.shadowRoot!.querySelector('[data-cancel]')!.textContent!.trim()).toBe('Cancel');
   });
 });

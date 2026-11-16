@@ -8,7 +8,7 @@ export const CgList = createVueWrapper(
     dividers: { type: Boolean, default: true },
     hoverable: { type: Boolean, default: false },
     clickable: { type: Boolean, default: false },
-    emptyText: { type: String, default: 'No items' },
+    emptyText: { type: String, default: undefined },
   },
   {
     'list-click': 'cg-list-click',

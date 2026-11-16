@@ -2,6 +2,13 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-date-picker', {
+  placeholder: 'Select date',
+  label: 'Date picker',
+  calendar: 'Calendar',
+});
 import '../cg-calendar/cg-calendar.js';
 
 /**
@@ -130,9 +137,14 @@ export class CgDatePicker extends LitElement {
     :host([success]) .helper { color: var(--cg-color-status-success-text-default); }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
+
   @property() label = '';
   @property() value = '';
-  @property() placeholder = 'Select date';
+  @property() placeholder?: string;
   @property() name = '';
   @property() helper = '';
   @property() min = '';
@@ -164,7 +176,7 @@ export class CgDatePicker extends LitElement {
     if (!this.value) return '';
     const d = new Date(this.value + 'T00:00:00');
     if (isNaN(d.getTime())) return '';
-    return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    return d.toLocaleDateString(this.i18n.locale, { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
   private _handleClickOutside = (e: Event) => {
@@ -200,7 +212,7 @@ export class CgDatePicker extends LitElement {
         aria-haspopup="dialog"
         aria-controls="cg-dp-popover"
         aria-invalid=${this.error ? 'true' : nothing}
-        aria-label=${this.label || 'Date picker'}
+        aria-label=${this.label || this.i18n.t('label')}
         @click=${this._toggle}
         @keydown=${this._handleKeydown}
       >
@@ -213,11 +225,11 @@ export class CgDatePicker extends LitElement {
           </svg>
         </span>
         <span class="trigger-text ${!display ? 'placeholder' : ''}">
-          ${display || this.placeholder}
+          ${display || (this.placeholder ?? this.i18n.t('placeholder'))}
         </span>
       </div>
 
-      <div id="cg-dp-popover" class="popover ${this._open ? 'open' : ''}" role="dialog" aria-label="Calendar">
+      <div id="cg-dp-popover" class="popover ${this._open ? 'open' : ''}" role="dialog" aria-label=${this.i18n.t('calendar')}>
         <cg-calendar
           mode="single"
           .value=${this.value}

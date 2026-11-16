@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, menuListStyles, entranceStagger } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-menubar', {
+  label: 'Application menu',
+});
 
 export interface MenubarChildItem {
   label: string;
@@ -148,6 +153,10 @@ export class CgMenubar extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Array }) items: MenubarItem[] = [];
   /** Border-radius variant — matches cg-button's `rounded` scale. */
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
@@ -162,7 +171,7 @@ export class CgMenubar extends LitElement {
    */
   @property({ reflect: true }) indicator: 'underline' | 'none' = 'underline';
   /** Accessible name for the menubar (W3C APG requires a labeled menubar). */
-  @property() label = 'Application menu';
+  @property() label?: string;
 
   @state() private _openIndex = -1;
   /** Roving-tabindex: only the focused menubar item is in the tab order. */
@@ -393,7 +402,7 @@ export class CgMenubar extends LitElement {
   override render() {
     const indicatorStyle = `transform: translateX(${this._indicatorLeft}px); width: ${this._indicatorWidth}px;`;
     return html`
-      <div role="menubar" aria-label=${this.label}>
+      <div role="menubar" aria-label=${this.label ?? this.i18n.t('label')}>
         <div class="indicator ${this._openIndex >= 0 ? 'visible' : ''}" style=${indicatorStyle} aria-hidden="true"></div>
         ${this.items.map((menu, i) => html`
           <div class="menu-wrap">

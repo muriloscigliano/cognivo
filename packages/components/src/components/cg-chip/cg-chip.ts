@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-chip', {
+  remove: 'Remove {label}',
+});
 
 /**
  * @element cg-chip
@@ -196,6 +201,10 @@ export class CgChip extends LitElement {
   @property({ type: String }) icon = '';
   @property({ type: Boolean }) disabled = false;
   @property({ type: Boolean, reflect: true }) selected = false;
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
 
   private _handleClick() {
     if (this.disabled) return;
@@ -243,7 +252,7 @@ export class CgChip extends LitElement {
         ${this.removable && !this.disabled ? html`
           <button
             class="remove-btn"
-            aria-label="Remove ${this.label}"
+            aria-label=${this.i18n.t('remove', { label: this.label })}
             tabindex="-1"
             @click="${this._handleRemove}"
           >

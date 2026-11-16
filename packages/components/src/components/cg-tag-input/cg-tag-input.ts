@@ -2,6 +2,15 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-tag-input', {
+  duplicate: 'Tag "{tag}" already exists',
+  max: 'Maximum of {max} tags reached',
+  added: 'Added tag {tag}',
+  removed: 'Removed tag {tag}',
+  remove: 'Remove {tag}',
+});
 
 /**
  * @element cg-tag-input
@@ -194,6 +203,10 @@ export class CgTagInput extends LitElement {
     }
   }
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Array }) value: string[] = [];
   @property() label = '';
   @property() placeholder = '';
@@ -223,16 +236,16 @@ export class CgTagInput extends LitElement {
     tag = tag.trim();
     if (!tag) return;
     if (!this.allowDuplicates && this.value.includes(tag)) {
-      this._announce(`Tag "${tag}" already exists`);
+      this._announce(this.i18n.t('duplicate', { tag }));
       return;
     }
     if (this.max > 0 && this.value.length >= this.max) {
-      this._announce(`Maximum of ${this.max} tags reached`);
+      this._announce(this.i18n.t('max', { max: this.max }));
       return;
     }
     this.value = [...this.value, tag];
     this._inputValue = '';
-    this._announce(`Added tag ${tag}`);
+    this._announce(this.i18n.t('added', { tag }));
     this.dispatchEvent(new CustomEvent('cg-tag-add', {
       detail: { value: this.value, tag },
       bubbles: true,
@@ -249,7 +262,7 @@ export class CgTagInput extends LitElement {
     const tag = this.value[idx];
     if (!tag) return;
     this.value = this.value.filter((_, i) => i !== idx);
-    this._announce(`Removed tag ${tag}`);
+    this._announce(this.i18n.t('removed', { tag }));
     this.dispatchEvent(new CustomEvent('cg-tag-remove', {
       detail: { value: this.value, tag },
       bubbles: true,
@@ -308,7 +321,7 @@ export class CgTagInput extends LitElement {
             <button
               class="tag-remove"
               type="button"
-              aria-label=${`Remove ${tag}`}
+              aria-label=${this.i18n.t('remove', { tag })}
               @click=${(e: Event) => { e.stopPropagation(); this._removeTag(idx); }}
             >
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">

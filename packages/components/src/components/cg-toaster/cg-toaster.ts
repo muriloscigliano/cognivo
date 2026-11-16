@@ -3,6 +3,12 @@ import { svg } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-toaster', {
+  label: 'Notifications',
+  dismiss: 'Dismiss',
+});
 
 export type ToastVariant = 'default' | 'success' | 'warning' | 'error' | 'info' | 'ai';
 
@@ -157,6 +163,10 @@ export class CgToaster extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ reflect: true }) position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center' = 'bottom-right';
   @property({ type: Number }) max = 5;
 
@@ -288,7 +298,7 @@ export class CgToaster extends LitElement {
 
   override render() {
     return html`
-      <div role="region" aria-label="Notifications" style="display: contents;">
+      <div role="region" aria-label=${this.i18n.t('label')} style="display: contents;">
         ${this._toasts.map(toast => {
           const iconPath = this._iconFor(toast.variant);
           // `ai` is the only variant using fill; the rest use stroke.
@@ -321,7 +331,7 @@ export class CgToaster extends LitElement {
             ${toast.action ? html`
               <button class="toast-action" @click=${() => this._handleAction(toast)}>${toast.action.label}</button>
             ` : nothing}
-            <button class="toast-close" aria-label="Dismiss" @click=${() => this.dismiss(toast.id)}>×</button>
+            <button class="toast-close" aria-label=${this.i18n.t('dismiss')} @click=${() => this.dismiss(toast.id)}>×</button>
           </div>
         `;
         })}

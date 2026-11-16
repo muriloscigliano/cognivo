@@ -2,6 +2,12 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-breadcrumbs', {
+  label: 'Breadcrumb',
+  showAll: 'Show all breadcrumb items',
+});
 
 /** Breadcrumb segment for cg-breadcrumbs, with label, optional href, and optional icon. */
 export interface BreadcrumbItem {
@@ -196,6 +202,10 @@ export class CgBreadcrumbs extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ type: Array }) items: BreadcrumbItem[] = [];
   @property({ type: String }) separator = '/';
@@ -268,7 +278,7 @@ export class CgBreadcrumbs extends LitElement {
         <button
           class="ellipsis"
           @click="${this._expandCollapsed}"
-          aria-label="Show all breadcrumb items"
+          aria-label=${this.i18n.t('showAll')}
         >&hellip;</button>
         <span class="separator" aria-hidden="true">${this.separator}</span>
       </li>
@@ -288,7 +298,7 @@ export class CgBreadcrumbs extends LitElement {
       const tailItems = items.slice(items.length - tailCount);
 
       return html`
-        <nav aria-label="Breadcrumb">
+        <nav aria-label=${this.i18n.t('label')}>
           <ol class="breadcrumb-list">
             ${this._renderItem(firstItem, 0, false)}
             ${this._renderEllipsis()}
@@ -306,7 +316,7 @@ export class CgBreadcrumbs extends LitElement {
     const hasAutoCollapsibleMiddle = items.length > 3;
 
     return html`
-      <nav aria-label="Breadcrumb">
+      <nav aria-label=${this.i18n.t('label')}>
         <ol class="breadcrumb-list">
           ${items.map((item, index) => {
             const isLast = index === items.length - 1;

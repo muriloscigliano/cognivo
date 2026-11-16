@@ -11,6 +11,21 @@ import {
   digitsOnly,
   type Country,
 } from './countries.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-phone-input', {
+  switched: 'Switched to {country}, +{dial}',
+  trigger: 'Country code, currently {country}, +{dial}',
+  triggerEmpty: 'Select country code',
+  placeholder: 'Phone number',
+  dialog: 'Select country',
+  search: 'Search countries',
+  searchPlaceholder: 'Search country or +code',
+  list: 'Countries',
+  noMatch: 'No countries match "{query}"',
+  suggested: 'Suggested',
+  all: 'All countries',
+});
 
 /**
  * @element cg-phone-input
@@ -388,6 +403,10 @@ export class CgPhoneInput extends LitElement {
 
   // ─── Public API ───────────────────────────────────────────────────────────
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property() value = '';
   @property({ reflect: true }) country = 'US';
   @property({ attribute: 'default-country' }) defaultCountry = 'US';
@@ -519,6 +538,24 @@ export class CgPhoneInput extends LitElement {
     return COUNTRIES_BY_ISO[(this.country || 'US').toUpperCase()];
   }
 
+  private _regionNames?: { locale: string; names: Intl.DisplayNames | null };
+
+  /** Country name in the element's locale (Intl.DisplayNames); the English data name otherwise. */
+  private _countryName(c: Country): string {
+    const locale = this.i18n.locale;
+    if (/^en\b/i.test(locale)) return c.name;
+    if (this._regionNames?.locale !== locale) {
+      let names: Intl.DisplayNames | null = null;
+      try {
+        names = new Intl.DisplayNames([locale], { type: 'region' });
+      } catch {
+        names = null;
+      }
+      this._regionNames = { locale, names };
+    }
+    return this._regionNames.names?.of(c.iso2) ?? c.name;
+  }
+
   private get _filteredCountries(): { preferred: Country[]; rest: Country[] } {
     const q = this._query.trim().toLowerCase();
     const allow = (c: Country) => {
@@ -531,6 +568,7 @@ export class CgPhoneInput extends LitElement {
       const stripped = q.startsWith('+') ? q.slice(1) : q;
       return (
         c.name.toLowerCase().includes(q) ||
+        this._countryName(c).toLowerCase().includes(q) ||
         c.iso2.toLowerCase().includes(q) ||
         c.dialCode.startsWith(stripped)
       );
@@ -597,7 +635,7 @@ export class CgPhoneInput extends LitElement {
   private _selectCountry(c: Country, returnFocusToInput = true): void {
     if (this.country !== c.iso2) {
       this.country = c.iso2;
-      this._announce(`Switched to ${c.name}, +${c.dialCode}`);
+      this._announce(this.i18n.t('switched', { country: this._countryName(c), dial: c.dialCode }));
       this.dispatchEvent(new CustomEvent('cg-phone-input-country-change', {
         detail: { country: c.iso2, dialCode: c.dialCode },
         bubbles: true,
@@ -679,7 +717,7 @@ export class CgPhoneInput extends LitElement {
         @mouseenter=${() => { this._activeIndex = idx; }}
       >
         <span class="opt-flag" aria-hidden="true">${c.flag}</span>
-        <span class="opt-name">${c.name}</span>
+        <span class="opt-name">${this._countryName(c)}</span>
         <span class="opt-dial">+${c.dialCode}</span>
       </div>
     `;
@@ -700,12 +738,12 @@ export class CgPhoneInput extends LitElement {
     ].filter(Boolean).join(' ');
     const { preferred, rest } = this._filteredCountries;
     const triggerLabel = c
-      ? `Country code, currently ${c.name}, +${c.dialCode}`
-      : 'Select country code';
+      ? this.i18n.t('trigger', { country: this._countryName(c), dial: c.dialCode })
+      : this.i18n.t('triggerEmpty');
     const placeholder =
       this.placeholder ||
       c?.format ||
-      'Phone number';
+      this.i18n.t('placeholder');
 
     return html`
       <div class=${wrapperClasses}>
@@ -762,7 +800,7 @@ export class CgPhoneInput extends LitElement {
           id="cg-phone-popover"
           class="popover"
           role="dialog"
-          aria-label="Select country"
+          aria-label=${this.i18n.t('dialog')}
           @keydown=${this._onPopoverKey}
           @click=${(e: MouseEvent) => e.stopPropagation()}
         >
@@ -773,9 +811,9 @@ export class CgPhoneInput extends LitElement {
             </svg>
             <input
               type="search"
-              aria-label="Search countries"
+              aria-label=${this.i18n.t('search')}
               .value=${this._query}
-              placeholder="Search country or +code"
+              placeholder=${this.i18n.t('searchPlaceholder')}
               aria-controls="cg-phone-listbox"
               aria-activedescendant=${this.open && this._activeIndex >= 0 && this._flatFiltered.length > 0 ? `cg-phone-opt-${this._activeIndex}` : nothing}
               @input=${this._onSearchInput}
@@ -786,15 +824,15 @@ export class CgPhoneInput extends LitElement {
             class="options"
             id="cg-phone-listbox"
             role="listbox"
-            aria-label="Countries"
+            aria-label=${this.i18n.t('list')}
           >
             ${this._flatFiltered.length === 0
-              ? html`<div class="empty">No countries match "${this._query}"</div>`
+              ? html`<div class="empty">${this.i18n.t('noMatch', { query: this._query })}</div>`
               : html`
                   ${preferred.length > 0 ? html`
-                    <div class="group-label" role="presentation">Suggested</div>
+                    <div class="group-label" role="presentation">${this.i18n.t('suggested')}</div>
                     ${preferred.map((cc, i) => this._renderOption(cc, i))}
-                    <div class="group-label" role="presentation">All countries</div>
+                    <div class="group-label" role="presentation">${this.i18n.t('all')}</div>
                   ` : nothing}
                   ${rest.map((cc, i) => this._renderOption(cc, preferred.length + i))}
                 `}

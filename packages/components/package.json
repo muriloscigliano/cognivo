@@ -31,6 +31,14 @@
       "types": "./dist/utils/validation.d.ts",
       "import": "./dist/validation.js"
     },
+    "./messages": {
+      "types": "./dist/utils/messages.d.ts",
+      "import": "./dist/messages.js"
+    },
+    "./locales/pt-BR": {
+      "types": "./dist/locales/pt-BR.d.ts",
+      "import": "./dist/locales/pt-BR.js"
+    },
     "./package.json": "./package.json",
     "./*": {
       "types": "./dist/components/*/*.d.ts",

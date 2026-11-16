@@ -2,6 +2,13 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-image-gallery', {
+  label: 'Image gallery',
+  view: 'View image {n}',
+  viewWithAlt: 'View image {n}: {alt}',
+});
 
 /** Image entry for cg-image-gallery, with source URL, alt text, and optional caption. */
 export interface GalleryImage { src: string; alt?: string; caption?: string; }
@@ -103,6 +110,10 @@ export class CgImageGallery extends LitElement {
     :host([rounded="full"]) .grid { border-radius: var(--cg-border-radius-full); }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Array }) images: GalleryImage[] = [];
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property({ type: Number }) maxVisible = 5;
@@ -135,7 +146,7 @@ export class CgImageGallery extends LitElement {
     const gridClass = count <= 4 ? `count-${count}` : 'count-many';
 
     return html`
-      <div class="grid ${gridClass}" role="group" aria-label="Image gallery">
+      <div class="grid ${gridClass}" role="group" aria-label=${this.i18n.t('label')}>
         ${visible.map((img, i) => {
           const isLast = i === visible.length - 1 && overflow > 0;
           const loaded = this._loadedSet.has(i);
@@ -144,7 +155,7 @@ export class CgImageGallery extends LitElement {
               class="img-wrapper ${isLast ? 'overflow-wrapper' : ''}"
               tabindex="0"
               role="button"
-              aria-label="View image ${i + 1}${img.alt ? ': ' + img.alt : ''}"
+              aria-label=${img.alt ? this.i18n.t('viewWithAlt', { n: i + 1, alt: img.alt }) : this.i18n.t('view', { n: i + 1 })}
               @click=${() => this._handleClick(i)}
               @keydown=${(e: KeyboardEvent) => this._handleImageKeydown(e, i)}
             >

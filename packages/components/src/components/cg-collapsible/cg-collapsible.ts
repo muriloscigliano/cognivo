@@ -2,6 +2,11 @@ import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-collapsible', {
+  toggle: 'Toggle',
+});
 
 /**
  * @element cg-collapsible
@@ -128,6 +133,10 @@ export class CgCollapsible extends LitElement {
     :host([open][size="lg"]) .body { padding: var(--cg-component-collapsible-body-padding-lg); }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
@@ -153,7 +162,7 @@ export class CgCollapsible extends LitElement {
         ?disabled=${this.disabled}
         @click=${this._toggle}
       >
-        <slot name="trigger">Toggle</slot>
+        <slot name="trigger">${this.i18n.t('toggle')}</slot>
         <svg class="chevron" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 5l4 4 4-4"/>
         </svg>

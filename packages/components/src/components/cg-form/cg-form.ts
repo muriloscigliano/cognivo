@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-form', {
+  errorSummary: 'Please fix the following:',
+});
 
 /**
  * <cg-form> — Form container with submit handling, loading state, and field gap control.
@@ -60,6 +65,10 @@ export class CgForm extends LitElement {
   `];
 
   /** Form name identifier. */
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property() name = '';
 
   /** Gap between form fields. */
@@ -113,7 +122,7 @@ export class CgForm extends LitElement {
       >
         ${this.errors.length > 0 ? html`
           <div class="error-summary" role="alert" aria-labelledby="cg-form-error-heading">
-            <strong id="cg-form-error-heading" role="heading" aria-level="2">Please fix the following:</strong>
+            <strong id="cg-form-error-heading" role="heading" aria-level="2">${this.i18n.t('errorSummary')}</strong>
             <ul>${this.errors.map(e => html`<li>${e}</li>`)}</ul>
           </div>
         ` : nothing}

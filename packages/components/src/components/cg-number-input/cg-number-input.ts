@@ -3,6 +3,13 @@ import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { setValueMissing, type ValidationMessages } from '../../utils/validation.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-number-input', {
+  decrease: 'Decrease',
+  increase: 'Increase',
+  label: 'Number input',
+});
 
 /**
  * <cg-number-input> — Number input with increment/decrement buttons.
@@ -134,6 +141,11 @@ export class CgNumberInput extends LitElement {
     .label { display: block; font-size: var(--cg-font-size-xs); color: var(--cg-color-input-text-placeholder); margin-bottom: var(--cg-spacing-4); font-weight: var(--cg-font-weight-medium); }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Number }) value = 0;
   @property({ type: Number }) min = -Infinity;
   @property({ type: Number }) max = Infinity;
@@ -245,7 +257,7 @@ export class CgNumberInput extends LitElement {
     return html`
       ${this.label ? html`<span class="label">${this.label}</span>` : nothing}
       <div class="wrapper ${this._focused ? 'focused' : ''} ${this.disabled ? 'disabled' : ''}">
-        <button class="btn" aria-label="Decrease"
+        <button class="btn" aria-label=${this.i18n.t('decrease')}
           ?disabled=${this.disabled || atMin}
           @click=${(e: MouseEvent) => { if (e.detail === 0) this._decrement(); }}
           @mousedown=${() => this._startRepeat(() => this._decrement())}
@@ -260,7 +272,7 @@ export class CgNumberInput extends LitElement {
           aria-valuenow=${this.value}
           aria-valuemin=${this.min === -Infinity ? nothing : this.min}
           aria-valuemax=${this.max === Infinity ? nothing : this.max}
-          aria-label=${this.label || 'Number input'}
+          aria-label=${this.label || this.i18n.t('label')}
           aria-required=${this.required ? 'true' : 'false'}
           aria-invalid=${this.error ? 'true' : 'false'}
           aria-busy=${this.loading ? 'true' : 'false'}
@@ -271,7 +283,7 @@ export class CgNumberInput extends LitElement {
           @keydown=${this._onKeyDown}
           @focus=${() => { this._focused = true; }}
           @blur=${() => { this._focused = false; this._commitInput(); }} />
-        <button class="btn" aria-label="Increase"
+        <button class="btn" aria-label=${this.i18n.t('increase')}
           ?disabled=${this.disabled || atMax}
           @click=${(e: MouseEvent) => { if (e.detail === 0) this._increment(); }}
           @mousedown=${() => this._startRepeat(() => this._increment())}

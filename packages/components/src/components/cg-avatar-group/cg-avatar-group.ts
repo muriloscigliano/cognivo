@@ -2,6 +2,12 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-avatar-group', {
+  label: 'Avatar group',
+  more: '{n} more avatars',
+});
 
 export interface AvatarItem {
   src?: string;
@@ -157,6 +163,10 @@ export class CgAvatarGroup extends LitElement {
     :host([size="lg"]) .status { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Array }) avatars: AvatarItem[] = [];
   @property({ type: Number }) maxVisible = 4;
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
@@ -189,7 +199,7 @@ export class CgAvatarGroup extends LitElement {
     const overflow = this.avatars.length - this.maxVisible;
 
     return html`
-      <div class="group" role="group" aria-label="Avatar group"
+      <div class="group" role="group" aria-label=${this.i18n.t('label')}
         @mouseenter=${this._onGroupEnter}
         @mouseleave=${this._onGroupLeave}>
         ${visible.map((a, i) => html`
@@ -212,7 +222,7 @@ export class CgAvatarGroup extends LitElement {
         `)}
         ${overflow > 0 ? html`
           <button class="overflow"
-            aria-label="${overflow} more avatars"
+            aria-label=${this.i18n.t('more', { n: overflow })}
             style="z-index:0"
             @click=${this._onOverflowClick}>
             +${overflow}

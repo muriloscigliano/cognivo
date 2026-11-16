@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing, svg } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-avatar', {
+  label: 'Avatar',
+});
 
 /**
  * @element cg-avatar
@@ -112,6 +117,10 @@ export class CgAvatar extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property() src = '';
   @property() alt = '';
   @property() name = '';
@@ -149,7 +158,7 @@ export class CgAvatar extends LitElement {
     // are otherwise conveyed by color alone (ring / dot), invisible to AT.
     const typePrefix = this.type ? `${this.type} ` : '';
     const statusSuffix = this.status ? `, ${this.status}` : '';
-    const label = `${typePrefix}${this.alt || this.name || 'Avatar'}${statusSuffix}`;
+    const label = `${typePrefix}${this.alt || this.name || this.i18n.t('label')}${statusSuffix}`;
 
     const userIcon = svg`
       <svg class="fallback-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">

@@ -4,6 +4,15 @@ import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { FocusTrap } from '../../utils/focus-trap.js';
 import { handleRovingKey } from '../../utils/roving-index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-command', {
+  placeholder: 'Type a command or search...',
+  empty: 'No results found.',
+  dialog: 'Command palette',
+  list: 'Commands',
+  loading: 'Loading…',
+});
 
 export interface CommandItem {
   id: string;
@@ -215,11 +224,15 @@ export class CgCommand extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Boolean, reflect: true }) open = false;
-  @property() placeholder = 'Type a command or search...';
+  @property() placeholder?: string;
   @property({ type: Array }) commands: CommandItem[] = [];
   @property() value = '';
-  @property({ attribute: 'empty-text' }) emptyText = 'No results found.';
+  @property({ attribute: 'empty-text' }) emptyText?: string;
   @property({ type: Boolean }) loading = false;
 
   @state() private _activeIndex = 0;
@@ -326,7 +339,7 @@ export class CgCommand extends LitElement {
       <div
         class="palette"
         role="dialog"
-        aria-label="Command palette"
+        aria-label=${this.i18n.t('dialog')}
         aria-modal="true"
         ?hidden=${!this.open}
       >
@@ -340,21 +353,21 @@ export class CgCommand extends LitElement {
             aria-controls="command-list"
             aria-activedescendant=${this.open && filtered.length ? `command-opt-${this._activeIndex}` : nothing}
             aria-autocomplete="list"
-            placeholder=${this.placeholder}
+            placeholder=${this.placeholder ?? this.i18n.t('placeholder')}
             .value=${this.value}
             @input=${this._handleInput}
             @keydown=${this._handleKeydown}
           />
         </div>
-        <div class="list" id="command-list" role="listbox" aria-label="Commands">
+        <div class="list" id="command-list" role="listbox" aria-label=${this.i18n.t('list')}>
           ${this.loading ? html`
             <div class="loading" aria-busy="true">
               <cg-spinner size="sm"></cg-spinner>
-              <span>Loading…</span>
+              <span>${this.i18n.t('loading')}</span>
             </div>
           ` : filtered.length === 0 ? html`
             <slot name="empty">
-              <div class="empty">${this.emptyText}</div>
+              <div class="empty">${this.emptyText ?? this.i18n.t('empty')}</div>
             </slot>
           ` : groups.map(({ group, items }) => html`
             ${group ? html`<div class="group-label">${group}</div>` : nothing}

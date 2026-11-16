@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-progress-bar', {
+  label: 'Progress',
+});
 
 /**
  * <cg-progress-bar> — Linear progress bar with label, buffer, and custom formatting.
@@ -182,6 +187,11 @@ export class CgProgressBar extends LitElement {
   `];
 
   /** Progress value 0–100 */
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Number }) value = 0;
 
   /** Label text above the bar */
@@ -247,7 +257,7 @@ export class CgProgressBar extends LitElement {
         aria-valuenow="${this.indeterminate ? nothing : this._clampedValue}"
         aria-valuemin="0"
         aria-valuemax="100"
-        aria-label="${this.label || 'Progress'}"
+        aria-label="${this.label || this.i18n.t('label')}"
         aria-valuetext=${this.formatValue && !this.indeterminate ? this.formatValue : nothing}
         aria-busy="${this.indeterminate}"
       >

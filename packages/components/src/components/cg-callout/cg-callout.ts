@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, fadeSlideInKeyframes } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-callout', {
+  dismiss: 'Dismiss',
+});
 
 /**
  * <cg-callout> — Alert/notice with semantic variants.
@@ -127,6 +132,10 @@ export class CgCallout extends LitElement {
     :host([rounded="full"]) .callout { border-radius: var(--cg-border-radius-full); }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ reflect: true }) variant: 'info' | 'success' | 'warning' | 'danger' | 'neutral' = 'info';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'lg';
   @property() override title = '';
@@ -193,7 +202,7 @@ export class CgCallout extends LitElement {
           <slot name="action"></slot>
         </div>
         ${this.dismissible ? html`
-          <button class="dismiss" @click=${this._dismiss} aria-label="Dismiss">
+          <button class="dismiss" @click=${this._dismiss} aria-label=${this.i18n.t('dismiss')}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
               <path d="M18 6L6 18M6 6l12 12"></path>
             </svg>

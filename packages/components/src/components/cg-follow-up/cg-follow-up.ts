@@ -2,6 +2,14 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, shimmerKeyframes, focusRingSingle } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-follow-up', {
+  label: 'Suggested',
+  suggestion: 'Suggestion: {text}',
+  more: '+{n} more',
+  showMore: 'Show {n} more suggestions',
+});
 
 /**
  * <cg-follow-up> — Suggestion chips for chat conversations.
@@ -152,8 +160,12 @@ export class CgFollowUp extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Array }) items: (string | FollowUpItem)[] = [];
-  @property() label = 'Suggested';
+  @property() label?: string;
   @property({ type: Boolean }) disabled = false;
   @property({ type: Boolean }) loading = false;
   @property({ type: Boolean }) hideLabel = false;
@@ -197,11 +209,11 @@ export class CgFollowUp extends LitElement {
       ${!this.hideLabel ? html`
         <div class="header">
           <cg-icon class="header-icon" name="sparkle" size="sm"></cg-icon>
-          <span class="label">${this.label}</span>
+          <span class="label">${this.label ?? this.i18n.t('label')}</span>
         </div>
       ` : nothing}
 
-      <div class="chips" role="group" aria-label=${this.label} aria-busy=${this.loading}>
+      <div class="chips" role="group" aria-label=${this.label ?? this.i18n.t('label')} aria-busy=${this.loading}>
         ${this.loading
           ? shimmerWidths.slice(0, this.maxVisible || 3).map(w => html`
               <div class="shimmer" style="width: ${w}px"></div>
@@ -214,7 +226,7 @@ export class CgFollowUp extends LitElement {
                   <button
                     style="--item-index: ${i}"
                     ?disabled=${this.disabled}
-                    aria-label="Suggestion: ${text}"
+                    aria-label=${this.i18n.t('suggestion', { text })}
                     @click=${() => this._handleClick(item)}
                   >
                     ${icon ? html`<cg-icon class="icon" name="${icon}" size="sm" aria-hidden="true"></cg-icon>` : nothing}
@@ -223,8 +235,8 @@ export class CgFollowUp extends LitElement {
                 `;
               })}
               ${remaining > 0 ? html`
-                <button class="more-badge" @click=${this._handleShowAll} aria-label="Show ${remaining} more suggestions">
-                  +${remaining} more
+                <button class="more-badge" @click=${this._handleShowAll} aria-label=${this.i18n.t('showMore', { n: remaining })}>
+                  ${this.i18n.t('more', { n: remaining })}
                 </button>
               ` : nothing}
             `

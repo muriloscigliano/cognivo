@@ -2,6 +2,29 @@ import { LitElement, html, css, nothing, svg } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, focusRingSingle } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-file-input', {
+  placeholder: 'Drop files here or click to browse',
+  label: 'File upload',
+  tooLarge: 'File exceeds {size}',
+  tooMany: 'Maximum {max} files allowed',
+  removed: 'Removed {name}',
+  clearedOne: 'Cleared {n} file',
+  clearedOther: 'Cleared {n} files',
+  pdfBadge: 'PDF',
+  dropToAttach: 'Drop to attach',
+  addMore: 'Add more files',
+  attach: 'Attach files',
+  accepted: 'Accepted: {types}',
+  maxSize: 'Max size: {size}',
+  fileCount: '{n} files',
+  clearAll: 'Clear all',
+  uploading: 'Uploading {name}',
+  done: 'Done',
+  failed: 'Failed',
+  remove: 'Remove {name}',
+});
 
 /** Per-file upload status driven by the consumer via `setFileStatus()`. */
 export type FileStatus = 'idle' | 'uploading' | 'done' | 'error';
@@ -360,8 +383,12 @@ export class CgFileInput extends LitElement {
     }
   }
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property() label = '';
-  @property() placeholder = 'Drop files here or click to browse';
+  @property() placeholder?: string;
   @property() helper = '';
   @property() accept = '';
   @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
@@ -434,7 +461,7 @@ export class CgFileInput extends LitElement {
     for (const file of files) {
       if (this.maxSize > 0 && file.size > this.maxSize) {
         rejected.push(file);
-        reason = `File exceeds ${this._formatSize(this.maxSize)}`;
+        reason = this.i18n.t('tooLarge', { size: this._formatSize(this.maxSize) });
         continue;
       }
       valid.push(file);
@@ -443,7 +470,7 @@ export class CgFileInput extends LitElement {
       const allowed = this.maxFiles - this._files.length;
       rejected.push(...valid.slice(allowed));
       valid.splice(allowed);
-      reason = `Maximum ${this.maxFiles} files allowed`;
+      reason = this.i18n.t('tooMany', { max: this.maxFiles });
     }
     return { valid, rejected, reason };
   }
@@ -496,7 +523,7 @@ export class CgFileInput extends LitElement {
     const wasLast = this._files.length === 1;
     const nextIdx = idx >= this._files.length - 1 ? idx - 1 : idx;
     this._files = this._files.filter((_, i) => i !== idx);
-    this._announce(`Removed ${file.name}`);
+    this._announce(this.i18n.t('removed', { name: file.name }));
     this._updateFormValue();
     this.dispatchEvent(new CustomEvent('cg-file-remove', {
       detail: { file },
@@ -526,7 +553,7 @@ export class CgFileInput extends LitElement {
     this._files.forEach(f => { this._revokePreview(f); this._statusMap.delete(f); });
     const cleared = this._files.length;
     this._files = [];
-    this._announce(`Cleared ${cleared} file${cleared === 1 ? '' : 's'}`);
+    this._announce(this.i18n.t(cleared === 1 ? 'clearedOne' : 'clearedOther', { n: cleared }));
     this._updateFormValue();
     this.dispatchEvent(new CustomEvent('cg-file-clear', { bubbles: true, composed: true, detail: {} }));
     this.dispatchEvent(new CustomEvent('cg-file-change', {
@@ -646,7 +673,7 @@ export class CgFileInput extends LitElement {
         ` : kind === 'pdf' ? svg`
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
           <polyline points="14 2 14 8 20 8"/>
-          <text x="8" y="17" font-size="6" font-family="sans-serif" font-weight="700" fill="currentColor" stroke="none">PDF</text>
+          <text x="8" y="17" font-size="6" font-family="sans-serif" font-weight="700" fill="currentColor" stroke="none">${this.i18n.t('pdfBadge')}</text>
         ` : kind === 'doc' ? svg`
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
           <polyline points="14 2 14 8 20 8"/>
@@ -684,7 +711,7 @@ export class CgFileInput extends LitElement {
               <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
             </svg>
           </span>
-          <span>${this._dragging ? 'Drop to attach' : (count > 0 ? 'Add more files' : 'Attach files')}</span>
+          <span>${this.i18n.t(this._dragging ? 'dropToAttach' : count > 0 ? 'addMore' : 'attach')}</span>
           ${count > 0 ? html`<span class="compact-count">${count}</span>` : nothing}
         </button>
       `;
@@ -694,7 +721,7 @@ export class CgFileInput extends LitElement {
         class="dropzone ${this._dragging ? 'dragging' : ''} ${this.disabled ? 'disabled' : ''}"
         role="button"
         tabindex=${this.disabled ? '-1' : '0'}
-        aria-label=${this.label || 'File upload'}
+        aria-label=${this.label || this.i18n.t('label')}
         aria-disabled=${this.disabled ? 'true' : 'false'}
         @click=${this._handleClick}
         @keydown=${this._handleKeydown}
@@ -710,10 +737,10 @@ export class CgFileInput extends LitElement {
             <line x1="12" y1="3" x2="12" y2="15"/>
           </svg>
         </div>
-        <div class="title">${this.placeholder}</div>
+        <div class="title">${this.placeholder ?? this.i18n.t('placeholder')}</div>
         <div class="subtitles">
-          ${this.accept ? html`<div class="subtitle">Accepted: ${this.accept}</div>` : nothing}
-          ${this.maxSize > 0 ? html`<div class="subtitle">Max size: ${this._formatSize(this.maxSize)}</div>` : nothing}
+          ${this.accept ? html`<div class="subtitle">${this.i18n.t('accepted', { types: this.accept })}</div>` : nothing}
+          ${this.maxSize > 0 ? html`<div class="subtitle">${this.i18n.t('maxSize', { size: this._formatSize(this.maxSize) })}</div>` : nothing}
         </div>
       </div>
     `;
@@ -734,7 +761,7 @@ export class CgFileInput extends LitElement {
       />
       ${fileCount >= 2 ? html`
         <div class="bulk-actions">
-          <span class="bulk-count">${fileCount} files</span>
+          <span class="bulk-count">${this.i18n.t('fileCount', { n: fileCount })}</span>
           <button
             type="button"
             class="bulk-clear"
@@ -743,7 +770,7 @@ export class CgFileInput extends LitElement {
             <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
               <path d="M10.5 3.5l-7 7M3.5 3.5l7 7"/>
             </svg>
-            Clear all
+            ${this.i18n.t('clearAll')}
           </button>
         </div>
       ` : nothing}
@@ -771,7 +798,7 @@ export class CgFileInput extends LitElement {
                       aria-valuenow=${status.progress ?? 0}
                       aria-valuemin="0"
                       aria-valuemax="100"
-                      aria-label=${`Uploading ${file.name}`}
+                      aria-label=${this.i18n.t('uploading', { name: file.name })}
                     >
                       <div class="progress-fill" style="width: ${Math.max(0, Math.min(100, status.progress ?? 0))}%"></div>
                     </div>
@@ -781,13 +808,13 @@ export class CgFileInput extends LitElement {
                   <span class="status-pill ${status.state}">
                     ${status.state === 'uploading'
                       ? `${Math.round(status.progress ?? 0)}%`
-                      : status.state === 'done' ? 'Done' : 'Failed'}
+                      : this.i18n.t(status.state === 'done' ? 'done' : 'failed')}
                   </span>
                 ` : nothing}
                 <button
                   type="button"
                   class="file-remove"
-                  aria-label=${`Remove ${file.name}`}
+                  aria-label=${this.i18n.t('remove', { name: file.name })}
                   @click=${() => this._removeFile(idx)}
                 >
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">

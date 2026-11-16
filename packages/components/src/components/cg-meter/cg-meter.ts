@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing, svg } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-meter', {
+  label: 'Meter',
+});
 
 /**
  * @element cg-meter
@@ -104,6 +109,11 @@ export class CgMeter extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Number }) value = 0;
   @property({ type: Number }) min = 0;
   @property({ type: Number }) max = 100;
@@ -164,7 +174,7 @@ export class CgMeter extends LitElement {
           aria-valuemax=${this.max}
           aria-valuetext=${this.showValue ? valueText : nothing}
           aria-labelledby=${labelId ?? nothing}
-          aria-label=${labelId ? nothing : (this.label || 'Meter')}
+          aria-label=${labelId ? nothing : (this.label || this.i18n.t('label'))}
         >
           ${svg`
             <svg viewBox="0 0 100 100">
@@ -197,7 +207,7 @@ export class CgMeter extends LitElement {
         aria-valuemax=${this.max}
         aria-valuetext=${this.showValue ? valueText : nothing}
         aria-labelledby=${labelId ?? nothing}
-        aria-label=${labelId ? nothing : (this.label || 'Meter')}
+        aria-label=${labelId ? nothing : (this.label || this.i18n.t('label'))}
       >
         <div class="fill ${level}" style="width: ${pct}%"></div>
       </div>

@@ -3,6 +3,12 @@ import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { reducedMotion } from '../../styles/index.js';
 import { FocusTrap } from '../../utils/focus-trap.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-sheet', {
+  label: 'Sheet',
+  resize: 'Resize sheet',
+});
 
 /**
  * @element cg-sheet
@@ -119,8 +125,13 @@ export class CgSheet extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Boolean, reflect: true }) open = false;
-  @property() label = 'Sheet';
+  /** Accessible name; defaults to the `label` message. */
+  @property() label?: string;
   @property({ reflect: true }) side: 'bottom' | 'right' | 'left' | 'top' = 'bottom';
   @property({ type: Array }) snapPoints: number[] = [];
   @property({ type: Number }) activeSnap = 0;
@@ -259,7 +270,7 @@ export class CgSheet extends LitElement {
         class="panel"
         role="dialog"
         aria-modal="true"
-        aria-label=${this.label}
+        aria-label=${this.label ?? this.i18n.t('label')}
         aria-hidden=${this.open ? 'false' : 'true'}
         ?inert=${!this.open}
         style=${panelStyle}
@@ -269,7 +280,7 @@ export class CgSheet extends LitElement {
             class="handle"
             role=${this.snapPoints.length ? 'slider' : nothing}
             tabindex=${this.snapPoints.length ? '0' : nothing}
-            aria-label=${this.snapPoints.length ? 'Resize sheet' : nothing}
+            aria-label=${this.snapPoints.length ? this.i18n.t('resize') : nothing}
             aria-valuemin=${this.snapPoints.length ? '0' : nothing}
             aria-valuemax=${this.snapPoints.length ? String(this.snapPoints.length - 1) : nothing}
             aria-valuenow=${this.snapPoints.length ? String(this.activeSnap) : nothing}

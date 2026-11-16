@@ -2,6 +2,14 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-pagination', {
+  label: 'Pagination',
+  previous: 'Previous page',
+  next: 'Next page',
+  page: 'Page {page}',
+});
 
 /**
  * @element cg-pagination
@@ -144,6 +152,10 @@ export class CgPagination extends LitElement {
     :host([rounded="full"]) .page-btn { border-radius: var(--cg-border-radius-full); }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
   @property({ type: Number }) total = 1;
@@ -206,13 +218,13 @@ export class CgPagination extends LitElement {
     const isLastPage = this.current >= this.total;
 
     return html`
-      <nav aria-label="Pagination">
+      <nav aria-label=${this.i18n.t('label')}>
         <ul class="pagination">
           <li>
             <button
               class="page-btn"
               aria-disabled="${isFirstPage ? 'true' : 'false'}"
-              aria-label="Previous page"
+              aria-label=${this.i18n.t('previous')}
               @click="${() => this._goToPage(this.current - 1)}"
             >
               <cg-icon name="chevron-left" size="sm"></cg-icon>
@@ -228,7 +240,7 @@ export class CgPagination extends LitElement {
               <li>
                 <button
                   class="page-btn ${isActive ? 'active' : ''}"
-                  aria-label="Page ${page}"
+                  aria-label=${this.i18n.t('page', { page })}
                   aria-current="${isActive ? 'page' : nothing}"
                   @click="${() => this._goToPage(page)}"
                 >
@@ -242,7 +254,7 @@ export class CgPagination extends LitElement {
             <button
               class="page-btn"
               aria-disabled="${isLastPage ? 'true' : 'false'}"
-              aria-label="Next page"
+              aria-label=${this.i18n.t('next')}
               @click="${() => this._goToPage(this.current + 1)}"
             >
               <cg-icon name="chevron-right" size="sm"></cg-icon>

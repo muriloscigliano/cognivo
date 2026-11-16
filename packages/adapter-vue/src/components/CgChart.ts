@@ -11,7 +11,7 @@ export const CgChart = createVueWrapper(
     showLegend: { type: Boolean, default: true },
     showValues: { type: Boolean, default: true },
     showGrid: { type: Boolean, default: true },
-    emptyText: { type: String, default: 'No data' },
+    emptyText: { type: String, default: undefined },
   },
   {}
 );

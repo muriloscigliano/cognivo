@@ -102,6 +102,9 @@ export default defineConfig(({ mode }) => {
           lazy: resolve(__dirname, 'src/lazy.ts'),
           // Page-wide validation message map, importable without a barrel.
           validation: resolve(__dirname, 'src/utils/validation.ts'),
+          // Page-wide interface-text map and the built-in pt-BR locale.
+          messages: resolve(__dirname, 'src/utils/messages.ts'),
+          'locales/pt-BR': resolve(__dirname, 'src/locales/pt-BR.ts'),
           ...componentEntries,
         },
         formats: ['es'],

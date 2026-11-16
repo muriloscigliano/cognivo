@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-image', {
+  unavailable: 'Image unavailable',
+});
 
 /**
  * <cg-image> — Image with lazy loading, aspect ratio, skeleton placeholder, and error fallback.
@@ -108,6 +113,10 @@ export class CgImage extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property() src = '';
   @property() alt = '';
   @property({ reflect: true }) ratio: '1:1' | '3:2' | '4:3' | '16:9' | '21:9' | 'auto' = 'auto';
@@ -141,7 +150,7 @@ export class CgImage extends LitElement {
               <circle cx="8.5" cy="8.5" r="1.5"></circle>
               <polyline points="21 15 16 10 5 21"></polyline>
             </svg>
-            <span>Image unavailable</span>
+            <span>${this.i18n.t('unavailable')}</span>
           </div>
         ` : nothing}
         <img

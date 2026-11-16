@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-slider', {
+  label: 'Slider',
+});
 
 /**
  * <cg-slider> — Range slider with floating tooltip, filled track, and spring interactions.
@@ -234,6 +239,11 @@ export class CgSlider extends LitElement {
     :host([size="lg"]:not([variant="toggle"])) .thumb { width: var(--cg-spacing-24); height: var(--cg-spacing-24); }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ reflect: true }) variant: 'default' | 'simple' | 'toggle' = 'default';
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property() label = '';
@@ -346,7 +356,7 @@ export class CgSlider extends LitElement {
             max=${this.max}
             step=${this.step}
             ?disabled=${this.disabled || this.loading}
-            aria-label=${this.label || 'Slider'}
+            aria-label=${this.label || this.i18n.t('label')}
             aria-valuetext="${this.value}${this.unit}"
             name=${this.name || nothing}
             @input=${this._handleInput}

@@ -5,6 +5,11 @@ import { hostBase, reducedMotion, entranceStagger, menuListStyles } from '../../
 import { applyFloatingPosition } from '../../utils/floating.js';
 import { bindOutsideClick } from '../../utils/outside-click.js';
 import { handleRovingKey } from '../../utils/roving-index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-split-button', {
+  more: 'More actions',
+});
 
 export interface SplitButtonItem {
   id: string;
@@ -233,6 +238,10 @@ export class CgSplitButton extends LitElement {
     :host([menu-placement="top-end"]) .menu { transform-origin: bottom right; }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property() label = '';
   @property({ reflect: true }) variant: 'primary' | 'secondary' | 'tertiary' = 'primary';
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
@@ -356,7 +365,7 @@ export class CgSplitButton extends LitElement {
         <button
           class="chevron"
           type="button"
-          aria-label="More actions"
+          aria-label=${this.i18n.t('more')}
           aria-haspopup="menu"
           aria-expanded=${this.open ? 'true' : 'false'}
           ?disabled=${this.disabled}

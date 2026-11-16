@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, shimmerKeyframes } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-metric-card', {
+  loading: 'Loading metric',
+});
 
 /**
  * <cg-metric-card> — KPI metric display with trend indicator and sparkline.
@@ -194,6 +199,11 @@ export class CgMetricCard extends LitElement {
   `];
 
   /** Metric label (e.g. "Revenue", "Active Users") */
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
+
   @property() override title = '';
 
   /** Metric value (e.g. "$2.4M", "14.2K") */
@@ -267,7 +277,7 @@ export class CgMetricCard extends LitElement {
   override render() {
     if (this.loading) {
       return html`
-        <div class="card skeleton" role="status" aria-label="Loading metric">
+        <div class="card skeleton" role="status" aria-label=${this.i18n.t('loading')}>
           <div class="skel skel-title"></div>
           <div class="skel skel-value"></div>
           <div class="skel skel-delta"></div>

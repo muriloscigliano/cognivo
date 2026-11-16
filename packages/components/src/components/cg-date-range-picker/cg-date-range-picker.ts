@@ -2,6 +2,14 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-date-range-picker', {
+  placeholder: 'Select date range',
+  endPlaceholder: 'End date',
+  label: 'Date range picker',
+  calendar: 'Date range calendar',
+});
 import '../cg-calendar/cg-calendar.js';
 
 /**
@@ -149,14 +157,19 @@ export class CgDateRangePicker extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
+
   @property() label = '';
   @property() from = '';
   @property() to = '';
   @property() min = '';
   @property() max = '';
-  @property() placeholder = 'Select date range';
+  @property() placeholder?: string;
   /** Placeholder for the end-date segment (overridable / i18n-able). */
-  @property({ attribute: 'end-placeholder' }) endPlaceholder = 'End date';
+  @property({ attribute: 'end-placeholder' }) endPlaceholder?: string;
   @property() format = 'MMM dd, yyyy';
   @property({ type: Boolean }) disabled = false;
   @property({ type: Boolean, reflect: true }) open = false;
@@ -189,7 +202,7 @@ export class CgDateRangePicker extends LitElement {
     if (!iso) return '';
     const d = new Date(iso + 'T00:00:00');
     if (isNaN(d.getTime())) return '';
-    return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    return d.toLocaleDateString(this.i18n.locale, { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
   private _onCalendarChange(e: Event) {
@@ -243,7 +256,7 @@ export class CgDateRangePicker extends LitElement {
         aria-disabled=${this.disabled ? 'true' : nothing}
         aria-haspopup="dialog"
         aria-controls="cg-drp-dropdown"
-        aria-label=${this.label || 'Date range picker'}
+        aria-label=${this.label || this.i18n.t('label')}
         aria-invalid=${this.error ? 'true' : nothing}
         aria-describedby=${this.error ? 'cg-drp-error' : nothing}
         @click=${this._toggle}
@@ -257,16 +270,16 @@ export class CgDateRangePicker extends LitElement {
             <line x1="3" y1="10" x2="21" y2="10"></line>
           </svg>
         </span>
-        <span class="segment ${fromText ? '' : 'empty'}">${fromText || this.placeholder}</span>
+        <span class="segment ${fromText ? '' : 'empty'}">${fromText || (this.placeholder ?? this.i18n.t('placeholder'))}</span>
         <span class="arrow" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 6l6 6-6 6"/>
           </svg>
         </span>
-        <span class="segment ${toText ? '' : 'empty'}">${toText || this.endPlaceholder}</span>
+        <span class="segment ${toText ? '' : 'empty'}">${toText || (this.endPlaceholder ?? this.i18n.t('endPlaceholder'))}</span>
       </div>
 
-      <div id="cg-drp-dropdown" class="dropdown ${this.open ? 'open' : ''}" role="dialog" aria-label="Date range calendar">
+      <div id="cg-drp-dropdown" class="dropdown ${this.open ? 'open' : ''}" role="dialog" aria-label=${this.i18n.t('calendar')}>
         <cg-calendar
           mode="range"
           .value=${this.from}

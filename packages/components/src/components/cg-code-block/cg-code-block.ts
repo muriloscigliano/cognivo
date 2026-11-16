@@ -2,6 +2,15 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-code-block', {
+  copy: 'Copy',
+  copied: 'Copied',
+  copyLabel: 'Copy code',
+  copiedLabel: 'Code copied',
+  copiedStatus: 'Copied!',
+});
 
 /**
  * <cg-code-block> — Code display with syntax highlighting, copy button, and line numbers.
@@ -258,6 +267,10 @@ export class CgCodeBlock extends LitElement {
     :host([rounded="lg"]) .wrapper { border-radius: var(--cg-border-radius-200); }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property() code = '';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property() language = '';
@@ -295,13 +308,13 @@ export class CgCodeBlock extends LitElement {
           </div>
           <div class="actions">
             ${this.language ? html`<span class="language">${this.language}</span>` : nothing}
-            <button class="copy-btn ${this._copied ? 'copied' : ''}" @click=${this._copy} aria-label=${this._copied ? 'Code copied' : 'Copy code'}>
+            <button class="copy-btn ${this._copied ? 'copied' : ''}" @click=${this._copy} aria-label=${this.i18n.t(this._copied ? 'copiedLabel' : 'copyLabel')}>
               ${this._copied
-                ? html`<cg-icon name="check" size="xs"></cg-icon> Copied`
-                : html`<cg-icon name="copy" size="xs"></cg-icon> Copy`
+                ? html`<cg-icon name="check" size="xs"></cg-icon> ${this.i18n.t('copied')}`
+                : html`<cg-icon name="copy" size="xs"></cg-icon> ${this.i18n.t('copy')}`
               }
             </button>
-            <span class="sr-only" role="status" aria-live="polite">${this._copied ? 'Copied!' : ''}</span>
+            <span class="sr-only" role="status" aria-live="polite">${this._copied ? this.i18n.t('copiedStatus') : ''}</span>
           </div>
         </div>
 

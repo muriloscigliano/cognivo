@@ -2,6 +2,16 @@ import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-markdown', {
+  copy: 'Copy',
+  copied: 'Copied',
+  copyLabel: 'Copy code',
+  permalink: 'Permalink to this heading',
+  taskDone: 'Done: ',
+  taskTodo: 'To do: ',
+});
 
 /** Allowed HTML tags after markdown parsing */
 const ALLOWED_TAGS = new Set([
@@ -448,6 +458,10 @@ export class CgMarkdown extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property() text = '';
 
   /**
@@ -484,7 +498,7 @@ export class CgMarkdown extends LitElement {
         blocks.push(
           `<div class="code-block">` +
             `<div class="code-header">${langLabel}` +
-              `<button class="code-copy" type="button" aria-label="Copy code">Copy</button>` +
+              `<button class="code-copy" type="button" aria-label="${escapeHtml(this.i18n.t('copyLabel'))}">${escapeHtml(this.i18n.t('copy'))}</button>` +
             `</div>` +
             `<pre><code${langClass}>${code}</code></pre>` +
           `</div>`,
@@ -500,7 +514,7 @@ export class CgMarkdown extends LitElement {
         const slug = slugify(text);
         const inline = this._inline(text);
         const anchor = slug
-          ? ` <a class="anchor" href="#${slug}" aria-label="Permalink to this heading">#</a>`
+          ? ` <a class="anchor" href="#${slug}" aria-label="${escapeHtml(this.i18n.t('permalink'))}">#</a>`
           : '';
         const idAttr = slug ? ` id="${slug}"` : '';
         blocks.push(`<h${level}${idAttr}>${inline}${anchor}</h${level}>`);
@@ -556,7 +570,7 @@ export class CgMarkdown extends LitElement {
             items.push(
               `<li class="task">` +
                 `<span class="${checkClass}" aria-hidden="true"></span>` +
-                `<span class="sr-only">${checked ? 'Done: ' : 'To do: '}</span>` +
+                `<span class="sr-only">${escapeHtml(this.i18n.t(checked ? 'taskDone' : 'taskTodo'))}</span>` +
                 this._inline(taskMatch[2]!) +
               `</li>`,
             );
@@ -721,9 +735,10 @@ export class CgMarkdown extends LitElement {
       try {
         await navigator.clipboard?.writeText(codeText);
         const original = btn.textContent;
-        btn.textContent = 'Copied';
+        const copied = this.i18n.t('copied');
+        btn.textContent = copied;
         setTimeout(() => {
-          if (btn.textContent === 'Copied') btn.textContent = original;
+          if (btn.textContent === copied) btn.textContent = original;
         }, 1200);
       } catch {
         // Clipboard API may be blocked (insecure context, permission denied);

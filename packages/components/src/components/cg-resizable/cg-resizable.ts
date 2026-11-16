@@ -2,6 +2,11 @@ import { LitElement, html, css, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-resizable', {
+  handle: 'Resize panes',
+});
 
 /**
  * @element cg-resizable
@@ -142,12 +147,17 @@ export class CgResizable extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ reflect: true }) direction: 'horizontal' | 'vertical' = 'horizontal';
   @property({ type: Number }) defaultSize = 0.5;
   @property({ type: Number }) min = 0.1;
   @property({ type: Number }) max = 0.9;
   /** Accessible name for the resize handle (window-splitter pattern). */
-  @property({ attribute: 'handle-label' }) handleLabel = 'Resize panes';
+  /** Handle's accessible name; defaults to the `handle` message. */
+  @property({ attribute: 'handle-label' }) handleLabel?: string;
 
   @state() private _size = 0.5;
 
@@ -270,7 +280,7 @@ export class CgResizable extends LitElement {
         class="handle"
         role="separator"
         tabindex="0"
-        aria-label=${this.handleLabel}
+        aria-label=${this.handleLabel ?? this.i18n.t('handle')}
         aria-orientation=${horizontal ? 'vertical' : 'horizontal'}
         aria-valuenow=${Math.round(this._size * 100)}
         aria-valuemin=${Math.round(this.min * 100)}

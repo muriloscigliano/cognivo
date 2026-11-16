@@ -5,6 +5,12 @@ import { hostBlock, reducedMotion, menuListStyles } from '../../styles/index.js'
 import { applyFloatingPosition } from '../../utils/floating.js';
 import { bindOutsideClick } from '../../utils/outside-click.js';
 import { handleRovingKey } from '../../utils/roving-index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-context-menu', {
+  label: 'Context menu',
+  empty: 'No actions',
+});
 
 export interface ContextMenuItem {
   id: string;
@@ -66,11 +72,15 @@ export class CgContextMenu extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: Array }) items: ContextMenuItem[] = [];
   @property({ type: Boolean, reflect: true }) disabled = false;
   /** Accessible name for the menu (bound as aria-label on role="menu"). */
-  @property() label = 'Context menu';
+  @property() label?: string;
 
   @state() private _activeIndex = -1;
   @state() private _closing = false;
@@ -322,12 +332,12 @@ export class CgContextMenu extends LitElement {
       <ul
         class="menu ${this._closing ? 'closing' : ''}"
         role="menu"
-        aria-label=${this.label}
+        aria-label=${this.label ?? this.i18n.t('label')}
         aria-orientation="vertical"
         ?inert=${!this.open}
       >
         ${this.items.length === 0 ? html`
-          <li class="menu-empty" role="presentation">No actions</li>
+          <li class="menu-empty" role="presentation">${this.i18n.t('empty')}</li>
         ` : nothing}
         ${this.items.map((item, idx) => {
           if (item.separator) {

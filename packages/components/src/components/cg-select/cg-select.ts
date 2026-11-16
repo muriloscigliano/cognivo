@@ -4,6 +4,14 @@ import { customElement } from '../../utils/define.js';
 import { setValueMissing, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { bindOutsideClick } from '../../utils/outside-click.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-select', {
+  placeholder: 'Select...',
+  search: 'Search...',
+  searchLabel: 'Search options',
+  noOptions: 'No options',
+});
 
 /**
  * @element cg-select
@@ -173,12 +181,16 @@ export class CgSelect extends LitElement {
     :host([rounded="full"]) .dropdown { border-radius: var(--cg-border-radius-150); }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
   @property({ type: Array }) options: SelectOption[] = [];
   @property() value = '';
   @property() label = '';
-  @property() placeholder = 'Select...';
+  @property() placeholder?: string;
   @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property({ type: Boolean }) disabled = false;
   @property({ type: Boolean, reflect: true }) error = false;
@@ -327,7 +339,7 @@ export class CgSelect extends LitElement {
         aria-haspopup="listbox"
         aria-controls="select-listbox"
         aria-labelledby=${this.label ? 'select-label' : nothing}
-        aria-label=${this.label ? nothing : this.placeholder}
+        aria-label=${this.label ? nothing : this.placeholder ?? this.i18n.t('placeholder')}
         aria-activedescendant=${this._open && this._highlighted >= 0 && this._highlighted < filtered.length ? `select-option-${this._highlighted}` : nothing}
         aria-required=${this.required ? 'true' : 'false'}
         aria-invalid=${this.error ? 'true' : 'false'}
@@ -336,7 +348,7 @@ export class CgSelect extends LitElement {
         @keydown=${this._handleKeydown}
       >
         <span class="trigger-text ${!selected ? 'placeholder' : ''}">
-          ${selected ? selected.label : this.placeholder}
+          ${selected ? selected.label : this.placeholder ?? this.i18n.t('placeholder')}
         </span>
         ${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : html`
         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -348,8 +360,8 @@ export class CgSelect extends LitElement {
         ${this.searchable ? html`
           <div class="search">
             <input
-              placeholder="Search..."
-              aria-label="Search options"
+              placeholder=${this.i18n.t('search')}
+              aria-label=${this.i18n.t('searchLabel')}
               .value=${this._search}
               @input=${(e: Event) => { this._search = (e.target as HTMLInputElement).value; this._highlighted = 0; }}
               @keydown=${this._handleKeydown}
@@ -357,7 +369,7 @@ export class CgSelect extends LitElement {
             />
           </div>
         ` : nothing}
-        ${filtered.length === 0 ? html`<div class="empty-msg">No options</div>` : nothing}
+        ${filtered.length === 0 ? html`<div class="empty-msg">${this.i18n.t('noOptions')}</div>` : nothing}
         ${filtered.map((opt, i) => html`
           <div
             class="option ${opt.value === this.value ? 'selected' : ''} ${i === this._highlighted ? 'highlighted' : ''} ${opt.disabled ? 'disabled' : ''}"

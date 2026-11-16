@@ -2,7 +2,7 @@ import { createVueWrapper } from '../create-wrapper.js';
 export const CgDateTimePicker = createVueWrapper('cg-date-time-picker', {
   label: { type: String, default: '' },
   value: { type: String, default: '' },
-  placeholder: { type: String, default: 'Select date & time' },
+  placeholder: { type: String, default: undefined },
   helper: { type: String, default: '' },
   min: { type: String, default: '' },
   max: { type: String, default: '' },

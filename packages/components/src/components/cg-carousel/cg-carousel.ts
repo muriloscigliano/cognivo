@@ -2,6 +2,16 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-carousel', {
+  label: 'Carousel',
+  roleDescription: 'carousel',
+  previous: 'Previous slide',
+  next: 'Next slide',
+  indicators: 'Slide indicators',
+  goTo: 'Go to slide {n}',
+});
 
 /**
  * <cg-carousel> — Scrollable content carousel with snap, autoplay, and multi-column.
@@ -148,6 +158,10 @@ export class CgCarousel extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Boolean }) showDots = true;
   @property({ type: Boolean }) showArrows = true;
   @property({ type: Number, reflect: true }) columns = 1;
@@ -269,29 +283,29 @@ export class CgCarousel extends LitElement {
         @mouseenter=${() => { this._paused = true; }}
         @mouseleave=${() => { this._paused = false; }}
         role="region"
-        aria-label="Carousel"
-        aria-roledescription="carousel"
+        aria-label=${this.i18n.t('label')}
+        aria-roledescription=${this.i18n.t('roleDescription')}
         aria-live=${this.autoplay && !this._paused ? 'off' : 'polite'}
       >
         <div class="track" @click=${this._handleSlideClick}><slot></slot></div>
       </div>
 
       ${this.showArrows && this._total > 1 ? html`
-        <button class="nav-btn nav-prev" @click=${this._prev} ?disabled=${atStart} aria-label="Previous slide">
+        <button class="nav-btn nav-prev" @click=${this._prev} ?disabled=${atStart} aria-label=${this.i18n.t('previous')}>
           <cg-icon name="chevron-left" size="sm"></cg-icon>
         </button>
-        <button class="nav-btn nav-next" @click=${this._next} ?disabled=${atEnd} aria-label="Next slide">
+        <button class="nav-btn nav-next" @click=${this._next} ?disabled=${atEnd} aria-label=${this.i18n.t('next')}>
           <cg-icon name="chevron-right" size="sm"></cg-icon>
         </button>
       ` : nothing}
 
       ${this.showDots && this._total > 1 ? html`
-        <div class="dots" role="group" aria-label="Slide indicators">
+        <div class="dots" role="group" aria-label=${this.i18n.t('indicators')}>
           ${Array.from({ length: this._total }, (_, i) => html`
             <button
               class="dot ${i === this._current ? 'active' : ''}"
               aria-current=${i === this._current ? 'true' : nothing}
-              aria-label="Go to slide ${i + 1}"
+              aria-label=${this.i18n.t('goTo', { n: i + 1 })}
               @click=${() => this._goTo(i)}
             ></button>
           `)}

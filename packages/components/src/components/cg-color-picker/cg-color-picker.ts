@@ -2,6 +2,18 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-color-picker', {
+  label: 'Color picker',
+  saturation: 'Saturation and brightness',
+  saturationValue: 'Saturation {s}%, brightness {v}%, {hex}',
+  hue: 'Hue',
+  opacity: 'Opacity',
+  hex: 'Hex color',
+  copy: 'Copy color',
+  presets: 'Preset colors',
+});
 
 const PRESET_COLORS = [
   '#ef4444', '#f97316', '#f59e0b', '#84cc16', '#22c55e', '#06b6d4',
@@ -289,6 +301,11 @@ export class CgColorPicker extends LitElement {
     .preset:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--cg-overlay-accent-strong); }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
+
   @property() value = '#3b82f6';
   @property() label = '';
   @property({ type: Array }) colors: string[] = PRESET_COLORS;
@@ -460,7 +477,7 @@ export class CgColorPicker extends LitElement {
       <div class="trigger ${this._open ? 'open' : ''} ${this.disabled ? 'disabled' : ''}"
         tabindex=${this.disabled ? '-1' : '0'}
         role="combobox" aria-expanded=${this._open} aria-haspopup="dialog"
-        aria-label=${this.label || 'Color picker'}
+        aria-label=${this.label || this.i18n.t('label')}
         @click=${this._toggle} @keydown=${this._handleKeydown}
       >
         <div class="trigger-swatch" style="background:${currentHex}"></div>
@@ -468,13 +485,13 @@ export class CgColorPicker extends LitElement {
         <svg class="trigger-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg>
       </div>
 
-      <div class="dropdown ${this._open ? 'open' : ''}" role="dialog" aria-label="Color picker">
+      <div class="dropdown ${this._open ? 'open' : ''}" role="dialog" aria-label=${this.i18n.t('label')}>
         <!-- Spectrum -->
         <div class="color-area"
           tabindex="0"
           role="slider"
-          aria-label="Saturation and brightness"
-          aria-valuetext=${`Saturation ${Math.round(this._hsv.s * 100)}%, brightness ${Math.round(this._hsv.v * 100)}%, ${currentHex}`}
+          aria-label=${this.i18n.t('saturation')}
+          aria-valuetext=${this.i18n.t('saturationValue', { s: Math.round(this._hsv.s * 100), v: Math.round(this._hsv.v * 100), hex: currentHex })}
           @pointerdown=${this._onAreaPointerDown}
           @pointermove=${this._onAreaPointerMove}
           @pointerup=${this._onPointerUp}
@@ -491,7 +508,7 @@ export class CgColorPicker extends LitElement {
           <div class="slider-track hue-track"
             tabindex="0"
             role="slider"
-            aria-label="Hue"
+            aria-label=${this.i18n.t('hue')}
             aria-valuemin="0"
             aria-valuemax="360"
             aria-valuenow=${Math.round(this._hsv.h)}
@@ -508,7 +525,7 @@ export class CgColorPicker extends LitElement {
             <div class="slider-track alpha-track"
               tabindex="0"
               role="slider"
-              aria-label="Opacity"
+              aria-label=${this.i18n.t('opacity')}
               aria-valuemin="0"
               aria-valuemax="100"
               aria-valuenow=${Math.round(this._hsv.a * 100)}
@@ -524,8 +541,8 @@ export class CgColorPicker extends LitElement {
         <!-- Hex + copy -->
         <div class="inputs-row">
           <div class="preview-dot" style="background:${currentHex}"></div>
-          <input class="hex-input" type="text" .value=${this._hexInput} aria-label="Hex color" @input=${this._onHexInput} />
-          <button class="copy-btn" @click=${this._copy} aria-label="Copy color">
+          <input class="hex-input" type="text" .value=${this._hexInput} aria-label=${this.i18n.t('hex')} @input=${this._onHexInput} />
+          <button class="copy-btn" @click=${this._copy} aria-label=${this.i18n.t('copy')}>
             ${this._copied ? html`
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6L9 17l-5-5"></path></svg>
             ` : html`
@@ -550,7 +567,7 @@ export class CgColorPicker extends LitElement {
 
         <!-- Presets -->
         ${this.showPresets && this.colors.length > 0 ? html`
-          <div class="presets" role="radiogroup" aria-label="Preset colors">
+          <div class="presets" role="radiogroup" aria-label=${this.i18n.t('presets')}>
             ${this.colors.map(c => html`
               <button class="preset ${this.value === c ? 'active' : ''}" style="background:${c}"
                 role="radio" aria-checked=${this.value === c} aria-label=${c}

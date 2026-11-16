@@ -2,6 +2,12 @@ import { LitElement, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-otp-input', {
+  label: 'One-time password input',
+  digit: 'Digit {n} of {total}',
+});
 
 /**
  * <cg-otp-input> — One-time password input with individual digit boxes.
@@ -103,6 +109,11 @@ export class CgOtpInput extends LitElement {
       }
     }
   `];
+
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
 
   @property({ type: Number }) length = 6;
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
@@ -209,7 +220,7 @@ export class CgOtpInput extends LitElement {
 
   override render() {
     return html`
-      <div class="container" role="group" aria-label="One-time password input">
+      <div class="container" role="group" aria-label=${this.i18n.t('label')}>
         ${Array.from({ length: this.length }, (_, i) => {
           const digit = this._digits[i] || '';
           const display = this.mask && digit ? '\u2022' : digit;
@@ -221,7 +232,7 @@ export class CgOtpInput extends LitElement {
               ?disabled=${this.disabled}
               aria-invalid=${this.error ? 'true' : 'false'}
               autocomplete="one-time-code"
-              aria-label=${`Digit ${i + 1} of ${this.length}`}
+              aria-label=${this.i18n.t('digit', { n: i + 1, total: this.length })}
               @input=${(e: Event) => this._onInput(i, e)}
               @keydown=${(e: KeyboardEvent) => this._onKeyDown(i, e)}
               @paste=${this._onPaste}

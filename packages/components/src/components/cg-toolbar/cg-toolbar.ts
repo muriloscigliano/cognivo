@@ -2,6 +2,11 @@ import { LitElement, html, css } from 'lit';
 import { property, queryAssignedElements } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-toolbar', {
+  label: 'Toolbar',
+});
 
 /**
  * @element cg-toolbar
@@ -59,6 +64,10 @@ export class CgToolbar extends LitElement {
   `];
 
   /** Arrow-key axis + flex direction. */
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ reflect: true }) orientation: 'horizontal' | 'vertical' = 'horizontal';
 
   /** aria-label for the toolbar landmark. */
@@ -164,7 +173,7 @@ export class CgToolbar extends LitElement {
       <div
         class="root"
         role="toolbar"
-        aria-label=${this.label || 'Toolbar'}
+        aria-label=${this.label || this.i18n.t('label')}
         aria-orientation=${this.orientation}
       >
         <slot @slotchange=${this._onSlotChange}></slot>

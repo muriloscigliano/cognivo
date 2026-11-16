@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-navigation-menu', {
+  label: 'Main navigation',
+});
 
 export interface NavMenuLink {
   title: string;
@@ -177,9 +182,13 @@ export class CgNavigationMenu extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Array }) items: NavMenuItem[] = [];
   /** Accessible name for the navigation landmark. */
-  @property() label = 'Main navigation';
+  @property() label?: string;
   @property({ type: Number }) openDelay = 80;
   @property({ type: Number }) closeDelay = 120;
   /** Panel grid column count. Default 2. */
@@ -233,7 +242,7 @@ export class CgNavigationMenu extends LitElement {
     return html`
       <nav
         role="navigation"
-        aria-label=${this.label}
+        aria-label=${this.label ?? this.i18n.t('label')}
         @mouseleave=${this._scheduleClose}
         @keydown=${this._onKeydown}
         @focusout=${this._onFocusOut}

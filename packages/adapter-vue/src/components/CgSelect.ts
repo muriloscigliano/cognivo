@@ -21,7 +21,7 @@ export const CgSelect = createVueWrapper(
   {
     options: { type: Array, default: () => [] },
     value: { type: String, default: '' },
-    placeholder: { type: String, default: 'Select...' },
+    placeholder: { type: String, default: undefined },
     name: { type: String, default: '' },
     disabled: { type: Boolean, default: false },
     error: { type: Boolean, default: false },

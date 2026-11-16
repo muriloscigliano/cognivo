@@ -3,6 +3,15 @@ import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion, focusRingDual } from '../../styles/index.js';
 import { FocusTrap } from '../../utils/focus-trap.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-lightbox', {
+  label: 'Image viewer',
+  close: 'Close',
+  previous: 'Previous image',
+  next: 'Next image',
+  empty: 'No images',
+});
 
 export interface CgLightboxImage {
   src: string;
@@ -114,6 +123,10 @@ export class CgLightbox extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ attribute: false }) images: CgLightboxImage[] = [];
   @property({ type: Number, reflect: true }) index = 0;
@@ -217,24 +230,24 @@ export class CgLightbox extends LitElement {
           role="dialog"
           aria-modal="true"
           tabindex="-1"
-          aria-label=${current?.caption || current?.alt || 'Image viewer'}
+          aria-label=${current?.caption || current?.alt || this.i18n.t('label')}
         >
           ${this.closable ? html`
-            <button class="ctrl close" type="button" aria-label="Close" @click=${this._requestClose}>
+            <button class="ctrl close" type="button" aria-label=${this.i18n.t('close')} @click=${this._requestClose}>
               ${svg`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`}
             </button>` : nothing}
 
           ${many ? html`
-            <button class="ctrl nav prev" type="button" aria-label="Previous image" @click=${() => this._go(-1)}>
+            <button class="ctrl nav prev" type="button" aria-label=${this.i18n.t('previous')} @click=${() => this._go(-1)}>
               ${svg`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`}
             </button>` : nothing}
 
           ${current
             ? html`<img src=${current.src} alt=${current.alt || ''} />`
-            : html`<figcaption>No images</figcaption>`}
+            : html`<figcaption>${this.i18n.t('empty')}</figcaption>`}
 
           ${many ? html`
-            <button class="ctrl nav next" type="button" aria-label="Next image" @click=${() => this._go(1)}>
+            <button class="ctrl nav next" type="button" aria-label=${this.i18n.t('next')} @click=${() => this._go(1)}>
               ${svg`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`}
             </button>` : nothing}
 

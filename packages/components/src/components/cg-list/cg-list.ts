@@ -2,6 +2,11 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-list', {
+  empty: 'No items',
+});
 
 /** Item definition for cg-list. */
 export interface ListItem {
@@ -247,13 +252,17 @@ export class CgList extends LitElement {
     .item:hover .chevron { opacity: 1; }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Array }) items: ListItem[] = [];
   @property({ reflect: true }) variant: 'number' | 'bullet' | 'image' | 'plain' = 'plain';
   @property({ type: Boolean, reflect: true }) dividers = false;
   @property({ type: Boolean, reflect: true }) hoverable = true;
   @property({ type: Boolean, reflect: true }) clickable = false;
   @property({ type: Boolean, reflect: true }) contained = false;
-  @property() emptyText = 'No items';
+  @property() emptyText?: string;
 
   private _handleItemClick(item: ListItem, index: number) {
     if (!this.clickable) return;
@@ -281,7 +290,7 @@ export class CgList extends LitElement {
             <rect x="3" y="3" width="18" height="18" rx="2"></rect>
             <path d="M8 8h8M8 12h5M8 16h3"></path>
           </svg>
-          <span class="empty-text">${this.emptyText}</span>
+          <span class="empty-text">${this.emptyText ?? this.i18n.t('empty')}</span>
         </div>
       `;
     }

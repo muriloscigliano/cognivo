@@ -2,6 +2,14 @@ import { LitElement, html, css, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-steps', {
+  label: 'Steps',
+  step: 'Step {n} of {total}: {title}',
+  done: ', completed',
+  error: ', error',
+});
 
 /** Step definition for cg-steps. */
 export interface StepItem {
@@ -197,6 +205,10 @@ export class CgSteps extends LitElement {
     }
   `];
 
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   @property({ type: Array }) items: StepItem[] = [];
   @property({ reflect: true }) direction: 'vertical' | 'horizontal' = 'vertical';
   @property({ type: Boolean, reflect: true }) clickable = false;
@@ -212,7 +224,7 @@ export class CgSteps extends LitElement {
   }
 
   private _statusSuffix(status: string): string {
-    return status === 'done' ? ', completed' : status === 'error' ? ', error' : '';
+    return status === 'done' ? this.i18n.t('done') : status === 'error' ? this.i18n.t('error') : '';
   }
 
   /**
@@ -239,7 +251,7 @@ export class CgSteps extends LitElement {
         role=${this.clickable ? 'button' : nothing}
         aria-current=${status === 'active' ? 'step' : nothing}
         aria-label=${this.clickable
-          ? `Step ${index + 1} of ${this.items.length}: ${this.items[index]?.title}${this._statusSuffix(status)}`
+          ? `${this.i18n.t('step', { n: index + 1, total: this.items.length, title: this.items[index]?.title ?? '' })}${this._statusSuffix(status)}`
           : nothing}
         @click=${() => this._handleClick(index)}
         @keydown=${(e: KeyboardEvent) => { if (this.clickable && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); this._handleClick(index); } }}
@@ -254,7 +266,7 @@ export class CgSteps extends LitElement {
   override render() {
     if (this.direction === 'horizontal') {
       return html`
-        <div class="steps-horizontal" role="list" aria-label="Steps">
+        <div class="steps-horizontal" role="list" aria-label=${this.i18n.t('label')}>
           ${this.items.map((item, i) => {
             const status = this._getStatus(item, i);
             return html`
@@ -276,7 +288,7 @@ export class CgSteps extends LitElement {
     }
 
     return html`
-      <div class="steps-vertical" role="list" aria-label="Steps">
+      <div class="steps-vertical" role="list" aria-label=${this.i18n.t('label')}>
         ${this.items.map((item, i) => {
           const status = this._getStatus(item, i);
           const isLast = i === this.items.length - 1;

@@ -2,6 +2,12 @@ import { LitElement, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-calendar', {
+  previousMonth: 'Previous month',
+  nextMonth: 'Next month',
+});
 
 /**
  * @element cg-calendar
@@ -162,6 +168,11 @@ export class CgCalendar extends LitElement {
       this._internals = this.attachInternals();
     }
   }
+
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+
+  private i18n = new Messages(this, MESSAGES);
 
   @property() value = '';
   @property({ attribute: 'range-end' }) rangeEnd = '';
@@ -344,7 +355,9 @@ export class CgCalendar extends LitElement {
   }
 
   private _getWeekdayNames(): string[] {
-    const names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    // 2023-01-01 was a Sunday.
+    const fmt = new Intl.DateTimeFormat(this.i18n.locale, { weekday: 'short' });
+    const names = Array.from({ length: 7 }, (_, i) => fmt.format(new Date(2023, 0, 1 + i)));
     if (this.weekStartsOn === 1) {
       return [...names.slice(1), names[0]!];
     }
@@ -352,7 +365,7 @@ export class CgCalendar extends LitElement {
   }
 
   private _getMonthName(): string {
-    return new Date(this._displayYear, this._displayMonth, 1).toLocaleString('default', { month: 'long' });
+    return new Date(this._displayYear, this._displayMonth, 1).toLocaleString(this.i18n.locale, { month: 'long' });
   }
 
   private _getDayClasses(date: Date, isOutside: boolean): string {
@@ -407,13 +420,13 @@ export class CgCalendar extends LitElement {
     return html`
       <div class="calendar" role="grid" aria-label=${`${this._getMonthName()} ${this._displayYear}`}>
         <div class="header">
-          <button class="nav-btn" type="button" aria-label="Previous month" ?disabled=${this._isPrevMonthOutOfBounds()} @click=${this._prevMonth}>
+          <button class="nav-btn" type="button" aria-label=${this.i18n.t('previousMonth')} ?disabled=${this._isPrevMonthOutOfBounds()} @click=${this._prevMonth}>
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M9 3L5 7l4 4"/>
             </svg>
           </button>
           <div class="month-year">${this._getMonthName()} ${this._displayYear}</div>
-          <button class="nav-btn" type="button" aria-label="Next month" ?disabled=${this._isNextMonthOutOfBounds()} @click=${this._nextMonth}>
+          <button class="nav-btn" type="button" aria-label=${this.i18n.t('nextMonth')} ?disabled=${this._isNextMonthOutOfBounds()} @click=${this._nextMonth}>
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5 3l4 4-4 4"/>
             </svg>
