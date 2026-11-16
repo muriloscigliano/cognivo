@@ -14,10 +14,19 @@
 //     background, or, when the host is transparent, on the page: it is
 //     paired with the three page surfaces (base, cards, container).
 //
+// A colour value counts when it is a `var()` chain of tokens, with or without
+// `!important`: `var(--cg-a, var(--cg-b))` paints a or b (both audited), and
+// `var(--_private, var(--cg-c))` paints c by default. Text set only in a
+// state (`.item:hover { color }`) sits on that state's own background, or on
+// the element's resting background.
+//
+// Shared style modules (`src/styles/*.css.ts`, e.g. the menu list) are read
+// too; their pairs are reported as `styles/<module>`.
+//
 // Skipped: disabled / inactive states (WCAG 1.4.3 exempts them), `color:`
-// values that are not a single `--cg-color-*` token (inherit, currentColor,
-// gradients, fallbacks to raw values), and backgrounds that are not a single
-// colour token (gradients, images, transparent).
+// values that are not token `var()` chains (inherit, currentColor,
+// gradients, raw values), and backgrounds that are not a colour token
+// (gradients, images, transparent).
 //
 // Non-text tokens painted through `color` (icons, checkmarks, dots, borders
 // used via currentColor) are audited at 3:1 (WCAG 1.4.11), text at 4.5:1.
@@ -44,10 +53,22 @@ const DISABLED_TOKEN = /(^|-)disabled?(-|$)/
 const DISABLED_SELECTOR = /disabled|\[aria-disabled|inert/
 const STATE_PSEUDO = /:(?:hover|focus-visible|focus-within|focus|active|visited|not\((?:[^()]|\([^()]*\))*\))/g
 
-/** The single `--cg-*` token a colour declaration consists of, else null. */
-function soleColorToken(value) {
-  const m = value.trim().match(/^var\(\s*--cg-([a-z0-9-]+)\s*\)$/)
-  return m ? m[1] : null
+/**
+ * The `--cg-*` tokens a colour declaration can paint: a `var()` chain, with
+ * token fallbacks, private custom properties falling back to a token, and
+ * `!important`. Anything else (raw colours, currentColor, gradients,
+ * functions) paints no token: [].
+ */
+export function colorTokens(value) {
+  let v = value.replace(/!important\s*$/i, '').trim()
+  const tokens = []
+  while (v) {
+    const m = v.match(/^var\(\s*--([A-Za-z0-9_-]+)\s*(?:,\s*([\s\S]*))?\)$/)
+    if (!m) break
+    if (m[1].startsWith('cg-')) tokens.push(m[1].slice(3))
+    v = (m[2] ?? '').trim()
+  }
+  return tokens
 }
 
 /** Text of every css`…` template in a TS source (interpolations removed). */
@@ -142,18 +163,22 @@ export function pairsFromCss(text) {
   for (const rule of cssRules(text)) {
     const note = rule.decls.get('--contrast')
     if (note === 'decorative') continue
-    const fg = rule.decls.has('color') ? soleColorToken(rule.decls.get('color')) : null
+    const fgs = rule.decls.has('color') ? colorTokens(rule.decls.get('color')) : []
     const bgDecl = rule.decls.get('background-color') ?? rule.decls.get('background')
-    const bg = bgDecl ? soleColorToken(bgDecl) : null
+    const bgs = bgDecl ? colorTokens(bgDecl) : []
     // `contrast: [non-text] [on --cg-color-x]`: icon-only (3:1) and/or the
     // background this rule's colour sits on.
     const parsed = note?.match(/^(non-text)?\s*(?:on\s+--cg-(color-[a-z0-9-]+))?$/)
     if (note && (!parsed || (!parsed[1] && !parsed[2]))) {
       throw new Error(`unknown contrast annotation "${note}" (use "on --cg-color-…", "non-text", or "decorative")`)
     }
-    if (!fg && !bg) continue
+    if (!fgs.length && !bgs.length) continue
     for (const selector of rule.selectors) {
-      entries.push({ selector, base: baseSelector(selector), fg, bg, on: parsed?.[2] ?? null, nonText: Boolean(parsed?.[1]) })
+      for (const fg of fgs.length ? fgs : [null]) {
+        for (const bg of bgs.length ? bgs : [null]) {
+          entries.push({ selector, base: baseSelector(selector), fg, bg, on: parsed?.[2] ?? null, nonText: Boolean(parsed?.[1]) })
+        }
+      }
     }
   }
 
@@ -176,6 +201,17 @@ export function pairsFromCss(text) {
     const siblings = byBase.get(e.base)
     if (e.fg && e.bg) { add(e.fg, e.bg, e.selector, e.nonText); continue }
     if (e.fg && e.on) { add(e.fg, e.on, e.selector, e.nonText); continue }
+    if (e.fg && e.selector !== e.base) {
+      // Text set only in a state: on that state's own background, else on the
+      // element's resting background (a sibling rule may set colour too).
+      const own = siblings.filter((s) => s.bg && s.selector === e.selector).map((s) => s.bg)
+      const resting = siblings.filter((s) => s.bg && s.selector === s.base).map((s) => s.bg)
+      const bgs = [...new Set(own.length ? own : resting)]
+      if (bgs.length) {
+        bgs.forEach((bg) => add(e.fg, bg, e.selector, e.nonText))
+        continue
+      }
+    }
     if (e.fg) {
       // A sibling that sets its own text colour paints a different pair.
       const bgs = [...new Set(siblings.filter((s) => s.bg && !s.fg).map((s) => s.bg))]
@@ -200,21 +236,32 @@ export function pairsFromCss(text) {
  */
 export function deriveComponentPairs(componentsDir) {
   const map = new Map()
+  const read = (name, file) => {
+    const source = fs.readFileSync(file, 'utf8')
+    for (const tpl of cssTemplates(source)) {
+      for (const p of pairsFromCss(tpl)) {
+        const key = `${p.fg}|${p.bg}|${p.min}`
+        const entry = map.get(key) ?? { fg: p.fg, bg: p.bg, min: p.min, usedBy: [] }
+        const where = `${name} ${p.selector}`
+        if (!entry.usedBy.includes(where)) entry.usedBy.push(where)
+        map.set(key, entry)
+      }
+    }
+  }
   for (const dir of fs.readdirSync(componentsDir).sort()) {
     const full = path.join(componentsDir, dir)
     if (!fs.statSync(full).isDirectory()) continue
     for (const file of fs.readdirSync(full).sort()) {
       if (!file.endsWith('.ts') || file.endsWith('.test.ts') || file.endsWith('.d.ts')) continue
-      const source = fs.readFileSync(path.join(full, file), 'utf8')
-      for (const tpl of cssTemplates(source)) {
-        for (const p of pairsFromCss(tpl)) {
-          const key = `${p.fg}|${p.bg}|${p.min}`
-          const entry = map.get(key) ?? { fg: p.fg, bg: p.bg, min: p.min, usedBy: [] }
-          const where = `${dir} ${p.selector}`
-          if (!entry.usedBy.includes(where)) entry.usedBy.push(where)
-          map.set(key, entry)
-        }
-      }
+      read(dir, path.join(full, file))
+    }
+  }
+  // Shared style modules (menu list, focus ring, …) that components import.
+  const stylesDir = path.join(componentsDir, '..', 'styles')
+  if (fs.existsSync(stylesDir)) {
+    for (const file of fs.readdirSync(stylesDir).sort()) {
+      if (!file.endsWith('.css.ts')) continue
+      read(`styles/${file.replace(/\.ts$/, '')}`, path.join(stylesDir, file))
     }
   }
   return [...map.values()]

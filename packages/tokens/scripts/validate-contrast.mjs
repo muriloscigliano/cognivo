@@ -15,15 +15,18 @@
  *     overrides applied on top.
  *  5. Every text/background pair the components paint, derived from their
  *     Lit `css` templates (scripts/component-pairs.mjs), is a hard gate too.
- *     Known failures not fixed yet are listed, one per component, in
- *     scripts/contrast-baseline.json; the list can only shrink (an entry
- *     that passes, or is no longer painted, fails the gate until removed).
+ *     Known failures not fixed yet are listed, one per component + selector
+ *     + theme + pair with the ratio measured when listed, in
+ *     scripts/contrast-baseline.json (see contrast-baseline.mjs): the list
+ *     can only shrink (`maxEntries`), a listed pair may not get worse, and an
+ *     entry that passes or is no longer painted fails until removed.
  */
 
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { deriveComponentPairs } from './component-pairs.mjs'
+import { checkBaseline } from './contrast-baseline.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const CSS_PATH = path.resolve(__dirname, '..', 'dist', 'index.css')
@@ -282,27 +285,15 @@ function main() {
   const all = [...PAIRS, ...derived]
   const rows = [...evaluate(light, 'light', all), ...evaluate(dark, 'dark', all)]
   const baseline = JSON.parse(fs.readFileSync(BASELINE_PATH, 'utf-8'))
-  const baselineUsed = new Set()
-  const componentFailures = []
+  const { errors: baselineErrors, known: knownCount } = checkBaseline(rows, baseline)
 
   let failures = 0
   let unresolved = 0
   let lowest = { label: null, theme: null, ratio: Infinity }
 
   for (const row of rows) {
-    if (row.pair.component) {
-      // Hard gate at the pair's own minimum, per component that paints it.
-      if (row.status === 'PASS') continue
-      const components = [...new Set(row.pair.usedBy.map((u) => u.split(' ')[0]))]
-      const known = []
-      for (const c of components) {
-        const key = `${row.theme} ${row.label} @ ${c}`
-        if (key in baseline) { baselineUsed.add(key); known.push(c) }
-        else componentFailures.push(`${key} = ${row.ratio ? row.ratio.toFixed(2) : 'unresolved'} (min ${row.pair.min}; ${row.pair.usedBy.filter((u) => u.startsWith(`${c} `)).join(', ')})`)
-      }
-      if (known.length === components.length) row.status = 'KNOWN'
-      continue
-    }
+    // Component pairs: hard gate at their own minimum, through the baseline.
+    if (row.pair.component) continue
     if (row.status === 'UNRESOLVED') unresolved++
     // A required pair whose tokens are missing in a theme is a failure, not a
     // warning: an undefined focus-ring token renders no ring at all.
@@ -336,12 +327,9 @@ function main() {
     )
   }
 
-  const stale = Object.keys(baseline).filter((k) => !baselineUsed.has(k))
-  const knownCount = baselineUsed.size
   console.log(`component pairs: ${derived.length} derived from component styles, ${derived.length * 2} checks, ${knownCount} known failure(s) in contrast-baseline.json`)
-  for (const f of componentFailures) console.error(`  FAIL ${f}`)
-  for (const k of stale) console.error(`  STALE baseline entry (passes now or no longer painted; delete it): ${k}`)
-  failures += componentFailures.length + stale.length
+  for (const e of baselineErrors) console.error(`  ${e}`)
+  failures += baselineErrors.length
 
   if (unresolved > 0) {
     console.warn(`[validate-contrast] ${unresolved} pair(s) could not be resolved (missing tokens or unresolvable refs).`)

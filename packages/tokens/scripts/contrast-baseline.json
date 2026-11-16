@@ -1,51 +1,253 @@
 {
-  "dark color-action-primary-text-default on color-surface-base-background @ ai-annotation": "unverified: .annotation-tag text; its background is set outside this rule (inline), so the derived page pair may be a false positive \u2014 confirm and annotate, or fix",
-  "dark color-action-primary-text-default on color-surface-base-background @ ai-detection-canvas": "unverified: label text over the image canvas; background is inline/the image \u2014 confirm and annotate, or fix",
-  "dark color-action-primary-text-default on color-surface-base-background @ ai-transform-slider": "unverified: handle icon colour; the handle background is set outside this rule \u2014 confirm and annotate, or fix",
-  "dark color-action-primary-text-default on color-surface-cards-background @ ai-annotation": "unverified: .annotation-tag text; its background is set outside this rule (inline), so the derived page pair may be a false positive \u2014 confirm and annotate, or fix",
-  "dark color-action-primary-text-default on color-surface-cards-background @ ai-detection-canvas": "unverified: label text over the image canvas; background is inline/the image \u2014 confirm and annotate, or fix",
-  "dark color-action-primary-text-default on color-surface-cards-background @ ai-transform-slider": "unverified: handle icon colour; the handle background is set outside this rule \u2014 confirm and annotate, or fix",
-  "dark color-action-primary-text-default on color-surface-container-background @ ai-annotation": "unverified: .annotation-tag text; its background is set outside this rule (inline), so the derived page pair may be a false positive \u2014 confirm and annotate, or fix",
-  "dark color-action-primary-text-default on color-surface-container-background @ ai-detection-canvas": "unverified: label text over the image canvas; background is inline/the image \u2014 confirm and annotate, or fix",
-  "dark color-action-primary-text-default on color-surface-container-background @ ai-transform-slider": "unverified: handle icon colour; the handle background is set outside this rule \u2014 confirm and annotate, or fix",
-  "dark color-action-primary-text-default on overlay-accent-light @ ai-personalization-dash": "real: on-primary (black in dark) text on a translucent accent overlay \u2014 needs accent-text or a solid primary background",
-  "dark color-action-primary-text-default on overlay-accent-subtle @ ai-personalization-dash": "real: on-primary (black in dark) text on a translucent accent overlay \u2014 needs accent-text or a solid primary background",
-  "dark color-surface-cards-border on color-surface-base-background @ ai-data-lineage": "decorative arrow glyph in a border colour \u2014 confirm decorative and annotate, or use an icon token",
-  "dark color-surface-cards-border on color-surface-base-background @ ai-feedback": "real: empty rating star drawn in a border colour (non-text 3:1 required) \u2014 use an icon token",
-  "dark color-surface-cards-border on color-surface-base-background @ ai-token-tracker": "decorative separator glyph in a border colour \u2014 confirm decorative and annotate",
-  "dark color-surface-cards-border on color-surface-cards-background @ ai-data-lineage": "decorative arrow glyph in a border colour \u2014 confirm decorative and annotate, or use an icon token",
-  "dark color-surface-cards-border on color-surface-cards-background @ ai-feedback": "real: empty rating star drawn in a border colour (non-text 3:1 required) \u2014 use an icon token",
-  "dark color-surface-cards-border on color-surface-cards-background @ ai-token-tracker": "decorative separator glyph in a border colour \u2014 confirm decorative and annotate",
-  "dark color-surface-cards-border on color-surface-container-background @ ai-data-lineage": "decorative arrow glyph in a border colour \u2014 confirm decorative and annotate, or use an icon token",
-  "dark color-surface-cards-border on color-surface-container-background @ ai-feedback": "real: empty rating star drawn in a border colour (non-text 3:1 required) \u2014 use an icon token",
-  "dark color-surface-cards-border on color-surface-container-background @ ai-token-tracker": "decorative separator glyph in a border colour \u2014 confirm decorative and annotate",
-  "dark color-surface-container-background on color-surface-container-background @ ai-collaborative-editor": "cursor label background is the collaborator colour (inline style); contrast depends on that colour \u2014 needs a per-colour text choice",
-  "light color-code-keyword on color-surface-base-background @ ai-data-preview": "real (light): JSON syntax colours are tuned for the dark code background but painted on the page",
-  "light color-code-muted on color-surface-base-background @ ai-diff-panel": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states",
-  "light color-code-muted on color-surface-cards-background @ ai-diff-panel": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states",
-  "light color-code-muted on color-surface-container-background @ ai-diff-panel": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states",
-  "light color-code-number on color-surface-base-background @ ai-data-preview": "real (light): JSON syntax colours are tuned for the dark code background but painted on the page",
-  "light color-code-string on color-surface-base-background @ ai-data-preview": "real (light): JSON syntax colours are tuned for the dark code background but painted on the page",
-  "light color-code-text on color-surface-base-background @ ai-diff-panel": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states",
-  "light color-code-text on color-surface-cards-background @ ai-diff-panel": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states",
-  "light color-code-text on color-surface-container-background @ ai-diff-panel": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states",
-  "light color-code-text on overlay-white-medium @ ai-diff-panel": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states",
-  "light color-code-text on overlay-white-subtle @ ai-diff-panel": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states",
-  "light color-input-text-placeholder on color-code-background @ ai-debug-console": "real (light): status and muted tokens tuned for light surfaces painted on the dark code background",
-  "light color-status-error-text-default on color-code-background @ ai-debug-console": "real (light): status and muted tokens tuned for light surfaces painted on the dark code background",
-  "light color-status-info-text-default on color-code-background @ ai-debug-console": "real (light): status and muted tokens tuned for light surfaces painted on the dark code background",
-  "light color-status-success-text-default on color-code-background @ ai-debug-console": "real (light): status and muted tokens tuned for light surfaces painted on the dark code background",
-  "light color-surface-cards-border on color-surface-base-background @ ai-data-lineage": "decorative arrow glyph in a border colour \u2014 confirm decorative and annotate, or use an icon token",
-  "light color-surface-cards-border on color-surface-base-background @ ai-feedback": "real: empty rating star drawn in a border colour (non-text 3:1 required) \u2014 use an icon token",
-  "light color-surface-cards-border on color-surface-base-background @ ai-token-tracker": "decorative separator glyph in a border colour \u2014 confirm decorative and annotate",
-  "light color-surface-cards-border on color-surface-cards-background @ ai-data-lineage": "decorative arrow glyph in a border colour \u2014 confirm decorative and annotate, or use an icon token",
-  "light color-surface-cards-border on color-surface-cards-background @ ai-feedback": "real: empty rating star drawn in a border colour (non-text 3:1 required) \u2014 use an icon token",
-  "light color-surface-cards-border on color-surface-cards-background @ ai-token-tracker": "decorative separator glyph in a border colour \u2014 confirm decorative and annotate",
-  "light color-surface-cards-border on color-surface-container-background @ ai-data-lineage": "decorative arrow glyph in a border colour \u2014 confirm decorative and annotate, or use an icon token",
-  "light color-surface-cards-border on color-surface-container-background @ ai-feedback": "real: empty rating star drawn in a border colour (non-text 3:1 required) \u2014 use an icon token",
-  "light color-surface-cards-border on color-surface-container-background @ ai-token-tracker": "decorative separator glyph in a border colour \u2014 confirm decorative and annotate",
-  "light color-surface-container-background on color-surface-container-background @ ai-collaborative-editor": "cursor label background is the collaborator colour (inline style); contrast depends on that colour \u2014 needs a per-colour text choice",
-  "light color-surface-container-outlined on color-code-background @ ai-error-boundary": "real (light): muted text on the dark code background",
-  "light overlay-dark-text on overlay-dark-strong @ ai-detection-canvas": "unverified: label text over the image canvas; background is inline/the image \u2014 confirm and annotate, or fix",
-  "light overlay-dark-text on overlay-dark-strong @ cg-image-gallery": "overflow badge sits on a dark overlay over an image, measured here over white; light overlay (40% black) is too thin for white text"
+  "maxEntries": 62,
+  "entries": {
+    "dark color-action-primary-text-default on color-surface-base-background @ ai-annotation .annotation-tag": {
+      "ratio": 1.06,
+      "reason": "unverified: .annotation-tag text; its background is set outside this rule (inline), so the derived page pair may be a false positive — confirm and annotate, or fix"
+    },
+    "dark color-action-primary-text-default on color-surface-base-background @ ai-detection-canvas .bbox-label": {
+      "ratio": 1.06,
+      "reason": "unverified: label text over the image canvas; background is inline/the image — confirm and annotate, or fix"
+    },
+    "dark color-action-primary-text-default on color-surface-base-background @ ai-transform-slider .handle svg": {
+      "ratio": 1.06,
+      "reason": "unverified: handle icon colour; the handle background is set outside this rule — confirm and annotate, or fix"
+    },
+    "dark color-action-primary-text-default on color-surface-cards-background @ ai-annotation .annotation-tag": {
+      "ratio": 1.19,
+      "reason": "unverified: .annotation-tag text; its background is set outside this rule (inline), so the derived page pair may be a false positive — confirm and annotate, or fix"
+    },
+    "dark color-action-primary-text-default on color-surface-cards-background @ ai-detection-canvas .bbox-label": {
+      "ratio": 1.19,
+      "reason": "unverified: label text over the image canvas; background is inline/the image — confirm and annotate, or fix"
+    },
+    "dark color-action-primary-text-default on color-surface-cards-background @ ai-transform-slider .handle svg": {
+      "ratio": 1.19,
+      "reason": "unverified: handle icon colour; the handle background is set outside this rule — confirm and annotate, or fix"
+    },
+    "dark color-action-primary-text-default on color-surface-container-background @ ai-annotation .annotation-tag": {
+      "ratio": 1.19,
+      "reason": "unverified: .annotation-tag text; its background is set outside this rule (inline), so the derived page pair may be a false positive — confirm and annotate, or fix"
+    },
+    "dark color-action-primary-text-default on color-surface-container-background @ ai-detection-canvas .bbox-label": {
+      "ratio": 1.19,
+      "reason": "unverified: label text over the image canvas; background is inline/the image — confirm and annotate, or fix"
+    },
+    "dark color-action-primary-text-default on color-surface-container-background @ ai-transform-slider .handle svg": {
+      "ratio": 1.19,
+      "reason": "unverified: handle icon colour; the handle background is set outside this rule — confirm and annotate, or fix"
+    },
+    "dark color-action-primary-text-default on overlay-accent-light @ ai-personalization-dash .profile-avatar": {
+      "ratio": 1.37,
+      "reason": "real: on-primary (black in dark) text on a translucent accent overlay — needs accent-text or a solid primary background"
+    },
+    "dark color-action-primary-text-default on overlay-accent-subtle @ ai-personalization-dash .seg.active": {
+      "ratio": 1.17,
+      "reason": "real: on-primary (black in dark) text on a translucent accent overlay — needs accent-text or a solid primary background"
+    },
+    "dark color-surface-cards-border on color-surface-base-background @ ai-data-lineage .arrow": {
+      "ratio": 1.34,
+      "reason": "decorative arrow glyph in a border colour — confirm decorative and annotate, or use an icon token"
+    },
+    "dark color-surface-cards-border on color-surface-base-background @ ai-feedback .star-btn": {
+      "ratio": 1.34,
+      "reason": "real: empty rating star drawn in a border colour (non-text 3:1 required) — use an icon token"
+    },
+    "dark color-surface-cards-border on color-surface-base-background @ ai-token-tracker .compact .sep": {
+      "ratio": 1.34,
+      "reason": "decorative separator glyph in a border colour — confirm decorative and annotate"
+    },
+    "dark color-surface-cards-border on color-surface-cards-background @ ai-data-lineage .arrow": {
+      "ratio": 1.19,
+      "reason": "decorative arrow glyph in a border colour — confirm decorative and annotate, or use an icon token"
+    },
+    "dark color-surface-cards-border on color-surface-cards-background @ ai-feedback .star-btn": {
+      "ratio": 1.19,
+      "reason": "real: empty rating star drawn in a border colour (non-text 3:1 required) — use an icon token"
+    },
+    "dark color-surface-cards-border on color-surface-cards-background @ ai-token-tracker .compact .sep": {
+      "ratio": 1.19,
+      "reason": "decorative separator glyph in a border colour — confirm decorative and annotate"
+    },
+    "dark color-surface-cards-border on color-surface-container-background @ ai-data-lineage .arrow": {
+      "ratio": 1.19,
+      "reason": "decorative arrow glyph in a border colour — confirm decorative and annotate, or use an icon token"
+    },
+    "dark color-surface-cards-border on color-surface-container-background @ ai-feedback .star-btn": {
+      "ratio": 1.19,
+      "reason": "real: empty rating star drawn in a border colour (non-text 3:1 required) — use an icon token"
+    },
+    "dark color-surface-cards-border on color-surface-container-background @ ai-token-tracker .compact .sep": {
+      "ratio": 1.19,
+      "reason": "decorative separator glyph in a border colour — confirm decorative and annotate"
+    },
+    "dark color-surface-container-background on color-surface-container-background @ ai-collaborative-editor .cursor-label": {
+      "ratio": 1.0,
+      "reason": "cursor label background is the collaborator colour (inline style); contrast depends on that colour — needs a per-colour text choice"
+    },
+    "light color-code-keyword on color-surface-base-background @ ai-data-preview .json-bool": {
+      "ratio": 1.01,
+      "reason": "real (light): JSON syntax colours are tuned for the dark code background but painted on the page"
+    },
+    "light color-code-keyword on color-surface-base-background @ ai-data-preview .json-key": {
+      "ratio": 1.01,
+      "reason": "real (light): JSON syntax colours are tuned for the dark code background but painted on the page"
+    },
+    "light color-code-muted on color-surface-base-background @ ai-diff-panel .diff-line.unchanged .line-content": {
+      "ratio": 2.33,
+      "reason": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states"
+    },
+    "light color-code-muted on color-surface-base-background @ ai-diff-panel .line-num": {
+      "ratio": 2.33,
+      "reason": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states"
+    },
+    "light color-code-muted on color-surface-base-background @ ai-diff-panel .stat-unchanged": {
+      "ratio": 2.33,
+      "reason": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states"
+    },
+    "light color-code-muted on color-surface-cards-background @ ai-diff-panel .diff-line.unchanged .line-content": {
+      "ratio": 2.33,
+      "reason": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states"
+    },
+    "light color-code-muted on color-surface-cards-background @ ai-diff-panel .line-num": {
+      "ratio": 2.33,
+      "reason": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states"
+    },
+    "light color-code-muted on color-surface-cards-background @ ai-diff-panel .stat-unchanged": {
+      "ratio": 2.33,
+      "reason": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states"
+    },
+    "light color-code-muted on color-surface-container-background @ ai-diff-panel .diff-line.unchanged .line-content": {
+      "ratio": 2.56,
+      "reason": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states"
+    },
+    "light color-code-muted on color-surface-container-background @ ai-diff-panel .line-num": {
+      "ratio": 2.56,
+      "reason": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states"
+    },
+    "light color-code-muted on color-surface-container-background @ ai-diff-panel .stat-unchanged": {
+      "ratio": 2.56,
+      "reason": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states"
+    },
+    "light color-code-number on color-surface-base-background @ ai-data-preview .json-number": {
+      "ratio": 1.52,
+      "reason": "real (light): JSON syntax colours are tuned for the dark code background but painted on the page"
+    },
+    "light color-code-string on color-surface-base-background @ ai-data-preview .json-string": {
+      "ratio": 1.1,
+      "reason": "real (light): JSON syntax colours are tuned for the dark code background but painted on the page"
+    },
+    "light color-code-text on color-surface-base-background @ ai-diff-panel .line-content": {
+      "ratio": 1.15,
+      "reason": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states"
+    },
+    "light color-code-text on color-surface-cards-background @ ai-diff-panel .line-content": {
+      "ratio": 1.15,
+      "reason": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states"
+    },
+    "light color-code-text on color-surface-container-background @ ai-diff-panel .line-content": {
+      "ratio": 1.27,
+      "reason": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states"
+    },
+    "light color-code-text on overlay-white-medium @ ai-diff-panel .mode-btn.active": {
+      "ratio": 1.27,
+      "reason": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states"
+    },
+    "light color-code-text on overlay-white-subtle @ ai-diff-panel .mode-btn:hover:not(.active)": {
+      "ratio": 1.27,
+      "reason": "text sits on the .panel code background (ancestor) and on translucent white states over it; annotate the ancestor and recheck the overlay states"
+    },
+    "light color-input-text-placeholder on color-code-background @ ai-debug-console .chevron": {
+      "ratio": 2.29,
+      "reason": "real (light): status and muted tokens tuned for light surfaces painted on the dark code background"
+    },
+    "light color-input-text-placeholder on color-code-background @ ai-debug-console .clear-btn": {
+      "ratio": 2.29,
+      "reason": "real (light): status and muted tokens tuned for light surfaces painted on the dark code background"
+    },
+    "light color-input-text-placeholder on color-code-background @ ai-debug-console .empty": {
+      "ratio": 2.29,
+      "reason": "real (light): status and muted tokens tuned for light surfaces painted on the dark code background"
+    },
+    "light color-input-text-placeholder on color-code-background @ ai-debug-console .entry-duration": {
+      "ratio": 2.29,
+      "reason": "real (light): status and muted tokens tuned for light surfaces painted on the dark code background"
+    },
+    "light color-input-text-placeholder on color-code-background @ ai-debug-console .entry-preview": {
+      "ratio": 2.29,
+      "reason": "real (light): status and muted tokens tuned for light surfaces painted on the dark code background"
+    },
+    "light color-input-text-placeholder on color-code-background @ ai-debug-console .entry-ts": {
+      "ratio": 2.29,
+      "reason": "real (light): status and muted tokens tuned for light surfaces painted on the dark code background"
+    },
+    "light color-input-text-placeholder on color-code-background @ ai-debug-console .label-info": {
+      "ratio": 2.29,
+      "reason": "real (light): status and muted tokens tuned for light surfaces painted on the dark code background"
+    },
+    "light color-status-error-text-default on color-code-background @ ai-debug-console .label-error": {
+      "ratio": 2.13,
+      "reason": "real (light): status and muted tokens tuned for light surfaces painted on the dark code background"
+    },
+    "light color-status-info-text-default on color-code-background @ ai-debug-console .label-request": {
+      "ratio": 2.64,
+      "reason": "real (light): status and muted tokens tuned for light surfaces painted on the dark code background"
+    },
+    "light color-status-success-text-default on color-code-background @ ai-debug-console .label-response": {
+      "ratio": 2.48,
+      "reason": "real (light): status and muted tokens tuned for light surfaces painted on the dark code background"
+    },
+    "light color-surface-cards-border on color-surface-base-background @ ai-data-lineage .arrow": {
+      "ratio": 1.34,
+      "reason": "decorative arrow glyph in a border colour — confirm decorative and annotate, or use an icon token"
+    },
+    "light color-surface-cards-border on color-surface-base-background @ ai-feedback .star-btn": {
+      "ratio": 1.34,
+      "reason": "real: empty rating star drawn in a border colour (non-text 3:1 required) — use an icon token"
+    },
+    "light color-surface-cards-border on color-surface-base-background @ ai-token-tracker .compact .sep": {
+      "ratio": 1.34,
+      "reason": "decorative separator glyph in a border colour — confirm decorative and annotate"
+    },
+    "light color-surface-cards-border on color-surface-cards-background @ ai-data-lineage .arrow": {
+      "ratio": 1.34,
+      "reason": "decorative arrow glyph in a border colour — confirm decorative and annotate, or use an icon token"
+    },
+    "light color-surface-cards-border on color-surface-cards-background @ ai-feedback .star-btn": {
+      "ratio": 1.34,
+      "reason": "real: empty rating star drawn in a border colour (non-text 3:1 required) — use an icon token"
+    },
+    "light color-surface-cards-border on color-surface-cards-background @ ai-token-tracker .compact .sep": {
+      "ratio": 1.34,
+      "reason": "decorative separator glyph in a border colour — confirm decorative and annotate"
+    },
+    "light color-surface-cards-border on color-surface-container-background @ ai-data-lineage .arrow": {
+      "ratio": 1.48,
+      "reason": "decorative arrow glyph in a border colour — confirm decorative and annotate, or use an icon token"
+    },
+    "light color-surface-cards-border on color-surface-container-background @ ai-feedback .star-btn": {
+      "ratio": 1.48,
+      "reason": "real: empty rating star drawn in a border colour (non-text 3:1 required) — use an icon token"
+    },
+    "light color-surface-cards-border on color-surface-container-background @ ai-token-tracker .compact .sep": {
+      "ratio": 1.48,
+      "reason": "decorative separator glyph in a border colour — confirm decorative and annotate"
+    },
+    "light color-surface-container-background on color-surface-container-background @ ai-collaborative-editor .cursor-label": {
+      "ratio": 1.0,
+      "reason": "cursor label background is the collaborator colour (inline style); contrast depends on that colour — needs a per-colour text choice"
+    },
+    "light color-surface-container-outlined on color-code-background @ ai-error-boundary .details": {
+      "ratio": 2.29,
+      "reason": "real (light): muted text on the dark code background"
+    },
+    "light overlay-dark-text on overlay-dark-strong @ ai-detection-canvas .count-badge": {
+      "ratio": 2.85,
+      "reason": "unverified: label text over the image canvas; background is inline/the image — confirm and annotate, or fix"
+    },
+    "light overlay-dark-text on overlay-dark-strong @ cg-image-gallery .overflow-badge": {
+      "ratio": 2.85,
+      "reason": "overflow badge sits on a dark overlay over an image, measured here over white; light overlay (40% black) is too thin for white text"
+    }
+  }
 }
