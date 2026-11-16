@@ -137,54 +137,65 @@ export class CgTable extends LitElement {
     .table-scroll {
       overflow-x: auto;
     }
+    /* Overflowing: the scroll box is a tab stop (keyboard scrolling); its ring sits inside. */
+    .table-scroll:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring);
+    }
 
-    /* Body area — slightly darker inset with inner rounding + border */
-    tbody {
+    /* variant="plain": flat rows in the card — full-width hairlines between
+       rows, no inset body; the card's border closes the last row. */
+    :host([variant="plain"]) .table-wrapper { padding: 0; }
+    :host([variant="plain"]) table { width: 100%; margin: 0; }
+    :host([variant="plain"]) tbody tr:last-child > * { border-bottom: 0; }
+
+    /* Body area (default variant "inset") — slightly darker inset with inner rounding + border */
+    :host(:not([variant="plain"])) tbody {
       background: var(--cg-overlay-dark-subtle);
     }
-    tbody tr:first-child > * {
+    :host(:not([variant="plain"])) tbody tr:first-child > * {
       border-top: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
     }
-    tbody tr:last-child > * {
+    :host(:not([variant="plain"])) tbody tr:last-child > * {
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
     }
-    tbody tr > :first-child {
+    :host(:not([variant="plain"])) tbody tr > :first-child {
       border-left: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
     }
-    tbody tr > :last-child {
+    :host(:not([variant="plain"])) tbody tr > :last-child {
       border-right: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
     }
-    tbody tr:first-child > :first-child {
+    :host(:not([variant="plain"])) tbody tr:first-child > :first-child {
       border-top-left-radius: var(--cg-border-radius-150);
     }
-    tbody tr:first-child > :last-child {
+    :host(:not([variant="plain"])) tbody tr:first-child > :last-child {
       border-top-right-radius: var(--cg-border-radius-150);
     }
-    tbody tr:last-child > :first-child {
+    :host(:not([variant="plain"])) tbody tr:last-child > :first-child {
       border-bottom-left-radius: var(--cg-border-radius-150);
     }
-    tbody tr:last-child > :last-child {
+    :host(:not([variant="plain"])) tbody tr:last-child > :last-child {
       border-bottom-right-radius: var(--cg-border-radius-150);
     }
 
     /* Rounded variants — outer wrapper + inner tbody corners */
     :host([rounded="none"]) .table-wrapper { border-radius: 0; }
-    :host([rounded="none"]) tbody tr:first-child > :first-child,
-    :host([rounded="none"]) tbody tr:first-child > :last-child,
-    :host([rounded="none"]) tbody tr:last-child > :first-child,
-    :host([rounded="none"]) tbody tr:last-child > :last-child { border-radius: 0; }
+    :host([rounded="none"]:not([variant="plain"])) tbody tr:first-child > :first-child,
+    :host([rounded="none"]:not([variant="plain"])) tbody tr:first-child > :last-child,
+    :host([rounded="none"]:not([variant="plain"])) tbody tr:last-child > :first-child,
+    :host([rounded="none"]:not([variant="plain"])) tbody tr:last-child > :last-child { border-radius: 0; }
 
     :host([rounded="sm"]) .table-wrapper { border-radius: var(--cg-border-radius-100); }
-    :host([rounded="sm"]) tbody tr:first-child > :first-child { border-top-left-radius: var(--cg-border-radius-50); }
-    :host([rounded="sm"]) tbody tr:first-child > :last-child { border-top-right-radius: var(--cg-border-radius-50); }
-    :host([rounded="sm"]) tbody tr:last-child > :first-child { border-bottom-left-radius: var(--cg-border-radius-50); }
-    :host([rounded="sm"]) tbody tr:last-child > :last-child { border-bottom-right-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"]:not([variant="plain"])) tbody tr:first-child > :first-child { border-top-left-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"]:not([variant="plain"])) tbody tr:first-child > :last-child { border-top-right-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"]:not([variant="plain"])) tbody tr:last-child > :first-child { border-bottom-left-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"]:not([variant="plain"])) tbody tr:last-child > :last-child { border-bottom-right-radius: var(--cg-border-radius-50); }
 
     :host([rounded="md"]) .table-wrapper { border-radius: var(--cg-border-radius-150); }
-    :host([rounded="md"]) tbody tr:first-child > :first-child { border-top-left-radius: var(--cg-border-radius-100); }
-    :host([rounded="md"]) tbody tr:first-child > :last-child { border-top-right-radius: var(--cg-border-radius-100); }
-    :host([rounded="md"]) tbody tr:last-child > :first-child { border-bottom-left-radius: var(--cg-border-radius-100); }
-    :host([rounded="md"]) tbody tr:last-child > :last-child { border-bottom-right-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"]:not([variant="plain"])) tbody tr:first-child > :first-child { border-top-left-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"]:not([variant="plain"])) tbody tr:first-child > :last-child { border-top-right-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"]:not([variant="plain"])) tbody tr:last-child > :first-child { border-bottom-left-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"]:not([variant="plain"])) tbody tr:last-child > :last-child { border-bottom-right-radius: var(--cg-border-radius-100); }
 
     :host([rounded="lg"]) .table-wrapper { border-radius: var(--cg-component-table-radius); }
 
@@ -422,6 +433,9 @@ export class CgTable extends LitElement {
 
   private i18n = new Messages(this, MESSAGES);
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
+  /** `inset` (default): the body is an inset card inside the outer card.
+   *  `plain`: flat rows separated by full-width hairlines. */
+  @property({ reflect: true }) variant: 'inset' | 'plain' = 'inset';
 
   /** Caption (names the table). */
   @property() caption = '';
@@ -450,6 +464,9 @@ export class CgTable extends LitElement {
   @state() private _sortDir: 'asc' | 'desc' = 'asc';
   @state() private _selected = new Set<number>();
   @state() private _hasFooter = false;
+  /** The table is wider than its box: the scroll box becomes a focusable, named region. */
+  @state() private _overflows = false;
+  private _resize: ResizeObserver | undefined;
 
   private _unobserveLight: (() => void) | null = null;
 
@@ -469,6 +486,16 @@ export class CgTable extends LitElement {
     this._labelObserver = undefined;
     this._unobserveLight?.();
     this._unobserveLight = null;
+    this._resize?.disconnect();
+    this._resize = undefined;
+  }
+
+  override firstUpdated() {
+    if (typeof ResizeObserver !== 'function') return;
+    const box = this.renderRoot.querySelector<HTMLElement>('.table-scroll')!;
+    this._resize = new ResizeObserver(() => { this._overflows = box.scrollWidth > box.clientWidth; });
+    this._resize.observe(box);
+    this._resize.observe(box.firstElementChild!);
   }
 
   override willUpdate(changed: PropertyValues) {
@@ -623,10 +650,15 @@ export class CgTable extends LitElement {
     const sort = this._sort;
     const allSelected = this.rows.length > 0 && this._selected.size === this.rows.length;
     const widths = ['short', 'long', 'med', 'short'];
+    // An overflowing scroll box is a tab stop; named after the table, it is a region.
+    const scrollName = this._overflows ? this._labelledText || this.label || this.caption : '';
 
     return html`
       <div class="table-wrapper">
-        <div class="table-scroll">
+        <div class="table-scroll"
+          tabindex=${this._overflows ? '0' : nothing}
+          role=${scrollName ? 'region' : nothing}
+          aria-label=${scrollName || nothing}>
         <table aria-label=${this._labelledText || this.label || nothing} aria-busy=${this.loading ? 'true' : nothing}>
           ${this.caption ? html`<caption class=${this.captionHidden ? 'sr-only' : ''}>${this.caption}</caption>` : nothing}
           <thead>
