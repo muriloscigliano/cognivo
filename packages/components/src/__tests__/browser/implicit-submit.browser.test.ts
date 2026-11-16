@@ -10,7 +10,7 @@ import { describe, it, expect, afterAll } from 'vitest';
 import type { Page } from '@playwright/test';
 import { browserAvailable, openPage, closeBrowser } from './harness.js';
 
-const TAGS = ['cg-input', 'cg-password-input', 'cg-number-input', 'cg-phone-input', 'cg-combobox', 'cg-tag-input', 'cg-checkbox', 'cg-button'];
+const TAGS = ['cg-input', 'cg-password-input', 'cg-number-input', 'cg-phone-input', 'cg-combobox', 'cg-tag-input', 'cg-otp-input', 'cg-checkbox', 'cg-button'];
 
 const instrument = `
   window.__submits = 0; window.__submitter = null; window.__clicks = 0;
@@ -38,6 +38,7 @@ describe.skipIf(!browserAvailable)('implicit submission (real browser)', { timeo
     ['cg-phone-input', '<cg-phone-input id="x" name="a" label="A"></cg-phone-input>', '#x input[type="tel"]'],
     ['cg-combobox (list closed)', '<cg-combobox id="x" name="a" label="A"></cg-combobox>', '#x input'],
     ['cg-tag-input (empty draft)', '<cg-tag-input id="x" name="a" label="A"></cg-tag-input>', '#x input'],
+    ['cg-otp-input', '<cg-otp-input id="x" name="a" length="4"></cg-otp-input>', '#x input >> nth=2'],
   ];
 
   for (const [name, field, sel] of FIELDS) {
@@ -140,6 +141,7 @@ describe.skipIf(!browserAvailable)('<fieldset disabled> (real browser)', { timeo
     'cg-button', 'cg-input', 'cg-textarea', 'cg-password-input', 'cg-number-input', 'cg-phone-input',
     'cg-checkbox', 'cg-radio', 'cg-switch', 'cg-toggle', 'cg-select', 'cg-combobox', 'cg-tag-input',
     'cg-slider', 'cg-rating', 'cg-segmented-control', 'cg-file-input', 'cg-date-range-picker', 'cg-calendar',
+    'cg-otp-input',
   ];
 
   /** Every focusable control inside the element's shadow root. */

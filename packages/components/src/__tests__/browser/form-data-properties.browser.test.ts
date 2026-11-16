@@ -22,6 +22,7 @@ const CASES: Record<string, { set: string; expected: string }> = {
   'cg-calendar': { set: 'el.value = "2026-11-16"', expected: '2026-11-16' },
   'cg-phone-input': { set: 'el.value = "+5511999990000"', expected: '+5511999990000' },
   'cg-tag-input': { set: 'el.value = ["x", "y"]', expected: 'x,y' },
+  'cg-otp-input': { set: 'el.value = "123456"', expected: '123456' },
 };
 
 describe.skipIf(!browserAvailable)('form-associated fields set purely through properties (real browser)', { timeout: 60_000 }, () => {

@@ -1,6 +1,8 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
+import { setValueMissing, type ValidationMessages } from '../../utils/validation.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -16,7 +18,13 @@ const MESSAGES = defineMessages('cg-otp-input', {
  * ```html
  * <cg-otp-input length="6"></cg-otp-input>
  * <cg-otp-input length="4" mask></cg-otp-input>
+ * <form><cg-otp-input name="code" required></cg-otp-input></form>
  * ```
+ *
+ * Form-associated: the code is submitted under `name`, `required` means a
+ * complete code (fewer digits than `length` is `valueMissing`), a form reset
+ * restores the `value` attribute, a `<fieldset disabled>` disables it, and
+ * Enter submits the form (HTML implicit submission).
  *
  * @fires {CustomEvent<{value: string}>} cg-otp-change - On each digit change
  * @fires {CustomEvent<{value: string}>} cg-otp-complete - When all digits filled
@@ -27,6 +35,19 @@ const MESSAGES = defineMessages('cg-otp-input', {
  */
 @customElement('cg-otp-input')
 export class CgOtpInput extends LitElement {
+  static formAssociated = true;
+  /** Enter here submits the owning form per HTML implicit submission, and the
+   *  field counts as one that blocks it (see utils/implicit-submit). */
+  static blocksImplicitSubmission = true;
+  private _internals?: ElementInternals;
+
+  constructor() {
+    super();
+    if (typeof this.attachInternals === 'function') {
+      this._internals = this.attachInternals();
+    }
+  }
+
   static override styles = [hostBase, reducedMotion, css`
     .container {
       display: flex;
@@ -118,7 +139,19 @@ export class CgOtpInput extends LitElement {
   @property({ type: Number }) length = 6;
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
   @property() value = '';
+  @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
+  /** A complete code is required: fewer digits than `length` is `valueMissing`. */
+  @property({ type: Boolean }) required = false;
+  /** Per-element validation texts (JSON in the `validation-messages` attribute
+   *  or a property). Falls back to `setValidationMessages()` then to the
+   *  browser's own localised message. */
+  @property({ type: Object, attribute: 'validation-messages' }) validationMessages: ValidationMessages | null = null;
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;
   @property({ type: Boolean }) mask = false;
@@ -130,8 +163,33 @@ export class CgOtpInput extends LitElement {
     this._syncDigits();
   }
 
-  override updated(changed: Map<string, unknown>) {
+  /** Native-like constraint validation API (delegates to ElementInternals). */
+  get validity(): ValidityState | undefined { return this._internals?.validity; }
+  get validationMessage(): string { return this._internals?.validationMessage ?? ''; }
+  get willValidate(): boolean { return this._internals?.willValidate ?? false; }
+  checkValidity(): boolean { return this._internals?.checkValidity() ?? true; }
+  reportValidity(): boolean { return this._internals?.reportValidity() ?? true; }
+
+  /** Before render, so a value set from outside (a property, a form reset)
+   *  shows in the boxes in the same update. */
+  override willUpdate(changed: PropertyValues) {
     if ((changed.has('value') && this.value !== this._digits.join('')) || changed.has('length')) this._syncDigits();
+  }
+
+  override updated(changed: PropertyValues) {
+    if (changed.has('value') || changed.has('required') || changed.has('length')) {
+      this._internals?.setFormValue(this.value);
+      const boxes = this._getBoxes();
+      setValueMissing(this._internals, this.required && this.value.length < this.length, this.validationMessages, 'text', boxes[this.value.length] ?? boxes[0]);
+    }
+  }
+
+  formResetCallback(): void {
+    this.value = this.getAttribute('value') ?? '';
+  }
+
+  formStateRestoreCallback(state: string): void {
+    this.value = state;
   }
 
   private _syncDigits() {
@@ -202,6 +260,9 @@ export class CgOtpInput extends LitElement {
       e.preventDefault(); this._focusBox(index - 1);
     } else if (e.key === 'ArrowRight' && index < this.length - 1) {
       e.preventDefault(); this._focusBox(index + 1);
+    } else {
+      // Enter submits the owning form, as in a native text field.
+      handleImplicitSubmit(e, this._internals);
     }
   }
 
@@ -229,7 +290,8 @@ export class CgOtpInput extends LitElement {
               type="text" inputmode="numeric" maxlength="1"
               style="animation-delay: calc(${i} * var(--cg-transition-duration-fast) / 2)"
               .value=${display}
-              ?disabled=${this.disabled}
+              ?disabled=${this._effectivelyDisabled}
+              aria-required=${this.required ? 'true' : 'false'}
               aria-invalid=${this.error ? 'true' : 'false'}
               autocomplete="one-time-code"
               aria-label=${this.i18n.t('digit', { n: i + 1, total: this.length })}

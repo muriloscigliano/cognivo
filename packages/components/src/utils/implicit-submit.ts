@@ -24,7 +24,7 @@
  * time, datetime-local or number — and, for Cognivo, any form-associated
  * element whose class sets `static blocksImplicitSubmission = true` (the
  * single-line text fields: cg-input, cg-password-input, cg-number-input,
- * cg-phone-input, cg-combobox, cg-tag-input).
+ * cg-phone-input, cg-combobox, cg-tag-input, cg-otp-input).
  */
 
 const BLOCKING_INPUT_TYPES = new Set([
