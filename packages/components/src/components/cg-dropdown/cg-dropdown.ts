@@ -36,7 +36,18 @@ export interface DropdownItem {
  * </cg-dropdown>
  * ```
  *
- * @slot trigger - The element that toggles the dropdown on click
+ * @slot trigger - The element that toggles the dropdown on click. Slot a
+ *   native `<button>` (or an element with `role="button"`): it receives
+ *   `aria-haspopup="menu"` and `aria-expanded`. (No `aria-controls`: an id
+ *   cannot point into the shadow root, Chromium drops `ariaControlsElements`
+ *   across it, and the menu-button pattern does not require it — focus moves
+ *   into the menu when it opens.)
+ *
+ * Keyboard (WAI-ARIA menu button): Enter / Space / ArrowDown on the trigger
+ * open with focus on the first item, ArrowUp on the last; in the menu
+ * ArrowUp / ArrowDown / Home / End move, a printable key jumps to the next
+ * item starting with it, Enter / Space choose, Escape closes and returns
+ * focus to the trigger, Tab closes.
  *
  * @fires {CustomEvent} cg-dropdown-open - When the menu opens
  * @fires {CustomEvent} cg-dropdown-close - When the menu closes
@@ -65,6 +76,10 @@ export class CgDropdown extends LitElement {
     .menu {
       position: absolute;
       z-index: var(--cg-z-index-400);
+    }
+    /* A closed menu leaves the accessibility tree (it stays visible while its exit animation runs). */
+    :host(:not([open])) .menu:not(.closing) {
+      visibility: hidden;
     }
     :host([position="bottom-start"]) .menu {
       top: 100%;
@@ -133,14 +148,32 @@ export class CgDropdown extends LitElement {
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property({ type: Array }) items: DropdownItem[] = [];
   @property({ type: Boolean, reflect: true }) loading = false;
+  /** Accessible name of the menu. Default: the trigger's text, then "Dropdown menu". */
+  @property() label = '';
 
   @state() private _activeIndex = -1;
   @state() private _closing = false;
   @query('.menu') private _menu!: HTMLElement;
 
   private _disposeOutsideClick: (() => void) | null = null;
+  private _typeahead = '';
+  private _typeaheadAt = 0;
+
+  private _slottedTrigger(): HTMLElement | null {
+    const slot = this.shadowRoot?.querySelector<HTMLSlotElement>('slot[name="trigger"]');
+    return (slot?.assignedElements()[0] as HTMLElement | undefined) ?? null;
+  }
+
+  /** ARIA popup state lives on the slotted trigger — a role-less wrapper div
+   *  is invisible to assistive tech (and fails axe `aria-allowed-attr`). */
+  private _syncTrigger(): void {
+    const el = this._slottedTrigger();
+    el?.setAttribute('aria-haspopup', 'menu');
+    el?.setAttribute('aria-expanded', String(this.open));
+  }
 
   override updated(changed: Map<string, unknown>) {
+    if (changed.has('open')) this._syncTrigger();
     if (changed.has('open') && !this.open && changed.get('open') === true) {
       this._closing = true;
       setTimeout(() => { this._closing = false; }, 100);
@@ -168,10 +201,17 @@ export class CgDropdown extends LitElement {
     }
   }
 
-  private _open() {
+  /** Open and move focus into the menu: the first enabled item, or the last (`last`). */
+  private _open(last = false) {
     this.open = true;
     this._activeIndex = -1;
     this.dispatchEvent(new CustomEvent('cg-dropdown-open', { bubbles: true, composed: true }));
+    this.updateComplete.then(() => {
+      const count = this._enabledItems.length;
+      if (!this.open || !count) return;
+      this._activeIndex = last ? count - 1 : 0;
+      this._focusActiveItem();
+    });
   }
 
   private _close() {
@@ -188,22 +228,42 @@ export class CgDropdown extends LitElement {
       detail: { id: item.id, label: item.label },
     }));
     this._close();
+    this._focusTrigger();
   }
 
   private get _enabledItems(): DropdownItem[] {
     return this.items.filter(i => !i.divider && !i.disabled);
   }
 
+  /** Printable key: the next enabled item whose label starts with the typed text (500 ms buffer). */
+  private _typeaheadKey(e: KeyboardEvent): boolean {
+    if (e.key.length !== 1 || e.key === ' ' || e.ctrlKey || e.metaKey || e.altKey) return false;
+    const now = Date.now();
+    this._typeahead = (now - this._typeaheadAt > 500 ? '' : this._typeahead) + e.key.toLowerCase();
+    this._typeaheadAt = now;
+    const items = this._enabledItems;
+    const query = this._typeahead.split('').every((c) => c === this._typeahead[0]) ? this._typeahead[0]! : this._typeahead;
+    // A repeated single letter cycles; a longer prefix starts from the current item.
+    const start = query.length === 1 ? this._activeIndex + 1 : Math.max(this._activeIndex, 0);
+    for (let n = 0; n < items.length; n++) {
+      const i = (start + n) % items.length;
+      if (items[i]!.label.toLowerCase().startsWith(query)) {
+        this._activeIndex = i;
+        this._focusActiveItem();
+        break;
+      }
+    }
+    return true;
+  }
+
   private _handleKeydown(e: KeyboardEvent) {
     if (!this.open) {
-      if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+      // A native button opens on Space itself (its click, on key-up): opening on key-down
+      // would move focus into the menu and the key-up would choose the first item.
+      if (e.key === ' ' && e.target instanceof HTMLButtonElement) return;
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
         e.preventDefault();
-        this._open();
-        // Focus first item after open
-        this.updateComplete.then(() => {
-          this._activeIndex = 0;
-          this._focusActiveItem();
-        });
+        this._open(e.key === 'ArrowUp');
       }
       return;
     }
@@ -213,15 +273,19 @@ export class CgDropdown extends LitElement {
       return;
     }
 
+    if (this._typeaheadKey(e)) {
+      e.preventDefault();
+      return;
+    }
+
     const { index, handled } = handleRovingKey(e, {
       items: this.items,
       activeIndex: this._activeIndex,
       isSkippable: i => Boolean(i.divider || i.disabled),
-      onSelect: item => {
-        this._selectItem(item);
-        this._focusTrigger();
-      },
+      onSelect: item => this._selectItem(item),
       onEscape: () => {
+        // The open menu consumes its Escape: document listeners (a drawer, a dialog) do not close too.
+        e.stopPropagation();
         this._close();
         this._focusTrigger();
       },
@@ -237,7 +301,7 @@ export class CgDropdown extends LitElement {
 
   private _focusActiveItem() {
     this.updateComplete.then(() => {
-      const items = this.shadowRoot?.querySelectorAll('.menu-item:not(.disabled)');
+      const items = this.shadowRoot?.querySelectorAll('.menu-item:not(.disabled):not(.menu-empty)');
       if (items && items[this._activeIndex]) {
         (items[this._activeIndex] as HTMLElement).focus();
       }
@@ -262,26 +326,25 @@ export class CgDropdown extends LitElement {
     return html`
       <div
         class="trigger"
-        aria-haspopup="menu"
-        aria-expanded="${this.open}"
         @click="${this._toggle}"
         @keydown="${this._handleKeydown}"
       >
-        <slot name="trigger"></slot>
+        <slot name="trigger" @slotchange=${this._syncTrigger}></slot>
       </div>
       <div
         class="menu ${this._closing ? 'closing' : ''}"
         role="menu"
-        aria-label=${this.i18n.t('label')}
+        aria-label=${this.label || this._slottedTrigger()?.textContent?.trim() || this.i18n.t('label')}
+        aria-busy=${this.loading ? 'true' : nothing}
         @keydown="${this._handleKeydown}"
       >
         ${this.loading ? html`
-          <div class="menu-loading" aria-busy="true">
+          <div class="menu-loading" role="none">
             <span class="menu-loading-spinner"></span>
             <span>${this.i18n.t('loading')}</span>
           </div>
         ` : this.items.length === 0 ? html`
-          <div class="menu-empty">${this.i18n.t('empty')}</div>
+          <div class="menu-item menu-empty" role="menuitem" aria-disabled="true">${this.i18n.t('empty')}</div>
         ` : nothing}
         ${!this.loading ? this.items.map((item, index) => {
           if (item.divider) {
@@ -292,8 +355,8 @@ export class CgDropdown extends LitElement {
             <button
               class="menu-item ${item.disabled ? 'disabled' : ''} ${enabledIndex === this._activeIndex ? 'active' : ''}"
               role="menuitem"
-              tabindex="${this.open && !item.disabled ? '0' : '-1'}"
-              aria-disabled="${item.disabled ? 'true' : 'false'}"
+              tabindex="-1"
+              aria-disabled=${item.disabled ? 'true' : nothing}
               style="--stagger-index: ${index}"
               @click="${() => this._selectItem(item)}"
             >

@@ -62,7 +62,11 @@ async function drawerWith(c: Case): Promise<Page> {
 const drawerOpen = (page: Page) =>
   page.evaluate(() => !(document.querySelector('cg-app-shell') as HTMLElement & { sidebarCollapsed: boolean }).sidebarCollapsed);
 const expanded = (page: Page) =>
-  page.evaluate(() => document.getElementById('popup')!.shadowRoot!.querySelector('[aria-expanded]')!.getAttribute('aria-expanded'));
+  page.evaluate(() => {
+    const popup = document.getElementById('popup')!;
+    // cg-dropdown puts the state on its slotted trigger; the others on their own shadow control.
+    return (popup.querySelector('[aria-expanded]') ?? popup.shadowRoot!.querySelector('[aria-expanded]'))!.getAttribute('aria-expanded');
+  });
 
 describe.skipIf(!browserAvailable)('Escape in a popup inside the phone drawer (real browser)', { timeout: 30_000 }, () => {
   afterAll(closeBrowser);

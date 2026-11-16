@@ -167,18 +167,19 @@ describe('cg-dropdown', () => {
     expect(cssText).toContain('staggerFadeIn');
   });
 
-  it('trigger has aria-haspopup="menu"', () => {
-    const trigger = el.shadowRoot!.querySelector('.trigger');
-    expect(trigger!.getAttribute('aria-haspopup')).toBe('menu');
-  });
-
-  it('trigger aria-expanded reflects open state', async () => {
-    const trigger = el.shadowRoot!.querySelector('.trigger');
-    expect(trigger!.getAttribute('aria-expanded')).toBe('false');
-
+  it('the slotted trigger gets aria-haspopup="menu" and aria-expanded (the wrapper has no ARIA)', async () => {
+    const button = document.createElement('button');
+    button.slot = 'trigger';
+    button.textContent = 'Actions';
+    el.appendChild(button);
+    await new Promise((r) => setTimeout(r, 0));
+    await el.updateComplete;
+    expect(button.getAttribute('aria-haspopup')).toBe('menu');
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(el.shadowRoot!.querySelector('.trigger')!.hasAttribute('aria-expanded')).toBe(false);
     el.open = true;
     await el.updateComplete;
-    expect(trigger!.getAttribute('aria-expanded')).toBe('true');
+    expect(button.getAttribute('aria-expanded')).toBe('true');
   });
 
   it('menu has role="menu"', () => {
