@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { formInternals } from '../../utils/form-internals.js';
 import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
 import { setValueMissing, type ValidationMessages } from '../../utils/validation.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
@@ -27,9 +28,7 @@ export class CgNumberInput extends LitElement {
 
   constructor() {
     super();
-    if (typeof this.attachInternals === 'function') {
-      this._internals = this.attachInternals();
-    }
+    this._internals = formInternals(this);
   }
 
   static override styles = [hostBase, reducedMotion, css`

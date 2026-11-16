@@ -49,6 +49,16 @@ import { setValidationMessages } from '@cognivo/components/validation';
 setValidationMessages({ valueMissing: 'Campo obrigatório', typeMismatch: 'Formato inválido' });
 ```
 
+### Unit tests in jsdom
+
+jsdom (the default for Jest, Vitest and React Testing Library) has
+`attachInternals()` but none of its form API (`setFormValue`, `setValidity`,
+`form`, `validity`). Form-associated components feature-detect it and degrade
+to plain elements there: they render, hold `value`, fire their events, and
+`checkValidity()`/`reportValidity()` return `true`; nothing reaches `FormData`
+and Enter does not submit. Assert on `value` and events in jsdom; test
+submission and validity in a real browser (Playwright, Vitest browser mode).
+
 ## Translating interface text
 
 Foundation (`cg-*`) and `bias-*` components contain no hard-coded English. Every

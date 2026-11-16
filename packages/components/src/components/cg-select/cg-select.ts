@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { formInternals } from '../../utils/form-internals.js';
 import { setValueMissing, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { bindOutsideClick } from '../../utils/outside-click.js';
@@ -48,9 +49,7 @@ export class CgSelect extends LitElement {
 
   constructor() {
     super();
-    if (typeof this.attachInternals === 'function') {
-      this._internals = this.attachInternals();
-    }
+    this._internals = formInternals(this);
   }
 
   static override styles = [hostBlock, reducedMotion, css`

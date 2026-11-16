@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { formInternals } from '../../utils/form-internals.js';
 import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
@@ -198,13 +199,11 @@ export class CgTagInput extends LitElement {
   /** Enter here submits the owning form per HTML implicit submission, and the
    *  field counts as one that blocks it (see utils/implicit-submit). */
   static blocksImplicitSubmission = true;
-  private _internals?: ElementInternals;
+  private _internals: ElementInternals | undefined;
 
   constructor() {
     super();
-    if (typeof this.attachInternals === 'function') {
-      this._internals = this.attachInternals();
-    }
+    this._internals = formInternals(this);
   }
 
   /** Per-element text overrides (JSON attribute); see `setMessages()`. */

@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { formInternals } from '../../utils/form-internals.js';
 import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
 
 /**
@@ -39,9 +40,7 @@ export class CgButton extends LitElement {
 
   constructor() {
     super();
-    if (typeof this.attachInternals === 'function') {
-      this._internals = this.attachInternals();
-    }
+    this._internals = formInternals(this);
     // On the host, not the inner <button>: a click on the inner button
     // bubbles here, and so does host.click() — which is how a form's
     // implicit submission (Enter in a field) activates its default button.

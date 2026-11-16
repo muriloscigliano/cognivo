@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { formInternals } from '../../utils/form-internals.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 
 export interface SegmentOption {
@@ -122,13 +123,11 @@ export class CgSegmentedControl extends LitElement {
   `];
 
   static formAssociated = true;
-  private _internals?: ElementInternals;
+  private _internals: ElementInternals | undefined;
 
   constructor() {
     super();
-    if (typeof this.attachInternals === 'function') {
-      this._internals = this.attachInternals();
-    }
+    this._internals = formInternals(this);
   }
 
   @property({ type: Array }) options: SegmentOption[] = [];
@@ -149,8 +148,9 @@ export class CgSegmentedControl extends LitElement {
 
   override connectedCallback(): void {
     super.connectedCallback();
-    // Re-compute indicator when container resizes (e.g. full width on mobile)
-    this._resizeObserver = new ResizeObserver(() => this._updateIndicator());
+    // Re-compute indicator when container resizes (e.g. full width on mobile).
+    // Feature-detected: jsdom has no ResizeObserver.
+    if (typeof ResizeObserver === 'function') this._resizeObserver = new ResizeObserver(() => this._updateIndicator());
     requestAnimationFrame(() => {
       const track = this.shadowRoot?.querySelector('.track');
       if (track && this._resizeObserver) this._resizeObserver.observe(track);

@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing, svg } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { formInternals } from '../../utils/form-internals.js';
 import { hostBlock, reducedMotion, focusRingSingle } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -374,13 +375,11 @@ export class CgFileInput extends LitElement {
   `];
 
   static formAssociated = true;
-  private _internals?: ElementInternals;
+  private _internals: ElementInternals | undefined;
 
   constructor() {
     super();
-    if (typeof this.attachInternals === 'function') {
-      this._internals = this.attachInternals();
-    }
+    this._internals = formInternals(this);
   }
 
   /** Per-element text overrides (JSON attribute); see `setMessages()`. */

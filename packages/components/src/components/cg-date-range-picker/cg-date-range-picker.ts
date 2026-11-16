@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { formInternals } from '../../utils/form-internals.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -30,9 +31,7 @@ export class CgDateRangePicker extends LitElement {
 
   constructor() {
     super();
-    if ('attachInternals' in this) {
-      this._internals = this.attachInternals();
-    }
+    this._internals = formInternals(this);
   }
 
   static override styles = [hostBlock, reducedMotion, css`

@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { formInternals } from '../../utils/form-internals.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -85,13 +86,11 @@ export class CgRating extends LitElement {
   `];
 
   static formAssociated = true;
-  private _internals?: ElementInternals;
+  private _internals: ElementInternals | undefined;
 
   constructor() {
     super();
-    if (typeof this.attachInternals === 'function') {
-      this._internals = this.attachInternals();
-    }
+    this._internals = formInternals(this);
   }
 
   /** Per-element text overrides (JSON attribute); see `setMessages()`. */

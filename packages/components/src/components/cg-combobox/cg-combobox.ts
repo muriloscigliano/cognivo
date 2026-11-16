@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { formInternals } from '../../utils/form-internals.js';
 import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
@@ -249,9 +250,7 @@ export class CgCombobox extends LitElement {
 
   constructor() {
     super();
-    if ('attachInternals' in this) {
-      try { this._internals = (this as HTMLElement).attachInternals(); } catch { /* ignore */ }
-    }
+    try { this._internals = formInternals(this) ?? null; } catch { /* ignore */ }
   }
 
   override connectedCallback(): void {
