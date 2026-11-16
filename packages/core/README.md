@@ -34,6 +34,10 @@ const result = await client.runIntent(AiIntent.EXPLAIN, {
 });
 ```
 
+## Size budget
+
+`pnpm size` (run in CI) limits `dist/index.js` to **14.94 KB gzip**. That is the size measured on 2026-11-16 (15,298 B) — the package had already grown past its earlier 14 KB budget, so the limit records the current size rather than an aim. It should come down: the limit is lowered whenever the package shrinks, and is never raised past a measured size.
+
 ## License
 
 MIT
