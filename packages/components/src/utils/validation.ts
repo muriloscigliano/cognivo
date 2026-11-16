@@ -15,7 +15,9 @@
  * </cg-input>
  * ```
  * ```ts
- * import { setValidationMessages } from '@cognivo/components';
+ * // The /validation subpath is side-effect free: it registers no components.
+ * // (Also exported from the package root, which registers every component.)
+ * import { setValidationMessages } from '@cognivo/components/validation';
  * setValidationMessages({ valueMissing: 'Campo obrigatório' });
  * ```
  */
