@@ -466,6 +466,8 @@ export class CgTable extends LitElement {
   @state() private _hasFooter = false;
   /** The table is wider than its box: the scroll box becomes a focusable, named region. */
   @state() private _overflows = false;
+  /** The scroll box holds focus: it keeps its tab stop until blur, even if it stops overflowing. */
+  @state() private _scrollFocused = false;
   private _resize: ResizeObserver | undefined;
 
   private _unobserveLight: (() => void) | null = null;
@@ -478,6 +480,8 @@ export class CgTable extends LitElement {
       this._syncFooter();
       this._syncTruncateTitles();
     });
+    // Observe on every connect (a moved table reconnects), once rendered.
+    void this.updateComplete.then(() => this._observeScroll());
   }
 
   override disconnectedCallback() {
@@ -490,9 +494,10 @@ export class CgTable extends LitElement {
     this._resize = undefined;
   }
 
-  override firstUpdated() {
-    if (typeof ResizeObserver !== 'function') return;
-    const box = this.renderRoot.querySelector<HTMLElement>('.table-scroll')!;
+  private _observeScroll() {
+    if (!this.isConnected || this._resize || typeof ResizeObserver !== 'function') return;
+    const box = this.renderRoot.querySelector<HTMLElement>('.table-scroll');
+    if (!box) return;
     this._resize = new ResizeObserver(() => { this._overflows = box.scrollWidth > box.clientWidth; });
     this._resize.observe(box);
     this._resize.observe(box.firstElementChild!);
@@ -656,9 +661,11 @@ export class CgTable extends LitElement {
     return html`
       <div class="table-wrapper">
         <div class="table-scroll"
-          tabindex=${this._overflows ? '0' : nothing}
+          tabindex=${this._overflows || this._scrollFocused ? '0' : nothing}
           role=${scrollName ? 'region' : nothing}
-          aria-label=${scrollName || nothing}>
+          aria-label=${scrollName || nothing}
+          @focus=${(e: FocusEvent) => { this._scrollFocused = e.target === e.currentTarget; }}
+          @blur=${() => { this._scrollFocused = false; }}>
         <table aria-label=${this._labelledText || this.label || nothing} aria-busy=${this.loading ? 'true' : nothing}>
           ${this.caption ? html`<caption class=${this.captionHidden ? 'sr-only' : ''}>${this.caption}</caption>` : nothing}
           <thead>

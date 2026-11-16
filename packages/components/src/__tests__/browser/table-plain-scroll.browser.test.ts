@@ -92,4 +92,38 @@ describe.skipIf(!browserAvailable)('cg-table plain variant and scroll box (real 
     await page.waitForFunction(() => document.querySelector('cg-table')!.shadowRoot!.querySelector('.table-scroll')!.getAttribute('tabindex') === '0');
     await page.close();
   });
+  it('a table moved to another parent still becomes a tab stop when its box narrows (observer re-attached on reconnect)', async () => {
+    const page = await table('1200px');
+    expect((await scrollBox(page)).tabindex).toBeNull();
+    await page.evaluate(async () => {
+      const other = document.createElement('div');
+      other.id = 'other';
+      other.style.width = '1200px';
+      document.body.append(other);
+      const t = document.querySelector('cg-table')! as HTMLElement & { updateComplete: Promise<unknown> };
+      other.append(t); // disconnect + reconnect
+      await t.updateComplete;
+    });
+    await page.evaluate(() => { document.getElementById('other')!.style.width = '240px'; });
+    await page.waitForFunction(() => document.querySelector('cg-table')!.shadowRoot!.querySelector('.table-scroll')!.getAttribute('tabindex') === '0', undefined, { timeout: 3000 });
+    await page.close();
+  });
+
+  it('the focused scroll box keeps its tab stop when the table stops overflowing; it is dropped on blur', async () => {
+    const page = await table('240px');
+    await page.keyboard.press('Tab');
+    expect(await page.evaluate(() => document.querySelector('cg-table')!.shadowRoot!.activeElement?.className)).toBe('table-scroll');
+    await page.evaluate(() => { document.getElementById('box')!.style.width = '1200px'; });
+    // Let the observer report the wider box.
+    await page.waitForFunction(() => {
+      const box = document.querySelector('cg-table')!.shadowRoot!.querySelector('.table-scroll')!;
+      return box.scrollWidth <= box.clientWidth;
+    });
+    await settleStyles(page);
+    expect((await scrollBox(page)).tabindex).toBe('0');
+    expect(await page.evaluate(() => document.querySelector('cg-table')!.shadowRoot!.activeElement?.className)).toBe('table-scroll');
+    await page.evaluate(() => (document.activeElement as HTMLElement).blur());
+    await page.waitForFunction(() => document.querySelector('cg-table')!.shadowRoot!.querySelector('.table-scroll')!.getAttribute('tabindex') === null, undefined, { timeout: 3000 });
+    await page.close();
+  });
 });
