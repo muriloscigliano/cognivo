@@ -251,7 +251,7 @@ export class CgButton extends LitElement {
   /** Link mode: renders an `<a href>` with the button's look (navigation,
    *  middle-click, "open in new tab" all work). Disabled or loading, it is a
    *  disabled link: no `href`, `aria-disabled="true"`, not focusable. */
-  @property({ reflect: true }) href = '';
+  @property() href = '';
   /** Link mode: the `<a>`'s `target` (e.g. `_blank`). */
   @property() target = '';
   /** Link mode: the `<a>`'s `rel` (e.g. `noopener noreferrer`). */

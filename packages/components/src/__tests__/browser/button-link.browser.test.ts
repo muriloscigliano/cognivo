@@ -72,6 +72,13 @@ describe.skipIf(!browserAvailable)('cg-button link mode (real browser)', { timeo
     await page.close();
   });
 
+  it('the host never carries an href attribute (focus traps would take a plain button for a link)', async () => {
+    const page = await open(`<cg-button id="b">Save</cg-button><cg-button id="l" href="/x">Go</cg-button>`);
+    const attrs = await page.evaluate(() => ['#b', '#l'].map((s) => document.querySelector(s)!.hasAttribute('href')));
+    expect(attrs).toEqual([false, false]);
+    await page.close();
+  });
+
   it('removing href renders a button again', async () => {
     const page = await open(`<cg-button id="l" href="/x">Go</cg-button>`);
     await page.evaluate(() => { (document.querySelector('#l') as HTMLElement & { href: string }).href = ''; });
