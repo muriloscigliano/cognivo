@@ -112,7 +112,7 @@ export class CgAccordion extends LitElement {
     .item.open .trigger {
       background: var(--cg-overlay-accent-subtle);
       color: var(--cg-color-surface-base-text);
-      box-shadow: inset var(--cg-border-width-100) 0 0 0 var(--cg-color-action-primary-background-default);
+      box-shadow: inset var(--cg-border-width-100) 0 0 0 var(--cg-color-current-indicator);
     }
 
     /* ── Content — CSS grid smooth height ── */

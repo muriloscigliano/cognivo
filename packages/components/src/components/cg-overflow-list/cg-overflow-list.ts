@@ -69,7 +69,7 @@ export class CgOverflowList extends LitElement {
         border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .more:hover { border-color: var(--cg-color-action-primary-border-default); }
+    .more:hover { border-color: var(--cg-color-input-border-hover); }
     .more:active { transform: scale(var(--cg-interaction-press-scale)); }
     .more:focus-visible { ${focusRingDual} }
     .more svg { width: var(--cg-spacing-16); height: var(--cg-spacing-16); }

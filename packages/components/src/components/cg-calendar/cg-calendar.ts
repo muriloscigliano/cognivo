@@ -131,27 +131,27 @@ export class CgCalendar extends LitElement {
       opacity: 0.5;
     }
     .day.today:not(.selected):not(.range-start):not(.range-end) {
-      box-shadow: inset 0 0 0 var(--cg-border-width-50) var(--cg-color-action-primary-border-default);
-      color: var(--cg-color-accent-text);
+      box-shadow: inset 0 0 0 var(--cg-border-width-50) var(--cg-color-current-indicator);
+      color: var(--cg-color-current-text);
       font-weight: var(--cg-font-weight-semibold);
     }
     .day.selected {
-      background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-action-primary-text-default);
+      background: var(--cg-color-selected-background);
+      color: var(--cg-color-selected-text);
       font-weight: var(--cg-font-weight-semibold);
     }
     .day.in-range {
-      background: var(--cg-overlay-accent-light);
+      background: var(--cg-color-selected-subtle);
       border-radius: 0;
     }
     .day.range-start {
-      background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-action-primary-text-default);
+      background: var(--cg-color-selected-background);
+      color: var(--cg-color-selected-text);
       border-radius: var(--cg-border-radius-100) 0 0 var(--cg-border-radius-100);
     }
     .day.range-end {
-      background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-action-primary-text-default);
+      background: var(--cg-color-selected-background);
+      color: var(--cg-color-selected-text);
       border-radius: 0 var(--cg-border-radius-100) var(--cg-border-radius-100) 0;
     }
     .day:disabled {

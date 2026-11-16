@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
 import { mirrorValidity, type ValidationMessages } from '../../utils/validation.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, spinKeyframes } from '../../styles/index.js';
 
 /**
  * @element cg-checkbox
@@ -33,7 +33,7 @@ export class CgCheckbox extends LitElement {
     this._internals = formInternals(this);
   }
 
-  static override styles = [hostBlock, reducedMotion, css`
+  static override styles = [hostBlock, reducedMotion, spinKeyframes, css`
     :host { display: inline-block; }
 
     label {
@@ -79,10 +79,10 @@ export class CgCheckbox extends LitElement {
     :host([rounded="lg"]) .box { border-radius: var(--cg-border-radius-150); }
     :host([rounded="full"]) .box { border-radius: var(--cg-border-radius-full); }
 
-    /* Hover — scoped so it doesn't override the error/success border, and
-       uses the accent BORDER token (not a -background- fill) for the edge. */
+    /* Hover — scoped so it doesn't override the error/success border; the
+       neutral field hover border (never an accent). */
     :host(:not([disabled]):not([error]):not([success])) label:hover .box {
-      border-color: var(--cg-color-checkbox-border-checked);
+      border-color: var(--cg-color-input-border-hover);
     }
 
     /* Pressed */
@@ -116,14 +116,8 @@ export class CgCheckbox extends LitElement {
       box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring-offset), 0 0 0 calc(var(--cg-border-width-100) * 2) var(--cg-color-focus-ring);
     }
 
-    /* ── Checked state ── */
-    .box.checked {
-      background: var(--cg-color-checkbox-background-checked);
-      border-color: var(--cg-color-checkbox-border-checked);
-      animation: boxPop var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out);
-    }
-
-    /* Indeterminate — same spring entry as checked for consistent feedback. */
+    /* ── Checked / indeterminate (same spring entry for consistent feedback) ── */
+    .box.checked,
     .box.indeterminate {
       background: var(--cg-color-checkbox-background-checked);
       border-color: var(--cg-color-checkbox-border-checked);
@@ -202,10 +196,7 @@ export class CgCheckbox extends LitElement {
       border: var(--cg-border-width-100) solid var(--cg-color-loading-spinner-secondary);
       border-top-color: var(--cg-color-loading-spinner-primary);
       border-radius: var(--cg-border-radius-full);
-      animation: cg-checkbox-spin var(--cg-transition-duration-slow) linear infinite;
-    }
-    @keyframes cg-checkbox-spin {
-      to { transform: rotate(360deg); }
+      animation: spin var(--cg-transition-duration-slow) linear infinite;
     }
 
     /* Text */

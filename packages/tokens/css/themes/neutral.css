@@ -1,0 +1,49 @@
+/**
+ * Cognivo "neutral" theme preset — @cognivo/tokens/themes/neutral.css
+ *
+ * A token override file: load it AFTER @cognivo/tokens. Nothing else changes.
+ *
+ *   @import '@cognivo/tokens';
+ *   @import '@cognivo/tokens/themes/neutral.css';
+ *
+ * - Primary fill (buttons, switches, checkboxes, radios, sliders, progress,
+ *   chips, split buttons): near-black with white text in light, white with
+ *   near-black text in dark. Hover and pressed are one and two grey steps
+ *   away from it.
+ * - Selection: selected days and ranges, the current page and step, the active
+ *   tab, selected time options use the neutral state tokens
+ *   (--cg-color-state-selected / -text / -hover) instead of the accent.
+ *
+ * Without this file the default preset applies: the brand lime primary and
+ * accent selection (unchanged). Hover and focus states are neutral in both.
+ * Values are existing grey tokens only; contrast is gated for both presets
+ * (scripts/validate-contrast.mjs).
+ */
+
+/* Light (and the page default). */
+:root {
+  --cg-color-action-primary-background-default: var(--cg-gray-950);
+  --cg-color-action-primary-background-hover: var(--cg-gray-800);
+  --cg-color-action-primary-background-active: var(--cg-gray-700);
+  --cg-color-action-primary-text-default: var(--cg-gray-white);
+  --cg-color-action-primary-border-default: var(--cg-gray-950);
+}
+
+/* Dark: the same selector the tokens use for the dark theme. */
+[data-theme="dark"] {
+  --cg-color-action-primary-background-default: var(--cg-gray-white);
+  --cg-color-action-primary-background-hover: var(--cg-gray-200);
+  --cg-color-action-primary-background-active: var(--cg-gray-300);
+  --cg-color-action-primary-text-default: var(--cg-gray-950);
+  --cg-color-action-primary-border-default: var(--cg-gray-white);
+}
+
+/* Selection (both themes: the state tokens already change with the theme). */
+:root,
+[data-theme="dark"] {
+  --cg-color-selected-background: var(--cg-color-state-selected);
+  --cg-color-selected-text: var(--cg-color-state-text);
+  --cg-color-selected-subtle: var(--cg-color-state-hover);
+  --cg-color-current-indicator: var(--cg-color-state-text);
+  --cg-color-current-text: var(--cg-color-state-text);
+}

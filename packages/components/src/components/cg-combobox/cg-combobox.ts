@@ -190,17 +190,17 @@ export class CgCombobox extends LitElement {
     .option:hover {
       background: var(--cg-color-action-tertiary-background-hover);
     }
-    /* Keyboard-active descendant gets a distinct accent so it's not confused
-       with a hovered row. */
+    /* Keyboard-active descendant gets a distinct neutral bar so it's not
+       confused with a hovered row. */
     .option.active {
       background: var(--cg-color-state-hover);
-      box-shadow: inset var(--cg-spacing-2) 0 0 0 var(--cg-color-action-primary-background-default);
+      box-shadow: inset var(--cg-spacing-2) 0 0 0 var(--cg-color-state-text);
     }
     .option.disabled { opacity: 0.5; cursor: not-allowed; }
     .option.selected { font-weight: var(--cg-font-weight-medium); }
     .option.selected::after {
       content: '✓';
-      color: var(--cg-color-accent-text);
+      color: var(--cg-color-current-text);
       font-weight: var(--cg-font-weight-semibold);
     }
 

@@ -98,7 +98,7 @@ export class CgLightbox extends LitElement {
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .ctrl:hover { border-color: var(--cg-color-action-primary-border-default); }
+    .ctrl:hover { border-color: var(--cg-color-input-border-hover); }
     .ctrl:active { transform: scale(var(--cg-interaction-press-scale)); }
     .ctrl:focus-visible { ${focusRingDual} }
     .ctrl svg { width: var(--cg-spacing-20); height: var(--cg-spacing-20); }

@@ -385,7 +385,7 @@ export class CgPhoneInput extends LitElement {
     }
     .option.selected .opt-dial::after {
       content: ' ✓';
-      color: var(--cg-color-accent-text);
+      color: var(--cg-color-current-text);
       font-weight: var(--cg-font-weight-semibold);
     }
 

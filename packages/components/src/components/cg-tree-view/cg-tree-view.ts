@@ -129,7 +129,7 @@ export class CgTreeView extends LitElement {
       transition:
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .node:hover .leading-icon,
+    .node:hover .leading-icon { color: var(--cg-color-state-text); }
     .node.selected .leading-icon {
       color: var(--cg-color-surface-container-icon);
     }

@@ -382,7 +382,7 @@ export class CgMarkdown extends LitElement {
     }
     .md :is(h1, h2, h3, h4, h5, h6):hover .anchor,
     .md :is(h1, h2, h3, h4, h5, h6) .anchor:focus-visible { opacity: 1; }
-    .md .anchor:hover { color: var(--cg-color-accent-text); }
+    .md .anchor:hover { color: var(--cg-color-state-text); }
 
     /* ── Links ── 4px underline-offset reads as polished prose (not UI). */
     .md a {
@@ -426,8 +426,8 @@ export class CgMarkdown extends LitElement {
 
     /* ── Selection highlight ── matches the brand accent. */
     .md ::selection {
-      background: var(--cg-overlay-accent-light);
-      color: var(--cg-color-surface-base-text);
+      background: var(--cg-color-selection-background);
+      color: var(--cg-color-selection-text);
     }
 
     /* ── Images ── contained to the prose column. */

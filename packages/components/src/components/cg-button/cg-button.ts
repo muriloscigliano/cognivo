@@ -83,23 +83,25 @@ export class CgButton extends LitElement {
     }
 
     /* Hover / pressed: a neutral state overlay on the variant's own colour
-       (never an accent). Hover only where the device hovers; touch gets pressed. */
+       (never an accent); primary instead steps to its own hover / pressed
+       tokens (--_p, read only by primary). Hover only where the device
+       hovers; touch gets pressed. */
     @media (hover: hover) {
-      .btn:not(:disabled, [aria-disabled="true"]):hover { --_s: var(--cg-color-state-hover); }
-      :host([type="danger"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
+      .btn:not(:disabled, [aria-disabled="true"]):hover { --_s: var(--cg-color-state-hover); --_p: var(--cg-color-action-primary-background-hover); }
+      :host([type="danger"]) .btn:not(:disabled, [aria-disabled="true"]):hover,
+      :host([status="error"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
         background-color: var(--cg-color-status-error-background-hover);
       }
       :host([type="danger"][variant="primary"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
         background-color: var(--cg-color-status-error-background-hover-strong);
       }
-      :host([status="error"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
-        background-color: var(--cg-color-status-error-background-hover);
-      }
       :host([status="success"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
         background-color: var(--cg-color-status-success-background-hover);
       }
     }
-    .btn:not(:disabled, [aria-disabled="true"]):active { --_s: var(--cg-color-state-pressed); }
+    .btn:not(:disabled, [aria-disabled="true"]):active { --_s: var(--cg-color-state-pressed); --_p: var(--cg-color-action-primary-background-active); }
+    /* Primary: no overlay, its own step (--_p) instead; danger / status keep the overlay. */
+    :host([variant="primary"]:not([type="danger"], [status="error"], [status="success"])) .btn { --_s: initial; }
     /* No state set: var(--_s) is invalid, so the image computes to none. */
     .btn:not(:disabled, [aria-disabled="true"]) { background-image: linear-gradient(var(--_s), var(--_s)); }
 
@@ -140,7 +142,7 @@ export class CgButton extends LitElement {
 
     /* ── Primary variant ── */
     :host([variant="primary"]) .btn {
-      background-color: var(--cg-color-action-primary-background-default);
+      background-color: var(--_p, var(--cg-color-action-primary-background-default));
       color: var(--cg-color-action-primary-text-default);
       border-color: var(--cg-color-action-primary-border-default);
     }
@@ -159,8 +161,9 @@ export class CgButton extends LitElement {
       border-color: transparent;
     }
 
-    /* ── Danger type ── */
-    :host([type="danger"]) .btn {
+    /* ── Danger type and error state ── */
+    :host([type="danger"]) .btn,
+    :host([status="error"]) .btn {
       background-color: var(--cg-color-status-error-background-default);
       color: var(--cg-color-status-error-text-default);
       border-color: var(--cg-color-status-error-border-default);
@@ -194,12 +197,7 @@ export class CgButton extends LitElement {
     :host([loading][variant="secondary"]) .spinner { color: var(--cg-color-action-secondary-text-default); /* contrast: non-text on --cg-color-action-secondary-background-default */ }
     :host([loading][variant="tertiary"]) .spinner { color: var(--cg-color-action-tertiary-text-default); }
 
-    /* ── Error state ── */
-    :host([status="error"]) .btn {
-      background-color: var(--cg-color-status-error-background-default);
-      color: var(--cg-color-status-error-text-default);
-      border-color: var(--cg-color-status-error-border-default);
-    }
+    /* ── Error state (colours: with the danger type above) ── */
     :host([status="error"]) .spinner { color: var(--cg-color-status-error-text-default); }
 
     /* ── Success state ── */

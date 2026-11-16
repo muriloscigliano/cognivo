@@ -67,9 +67,9 @@ export class CgNavigationMenu extends LitElement {
     .trigger.open {
       background: var(--cg-color-action-tertiary-background-hover);
     }
-    /* Distinct open indicator: accent underline so open != hover. */
+    /* Distinct open indicator: the current-indicator underline so open != hover. */
     .trigger.open:not(:focus-visible) {
-      box-shadow: inset 0 calc(-1 * var(--cg-border-width-100)) 0 var(--cg-color-action-primary-border-default);
+      box-shadow: inset 0 calc(-1 * var(--cg-border-width-100)) 0 var(--cg-color-current-indicator);
     }
     .trigger:active { transform: scale(var(--cg-interaction-press-scale)); }
     .trigger:focus-visible {

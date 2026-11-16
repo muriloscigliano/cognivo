@@ -71,13 +71,13 @@ export class CgThumbnail extends LitElement {
         border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    button.tile:hover:not(:disabled) { border-color: var(--cg-color-action-primary-border-default); }
+    button.tile:hover:not(:disabled) { border-color: var(--cg-color-input-border-hover); }
     button.tile:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
     button.tile:focus-visible { ${focusRingDual} }
 
     :host([selected]) button.tile {
-      border-color: var(--cg-color-action-primary-border-default);
-      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-action-primary-border-default) inset;
+      border-color: var(--cg-color-current-indicator);
+      box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-current-indicator) inset;
     }
 
     :host([disabled]) .tile { opacity: 0.5; cursor: not-allowed; }

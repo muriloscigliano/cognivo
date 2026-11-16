@@ -4,7 +4,7 @@ import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
 import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
 import { mirrorValidity, type ValidationMessages } from '../../utils/validation.js';
-import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { hostBlock, reducedMotion, spinKeyframes } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
 const MESSAGES = defineMessages('cg-input', {
@@ -47,7 +47,7 @@ export class CgInput extends LitElement {
     this._internals = formInternals(this);
   }
 
-  static override styles = [hostBlock, reducedMotion, css`
+  static override styles = [hostBlock, reducedMotion, spinKeyframes, css`
     :host { display: block; }
 
     .wrapper {
@@ -66,7 +66,7 @@ export class CgInput extends LitElement {
     }
 
     /* Size variants */
-    :host([size="lg"]) .wrapper { height: var(--cg-component-input-height-lg); padding: 0 var(--cg-spacing-4); border-radius: var(--cg-border-radius-150); }
+    :host([size="lg"]) .wrapper { height: var(--cg-component-input-height-lg); border-radius: var(--cg-border-radius-150); }
 
     /* Rounded variants */
     :host([rounded="none"]) .wrapper { border-radius: 0; }
@@ -95,11 +95,8 @@ export class CgInput extends LitElement {
       border: var(--cg-border-width-100) solid var(--cg-color-loading-spinner-secondary);
       border-top-color: var(--cg-color-loading-spinner-primary);
       border-radius: var(--cg-border-radius-full);
-      animation: cg-input-spin 600ms linear infinite;
+      animation: spin 600ms linear infinite;
       flex-shrink: 0;
-    }
-    @keyframes cg-input-spin {
-      to { transform: rotate(360deg); }
     }
 
     /* Focus — a near-black (dark: white) border, the visible indicator, plus a
@@ -218,10 +215,7 @@ export class CgInput extends LitElement {
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-surface-container-text);
     }
-    :host([size="lg"]) .field.floated .floating-label {
-      top: var(--cg-spacing-8);
-      font-size: var(--cg-font-size-xs);
-    }
+    :host([size="lg"]) .field.floated .floating-label { top: var(--cg-spacing-8); }
 
     /* Error state label color */
     :host([error]) .field.floated .floating-label {

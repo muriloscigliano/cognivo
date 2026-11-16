@@ -102,7 +102,7 @@ export class CgImageBlock extends LitElement {
     }
     .retry-btn:hover {
       background: var(--cg-color-action-tertiary-background-hover);
-      border-color: var(--cg-color-action-primary-background-default);
+      border-color: var(--cg-color-input-border-hover);
     }
     .retry-btn:focus-visible {
       outline: none;

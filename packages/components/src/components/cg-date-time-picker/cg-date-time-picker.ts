@@ -167,8 +167,8 @@ export class CgDateTimePicker extends LitElement {
     .cal-day:hover { background: var(--cg-color-action-secondary-background-hover); }
     .cal-day:active { transform: scale(var(--cg-interaction-press-scale)); }
     .cal-day.today { border: var(--cg-border-width-50) solid var(--cg-color-input-border-focus); font-weight: var(--cg-font-weight-semibold); }
-    .cal-day.selected { background: var(--cg-color-action-primary-background-default); color: var(--cg-color-action-primary-text-default); font-weight: var(--cg-font-weight-semibold); }
-    .cal-day.selected:hover { background: var(--cg-color-action-primary-background-default); }
+    .cal-day.selected { background: var(--cg-color-selected-background); color: var(--cg-color-selected-text); font-weight: var(--cg-font-weight-semibold); }
+    .cal-day.selected:hover { background: var(--cg-color-selected-background); }
     .cal-day.outside { color: var(--cg-color-input-text-placeholder); opacity: 0.5; }
     .cal-day.disabled-day { opacity: 0.3; pointer-events: none; }
     .cal-day:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--cg-color-state-focus-halo); }
@@ -211,8 +211,8 @@ export class CgDateTimePicker extends LitElement {
     }
     .time-option:hover { background: var(--cg-color-action-secondary-background-hover); }
     .time-option:active { transform: scale(var(--cg-interaction-press-scale)); }
-    .time-option.selected { background: var(--cg-color-action-primary-background-default); color: var(--cg-color-action-primary-text-default); font-weight: var(--cg-font-weight-semibold); }
-    .time-option.selected:hover { background: var(--cg-color-action-primary-background-default); }
+    .time-option.selected { background: var(--cg-color-selected-background); color: var(--cg-color-selected-text); font-weight: var(--cg-font-weight-semibold); }
+    .time-option.selected:hover { background: var(--cg-color-selected-background); }
     .time-option:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--cg-color-state-focus-halo); }
 
     .time-col-divider {
@@ -238,9 +238,9 @@ export class CgDateTimePicker extends LitElement {
     }
     .period-btn:hover { border-color: var(--cg-color-input-border-hover); }
     .period-btn.active {
-      background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-action-primary-text-default);
-      border-color: var(--cg-color-action-primary-background-default);
+      background: var(--cg-color-selected-background);
+      color: var(--cg-color-selected-text);
+      border-color: var(--cg-color-current-indicator);
     }
 
     /* ── Helper ── */

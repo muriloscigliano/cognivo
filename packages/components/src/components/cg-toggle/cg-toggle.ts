@@ -116,9 +116,9 @@ export class CgToggle extends LitElement {
        avoid a 1px layout shift on press. */
     :host([variant="outline"][pressed]) button {
       background: var(--cg-color-state-selected);
-      color: var(--cg-color-accent-text);
-      border-color: var(--cg-color-action-primary-border-default);
-      box-shadow: inset 0 0 0 var(--cg-border-width-50) var(--cg-color-action-primary-border-default);
+      color: var(--cg-color-current-text);
+      border-color: var(--cg-color-current-indicator);
+      box-shadow: inset 0 0 0 var(--cg-border-width-50) var(--cg-color-current-indicator);
     }
     :host([variant="outline"][pressed]) button:hover:not(:disabled) {
       background: var(--cg-color-state-pressed);

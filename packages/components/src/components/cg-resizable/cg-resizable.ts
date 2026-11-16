@@ -103,36 +103,36 @@ export class CgResizable extends LitElement {
         0 var(--cg-spacing-4) 0 0 var(--cg-color-surface-container-outlined);
     }
 
-    /* Hover + focus-visible — brand-accent borders + tinted fill. */
+    /* Hover + focus-visible — neutral borders + state fill (never an accent). */
     :host([direction="horizontal"]) .handle:hover,
     :host([direction="horizontal"]) .handle:focus-visible {
-      border-left-color: var(--cg-color-action-primary-border-default);
-      border-right-color: var(--cg-color-action-primary-border-default);
-      background: var(--cg-overlay-accent-medium);
+      border-left-color: var(--cg-color-input-border-hover);
+      border-right-color: var(--cg-color-input-border-hover);
+      background: var(--cg-color-state-hover);
       outline: none;
     }
     :host([direction="vertical"]) .handle:hover,
     :host([direction="vertical"]) .handle:focus-visible {
-      border-top-color: var(--cg-color-action-primary-border-default);
-      border-bottom-color: var(--cg-color-action-primary-border-default);
-      background: var(--cg-overlay-accent-medium);
+      border-top-color: var(--cg-color-input-border-hover);
+      border-bottom-color: var(--cg-color-input-border-hover);
+      background: var(--cg-color-state-hover);
       outline: none;
     }
     .handle:hover::before,
     .handle:focus-visible::before {
-      background: var(--cg-color-accent-text);
+      background: var(--cg-color-state-text);
     }
     :host([direction="horizontal"]) .handle:hover::before,
     :host([direction="horizontal"]) .handle:focus-visible::before {
       box-shadow:
-        calc(var(--cg-spacing-4) * -1) 0 0 0 var(--cg-color-accent-text),
-        var(--cg-spacing-4) 0 0 0 var(--cg-color-accent-text);
+        calc(var(--cg-spacing-4) * -1) 0 0 0 var(--cg-color-state-text),
+        var(--cg-spacing-4) 0 0 0 var(--cg-color-state-text);
     }
     :host([direction="vertical"]) .handle:hover::before,
     :host([direction="vertical"]) .handle:focus-visible::before {
       box-shadow:
-        0 calc(var(--cg-spacing-4) * -1) 0 0 var(--cg-color-accent-text),
-        0 var(--cg-spacing-4) 0 0 var(--cg-color-accent-text);
+        0 calc(var(--cg-spacing-4) * -1) 0 0 var(--cg-color-state-text),
+        0 var(--cg-spacing-4) 0 0 var(--cg-color-state-text);
     }
 
     /* Active drag — stronger tint while pointer is down. */

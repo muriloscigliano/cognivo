@@ -176,7 +176,7 @@ export class CgCommand extends LitElement {
     }
     /* Hover (mouse) AND data-active (keyboard) share the background so both
        input methods feel instant. The keyboard-active row additionally gets
-       an accent left bar so the item Enter will trigger is unmistakable in a
+       a neutral left bar so the item Enter will trigger is unmistakable in a
        palette (a faint gray fill alone was too easy to lose track of). */
     .item:hover:not([disabled]),
     .item[data-active]:not([disabled]) {
@@ -184,7 +184,7 @@ export class CgCommand extends LitElement {
       color: var(--cg-color-surface-base-text);
     }
     .item[data-active]:not([disabled]) {
-      box-shadow: inset var(--cg-spacing-2) 0 0 0 var(--cg-color-action-primary-background-default);
+      box-shadow: inset var(--cg-spacing-2) 0 0 0 var(--cg-color-state-text);
     }
     .item:active:not([disabled]) {
       transform: scale(var(--cg-interaction-press-scale));
@@ -202,7 +202,7 @@ export class CgCommand extends LitElement {
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .item[data-active] .item-icon {
-      color: var(--cg-color-accent-text);
+      color: var(--cg-color-state-text);
       opacity: 1;
     }
     .item-label { flex: 1; }

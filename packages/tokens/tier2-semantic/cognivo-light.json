@@ -58,6 +58,35 @@
         "$description": "Text selection colour."
       }
     },
+    "selected": {
+      "background": {
+        "$type": "color",
+        "$value": "{color.action.primary.background.default}",
+        "$description": "Selected item fill: a selected calendar day and range ends, a selected time option, the current page, the current step. Default preset: the primary fill (accent); the neutral preset (themes/neutral.css) sets it to --cg-color-state-selected."
+      },
+      "text": {
+        "$type": "color",
+        "$value": "{color.action.primary.text.default}",
+        "$description": "Text on --cg-color-selected-background. Neutral preset: --cg-color-state-text."
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "{overlay.accent.light}",
+        "$description": "Soft selected fill: days inside a selected range, the active tab's count. Neutral preset: --cg-color-state-hover."
+      }
+    },
+    "current": {
+      "indicator": {
+        "$type": "color",
+        "$value": "{color.action.primary.border.default}",
+        "$description": "Current / active marker line or ring: the active tab underline, today's ring, the current step's border, a pressed outline toggle's border, an open menu trigger's underline. Neutral preset: --cg-color-state-text."
+      },
+      "text": {
+        "$type": "color",
+        "$value": "{color.accent.text}",
+        "$description": "Current / active label: the active tab, the current step title, today's date, a pressed outline toggle. Neutral preset: --cg-color-state-text."
+      }
+    },
     "focus": {
       "ring": {
         "$type": "color",
@@ -1448,7 +1477,8 @@
         },
         "hover": {
           "$type": "color",
-          "$value": "{color.action.primary.border.default}"
+          "$value": "{gray.400}",
+          "$description": "Field border on hover: one neutral step darker (dark: lighter) than the resting border, never an accent."
         },
         "focus": {
           "$type": "color",

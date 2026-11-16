@@ -188,12 +188,12 @@ export class CgTimePicker extends LitElement {
     .time-option:hover { background: var(--cg-color-action-secondary-background-hover); }
     .time-option:active { transform: scale(var(--cg-interaction-press-scale)); }
     .time-option.selected {
-      background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-action-primary-text-default);
+      background: var(--cg-color-selected-background);
+      color: var(--cg-color-selected-text);
       font-weight: var(--cg-font-weight-semibold);
     }
     .time-option.selected:hover {
-      background: var(--cg-color-action-primary-background-default);
+      background: var(--cg-color-selected-background);
     }
     .time-option:focus-visible {
       outline: none;
@@ -234,9 +234,9 @@ export class CgTimePicker extends LitElement {
       box-shadow: 0 0 0 2px var(--cg-color-state-focus-halo);
     }
     .period-btn.active {
-      background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-action-primary-text-default);
-      border-color: var(--cg-color-action-primary-border-default);
+      background: var(--cg-color-selected-background);
+      color: var(--cg-color-selected-text);
+      border-color: var(--cg-color-current-indicator);
     }
 
     /* ── Divider ── */

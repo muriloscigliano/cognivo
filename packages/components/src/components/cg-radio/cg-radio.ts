@@ -72,8 +72,8 @@ export class CgRadio extends LitElement {
 
     /* Hover */
     :host(:not([disabled])) label:hover .circle {
-      border-color: var(--cg-color-radio-border-checked);
-      background: var(--cg-color-radio-background-hover);
+      border-color: var(--cg-color-input-border-hover);
+      background: var(--cg-color-state-hover);
     }
 
     /* Press */

@@ -133,19 +133,15 @@ describe.skipIf(!browserAvailable)('interaction states (real browser)', { timeou
         await page.close();
       });
 
-      it('buttons: hover lays the neutral hover overlay on the resting colour (primary keeps its colour); disabled is 40% opacity with no hover', async () => {
+      it('buttons: hover lays the neutral hover overlay on the resting colour (primary steps to its own hover token, theme-presets suite); disabled is 40% opacity with no hover', async () => {
         const page = await open(theme);
         const hover = await token(page, '--cg-color-state-hover');
-        const resting = await style(page, BTN('primary'), ['background-color']);
-        for (const id of ['primary', 'secondary', 'ghost']) {
+        for (const id of ['secondary', 'ghost']) {
           await page.locator(`#${id}`).hover();
           await settleStyles(page);
           const s = await style(page, BTN(id), ['background-image', 'background-color']);
           expect(s['background-image'], id).toContain(hover);
         }
-        await page.locator('#primary').hover();
-        await settleStyles(page);
-        expect((await style(page, BTN('primary'), ['background-color']))['background-color']).toBe(resting['background-color']);
         const disabled = await style(page, BTN('disabled'), ['opacity', 'cursor', 'background-image']);
         expect(disabled).toEqual({ opacity: '0.4', cursor: 'not-allowed', 'background-image': 'none' });
         await page.close();

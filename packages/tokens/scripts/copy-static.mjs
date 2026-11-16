@@ -11,11 +11,13 @@ const PKG_ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const STATIC_ASSETS = [
   ['css/motion.css', 'dist/motion.css'],
+  ['css/themes/neutral.css', 'dist/themes/neutral.css'],
 ];
 
 fs.mkdirSync(path.join(PKG_ROOT, 'dist'), { recursive: true });
 
 for (const [from, to] of STATIC_ASSETS) {
+  fs.mkdirSync(path.dirname(path.join(PKG_ROOT, to)), { recursive: true });
   fs.copyFileSync(path.join(PKG_ROOT, from), path.join(PKG_ROOT, to));
   console.log(`[copy-static] ${from} → ${to}`);
 }

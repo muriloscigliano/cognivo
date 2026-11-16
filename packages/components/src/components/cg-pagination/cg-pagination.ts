@@ -28,7 +28,7 @@ const MESSAGES = defineMessages('cg-pagination', {
  * @fires {CustomEvent<{page: number} | {direction: 'previous' | 'next'}>} cg-page-change - A page was requested: `{page}` in pages mode, `{direction}` in cursor mode
  *
  * @cssprop --cg-component-pagination-button-size - Button size (36px)
- * @cssprop --cg-color-action-primary-background-default - Active page background
+ * @cssprop --cg-color-selected-background - Current page background (neutral preset: the state-selected grey)
  */
 @customElement('cg-pagination')
 export class CgPagination extends LitElement {
@@ -96,9 +96,9 @@ export class CgPagination extends LitElement {
     /* ── Active page ── */
     .page-btn.active {
       cursor: default;
-      background: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-action-primary-text-default);
-      border-color: var(--cg-color-action-primary-border-default);
+      background: var(--cg-color-selected-background);
+      color: var(--cg-color-selected-text);
+      border-color: var(--cg-color-current-indicator);
       font-weight: var(--cg-font-weight-semibold);
     }
 

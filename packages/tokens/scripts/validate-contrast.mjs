@@ -20,18 +20,26 @@
  *     scripts/contrast-baseline.json (see contrast-baseline.mjs): the list
  *     can only shrink (`maxEntries`), a listed pair may not get worse, and an
  *     entry that passes or is no longer painted fails until removed.
+ *  6. The neutral theme preset (css/themes/neutral.css, loaded after the
+ *     tokens) is audited too: every pair above is re-evaluated with the
+ *     preset's overrides on top of each theme, and each pair whose colours
+ *     differ from the default preset is gated the same way. A component pair
+ *     already listed in the baseline (either theme: a preset can move a
+ *     failure from one theme to the other) stays known in the preset; any
+ *     other preset failure fails the gate.
  */
 
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { deriveComponentPairs } from './component-pairs.mjs'
-import { checkBaseline } from './contrast-baseline.mjs'
+import { checkBaseline, baselineKey } from './contrast-baseline.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const CSS_PATH = path.resolve(__dirname, '..', 'dist', 'index.css')
 const COMPONENTS_DIR = path.resolve(__dirname, '..', '..', 'components', 'src', 'components')
 const BASELINE_PATH = path.resolve(__dirname, 'contrast-baseline.json')
+const PRESETS = { neutral: path.resolve(__dirname, '..', 'css', 'themes', 'neutral.css') }
 
 // ---------- color math ----------
 function hexToRgb(hex) {
@@ -108,6 +116,23 @@ function parseCSS(css) {
   }
 
   return { light, dark }
+}
+
+/**
+ * A preset's overrides on top of the default themes. Each rule applies to the
+ * light theme when a selector is `:root`, to the dark theme when a selector is
+ * `[data-theme="dark"]` (the dark rule re-declares every token on its element,
+ * so only dark rules reach it).
+ */
+function applyPreset(presetCss, { light, dark }) {
+  const out = { light: new Map(light), dark: new Map(dark) }
+  for (const m of presetCss.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    const selectors = m[1].split(',').map((x) => x.trim())
+    const decls = parseBlock(m[2])
+    if (selectors.includes(':root')) for (const [k, v] of decls) out.light.set(k, v)
+    if (selectors.some((x) => /^\[data-theme=["']dark["']\]$/.test(x))) for (const [k, v] of decls) out.dark.set(k, v)
+  }
+  return out
 }
 
 function resolveValue(name, decls, seen = new Set()) {
@@ -287,6 +312,39 @@ function main() {
   const baseline = JSON.parse(fs.readFileSync(BASELINE_PATH, 'utf-8'))
   const { errors: baselineErrors, known: knownCount } = checkBaseline(rows, baseline)
 
+  // Presets: only the pairs whose colours the preset changes.
+  const presetErrors = []
+  let presetChecks = 0
+  for (const [preset, file] of Object.entries(PRESETS)) {
+    if (!fs.existsSync(file)) {
+      presetErrors.push(`preset ${preset}: ${file} not found`)
+      continue
+    }
+    const maps = applyPreset(fs.readFileSync(file, 'utf-8'), { light, dark })
+    for (const theme of ['light', 'dark']) {
+      const base = new Map(rows.filter((r) => r.theme === theme).map((r) => [r.label, r]))
+      for (const row of evaluate(maps[theme], theme, all)) {
+        const def = base.get(row.label)
+        if (def && def.fgValue === row.fgValue && def.bgValue === row.bgValue) continue
+        presetChecks++
+        row.theme = `${preset}-${theme}`
+        rows.push(row)
+        const min = row.pair.min ?? MIN_AA
+        if (row.status === 'PASS') continue
+        if (row.status === 'UNRESOLVED' && !row.pair.component && !REQUIRED.has(row.label)) continue
+        // Known: the same component pair is already a listed failure in the default preset (either theme — the
+        // preset can move a failure from one theme to the other, e.g. primary text on the page).
+        const listed = (w) => ['light', 'dark'].some((t) => baseline.entries?.[baselineKey(t, row.label, w)])
+        if (row.pair.component && row.pair.usedBy.every(listed)) {
+          row.status = 'KNOWN'
+          continue
+        }
+        const measured = row.ratio == null ? 'unresolved' : row.ratio.toFixed(2)
+        presetErrors.push(`FAIL [${preset}-${theme}] ${row.label} = ${measured} (min ${min})${row.pair.usedBy ? ` @ ${row.pair.usedBy.join(', ')}` : ''}`)
+      }
+    }
+  }
+
   let failures = 0
   let unresolved = 0
   let lowest = { label: null, theme: null, ratio: Infinity }
@@ -294,6 +352,8 @@ function main() {
   for (const row of rows) {
     // Component pairs: hard gate at their own minimum, through the baseline.
     if (row.pair.component) continue
+    // Preset rows: gated above (presetErrors).
+    if (row.theme.includes('-')) continue
     if (row.status === 'UNRESOLVED') unresolved++
     // A required pair whose tokens are missing in a theme is a failure, not a
     // warning: an undefined focus-ring token renders no ring at all.
@@ -330,6 +390,9 @@ function main() {
   console.log(`component pairs: ${derived.length} derived from component styles, ${derived.length * 2} checks, ${knownCount} known failure(s) in contrast-baseline.json`)
   for (const e of baselineErrors) console.error(`  ${e}`)
   failures += baselineErrors.length
+  console.log(`presets: ${Object.keys(PRESETS).join(', ')} — ${presetChecks} pair(s) whose colours the preset changes, gated`)
+  for (const e of presetErrors) console.error(`  ${e}`)
+  failures += presetErrors.length
 
   if (unresolved > 0) {
     console.warn(`[validate-contrast] ${unresolved} pair(s) could not be resolved (missing tokens or unresolvable refs).`)

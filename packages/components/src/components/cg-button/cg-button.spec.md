@@ -59,8 +59,8 @@ Primary actionable button. Three variants by emphasis, three sizes, full-width a
 | State | Required? | Implementation note |
 |-------|-----------|---------------------|
 | Default | Required | All variants. |
-| Hover | Required | Neutral overlay `--cg-color-state-hover` on the variant's own colour, only under `@media (hover: hover)`; 150ms ease-out colour transition. |
-| Active / Press | Required | Neutral overlay `--cg-color-state-pressed`; nothing moves. |
+| Hover | Required | Primary: its own `--cg-color-action-primary-background-hover`, no overlay. Other variants: neutral overlay `--cg-color-state-hover` on the variant's own colour. Only under `@media (hover: hover)`; 150ms ease-out colour transition. |
+| Active / Press | Required | Primary: `--cg-color-action-primary-background-active`, no overlay. Others: neutral overlay `--cg-color-state-pressed`. Nothing moves. |
 | Focus-visible | Required | Dual ring: `--cg-color-focus-ring-offset` band + neutral `--cg-color-focus-ring`. |
 | Disabled | Required | The variant at `opacity: var(--cg-opacity-40)`, `cursor: not-allowed`, no hover. |
 | Loading | Required | Inline `cg-spinner`; `aria-busy="true"`; click handler short-circuits. |
@@ -87,10 +87,10 @@ Primary actionable button. Three variants by emphasis, three sizes, full-width a
 
 | Token | Where used | Should resolve to |
 |-------|------------|-------------------|
-| `--cg-color-action-primary-background-default/hover/active` | primary variant bg | brand accent + state shifts |
-| `--cg-color-action-primary-text-default` | primary variant text | gray-black (high contrast on lime) |
+| `--cg-color-action-primary-background-default/hover/active` | primary variant bg, hover, pressed | default preset: brand lime + its shades; neutral preset (`@cognivo/tokens/themes/neutral.css`): gray-950 / 800 / 700 (dark: white / gray-200 / 300) |
+| `--cg-color-action-primary-text-default` | primary variant text | gray-black on lime; neutral preset: white (dark: gray-950) |
 | `--cg-color-action-secondary-background-default/hover` | secondary variant bg | gray-100/800 |
-| `--cg-color-state-hover` / `--cg-color-state-pressed` | hover / pressed overlay (all variants) | neutral black 4/8% (dark: white 6/10%) |
+| `--cg-color-state-hover` / `--cg-color-state-pressed` | hover / pressed overlay (secondary, tertiary, danger, status) | neutral black 4/8% (dark: white 6/10%) |
 | `--cg-color-status-error-background-default` | `type="danger"` bg | red |
 | `--cg-color-focus-ring` | focus ring | neutral gray.600 (dark: gray.400) |
 | `--cg-shadow-focus-error` / `--cg-shadow-focus-success` | status focus rings | red / green at 20% rgba |

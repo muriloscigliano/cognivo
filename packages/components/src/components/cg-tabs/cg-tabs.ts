@@ -38,7 +38,7 @@ export class CgTabs extends LitElement {
       position: absolute;
       bottom: 0;
       height: var(--cg-border-width-100);
-      background: var(--cg-color-action-primary-background-default);
+      background: var(--cg-color-current-indicator);
       border-radius: var(--cg-border-radius-full);
       transition: left var(--cg-transition-duration-default) var(--cg-transition-easing-default), width var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
@@ -64,7 +64,7 @@ export class CgTabs extends LitElement {
       color: var(--cg-color-surface-base-text);
     }
     .tab.active {
-      color: var(--cg-color-accent-text);
+      color: var(--cg-color-current-text);
       font-weight: var(--cg-font-weight-semibold);
     }
     .tab.disabled { opacity: var(--cg-opacity-50); cursor: not-allowed; }
@@ -87,8 +87,8 @@ export class CgTabs extends LitElement {
       line-height: var(--cg-line-height-snug);
     }
     .tab.active .tab-count {
-      background: var(--cg-overlay-accent-light);
-      color: var(--cg-color-accent-text);
+      background: var(--cg-color-selected-subtle);
+      color: var(--cg-color-current-text);
     }
 
     /* Pills variant */

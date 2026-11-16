@@ -84,8 +84,8 @@ export class CgFollowUp extends LitElement {
     }
 
     button:hover:not(:disabled) {
-      border-color: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-accent-text);
+      border-color: var(--cg-color-input-border-hover);
+      color: var(--cg-color-state-text);
       background: var(--cg-color-action-tertiary-background-hover);
     }
     button:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
@@ -98,7 +98,7 @@ export class CgFollowUp extends LitElement {
       color: var(--cg-color-surface-container-outlined);
     }
     button:hover:not(:disabled) .icon {
-      color: var(--cg-color-accent-text);
+      color: var(--cg-color-state-text);
     }
 
     /* ── Card variant ── */
@@ -141,8 +141,8 @@ export class CgFollowUp extends LitElement {
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .more-badge:hover {
-      border-color: var(--cg-color-action-primary-background-default);
-      color: var(--cg-color-accent-text);
+      border-color: var(--cg-color-input-border-hover);
+      color: var(--cg-color-state-text);
     }
 
     /* ── Loading shimmer ── */

@@ -27,7 +27,8 @@
       "import": "./dist/manifest-runtime.js"
     },
     "./manifest.json": "./dist/manifest.json",
-    "./motion.css": "./dist/motion.css"
+    "./motion.css": "./dist/motion.css",
+    "./themes/neutral.css": "./dist/themes/neutral.css"
   },
   "files": [
     "dist",
@@ -50,7 +51,7 @@
     "build:only": "node build.js",
     "build:manifest": "node scripts/build-manifest.mjs",
     "check:manifest": "node scripts/check-manifest-drift.mjs",
-    "test": "node --test __tests__/manifest-lib.test.mjs __tests__/motion-css.test.mjs __tests__/focus-and-field-contrast.test.mjs __tests__/color-scheme.test.mjs __tests__/component-pairs.test.mjs",
+    "test": "node --test __tests__/manifest-lib.test.mjs __tests__/motion-css.test.mjs __tests__/focus-and-field-contrast.test.mjs __tests__/color-scheme.test.mjs __tests__/component-pairs.test.mjs __tests__/theme-presets.test.mjs",
     "validate:contrast": "node scripts/validate-contrast.mjs",
     "prepublishOnly": "pnpm build",
     "dev": "node build.js --watch",

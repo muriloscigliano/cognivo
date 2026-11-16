@@ -110,7 +110,7 @@ export class CgCollapsible extends LitElement {
     .trigger:hover .chevron { color: var(--cg-color-surface-base-text); }
     .trigger:active:not(:disabled) { transform: scale(0.995); }
     :host([open]) .chevron {
-      color: var(--cg-color-accent-text);
+      color: var(--cg-color-current-text);
       transform: rotate(180deg);
     }
 

@@ -29,7 +29,7 @@ export interface StepItem {
  * @fires {CustomEvent<{index, item}>} cg-step-click - When a clickable step is clicked
  *
  * @cssprop --cg-color-status-success-text-default - Done state color
- * @cssprop --cg-color-action-primary-background-default - Active state color
+ * @cssprop --cg-color-selected-background - Current step fill (neutral preset: the state-selected grey)
  */
 @customElement('cg-steps')
 export class CgSteps extends LitElement {
@@ -124,9 +124,9 @@ export class CgSteps extends LitElement {
       color: var(--cg-color-status-success-text-inverse);
     }
     .circle.active {
-      background: var(--cg-color-action-primary-background-default);
-      border-color: var(--cg-color-action-primary-border-default);
-      color: var(--cg-color-action-primary-text-default);
+      background: var(--cg-color-selected-background);
+      border-color: var(--cg-color-current-indicator);
+      color: var(--cg-color-selected-text);
     }
     .circle.error {
       background: var(--cg-color-status-error-text-default);
@@ -138,7 +138,7 @@ export class CgSteps extends LitElement {
     .circle.active { animation: stepPulse 2s ease-in-out infinite; }
     @keyframes stepPulse {
       0%, 100% { box-shadow: 0 0 0 0 transparent; }
-      50% { box-shadow: 0 0 0 var(--cg-spacing-4) var(--cg-overlay-accent-subtle); }
+      50% { box-shadow: 0 0 0 var(--cg-spacing-4) var(--cg-color-selected-subtle); }
     }
 
     /* ── Clickable ── */
@@ -147,8 +147,8 @@ export class CgSteps extends LitElement {
     /* Hover preview only for pending circles — done/error keep their
        status fill so hovering never repaints a completed/failed step. */
     :host([clickable]) .circle:hover:not(.active):not(.done):not(.error) {
-      border-color: var(--cg-color-action-primary-border-default);
-      color: var(--cg-color-accent-text);
+      border-color: var(--cg-color-input-border-hover);
+      color: var(--cg-color-state-text);
     }
     /* Two-layer offset focus ring (button-family convention, matches
        cg-calendar .day / cg-pagination .page-btn). */
@@ -180,7 +180,7 @@ export class CgSteps extends LitElement {
     }
     :host([compact]) .title { font-size: var(--cg-font-size-xs); }
 
-    .title.active { color: var(--cg-color-accent-text); }
+    .title.active { color: var(--cg-color-current-text); }
     .title.done { color: var(--cg-color-status-success-text-default); }
     .title.error { color: var(--cg-color-status-error-text-default); }
 

@@ -92,6 +92,30 @@ Dark mode uses slightly heavier shadows automatically.
 
 The primitive layer stays constant. Only the semantic layer swaps, so all component visuals update automatically.
 
+## Theme Presets
+
+The default preset is what `@cognivo/tokens` gives you: the brand lime primary, and accent selection (selected days, the active tab, the current step and page). Hover and focus states are neutral greys in every preset.
+
+**Neutral preset** — a near-black primary with white text (dark theme: white with near-black text), and neutral selection. Load it after the tokens:
+
+```css
+@import '@cognivo/tokens';
+@import '@cognivo/tokens/themes/neutral.css';
+```
+
+It only re-points existing semantic tokens, in light and dark:
+
+| Token | Default | Neutral (light / dark) |
+|---|---|---|
+| `--cg-color-action-primary-background-default` | brand lime | gray-950 / white |
+| `--cg-color-action-primary-background-hover` / `-active` (pressed) | lime shades | gray-800, gray-700 / gray-200, gray-300 |
+| `--cg-color-action-primary-text-default` | black | white / gray-950 |
+| `--cg-color-selected-background` / `-text` (selected day, time, page, current step) | the primary fill | `--cg-color-state-selected` / `--cg-color-state-text` |
+| `--cg-color-selected-subtle` (days in a range, active tab count) | accent tint | `--cg-color-state-hover` |
+| `--cg-color-current-indicator` / `-text` (tab underline, today, step border, active labels) | accent | `--cg-color-state-text` |
+
+Every component that paints the primary fill (button, switch, checkbox, radio, slider, progress, chip, split button) follows. Contrast is gated for both presets (`pnpm validate:contrast`).
+
 ## Palette Generator
 
 Swap the entire theme by providing a new palette JSON:
