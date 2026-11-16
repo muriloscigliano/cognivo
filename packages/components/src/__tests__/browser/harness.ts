@@ -117,6 +117,33 @@ export async function settle(page: Page): Promise<void> {
 }
 
 /**
+ * Wait until the page is visually at rest before reading computed styles:
+ * Lit has rendered and every CSS transition / animation has finished
+ * (`document.getAnimations()` → `.finished`), including the 0.01ms
+ * reduced-motion ones and any started by another finishing. Reading after a
+ * fixed delay is racy under load: a theme or state change can still be
+ * mid-transition. Chromium also keeps a transition's start value for up to a
+ * frame after a near-zero transition ends, so each round waits two frames
+ * before asking which animations are still running.
+ */
+export async function settleStyles(page: Page): Promise<void> {
+  await settle(page);
+  await page.evaluate(async () => {
+    const frame = () => new Promise((r) => requestAnimationFrame(() => r(null)));
+    for (let round = 0; round < 20; round++) {
+      await frame();
+      await frame();
+      // Finite, running (or about-to-run) animations only: an infinite spinner never finishes.
+      const running = document
+        .getAnimations()
+        .filter((a) => (a.playState === 'running' || a.pending) && a.effect?.getTiming().iterations !== Infinity);
+      if (running.length === 0) return;
+      await Promise.all(running.map((a) => a.finished.catch(() => undefined)));
+    }
+  });
+}
+
+/**
  * axe-core violations as `"rule-id: target, target"` strings. Page-structure
  * rules (one h1, landmarks) are off: fixtures are component snippets, not pages.
  */

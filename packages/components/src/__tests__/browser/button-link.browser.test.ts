@@ -7,7 +7,7 @@
 import { describe, it, expect, afterAll } from 'vitest';
 import { resolve } from 'node:path';
 import type { Page } from '@playwright/test';
-import { browserAvailable, openPage, closeBrowser, settle } from './harness.js';
+import { browserAvailable, openPage, closeBrowser, settleStyles } from './harness.js';
 
 const TOKENS_CSS = resolve(__dirname, '..', '..', '..', '..', 'tokens', 'dist', 'index.css');
 
@@ -16,8 +16,7 @@ async function open(body: string): Promise<Page> {
   // Tokens arrive after the first render: compare end states, not colour transitions.
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.addStyleTag({ path: TOKENS_CSS });
-  await settle(page);
-  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 20))));
+  await settleStyles(page);
   return page;
 }
 
@@ -89,7 +88,7 @@ describe.skipIf(!browserAvailable)('cg-button link mode (real browser)', { timeo
   it('removing href renders a button again', async () => {
     const page = await open(`<cg-button id="l" href="/x">Go</cg-button>`);
     await page.evaluate(() => { (document.querySelector('#l') as HTMLElement & { href: string }).href = ''; });
-    await settle(page);
+    await settleStyles(page);
     expect((await inner(page, '#l')).tag).toBe('button');
     await page.close();
   });

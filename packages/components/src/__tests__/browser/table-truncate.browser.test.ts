@@ -7,7 +7,7 @@
 import { describe, it, expect, afterAll } from 'vitest';
 import { resolve } from 'node:path';
 import type { Page } from '@playwright/test';
-import { browserAvailable, openPage, closeBrowser, settle } from './harness.js';
+import { browserAvailable, openPage, closeBrowser, settleStyles } from './harness.js';
 
 const TOKENS_CSS = resolve(__dirname, '..', '..', '..', '..', 'tokens', 'dist', 'index.css');
 const LONG = 'Globex Corporation — renewal of the enterprise plan with three regional add-ons and a migration package';
@@ -16,7 +16,7 @@ async function table(columns: unknown[], rows: unknown[][], body = '<div style="
   const page = await openPage(['cg-table'], body);
   await page.addStyleTag({ path: TOKENS_CSS });
   await page.evaluate(({ columns, rows }) => Object.assign(document.querySelector('cg-table')!, { columns, rows }), { columns, rows });
-  await settle(page);
+  await settleStyles(page);
   return page;
 }
 
@@ -56,7 +56,7 @@ describe.skipIf(!browserAvailable)('cg-table truncate column (real browser)', { 
     expect((await truncated(page)).ellipsis).toBe('ellipsis');
     await expect(page.getByRole('rowheader', { name: LONG }).count()).resolves.toBe(1);
     await page.evaluate(() => { (document.querySelector('cg-table') as HTMLElement & { rows: unknown[][] }).rows = [['Initech', 1]]; });
-    await settle(page);
+    await settleStyles(page);
     expect((await truncated(page)).title).toBe('Initech');
     await page.close();
   });

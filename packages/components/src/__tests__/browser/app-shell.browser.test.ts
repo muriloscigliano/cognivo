@@ -9,7 +9,7 @@
 import { describe, it, expect, afterAll } from 'vitest';
 import { resolve } from 'node:path';
 import type { Page } from '@playwright/test';
-import { browserAvailable, openPage, closeBrowser, settle } from './harness.js';
+import { browserAvailable, openPage, closeBrowser, settleStyles } from './harness.js';
 
 const TOKENS_CSS = resolve(__dirname, '..', '..', '..', '..', 'tokens', 'dist', 'index.css');
 const TAGS = ['cg-app-shell', 'cg-sidebar'];
@@ -35,11 +35,8 @@ async function shell(viewport: { width: number; height: number }, attrs = ''): P
   return page;
 }
 
-/** Let Lit render and (0.01ms, reduced-motion) transitions finish. */
-async function frames(page: Page): Promise<void> {
-  await settle(page);
-  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 20)))));
-}
+/** Let Lit render and every (0.01ms, reduced-motion) transition finish. */
+const frames = settleStyles;
 
 const rect = (page: Page, js: string) =>
   page.evaluate((js) => {

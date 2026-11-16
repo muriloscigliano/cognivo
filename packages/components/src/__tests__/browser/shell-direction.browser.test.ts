@@ -10,7 +10,7 @@
 import { describe, it, expect, afterAll } from 'vitest';
 import { resolve } from 'node:path';
 import type { Page } from '@playwright/test';
-import { browserAvailable, openPage, closeBrowser, settle } from './harness.js';
+import { browserAvailable, openPage, closeBrowser, settleStyles } from './harness.js';
 
 const TOKENS_CSS = resolve(__dirname, '..', '..', '..', '..', 'tokens', 'dist', 'index.css');
 const BODY = `
@@ -32,8 +32,7 @@ async function open(theme: 'light' | 'dark'): Promise<Page> {
   await page.addStyleTag({ path: TOKENS_CSS });
   await page.addStyleTag({ content: 'html, body { margin: 0; }' });
   if (theme === 'dark') await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
-  await settle(page);
-  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 20))));
+  await settleStyles(page);
   return page;
 }
 
@@ -110,7 +109,7 @@ describe.skipIf(!browserAvailable)('dashboard direction in cg-app-shell / cg-sid
   it('without `panel` the shell keeps its flat layout (opt-in)', async () => {
     const page = await openPage(['cg-app-shell'], '<cg-app-shell><div>x</div></cg-app-shell>');
     await page.addStyleTag({ path: TOKENS_CSS });
-    await settle(page);
+    await settleStyles(page);
     const radius = await page.evaluate(() => getComputedStyle(document.querySelector('cg-app-shell')!.shadowRoot!.querySelector('main')!).borderTopLeftRadius);
     expect(radius).toBe('0px');
     await page.close();
