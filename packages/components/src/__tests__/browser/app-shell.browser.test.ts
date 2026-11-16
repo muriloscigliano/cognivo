@@ -38,6 +38,13 @@ async function shell(viewport: { width: number; height: number }, attrs = ''): P
 /** Let Lit render and every (0.01ms, reduced-motion) transition finish. */
 const frames = settleStyles;
 
+const collapsed = (page: Page) =>
+  page.evaluate(() => (document.querySelector('cg-app-shell') as HTMLElement & { sidebarCollapsed: boolean }).sidebarCollapsed);
+async function setCollapsed(page: Page, value: boolean): Promise<void> {
+  await page.evaluate((value) => { (document.querySelector('cg-app-shell') as HTMLElement & { sidebarCollapsed: boolean }).sidebarCollapsed = value; }, value);
+  await frames(page);
+}
+
 const rect = (page: Page, js: string) =>
   page.evaluate((js) => {
     const el = new Function(`return ${js}`)() as Element;
@@ -161,9 +168,105 @@ describe.skipIf(!browserAvailable)('cg-app-shell (real browser)', { timeout: 30_
 
     it('clicking the backdrop closes the sidebar', async () => {
       const page = await shell(PHONE);
+      await setCollapsed(page, false);
       await page.mouse.click(380, 400);
       await frames(page);
       await expect(page.evaluate(() => (document.querySelector('cg-app-shell') as HTMLElement & { sidebarCollapsed: boolean }).sidebarCollapsed)).resolves.toBe(true);
+      await page.close();
+    });
+
+    it('is closed by default on a phone: on first load and when the window narrows from desktop', async () => {
+      // Narrowing: open on desktop (the default), then the window becomes phone-sized.
+      const page = await shell(DESKTOP);
+      expect(await collapsed(page)).toBe(false);
+      await page.setViewportSize(PHONE);
+      await frames(page);
+      expect(await collapsed(page)).toBe(true);
+      expect((await rect(page, ASIDE)).left + (await rect(page, ASIDE)).width).toBeLessThanOrEqual(0);
+      // First load on a phone: a shell created at phone width starts closed.
+      await page.evaluate((html) => { document.body.innerHTML = html; }, SHELL());
+      await frames(page);
+      expect(await collapsed(page)).toBe(true);
+      expect(await page.evaluate(() => document.body.style.overflow)).toBe('');
+      await page.close();
+    });
+
+    it('widening back to desktop restores the desktop column as it was', async () => {
+      const page = await shell(DESKTOP);
+      await page.setViewportSize(PHONE);
+      await frames(page);
+      await page.setViewportSize(DESKTOP);
+      await frames(page);
+      expect(await collapsed(page)).toBe(false);
+      // Also after a first load at phone width.
+      await page.setViewportSize(PHONE);
+      await page.evaluate((html) => { document.body.innerHTML = html; }, SHELL());
+      await frames(page);
+      expect(await collapsed(page)).toBe(true);
+      await page.setViewportSize(DESKTOP);
+      await frames(page);
+      expect(await collapsed(page)).toBe(false);
+      await page.close();
+    });
+
+    it('open: the header, main content and footer are inert, so focus stays in the drawer; closing restores them', async () => {
+      const page = await shell(PHONE);
+      const inertRegions = () => page.evaluate(() => {
+        const r = document.querySelector('cg-app-shell')!.shadowRoot!;
+        return ['header', 'main', 'footer'].map((t) => (r.querySelector(t) as HTMLElement).inert);
+      });
+      expect(await inertRegions()).toEqual([false, false, false]);
+      await setCollapsed(page, false);
+      expect(await inertRegions()).toEqual([true, true, true]);
+      await page.locator('#first-link').focus();
+      const trail: string[] = [];
+      for (let i = 0; i < 4; i++) {
+        await page.keyboard.press('Tab');
+        trail.push(await page.evaluate(() => document.activeElement?.id || document.activeElement?.textContent || ''));
+      }
+      expect(trail).not.toContain('in-main');
+      expect(trail).not.toContain('menu');
+      await setCollapsed(page, true);
+      expect(await inertRegions()).toEqual([false, false, false]);
+      await page.close();
+    });
+  });
+
+  describe('right-to-left (dir="rtl")', () => {
+    async function rtl(viewport: { width: number; height: number }, attrs = ''): Promise<Page> {
+      const page = await shell(viewport, attrs);
+      await page.evaluate(() => document.documentElement.setAttribute('dir', 'rtl'));
+      await frames(page);
+      return page;
+    }
+
+    it('phone: the start-side drawer slides from the right edge and hides off the right edge', async () => {
+      const page = await rtl(PHONE);
+      const closed = await rect(page, ASIDE);
+      expect(closed.left).toBeGreaterThanOrEqual(PHONE.width);
+      await setCollapsed(page, false);
+      const open = await rect(page, ASIDE);
+      expect(open.left + open.width).toBe(PHONE.width);
+      await page.close();
+    });
+
+    it('phone: an end-side drawer hides off the left edge', async () => {
+      const page = await rtl(PHONE, 'sidebar-position="end"');
+      const closed = await rect(page, ASIDE);
+      expect(closed.left + closed.width).toBeLessThanOrEqual(0);
+      await setCollapsed(page, false);
+      expect((await rect(page, ASIDE)).left).toBe(0);
+      await page.close();
+    });
+
+    it('desktop panel: the inset sits on the outer (inline-end) edge, flush against an end-side sidebar', async () => {
+      const page = await rtl(DESKTOP, 'panel sidebar-position="end"');
+      const main = await rect(page, `document.querySelector('cg-app-shell').shadowRoot.querySelector('main')`);
+      const aside = await rect(page, ASIDE);
+      // RTL + end: the sidebar is on the left; the panel's outer edge is the right one.
+      expect(aside.left).toBe(0);
+      expect(main.left).toBe(aside.left + aside.width);
+      expect(main.left + main.width).toBe(DESKTOP.width - 8);
       await page.close();
     });
   });

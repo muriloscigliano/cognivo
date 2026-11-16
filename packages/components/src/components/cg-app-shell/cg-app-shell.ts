@@ -26,11 +26,18 @@ const PHONE_QUERY = '(max-width: 768px)';
  * hairline instead of divider lines.
  *
  * Phone (≤ 768px): the sidebar is an overlay drawer, open when not
- * `sidebar-collapsed`. While open: a backdrop covers the page (click closes),
- * Escape closes, the page behind does not scroll, and focus moves into the
+ * `sidebar-collapsed`. It starts closed: on first load at phone width, and
+ * when the window narrows from desktop (widening back restores the desktop
+ * column as it was). While open: a backdrop covers the page (click closes),
+ * Escape closes, the page behind does not scroll, the header, content and
+ * footer are `inert` (focus stays in the drawer), and focus moves into the
  * sidebar when it opens and back to where it was when it closes. Closing
- * from the backdrop or Escape fires `cg-app-shell-toggle` like
- * `toggleSidebar()`.
+ * from the backdrop or Escape, and the breakpoint changes, fire
+ * `cg-app-shell-toggle` like `toggleSidebar()`.
+ *
+ * Right-to-left: the drawer slides from the inline-start edge (the right in
+ * `dir="rtl"`), and the panel's inset and the column's divider follow the
+ * writing direction.
  *
  * @example
  * ```html
@@ -59,10 +66,15 @@ export class CgAppShell extends LitElement {
       --_cg-shell-header-h: 56px;
       /* Where the sticky sidebar column starts: under a sticky header, or at the top. */
       --_cg-shell-sidebar-top: 0px;
+      /* 1 in left-to-right, -1 in right-to-left: the drawer slide follows the inline direction. */
+      --_cg-shell-dir: 1;
       font-family: var(--cg-font-family-primary);
     }
     :host([sticky-header]) {
       --_cg-shell-sidebar-top: var(--_cg-shell-header-h);
+    }
+    :host(:dir(rtl)) {
+      --_cg-shell-dir: -1;
     }
 
     .shell {
@@ -120,14 +132,15 @@ export class CgAppShell extends LitElement {
     :host([panel]) header,
     :host([panel]) footer { border: none; }
     :host([panel]) main {
-      margin: 0 var(--cg-component-app-shell-panel-inset) var(--cg-component-app-shell-panel-inset);
+      margin-block: 0 var(--cg-component-app-shell-panel-inset);
+      margin-inline: var(--cg-component-app-shell-panel-inset);
       background: var(--cg-color-surface-panel-background);
       color: var(--cg-color-surface-base-text);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-panel-border);
       border-radius: var(--cg-component-app-shell-panel-radius);
     }
     :host([panel][sidebar-position="end"]) main {
-      margin: 0 0 var(--cg-component-app-shell-panel-inset) var(--cg-component-app-shell-panel-inset);
+      margin-inline: var(--cg-component-app-shell-panel-inset) 0;
     }
 
     /* Empty regions collapse so they don't reserve borders */
@@ -169,11 +182,11 @@ export class CgAppShell extends LitElement {
         align-self: start;
         height: 100%;
         max-height: calc(100dvh - var(--_cg-shell-sidebar-top));
-        border-right: var(--cg-border-width-50) solid var(--cg-color-surface-base-divider);
+        border-inline-end: var(--cg-border-width-50) solid var(--cg-color-surface-base-divider);
       }
       :host([sidebar-position="end"]) aside {
-        border-right: none;
-        border-left: var(--cg-border-width-50) solid var(--cg-color-surface-base-divider);
+        border-inline-end: none;
+        border-inline-start: var(--cg-border-width-50) solid var(--cg-color-surface-base-divider);
       }
       /* Collapsed: out of sight, the tab order and the accessibility tree (also inert). */
       :host([sidebar-collapsed]) aside { border: none; visibility: hidden; }
@@ -207,11 +220,12 @@ export class CgAppShell extends LitElement {
         inset-inline-start: auto;
         inset-inline-end: 0;
       }
+      /* Slide out past the inline-start (or, for end, inline-end) edge. */
       :host([sidebar-collapsed]) aside {
-        transform: translateX(calc(-1 * (var(--_cg-shell-sidebar-w) + var(--cg-spacing-16))));
+        transform: translateX(calc(-1 * var(--_cg-shell-dir) * (var(--_cg-shell-sidebar-w) + var(--cg-spacing-16))));
       }
       :host([sidebar-position="end"][sidebar-collapsed]) aside {
-        transform: translateX(calc(var(--_cg-shell-sidebar-w) + var(--cg-spacing-16)));
+        transform: translateX(calc(var(--_cg-shell-dir) * (var(--_cg-shell-sidebar-w) + var(--cg-spacing-16))));
       }
 
       .backdrop {
@@ -245,6 +259,8 @@ export class CgAppShell extends LitElement {
 
   private _hasFooter = false;
   private _media: MediaQueryList | null = null;
+  /** The desktop column's collapsed state before the window narrowed to a phone. */
+  private _desktopCollapsed: boolean | null = null;
   /** Focus to restore when the phone drawer closes. */
   private _returnFocus: HTMLElement | null = null;
 
@@ -257,6 +273,12 @@ export class CgAppShell extends LitElement {
     super.connectedCallback();
     this._media = window.matchMedia?.(PHONE_QUERY) ?? null;
     this._phone = this._media?.matches ?? false;
+    // A phone drawer starts closed (not covering the page on first load);
+    // widening to desktop later restores the column as authored.
+    if (this._phone && this._desktopCollapsed === null) {
+      this._desktopCollapsed = this.sidebarCollapsed;
+      this.sidebarCollapsed = true;
+    }
     this._media?.addEventListener('change', this._onMediaChange);
     document.addEventListener('keydown', this._onKeydown);
   }
@@ -304,6 +326,15 @@ export class CgAppShell extends LitElement {
 
   private _onMediaChange = (e: MediaQueryListEvent): void => {
     this._phone = e.matches;
+    if (e.matches) {
+      // Narrowed to a phone: the drawer starts closed; remember the desktop column.
+      this._desktopCollapsed = this.sidebarCollapsed;
+      this._setCollapsed(true);
+    } else if (this._desktopCollapsed !== null) {
+      // Widened back: the desktop column as it was.
+      this._setCollapsed(this._desktopCollapsed);
+      this._desktopCollapsed = null;
+    }
   };
 
   private _onKeydown = (e: KeyboardEvent): void => {
@@ -363,15 +394,17 @@ export class CgAppShell extends LitElement {
   }
 
   override render() {
+    // While the phone drawer is open, the rest of the page is inert: focus stays in the drawer.
+    const behind = this._drawerOpen;
     return html`
       <div class="shell">
-        <header><slot name="header"></slot></header>
+        <header ?inert=${behind}><slot name="header"></slot></header>
         <div class="backdrop" @click=${() => this._setCollapsed(true)}></div>
         <aside ?inert=${this.sidebarCollapsed}>
           <slot name="sidebar"></slot>
         </aside>
-        <main><slot></slot></main>
-        <footer class=${this._hasFooter ? '' : 'empty'}>
+        <main ?inert=${behind}><slot></slot></main>
+        <footer class=${this._hasFooter ? '' : 'empty'} ?inert=${behind}>
           <slot name="footer" @slotchange=${this._onFooterSlotChange}></slot>
         </footer>
       </div>
