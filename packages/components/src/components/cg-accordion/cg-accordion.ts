@@ -85,7 +85,7 @@ export class CgAccordion extends LitElement {
     }
 
     .trigger:disabled {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
     }
 

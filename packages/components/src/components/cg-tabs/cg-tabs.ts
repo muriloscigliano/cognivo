@@ -67,7 +67,7 @@ export class CgTabs extends LitElement {
       color: var(--cg-color-current-text);
       font-weight: var(--cg-font-weight-semibold);
     }
-    .tab.disabled { opacity: var(--cg-opacity-50); cursor: not-allowed; }
+    .tab.disabled { opacity: var(--cg-opacity-40); cursor: not-allowed; }
     .tab:active:not(.disabled) { transform: scale(var(--cg-interaction-press-scale)); }
 
     .tab:focus-visible {

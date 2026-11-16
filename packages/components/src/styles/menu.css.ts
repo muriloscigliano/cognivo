@@ -124,7 +124,7 @@ export const menuListStyles = /* @__PURE__ */ pureStyle(() => css`
   .menu-item.disabled {
     color: var(--cg-color-surface-container-outlined);
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--cg-opacity-40);
   }
   .menu-item.danger {
     color: var(--cg-color-status-error-text-default);

@@ -75,10 +75,8 @@ export class CgInput extends LitElement {
     :host([rounded="lg"]) .wrapper { border-radius: var(--cg-component-input-radius); }
 
     /* Hover */
-    @media (hover: hover) {
-      .wrapper:hover:not(.disabled):not(.readonly):not(.focused) {
-        border-color: var(--cg-color-input-border-hover);
-      }
+    .wrapper:hover:not(.disabled):not(.readonly):not(.focused) {
+      border-color: var(--cg-color-input-border-hover);
     }
 
     /* Active / Press — no scale transform on text inputs */
@@ -126,7 +124,7 @@ export class CgInput extends LitElement {
 
     /* Disabled */
     .wrapper.disabled {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-40);
       pointer-events: none;
       background: var(--cg-color-input-background-disabled);
       border-color: var(--cg-color-input-border-disabled);
@@ -279,7 +277,7 @@ export class CgInput extends LitElement {
       transform: scale(0.8);
       animation: clearIn 150ms var(--cg-transition-easing-ease-out) forwards;
     }
-    @media (hover: hover) { .clear:hover { background: var(--cg-color-state-hover); color: var(--cg-color-state-text); } }
+    .clear:hover { background: var(--cg-color-state-hover); color: var(--cg-color-state-text); }
     .clear:active { transform: scale(0.9); }
     .clear svg { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
 

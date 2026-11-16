@@ -23,7 +23,7 @@ const MESSAGES = defineMessages('cg-meter', {
 export class CgMeter extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
     :host { width: 100%; font-family: var(--cg-font-family-primary); }
-    :host([disabled]) { opacity: 0.5; cursor: not-allowed; }
+    :host([disabled]) { opacity: var(--cg-opacity-40); cursor: not-allowed; }
     :host([disabled]) .track,
     :host([disabled]) .circular { pointer-events: none; }
 

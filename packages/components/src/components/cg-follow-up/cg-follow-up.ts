@@ -92,7 +92,7 @@ export class CgFollowUp extends LitElement {
     button:focus-visible {
       ${focusRingSingle}
     }
-    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    button:disabled { opacity: var(--cg-opacity-40); cursor: not-allowed; }
 
     .icon {
       color: var(--cg-color-surface-container-outlined);

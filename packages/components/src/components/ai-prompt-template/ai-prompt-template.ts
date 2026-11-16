@@ -171,7 +171,7 @@ export class AiPromptTemplate extends LitElement {
       outline-offset: calc(-1 * var(--cg-outline-offset-default));
     }
     .var-input:disabled {
-      opacity: var(--cg-opacity-50);
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
     }
 

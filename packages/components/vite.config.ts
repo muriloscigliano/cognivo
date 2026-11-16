@@ -2,6 +2,8 @@ import { defineConfig, type Plugin } from 'vite';
 import { resolve } from 'path';
 import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import dts from 'vite-plugin-dts';
+// @ts-expect-error -- plain ES module shared with the browser-test bundle
+import { hoverOnlyWhereHoverInSource } from './scripts/hover-media.mjs';
 
 const componentsDir = resolve(__dirname, 'src/components');
 
@@ -67,6 +69,23 @@ export function minifyCssTemplates(): Plugin {
   };
 }
 
+/**
+ * Hover only where the device hovers: every `:hover` rule in a Lit `css`
+ * template moves into `@media (hover:hover)` (scripts/hover-media.mjs). Runs
+ * before minification; components are written with plain `:hover` rules.
+ */
+export function hoverMediaCssTemplates(): Plugin {
+  return {
+    name: 'cognivo-hover-media',
+    enforce: 'pre',
+    transform(code, id) {
+      if (!/\/src\/.*\.ts$/.test(id) || id.includes('__tests__')) return null;
+      const out = hoverOnlyWhereHoverInSource(code) as string;
+      return out === code ? null : { code: out, map: null };
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   // The legacy IIFE build (single `cognivo.min.js`) is kept as a separate mode
   // so it can be invoked with `vite build --mode iife` if ever needed for a
@@ -75,6 +94,7 @@ export default defineConfig(({ mode }) => {
   if (mode === 'iife') {
     return {
       define,
+      plugins: [hoverMediaCssTemplates()],
       build: {
         emptyOutDir: false,
         lib: {
@@ -92,6 +112,7 @@ export default defineConfig(({ mode }) => {
   return {
     define,
     plugins: [
+      hoverMediaCssTemplates(),
       minifyCssTemplates(),
       dts({
         insertTypesEntry: true,

@@ -11,10 +11,13 @@
  * skipped silently there.
  */
 import { existsSync, readFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { build } from 'esbuild';
 import { chromium, type Browser, type Page } from '@playwright/test';
 import { AxeBuilder } from '@axe-core/playwright';
+// @ts-expect-error -- plain ES module shared with the library build (vite.config.ts)
+import { hoverOnlyWhereHoverInSource } from '../../../scripts/hover-media.mjs';
 
 const SRC = resolve(__dirname, '..', '..');
 
@@ -69,6 +72,16 @@ export async function bundleComponents(tags: string[], modules: string[] = []): 
     tsconfig: resolve(SRC, '..', 'tsconfig.json'),
     define: { __COGNIVO_VERSION__: JSON.stringify((JSON.parse(readFileSync(resolve(SRC, '..', 'package.json'), 'utf8')) as { version: string }).version) },
     logLevel: 'silent',
+    // The same `:hover` → `@media (hover:hover)` transform as the library build.
+    plugins: [{
+      name: 'cognivo-hover-media',
+      setup(b) {
+        b.onLoad({ filter: /\/src\/.*\.ts$/ }, async (args) =>
+          args.path.includes('/__tests__/')
+            ? undefined
+            : { contents: hoverOnlyWhereHoverInSource(await readFile(args.path, 'utf8')) as string, loader: 'ts' as const });
+      },
+    }],
   });
   const code = out.outputFiles[0]!.text;
   bundleCache.set(key, code);

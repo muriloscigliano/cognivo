@@ -85,7 +85,7 @@ export class CgTreeView extends LitElement {
     }
 
     .node.disabled {
-      opacity: var(--cg-opacity-50);
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
     }
     .node:focus-visible {

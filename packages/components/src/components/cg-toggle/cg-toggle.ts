@@ -154,7 +154,7 @@ export class CgToggle extends LitElement {
 
     /* Disabled */
     :host([disabled]) button {
-      opacity: var(--cg-opacity-50);
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
     }
 

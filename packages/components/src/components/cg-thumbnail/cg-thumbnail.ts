@@ -80,7 +80,7 @@ export class CgThumbnail extends LitElement {
       box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-current-indicator) inset;
     }
 
-    :host([disabled]) .tile { opacity: 0.5; cursor: not-allowed; }
+    :host([disabled]) .tile { opacity: var(--cg-opacity-40); cursor: not-allowed; }
   `];
 
   @property() src = '';

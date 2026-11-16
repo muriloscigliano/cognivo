@@ -63,7 +63,7 @@ export class CgDateTimePicker extends LitElement {
     .trigger:hover:not(.disabled) { border-color: var(--cg-color-input-border-hover); }
     .trigger:focus-visible { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); }
     .trigger.open { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); }
-    .trigger.disabled { opacity: 0.5; pointer-events: none; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
+    .trigger.disabled { opacity: var(--cg-opacity-40); pointer-events: none; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
 
     :host([error]) .trigger { border-color: var(--cg-color-input-border-error); }
     :host([error]) .trigger:focus-visible,
@@ -170,7 +170,7 @@ export class CgDateTimePicker extends LitElement {
     .cal-day.selected { background: var(--cg-color-selected-background); color: var(--cg-color-selected-text); font-weight: var(--cg-font-weight-semibold); }
     .cal-day.selected:hover { background: var(--cg-color-selected-background); }
     .cal-day.outside { color: var(--cg-color-input-text-placeholder); opacity: 0.5; }
-    .cal-day.disabled-day { opacity: 0.3; pointer-events: none; }
+    .cal-day.disabled-day { opacity: var(--cg-opacity-40); pointer-events: none; }
     .cal-day:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--cg-color-state-focus-halo); }
 
     /* ── Divider ── */

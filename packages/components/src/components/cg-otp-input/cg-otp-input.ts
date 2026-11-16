@@ -87,7 +87,7 @@ export class CgOtpInput extends LitElement {
     }
 
     .box:disabled {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
       background: var(--cg-color-input-background-disabled);
       border-color: var(--cg-color-input-border-disabled);

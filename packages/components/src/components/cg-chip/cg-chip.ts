@@ -83,7 +83,7 @@ export class CgChip extends LitElement {
 
     /* ── Disabled ── */
     .chip.disabled {
-      opacity: 0.45;
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
       pointer-events: none;
     }

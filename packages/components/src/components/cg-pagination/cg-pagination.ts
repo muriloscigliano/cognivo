@@ -89,7 +89,7 @@ export class CgPagination extends LitElement {
     }
 
     .page-btn[aria-disabled="true"] {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
     }
 

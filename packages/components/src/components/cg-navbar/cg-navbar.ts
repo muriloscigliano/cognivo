@@ -216,7 +216,7 @@ export class CgNavbar extends LitElement {
       color: var(--cg-color-surface-base-text);
     }
     .item[aria-disabled="true"] {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-40);
       pointer-events: none;
       cursor: not-allowed;
     }
@@ -345,7 +345,7 @@ export class CgNavbar extends LitElement {
       box-shadow: var(--cg-shadow-elevation-sm);
     }
     .mobile-item[aria-disabled="true"] {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-40);
       pointer-events: none;
     }
 

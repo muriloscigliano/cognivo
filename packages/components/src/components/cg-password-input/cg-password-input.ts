@@ -77,7 +77,7 @@ export class CgPasswordInput extends LitElement {
       box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo);
     }
     input:disabled {
-      opacity: 0.6;
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
     }
 
@@ -111,7 +111,7 @@ export class CgPasswordInput extends LitElement {
       color: var(--cg-color-surface-base-text);
       background: var(--cg-color-action-tertiary-background-hover);
     }
-    .toggle:disabled { opacity: 0.6; cursor: not-allowed; }
+    .toggle:disabled { opacity: var(--cg-opacity-40); cursor: not-allowed; }
     .toggle:focus-visible {
       outline: none;
       box-shadow:

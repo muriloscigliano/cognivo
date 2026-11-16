@@ -190,7 +190,7 @@ export class CgCommand extends LitElement {
       transform: scale(var(--cg-interaction-press-scale));
     }
     .item[disabled] {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
     }
     .item-icon {

@@ -177,7 +177,7 @@ export class AiConfidenceBadge extends LitElement {
 
     :host([disabled]) .badge {
       cursor: default;
-      opacity: var(--cg-opacity-50);
+      opacity: var(--cg-opacity-40);
     }
     :host([disabled]) .badge:hover { filter: none; }
     :host([disabled]) .badge:active { transform: none; }

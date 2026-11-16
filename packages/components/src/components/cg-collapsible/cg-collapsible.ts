@@ -96,7 +96,7 @@ export class CgCollapsible extends LitElement {
         inset 0 0 0 var(--cg-spacing-4) var(--cg-color-focus-ring);
     }
     .trigger:disabled {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
     }
 

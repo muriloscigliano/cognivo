@@ -74,7 +74,7 @@ export class CgRating extends LitElement {
 
     :host([readonly]) .star { cursor: default; }
     :host([readonly]) .star:hover { transform: none; }
-    :host([disabled]) .rating { opacity: var(--cg-opacity-50); pointer-events: none; }
+    :host([disabled]) .rating { opacity: var(--cg-opacity-40); pointer-events: none; }
 
     .rating:focus-visible {
       outline: none;

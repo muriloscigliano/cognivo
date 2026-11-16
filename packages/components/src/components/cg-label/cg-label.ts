@@ -30,7 +30,7 @@ export class CgLabel extends LitElement {
 
     :host([disabled]) label,
     :host([disabled]) .hint {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-40);
     }
 
     :host([disabled]) label {

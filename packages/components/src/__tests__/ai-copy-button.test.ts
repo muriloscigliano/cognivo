@@ -48,7 +48,7 @@ describe('ai-copy-button', () => {
     const cssText = (el.constructor as typeof AiCopyButton).styles
       .map(s => (s as { cssText?: string }).cssText ?? '')
       .join('\n');
-    expect(cssText).toContain('opacity: var(--cg-opacity-50)');
+    expect(cssText).toContain('opacity: var(--cg-opacity-40)');
     expect(cssText).toContain('var(--cg-color-focus-ring)');
     expect(cssText).not.toContain('opacity: 0.5');
   });

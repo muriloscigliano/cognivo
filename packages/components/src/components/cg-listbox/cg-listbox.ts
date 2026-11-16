@@ -71,7 +71,7 @@ export class CgListbox extends LitElement {
     }
 
     .option.disabled {
-      opacity: 0.45;
+      opacity: var(--cg-opacity-40);
       pointer-events: none;
       cursor: not-allowed;
     }

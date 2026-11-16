@@ -48,7 +48,7 @@ export class CgNumberInput extends LitElement {
     .wrapper:hover:not(.disabled) {
       border-color: var(--cg-color-input-border-hover);
     }
-    .wrapper.disabled { opacity: 0.5; cursor: not-allowed; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
+    .wrapper.disabled { opacity: var(--cg-opacity-40); cursor: not-allowed; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
 
     /* Error */
     :host([error]) .wrapper { border-color: var(--cg-color-input-border-error); }

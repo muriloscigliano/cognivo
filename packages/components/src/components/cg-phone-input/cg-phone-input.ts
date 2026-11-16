@@ -110,7 +110,7 @@ export class CgPhoneInput extends LitElement {
     }
 
     .wrapper.disabled {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-40);
       pointer-events: none;
       background: var(--cg-color-input-background-disabled);
       border-color: var(--cg-color-input-border-disabled);

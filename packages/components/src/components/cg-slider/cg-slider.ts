@@ -166,7 +166,7 @@ export class CgSlider extends LitElement {
     input[type="range"]:disabled { cursor: not-allowed; }
 
     /* ── Disabled ── */
-    :host([disabled]) .track-container { opacity: var(--cg-opacity-50); pointer-events: none; }
+    :host([disabled]) .track-container { opacity: var(--cg-opacity-40); pointer-events: none; }
 
     /* ── Error ── */
     :host([error]) .track-fill { background: var(--cg-color-status-error-text-default); }

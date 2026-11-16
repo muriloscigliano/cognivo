@@ -113,7 +113,7 @@ export class CgFileInput extends LitElement {
         0 0 0 var(--cg-focus-ring-offset) var(--cg-color-focus-ring-offset),
         0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
-    .dropzone.disabled { opacity: 0.5; cursor: not-allowed; }
+    .dropzone.disabled { opacity: var(--cg-opacity-40); cursor: not-allowed; }
 
     :host([error]) .dropzone { border-color: var(--cg-color-status-error-border-default); }
     :host([success]) .dropzone { border-color: var(--cg-color-status-success-border-default); }
@@ -177,7 +177,7 @@ export class CgFileInput extends LitElement {
       border-color: var(--cg-color-action-primary-border-default);
       background: var(--cg-overlay-accent-light);
     }
-    .compact.disabled { opacity: 0.5; cursor: not-allowed; }
+    .compact.disabled { opacity: var(--cg-opacity-40); cursor: not-allowed; }
     .compact-icon { color: var(--cg-color-input-icon-default); display: flex; flex-shrink: 0; }
     .compact-icon svg { width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); }
     .compact-count {

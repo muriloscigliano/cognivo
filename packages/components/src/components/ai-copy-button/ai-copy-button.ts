@@ -110,7 +110,7 @@ export class AiCopyButton extends LitElement {
 
     /* Disabled state */
     .copy-btn:disabled {
-      opacity: var(--cg-opacity-50);
+      opacity: var(--cg-opacity-40);
       cursor: var(--cg-cursor-not-allowed);
       pointer-events: none;
     }

@@ -141,7 +141,7 @@ export class AiVoicePanel extends LitElement {
       color: var(--cg-color-ai-error-text);
     }
     .mic-btn:disabled {
-      opacity: 0.4;
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
     }
     .mic-btn svg {

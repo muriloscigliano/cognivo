@@ -140,7 +140,7 @@ export class AiErrorBoundary extends LitElement {
       box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
     }
     .btn:disabled {
-      opacity: 0.4;
+      opacity: var(--cg-opacity-40);
       cursor: default;
     }
 

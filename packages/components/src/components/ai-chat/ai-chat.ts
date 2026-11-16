@@ -212,7 +212,7 @@ export class AiChat extends LitElement {
         border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .icon-btn:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
-    .icon-btn:disabled { opacity: 0.3; cursor: default; }
+    .icon-btn:disabled { opacity: var(--cg-opacity-40); cursor: default; }
 
     .send-btn {
       background: var(--cg-color-action-primary-background-default);

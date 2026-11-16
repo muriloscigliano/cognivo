@@ -53,7 +53,7 @@ export class CgDatePicker extends LitElement {
       border-color: var(--cg-color-input-border-focus);
       box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo);
     }
-    .trigger.disabled { opacity: 0.5; pointer-events: none; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
+    .trigger.disabled { opacity: var(--cg-opacity-40); pointer-events: none; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
 
     :host([error]) .trigger { border-color: var(--cg-color-input-border-error); }
     :host([error]) .trigger:focus-visible,

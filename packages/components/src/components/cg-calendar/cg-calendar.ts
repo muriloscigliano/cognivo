@@ -58,7 +58,7 @@ export class CgCalendar extends LitElement {
     }
     .nav-btn:hover { background: var(--cg-color-action-tertiary-background-hover); }
     .nav-btn:disabled {
-      opacity: 0.3;
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
     }
     .nav-btn:focus-visible {
@@ -155,7 +155,7 @@ export class CgCalendar extends LitElement {
       border-radius: 0 var(--cg-border-radius-100) var(--cg-border-radius-100) 0;
     }
     .day:disabled {
-      opacity: 0.3;
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
     }
   `];

@@ -67,7 +67,7 @@ export class CgAutocomplete extends LitElement {
       box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo);
     }
     .input-wrap.disabled {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
       background: var(--cg-color-input-background-disabled);
       border-color: var(--cg-color-input-border-disabled);

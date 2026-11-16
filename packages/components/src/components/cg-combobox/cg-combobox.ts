@@ -92,7 +92,7 @@ export class CgCombobox extends LitElement {
     }
 
     :host([disabled]) .wrapper {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
       pointer-events: none;
       background: var(--cg-color-input-background-disabled);
@@ -196,7 +196,7 @@ export class CgCombobox extends LitElement {
       background: var(--cg-color-state-hover);
       box-shadow: inset var(--cg-spacing-2) 0 0 0 var(--cg-color-state-text);
     }
-    .option.disabled { opacity: 0.5; cursor: not-allowed; }
+    .option.disabled { opacity: var(--cg-opacity-40); cursor: not-allowed; }
     .option.selected { font-weight: var(--cg-font-weight-medium); }
     .option.selected::after {
       content: '✓';
