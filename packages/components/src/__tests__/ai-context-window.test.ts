@@ -73,6 +73,6 @@ describe('ai-context-window', () => {
     expect(cssText).toContain('.bar.over');
     expect(cssText).toContain('var(--cg-color-status-error-border-default)');
     expect(cssText).toContain('.segment:focus-visible');
-    expect(cssText).toContain('var(--cg-focus-ring-color)');
+    expect(cssText).toContain('var(--cg-color-focus-ring)');
   });
 });

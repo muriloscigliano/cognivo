@@ -61,7 +61,7 @@ export class AiContextWindow extends LitElement {
     .segment:last-child { border-radius: 0 var(--cg-border-radius-full) var(--cg-border-radius-full) 0; }
     .segment:hover { opacity: 0.8; }
     .segment:focus-visible {
-      outline: var(--cg-focus-ring-width) solid var(--cg-focus-ring-color);
+      outline: var(--cg-focus-ring-width) solid var(--cg-color-focus-ring);
       outline-offset: var(--cg-focus-ring-offset);
     }
 

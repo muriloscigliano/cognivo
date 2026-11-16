@@ -83,7 +83,7 @@ export class CgOtpInput extends LitElement {
 
     .box:focus {
       border-color: var(--cg-color-input-border-focus);
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo);
     }
 
     .box:disabled {

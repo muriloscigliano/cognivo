@@ -53,8 +53,8 @@ export class CgTimePicker extends LitElement {
         box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .trigger:hover:not(.disabled) { border-color: var(--cg-color-input-border-hover); }
-    .trigger:focus-visible { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
-    .trigger.open { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .trigger:focus-visible { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); }
+    .trigger.open { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); }
     .trigger.disabled { opacity: 0.5; pointer-events: none; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
 
     :host([error]) .trigger { border-color: var(--cg-color-input-border-error); }
@@ -197,7 +197,7 @@ export class CgTimePicker extends LitElement {
     }
     .time-option:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 2px var(--cg-color-state-focus-halo);
     }
 
     /* ── Period toggle (AM/PM) ── */
@@ -231,7 +231,7 @@ export class CgTimePicker extends LitElement {
     .period-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .period-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 2px var(--cg-color-state-focus-halo);
     }
     .period-btn.active {
       background: var(--cg-color-action-primary-background-default);

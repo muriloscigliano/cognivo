@@ -12,15 +12,15 @@ import { pureStyle } from './pure-style.js';
 export const focusRingDual = /* @__PURE__ */ pureStyle(() => css`
   box-shadow:
     0 0 0 2px var(--cg-color-surface-base-background),
-    0 0 0 4px var(--cg-focus-ring-color);
+    0 0 0 4px var(--cg-color-focus-ring);
   outline: none;
 `);
 
 /**
- * Single-layer focus ring for form fields (input, textarea, select).
- * Softer glow that works with existing borders.
+ * Single-layer focus halo for form fields (input, textarea, select): a soft
+ * neutral 3px halo next to the field's near-black focus border. No accent.
  */
 export const focusRingSingle = /* @__PURE__ */ pureStyle(() => css`
-  box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+  box-shadow: 0 0 0 3px var(--cg-color-state-focus-halo);
   outline: none;
 `);

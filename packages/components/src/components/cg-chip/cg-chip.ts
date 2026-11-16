@@ -76,7 +76,7 @@ export class CgChip extends LitElement {
     /* ── Focus ring ── */
     .chip:focus-visible {
       box-shadow:
-        0 0 0 var(--cg-spacing-2) var(--cg-overlay-accent-strong);
+        0 0 0 var(--cg-spacing-2) var(--cg-color-focus-ring);
       outline: none;
       outline-offset: var(--cg-outline-offset-default);
     }
@@ -188,7 +188,7 @@ export class CgChip extends LitElement {
     .remove-btn:hover { opacity: 1; }
     .remove-btn:active { transform: scale(var(--cg-interaction-press-scale)); }
     .remove-btn:focus-visible {
-      box-shadow: 0 0 0 var(--cg-spacing-2) var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-spacing-2) var(--cg-color-focus-ring);
       outline: none;
     }
   `];

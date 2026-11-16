@@ -38,9 +38,10 @@ const define = {
 
 /**
  * Minify the static CSS inside Lit `css\`…\`` templates at build time
- * (comments, indentation, spaces around { } ; ,). Templates with `${…}`
- * interpolations are left untouched. Spaces next to `:` are kept — they can
- * be descendant combinators (`.a :focus`).
+ * (comments, indentation, spaces around { } ; , and after a declaration's
+ * `:`). Templates with `${…}` interpolations are left untouched. A space
+ * BEFORE `:` is kept — it can be a descendant combinator (`.a :focus`) — and
+ * quoted strings are never touched.
  */
 export function minifyCssTemplates(): Plugin {
   const minify = (cssText: string): string =>
@@ -49,6 +50,9 @@ export function minifyCssTemplates(): Plugin {
       .replace(/\s+/g, ' ')
       .replace(/\s*([{};,])\s*/g, '$1')
       .replace(/;}/g, '}')
+      .split(/('[^']*'|"[^"]*")/)
+      .map((part, i) => (i % 2 ? part : part.replace(/([\w)-]):\s+/g, '$1:')))
+      .join('')
       .trim();
   return {
     name: 'cognivo-minify-css-templates',

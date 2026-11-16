@@ -84,7 +84,7 @@ export class CgRadio extends LitElement {
     /* Focus ring */
     label:focus-visible .circle {
       border-color: var(--cg-color-radio-border-focus);
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo);
       outline: none;
     }
     :host([error]) label:focus-visible .circle {

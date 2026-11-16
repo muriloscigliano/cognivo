@@ -138,7 +138,7 @@ export class CgList extends LitElement {
       cursor: pointer;
     }
     :host([clickable]) .item:active {
-      background: var(--cg-overlay-accent-subtle);
+      background: var(--cg-color-state-pressed);
     }
     :host([clickable]) .item:focus-visible {
       outline: none;
@@ -232,7 +232,7 @@ export class CgList extends LitElement {
       .action-btn { opacity: 0; }
       .item:hover .action-btn { opacity: 1; }
     }
-    .action-btn:hover { background: var(--cg-overlay-accent-light); }
+    .action-btn:hover { background: var(--cg-color-state-hover); }
     .action-btn:focus-visible {
       opacity: 1;
       outline: none;

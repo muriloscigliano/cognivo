@@ -143,9 +143,11 @@ export class CgSidebar extends LitElement {
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .toggle:hover {
-      background: var(--cg-color-action-tertiary-background-hover);
-      color: var(--cg-color-surface-base-text);
+    @media (hover: hover) {
+      .toggle:hover {
+        background: var(--cg-color-state-hover);
+        color: var(--cg-color-state-text);
+      }
     }
     .toggle:focus-visible {
       outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
@@ -180,14 +182,25 @@ export class CgSidebar extends LitElement {
       text-align: left;
       cursor: pointer;
       box-sizing: border-box;
+      /* Interaction states: colour only, 150ms ease-out. */
       transition:
-        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+        background-color var(--cg-transition-duration-state) var(--cg-transition-easing-ease-out),
+        color var(--cg-transition-duration-state) var(--cg-transition-easing-ease-out);
     }
-    ::slotted(a:hover),
-    ::slotted(button:hover) {
-      background: var(--cg-color-surface-sidebar-hover-background);
-      color: var(--cg-color-surface-sidebar-text);
+    /* Hover (devices that hover): a neutral fill one step off the canvas,
+       near-black text. The current item does not change on hover. */
+    @media (hover: hover) {
+      ::slotted(a:hover:not([aria-current], .active, [data-sub])),
+      ::slotted(button:hover:not([aria-current], .active, [data-sub])) {
+        background: var(--cg-color-surface-sidebar-hover-background);
+        color: var(--cg-color-state-text);
+      }
+      /* Sub-items: text only, no fill. */
+      ::slotted([data-sub]:hover) { color: var(--cg-color-state-text); }
+    }
+    ::slotted(a:active:not([aria-current], .active, [data-sub])),
+    ::slotted(button:active:not([aria-current], .active, [data-sub])) {
+      background: var(--cg-color-surface-sidebar-active-background);
     }
     /* Icon sizing contract: the leading icon (aria-hidden span or [data-icon])
        gets a fixed square box so every row's label starts at the same x —
@@ -203,13 +216,21 @@ export class CgSidebar extends LitElement {
       flex-shrink: 0;
       text-align: center;
     }
-    /* Active: a subtle filled pill — a surface step, not a coloured bar. */
+    /* Current: a white (dark: panel) pill with a hairline, near-black text —
+       a surface, never a coloured bar. */
     ::slotted(a[aria-current]),
     ::slotted(button[aria-current]),
     ::slotted(a.active),
     ::slotted(button.active) {
       background: var(--cg-color-surface-sidebar-selected-background);
-      color: var(--cg-color-surface-sidebar-text);
+      box-shadow: 0 0 0 var(--cg-border-width-50) var(--cg-color-state-pill-border);
+      color: var(--cg-color-state-text);
+    }
+    /* A current sub-item: near-black text, no pill. */
+    ::slotted([data-sub][aria-current]),
+    ::slotted([data-sub].active) {
+      background: transparent;
+      box-shadow: none;
     }
 
     /* Sub-items: indented under their parent, joined by a thin guide line. */
@@ -230,10 +251,11 @@ export class CgSidebar extends LitElement {
     :host([collapsed]) ::slotted([data-sub]) { margin-left: auto; }
     :host([collapsed]) ::slotted([data-sub])::before { display: none; }
 
+    /* Keyboard focus: the neutral ring, 2px, 2px off the item, same radius. */
     ::slotted(a:focus-visible),
     ::slotted(button:focus-visible) {
       outline: var(--cg-border-width-100) solid var(--cg-color-focus-ring);
-      outline-offset: calc(-1 * var(--cg-border-width-100));
+      outline-offset: var(--cg-border-width-100);
     }
 
     /* ── Section labels ──

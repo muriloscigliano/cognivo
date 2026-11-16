@@ -65,14 +65,16 @@ export class CgSelect extends LitElement {
       font: inherit; font-size: var(--cg-font-size-sm);
       color: var(--cg-color-input-text-default);
       cursor: pointer; height: var(--cg-component-select-height-md);
-      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition: background-color var(--cg-transition-duration-state) var(--cg-transition-easing-ease-out), border-color var(--cg-transition-duration-state) var(--cg-transition-easing-ease-out), box-shadow var(--cg-transition-duration-state) var(--cg-transition-easing-ease-out);
       outline: none;
     }
-    .trigger:hover:not(.disabled) { border-color: var(--cg-color-input-border-hover); }
-    .trigger:active:not(.disabled) {
-      transform: scale(var(--cg-interaction-press-scale));
+    /* Neutral states: hover / open a small neutral overlay, focus a near-black border + soft halo. */
+    @media (hover: hover) {
+      .trigger:hover:not(.disabled) { border-color: var(--cg-color-input-border-hover); background-image: linear-gradient(var(--cg-color-state-hover), var(--cg-color-state-hover)); }
+      .option:hover { background: var(--cg-color-state-hover); }
     }
-    .trigger:focus-visible { outline: none; border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .trigger:active:not(.disabled) { background-image: linear-gradient(var(--cg-color-state-pressed), var(--cg-color-state-pressed)); }
+    .trigger:focus-visible { outline: none; border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); }
 
     /* Loading */
     :host([loading]) .trigger { pointer-events: none; opacity: 0.7; }
@@ -88,8 +90,8 @@ export class CgSelect extends LitElement {
     @keyframes cg-select-spin {
       to { transform: rotate(360deg); }
     }
-    .trigger.open { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
-    .trigger.disabled { opacity: 0.5; pointer-events: none; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
+    .trigger.open { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); background-image: linear-gradient(var(--cg-color-state-hover), var(--cg-color-state-hover)); }
+    .trigger.disabled { opacity: var(--cg-opacity-40); cursor: not-allowed; pointer-events: none; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
     :host([error]) .trigger { border-color: var(--cg-color-input-border-error); }
     :host([error]) .trigger:focus-visible,
     :host([error]) .trigger.open {
@@ -129,17 +131,16 @@ export class CgSelect extends LitElement {
       padding: var(--cg-spacing-8) var(--cg-spacing-12); border-radius: var(--cg-border-radius-100); cursor: pointer;
       font-size: var(--cg-font-size-sm);
       color: var(--cg-color-surface-base-text);
-      transition: background var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition: background-color var(--cg-transition-duration-state) var(--cg-transition-easing-ease-out);
       display: flex; align-items: center; gap: var(--cg-spacing-8);
     }
-    .option:hover { background: var(--cg-color-action-tertiary-background-hover); }
-    .option.highlighted { background: var(--cg-color-action-secondary-background-hover); }
-    .option.selected { color: var(--cg-color-accent-text); font-weight: var(--cg-font-weight-medium); }
-    .option.disabled { opacity: 0.5; pointer-events: none; }
+    .option.highlighted { background: var(--cg-color-state-hover); }
+    .option.selected { color: var(--cg-color-state-text); font-weight: var(--cg-font-weight-medium); }
+    .option.disabled { opacity: var(--cg-opacity-40); pointer-events: none; }
     .option .check {
       width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); flex-shrink: 0;
       margin-left: auto; opacity: 0;
-      color: var(--cg-color-accent-text);
+      color: var(--cg-color-state-text);
       transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .option.selected .check { opacity: 1; }

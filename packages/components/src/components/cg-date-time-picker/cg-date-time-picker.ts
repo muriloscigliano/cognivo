@@ -61,8 +61,8 @@ export class CgDateTimePicker extends LitElement {
         box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .trigger:hover:not(.disabled) { border-color: var(--cg-color-input-border-hover); }
-    .trigger:focus-visible { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
-    .trigger.open { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .trigger:focus-visible { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); }
+    .trigger.open { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); }
     .trigger.disabled { opacity: 0.5; pointer-events: none; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
 
     :host([error]) .trigger { border-color: var(--cg-color-input-border-error); }
@@ -171,7 +171,7 @@ export class CgDateTimePicker extends LitElement {
     .cal-day.selected:hover { background: var(--cg-color-action-primary-background-default); }
     .cal-day.outside { color: var(--cg-color-input-text-placeholder); opacity: 0.5; }
     .cal-day.disabled-day { opacity: 0.3; pointer-events: none; }
-    .cal-day:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--cg-overlay-accent-strong); }
+    .cal-day:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--cg-color-state-focus-halo); }
 
     /* ── Divider ── */
     .panel-divider {
@@ -213,7 +213,7 @@ export class CgDateTimePicker extends LitElement {
     .time-option:active { transform: scale(var(--cg-interaction-press-scale)); }
     .time-option.selected { background: var(--cg-color-action-primary-background-default); color: var(--cg-color-action-primary-text-default); font-weight: var(--cg-font-weight-semibold); }
     .time-option.selected:hover { background: var(--cg-color-action-primary-background-default); }
-    .time-option:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--cg-overlay-accent-strong); }
+    .time-option:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--cg-color-state-focus-halo); }
 
     .time-col-divider {
       width: var(--cg-border-width-50); background: var(--cg-color-input-border-default);

@@ -95,7 +95,7 @@ export class CgPhoneInput extends LitElement {
     }
     .wrapper.focused {
       border-color: var(--cg-color-input-border-focus);
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo);
     }
 
     :host([error]) .wrapper { border-color: var(--cg-color-input-border-error); }
@@ -142,11 +142,11 @@ export class CgPhoneInput extends LitElement {
         background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .trigger:hover:not(:disabled) { background: var(--cg-overlay-accent-subtle); }
+    .trigger:hover:not(:disabled) { background: var(--cg-color-state-hover); }
     .trigger:active:not(:disabled) { transform: scale(var(--cg-interaction-press-scale)); }
     .trigger:focus-visible {
       outline: none;
-      background: var(--cg-overlay-accent-subtle);
+      background: var(--cg-color-state-hover);
     }
     .trigger:disabled { cursor: not-allowed; }
 

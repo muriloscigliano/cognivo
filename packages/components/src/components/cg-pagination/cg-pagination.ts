@@ -74,7 +74,7 @@ export class CgPagination extends LitElement {
     }
 
     .page-btn:hover:not([aria-disabled="true"]):not(.active) {
-      background: var(--cg-overlay-accent-subtle);
+      background: var(--cg-color-state-hover);
     }
 
     .page-btn:active:not([aria-disabled="true"]) {

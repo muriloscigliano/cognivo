@@ -59,10 +59,10 @@ Primary actionable button. Three variants by emphasis, three sizes, full-width a
 | State | Required? | Implementation note |
 |-------|-----------|---------------------|
 | Default | Required | All variants. |
-| Hover | Required | Background shift via `*-background-hover` tokens. |
-| Active / Press | Required | `transform: scale(var(--cg-interaction-press-scale))`. |
-| Focus-visible | Required | Input-family ring: `box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong)`. |
-| Disabled | Required | `opacity: 0.5` + `pointer-events: none` + `tabindex="-1"` + `aria-disabled="true"`. |
+| Hover | Required | Neutral overlay `--cg-color-state-hover` on the variant's own colour, only under `@media (hover: hover)`; 150ms ease-out colour transition. |
+| Active / Press | Required | Neutral overlay `--cg-color-state-pressed`; nothing moves. |
+| Focus-visible | Required | Dual ring: `--cg-color-focus-ring-offset` band + neutral `--cg-color-focus-ring`. |
+| Disabled | Required | The variant at `opacity: var(--cg-opacity-40)`, `cursor: not-allowed`, no hover. |
 | Loading | Required | Inline `cg-spinner`; `aria-busy="true"`; click handler short-circuits. |
 | Error | Required | `status="error"` paints red border + bg pulse for ~600ms then returns to idle. |
 | Success | Required | `status="success"` paints green border + checkmark pulse for ~600ms. |
@@ -90,9 +90,9 @@ Primary actionable button. Three variants by emphasis, three sizes, full-width a
 | `--cg-color-action-primary-background-default/hover/active` | primary variant bg | brand accent + state shifts |
 | `--cg-color-action-primary-text-default` | primary variant text | gray-black (high contrast on lime) |
 | `--cg-color-action-secondary-background-default/hover` | secondary variant bg | gray-100/800 |
-| `--cg-color-action-tertiary-background-hover` | tertiary variant hover | subtle gray |
+| `--cg-color-state-hover` / `--cg-color-state-pressed` | hover / pressed overlay (all variants) | neutral black 4/8% (dark: white 6/10%) |
 | `--cg-color-status-error-background-default` | `type="danger"` bg | red |
-| `--cg-overlay-accent-strong` | focus ring | brand-tinted 25% rgba |
+| `--cg-color-focus-ring` | focus ring | neutral gray.600 (dark: gray.400) |
 | `--cg-shadow-focus-error` / `--cg-shadow-focus-success` | status focus rings | red / green at 20% rgba |
 
 Never use `*-background-*` as `color` — see [`CLAUDE.semantic-rules.md`](../../../../../CLAUDE.semantic-rules.md) Rule 1.

@@ -40,15 +40,10 @@ import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
  * @cssprop --cg-interaction-press-scale - Scale on press/active (0.97)
  * @cssprop --cg-transition-duration-fast - Color transition speed
  */
-/** Schemes that run code or smuggle content when followed. */
-const UNSAFE_SCHEME = /^(?:javascript|data|vbscript):/i;
-
-/** An href is safe unless it uses a script/data scheme (browsers ignore
- *  leading spaces/control characters and tabs/newlines inside the scheme). */
-function isSafeHref(href: string): boolean {
-  // eslint-disable-next-line no-control-regex
-  return !UNSAFE_SCHEME.test(href.replace(/[\u0000-\u0020\u007f]/g, ''));
-}
+/** An href is safe unless it uses a script/data scheme (javascript:,
+ *  data:, vbscript:). Browsers ignore leading spaces/control characters and
+ *  tabs/newlines inside the scheme, so those are dropped before the check. */
+const isSafeHref = (href: string): boolean => !/^(javascript|data|vbscript):/i.test(href.replace(/[\0- \x7f]/g, ''));
 
 @customElement('cg-button')
 export class CgButton extends LitElement {
@@ -79,19 +74,34 @@ export class CgButton extends LitElement {
       line-height: 1;
       white-space: nowrap;
       text-decoration: none;
-      transition:
-        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      /* Interaction states: colour only, 150ms ease-out; nothing moves. */
+      transition-property: background-color, color, border-color, box-shadow;
+      transition-duration: var(--cg-transition-duration-state);
+      transition-timing-function: var(--cg-transition-easing-ease-out);
       -webkit-font-smoothing: antialiased;
       position: relative;
     }
 
-    /* Press scale */
-    .btn:active:not(:disabled, [aria-disabled="true"]) {
-      transform: scale(var(--cg-interaction-press-scale));
+    /* Hover / pressed: a neutral state overlay on the variant's own colour
+       (never an accent). Hover only where the device hovers; touch gets pressed. */
+    @media (hover: hover) {
+      .btn:not(:disabled, [aria-disabled="true"]):hover { --_s: var(--cg-color-state-hover); }
+      :host([type="danger"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
+        background-color: var(--cg-color-status-error-background-hover);
+      }
+      :host([type="danger"][variant="primary"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
+        background-color: var(--cg-color-status-error-background-hover-strong);
+      }
+      :host([status="error"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
+        background-color: var(--cg-color-status-error-background-hover);
+      }
+      :host([status="success"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
+        background-color: var(--cg-color-status-success-background-hover);
+      }
     }
+    .btn:not(:disabled, [aria-disabled="true"]):active { --_s: var(--cg-color-state-pressed); }
+    /* No state set: var(--_s) is invalid, so the image computes to none. */
+    .btn:not(:disabled, [aria-disabled="true"]) { background-image: linear-gradient(var(--_s), var(--_s)); }
 
     /* Focus ring — dual-layer */
     .btn:focus-visible {
@@ -130,77 +140,42 @@ export class CgButton extends LitElement {
 
     /* ── Primary variant ── */
     :host([variant="primary"]) .btn {
-      background: var(--cg-color-action-primary-background-default);
+      background-color: var(--cg-color-action-primary-background-default);
       color: var(--cg-color-action-primary-text-default);
       border-color: var(--cg-color-action-primary-border-default);
-    }
-    :host([variant="primary"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
-      background: var(--cg-color-action-primary-background-hover);
     }
 
     /* ── Secondary variant ── */
     :host([variant="secondary"]) .btn {
-      background: var(--cg-color-action-secondary-background-default);
+      background-color: var(--cg-color-action-secondary-background-default);
       color: var(--cg-color-action-secondary-text-default);
       border-color: var(--cg-color-action-secondary-border-default);
-    }
-    :host([variant="secondary"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
-      background: var(--cg-color-action-secondary-background-hover);
     }
 
     /* ── Tertiary (ghost) variant ── */
     :host([variant="tertiary"]) .btn {
-      background: transparent;
+      background-color: transparent;
       color: var(--cg-color-action-tertiary-text-default);
       border-color: transparent;
-    }
-    :host([variant="tertiary"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
-      background: var(--cg-color-action-tertiary-background-hover);
     }
 
     /* ── Danger type ── */
     :host([type="danger"]) .btn {
-      background: var(--cg-color-status-error-background-default);
+      background-color: var(--cg-color-status-error-background-default);
       color: var(--cg-color-status-error-text-default);
       border-color: var(--cg-color-status-error-border-default);
     }
     :host([type="danger"][variant="primary"]) .btn {
-      background: var(--cg-color-status-error-text-default);
+      background-color: var(--cg-color-status-error-text-default);
       color: var(--cg-color-status-error-text-inverse);
       border-color: transparent;
     }
-    :host([type="danger"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
-      background: var(--cg-color-status-error-background-hover);
-    }
-    :host([type="danger"][variant="primary"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
-      background: var(--cg-color-status-error-background-hover-strong);
-    }
 
-    /* ── Disabled ──
-       Themeable per-variant disabled colors (no opacity smudge on re-pointed brands).
-       Scoped with :host so these win over the variant/type/status background rules. */
+    /* ── Disabled: the variant's own colours at 40% opacity, no hover, not-allowed. ── */
     .btn:is(:disabled, [aria-disabled="true"]) {
-      pointer-events: none;
+      opacity: var(--cg-opacity-40);
+      cursor: not-allowed;
     }
-    :host([variant="primary"]) .btn:is(:disabled, [aria-disabled="true"]),
-    :host([type="danger"][variant="primary"]) .btn:is(:disabled, [aria-disabled="true"]),
-    :host([status="error"]) .btn:is(:disabled, [aria-disabled="true"]),
-    :host([status="success"]) .btn:is(:disabled, [aria-disabled="true"]) {
-      background: var(--cg-color-action-primary-background-disable);
-      color: var(--cg-color-action-primary-text-disable);
-      border-color: var(--cg-color-action-primary-border-disable);
-    }
-    :host([variant="secondary"]) .btn:is(:disabled, [aria-disabled="true"]) {
-      background: var(--cg-color-action-secondary-background-disable);
-      color: var(--cg-color-action-secondary-text-disable);
-      border-color: var(--cg-color-action-secondary-border-disable);
-    }
-    :host([variant="tertiary"]) .btn:is(:disabled, [aria-disabled="true"]) {
-      background: var(--cg-color-action-tertiary-background-disable);
-      color: var(--cg-color-action-tertiary-text-disable);
-      border-color: var(--cg-color-action-tertiary-border-disable);
-    }
-
     /* ── Loading ── */
     :host([loading]) .btn {
       color: transparent;
@@ -221,23 +196,17 @@ export class CgButton extends LitElement {
 
     /* ── Error state ── */
     :host([status="error"]) .btn {
-      background: var(--cg-color-status-error-background-default);
+      background-color: var(--cg-color-status-error-background-default);
       color: var(--cg-color-status-error-text-default);
       border-color: var(--cg-color-status-error-border-default);
-    }
-    :host([status="error"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
-      background: var(--cg-color-status-error-background-hover);
     }
     :host([status="error"]) .spinner { color: var(--cg-color-status-error-text-default); }
 
     /* ── Success state ── */
     :host([status="success"]) .btn {
-      background: var(--cg-color-status-success-background-default);
+      background-color: var(--cg-color-status-success-background-default);
       color: var(--cg-color-status-success-text-default);
       border-color: var(--cg-color-status-success-border-default);
-    }
-    :host([status="success"]) .btn:not(:disabled, [aria-disabled="true"]):hover {
-      background: var(--cg-color-status-success-background-hover);
     }
     :host([status="success"]) .spinner { color: var(--cg-color-status-success-text-default); }
 
@@ -299,42 +268,15 @@ export class CgButton extends LitElement {
   };
 
   override render() {
-    const content = html`
-        ${this.loading ? html`<span class="spinner"></span>` : nothing}
-        <slot name="prefix"></slot>
-        <slot>${this.label}</slot>
-        <slot name="suffix"></slot>
-    `;
+    const content = html`${this.loading ? html`<span class="spinner"></span>` : nothing}<slot name="prefix"></slot><slot>${this.label}</slot><slot name="suffix"></slot>`;
     if (this.href) {
       // Disabled link: no href (so not focusable and not followable), still a
-      // link. A script/data URL is refused the same way.
+      // link. A script/data URL is refused the same way. target=_blank gets
+      // rel="noopener noreferrer" unless a rel is given.
       const inactive = this.disabled || this._formDisabled || this.loading || !isSafeHref(this.href);
-      const rel = this.rel || (this.target === '_blank' ? 'noopener noreferrer' : '');
-      return html`
-        <a
-          part="button"
-          class="btn"
-          href=${inactive ? nothing : this.href}
-          role=${inactive ? 'link' : nothing}
-          aria-disabled=${inactive ? 'true' : nothing}
-          aria-busy=${this.loading ? 'true' : nothing}
-          aria-label=${this.label || nothing}
-          target=${this.target || nothing}
-          rel=${rel || nothing}
-          download=${this.download ?? nothing}
-        >${content}</a>
-      `;
+      return html`<a part="button" class="btn" href=${inactive ? nothing : this.href} role=${inactive ? 'link' : nothing} aria-disabled=${inactive ? 'true' : nothing} aria-busy=${this.loading ? 'true' : nothing} aria-label=${this.label || nothing} target=${this.target || nothing} rel=${this.rel || (this.target === '_blank' ? 'noopener noreferrer' : nothing)} download=${this.download ?? nothing}>${content}</a>`;
     }
-    return html`
-      <button
-        part="button"
-        class="btn"
-        type="button"
-        ?disabled=${this.disabled || this._formDisabled || this.loading}
-        aria-busy=${this.loading ? 'true' : 'false'}
-        aria-label=${this.label || nothing}
-      >${content}</button>
-    `;
+    return html`<button part="button" class="btn" type="button" ?disabled=${this.disabled || this._formDisabled || this.loading} aria-busy=${this.loading ? 'true' : 'false'} aria-label=${this.label || nothing}>${content}</button>`;
   }
 }
 

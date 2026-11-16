@@ -222,16 +222,17 @@ describe('cg-input', () => {
 });
 
 describe('cg-input focus indicator (light theme)', () => {
-  // The old ring was a 15%-alpha lime glow (--cg-overlay-accent-strong):
-  // invisible on a white page. The focused field must draw the themed ring.
+  // Interaction states (2.0.0): a near-black (dark: white) border is the
+  // visible indicator (--cg-color-input-border-focus → --cg-color-state-focus-border),
+  // plus a soft neutral halo. Never the lime accent glow.
   const cssText = (CgInput.styles as unknown as Array<{ cssText: string }>)
     .map((s) => s.cssText)
     .join('\n');
 
-  it('the focused wrapper paints --cg-color-focus-ring with its offset band', () => {
+  it('the focused wrapper paints the focus border and the neutral halo, no accent', () => {
     const rule = cssText.match(/\.wrapper\.focused\s*\{[^}]*\}/)?.[0] ?? '';
-    expect(rule).toContain('var(--cg-color-focus-ring)');
-    expect(rule).toContain('var(--cg-color-focus-ring-offset)');
+    expect(rule).toContain('var(--cg-color-input-border-focus)');
+    expect(rule).toContain('var(--cg-color-state-focus-halo)');
     expect(rule).not.toContain('--cg-overlay-accent-strong');
   });
 });

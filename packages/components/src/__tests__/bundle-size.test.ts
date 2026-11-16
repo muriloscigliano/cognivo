@@ -47,11 +47,11 @@ async function bundle(tags: string[]): Promise<{ text: string; gzip: number }> {
  * dead: no component imports aiGlow, so it could never leak and never failed.
  */
 const SENTINELS: Record<string, { text: string; user: string }> = {
-  menuListStyles: { text: 'min-width: 200px', user: 'cg-dropdown' },
+  menuListStyles: { text: 'min-width:200px', user: 'cg-dropdown' },
   shimmerKeyframes: { text: '@keyframes shimmer', user: 'cg-image' },
   fadeSlideInKeyframes: { text: '@keyframes fadeSlideIn', user: 'ai-feature-flag' },
   pulseKeyframes: { text: '@keyframes pulse', user: 'cg-skeleton' },
-  focusRingSingle: { text: 'var(--cg-overlay-accent-strong)', user: 'cg-listbox' },
+  focusRingSingle: { text: '0 0 0 3px var(--cg-color-state-focus-halo)', user: 'cg-listbox' },
 };
 
 describe.skipIf(!existsSync(resolve(pkg, entry('cg-input'))))('per-component bundle size', () => {

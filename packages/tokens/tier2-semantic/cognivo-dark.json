@@ -1,10 +1,68 @@
 {
   "color": {
+    "state": {
+      "hover": {
+        "$type": "color",
+        "$value": "{overlay.white.light}",
+        "$description": "Hover fill: a neutral overlay one small step darker (light) / lighter (dark) than whatever it sits on. Never an accent colour. Hover rules sit under @media (hover: hover)."
+      },
+      "pressed": {
+        "$type": "color",
+        "$value": "{overlay.white.medium}",
+        "$description": "Pressed fill: one step more than hover (touch gets this instead of hover)."
+      },
+      "selected": {
+        "$type": "color",
+        "$value": "{overlay.white.medium}",
+        "$description": "Selected / checked row fill (lists, tables): a neutral step, never a coloured row."
+      },
+      "text": {
+        "$type": "color",
+        "$value": "{gray.white}",
+        "$description": "Near-black (dark: white) text for hovered and selected items."
+      },
+      "pill": {
+        "background": {
+          "$type": "color",
+          "$value": "{gray.900}",
+          "$description": "Selected / current item pill (sidebar current item, segmented option): white on the canvas (dark: the panel colour)."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.surface.panel.border}",
+          "$description": "Hairline around the selected pill."
+        }
+      },
+      "focus": {
+        "border": {
+          "$type": "color",
+          "$value": "{gray.white}",
+          "$description": "Focused field border: near-black 1px (dark: white)."
+        },
+        "halo": {
+          "$type": "color",
+          "$value": "{overlay.white.strong}",
+          "$description": "Soft 3px halo around a focused field (≈15%)."
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$type": "color",
+        "$value": "{overlay.white.strong}",
+        "$description": "Text selection (::selection) background: neutral grey (dark: white ≈ 20%)."
+      },
+      "text": {
+        "$type": "color",
+        "$value": "{gray.white}",
+        "$description": "Text selection colour."
+      }
+    },
     "focus": {
       "ring": {
         "$type": "color",
-        "$value": "{brand.ai.accent}",
-        "$description": "Focus ring color for all interactive elements"
+        "$value": "{gray.400}",
+        "$description": "Focus ring color for all interactive elements: neutral (white ≈ 60% on the dark canvas), never an accent"
       },
       "ring-offset": {
         "$type": "color",
@@ -67,7 +125,7 @@
           },
           "focus": {
             "$type": "color",
-            "$value": "{brand.primary.600}"
+            "$value": "{color.focus.ring}"
           },
           "disable": {
             "$type": "color",
@@ -111,7 +169,7 @@
           },
           "focus": {
             "$type": "color",
-            "$value": "{gray.300}"
+            "$value": "{color.focus.ring}"
           },
           "disable": {
             "$type": "color",
@@ -155,7 +213,7 @@
           },
           "focus": {
             "$type": "color",
-            "$value": "{gray.200}"
+            "$value": "{color.focus.ring}"
           },
           "disable": {
             "$type": "color",
@@ -490,19 +548,19 @@
         "hover": {
           "background": {
             "$type": "color",
-            "$value": "{gray.800}"
+            "$value": "{color.state.hover}"
           }
         },
         "active": {
           "background": {
             "$type": "color",
-            "$value": "{gray.600}"
+            "$value": "{color.state.pressed}"
           }
         },
         "selected": {
           "background": {
             "$type": "color",
-            "$value": "{gray.900}"
+            "$value": "{color.state.pill.background}"
           }
         }
       },
@@ -1395,7 +1453,7 @@
         },
         "focus": {
           "$type": "color",
-          "$value": "{color.action.primary.border.focus}"
+          "$value": "{color.state.focus.border}"
         },
         "error": {
           "$type": "color",

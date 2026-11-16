@@ -58,8 +58,8 @@ export class CgSegmentedControl extends LitElement {
       left: 0;
       height: calc(100% - 2 * var(--cg-component-segmented-control-padding));
       box-sizing: border-box;
-      background: var(--cg-color-surface-container-background);
-      border: var(--cg-border-width-50) solid var(--cg-color-action-secondary-border-default);
+      background: var(--cg-color-state-pill-background);
+      border: var(--cg-border-width-50) solid var(--cg-color-state-pill-border);
       border-radius: calc(var(--cg-component-segmented-control-radius) - var(--cg-component-segmented-control-padding));
       transition:
         transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-in-out),
@@ -82,18 +82,18 @@ export class CgSegmentedControl extends LitElement {
       font-size: var(--cg-font-size-sm);
       font-weight: var(--cg-font-weight-medium);
       cursor: pointer;
-      transition:
-        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition: color var(--cg-transition-duration-state) var(--cg-transition-easing-ease-out);
       z-index: 1;
       border-radius: inherit;
       flex: 1;
     }
-    .segment:hover:not(:disabled) {
-      color: var(--cg-color-surface-base-text);
+    @media (hover: hover) {
+      .segment:hover:not(:disabled) {
+        color: var(--cg-color-state-text);
+      }
     }
     .segment[aria-checked="true"] {
-      color: var(--cg-color-surface-base-text);
+      color: var(--cg-color-state-text);
     }
     .segment:focus-visible {
       outline: none;
@@ -102,11 +102,8 @@ export class CgSegmentedControl extends LitElement {
         0 0 0 calc(var(--cg-focus-ring-offset) + var(--cg-focus-ring-width)) var(--cg-color-focus-ring);
     }
     .segment:disabled {
-      opacity: var(--cg-opacity-50);
+      opacity: var(--cg-opacity-40);
       cursor: not-allowed;
-    }
-    .segment:active:not(:disabled) {
-      transform: scale(var(--cg-interaction-press-scale));
     }
 
     /* Sizes */

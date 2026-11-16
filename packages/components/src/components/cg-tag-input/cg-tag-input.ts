@@ -65,7 +65,7 @@ export class CgTagInput extends LitElement {
     .container:hover { border-color: var(--cg-color-input-border-hover); }
     .container.focused {
       border-color: var(--cg-color-input-border-focus);
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo);
     }
 
     :host([error]) .container { border-color: var(--cg-color-status-error-border-default); }

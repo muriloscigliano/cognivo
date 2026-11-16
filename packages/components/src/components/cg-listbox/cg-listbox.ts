@@ -66,7 +66,7 @@ export class CgListbox extends LitElement {
     }
 
     .option.selected {
-      color: var(--cg-color-accent-text);
+      color: var(--cg-color-state-text);
       font-weight: var(--cg-font-weight-semibold);
     }
 
@@ -77,7 +77,7 @@ export class CgListbox extends LitElement {
     }
 
     .option:active:not(.disabled) {
-      background: var(--cg-overlay-accent-subtle);
+      background: var(--cg-color-state-pressed);
     }
 
     /* Checkmark tick */

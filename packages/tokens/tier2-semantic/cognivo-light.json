@@ -1,10 +1,68 @@
 {
   "color": {
+    "state": {
+      "hover": {
+        "$type": "color",
+        "$value": "{overlay.dark.subtle}",
+        "$description": "Hover fill: a neutral overlay one small step darker (light) / lighter (dark) than whatever it sits on. Never an accent colour. Hover rules sit under @media (hover: hover)."
+      },
+      "pressed": {
+        "$type": "color",
+        "$value": "{overlay.dark.light}",
+        "$description": "Pressed fill: one step more than hover (touch gets this instead of hover)."
+      },
+      "selected": {
+        "$type": "color",
+        "$value": "{overlay.dark.light}",
+        "$description": "Selected / checked row fill (lists, tables): a neutral step, never a coloured row."
+      },
+      "text": {
+        "$type": "color",
+        "$value": "{gray.950}",
+        "$description": "Near-black (dark: white) text for hovered and selected items."
+      },
+      "pill": {
+        "background": {
+          "$type": "color",
+          "$value": "{gray.white}",
+          "$description": "Selected / current item pill (sidebar current item, segmented option): white on the canvas (dark: the panel colour)."
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.surface.panel.border}",
+          "$description": "Hairline around the selected pill."
+        }
+      },
+      "focus": {
+        "border": {
+          "$type": "color",
+          "$value": "{gray.950}",
+          "$description": "Focused field border: near-black 1px (dark: white)."
+        },
+        "halo": {
+          "$type": "color",
+          "$value": "{overlay.dark.medium}",
+          "$description": "Soft 3px halo around a focused field (≈15%)."
+        }
+      }
+    },
+    "selection": {
+      "background": {
+        "$type": "color",
+        "$value": "{gray.200}",
+        "$description": "Text selection (::selection) background: neutral grey (dark: white ≈ 20%)."
+      },
+      "text": {
+        "$type": "color",
+        "$value": "{gray.950}",
+        "$description": "Text selection colour."
+      }
+    },
     "focus": {
       "ring": {
         "$type": "color",
-        "$value": "{green.700}",
-        "$description": "Focus ring color for all interactive elements (light theme — brand lime is invisible on white, so an accessible green is used; green.700 keeps >= 3:1 on gray.100 pages, green.600 measured 3.00:1)"
+        "$value": "{gray.600}",
+        "$description": "Focus ring color for all interactive elements: neutral near-black (≈ 60%), never an accent; >= 3:1 on every page surface"
       },
       "ring-offset": {
         "$type": "color",
@@ -66,7 +124,7 @@
           },
           "focus": {
             "$type": "color",
-            "$value": "{brand.primary.600}"
+            "$value": "{color.focus.ring}"
           },
           "disable": {
             "$type": "color",
@@ -110,7 +168,7 @@
           },
           "focus": {
             "$type": "color",
-            "$value": "{gray.900}"
+            "$value": "{color.focus.ring}"
           },
           "disable": {
             "$type": "color",
@@ -154,7 +212,7 @@
           },
           "focus": {
             "$type": "color",
-            "$value": "{brand.primary.600}"
+            "$value": "{color.focus.ring}"
           },
           "disable": {
             "$type": "color",
@@ -489,19 +547,19 @@
         "hover": {
           "background": {
             "$type": "color",
-            "$value": "{gray.200}"
+            "$value": "{color.state.hover}"
           }
         },
         "active": {
           "background": {
             "$type": "color",
-            "$value": "{gray.300}"
+            "$value": "{color.state.pressed}"
           }
         },
         "selected": {
           "background": {
             "$type": "color",
-            "$value": "{gray.200}"
+            "$value": "{color.state.pill.background}"
           }
         }
       },
@@ -1394,7 +1452,7 @@
         },
         "focus": {
           "$type": "color",
-          "$value": "{color.action.primary.border.focus}"
+          "$value": "{color.state.focus.border}"
         },
         "error": {
           "$type": "color",

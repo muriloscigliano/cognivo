@@ -97,8 +97,8 @@ export class CgFileInput extends LitElement {
     :host([size="lg"]) .dropzone { min-height: var(--cg-component-file-input-min-height-lg); padding: var(--cg-spacing-40) var(--cg-spacing-32); gap: var(--cg-spacing-16); }
 
     .dropzone:hover:not(.disabled) {
-      border-color: var(--cg-color-action-primary-border-default);
-      background: var(--cg-overlay-accent-subtle);
+      border-color: var(--cg-color-input-border-hover);
+      background: var(--cg-color-state-hover);
     }
     .dropzone.dragging {
       border-style: solid;

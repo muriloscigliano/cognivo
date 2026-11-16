@@ -74,7 +74,7 @@ export class CgTextarea extends LitElement {
     :host(:not([label])) textarea::placeholder { color: var(--cg-color-input-text-placeholder); }
 
     textarea:hover:not(:disabled):not([readonly]) { border-color: var(--cg-color-input-border-hover); }
-    textarea:focus-visible { outline: none; border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    textarea:focus-visible { outline: none; border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); }
     textarea:disabled { opacity: 0.5; cursor: not-allowed; background: var(--cg-color-input-background-disabled); }
     textarea[readonly] { background: var(--cg-color-surface-field-readonly-background); }
 

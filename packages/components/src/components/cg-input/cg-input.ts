@@ -75,8 +75,10 @@ export class CgInput extends LitElement {
     :host([rounded="lg"]) .wrapper { border-radius: var(--cg-component-input-radius); }
 
     /* Hover */
-    .wrapper:hover:not(.disabled):not(.readonly) {
-      border-color: var(--cg-color-input-border-hover);
+    @media (hover: hover) {
+      .wrapper:hover:not(.disabled):not(.readonly):not(.focused) {
+        border-color: var(--cg-color-input-border-hover);
+      }
     }
 
     /* Active / Press — no scale transform on text inputs */
@@ -100,14 +102,11 @@ export class CgInput extends LitElement {
       to { transform: rotate(360deg); }
     }
 
-    /* Focus — border change + the themed dual focus ring. (The old 15%-alpha
-       accent glow was invisible on light pages; the ring tokens are defined
-       and contrast-gated in BOTH themes.) */
+    /* Focus — a near-black (dark: white) border, the visible indicator, plus a
+       soft neutral 3px halo (--cg-color-state-focus-*). No accent glow. */
     .wrapper.focused {
       border-color: var(--cg-color-input-border-focus);
-      box-shadow:
-        0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring-offset),
-        0 0 0 calc(var(--cg-border-width-100) * 2) var(--cg-color-focus-ring);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo);
     }
 
     /* Error */
@@ -286,7 +285,7 @@ export class CgInput extends LitElement {
       transform: scale(0.8);
       animation: clearIn 150ms var(--cg-transition-easing-ease-out) forwards;
     }
-    .clear:hover { background: var(--cg-overlay-accent-subtle); color: var(--cg-color-surface-base-text); }
+    @media (hover: hover) { .clear:hover { background: var(--cg-color-state-hover); color: var(--cg-color-state-text); } }
     .clear:active { transform: scale(0.9); }
     .clear svg { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
 

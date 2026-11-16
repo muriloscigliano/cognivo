@@ -70,7 +70,7 @@ export class CgCombobox extends LitElement {
     .wrapper:hover { border-color: var(--cg-color-input-border-hover); }
     .wrapper:focus-within {
       border-color: var(--cg-color-input-border-focus);
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo);
     }
 
     /* Error state — match cg-input */
@@ -193,7 +193,7 @@ export class CgCombobox extends LitElement {
     /* Keyboard-active descendant gets a distinct accent so it's not confused
        with a hovered row. */
     .option.active {
-      background: var(--cg-overlay-accent-strong);
+      background: var(--cg-color-state-hover);
       box-shadow: inset var(--cg-spacing-2) 0 0 0 var(--cg-color-action-primary-background-default);
     }
     .option.disabled { opacity: 0.5; cursor: not-allowed; }

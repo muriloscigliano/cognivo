@@ -70,7 +70,7 @@ export const focusRingAnimated = /* @__PURE__ */ pureStyle(() => css`
   &:focus-visible {
     box-shadow:
       0 0 0 2px var(--cg-color-surface-base-background),
-      0 0 0 4px var(--cg-focus-ring-color);
+      0 0 0 4px var(--cg-color-focus-ring);
     outline: none;
   }
 `);

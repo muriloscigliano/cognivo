@@ -245,17 +245,13 @@ describe('cg-button', () => {
     expect(btn.getAttribute('part')).toBe('button');
   });
 
-  it('disabled state uses themeable action-disable tokens per variant, not opacity dimming', async () => {
+  it('disabled is the variant at 40% opacity (--cg-opacity-40), not-allowed, with no hover (interaction states, 2.0.0)', async () => {
     await create({ disabled: true });
     const css = cssText();
-    // The disabled color must come from the semantic disable tokens (themeable on a re-pointed brand)…
-    expect(css).toContain('--cg-color-action-primary-background-disable');
-    expect(css).toContain('--cg-color-action-secondary-background-disable');
-    expect(css).toContain('--cg-color-action-tertiary-background-disable');
-    // …and the button:disabled rule must not fall back to fractional opacity (the smudge bug).
-    const disabledRule = cssText()
-      .split('\n')
-      .find(rule => /button:disabled\b/.test(rule) && !/:not\(:disabled\)/.test(rule)) ?? '';
-    expect(disabledRule).not.toMatch(/opacity:\s*0?\.\d/);
+    const disabledRule = css.match(/\.btn:is\(:disabled, \[aria-disabled="true"\]\)\s*\{[^}]*\}/)?.[0] ?? '';
+    expect(disabledRule).toContain('opacity: var(--cg-opacity-40)');
+    expect(disabledRule).toContain('cursor: not-allowed');
+    // Every hover rule excludes disabled buttons.
+    for (const rule of css.match(/[^{}]*:hover[^{]*\{/g) ?? []) expect(rule).toMatch(/:not\(:disabled/);
   });
 });

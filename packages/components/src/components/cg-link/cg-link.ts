@@ -24,23 +24,27 @@ export class CgLink extends LitElement {
       position: relative;
       cursor: pointer;
       font-weight: var(--cg-font-weight-medium);
-      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition: color var(--cg-transition-duration-state) var(--cg-transition-easing-ease-out);
     }
 
-    /* Underline animation — grows from center */
+    /* Underline on hover and keyboard focus — fades in, nothing moves. */
     a::after {
       content: '';
       position: absolute;
       bottom: calc(-1 * var(--cg-border-width-50));
-      left: 50%;
-      width: 0;
-      height: var(--cg-border-width-50);
-      background: currentColor;
-      transition: width var(--cg-transition-duration-slow) var(--cg-transition-easing-default), left var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
-    }
-    a:hover::after {
       left: 0;
       width: 100%;
+      height: var(--cg-border-width-50);
+      background: currentColor;
+      opacity: 0;
+      transition: opacity var(--cg-transition-duration-state) var(--cg-transition-easing-ease-out);
+    }
+    a:focus-visible::after { opacity: 1; }
+    /* Hover (devices that hover): text to near-black (never accent), underline. */
+    @media (hover: hover) {
+      a:hover::after { opacity: 1; }
+      a:hover,
+      :host([variant]) a:hover { color: var(--cg-color-state-text); }
     }
 
     /* Focus ring — dual layer */
@@ -59,32 +63,21 @@ export class CgLink extends LitElement {
 
     /* Variant: default */
     :host([variant="default"]) a { color: var(--cg-color-surface-base-text); }
-    :host([variant="default"]) a:hover { color: var(--cg-color-surface-base-text); }
 
     /* Variant: accent — uses the brand accent color */
     :host([variant="accent"]) a { color: var(--cg-color-accent-text); }
-    :host([variant="accent"]) a:hover { color: var(--cg-color-accent-text); }
     :host([variant="accent"]) a::after { background: var(--cg-color-accent-text); }
 
     /* Variant: muted */
     :host([variant="muted"]) a { color: var(--cg-color-input-text-placeholder); }
-    :host([variant="muted"]) a:hover { color: var(--cg-color-surface-base-text); }
 
     /* Variant: underline — always show underline */
     :host([variant="underline"]) a { color: var(--cg-color-surface-base-text); text-decoration: underline; text-underline-offset: var(--cg-spacing-2); text-decoration-skip-ink: auto; }
     :host([variant="underline"]) a::after { display: none; }
-    :host([variant="underline"]) a:hover { color: var(--cg-color-surface-base-text); }
-
-    /* Active press feedback */
-    a:active {
-      opacity: 0.8;
-      transform: scale(var(--cg-interaction-press-scale));
-      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default), opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
-    }
 
     /* Disabled */
     :host([disabled]) a {
-      opacity: 0.5;
+      opacity: var(--cg-opacity-40);
       pointer-events: none;
       cursor: not-allowed;
     }

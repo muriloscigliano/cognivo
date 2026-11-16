@@ -246,11 +246,7 @@ export class CgTable extends LitElement {
       text-align: inherit;
       cursor: pointer;
     }
-    .sort-btn:hover { color: var(--cg-color-accent-text); }
-    .sort-btn:active {
-      transform: scale(var(--cg-interaction-press-scale));
-      transition: transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
-    }
+
     .sort-btn:focus-visible {
       outline: none;
       box-shadow: 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring);
@@ -309,14 +305,22 @@ export class CgTable extends LitElement {
     /* Row dividers — last row keeps its content border from the tbody border rules */
 
     /* ── Row states ── */
-    tbody tr {
-      transition: background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+    /* Neutral states: hover a small fill (devices that hover), pressed one
+       step more, checked rows the selected fill — never a coloured row. */
+    tbody tr > * {
+      transition: background-color var(--cg-transition-duration-state) var(--cg-transition-easing-ease-out);
     }
-    tbody tr:hover > * {
-      background: var(--cg-color-action-tertiary-background-hover);
+    @media (hover: hover) {
+      tbody tr:hover > * {
+        background: var(--cg-color-state-hover);
+      }
+      .sort-btn:hover { color: var(--cg-color-state-text); }
+    }
+    :host([clickable]) tbody tr:active > * {
+      background: var(--cg-color-state-pressed);
     }
     tbody tr.selected > * {
-      background: var(--cg-color-action-tertiary-background-hover);
+      background: var(--cg-color-state-selected);
     }
     :host([clickable]) tbody tr {
       cursor: pointer;
@@ -332,8 +336,10 @@ export class CgTable extends LitElement {
     :host([striped]) tbody tr:nth-child(even) > * {
       background: var(--cg-color-action-tertiary-background-hover);
     }
-    :host([striped]) tbody tr:nth-child(even):hover > * {
-      background: var(--cg-color-action-tertiary-background-hover);
+    @media (hover: hover) {
+      :host([striped]) tbody tr:nth-child(even):hover > * {
+        background: var(--cg-color-action-tertiary-background-hover);
+      }
     }
 
     /* ── Empty state ── */

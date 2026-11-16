@@ -87,7 +87,7 @@ export class CgDateRangePicker extends LitElement {
     .trigger.open,
     .trigger:focus-visible {
       border-color: var(--cg-color-input-border-focus);
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo);
     }
 
     .trigger.disabled {

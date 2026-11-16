@@ -104,8 +104,8 @@ export class CgColorPicker extends LitElement {
         box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
     .trigger:hover:not(.disabled) { border-color: var(--cg-color-input-border-hover); }
-    .trigger:focus-visible { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
-    .trigger.open { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .trigger:focus-visible { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); }
+    .trigger.open { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); }
     .trigger.disabled { opacity: 0.5; pointer-events: none; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
 
     .trigger-swatch {
@@ -246,7 +246,7 @@ export class CgColorPicker extends LitElement {
         border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .hex-input:focus { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .hex-input:focus { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); }
     .copy-btn {
       display: flex; align-items: center; justify-content: center;
       width: var(--cg-spacing-32); height: var(--cg-spacing-32);
@@ -280,7 +280,7 @@ export class CgColorPicker extends LitElement {
       padding: var(--cg-spacing-4) var(--cg-spacing-2);
       outline: none;
     }
-    .rgb-input:focus { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong); }
+    .rgb-input:focus { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); }
 
     /* ── Presets ── */
     .presets {
@@ -297,8 +297,8 @@ export class CgColorPicker extends LitElement {
     }
     .preset:hover { transform: scale(1.2); }
     .preset:active { transform: scale(var(--cg-interaction-press-scale)); }
-    .preset.active { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 2px var(--cg-overlay-accent-strong); }
-    .preset:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--cg-overlay-accent-strong); }
+    .preset.active { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 2px var(--cg-color-state-focus-halo); }
+    .preset:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--cg-color-state-focus-halo); }
   `];
 
   /** Per-element text overrides (JSON attribute); see `setMessages()`. */

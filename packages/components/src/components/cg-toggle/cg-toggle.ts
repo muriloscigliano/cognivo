@@ -100,14 +100,14 @@ export class CgToggle extends LitElement {
        the signal is the fill, not a color shift. Subtle indicator. */
     :host([pressed]) button,
     :host([variant="ghost"][pressed]) button {
-      background: var(--cg-overlay-accent-medium);
+      background: var(--cg-color-state-selected);
       color: var(--cg-color-surface-base-text);
       border-color: transparent;
       box-shadow: none;
     }
     :host([pressed]) button:hover:not(:disabled),
     :host([variant="ghost"][pressed]) button:hover:not(:disabled) {
-      background: var(--cg-overlay-accent-strong);
+      background: var(--cg-color-state-pressed);
     }
 
     /* Outline pressed — ACCENT BORDER + ACCENT TEXT. Border is the signal,
@@ -115,13 +115,13 @@ export class CgToggle extends LitElement {
        normal text color). Border-width stays stable via inset shadow to
        avoid a 1px layout shift on press. */
     :host([variant="outline"][pressed]) button {
-      background: var(--cg-overlay-accent-subtle);
+      background: var(--cg-color-state-selected);
       color: var(--cg-color-accent-text);
       border-color: var(--cg-color-action-primary-border-default);
       box-shadow: inset 0 0 0 var(--cg-border-width-50) var(--cg-color-action-primary-border-default);
     }
     :host([variant="outline"][pressed]) button:hover:not(:disabled) {
-      background: var(--cg-overlay-accent-medium);
+      background: var(--cg-color-state-pressed);
     }
 
     /* Solid pressed — full brand fill with elevation. */

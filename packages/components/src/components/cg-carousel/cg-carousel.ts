@@ -111,7 +111,7 @@ export class CgCarousel extends LitElement {
     }
     .nav-btn:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-focus-ring);
       opacity: 1;
     }
     .nav-btn:disabled { opacity: 0 !important; cursor: default; }
@@ -148,7 +148,7 @@ export class CgCarousel extends LitElement {
     }
     .dot:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px var(--cg-overlay-accent-strong);
+      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo);
     }
 
     /* Reduced motion */

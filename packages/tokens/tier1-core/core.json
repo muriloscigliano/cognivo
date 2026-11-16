@@ -679,6 +679,11 @@
       "$type": "number",
       "$value": 0.25
     },
+    "40": {
+      "$type": "number",
+      "$value": 0.4,
+      "$description": "Disabled controls (interaction states)"
+    },
     "50": {
       "$type": "number",
       "$value": 0.5
@@ -803,6 +808,11 @@
       "fast": {
         "$type": "duration",
         "$value": "100ms"
+      },
+      "state": {
+        "$type": "duration",
+        "$value": "150ms",
+        "$description": "Interaction-state colour changes (hover, pressed, selected, focus): 120–150ms, with --cg-transition-easing-ease-out"
       },
       "default": {
         "$type": "duration",
