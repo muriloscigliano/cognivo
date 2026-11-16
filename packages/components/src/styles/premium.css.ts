@@ -1,7 +1,8 @@
 import { css } from 'lit';
+import { pureStyle } from './pure-style.js';
 
-// Each style is wrapped in a /* @__PURE__ */ IIFE: bundlers cannot drop an
-// unused tagged template (css`…` might have side effects), but they do drop
+// Each style is a /* @__PURE__ */ pureStyle() call (see pure-style.ts):
+// bundlers cannot drop an unused tagged template (css`…` might have side effects), but they do drop
 // an unused pure call — so a component pays only for the styles it imports.
 
 // ─────────────────────────────────────────────────────────
@@ -15,29 +16,29 @@ import { css } from 'lit';
  * simulating overhead lighting hitting a raised surface.
  * (Apple/macOS pattern used in premium dark UIs)
  */
-export const insetHighlight = /* @__PURE__ */ (() => css`
+export const insetHighlight = /* @__PURE__ */ pureStyle(() => css`
   box-shadow: inset 0 1px 0 0 var(--cg-overlay-white-light);
-`)();
+`);
 
 /**
  * Subtle top-to-bottom gradient on surfaces for depth.
  * The 3% lightness difference creates a physical-object feel
  * without being visually distracting.
  */
-export const surfaceGradient = /* @__PURE__ */ (() => css`
+export const surfaceGradient = /* @__PURE__ */ pureStyle(() => css`
   background-image: linear-gradient(
     to bottom,
     var(--cg-overlay-white-subtle) 0%,
     transparent 100%
   );
-`)();
+`);
 
 /**
  * Micro-scale on hover for interactive elements.
  * The 1.02 scale is subtle enough to feel natural but
  * noticeable enough to communicate interactivity.
  */
-export const hoverScale = /* @__PURE__ */ (() => css`
+export const hoverScale = /* @__PURE__ */ pureStyle(() => css`
   transition: transform var(--cg-transition-duration-default) var(--cg-transition-easing-default);
   &:hover:not(:disabled):not([disabled]):not(.disabled) {
     transform: scale(1.02);
@@ -45,25 +46,25 @@ export const hoverScale = /* @__PURE__ */ (() => css`
   &:active:not(:disabled):not([disabled]):not(.disabled) {
     transform: scale(var(--cg-interaction-press-scale));
   }
-`)();
+`);
 
 /**
  * Color-matched hover background using the accent hue
  * at very low opacity. This feels intentional rather than
  * a generic gray overlay. (Radix/Shadcn pattern)
  */
-export const colorMatchedHover = /* @__PURE__ */ (() => css`
+export const colorMatchedHover = /* @__PURE__ */ pureStyle(() => css`
   &:hover:not(:disabled):not([disabled]):not(.disabled) {
     background-color: var(--cg-overlay-accent-subtle);
   }
-`)();
+`);
 
 /**
  * Focus ring that transitions in smoothly rather than
  * appearing instantly. The ring spreads from 0px to full
  * size over 150ms with deceleration easing.
  */
-export const focusRingAnimated = /* @__PURE__ */ (() => css`
+export const focusRingAnimated = /* @__PURE__ */ pureStyle(() => css`
   box-shadow: 0 0 0 0px transparent, 0 0 0 0px transparent;
   transition: box-shadow var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
   &:focus-visible {
@@ -72,7 +73,7 @@ export const focusRingAnimated = /* @__PURE__ */ (() => css`
       0 0 0 4px var(--cg-focus-ring-color);
     outline: none;
   }
-`)();
+`);
 
 /**
  * CSS-only ripple effect on click.
@@ -80,7 +81,7 @@ export const focusRingAnimated = /* @__PURE__ */ (() => css`
  * expands from center on :active. Requires parent to have
  * position: relative and overflow: hidden.
  */
-export const rippleEffect = /* @__PURE__ */ (() => css`
+export const rippleEffect = /* @__PURE__ */ pureStyle(() => css`
   position: relative;
   overflow: hidden;
   &::after {
@@ -103,27 +104,27 @@ export const rippleEffect = /* @__PURE__ */ (() => css`
     transform: scale(2.5);
     transition: 0s;
   }
-`)();
+`);
 
 /** Dot/indicator pulse animation for badges and status indicators. */
-export const dotPulseKeyframes = /* @__PURE__ */ (() => css`
+export const dotPulseKeyframes = /* @__PURE__ */ pureStyle(() => css`
   @keyframes dotPulse {
     0%, 100% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.4); opacity: 0.7; }
   }
-`)();
+`);
 
 /** Value change pulse for numbers and metrics. */
-export const valueChangePulseKeyframes = /* @__PURE__ */ (() => css`
+export const valueChangePulseKeyframes = /* @__PURE__ */ pureStyle(() => css`
   @keyframes valueChangePulse {
     0% { transform: scale(1); }
     40% { transform: scale(1.05); }
     100% { transform: scale(1); }
   }
-`)();
+`);
 
 /** Entrance animation with stagger support via --stagger-index custom property. */
-export const entranceStagger = /* @__PURE__ */ (() => css`
+export const entranceStagger = /* @__PURE__ */ pureStyle(() => css`
   @keyframes staggerFadeIn {
     from {
       opacity: 0;
@@ -134,15 +135,15 @@ export const entranceStagger = /* @__PURE__ */ (() => css`
       transform: translateY(0);
     }
   }
-`)();
+`);
 
 /** Exit animation for removed elements (badges, chips, list items). */
-export const exitFadeScaleKeyframes = /* @__PURE__ */ (() => css`
+export const exitFadeScaleKeyframes = /* @__PURE__ */ pureStyle(() => css`
   @keyframes exitFadeScale {
     from { opacity: 1; transform: scale(1); }
     to { opacity: 0; transform: scale(0.85); }
   }
-`)();
+`);
 
 // ─────────────────────────────────────────────────────────
 // Advanced Effects — cutting-edge CSS techniques
@@ -153,7 +154,7 @@ export const exitFadeScaleKeyframes = /* @__PURE__ */ (() => css`
  * The saturate(1.1) adds vibrancy behind the blur.
  * Use sparingly: max 2-3 glass elements per viewport.
  */
-export const glassCard = /* @__PURE__ */ (() => css`
+export const glassCard = /* @__PURE__ */ pureStyle(() => css`
   background: var(--cg-overlay-white-subtle);
   backdrop-filter: blur(12px) saturate(1.1);
   -webkit-backdrop-filter: blur(12px) saturate(1.1);
@@ -161,14 +162,14 @@ export const glassCard = /* @__PURE__ */ (() => css`
   box-shadow:
     0 8px 32px var(--cg-overlay-dark-strong),
     inset 0 1px 0 var(--cg-overlay-white-light);
-`)();
+`);
 
 /**
  * Noise texture overlay for premium dark surfaces.
  * Inline SVG avoids external file dependencies in Shadow DOM.
  * The mix-blend-mode: overlay enhances surfaces without washing out.
  */
-export const noiseOverlay = /* @__PURE__ */ (() => css`
+export const noiseOverlay = /* @__PURE__ */ pureStyle(() => css`
   &::before {
     content: '';
     position: absolute;
@@ -180,13 +181,13 @@ export const noiseOverlay = /* @__PURE__ */ (() => css`
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     mix-blend-mode: overlay;
   }
-`)();
+`);
 
 /**
  * Liquid fill hover — gradient sweeps up from bottom on hover.
  * More dramatic than colorMatchedHover, for hero/featured elements.
  */
-export const liquidFillHover = /* @__PURE__ */ (() => css`
+export const liquidFillHover = /* @__PURE__ */ pureStyle(() => css`
   position: relative;
   overflow: hidden;
   z-index: 0;
@@ -208,24 +209,24 @@ export const liquidFillHover = /* @__PURE__ */ (() => css`
   &:hover::before {
     transform: translateY(0);
   }
-`)();
+`);
 
 /**
  * AI processing glow ring — rotating conic gradient border.
  * Register --cg-border-angle via CSS.registerProperty() in connectedCallback.
  */
-export const aiGlowRing = /* @__PURE__ */ (() => css`
+export const aiGlowRing = /* @__PURE__ */ pureStyle(() => css`
   @keyframes cgBorderSpin {
     to { --cg-border-angle: 360deg; }
   }
-`)();
+`);
 
 /**
  * Scroll-driven reveal animation.
  * Elements fade+slide in as they enter the viewport.
  * Progressive enhancement — works in Chrome 115+, Firefox 110+, Safari 18+.
  */
-export const scrollReveal = /* @__PURE__ */ (() => css`
+export const scrollReveal = /* @__PURE__ */ pureStyle(() => css`
   @keyframes cgScrollReveal {
     from {
       opacity: 0;
@@ -236,4 +237,4 @@ export const scrollReveal = /* @__PURE__ */ (() => css`
       transform: translateY(0) scale(1);
     }
   }
-`)();
+`);

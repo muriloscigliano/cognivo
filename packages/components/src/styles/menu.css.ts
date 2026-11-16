@@ -1,7 +1,8 @@
 import { css } from 'lit';
+import { pureStyle } from './pure-style.js';
 
-// Each style is wrapped in a /* @__PURE__ */ IIFE: bundlers cannot drop an
-// unused tagged template (css`…` might have side effects), but they do drop
+// Each style is a /* @__PURE__ */ pureStyle() call (see pure-style.ts):
+// bundlers cannot drop an unused tagged template (css`…` might have side effects), but they do drop
 // an unused pure call — so a component pays only for the styles it imports.
 
 /**
@@ -16,7 +17,7 @@ import { css } from 'lit';
  * Positioning (absolute vs fixed, top/left placement) is intentionally NOT
  * included — each consumer owns its own positioning strategy.
  */
-export const menuListStyles = /* @__PURE__ */ (() => css`
+export const menuListStyles = /* @__PURE__ */ pureStyle(() => css`
   .menu {
     display: flex;
     flex-direction: column;
@@ -156,4 +157,4 @@ export const menuListStyles = /* @__PURE__ */ (() => css`
     background: var(--cg-color-modal-container-border);
     border: none;
   }
-`)();
+`);

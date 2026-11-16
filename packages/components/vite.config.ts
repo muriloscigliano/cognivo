@@ -133,11 +133,6 @@ export default defineConfig(({ mode }) => {
       },
       sourcemap: true,
       target: 'es2020',
-      // No minification of the library output: esbuild's syntax minifier
-      // inlines the `/* @__PURE__ */ (() => css`…`)()` wrappers of the shared
-      // styles into bare tagged templates, which consumer bundlers cannot drop
-      // (cg-input then carried every keyframe in motion.css). Consumers minify.
-      minify: false,
     },
   };
 });

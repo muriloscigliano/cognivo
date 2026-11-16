@@ -1,7 +1,8 @@
 import { css } from 'lit';
+import { pureStyle } from './pure-style.js';
 
-// Each style is wrapped in a /* @__PURE__ */ IIFE: bundlers cannot drop an
-// unused tagged template (css`…` might have side effects), but they do drop
+// Each style is a /* @__PURE__ */ pureStyle() call (see pure-style.ts):
+// bundlers cannot drop an unused tagged template (css`…` might have side effects), but they do drop
 // an unused pure call — so a component pays only for the styles it imports.
 
 // ── Elevation utilities ──
@@ -11,16 +12,16 @@ import { css } from 'lit';
 // are emptied. Use border / border-color tokens instead for depth cues.
 
 /** @deprecated No component uses box-shadow elevation. */
-export const elevation1 = /* @__PURE__ */ (() => css``)();
+export const elevation1 = /* @__PURE__ */ pureStyle(() => css``);
 
 /** @deprecated No component uses box-shadow elevation. */
-export const elevation2 = /* @__PURE__ */ (() => css``)();
+export const elevation2 = /* @__PURE__ */ pureStyle(() => css``);
 
 /** @deprecated No component uses box-shadow elevation. */
-export const elevation3 = /* @__PURE__ */ (() => css``)();
+export const elevation3 = /* @__PURE__ */ pureStyle(() => css``);
 
 /** @deprecated No component uses box-shadow elevation. */
-export const elevation4 = /* @__PURE__ */ (() => css``)();
+export const elevation4 = /* @__PURE__ */ pureStyle(() => css``);
 
 /** @deprecated No component uses box-shadow elevation. */
-export const elevation5 = /* @__PURE__ */ (() => css``)();
+export const elevation5 = /* @__PURE__ */ pureStyle(() => css``);

@@ -10,12 +10,12 @@
  * to move variants out of these components. Measured: 12.2 KB, then 12.67 KB
  * (12,972 B) after HTML implicit submission (shared helper), fieldset
  * disabling, version stamping and the cross-copy message stores — hence the
- * 13 KB gate. A floor and required-code checks catch a bundle that lost the
+ * 13 KB gate. 12,986 B with the library build minified again (2026-11-16). A floor and required-code checks catch a bundle that lost the
  * components (e.g. a sideEffects mistake tree-shaking them away).
  * Requires `pnpm build` first (turbo runs build before test).
  */
 import { describe, it, expect } from 'vitest';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { build } from 'esbuild';
@@ -72,6 +72,37 @@ describe.skipIf(!existsSync(resolve(pkg, entry('cg-input'))))('per-component bun
     expect(leaked, 'unused shared styles bundled').toEqual([]);
     expect(gzip, `gzip ${gzip} B`).toBeGreaterThanOrEqual(FLOOR_GZIP);
     expect(gzip, `gzip ${gzip} B`).toBeLessThanOrEqual(BUDGET_GZIP);
+  });
+});
+
+/**
+ * The library ships minified (identifiers mangled, syntax minified) so
+ * unbundled/CDN consumers get small files. esbuild's syntax minifier folds a
+ * `(() => css`…`)()` IIFE into a bare tagged template, which no bundler can
+ * drop; the shared styles therefore use a pure helper call that survives it.
+ */
+describe.skipIf(!existsSync(resolve(pkg, entry('cg-input'))))('minified output', () => {
+  const chunk = (marker: string): string => {
+    const dir = resolve(pkg, 'dist/chunks');
+    const file = readdirSync(dir).find((f) => f.endsWith('.js') && readFileSync(resolve(dir, f), 'utf8').includes(marker));
+    return readFileSync(resolve(dir, file!), 'utf8');
+  };
+
+  it('the ES build is minified and every shared style export stays a pure call', () => {
+    const motion = chunk('@keyframes shimmer');
+    // Mangled: the source names of the styles are gone from the declarations.
+    expect(motion).not.toMatch(/\b(const|let|var) shimmerKeyframes\b/);
+    const styles = (motion.match(/`@keyframes|`@media|`[a-z-]+:/g) ?? []).length;
+    const pure = (motion.match(/\/\* @__PURE__ \*\/ \w+\(\(\) =>/g) ?? []).length;
+    expect(styles).toBeGreaterThan(0);
+    expect(pure, 'shared styles that lost their pure call').toBe(styles);
+  });
+
+  it('the CDN build (cognivo.min.js) is minified', () => {
+    const iife = readFileSync(resolve(pkg, 'dist/cognivo.min.js'), 'utf8');
+    expect(iife.startsWith('var Cognivo=(function(')).toBe(true);
+    // Identifiers mangled: source names of shared styles and helpers are gone.
+    expect(iife).not.toMatch(/\b(shimmerKeyframes|hostTransition|focusRingSingle)\b/);
   });
 });
 
