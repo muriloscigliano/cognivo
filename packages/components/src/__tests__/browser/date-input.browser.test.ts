@@ -39,6 +39,30 @@ describe.skipIf(!browserAvailable)('cg-input type="date" (real browser)', { time
     await page.close();
   });
 
+  it('a non-ISO value (property, attribute or state restore) is sanitised to empty, so nothing is submitted while the field shows blank', async () => {
+    const page = await openPage(TAGS, `<form id="f"><cg-input id="a" type="date" name="a" label="A" value="15/03/2026"></cg-input><cg-input id="b" type="date" name="b" label="B"></cg-input><cg-input id="c" type="date" name="c" label="C"></cg-input></form>`);
+    await page.evaluate(() => {
+      (document.getElementById('b') as Field).value = '15/03/2026';
+      (document.getElementById('c') as unknown as { formStateRestoreCallback(s: string): void }).formStateRestoreCallback('15/03/2026');
+    });
+    await settle(page);
+    await settle(page);
+    const data = await page.evaluate(() => {
+      const shown = (id: string) => document.getElementById(id)!.shadowRoot!.querySelector('input')!.value;
+      return {
+        values: ['a', 'b', 'c'].map((id) => (document.getElementById(id) as Field).value),
+        shown: ['a', 'b', 'c'].map(shown),
+        form: Object.fromEntries(new FormData(document.getElementById('f') as HTMLFormElement)),
+      };
+    });
+    expect(data).toEqual({ values: ['', '', ''], shown: ['', '', ''], form: { a: '', b: '', c: '' } });
+    // A valid ISO value still round-trips.
+    await page.evaluate(() => { (document.getElementById('b') as Field).value = '2026-03-15'; });
+    await settle(page);
+    expect(await page.evaluate(() => new FormData(document.getElementById('f') as HTMLFormElement).get('b'))).toBe('2026-03-15');
+    await page.close();
+  });
+
   it('min/max validate natively (rangeUnderflow / rangeOverflow block the form) with page-wide messages', async () => {
     const page = await openPage(TAGS, `
       <form id="f">

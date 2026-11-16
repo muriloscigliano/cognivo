@@ -367,6 +367,11 @@ export class CgInput extends LitElement {
 
   override updated(changed: PropertyValues) {
     super.updated(changed);
+    // A date control drops a non-ISO value ('15/03/2026') and shows blank;
+    // take its sanitised value back so the form never submits what is not shown.
+    if (this.type === 'date' && this._input && this._input.value !== this.value) {
+      this.value = this._input.value;
+    }
     if (changed.has('value')) {
       this._internals?.setFormValue(this.value);
     }
