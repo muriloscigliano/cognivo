@@ -39,18 +39,48 @@ export interface TableColumn {
    *  hold objects or templates (a link, a badge), so they sort by their data. */
   accessor?: (cell: unknown, row: unknown[]) => unknown;
   /** Ascending comparator of accessor values (descending is its inverse).
-   *  Default: numbers and dates by value, nodes by text, the rest as text in
-   *  the page locale. Empty values (null, undefined, '') always sort last. */
+   *  Default: numbers, numeric strings ('9' before '10') and dates by value,
+   *  ahead of text; nodes by their text; text in the page language
+   *  (`<html lang>`) with digit runs compared as numbers ('item 9' before
+   *  'item 10'). Empty values (null, undefined, '') always sort last. */
   compare?: (a: unknown, b: unknown) => number;
 }
 
 const plain = (v: unknown): unknown => (v instanceof Date ? v.getTime() : v instanceof Node ? v.textContent : v);
+const NUMERIC = /^\s*[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?\s*$/i;
+/** A number, or a string that is one ('10', '2.5'); otherwise NaN. */
+const asNumber = (v: unknown): number =>
+  typeof v === 'number' ? v : typeof v === 'string' && NUMERIC.test(v) ? Number(v) : NaN;
+/** Default ascending order, total and transitive: numbers (and numeric
+ *  strings) first, by value; then text in the page language, digit runs
+ *  compared as numbers ('item 9' before 'item 10'). */
 const compareValues = (a: unknown, b: unknown): number => {
   const pa = plain(a);
   const pb = plain(b);
-  return typeof pa === 'number' && typeof pb === 'number' ? pa - pb : String(pa).localeCompare(String(pb));
+  const na = asNumber(pa);
+  const nb = asNumber(pb);
+  const aNum = !Number.isNaN(na);
+  const bNum = !Number.isNaN(nb);
+  if (aNum && bNum) return na < nb ? -1 : na > nb ? 1 : 0;
+  if (aNum !== bNum) return aNum ? -1 : 1;
+  const lang = (typeof document !== 'undefined' && document.documentElement.lang) || undefined;
+  return String(pa).localeCompare(String(pb), lang, { numeric: true });
 };
 const isEmpty = (v: unknown): boolean => v == null || v === '';
+/** Text of a labelling element for its accessible name: hidden descendants
+ *  (`hidden`, `aria-hidden="true"`, `display: none`, `visibility: hidden`)
+ *  are left out, as in the ARIA name computation. */
+const nameText = (el: Element): string => {
+  const hidden = (n: Element) =>
+    n.hasAttribute('hidden') || n.getAttribute('aria-hidden') === 'true' ||
+    (typeof getComputedStyle === 'function' && (() => { const cs = getComputedStyle(n); return cs.display === 'none' || cs.visibility === 'hidden'; })());
+  const walk = (n: Node): string => {
+    if (n.nodeType === Node.TEXT_NODE) return n.textContent ?? '';
+    if (n.nodeType !== Node.ELEMENT_NODE || hidden(n as Element)) return '';
+    return Array.from(n.childNodes, walk).join('');
+  };
+  return Array.from(el.childNodes, walk).join('').replace(/\s+/g, ' ').trim();
+};
 /** Elements whose own click/Enter must not also activate a clickable row. */
 const CONTROL = 'a[href],button,input,select,textarea,summary,label,[role=button],[role=link],[contenteditable]';
 
@@ -369,7 +399,7 @@ export class CgTable extends LitElement {
   @property() caption = '';
   /** Hide the caption visually; it still names the table. */
   @property({ type: Boolean, reflect: true, attribute: 'caption-hidden' }) captionHidden = false;
-  /** Accessible name of the inner table (wins over `caption`). */
+  /** Accessible name of the inner table (wins over `caption`; `labelledby` wins over it). */
   @property() label = '';
   /** Space-separated ids of elements in the table's document or shadow root
    *  whose text names the table. */
@@ -377,7 +407,11 @@ export class CgTable extends LitElement {
   /** Controlled sort. `undefined` (default): the table keeps its own sort.
    *  Set (a sort, or `null` for none): the table shows it and only asks for
    *  changes with `cg-sort-change`. */
-  @property({ type: Object }) sort: TableSort | null | undefined = undefined;
+  @property({
+    // Removing the attribute releases control (undefined); `sort="null"` is controlled, no sort.
+    converter: { fromAttribute: (v: string | null) => (v === null ? undefined : JSON.parse(v)), toAttribute: (v: unknown) => JSON.stringify(v) },
+  })
+  sort: TableSort | null | undefined = undefined;
   /** Rows arrive sorted (server-side, cursor data): never reorder them. */
   @property({ type: Boolean, reflect: true, attribute: 'manual-sort' }) manualSort = false;
 
@@ -397,6 +431,7 @@ export class CgTable extends LitElement {
   override disconnectedCallback() {
     super.disconnectedCallback();
     this._labelObserver?.disconnect();
+    this._labelObserver = undefined;
   }
 
   override willUpdate(changed: PropertyValues) {
@@ -407,17 +442,23 @@ export class CgTable extends LitElement {
   }
 
   /** `aria-labelledby` cannot reach out of the shadow root, so the referenced
-   *  elements' text becomes the inner table's label, kept in sync by an observer. */
+   *  elements' text becomes the inner table's label. One observer on the
+   *  table's root keeps it in sync: text changes, a target that appears
+   *  later, is replaced, gains the id, or has descendants hidden or shown. */
   private _resolveLabelledBy() {
-    this._labelObserver?.disconnect();
-    const root = this.getRootNode() as Partial<Document>;
-    const els = this.isConnected && this.labelledby && root.getElementById
-      ? this.labelledby.split(/\s+/).map(id => root.getElementById!(id)).filter((el): el is HTMLElement => !!el)
-      : [];
-    this._labelledText = els.map(el => el.textContent!.trim()).join(' ');
-    if (els.length && typeof MutationObserver === 'function') {
-      this._labelObserver ??= new MutationObserver(() => this._resolveLabelledBy());
-      for (const el of els) this._labelObserver.observe(el, { subtree: true, childList: true, characterData: true });
+    const root = this.getRootNode() as Partial<Document> & Node;
+    const ids = this.isConnected && this.labelledby && root.getElementById ? this.labelledby.split(/\s+/).filter(Boolean) : [];
+    const els = ids.map(id => root.getElementById!(id)).filter((el): el is HTMLElement => !!el);
+    this._labelledText = els.map(nameText).filter(Boolean).join(' ');
+    if (!ids.length) {
+      this._labelObserver?.disconnect();
+      this._labelObserver = undefined;
+    } else if (!this._labelObserver && typeof MutationObserver === 'function') {
+      this._labelObserver = new MutationObserver(() => this._resolveLabelledBy());
+      this._labelObserver.observe(root, {
+        subtree: true, childList: true, characterData: true,
+        attributes: true, attributeFilter: ['id', 'hidden', 'aria-hidden', 'style', 'class'],
+      });
     }
   }
 
@@ -519,7 +560,7 @@ export class CgTable extends LitElement {
     return html`
       <div class="table-wrapper">
         <div class="table-scroll">
-        <table aria-label=${this.label || this._labelledText || nothing} aria-busy=${this.loading ? 'true' : nothing}>
+        <table aria-label=${this._labelledText || this.label || nothing} aria-busy=${this.loading ? 'true' : nothing}>
           ${this.caption ? html`<caption class=${this.captionHidden ? 'sr-only' : ''}>${this.caption}</caption>` : nothing}
           <thead>
             <tr>

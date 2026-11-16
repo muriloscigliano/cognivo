@@ -73,6 +73,56 @@ describe.skipIf(!browserAvailable)('cg-table semantics (real browser)', { timeou
       await expect(page.getByRole('table', { name: 'Pipeline (Q3)' }).count()).resolves.toBe(1);
       await page.close();
     });
+    it('labelledby resolves a heading mounted after the table, and follows a replaced heading', async () => {
+      const page = await table('<div id="slot"></div><cg-table labelledby="deals-h"></cg-table>');
+      await page.evaluate(() => { document.getElementById('slot')!.innerHTML = '<h2 id="deals-h">Pipeline</h2>'; });
+      await settle(page);
+      await expect(page.getByRole('table', { name: 'Pipeline' }).count()).resolves.toBe(1);
+      // Replaced by a new node with the same id (a framework re-render).
+      await page.evaluate(() => {
+        const h = document.createElement('h2');
+        h.id = 'deals-h';
+        h.textContent = 'Won deals';
+        document.getElementById('deals-h')!.replaceWith(h);
+      });
+      await settle(page);
+      await expect(page.getByRole('table', { name: 'Won deals' }).count()).resolves.toBe(1);
+      // The new node's text changes are followed too.
+      await page.evaluate(() => { document.getElementById('deals-h')!.textContent = 'Won deals (Q3)'; });
+      await settle(page);
+      await expect(page.getByRole('table', { name: 'Won deals (Q3)' }).count()).resolves.toBe(1);
+      // An id appearing later on an existing node also counts.
+      await page.evaluate(() => {
+        document.getElementById('deals-h')!.removeAttribute('id');
+        document.getElementById('slot')!.insertAdjacentHTML('beforeend', '<p>Lost deals</p>');
+      });
+      await settle(page);
+      await page.evaluate(() => { document.querySelector('#slot p')!.id = 'deals-h'; });
+      await settle(page);
+      await expect(page.getByRole('table', { name: 'Lost deals' }).count()).resolves.toBe(1);
+      await page.close();
+    });
+
+    it('labelledby wins over label (ARIA precedence)', async () => {
+      const page = await table('<h2 id="deals-h">Pipeline</h2><cg-table labelledby="deals-h"></cg-table>', { label: 'Deals' });
+      await expect(page.getByRole('table', { name: 'Pipeline' }).count()).resolves.toBe(1);
+      await expect(page.getByRole('table', { name: 'Deals', exact: true }).count()).resolves.toBe(0);
+      await page.close();
+    });
+
+    it('the name from labelledby leaves out hidden descendants of the referenced element', async () => {
+      const page = await table(
+        '<h2 id="deals-h">Pipeline<span hidden> (draft)</span><span aria-hidden="true"> *</span><span style="display:none"> x</span><span style="visibility:hidden"> y</span> Q3</h2><cg-table labelledby="deals-h"></cg-table>',
+      );
+      const name = await page.evaluate(() => document.querySelector('cg-table')!.shadowRoot!.querySelector('table')!.getAttribute('aria-label'));
+      expect(name).toBe('Pipeline Q3');
+      await expect(page.getByRole('table', { name: 'Pipeline Q3', exact: true }).count()).resolves.toBe(1);
+      // Unhiding a descendant updates the name.
+      await page.evaluate(() => { document.querySelector('#deals-h [hidden]')!.removeAttribute('hidden'); });
+      await settle(page);
+      await expect(page.getByRole('table', { name: 'Pipeline (draft) Q3', exact: true }).count()).resolves.toBe(1);
+      await page.close();
+    });
   });
 
   describe('headers', () => {

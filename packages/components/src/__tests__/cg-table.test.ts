@@ -309,6 +309,55 @@ describe('cg-table', () => {
     expect(names(el2)).toEqual(['b', 'a']);
   });
 
+  it('controlled sort is released by removing the `sort` attribute: the table sorts by itself again', () => {
+    const col = { key: 'name', label: 'Name', sortable: true };
+    const el2 = make({ columns: [col], rows: [['b'], ['a']] });
+    el2.setAttribute('sort', '{"key":"name","direction":"desc"}');
+    expect(el2.sort).toEqual({ key: 'name', direction: 'desc' });
+    el2.setAttribute('sort', 'null'); // JSON null: controlled, no sort
+    expect(el2.sort).toBe(null);
+    el2.removeAttribute('sort');
+    expect(el2.sort).toBe(undefined);
+    const sorts: unknown[] = [];
+    el2.addEventListener('cg-sort', (e) => sorts.push((e as CustomEvent).detail));
+    (el2 as any)._handleSort(col);
+    expect(sorts).toEqual([{ key: 'name', direction: 'asc' }]);
+    expect(names(el2)).toEqual(['a', 'b']);
+  });
+
+  // Default order: numbers (and numeric strings) by value, before text; text
+  // in the page language with digit runs compared as numbers.
+  const sortCol = (rows: unknown[][], dir: 'asc' | 'desc' = 'asc') => {
+    const el2 = make({ columns: [{ key: 'v', label: 'V', sortable: true }], rows, sort: { key: 'v', direction: dir } });
+    return names(el2);
+  };
+
+  it('numeric strings sort by value: "9" before "10"; digit runs in text too ("item 9" before "item 10")', () => {
+    expect(sortCol([['10'], ['9'], ['100'], ['2.5'], ['2.10']])).toEqual(['2.10', '2.5', '9', '10', '100']);
+    expect(sortCol([['item 10'], ['item 9'], ['item 1']])).toEqual(['item 1', 'item 9', 'item 10']);
+  });
+
+  it('mixed columns have a total order: numbers (and numeric strings) first by value, then text; any input order gives the same result', () => {
+    const values = ['b', 10, 'a', 2, '10.5', 'item 2', 3.5, 'B'];
+    const asc = sortCol(values.map((v) => [v]));
+    expect(asc).toEqual([2, 3.5, 10, '10.5', 'a', 'b', 'B', 'item 2']);
+    expect(sortCol([...values].reverse().map((v) => [v]))).toEqual(asc);
+    expect(sortCol([...values.slice(3), ...values.slice(0, 3)].map((v) => [v]))).toEqual(asc);
+    expect(sortCol(values.map((v) => [v]), 'desc')).toEqual([...asc].reverse());
+  });
+
+  it('text compares in the page language (document lang)', () => {
+    const prev = document.documentElement.lang;
+    try {
+      document.documentElement.lang = 'sv'; // Swedish: ä after z
+      expect(sortCol([['ä'], ['z'], ['a']])).toEqual(['a', 'z', 'ä']);
+      document.documentElement.lang = 'de'; // German: ä with a
+      expect(sortCol([['ä'], ['z'], ['a']])).toEqual(['a', 'ä', 'z']);
+    } finally {
+      document.documentElement.lang = prev;
+    }
+  });
+
   it('manual-sort: rows render in the given order whatever the sort', () => {
     const col = { key: 'name', label: 'Name', sortable: true };
     const el2 = make({ columns: [col], rows: [['b'], ['c'], ['a']], manualSort: true, sort: { key: 'name', direction: 'asc' } });
