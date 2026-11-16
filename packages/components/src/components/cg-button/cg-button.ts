@@ -266,6 +266,13 @@ export class CgButton extends LitElement {
     this._formDisabled = disabled;
   }
 
+  /** Focus the inner button / link (the host itself is not focusable). */
+  override focus(options?: FocusOptions): void {
+    const inner = this.renderRoot?.querySelector?.<HTMLElement>('[part="button"]');
+    if (inner) inner.focus(options);
+    else super.focus(options);
+  }
+
   private _handleClick = () => {
     if (this.href || this.disabled || this._formDisabled || this.loading) return;
     if (this.type !== 'submit' && this.type !== 'reset') return;

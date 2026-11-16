@@ -72,10 +72,14 @@ describe.skipIf(!browserAvailable)('cg-button link mode (real browser)', { timeo
     await page.close();
   });
 
-  it('the host never carries an href attribute (focus traps would take a plain button for a link)', async () => {
+  it('a plain button host has no href attribute, and host.focus() reaches the inner control (focus traps call it)', async () => {
     const page = await open(`<cg-button id="b">Save</cg-button><cg-button id="l" href="/x">Go</cg-button>`);
-    const attrs = await page.evaluate(() => ['#b', '#l'].map((s) => document.querySelector(s)!.hasAttribute('href')));
-    expect(attrs).toEqual([false, false]);
+    expect(await page.evaluate(() => document.querySelector('#b')!.hasAttribute('href'))).toBe(false);
+    const focused = await page.evaluate(() => ['#b', '#l'].map((s) => {
+      (document.querySelector(s) as HTMLElement).focus();
+      return document.querySelector(s)!.shadowRoot!.activeElement?.localName ?? null;
+    }));
+    expect(focused).toEqual(['button', 'a']);
     await page.close();
   });
 
