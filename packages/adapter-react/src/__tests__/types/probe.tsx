@@ -1,9 +1,19 @@
 // Type-level test. Compiled by types.test.ts against the BUILT declarations
 // (dist/), resolved through the package's own `exports` — exactly what a
 // consumer's TypeScript sees. Lines marked @ts-expect-error MUST fail.
-import type { MouseEvent } from 'react';
-import { CgButton, CgCheckbox, CgChip, CgCombobox, CgInput, CgLink, CgModal, CgPagination, CgSelect, CgTable, AiCommandPalette } from '@cognivo/adapter-react';
-import type { CgTableColumn, CgTableSort, CgPageChangeDetail } from '@cognivo/adapter-react';
+import { createRef, type MouseEvent } from 'react';
+import { CgAppShell, CgButton, CgCheckbox, CgChip, CgCombobox, CgInput, CgLink, CgModal, CgPagination, CgSelect, CgTable, CgTextarea, AiCommandPalette } from '@cognivo/adapter-react';
+import type { CgTableColumn, CgTableSort, CgPageChangeDetail, CgTextareaElement } from '@cognivo/adapter-react';
+
+// cg-textarea: a typed ref with the selection API (insert at the cursor).
+const textareaRef = createRef<CgTextareaElement>();
+export const insertVariable = (): void => {
+  const ta = textareaRef.current;
+  if (!ta) return;
+  ta.setRangeText('{{first_name}}', ta.selectionStart ?? 0, ta.selectionEnd ?? 0, 'end');
+  ta.setSelectionRange(0, 0, 'forward');
+  ta.focus();
+};
 
 export const ok = [
   <CgInput key="1" name="email" type="email" label="E-mail" required value="x" onCgInput={(e) => e.detail.value} />,
@@ -50,6 +60,15 @@ export const ok = [
   <CgPagination key="14" total={10} current={2} onPageChange={(e) => ('page' in e.detail ? e.detail.page : 0)} />,
   // cg-input type="date" with min/max.
   <CgInput key="15" type="date" name="close" label="Close date" min="2026-01-01" max="2026-12-31" />,
+  // cg-button link mode.
+  <CgButton key="16" href="/deals/new" target="_blank" rel="noopener noreferrer" variant="secondary">New deal</CgButton>,
+  // cg-select accessible label different from the visible one.
+  <CgSelect key="17" label="Stage" accessibleLabel="Deal stage" />,
+  <CgSelect key="18" aria-label="Filter by stage" />,
+  // cg-table truncating column.
+  <CgTable key="19" columns={[{ key: 'notes', label: 'Notes', truncate: true, width: '240px' }]} rows={[['…']]} />,
+  <CgTextarea key="20" ref={textareaRef} name="body" />,
+  <CgAppShell key="21" sidebarCollapsed onToggle={(e: CustomEvent) => e.detail} />,
 ];
 
 export const column: CgTableColumn = { key: 'x', label: 'X', rowHeader: true };
@@ -80,4 +99,10 @@ export const bad = [
   <CgPagination key="b11" hasNext="yes" />,
   // @ts-expect-error cg-input types are a closed union
   <CgInput key="b12" type="datetime" />,
+  // @ts-expect-error href is a string
+  <CgButton key="b13" href={42} />,
+  // @ts-expect-error truncate is a boolean
+  <CgTable key="b14" columns={[{ key: 'a', label: 'A', truncate: 'yes' }]} />,
+  // @ts-expect-error accessibleLabel is a string
+  <CgSelect key="b15" accessibleLabel={1} />,
 ];
