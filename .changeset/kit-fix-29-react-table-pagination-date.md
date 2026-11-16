@@ -9,4 +9,4 @@ Types and events for the new table, pagination and date-input features.
 
   *Typing change:* `onPageChange` was an untyped `CustomEvent` (`detail: any`), so `e.detail.page` compiled. It is now the union `{ page } | { direction }`, and reading `e.detail.page` directly is a TypeScript error. Migration: narrow first, e.g. `if ('page' in e.detail) setPage(e.detail.page)` (and `'direction' in e.detail` for cursor mode). Runtime behaviour is unchanged: page mode still sends `{ page }`. This entry stays `minor` only because `@cognivo/adapter-react` already goes to **2.0.0** in this release (the renamed event props in `kit-fix-16` are `major`); released on its own, this typing change would also need a major.
 - `CgInput`: `type="date"`, `min`, `max`.
-- Type probe and react-dom runtime tests cover them.
+- Type probe, react-dom runtime tests and a real-browser React test (a slotted link shows in its own cell and moves with its row; a header click reaches `onSortChange`) cover them.
