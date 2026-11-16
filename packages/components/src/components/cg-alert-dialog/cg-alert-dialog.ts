@@ -76,6 +76,15 @@ export class CgAlertDialog extends LitElement {
         opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
     }
+    /* Closed: inert (tab order) and hidden from the accessibility tree,
+       slotted content included. Visibility flips after the fade-out. */
+    .dialog[inert] {
+      visibility: hidden;
+      transition:
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out),
+        visibility 0s linear var(--cg-transition-duration-fast);
+    }
     :host([open]) .dialog {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);

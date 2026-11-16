@@ -94,6 +94,15 @@ export class CgCommand extends LitElement {
         opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out);
     }
+    /* Closed: inert (tab order) and hidden from the accessibility tree,
+       slotted header included. Visibility flips after the fade-out. */
+    .palette[inert] {
+      visibility: hidden;
+      transition:
+        opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
+        transform var(--cg-transition-duration-default) var(--cg-transition-easing-ease-out),
+        visibility 0s linear var(--cg-transition-duration-fast);
+    }
     :host([open]) .palette {
       opacity: 1;
       transform: translateX(-50%) translateY(0) scale(1);
@@ -342,6 +351,7 @@ export class CgCommand extends LitElement {
         aria-label=${this.i18n.t('dialog')}
         aria-modal="true"
         ?hidden=${!this.open}
+        ?inert=${!this.open}
       >
         <slot name="header"></slot>
         <div class="input-wrap">

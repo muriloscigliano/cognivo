@@ -85,6 +85,16 @@ export class CgDrawer extends LitElement {
       .panel { transition: transform var(--cg-transition-duration-fast) ease; }
     }
 
+    /* Closed: out of the tab order and the accessibility tree, slotted fields
+       included (inert covers the flat tree; visibility hides it from AT).
+       Visibility flips after the slide-out (delayed, not animated). */
+    .panel[inert] {
+      visibility: hidden;
+      transition:
+        transform var(--cg-transition-duration-slow) var(--cg-transition-easing-default),
+        visibility 0s linear var(--cg-transition-duration-slow);
+    }
+
     /* ── Side: Left ── */
     :host([side="left"]) .panel {
       left: 0;
@@ -406,6 +416,7 @@ export class CgDrawer extends LitElement {
         aria-label="${this.title ? nothing : this.i18n.t('label')}"
         aria-labelledby="${this.title ? 'drawer-title' : nothing}"
         tabindex="-1"
+        ?inert=${!this.open}
       >
         ${this.title || this.closable || this.back ? html`
           <div class="drawer-header">
