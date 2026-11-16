@@ -42,9 +42,12 @@ describe('cg-app-shell', () => {
     expect(el.style.getPropertyValue('--_cg-shell-header-h')).toBe('64px');
   });
 
-  it('aside is aria-hidden when collapsed', async () => {
+  it('aside is inert (out of the tab order and the accessibility tree) when collapsed', async () => {
     await create({ sidebarCollapsed: true });
-    expect(el.shadowRoot!.querySelector('aside')!.getAttribute('aria-hidden')).toBe('true');
+    expect(el.shadowRoot!.querySelector('aside')!.hasAttribute('inert')).toBe(true);
+    el.sidebarCollapsed = false;
+    await el.updateComplete;
+    expect(el.shadowRoot!.querySelector('aside')!.hasAttribute('inert')).toBe(false);
   });
 
   it('toggleSidebar flips state and fires event', async () => {

@@ -1,12 +1,28 @@
 import { LitElement, html, css } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
+import { getDeepActiveElement, getFocusableElements, focusEntry } from '../../utils/focus-trap.js';
+
+/** Below this width the sidebar is an overlay drawer, not a column. */
+const PHONE_QUERY = '(max-width: 768px)';
 
 /**
  * @element cg-app-shell
  * Top-level application scaffold composing header, sidebar, content, and
  * footer regions with landmark roles and a responsive collapsible sidebar.
+ *
+ * Desktop: the sidebar column is viewport-height and sticks under the header
+ * while the page scrolls; it scrolls on its own, so `position: sticky`
+ * content and a slotted sidebar's bottom footer work inside it. Collapsed,
+ * the column is `inert`.
+ *
+ * Phone (≤ 768px): the sidebar is an overlay drawer, open when not
+ * `sidebar-collapsed`. While open: a backdrop covers the page (click closes),
+ * Escape closes, the page behind does not scroll, and focus moves into the
+ * sidebar when it opens and back to where it was when it closes. Closing
+ * from the backdrop or Escape fires `cg-app-shell-toggle` like
+ * `toggleSidebar()`.
  *
  * @example
  * ```html
@@ -33,38 +49,25 @@ export class CgAppShell extends LitElement {
       height: 100%;
       --_cg-shell-sidebar-w: 260px;
       --_cg-shell-header-h: 56px;
+      /* Where the sticky sidebar column starts: under a sticky header, or at the top. */
+      --_cg-shell-sidebar-top: 0px;
       font-family: var(--cg-font-family-primary);
+    }
+    :host([sticky-header]) {
+      --_cg-shell-sidebar-top: var(--_cg-shell-header-h);
     }
 
     .shell {
       display: grid;
       height: 100%;
       grid-template-rows: var(--_cg-shell-header-h) 1fr auto;
-      grid-template-columns: var(--_cg-shell-sidebar-w) 1fr;
+      grid-template-columns: 1fr;
       grid-template-areas:
-        "header header"
-        "sidebar main"
-        "footer footer";
+        "header"
+        "main"
+        "footer";
       background: var(--cg-color-surface-base-background);
       color: var(--cg-color-surface-base-text);
-      transition: grid-template-columns var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
-    }
-
-    /* Sidebar on the end side swaps the columns/areas */
-    :host([sidebar-position="end"]) .shell {
-      grid-template-columns: 1fr var(--_cg-shell-sidebar-w);
-      grid-template-areas:
-        "header header"
-        "main sidebar"
-        "footer footer";
-    }
-
-    /* Collapsed → sidebar column shrinks to 0 */
-    :host([sidebar-collapsed]) .shell {
-      grid-template-columns: 0 1fr;
-    }
-    :host([sidebar-collapsed][sidebar-position="end"]) .shell {
-      grid-template-columns: 1fr 0;
     }
 
     header {
@@ -77,14 +80,17 @@ export class CgAppShell extends LitElement {
     aside {
       grid-area: sidebar;
       overflow: hidden auto;
+      overscroll-behavior: contain;
       background: var(--cg-color-surface-sidebar-background);
       color: var(--cg-color-surface-sidebar-text);
-      border-right: var(--cg-border-width-50) solid var(--cg-color-surface-base-divider);
       min-width: 0;
+      /* The slotted sidebar fills the column, so its footer sits at the bottom. */
+      display: flex;
+      flex-direction: column;
     }
-    :host([sidebar-position="end"]) aside {
-      border-right: none;
-      border-left: var(--cg-border-width-50) solid var(--cg-color-surface-base-divider);
+    ::slotted([slot="sidebar"]) {
+      flex: 1 0 auto;
+      min-height: 0;
     }
 
     main {
@@ -102,24 +108,74 @@ export class CgAppShell extends LitElement {
     /* Empty regions collapse so they don't reserve borders */
     footer.empty { display: none; }
 
-    /* Mobile: sidebar overlays instead of taking a column */
-    @media (max-width: 768px) {
+    .backdrop { display: none; }
+
+    /* ── Desktop: the sidebar is a column ── */
+    @media (min-width: 769px) {
       .shell {
-        grid-template-columns: 1fr;
+        grid-template-columns: var(--_cg-shell-sidebar-w) 1fr;
         grid-template-areas:
-          "header"
-          "main"
-          "footer";
+          "header header"
+          "sidebar main"
+          "footer footer";
+        transition: grid-template-columns var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
       }
+      /* Sidebar on the end side swaps the columns/areas */
+      :host([sidebar-position="end"]) .shell {
+        grid-template-columns: 1fr var(--_cg-shell-sidebar-w);
+        grid-template-areas:
+          "header header"
+          "main sidebar"
+          "footer footer";
+      }
+      /* Collapsed → sidebar column shrinks to 0 */
+      :host([sidebar-collapsed]) .shell {
+        grid-template-columns: 0 1fr;
+      }
+      :host([sidebar-collapsed][sidebar-position="end"]) .shell {
+        grid-template-columns: 1fr 0;
+      }
+
+      /* Viewport-height column that stays in view while the page scrolls and
+         scrolls on its own (in a height-bounded shell it fills its row). */
+      aside {
+        position: sticky;
+        top: var(--_cg-shell-sidebar-top);
+        align-self: start;
+        height: 100%;
+        max-height: calc(100dvh - var(--_cg-shell-sidebar-top));
+        border-right: var(--cg-border-width-50) solid var(--cg-color-surface-base-divider);
+      }
+      :host([sidebar-position="end"]) aside {
+        border-right: none;
+        border-left: var(--cg-border-width-50) solid var(--cg-color-surface-base-divider);
+      }
+      /* Collapsed: out of sight, the tab order and the accessibility tree (also inert). */
+      :host([sidebar-collapsed]) aside { border: none; visibility: hidden; }
+    }
+
+    /* ── Phone: the sidebar is an overlay drawer ── */
+    @media (max-width: 768px) {
       aside {
         position: fixed;
         top: var(--_cg-shell-header-h);
         bottom: 0;
         inset-inline-start: 0;
         width: var(--_cg-shell-sidebar-w);
+        max-width: 100%;
         z-index: var(--cg-z-index-300);
         box-shadow: var(--cg-shadow-elevation-xl);
-        transition: transform var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
+        /* Opening: visible at once, so focus can move in. */
+        transition:
+          transform var(--cg-transition-duration-slow) var(--cg-transition-easing-default),
+          visibility 0s;
+      }
+      /* Closing: hidden once it has slid away. */
+      :host([sidebar-collapsed]) aside {
+        visibility: hidden;
+        transition:
+          transform var(--cg-transition-duration-slow) var(--cg-transition-easing-default),
+          visibility 0s linear var(--cg-transition-duration-slow);
       }
       :host([sidebar-position="end"]) aside {
         inset-inline-start: auto;
@@ -131,6 +187,22 @@ export class CgAppShell extends LitElement {
       :host([sidebar-position="end"][sidebar-collapsed]) aside {
         transform: translateX(calc(var(--_cg-shell-sidebar-w) + var(--cg-spacing-16)));
       }
+
+      .backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: var(--cg-z-index-300);
+        background: var(--cg-color-modal-overlay-background);
+        transition:
+          opacity var(--cg-transition-duration-slow) var(--cg-transition-easing-default),
+          visibility var(--cg-transition-duration-slow) var(--cg-transition-easing-default);
+      }
+      :host([sidebar-collapsed]) .backdrop {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
     }
   `];
 
@@ -140,7 +212,35 @@ export class CgAppShell extends LitElement {
   @property({ attribute: 'header-height', reflect: true }) headerHeight = '56px';
   @property({ type: Boolean, attribute: 'sticky-header', reflect: true }) stickyHeader = true;
 
+  /** True below the phone breakpoint, where the sidebar is an overlay drawer. */
+  @state() private _phone = false;
+
   private _hasFooter = false;
+  private _media: MediaQueryList | null = null;
+  /** Focus to restore when the phone drawer closes. */
+  private _returnFocus: HTMLElement | null = null;
+  /** body.style.overflow before the phone drawer locked scrolling; null when not locked. */
+  private _lockedOverflow: string | null = null;
+
+  /** The phone drawer is showing. */
+  private get _drawerOpen(): boolean {
+    return this._phone && !this.sidebarCollapsed;
+  }
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this._media = window.matchMedia?.(PHONE_QUERY) ?? null;
+    this._phone = this._media?.matches ?? false;
+    this._media?.addEventListener('change', this._onMediaChange);
+    document.addEventListener('keydown', this._onKeydown);
+  }
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this._media?.removeEventListener('change', this._onMediaChange);
+    document.removeEventListener('keydown', this._onKeydown);
+    this._unlockScroll();
+  }
 
   override updated(changed: Map<string, unknown>): void {
     if (changed.has('sidebarWidth')) {
@@ -149,16 +249,94 @@ export class CgAppShell extends LitElement {
     if (changed.has('headerHeight')) {
       this.style.setProperty('--_cg-shell-header-h', this.headerHeight || '56px');
     }
+    if (changed.has('sidebarCollapsed') || changed.has('_phone')) {
+      if (this._drawerOpen) this._lockScroll();
+      else this._unlockScroll();
+    }
+    // Focus follows the drawer only when it opens or closes on a phone (not on
+    // first render, and not when a desktop column collapses).
+    if (changed.has('sidebarCollapsed') && changed.get('sidebarCollapsed') !== undefined && this._phone) {
+      if (this.sidebarCollapsed) this._restoreFocus();
+      else this._focusSidebar();
+    }
   }
 
   /** Flip the sidebar collapse state. */
   toggleSidebar(): void {
-    this.sidebarCollapsed = !this.sidebarCollapsed;
+    this._setCollapsed(!this.sidebarCollapsed);
+  }
+
+  private _setCollapsed(collapsed: boolean): void {
+    if (collapsed === this.sidebarCollapsed) return;
+    this.sidebarCollapsed = collapsed;
     this.dispatchEvent(new CustomEvent('cg-app-shell-toggle', {
       detail: { collapsed: this.sidebarCollapsed },
       bubbles: true,
       composed: true,
     }));
+  }
+
+  private _onMediaChange = (e: MediaQueryListEvent): void => {
+    this._phone = e.matches;
+  };
+
+  private _onKeydown = (e: KeyboardEvent): void => {
+    if (e.key !== 'Escape' || !this._drawerOpen || e.defaultPrevented) return;
+    e.preventDefault();
+    this._setCollapsed(true);
+  };
+
+  private _focusSidebar(): void {
+    this._returnFocus = getDeepActiveElement();
+    const aside = this.renderRoot.querySelector('aside');
+    if (!aside) return;
+    // Focus once the drawer is visible (a visibility transition, even a
+    // reduced-motion one, can keep it hidden for a frame or two).
+    let frames = 10;
+    const tryFocus = (): void => {
+      if (this.sidebarCollapsed || !this._phone) return;
+      const first = getFocusableElements(aside)[0];
+      if (first) focusEntry(first);
+      else if (frames-- > 0) requestAnimationFrame(tryFocus);
+    };
+    requestAnimationFrame(tryFocus);
+  }
+
+  private _restoreFocus(): void {
+    const target = this._returnFocus;
+    this._returnFocus = null;
+    const aside = this.renderRoot.querySelector('aside');
+    const active = getDeepActiveElement();
+    // Only pull focus back if it is still inside the closing drawer (or lost).
+    const inDrawer = !active || active === document.body || (aside !== null && this._contains(aside, active));
+    if (target?.isConnected && inDrawer) target.focus();
+  }
+
+  private _contains(aside: Element, node: Element): boolean {
+    if (aside.contains(node)) return true;
+    const slot = aside.querySelector('slot');
+    return (slot?.assignedElements({ flatten: true }) ?? []).some((el) => el === node || el.contains(node) || this._shadowContains(el, node));
+  }
+
+  private _shadowContains(host: Element, node: Node): boolean {
+    let el: Node | null = node;
+    while (el) {
+      if (el === host) return true;
+      el = el instanceof ShadowRoot ? el.host : el.parentNode;
+    }
+    return false;
+  }
+
+  private _lockScroll(): void {
+    if (this._lockedOverflow !== null) return;
+    this._lockedOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+  }
+
+  private _unlockScroll(): void {
+    if (this._lockedOverflow === null) return;
+    document.body.style.overflow = this._lockedOverflow;
+    this._lockedOverflow = null;
   }
 
   private _onFooterSlotChange(e: Event): void {
@@ -174,7 +352,8 @@ export class CgAppShell extends LitElement {
     return html`
       <div class="shell">
         <header><slot name="header"></slot></header>
-        <aside aria-hidden=${this.sidebarCollapsed ? 'true' : 'false'}>
+        <div class="backdrop" @click=${() => this._setCollapsed(true)}></div>
+        <aside ?inert=${this.sidebarCollapsed}>
           <slot name="sidebar"></slot>
         </aside>
         <main><slot></slot></main>
