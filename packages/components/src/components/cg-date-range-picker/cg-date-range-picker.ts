@@ -1,5 +1,5 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
@@ -172,6 +172,11 @@ export class CgDateRangePicker extends LitElement {
   @property({ attribute: 'end-placeholder' }) endPlaceholder?: string;
   @property() format = 'MMM dd, yyyy';
   @property({ type: Boolean }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean, reflect: true }) open = false;
   @property() error = '';
 
@@ -190,7 +195,7 @@ export class CgDateRangePicker extends LitElement {
   }
 
   private _toggle() {
-    if (this.disabled) return;
+    if (this._effectivelyDisabled) return;
     this.open = !this.open;
   }
 
@@ -249,11 +254,11 @@ export class CgDateRangePicker extends LitElement {
     return html`
       ${this.label ? html`<label class="label">${this.label}</label>` : nothing}
       <div
-        class="trigger ${this.open ? 'open' : ''} ${this.disabled ? 'disabled' : ''} ${this.error ? 'invalid' : ''}"
+        class="trigger ${this.open ? 'open' : ''} ${this._effectivelyDisabled ? 'disabled' : ''} ${this.error ? 'invalid' : ''}"
         role="combobox"
-        tabindex=${this.disabled ? '-1' : '0'}
+        tabindex=${this._effectivelyDisabled ? '-1' : '0'}
         aria-expanded=${this.open ? 'true' : 'false'}
-        aria-disabled=${this.disabled ? 'true' : nothing}
+        aria-disabled=${this._effectivelyDisabled ? 'true' : nothing}
         aria-haspopup="dialog"
         aria-controls="cg-drp-dropdown"
         aria-label=${this.label || this.i18n.t('label')}

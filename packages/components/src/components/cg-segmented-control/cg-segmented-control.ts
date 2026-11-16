@@ -1,5 +1,5 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 
@@ -137,6 +137,11 @@ export class CgSegmentedControl extends LitElement {
   /** Accessible name for the radiogroup (e.g. "View period"). Strongly recommended. */
   @property() label = '';
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ type: Boolean, reflect: true }) full = false;
 
@@ -190,7 +195,7 @@ export class CgSegmentedControl extends LitElement {
   }
 
   private _select(option: SegmentOption): void {
-    if (option.disabled || this.disabled) return;
+    if (option.disabled || this._effectivelyDisabled) return;
     this.value = option.value;
     this.dispatchEvent(new CustomEvent('cg-segmented-change', {
       detail: { value: option.value },
@@ -200,7 +205,7 @@ export class CgSegmentedControl extends LitElement {
   }
 
   private _handleKeydown(e: KeyboardEvent): void {
-    if (this.disabled) return;
+    if (this._effectivelyDisabled) return;
     let current = this.options.findIndex(o => o.value === this.value);
     // No selection yet: navigate relative to the first enabled option (roving-focus seed).
     if (current < 0) current = this.options.findIndex(o => !o.disabled);
@@ -251,7 +256,7 @@ export class CgSegmentedControl extends LitElement {
     // so the control stays keyboard-reachable.
     const focusIdx = activeIdx >= 0 ? activeIdx : this.options.findIndex(o => !o.disabled);
     return html`
-      <div class="track" role="radiogroup" aria-label=${this.label || nothing} aria-disabled=${this.disabled ? 'true' : 'false'} @keydown=${this._handleKeydown}>
+      <div class="track" role="radiogroup" aria-label=${this.label || nothing} aria-disabled=${this._effectivelyDisabled ? 'true' : 'false'} @keydown=${this._handleKeydown}>
         <span class="indicator"></span>
         ${this.options.map((option, i) => html`
           <button
@@ -260,7 +265,7 @@ export class CgSegmentedControl extends LitElement {
             role="radio"
             aria-checked=${option.value === this.value ? 'true' : 'false'}
             tabindex=${i === focusIdx ? '0' : '-1'}
-            ?disabled=${option.disabled || this.disabled}
+            ?disabled=${option.disabled || this._effectivelyDisabled}
             @click=${() => this._select(option)}
           >${option.icon ? html`<cg-icon name=${option.icon}></cg-icon>` : nothing}${option.label}</button>
         `)}

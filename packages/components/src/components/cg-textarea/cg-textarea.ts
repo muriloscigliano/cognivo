@@ -222,6 +222,11 @@ export class CgTextarea extends LitElement {
   @property({ type: Number }) rows = 3;
   @property({ type: Number }) maxlength = 0;
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean, reflect: true }) readonly = false;
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;
@@ -286,7 +291,7 @@ export class CgTextarea extends LitElement {
     const fieldClasses = ['field', this._isFloated ? 'floated' : ''].filter(Boolean).join(' ');
 
     return html`
-      <div class="wrapper ${this.disabled ? 'disabled' : ''}">
+      <div class="wrapper ${this._effectivelyDisabled ? 'disabled' : ''}">
         <div class=${fieldClasses}>
           ${this.label ? html`<span class="floating-label">${this.label}</span>` : nothing}
           <textarea
@@ -295,7 +300,7 @@ export class CgTextarea extends LitElement {
             name=${this.name || nothing}
             placeholder=${this.placeholder || (this.label ? ' ' : nothing)}
             maxlength=${this.maxlength || nothing}
-            ?disabled=${this.disabled || this.loading}
+            ?disabled=${this._effectivelyDisabled || this.loading}
             ?readonly=${this.readonly}
             ?required=${this.required}
             aria-invalid=${this.error ? 'true' : 'false'}

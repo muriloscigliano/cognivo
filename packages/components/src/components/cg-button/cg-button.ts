@@ -1,5 +1,5 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
 
@@ -18,6 +18,8 @@ import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
  * Form behaviour: `type="submit"` calls `requestSubmit()` on the owning form
  * (runs constraint validation and fires `submit`), `type="reset"` resets it.
  * Any other type (default `normal`, `danger`, `button`) never submits.
+ * Disabled, loading, or inside a `<fieldset disabled>`: never submits, and
+ * Enter in a field does not submit when this is the form's default button.
  *
  * @slot - Default slot for button text/content
  * @slot prefix - Icon or content before the label
@@ -40,6 +42,10 @@ export class CgButton extends LitElement {
     if (typeof this.attachInternals === 'function') {
       this._internals = this.attachInternals();
     }
+    // On the host, not the inner <button>: a click on the inner button
+    // bubbles here, and so does host.click() — which is how a form's
+    // implicit submission (Enter in a field) activates its default button.
+    this.addEventListener('click', this._handleClick);
   }
 
   static override styles = [hostBase, reducedMotion, spinKeyframes, css`
@@ -238,8 +244,15 @@ export class CgButton extends LitElement {
   @property({ reflect: true }) status: 'idle' | 'error' | 'success' = 'idle';
   @property() label = '';
 
-  private _handleClick() {
-    if (this.disabled || this.loading) return;
+  /** Disabled by an ancestor `<fieldset disabled>` (or the own attribute). */
+  @state() private _formDisabled = false;
+
+  formDisabledCallback(disabled: boolean) {
+    this._formDisabled = disabled;
+  }
+
+  private _handleClick = () => {
+    if (this.disabled || this._formDisabled || this.loading) return;
     if (this.type !== 'submit' && this.type !== 'reset') return;
     const form = this._internals?.form ?? this.closest('form');
     if (!form) return;
@@ -247,15 +260,14 @@ export class CgButton extends LitElement {
     // shadows form.requestSubmit / form.reset (named-property access).
     if (this.type === 'submit') HTMLFormElement.prototype.requestSubmit.call(form);
     else HTMLFormElement.prototype.reset.call(form);
-  }
+  };
 
   override render() {
     return html`
       <button
         part="button"
         type="button"
-        @click=${this._handleClick}
-        ?disabled=${this.disabled || this.loading}
+        ?disabled=${this.disabled || this._formDisabled || this.loading}
         aria-busy=${this.loading ? 'true' : 'false'}
         aria-label=${this.label || nothing}
       >

@@ -253,6 +253,11 @@ export class CgSlider extends LitElement {
   @property({ type: Number }) max = 100;
   @property({ type: Number }) step = 1;
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;
   @property({ type: Boolean, reflect: true }) loading = false;
@@ -355,7 +360,7 @@ export class CgSlider extends LitElement {
             min=${this.min}
             max=${this.max}
             step=${this.step}
-            ?disabled=${this.disabled || this.loading}
+            ?disabled=${this._effectivelyDisabled || this.loading}
             aria-label=${this.label || this.i18n.t('label')}
             aria-valuetext="${this.value}${this.unit}"
             name=${this.name || nothing}

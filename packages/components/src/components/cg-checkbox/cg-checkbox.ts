@@ -1,5 +1,5 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { mirrorValidity, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
@@ -234,6 +234,11 @@ export class CgCheckbox extends LitElement {
   @property({ type: Boolean }) checked = false;
   @property({ type: Boolean }) indeterminate = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;
   @property({ type: Boolean, reflect: true }) loading = false;
@@ -291,7 +296,7 @@ export class CgCheckbox extends LitElement {
             .checked=${this.checked}
             .indeterminate=${this.indeterminate}
             .value=${this.value || 'on'}
-            ?disabled=${this.disabled || this.loading}
+            ?disabled=${this._effectivelyDisabled || this.loading}
             ?required=${this.required}
             aria-label=${ariaLabel}
             aria-labelledby=${this.label ? 'label-text' : nothing}

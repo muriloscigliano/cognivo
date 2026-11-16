@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -194,6 +195,9 @@ export class CgTagInput extends LitElement {
   `];
 
   static formAssociated = true;
+  /** Enter here submits the owning form per HTML implicit submission, and the
+   *  field counts as one that blocks it (see utils/implicit-submit). */
+  static blocksImplicitSubmission = true;
   private _internals?: ElementInternals;
 
   constructor() {
@@ -216,6 +220,11 @@ export class CgTagInput extends LitElement {
   @property({ type: Number }) max = 0;
   @property({ type: Boolean, attribute: 'allow-duplicates' }) allowDuplicates = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;
   @property({ reflect: true }) size: 'md' | 'lg' = 'md';
@@ -293,7 +302,10 @@ export class CgTagInput extends LitElement {
   }
 
   private _handleKeydown(e: KeyboardEvent): void {
-    if (e.key === 'Enter' || e.key === this.delimiter) {
+    if (e.key === 'Enter' && this._inputValue.trim() === '') {
+      // Nothing to add: Enter submits the form, as in a native text field.
+      handleImplicitSubmit(e, this._internals);
+    } else if (e.key === 'Enter' || e.key === this.delimiter) {
       e.preventDefault();
       this._addTag(this._inputValue);
     } else if (e.key === 'Backspace' && this._inputValue === '' && this.value.length > 0) {
@@ -334,7 +346,7 @@ export class CgTagInput extends LitElement {
           type="text"
           .value=${this._inputValue}
           placeholder=${this.value.length === 0 ? this.placeholder : ''}
-          ?disabled=${this.disabled}
+          ?disabled=${this._effectivelyDisabled}
           aria-label=${this.label || this.placeholder || nothing}
           aria-invalid=${this.error ? 'true' : 'false'}
           aria-describedby=${this.helper ? 'helper' : nothing}

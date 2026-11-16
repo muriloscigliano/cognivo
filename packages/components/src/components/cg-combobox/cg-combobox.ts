@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -26,6 +27,9 @@ export interface ComboOption {
 @customElement('cg-combobox')
 export class CgCombobox extends LitElement {
   static formAssociated = true;
+  /** Enter here submits the owning form per HTML implicit submission, and the
+   *  field counts as one that blocks it (see utils/implicit-submit). */
+  static blocksImplicitSubmission = true;
 
   static override styles = [hostBlock, reducedMotion, css`
     :host {
@@ -218,6 +222,11 @@ export class CgCombobox extends LitElement {
   @property({ type: Boolean }) searchable = true;
   @property({ type: Boolean }) clearable = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean }) loading = false;
   @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property({ type: Boolean, reflect: true }) open = false;
@@ -332,6 +341,8 @@ export class CgCombobox extends LitElement {
       if (this.open && filtered[this._activeIndex]) {
         e.preventDefault();
         this._selectOption(filtered[this._activeIndex]!);
+      } else {
+        handleImplicitSubmit(e, this._internals);
       }
     } else if (e.key === 'Escape') {
       this.open = false;
@@ -339,7 +350,7 @@ export class CgCombobox extends LitElement {
   }
 
   private _onWrapperClick(): void {
-    if (this.disabled) return;
+    if (this._effectivelyDisabled) return;
     this._input?.focus();
     this.open = true;
   }
@@ -371,7 +382,7 @@ export class CgCombobox extends LitElement {
           aria-controls="combobox-listbox"
           aria-haspopup="listbox"
           aria-activedescendant=${this.open && this._activeIndex >= 0 ? `combobox-opt-${this._activeIndex}` : nothing}
-          ?disabled=${this.disabled}
+          ?disabled=${this._effectivelyDisabled}
           .value=${this.multiple ? this._query : (typeof this.value === 'string' ? (this._query || this._labelFor(this.value)) : this._query)}
           placeholder=${this.placeholder}
           @input=${this._onInput}

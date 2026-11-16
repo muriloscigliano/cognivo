@@ -1,5 +1,5 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 
@@ -161,6 +161,11 @@ export class CgSwitch extends LitElement {
   @property({ attribute: 'aria-label' }) override ariaLabel: string | null = null;
   @property({ type: Boolean }) checked = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;
   @property({ type: Boolean, reflect: true }) loading = false;
@@ -181,13 +186,8 @@ export class CgSwitch extends LitElement {
     this.checked = state === 'on';
   }
 
-  /** Native form semantics: a disabled <fieldset> disables the switch. */
-  formDisabledCallback(disabled: boolean) {
-    this.disabled = disabled;
-  }
-
   private _toggle() {
-    if (this.disabled || this.loading) return;
+    if (this._effectivelyDisabled || this.loading) return;
     this.checked = !this.checked;
     this.dispatchEvent(new CustomEvent('cg-change', {
       detail: { checked: this.checked },
@@ -198,11 +198,11 @@ export class CgSwitch extends LitElement {
   override render() {
     return html`
       <label
-        tabindex=${this.disabled ? '-1' : '0'}
+        tabindex=${this._effectivelyDisabled ? '-1' : '0'}
         role="switch"
         aria-label=${!this.label && this.ariaLabel ? this.ariaLabel : nothing}
         aria-checked=${String(this.checked)}
-        aria-disabled=${String(this.disabled)}
+        aria-disabled=${String(this._effectivelyDisabled)}
         aria-invalid=${this.error ? 'true' : 'false'}
         aria-busy=${this.loading ? 'true' : 'false'}
         @click=${this._toggle}

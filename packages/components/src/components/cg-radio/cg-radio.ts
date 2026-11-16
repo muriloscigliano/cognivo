@@ -1,5 +1,5 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { setValueMissing, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
@@ -198,6 +198,11 @@ export class CgRadio extends LitElement {
   @property() value = '';
   @property({ type: Boolean }) checked = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;
   @property({ type: Boolean, reflect: true }) loading = false;
@@ -238,7 +243,7 @@ export class CgRadio extends LitElement {
   }
 
   private _select() {
-    if (this.disabled || this.loading || this.checked) return;
+    if (this._effectivelyDisabled || this.loading || this.checked) return;
     this.checked = true;
     this.dispatchEvent(new CustomEvent('cg-change', {
       detail: { value: this.value, checked: true },
@@ -261,11 +266,11 @@ export class CgRadio extends LitElement {
   override render() {
     return html`
       <label
-        tabindex=${this.disabled ? '-1' : String(this.groupTabIndex)}
+        tabindex=${this._effectivelyDisabled ? '-1' : String(this.groupTabIndex)}
         role="radio"
         aria-label=${!this.label && this.ariaLabel ? this.ariaLabel : nothing}
         aria-checked=${String(this.checked)}
-        aria-disabled=${String(this.disabled)}
+        aria-disabled=${String(this._effectivelyDisabled)}
         aria-required=${this.required ? 'true' : 'false'}
         aria-busy=${this.loading ? 'true' : 'false'}
         @click=${this._select}

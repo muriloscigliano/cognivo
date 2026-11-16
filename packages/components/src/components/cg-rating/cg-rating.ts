@@ -104,6 +104,11 @@ export class CgRating extends LitElement {
   @property({ type: Number }) precision: 0.5 | 1 = 1;
   @property({ type: Boolean, reflect: true }) readonly = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
 
@@ -128,7 +133,7 @@ export class CgRating extends LitElement {
   }
 
   private _handleClick(starIndex: number, e: MouseEvent): void {
-    if (this.readonly || this.disabled) return;
+    if (this.readonly || this._effectivelyDisabled) return;
     let newValue = starIndex + 1;
     if (this.precision === 0.5) {
       const target = e.currentTarget as HTMLElement;
@@ -147,7 +152,7 @@ export class CgRating extends LitElement {
   }
 
   private _handleMouseMove(starIndex: number, e: MouseEvent): void {
-    if (this.readonly || this.disabled) return;
+    if (this.readonly || this._effectivelyDisabled) return;
     if (this.precision === 0.5) {
       const target = e.currentTarget as HTMLElement;
       const rect = target.getBoundingClientRect();
@@ -163,7 +168,7 @@ export class CgRating extends LitElement {
   }
 
   private _handleKeydown(e: KeyboardEvent): void {
-    if (this.readonly || this.disabled) return;
+    if (this.readonly || this._effectivelyDisabled) return;
     const step = this.precision;
     let newValue = this.value;
     if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
@@ -197,13 +202,13 @@ export class CgRating extends LitElement {
       <div
         class="rating"
         role="slider"
-        tabindex=${this.disabled ? '-1' : '0'}
+        tabindex=${this._effectivelyDisabled ? '-1' : '0'}
         aria-label=${this.i18n.t('label')}
         aria-valuenow=${this.value}
         aria-valuemin="0"
         aria-valuemax=${this.max}
         aria-valuetext=${`${this.value} of ${this.max} stars`}
-        aria-disabled=${this.disabled ? 'true' : nothing}
+        aria-disabled=${this._effectivelyDisabled ? 'true' : nothing}
         aria-readonly=${this.readonly ? 'true' : nothing}
         @keydown=${this._handleKeydown}
         @mouseleave=${this._handleMouseLeave}

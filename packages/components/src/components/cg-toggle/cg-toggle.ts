@@ -1,5 +1,5 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 
@@ -177,6 +177,11 @@ export class CgToggle extends LitElement {
 
   @property({ type: Boolean, reflect: true }) pressed = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ reflect: true }) variant: 'ghost' | 'outline' | 'solid' = 'ghost';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
@@ -193,7 +198,7 @@ export class CgToggle extends LitElement {
   }
 
   private _toggle(): void {
-    if (this.disabled) return;
+    if (this._effectivelyDisabled) return;
     this.pressed = !this.pressed;
     this.dispatchEvent(new CustomEvent('cg-toggle-change', {
       detail: { pressed: this.pressed, value: this.value },
@@ -208,7 +213,7 @@ export class CgToggle extends LitElement {
         type="button"
         aria-label=${this.label || nothing}
         aria-pressed=${this.pressed ? 'true' : 'false'}
-        ?disabled=${this.disabled}
+        ?disabled=${this._effectivelyDisabled}
         @click=${this._toggle}
       >
         <slot></slot>

@@ -396,6 +396,11 @@ export class CgFileInput extends LitElement {
   @property({ type: Number, attribute: 'max-size' }) maxSize = 0;
   @property({ type: Number, attribute: 'max-files' }) maxFiles = 0;
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
@@ -587,7 +592,7 @@ export class CgFileInput extends LitElement {
   }
 
   private _handlePaste = (e: ClipboardEvent) => {
-    if (!this.paste || this.disabled) return;
+    if (!this.paste || this._effectivelyDisabled) return;
     // Don't hijack paste when the user is typing in an editable element.
     const active = document.activeElement as HTMLElement | null;
     const inEditable =
@@ -629,13 +634,13 @@ export class CgFileInput extends LitElement {
     e.preventDefault();
     this._dragging = false;
     this._dragCounter = 0;
-    if (this.disabled) return;
+    if (this._effectivelyDisabled) return;
     this._addFiles(e.dataTransfer?.files ?? null);
   }
 
   private _handleDragEnter(e: DragEvent): void {
     e.preventDefault();
-    if (this.disabled) return;
+    if (this._effectivelyDisabled) return;
     this._dragCounter++;
     this._dragging = true;
   }
@@ -650,12 +655,12 @@ export class CgFileInput extends LitElement {
   }
 
   private _handleClick(): void {
-    if (this.disabled) return;
+    if (this._effectivelyDisabled) return;
     this._inputEl?.click();
   }
 
   private _handleKeydown(e: KeyboardEvent): void {
-    if (this.disabled) return;
+    if (this._effectivelyDisabled) return;
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       this._inputEl?.click();
@@ -698,8 +703,8 @@ export class CgFileInput extends LitElement {
       return html`
         <button
           type="button"
-          class="compact ${this._dragging ? 'dragging' : ''} ${this.disabled ? 'disabled' : ''}"
-          ?disabled=${this.disabled}
+          class="compact ${this._dragging ? 'dragging' : ''} ${this._effectivelyDisabled ? 'disabled' : ''}"
+          ?disabled=${this._effectivelyDisabled}
           @click=${this._handleClick}
           @drop=${this._handleDrop}
           @dragenter=${this._handleDragEnter}
@@ -718,11 +723,11 @@ export class CgFileInput extends LitElement {
     }
     return html`
       <div
-        class="dropzone ${this._dragging ? 'dragging' : ''} ${this.disabled ? 'disabled' : ''}"
+        class="dropzone ${this._dragging ? 'dragging' : ''} ${this._effectivelyDisabled ? 'disabled' : ''}"
         role="button"
-        tabindex=${this.disabled ? '-1' : '0'}
+        tabindex=${this._effectivelyDisabled ? '-1' : '0'}
         aria-label=${this.label || this.i18n.t('label')}
-        aria-disabled=${this.disabled ? 'true' : 'false'}
+        aria-disabled=${this._effectivelyDisabled ? 'true' : 'false'}
         @click=${this._handleClick}
         @keydown=${this._handleKeydown}
         @drop=${this._handleDrop}
@@ -756,7 +761,7 @@ export class CgFileInput extends LitElement {
         accept=${this.accept}
         capture=${this.capture || nothing}
         ?multiple=${this.multiple}
-        ?disabled=${this.disabled}
+        ?disabled=${this._effectivelyDisabled}
         @change=${this._handleChange}
       />
       ${fileCount >= 2 ? html`

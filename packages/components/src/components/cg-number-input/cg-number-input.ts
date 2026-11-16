@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
 import { setValueMissing, type ValidationMessages } from '../../utils/validation.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
@@ -19,6 +20,9 @@ const MESSAGES = defineMessages('cg-number-input', {
 @customElement('cg-number-input')
 export class CgNumberInput extends LitElement {
   static formAssociated = true;
+  /** Enter here submits the owning form per HTML implicit submission, and the
+   *  field counts as one that blocks it (see utils/implicit-submit). */
+  static blocksImplicitSubmission = true;
   private _internals: ElementInternals | undefined;
 
   constructor() {
@@ -152,6 +156,11 @@ export class CgNumberInput extends LitElement {
   @property({ type: Number }) step = 1;
   @property() label = '';
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;
   @property({ type: Boolean, reflect: true }) loading = false;
@@ -222,7 +231,7 @@ export class CgNumberInput extends LitElement {
     const repeat = () => {
       const before = this.value;
       action();
-      if (this.disabled || this.value === before) return; // boundary reached — stop
+      if (this._effectivelyDisabled || this.value === before) return; // boundary reached — stop
       delay = Math.max(60, delay * 0.8);
       this._repeatTimer = window.setTimeout(repeat, delay);
     };
@@ -244,7 +253,7 @@ export class CgNumberInput extends LitElement {
   private _onKeyDown(e: KeyboardEvent) {
     if (e.key === 'ArrowUp') { e.preventDefault(); this._increment(); }
     else if (e.key === 'ArrowDown') { e.preventDefault(); this._decrement(); }
-    else if (e.key === 'Enter') { this._commitInput(); }
+    else if (e.key === 'Enter') { this._commitInput(); handleImplicitSubmit(e, this._internals); }
     else if (e.key === 'Home' && Number.isFinite(this.min)) { e.preventDefault(); this._setValue(this.min); }
     else if (e.key === 'End' && Number.isFinite(this.max)) { e.preventDefault(); this._setValue(this.max); }
   }
@@ -256,9 +265,9 @@ export class CgNumberInput extends LitElement {
     const atMax = this.value >= this.max;
     return html`
       ${this.label ? html`<span class="label">${this.label}</span>` : nothing}
-      <div class="wrapper ${this._focused ? 'focused' : ''} ${this.disabled ? 'disabled' : ''}">
+      <div class="wrapper ${this._focused ? 'focused' : ''} ${this._effectivelyDisabled ? 'disabled' : ''}">
         <button class="btn" aria-label=${this.i18n.t('decrease')}
-          ?disabled=${this.disabled || atMin}
+          ?disabled=${this._effectivelyDisabled || atMin}
           @click=${(e: MouseEvent) => { if (e.detail === 0) this._decrement(); }}
           @mousedown=${() => this._startRepeat(() => this._decrement())}
           @mouseup=${this._stopRepeat} @mouseleave=${this._stopRepeat}
@@ -277,14 +286,14 @@ export class CgNumberInput extends LitElement {
           aria-invalid=${this.error ? 'true' : 'false'}
           aria-busy=${this.loading ? 'true' : 'false'}
           .value=${String(this.value)}
-          ?disabled=${this.disabled}
+          ?disabled=${this._effectivelyDisabled}
           ?readonly=${this.loading}
           @input=${this._onInput}
           @keydown=${this._onKeyDown}
           @focus=${() => { this._focused = true; }}
           @blur=${() => { this._focused = false; this._commitInput(); }} />
         <button class="btn" aria-label=${this.i18n.t('increase')}
-          ?disabled=${this.disabled || atMax}
+          ?disabled=${this._effectivelyDisabled || atMax}
           @click=${(e: MouseEvent) => { if (e.detail === 0) this._increment(); }}
           @mousedown=${() => this._startRepeat(() => this._increment())}
           @mouseup=${this._stopRepeat} @mouseleave=${this._stopRepeat}

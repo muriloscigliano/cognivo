@@ -193,6 +193,11 @@ export class CgSelect extends LitElement {
   @property() placeholder?: string;
   @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property({ type: Boolean }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;
   @property({ type: Boolean, reflect: true }) loading = false;
@@ -240,7 +245,7 @@ export class CgSelect extends LitElement {
   }
 
   private _toggle() {
-    if (this.disabled || this.loading) return;
+    if (this._effectivelyDisabled || this.loading) return;
     if (this._open) {
       this._close();
       return;
@@ -332,8 +337,8 @@ export class CgSelect extends LitElement {
     return html`
       ${this.label ? html`<span class="label" id="select-label">${this.label}</span>` : nothing}
       <div
-        class="trigger ${this._open ? 'open' : ''} ${this.disabled ? 'disabled' : ''}"
-        tabindex=${this.disabled ? '-1' : '0'}
+        class="trigger ${this._open ? 'open' : ''} ${this._effectivelyDisabled ? 'disabled' : ''}"
+        tabindex=${this._effectivelyDisabled ? '-1' : '0'}
         role="combobox"
         aria-expanded=${this._open}
         aria-haspopup="listbox"

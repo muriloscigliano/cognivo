@@ -180,6 +180,10 @@ export class CgCalendar extends LitElement {
   @property() min = '';
   @property() max = '';
   @property({ type: Number, attribute: 'week-starts-on' }) weekStartsOn: 0 | 1 = 0;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own `disabled`
+   *  attribute (formDisabledCallback): every day and month button is disabled. */
+  @state() private _formDisabled = false;
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
 
   @state() private _displayYear = new Date().getFullYear();
@@ -251,6 +255,7 @@ export class CgCalendar extends LitElement {
   }
 
   private _isDisabled(date: Date): boolean {
+    if (this._formDisabled) return true;
     if (this.min) {
       const min = this._parseDate(this.min);
       if (min && date < min) return true;
@@ -262,8 +267,9 @@ export class CgCalendar extends LitElement {
     return false;
   }
 
-  /** True when the entire previous month is before `min` (nothing to show). */
+  /** True when the entire previous month is before `min` (nothing to show), or the calendar is fieldset-disabled. */
   private _isPrevMonthOutOfBounds(): boolean {
+    if (this._formDisabled) return true;
     if (!this.min) return false;
     const min = this._parseDate(this.min);
     if (!min) return false;
@@ -271,8 +277,9 @@ export class CgCalendar extends LitElement {
     return lastDayPrev < min;
   }
 
-  /** True when the entire next month is after `max` (nothing to show). */
+  /** True when the entire next month is after `max` (nothing to show), or the calendar is fieldset-disabled. */
   private _isNextMonthOutOfBounds(): boolean {
+    if (this._formDisabled) return true;
     if (!this.max) return false;
     const max = this._parseDate(this.max);
     if (!max) return false;

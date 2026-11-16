@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
 import { messageFor, setValueMissing, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
@@ -164,6 +165,9 @@ export class CgPasswordInput extends LitElement {
   `];
 
   static formAssociated = true;
+  /** Enter here submits the owning form per HTML implicit submission, and the
+   *  field counts as one that blocks it (see utils/implicit-submit). */
+  static blocksImplicitSubmission = true;
   private _internals?: ElementInternals;
 
   constructor() {
@@ -184,6 +188,11 @@ export class CgPasswordInput extends LitElement {
   @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
   @property({ type: Boolean, reflect: true }) required = false;
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;
   @property({ type: Boolean, attribute: 'show-strength' }) showStrength = false;
@@ -265,18 +274,19 @@ export class CgPasswordInput extends LitElement {
             .value=${this.value}
             placeholder=${this.placeholder}
             name=${this.name}
-            ?disabled=${this.disabled}
+            ?disabled=${this._effectivelyDisabled}
             ?required=${this.required}
             aria-label=${this.label ? nothing : (this.placeholder || this.i18n.t('label'))}
             aria-describedby=${this.helper ? 'helper' : nothing}
             aria-invalid=${this.error ? 'true' : 'false'}
             aria-required=${this.required ? 'true' : 'false'}
             @input=${this._handleInput}
+            @keydown=${(e: KeyboardEvent) => handleImplicitSubmit(e, this._internals)}
           />
           <button
             type="button"
             class="toggle"
-            ?disabled=${this.disabled}
+            ?disabled=${this._effectivelyDisabled}
             aria-label=${this.i18n.t(this._visible ? 'hide' : 'show')}
             @click=${this._toggleVisibility}
           >

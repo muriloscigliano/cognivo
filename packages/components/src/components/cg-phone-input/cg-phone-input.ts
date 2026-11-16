@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
 import { setValueMissing, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { bindOutsideClick } from '../../utils/outside-click.js';
@@ -54,6 +55,9 @@ const MESSAGES = defineMessages('cg-phone-input', {
 @customElement('cg-phone-input')
 export class CgPhoneInput extends LitElement {
   static formAssociated = true;
+  /** Enter here submits the owning form per HTML implicit submission, and the
+   *  field counts as one that blocks it (see utils/implicit-submit). */
+  static blocksImplicitSubmission = true;
   private _internals?: ElementInternals;
 
   constructor() {
@@ -417,6 +421,11 @@ export class CgPhoneInput extends LitElement {
   @property({ reflect: true }) size: 'md' | 'lg' = 'md';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean }) readonly = false;
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;
@@ -624,7 +633,7 @@ export class CgPhoneInput extends LitElement {
 
   private _toggleOpen(e: Event): void {
     e.stopPropagation();
-    if (this.disabled || this.readonly) return;
+    if (this._effectivelyDisabled || this.readonly) return;
     this.open = !this.open;
   }
 
@@ -689,6 +698,8 @@ export class CgPhoneInput extends LitElement {
     if (e.key === 'ArrowDown' && (e.altKey || e.metaKey)) {
       e.preventDefault();
       this.open = true;
+    } else {
+      handleImplicitSubmit(e, this._internals);
     }
   }
 
@@ -728,7 +739,7 @@ export class CgPhoneInput extends LitElement {
     const wrapperClasses = [
       'wrapper',
       this._focused ? 'focused' : '',
-      this.disabled ? 'disabled' : '',
+      this._effectivelyDisabled ? 'disabled' : '',
       this.readonly ? 'readonly' : '',
     ].filter(Boolean).join(' ');
     const fieldClasses = [
@@ -754,7 +765,7 @@ export class CgPhoneInput extends LitElement {
           aria-expanded=${this.open ? 'true' : 'false'}
           aria-controls="cg-phone-popover"
           aria-label=${triggerLabel}
-          ?disabled=${this.disabled || this.readonly || this.loading}
+          ?disabled=${this._effectivelyDisabled || this.readonly || this.loading}
           @click=${this._toggleOpen}
           @keydown=${(e: KeyboardEvent) => {
             if (e.key === 'ArrowDown') {
@@ -784,7 +795,7 @@ export class CgPhoneInput extends LitElement {
             name=${this.name || nothing}
             placeholder=${placeholder}
             aria-label=${this.label || nothing}
-            ?disabled=${this.disabled || this.loading}
+            ?disabled=${this._effectivelyDisabled || this.loading}
             ?readonly=${this.readonly}
             aria-invalid=${this.error ? 'true' : 'false'}
             aria-required=${this.required ? 'true' : 'false'}

@@ -1,6 +1,7 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
 import { mirrorValidity, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
@@ -34,6 +35,9 @@ const MESSAGES = defineMessages('cg-input', {
 @customElement('cg-input')
 export class CgInput extends LitElement {
   static formAssociated = true;
+  /** Enter here submits the owning form per HTML implicit submission, and the
+   *  field counts as one that blocks it (see utils/implicit-submit). */
+  static blocksImplicitSubmission = true;
   private _internals: ElementInternals | undefined;
 
   constructor() {
@@ -320,6 +324,11 @@ export class CgInput extends LitElement {
   @property({ reflect: true }) size: 'md' | 'lg' = 'md';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   @property({ type: Boolean, reflect: true }) disabled = false;
+  /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
+   *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
+  @state() private _formDisabled = false;
+  private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean }) readonly = false;
   @property({ type: Boolean, reflect: true }) error = false;
   @property({ type: Boolean, reflect: true }) success = false;
@@ -382,11 +391,7 @@ export class CgInput extends LitElement {
    *  does for a native <input> (the real input lives in our shadow root, so
    *  the browser cannot do this for us). */
   private _handleKeydown(e: KeyboardEvent) {
-    if (e.key !== 'Enter' || e.isComposing) return;
-    const form = this._internals?.form;
-    if (!form) return;
-    e.preventDefault();
-    HTMLFormElement.prototype.requestSubmit.call(form);
+    handleImplicitSubmit(e, this._internals);
   }
 
   private _handleFocus() { this._focused = true; }
@@ -404,7 +409,7 @@ export class CgInput extends LitElement {
     const wrapperClasses = [
       'wrapper',
       this._focused ? 'focused' : '',
-      this.disabled ? 'disabled' : '',
+      this._effectivelyDisabled ? 'disabled' : '',
       this.readonly ? 'readonly' : '',
     ].filter(Boolean).join(' ');
 
@@ -423,7 +428,7 @@ export class CgInput extends LitElement {
             type=${this.type}
             name=${this.name || nothing}
             placeholder=${this.placeholder || (this.label ? ' ' : nothing)}
-            ?disabled=${this.disabled || this.loading}
+            ?disabled=${this._effectivelyDisabled || this.loading}
             ?readonly=${this.readonly}
             ?required=${this.required}
             maxlength=${this.maxlength || nothing}
