@@ -32,22 +32,30 @@ export interface DropdownItem {
  *   position="bottom-start"
  *   .items=${[{id:'edit',label:'Edit'},{id:'delete',label:'Delete'}]}
  * >
- *   <cg-button slot="trigger">Actions <cg-icon slot="suffix" name="chevron-down" size="sm"></cg-icon></cg-button>
+ *   <cg-button slot="trigger" variant="secondary">Actions <cg-icon slot="suffix" name="chevron-down" size="sm"></cg-icon></cg-button>
  * </cg-dropdown>
+ * <!-- or a native button; an icon-only trigger names the menu with its aria-label -->
+ * <cg-dropdown .items=${items}><button slot="trigger" aria-label="Row actions">⋯</button></cg-dropdown>
  * ```
  *
- * @slot trigger - The element that toggles the dropdown on click. Slot a
- *   native `<button>` (or an element with `role="button"`): it receives
- *   `aria-haspopup="menu"` and `aria-expanded`. (No `aria-controls`: an id
- *   cannot point into the shadow root, Chromium drops `ariaControlsElements`
- *   across it, and the menu-button pattern does not require it — focus moves
- *   into the menu when it opens.)
+ * @slot trigger - The element that toggles the dropdown on click: a
+ *   `<cg-button>`, a native `<button>`, or an element with `role="button"`
+ *   (or a wrapper holding one). The button gets `aria-haspopup="menu"` and
+ *   `aria-expanded` — on a cg-button, through its `expanded` property, so
+ *   they land on its inner `<button>`. Anything else warns in
+ *   development. The attributes are removed when the trigger leaves the slot
+ *   or the dropdown is removed. (No `aria-controls`: an id cannot point into
+ *   the shadow root, Chromium drops `ariaControlsElements` across it, and the
+ *   menu-button pattern does not require it — focus moves into the menu when
+ *   it opens.)
  *
  * Keyboard (WAI-ARIA menu button): Enter / Space / ArrowDown on the trigger
  * open with focus on the first item, ArrowUp on the last; in the menu
  * ArrowUp / ArrowDown / Home / End move, a printable key jumps to the next
  * item starting with it, Enter / Space choose, Escape closes and returns
- * focus to the trigger, Tab closes.
+ * focus to the trigger, Tab / Shift+Tab close and move on from the trigger.
+ * Closing in code (`open = false`) while focus is in the menu returns focus
+ * to the trigger.
  *
  * @fires {CustomEvent} cg-dropdown-open - When the menu opens
  * @fires {CustomEvent} cg-dropdown-close - When the menu closes
@@ -153,7 +161,8 @@ export class CgDropdown extends LitElement {
   @property({ type: Boolean, reflect: true }) loading = false;
   /** Full width: the element is a block and the slotted trigger spans it. */
   @property({ type: Boolean, reflect: true }) block = false;
-  /** Accessible name of the menu. Default: the trigger's text, then "Dropdown menu". */
+  /** Accessible name of the menu. Default: the trigger's aria-label /
+   *  aria-labelledby / label, then its text, then "Dropdown menu". */
   @property() label = '';
 
   @state() private _activeIndex = -1;
@@ -164,22 +173,71 @@ export class CgDropdown extends LitElement {
   private _typeahead = '';
   private _typeaheadAt = 0;
 
+  /** The trigger that carries the popup state now (removed from it on unslot / disconnect). */
+  private _trigger: HTMLElement | null = null;
+
   private _slottedTrigger(): HTMLElement | null {
     const slot = this.shadowRoot?.querySelector<HTMLSlotElement>('slot[name="trigger"]');
     return (slot?.assignedElements()[0] as HTMLElement | undefined) ?? null;
   }
 
-  /** ARIA popup state lives on the slotted trigger — a role-less wrapper div
+  /** The button inside the trigger slot: the slotted element itself when it
+   *  is a button (native, `role="button"`, or a cg-button), else the first
+   *  one inside a wrapper. */
+  private _triggerButton(): HTMLElement | null {
+    const el = this._slottedTrigger();
+    if (!el) return null;
+    const BUTTON = 'button, [role="button"], cg-button';
+    return el.matches(BUTTON) ? el : el.querySelector<HTMLElement>(BUTTON);
+  }
+
+  private static _setPopupState(el: HTMLElement, expanded: string | null): void {
+    if (el.localName === 'cg-button') {
+      // Forwarded to its inner <button> as aria-haspopup="menu" + aria-expanded (the host has no role).
+      (el as HTMLElement & { expanded: string }).expanded = expanded ?? '';
+    } else if (expanded === null) {
+      el.removeAttribute('aria-haspopup');
+      el.removeAttribute('aria-expanded');
+    } else {
+      el.setAttribute('aria-haspopup', 'menu');
+      el.setAttribute('aria-expanded', expanded);
+    }
+  }
+
+  /** ARIA popup state lives on the trigger's button — a role-less wrapper div
    *  is invisible to assistive tech (and fails axe `aria-allowed-attr`). */
   private _syncTrigger(): void {
-    const el = this._slottedTrigger();
-    el?.setAttribute('aria-haspopup', 'menu');
-    el?.setAttribute('aria-expanded', String(this.open));
+    const el = this._triggerButton();
+    if (this._trigger && this._trigger !== el) CgDropdown._setPopupState(this._trigger, null);
+    this._trigger = el;
+    if (el) CgDropdown._setPopupState(el, String(this.open));
+    const slotted = this._slottedTrigger();
+    if (slotted && !el && (typeof process === 'undefined' || process.env.NODE_ENV !== 'production')) {
+      console.warn(
+        '[cg-dropdown] the trigger is not a button: slot a <cg-button>, a <button> or an element with role="button", ' +
+        'so assistive tech hears the menu button and its expanded state.',
+      );
+    }
+    this.requestUpdate(); // the menu's name follows the trigger
+  }
+
+  /** The menu's name: `label`, else the trigger's own name, else its text. */
+  private _menuName(): string {
+    if (this.label) return this.label;
+    const el = this._trigger ?? this._slottedTrigger();
+    const own = el?.getAttribute('aria-label')
+      || el?.getAttribute('aria-labelledby')?.split(/\s+/)
+        .map((id) => (el.getRootNode() as Document).getElementById?.(id)?.textContent?.trim() ?? '')
+        .filter(Boolean).join(' ')
+      || (el as { label?: unknown } | null)?.label;
+    return (typeof own === 'string' && own) || el?.textContent?.trim() || this.i18n.t('label');
   }
 
   override updated(changed: Map<string, unknown>) {
-    if (changed.has('open')) this._syncTrigger();
+    if (changed.has('open') && this._trigger) CgDropdown._setPopupState(this._trigger, String(this.open));
     if (changed.has('open') && !this.open && changed.get('open') === true) {
+      // Closed in code while focus was in the menu: focus would vanish with it.
+      if (this._menu?.contains(this.shadowRoot!.activeElement)) this._focusTrigger();
       this._closing = true;
       setTimeout(() => { this._closing = false; }, 100);
     }
@@ -192,10 +250,18 @@ export class CgDropdown extends LitElement {
     }
   }
 
+  override connectedCallback() {
+    super.connectedCallback();
+    // Reconnected (moved): the slot has not changed, so no slotchange restores the state.
+    if (this.hasUpdated) this._syncTrigger();
+  }
+
   override disconnectedCallback() {
     super.disconnectedCallback();
     this._disposeOutsideClick?.();
     this._disposeOutsideClick = null;
+    if (this._trigger) CgDropdown._setPopupState(this._trigger, null);
+    this._trigger = null;
   }
 
   private _toggle() {
@@ -274,6 +340,8 @@ export class CgDropdown extends LitElement {
     }
 
     if (e.key === 'Tab') {
+      // From the trigger, the browser's own Tab / Shift+Tab moves on past the dropdown.
+      this._focusTriggerNow();
       this._close();
       return;
     }
@@ -314,17 +382,17 @@ export class CgDropdown extends LitElement {
   }
 
   private _focusTrigger() {
-    this.updateComplete.then(() => {
-      const slot = this.shadowRoot?.querySelector('slot[name="trigger"]') as HTMLSlotElement;
-      const assigned = slot?.assignedElements?.() ?? [];
-      const focusable = assigned.find(el => (el as HTMLElement).focus) as HTMLElement | undefined;
-      if (focusable) {
-        focusable.focus();
-      } else {
-        const trigger = this.shadowRoot?.querySelector('.trigger') as HTMLElement;
-        trigger?.focus();
-      }
-    });
+    this.updateComplete.then(() => this._focusTriggerNow());
+  }
+
+  /** Focus the slotted trigger, or the first focusable element inside a
+   *  non-focusable wrapper. */
+  private _focusTriggerNow() {
+    const el = this._slottedTrigger();
+    if (!el) return;
+    el.focus();
+    if (el.matches(':focus-within')) return;
+    el.querySelector<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"]), cg-button')?.focus();
   }
 
   override render() {
@@ -339,7 +407,7 @@ export class CgDropdown extends LitElement {
       <div
         class="menu ${this._closing ? 'closing' : ''}"
         role="menu"
-        aria-label=${this.label || this._slottedTrigger()?.textContent?.trim() || this.i18n.t('label')}
+        aria-label=${this._menuName()}
         aria-busy=${this.loading ? 'true' : nothing}
         @keydown="${this._handleKeydown}"
       >

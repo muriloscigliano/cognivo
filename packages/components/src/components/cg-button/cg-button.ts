@@ -236,6 +236,9 @@ export class CgButton extends LitElement {
   /** Link mode: the `<a>`'s `download`: a file name, or `''` (a bare
    *  `download` attribute) to let the browser name it; `null` for none. */
   @property() download: string | null = null;
+  /** Menu button (set by cg-dropdown): `"true"` / `"false"` makes the inner
+   *  button `aria-haspopup="menu"` with that `aria-expanded`; `""` for neither. */
+  @property() expanded: '' | 'true' | 'false' = '';
 
   /** Disabled by an ancestor `<fieldset disabled>` (or the own attribute). */
   @state() private _formDisabled = false;
@@ -271,7 +274,7 @@ export class CgButton extends LitElement {
       const inactive = this.disabled || this._formDisabled || this.loading || !isSafeHref(this.href);
       return html`<a part="button" class="btn" href=${inactive ? nothing : this.href} role=${inactive ? 'link' : nothing} aria-disabled=${inactive ? 'true' : nothing} aria-busy=${this.loading ? 'true' : nothing} aria-label=${this.label || nothing} target=${this.target || nothing} rel=${this.rel || (this.target === '_blank' ? 'noopener noreferrer' : nothing)} download=${this.download ?? nothing}>${content}</a>`;
     }
-    return html`<button part="button" class="btn" type="button" ?disabled=${this.disabled || this._formDisabled || this.loading} aria-busy=${this.loading ? 'true' : 'false'} aria-label=${this.label || nothing}>${content}</button>`;
+    return html`<button part="button" class="btn" type="button" ?disabled=${this.disabled || this._formDisabled || this.loading} aria-busy=${this.loading ? 'true' : 'false'} aria-label=${this.label || nothing} aria-haspopup=${this.expanded ? 'menu' : nothing} aria-expanded=${this.expanded || nothing}>${content}</button>`;
   }
 }
 
