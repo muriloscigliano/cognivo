@@ -13,8 +13,11 @@ const TOKENS_CSS = resolve(__dirname, '..', '..', '..', '..', 'tokens', 'dist', 
 
 async function open(body: string): Promise<Page> {
   const page = await openPage(['cg-button'], body);
+  // Tokens arrive after the first render: compare end states, not colour transitions.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.addStyleTag({ path: TOKENS_CSS });
   await settle(page);
+  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 20))));
   return page;
 }
 
