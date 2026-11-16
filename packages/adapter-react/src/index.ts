@@ -115,7 +115,7 @@ export { CgInput } from './components/CgInput.js';
 export type { CgInputProps } from './components/CgInput.js';
 
 export { CgTextarea } from './components/CgTextarea.js';
-export type { CgTextareaProps } from './components/CgTextarea.js';
+export type { CgTextareaProps, CgTextareaElement } from './components/CgTextarea.js';
 
 export { CgSelect } from './components/CgSelect.js';
 export type { CgSelectProps, CgSelectOption } from './components/CgSelect.js';

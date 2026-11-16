@@ -249,6 +249,56 @@ export class CgTextarea extends LitElement {
   checkValidity(): boolean { return this._internals?.checkValidity() ?? true; }
   reportValidity(): boolean { return this._internals?.reportValidity() ?? true; }
 
+  /* ── Selection API (passthrough to the inner <textarea>), e.g. to insert a
+     variable at the cursor:
+       ta.setRangeText('{{first_name}}', ta.selectionStart, ta.selectionEnd, 'end'); ta.focus();
+     Before the first render there is no selection (null / no-op). ── */
+
+  /** Start of the selection (the caret when nothing is selected). */
+  get selectionStart(): number | null { return this._textarea?.selectionStart ?? null; }
+  set selectionStart(v: number | null) { if (this._textarea) this._textarea.selectionStart = v ?? 0; }
+  /** End of the selection. */
+  get selectionEnd(): number | null { return this._textarea?.selectionEnd ?? null; }
+  set selectionEnd(v: number | null) { if (this._textarea) this._textarea.selectionEnd = v ?? 0; }
+  /** `forward`, `backward` or `none`. */
+  get selectionDirection(): 'forward' | 'backward' | 'none' | null {
+    return (this._textarea?.selectionDirection as 'forward' | 'backward' | 'none' | undefined) ?? null;
+  }
+  set selectionDirection(v: 'forward' | 'backward' | 'none' | null) {
+    if (this._textarea) this._textarea.selectionDirection = v ?? 'none';
+  }
+
+  /** Select a range of the text, like `HTMLTextAreaElement.setSelectionRange`. */
+  setSelectionRange(start: number | null, end: number | null, direction?: 'forward' | 'backward' | 'none'): void {
+    this._textarea?.setSelectionRange(start, end, direction);
+  }
+
+  /** Select all the text. */
+  select(): void { this._textarea?.select(); }
+
+  /**
+   * Replace a range of the text (default: the current selection), like
+   * `HTMLTextAreaElement.setRangeText`. `value` and the form value update;
+   * like the native method, no `input` / `cg-input` event fires.
+   */
+  setRangeText(replacement: string): void;
+  setRangeText(replacement: string, start: number, end: number, selectMode?: SelectionMode): void;
+  setRangeText(replacement: string, start?: number, end?: number, selectMode?: SelectionMode): void {
+    const ta = this._textarea;
+    if (!ta) return;
+    if (start === undefined || end === undefined) ta.setRangeText(replacement);
+    else ta.setRangeText(replacement, start, end, selectMode);
+    // Keep the property (and so the re-render's `.value` binding) in step,
+    // and preserve the selection the native call left.
+    const [s, e, d] = [ta.selectionStart, ta.selectionEnd, ta.selectionDirection];
+    this.value = ta.value;
+    void this.updateComplete.then(() => ta.setSelectionRange(s, e, d));
+  }
+
+  /** Focus the text field (the host itself is not focusable). */
+  override focus(options?: FocusOptions): void { this._textarea?.focus(options); }
+  override blur(): void { this._textarea?.blur(); }
+
   override updated(changed: PropertyValues) {
     super.updated(changed);
     if (changed.has('value')) {

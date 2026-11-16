@@ -1,4 +1,10 @@
+import type { CgTextarea as CgTextareaElementClass } from '@cognivo/components/cg-textarea';
 import { createWrapper } from '../create-wrapper.js';
+
+/** The `<cg-textarea>` element, for a typed `ref`: `useRef<CgTextareaElement>(null)`.
+ *  Has the selection API (`selectionStart`, `selectionEnd`, `setSelectionRange`,
+ *  `setRangeText`, `select`, `focus`), e.g. to insert a variable at the cursor. */
+export type CgTextareaElement = CgTextareaElementClass;
 
 export interface CgTextareaProps {
   /** Current textarea value. */
