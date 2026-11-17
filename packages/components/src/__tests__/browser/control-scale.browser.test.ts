@@ -106,6 +106,21 @@ describe.skipIf(!browserAvailable)('one control scale (real browser)', { timeout
     await page.close();
   });
 
+  it('cg-input type="search": no native (blue) cancel button; the clear button is the grey clearable one', async () => {
+    const page = await open(['cg-input'], '<cg-input id="s" type="search" size="sm" clearable value="quinn" placeholder="Search"></cg-input>');
+    // getComputedStyle cannot read this pseudo-element: check the component's own rule.
+    const r = await page.evaluate(() => {
+      const root = document.getElementById('s')!.shadowRoot!;
+      const rules = root.adoptedStyleSheets.flatMap((sh) => Array.from(sh.cssRules)) as CSSStyleRule[];
+      const cancel = rules.find((x) => x.selectorText?.includes('::-webkit-search-cancel-button'));
+      return { display: cancel?.style.display, clear: !!root.querySelector('.clear') };
+    });
+    expect(r).toEqual({ display: 'none', clear: true });
+    expect(await page.evaluate(() => getComputedStyle(document.getElementById('s')!.shadowRoot!.querySelector('.clear')!).color))
+      .toBe(await token(page, 'color', '--cg-color-input-text-placeholder'));
+    await page.close();
+  });
+
   it('cg-input label-position="floating" keeps the floating label inside the field', async () => {
     const page = await open(['cg-input'], '<cg-input id="f" label="Name" label-position="floating"></cg-input>');
     expect(await page.evaluate(() => {

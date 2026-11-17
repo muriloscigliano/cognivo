@@ -133,7 +133,7 @@ export class CgInput extends LitElement {
     }
     :host([success]) .wrapper.focused {
       border-color: var(--cg-color-status-success-text-default);
-      box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-shadow-focus-success);
+      box-shadow: 0 0 0 3px var(--cg-shadow-focus-success);
     }
 
     /* Disabled */
@@ -171,7 +171,6 @@ export class CgInput extends LitElement {
       color: var(--cg-color-input-text-default);
       min-width: 0;
       padding: var(--cg-spacing-8) 0;
-      z-index: 1;
     }
     :host([size="lg"]) input { font-size: var(--cg-font-size-base); }
 
@@ -190,6 +189,8 @@ export class CgInput extends LitElement {
     }
 
     input:disabled { cursor: not-allowed; }
+    /* type="search": no native cancel button (blue in some browsers); clearable draws the grey one. */
+    input::-webkit-search-cancel-button { display: none; }
 
     /* ── Floating label ── */
     .floating-label {
@@ -272,7 +273,6 @@ export class CgInput extends LitElement {
       flex-shrink: 0;
     }
     .clear:hover { background: var(--cg-color-state-hover); color: var(--cg-color-state-text); }
-    .clear svg { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
 
     /* ── Character count ── */
     .count {
