@@ -269,6 +269,13 @@ export const ptBR: LocaleMessages = {
   'cg-app-shell': {
     menu: 'Menu',
   },
+  'cg-timeline': {
+    moved: '{label} movido para a posição {position} de {total}',
+  },
+  'cg-timeline-item': {
+    reorder: 'Reordenar {label}',
+    instructions: 'Use as setas para cima e para baixo para mover esta etapa.',
+  },
   'cg-pagination': {
     label: 'Paginação',
     previous: 'Página anterior',

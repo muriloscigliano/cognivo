@@ -2313,6 +2313,26 @@ export const ActionBarDef = defineComponent({
   description: 'Sticky action bar at the bottom of an editor: a polite status (Unsaved changes) and the Save actions',
 });
 
+export const TimelineDef = defineComponent({
+  name: 'Timeline', tagName: 'cg-timeline',
+  props: z.object({
+    label: z.string().optional(),
+    reorderable: z.boolean().optional(),
+    children: z.array(z.any()).optional(),
+  }),
+  description: 'Vertical timeline of numbered steps with a guide line; reorderable steps have drag handles (keyboard and pointer, announced moves, cancelable cg-reorder)',
+});
+
+export const TimelineItemDef = defineComponent({
+  name: 'TimelineItem', tagName: 'cg-timeline-item',
+  props: z.object({
+    label: z.string().optional(),
+    variant: z.enum(["card", "compact"]).optional(),
+    children: z.array(z.any()).optional(),
+  }),
+  description: 'One step of a cg-timeline: a numbered node on the guide line and a card (or a slim 40 px compact row)',
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Wave 11: Forms & actions coverage (2 components)
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2600,7 +2620,7 @@ const ALL_COMPONENTS = [
   AiTransformSliderDef, AiTranslationPanelDef, AiValidationChecklistDef, AiVoicePanelDef,
   // Wave 11: Astryx-parity layout & display
   ToolbarDef, GridDef, CenterDef, StatusDotDef, TimestampDef,
-  BlockquoteDef, ThumbnailDef, OverflowListDef, LightboxDef, AppShellDef, ActionBarDef, PageHeaderDef,
+  BlockquoteDef, ThumbnailDef, OverflowListDef, LightboxDef, AppShellDef, TimelineItemDef, TimelineDef, ActionBarDef, PageHeaderDef,
   // Wave 11: Forms & actions coverage
   PhoneInputDef, SplitButtonDef,
   // Wave 11: AI coverage

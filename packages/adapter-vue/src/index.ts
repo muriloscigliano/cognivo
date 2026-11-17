@@ -249,6 +249,8 @@ export { CgThumbnail } from './components/CgThumbnail.js';
 export { CgOverflowList } from './components/CgOverflowList.js';
 export { CgLightbox } from './components/CgLightbox.js';
 export { CgAppShell } from './components/CgAppShell.js';
+export { CgTimelineItem } from './components/CgTimelineItem.js';
+export { CgTimeline } from './components/CgTimeline.js';
 export { CgActionBar } from './components/CgActionBar.js';
 export { CgPageHeader } from './components/CgPageHeader.js';
 export { CgBorderBeam } from './components/CgBorderBeam.js';
