@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
+import { LitElement, html, svg, css, nothing, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
@@ -30,7 +30,7 @@ export class CgCheckbox extends LitElement {
 
   constructor() {
     super();
-    this._internals = formInternals(this);
+    this._internals = formInternals(this, () => this.renderRoot.querySelector('input')?.focus());
   }
 
   static override styles = [hostBlock, reducedMotion, spinKeyframes, css`
@@ -76,14 +76,13 @@ export class CgCheckbox extends LitElement {
 
     /* ── Rounded variants ── */
     :host([rounded="none"]) .box { border-radius: 0; }
-    :host([rounded="sm"]) .box { border-radius: var(--cg-border-radius-50); }
     :host([rounded="md"]) .box { border-radius: var(--cg-border-radius-100); }
     :host([rounded="lg"]) .box { border-radius: var(--cg-border-radius-150); }
     :host([rounded="full"]) .box { border-radius: var(--cg-border-radius-full); }
 
     /* Hover — scoped so it doesn't override the error/success border; the
        neutral field hover border (never an accent). */
-    :host(:not([disabled]):not([error]):not([success])) label:hover .box {
+    :host(:not([disabled],[error],[success])) label:hover .box {
       border-color: var(--cg-color-input-border-hover);
     }
 
@@ -144,29 +143,12 @@ export class CgCheckbox extends LitElement {
       to { stroke-dashoffset: 0; }
     }
 
-    /* ── Error state ── */
-    :host([error]) .box {
-      border-color: var(--cg-color-status-error-text-default);
-    }
-    :host([error]) .box:is(.checked, .indeterminate) {
-      background: var(--cg-color-status-error-text-default);
-      border-color: var(--cg-color-status-error-text-default);
-    }
-    :host([error]) .label-text {
-      color: var(--cg-color-status-error-text-default);
-    }
-
-    /* ── Success state ── */
-    :host([success]) .box {
-      border-color: var(--cg-color-status-success-text-default);
-    }
-    :host([success]) .box:is(.checked, .indeterminate) {
-      background: var(--cg-color-status-success-text-default);
-      border-color: var(--cg-color-status-success-text-default);
-    }
-    :host([success]) .label-text {
-      color: var(--cg-color-status-success-text-default);
-    }
+    /* ── Error (also a reported invalid) / success: one status colour ── */
+    :host(:is([error],[data-invalid])) { --_status: var(--cg-color-status-error-text-default); }
+    :host([success]) { --_status: var(--cg-color-status-success-text-default); }
+    :host(:is([error],[data-invalid],[success])) .box { border-color: var(--_status); }
+    :host(:is([error],[success])) .box:is(.checked, .indeterminate) { background: var(--_status); border-color: var(--_status); }
+    :host(:is([error],[data-invalid],[success])) .label-text, .helper { color: var(--_status); }
 
     /* ── Loading state ── */
     :host([loading]) label { pointer-events: none; opacity: 0.5; }
@@ -189,6 +171,7 @@ export class CgCheckbox extends LitElement {
       color: var(--cg-color-surface-base-text);
       line-height: var(--cg-line-height-snug);
     }
+.helper { font-size: var(--cg-font-size-xs); }
     .description {
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-surface-container-outlined);
@@ -216,6 +199,7 @@ export class CgCheckbox extends LitElement {
   @property({ type: Boolean, reflect: true }) loading = false;
   @property({ type: Boolean }) required = false;
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'sm';
+  @state() private _invalid = '';
 
   /** Per-element validation texts (JSON in the `validation-messages` attribute
    *  or a property). Falls back to `setValidationMessages()` then to the
@@ -235,6 +219,8 @@ export class CgCheckbox extends LitElement {
       this._internals?.setFormValue(this.checked ? (this.value || 'on') : null);
     }
     mirrorValidity(this._internals, this.renderRoot.querySelector<HTMLInputElement>('input.native'), this.validationMessages);
+    if (this._invalid) this._invalid = this.validationMessage;
+    this.toggleAttribute('data-invalid', !!this._invalid);
   }
 
   formResetCallback() {
@@ -272,20 +258,15 @@ export class CgCheckbox extends LitElement {
             ?required=${this.required}
             aria-label=${ariaLabel}
             aria-labelledby=${this.label ? 'label-text' : nothing}
-            aria-describedby=${this.label && this.description ? 'description' : nothing}
-            aria-invalid=${this.error ? 'true' : 'false'}
+            aria-describedby=${[this.label && this.description && 'description', this._invalid && 'helper'].filter(Boolean).join(' ') || nothing}
+            aria-invalid=${this.error || !!this._invalid}
             aria-busy=${this.loading ? 'true' : nothing}
             @change=${this._handleChange}
           />
           ${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : html`<span class="box ${state}" aria-hidden="true">
-            ${this.checked && !this.indeterminate ? html`
+            ${state ? html`
               <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                <path class="tick" d="M4 12L9 17L20 6"></path>
-              </svg>
-            ` : nothing}
-            ${this.indeterminate ? html`
-              <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
-                <path class="dash" d="M5 12h14"></path>
+                ${this.indeterminate ? svg`<path class="dash" d="M5 12h14"></path>` : svg`<path class="tick" d="M4 12L9 17L20 6"></path>`}
               </svg>
             ` : nothing}
           </span>`}
@@ -298,6 +279,7 @@ export class CgCheckbox extends LitElement {
           </span>
         ` : nothing}
       </label>
+      ${this._invalid ? html`<div class="helper" id="helper">${this._invalid}</div>` : nothing}
     `;
   }
 }

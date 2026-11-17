@@ -2,7 +2,7 @@ import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
-import { mirrorValidity, showInvalid, type ValidationMessages } from '../../utils/validation.js';
+import { mirrorValidity, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -42,8 +42,6 @@ export class CgTextarea extends LitElement {
   constructor() {
     super();
     this._internals = formInternals(this);
-    // No native bubble: the field shows its own message (utils/validation showInvalid).
-    this.addEventListener('invalid', (e) => { showInvalid(e, () => this.focus()); this._invalid = this.validationMessage; });
   }
 
   static override styles = [hostBlock, reducedMotion, css`

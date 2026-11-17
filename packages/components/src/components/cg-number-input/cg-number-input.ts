@@ -28,7 +28,7 @@ export class CgNumberInput extends LitElement {
 
   constructor() {
     super();
-    this._internals = formInternals(this);
+    this._internals = formInternals(this, () => this.renderRoot.querySelector('input')?.focus());
   }
 
   static override styles = [hostBase, reducedMotion, css`
@@ -51,12 +51,13 @@ export class CgNumberInput extends LitElement {
     .wrapper.disabled { opacity: var(--cg-opacity-40); cursor: not-allowed; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
 
     /* Error */
-    :host([error]) .wrapper { border-color: var(--cg-color-input-border-error); }
-    :host([error]) .wrapper.focused {
+    :host(:is([error],[data-invalid])) .wrapper { border-color: var(--cg-color-input-border-error); }
+    :host(:is([error],[data-invalid])) .wrapper.focused {
       border-color: var(--cg-color-status-error-text-default);
       box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
     }
-    :host([error]) .label { color: var(--cg-color-status-error-text-default); }
+    .helper { display: block; padding-top: var(--cg-spacing-4); font-size: var(--cg-font-size-xs); color: var(--cg-color-status-error-text-default); }
+    :host(:is([error],[data-invalid])) .label { color: var(--cg-color-status-error-text-default); }
 
     /* Success */
     :host([success]) .wrapper { border-color: var(--cg-color-status-success-text-default); }
@@ -160,6 +161,7 @@ export class CgNumberInput extends LitElement {
   /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
    *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
   @state() private _formDisabled = false;
+  @state() private _invalid = '';
   private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
   formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean, reflect: true }) error = false;
@@ -190,6 +192,8 @@ export class CgNumberInput extends LitElement {
     if (changed.has('required') || changed.has('value')) {
       setValueMissing(this._internals, this.required && (this.value === undefined || this.value === null), this.validationMessages, 'text');
     }
+    if (this._invalid) this._invalid = this.validationMessage;
+    this.toggleAttribute('data-invalid', !!this._invalid);
   }
 
   formResetCallback() {
@@ -284,7 +288,8 @@ export class CgNumberInput extends LitElement {
           aria-valuemax=${this.max === Infinity ? nothing : this.max}
           aria-label=${this.label || this.i18n.t('label')}
           aria-required=${this.required ? 'true' : 'false'}
-          aria-invalid=${this.error ? 'true' : 'false'}
+          aria-invalid=${this.error || !!this._invalid}
+          aria-describedby=${this._invalid ? 'helper' : nothing}
           aria-busy=${this.loading ? 'true' : 'false'}
           .value=${String(this.value)}
           ?disabled=${this._effectivelyDisabled}
@@ -303,6 +308,7 @@ export class CgNumberInput extends LitElement {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
         </button>
       </div>
+      ${this._invalid ? html`<span class="helper" id="helper">${this._invalid}</span>` : nothing}
     `;
   }
 }

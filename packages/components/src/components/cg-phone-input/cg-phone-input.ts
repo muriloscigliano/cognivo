@@ -63,7 +63,7 @@ export class CgPhoneInput extends LitElement {
 
   constructor() {
     super();
-    this._internals = formInternals(this);
+    this._internals = formInternals(this, () => this.renderRoot.querySelector<HTMLElement>('input[type="tel"]')?.focus());
   }
 
   static override styles = [hostBlock, reducedMotion, css`
@@ -99,8 +99,8 @@ export class CgPhoneInput extends LitElement {
       box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo);
     }
 
-    :host([error]) .wrapper { border-color: var(--cg-color-input-border-error); }
-    :host([error]) .wrapper.focused {
+    :host(:is([error],[data-invalid])) .wrapper { border-color: var(--cg-color-input-border-error); }
+    :host(:is([error],[data-invalid])) .wrapper.focused {
       border-color: var(--cg-color-status-error-text-default);
       box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
     }
@@ -260,7 +260,7 @@ export class CgPhoneInput extends LitElement {
       top: var(--cg-spacing-8);
       font-size: var(--cg-font-size-xs);
     }
-    :host([error]) .field.floated .floating-label {
+    :host(:is([error],[data-invalid])) .field.floated .floating-label {
       color: var(--cg-color-status-error-text-default);
     }
     :host([success]) .field.floated .floating-label {
@@ -273,7 +273,7 @@ export class CgPhoneInput extends LitElement {
       color: var(--cg-color-input-text-placeholder);
       padding: var(--cg-spacing-8) var(--cg-spacing-12) 0;
     }
-    :host([error]) .helper { color: var(--cg-color-status-error-text-default); }
+    :host(:is([error],[data-invalid])) .helper { color: var(--cg-color-status-error-text-default); }
     :host([success]) .helper { color: var(--cg-color-status-success-text-default); }
 
     /* ── Country popover ────────────────────────────────────────────────── */
@@ -424,6 +424,7 @@ export class CgPhoneInput extends LitElement {
   /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
    *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
   @state() private _formDisabled = false;
+  @state() private _invalid = '';
   private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
   formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean }) readonly = false;
@@ -516,6 +517,8 @@ export class CgPhoneInput extends LitElement {
       this._internals?.setFormValue(this.value || '');
       setValueMissing(this._internals, this.required && !this.value, this.validationMessages, 'text');
     }
+    if (this._invalid) this._invalid = this.validationMessage;
+    this.toggleAttribute('data-invalid', !!this._invalid);
   }
 
   formResetCallback(): void {
@@ -804,9 +807,9 @@ export class CgPhoneInput extends LitElement {
             aria-label=${this.label || nothing}
             ?disabled=${this._effectivelyDisabled || this.loading}
             ?readonly=${this.readonly}
-            aria-invalid=${this.error ? 'true' : 'false'}
+            aria-invalid=${this.error || !!this._invalid}
             aria-required=${this.required ? 'true' : 'false'}
-            aria-describedby=${this.helper ? 'cg-phone-helper' : nothing}
+            aria-describedby=${this._invalid || this.helper ? 'cg-phone-helper' : nothing}
             @input=${this._onTelInput}
             @keydown=${this._onTelKeydown}
             @focus=${this._onTelFocus}
@@ -858,7 +861,7 @@ export class CgPhoneInput extends LitElement {
         </div>
       </div>
 
-      ${this.helper ? html`<div class="helper" id="cg-phone-helper">${this.helper}</div>` : nothing}
+      ${this._invalid || this.helper ? html`<div class="helper" id="cg-phone-helper">${this._invalid || this.helper}</div>` : nothing}
       <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">${this._announcement}</div>
     `;
   }

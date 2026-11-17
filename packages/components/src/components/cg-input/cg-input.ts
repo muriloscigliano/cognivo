@@ -1,9 +1,9 @@
 import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
-import { property, state, query } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
 import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
-import { mirrorValidity, showInvalid, type ValidationMessages } from '../../utils/validation.js';
+import { mirrorValidity, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion, spinKeyframes } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -28,11 +28,12 @@ const MESSAGES = defineMessages('cg-input', {
  * 500, muted, 6 px gap); `label-position="floating"` puts it inside the field,
  * where it stands in for the placeholder until it floats.
  *
- * Invalid state: when the field fails validation (a form's submit,
- * `checkValidity()`, `reportValidity()`), the browser's bubble is suppressed;
+ * Invalid state: when a submit or `reportValidity()` (the field's or its
+ * form's) finds the field invalid, the browser's bubble is suppressed;
  * the field gets the error border, `aria-invalid`, its validation message
  * under it (in place of `helper`) and a `data-invalid` attribute, and the
- * first invalid field takes focus. The message clears once the value is valid. `affix="plain"` draws prefix / suffix
+ * first invalid field takes focus. The message clears once the value is valid.
+ * `checkValidity()` only answers: no message, no focus change. `affix="plain"` draws prefix / suffix
  * content inside the field with no box or divider; `size="sm"` is the
  * compact toolbar height (`--cg-component-input-height-sm`) and has no
  * floating label (it would not fit): `label` only names the field.
@@ -58,9 +59,7 @@ export class CgInput extends LitElement {
 
   constructor() {
     super();
-    this._internals = formInternals(this);
-    // No native bubble: the field shows its own message (utils/validation showInvalid).
-    this.addEventListener('invalid', (e) => { showInvalid(e, () => this._input.focus()); this._invalid = this.validationMessage; });
+    this._internals = formInternals(this, () => this._input.focus());
   }
 
   static override styles = [hostBlock, reducedMotion, spinKeyframes, css`
@@ -87,10 +86,9 @@ export class CgInput extends LitElement {
     :host([rounded="none"]) .wrapper { border-radius: 0; }
     :host([rounded="sm"]) .wrapper { border-radius: var(--cg-border-radius-50); }
     :host([rounded="md"]) .wrapper { border-radius: var(--cg-border-radius-100); }
-    :host([rounded="lg"]) .wrapper { border-radius: var(--cg-component-input-radius); }
 
     /* Hover */
-    .wrapper:hover:not(.disabled):not(.readonly):not(.focused) {
+    .wrapper:hover:not(.disabled, .readonly, .focused) {
       border-color: var(--cg-color-input-border-hover);
     }
 
@@ -334,7 +332,8 @@ export class CgInput extends LitElement {
   @state() private _hasPrefix = false;
   @state() private _hasSuffix = false;
 
-  @query('input') private _input!: HTMLInputElement;
+  /** The native input (what `@query('input')` did, without the decorator module in the form bundle). */
+  private get _input(): HTMLInputElement { return this.renderRoot?.querySelector('input') as HTMLInputElement; }
 
   /** Per-element validation texts (JSON in the `validation-messages` attribute
    *  or a property). Falls back to `setValidationMessages()` then to the

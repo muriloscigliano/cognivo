@@ -87,7 +87,7 @@ export class CgRadio extends LitElement {
       box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo);
       outline: none;
     }
-    :host([error]) label:focus-visible .circle {
+    :host(:is([error],[data-invalid])) label:focus-visible .circle {
       box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
     }
     :host([success]) label:focus-visible .circle {
@@ -145,11 +145,12 @@ export class CgRadio extends LitElement {
     /* Hidden native input */
 
     /* ── Error state ── */
-    :host([error]) .circle { border-color: var(--cg-color-status-error-text-default); }
+    :host(:is([error],[data-invalid])) .circle { border-color: var(--cg-color-status-error-text-default); }
     :host([error]) .circle.checked { border-color: var(--cg-color-status-error-text-default); }
     :host([error]) .dot { background: var(--cg-color-status-error-text-default); }
     :host([error]) .tick-icon { color: var(--cg-color-status-error-text-default); }
-    :host([error]) .label-text { color: var(--cg-color-status-error-text-default); }
+    :host(:is([error],[data-invalid])) .label-text { color: var(--cg-color-status-error-text-default); }
+    .helper { font-size: var(--cg-font-size-xs); color: var(--cg-color-status-error-text-default); }
 
     /* ── Success state ── */
     :host([success]) .circle { border-color: var(--cg-color-status-success-text-default); }
@@ -200,6 +201,7 @@ export class CgRadio extends LitElement {
   /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
    *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
   @state() private _formDisabled = false;
+  @state() private _invalid = '';
   private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
   formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   @property({ type: Boolean, reflect: true }) error = false;
@@ -231,6 +233,8 @@ export class CgRadio extends LitElement {
     if (changed.has('required') || changed.has('checked')) {
       setValueMissing(this._internals, this.required && !this.checked, this.validationMessages, 'radio');
     }
+    if (this._invalid) this._invalid = this.validationMessage;
+    this.toggleAttribute('data-invalid', !!this._invalid);
   }
 
   formResetCallback() {
@@ -271,6 +275,8 @@ export class CgRadio extends LitElement {
         aria-checked=${String(this.checked)}
         aria-disabled=${String(this._effectivelyDisabled)}
         aria-required=${this.required ? 'true' : 'false'}
+        aria-invalid=${this._invalid ? 'true' : nothing}
+        aria-describedby=${this._invalid ? 'helper' : nothing}
         aria-busy=${this.loading ? 'true' : 'false'}
         @click=${this._select}
         @keydown=${(e: KeyboardEvent) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); this._select(); } }}
@@ -287,6 +293,7 @@ export class CgRadio extends LitElement {
           </span>
         ` : nothing}
       </label>
+      ${this._invalid ? html`<div class="helper" id="helper">${this._invalid}</div>` : nothing}
     `;
   }
 }

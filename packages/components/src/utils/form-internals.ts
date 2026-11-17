@@ -1,3 +1,5 @@
+import { quietCheckValidity, showInvalid } from './validation.js';
+
 /**
  * ElementInternals for a form-associated component, or `undefined` where the
  * environment cannot associate it with a form.
@@ -10,7 +12,16 @@
  * events; `checkValidity()` returns `true`, nothing reaches FormData) instead
  * of crashing. Test form submission and validity in a real browser.
  */
-export const formInternals = (el: HTMLElement): ElementInternals | undefined => {
+export const formInternals = (el: HTMLElement, focus: () => void = () => el.focus()): ElementInternals | undefined => {
   const internals = typeof el.attachInternals === 'function' ? el.attachInternals() : undefined;
-  return typeof internals?.setFormValue === 'function' ? internals : undefined;
+  if (typeof internals?.setFormValue !== 'function') return undefined;
+  // One invalid behaviour for every field (utils/validation): a submit or
+  // reportValidity() shows the error in place — the field's `_invalid` state
+  // (its message, rendered under it) — and focuses the first invalid field
+  // (`focus`); checkValidity() stays quiet.
+  quietCheckValidity();
+  el.addEventListener('invalid', (e) => {
+    if (showInvalid(e, focus)) (el as HTMLElement & { _invalid?: string })._invalid = internals.validationMessage;
+  });
+  return internals;
 };

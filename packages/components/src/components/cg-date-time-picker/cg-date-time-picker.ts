@@ -2,7 +2,7 @@ import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
-import { setValueMissing, showInvalid, type ValidationMessages } from '../../utils/validation.js';
+import { setValueMissing, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -89,9 +89,7 @@ export class CgDateTimePicker extends LitElement {
 
   constructor() {
     super();
-    this._internals = formInternals(this);
-    // No native bubble: the field shows its own message (utils/validation showInvalid).
-    this.addEventListener('invalid', (e) => { showInvalid(e, () => this._trigger?.focus()); this._invalid = this.validationMessage; });
+    this._internals = formInternals(this, () => this._trigger?.focus());
   }
 
   static override styles = [hostBlock, reducedMotion, css`

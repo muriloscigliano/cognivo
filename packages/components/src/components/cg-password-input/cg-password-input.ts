@@ -82,10 +82,10 @@ export class CgPasswordInput extends LitElement {
       cursor: not-allowed;
     }
 
-    :host([error]) input {
+    :host(:is([error],[data-invalid])) input {
       border-color: var(--cg-color-status-error-border-default);
     }
-    :host([error]) input:focus { box-shadow: 0 0 0 3px var(--cg-shadow-focus-error); }
+    :host(:is([error],[data-invalid])) input:focus { box-shadow: 0 0 0 3px var(--cg-shadow-focus-error); }
     :host([success]) input {
       border-color: var(--cg-color-status-success-border-default);
     }
@@ -126,7 +126,7 @@ export class CgPasswordInput extends LitElement {
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-surface-container-outlined);
     }
-    :host([error]) .helper { color: var(--cg-color-status-error-text-default); }
+    :host(:is([error],[data-invalid])) .helper { color: var(--cg-color-status-error-text-default); }
     :host([success]) .helper { color: var(--cg-color-status-success-text-default); }
 
     /* Strength meter */
@@ -174,7 +174,7 @@ export class CgPasswordInput extends LitElement {
 
   constructor() {
     super();
-    this._internals = formInternals(this);
+    this._internals = formInternals(this, () => this.renderRoot.querySelector('input')?.focus());
   }
 
   /** Per-element text overrides (JSON attribute); see `setMessages()`. */
@@ -199,6 +199,7 @@ export class CgPasswordInput extends LitElement {
   @property({ type: Number, attribute: 'min-length' }) minLength = 0;
 
   @state() private _visible = false;
+  @state() private _invalid = '';
 
   /** Per-element validation texts (JSON in the `validation-messages` attribute
    *  or a property). Falls back to `setValidationMessages()` then to the
@@ -225,6 +226,8 @@ export class CgPasswordInput extends LitElement {
         this._internals?.setValidity({});
       }
     }
+    if (this._invalid) this._invalid = this.validationMessage;
+    this.toggleAttribute('data-invalid', !!this._invalid);
   }
 
   private _strengthScore(): number {
@@ -264,6 +267,7 @@ export class CgPasswordInput extends LitElement {
 
   override render() {
     const score = this._strengthScore();
+    const help = this._invalid || this.helper;
     return html`
       <div class="wrap">
         ${this.label ? html`<label for="input">${this.label}${this.required ? html` <span class="required-marker">*</span>` : nothing}</label>` : nothing}
@@ -277,8 +281,8 @@ export class CgPasswordInput extends LitElement {
             ?disabled=${this._effectivelyDisabled}
             ?required=${this.required}
             aria-label=${this.label ? nothing : (this.placeholder || this.i18n.t('label'))}
-            aria-describedby=${this.helper ? 'helper' : nothing}
-            aria-invalid=${this.error ? 'true' : 'false'}
+            aria-describedby=${help ? 'helper' : nothing}
+            aria-invalid=${this.error || !!this._invalid}
             aria-required=${this.required ? 'true' : 'false'}
             @input=${this._handleInput}
             @keydown=${(e: KeyboardEvent) => handleImplicitSubmit(e, this._internals)}
@@ -311,7 +315,7 @@ export class CgPasswordInput extends LitElement {
           </div>
           <div class="strength-label" role="status" aria-live="polite">${this._strengthLabel()}</div>
         ` : nothing}
-        ${this.helper ? html`<div class="helper" id="helper">${this.helper}</div>` : nothing}
+        ${help ? html`<div class="helper" id="helper">${help}</div>` : nothing}
       </div>
     `;
   }

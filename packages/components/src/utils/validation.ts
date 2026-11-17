@@ -32,18 +32,6 @@ export type ValidityKey = keyof ValidityStateFlags;
 export type KindValueMissingKey = 'valueMissingCheckbox' | 'valueMissingRadio' | 'valueMissingSelect';
 export type ValidationMessages = Partial<Record<ValidityKey | KindValueMissingKey, string>>;
 
-const KEYS: ValidityKey[] = [
-  'valueMissing',
-  'typeMismatch',
-  'patternMismatch',
-  'tooLong',
-  'tooShort',
-  'rangeUnderflow',
-  'rangeOverflow',
-  'stepMismatch',
-  'badInput',
-  'customError',
-];
 
 /**
  * The page-wide map lives on `globalThis` under a `Symbol.for` key, so every
@@ -106,13 +94,16 @@ export function mirrorValidity(
   }
   const flags: ValidityStateFlags = {};
   let first: ValidityKey | undefined;
-  for (const k of KEYS) {
-    if (v[k]) {
+  // ValidityState's flags, in IDL order (WebIDL attributes are enumerable); `valid` is not one.
+  for (const key in v) {
+    const k = key as ValidityKey;
+    if (k !== ('valid' as ValidityKey) && v[k]) {
       flags[k] = true;
       first ??= k;
     }
   }
-  const kind: ProbeKind = control instanceof HTMLInputElement && (control.type === 'checkbox' || control.type === 'radio') ? control.type : 'text';
+  // A textarea's type is 'textarea': only checkbox / radio inputs are their own kind.
+  const kind = (control.type === 'checkbox' || control.type === 'radio' ? control.type : 'text') as ProbeKind;
   internals.setValidity(flags, messageFor(first ?? 'customError', own, control.validationMessage, kind), control);
 }
 
@@ -156,18 +147,49 @@ export function setValueMissing(
 let focusing = false;
 
 /**
- * Field error state without the browser's bubble. A form-associated field
- * calls this from its own `invalid` listener: the event is cancelled (the
- * browser shows no validation bubble — the field shows its message under
- * itself instead) and, for the first invalid field of one validation pass
- * (a form's invalid events fire synchronously, in tree order), `focus` runs.
- * `checkValidity()` / `reportValidity()` fire `invalid` too, so they show the
- * message and move focus to the first invalid field as well.
+ * `checkValidity()` only asks: it fires `invalid` like `reportValidity()`
+ * does, but must not show errors or move focus. The browser gives the two
+ * the same event, so the checkValidity methods of forms, fieldsets and
+ * ElementInternals (which every field's own `checkValidity()` calls) are
+ * wrapped once to count the quiet calls in progress. A second copy of the
+ * library on the page wraps the wrapper: both counts go up, so each copy's
+ * fields stay quiet. (A listener's exception never propagates out of
+ * checkValidity(), so a count always comes back down.)
  */
-export function showInvalid(e: Event, focus: () => void): void {
+let quiet = 0;
+let wrapped = false;
+
+export function quietCheckValidity(): void {
+  if (wrapped) return;
+  wrapped = true;
+  for (const C of [HTMLFormElement, HTMLFieldSetElement, ElementInternals]) {
+    const proto = C.prototype as { checkValidity(): boolean };
+    const check = proto.checkValidity;
+    proto.checkValidity = function (this: unknown) {
+      quiet++;
+      const valid = check.call(this);
+      quiet--;
+      return valid;
+    };
+  }
+}
+
+/**
+ * Field error state without the browser's bubble, for every form-associated
+ * component (installed by `formInternals`). On a reported `invalid` — a
+ * submit attempt or `reportValidity()` — the event is cancelled (no bubble:
+ * the field shows its message under itself; its own listener sees
+ * `defaultPrevented`) and the first invalid field of the pass (a form's
+ * invalid events fire synchronously, in tree order) runs `focus`. On a
+ * `checkValidity()` nothing happens: returns `false`.
+ */
+export function showInvalid(e: Event, focus: () => void): boolean {
+  if (quiet) return false;
   e.preventDefault();
-  if (focusing) return;
-  focusing = true;
-  queueMicrotask(() => (focusing = false));
-  focus();
+  if (!focusing) {
+    focusing = true;
+    queueMicrotask(() => (focusing = false));
+    focus();
+  }
+  return true;
 }

@@ -1,4 +1,4 @@
-import { LitElement, html, css, type PropertyValues } from 'lit';
+import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
@@ -44,7 +44,7 @@ export class CgOtpInput extends LitElement {
 
   constructor() {
     super();
-    this._internals = formInternals(this);
+    this._internals = formInternals(this, () => { const b = this._getBoxes(); (b[this.value.length] ?? b[0])?.focus(); });
   }
 
   static override styles = [hostBase, reducedMotion, css`
@@ -93,13 +93,15 @@ export class CgOtpInput extends LitElement {
       border-color: var(--cg-color-input-border-disabled);
     }
 
-    :host([error]) .box {
+    :host(:is([error],[data-invalid])) .box {
       border-color: var(--cg-color-input-border-error);
     }
-    :host([error]) .box:focus {
+    :host(:is([error],[data-invalid])) .box:focus {
       border-color: var(--cg-color-status-error-text-default);
       box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
     }
+
+    .helper { padding-top: var(--cg-spacing-4); font-size: var(--cg-font-size-xs); color: var(--cg-color-status-error-text-default); }
 
     /* ── Success state ── */
     :host([success]) .box {
@@ -143,6 +145,7 @@ export class CgOtpInput extends LitElement {
   /** Disabled by an ancestor `<fieldset disabled>` or the own attribute
    *  (formDisabledCallback), so a fieldset disables this field as it does a native one. */
   @state() private _formDisabled = false;
+  @state() private _invalid = '';
   private get _effectivelyDisabled(): boolean { return this.disabled || this._formDisabled; }
   formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   /** A complete code is required: fewer digits than `length` is `valueMissing`. */
@@ -181,6 +184,8 @@ export class CgOtpInput extends LitElement {
       const boxes = this._getBoxes();
       setValueMissing(this._internals, this.required && this.value.length < this.length, this.validationMessages, 'text', boxes[this.value.length] ?? boxes[0]);
     }
+    if (this._invalid) this._invalid = this.validationMessage;
+    this.toggleAttribute('data-invalid', !!this._invalid);
   }
 
   formResetCallback(): void {
@@ -291,7 +296,8 @@ export class CgOtpInput extends LitElement {
               .value=${display}
               ?disabled=${this._effectivelyDisabled}
               aria-required=${this.required ? 'true' : 'false'}
-              aria-invalid=${this.error ? 'true' : 'false'}
+              aria-invalid=${this.error || !!this._invalid}
+              aria-describedby=${this._invalid ? 'helper' : nothing}
               autocomplete="one-time-code"
               aria-label=${this.i18n.t('digit', { n: i + 1, total: this.length })}
               @input=${(e: Event) => this._onInput(i, e)}
@@ -301,6 +307,7 @@ export class CgOtpInput extends LitElement {
           `;
         })}
       </div>
+      ${this._invalid ? html`<div class="helper" id="helper">${this._invalid}</div>` : nothing}
     `;
   }
 }
