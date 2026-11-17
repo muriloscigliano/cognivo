@@ -27,7 +27,9 @@ const MESSAGES = defineMessages('cg-select', {
  * <cg-select searchable error .options=${items}></cg-select>
  * ```
  *
- * The label sits above the trigger (12 px, 500, 6 px gap). The menu is at
+ * The label sits above the trigger (12 px, 500, 6 px gap). `width="auto"`
+ * (with `size="sm"`, 32 px) makes a small inline select for a row or a
+ * sentence: as wide as its longest option, up to its container. The menu is at
  * least as wide as the trigger and 200 px, and options stay on one line.
  * When the field fails validation, the browser's bubble is suppressed and the
  * message shows under the field (see cg-input).
@@ -175,6 +177,12 @@ export class CgSelect extends LitElement {
     :host([size="sm"]) .trigger { height: var(--cg-component-input-height-sm); font-size: var(--cg-font-size-xs); padding: 0 var(--cg-spacing-8); }
     :host([size="sm"]) .option { font-size: var(--cg-font-size-xs); }
 
+    /* width="auto": inline, as wide as the longest option (the width holds as the value changes). */
+    :host([width="auto"]) { display: inline-block; vertical-align: middle; max-width: 100%; }
+    .fit { flex: 1; min-width: 0; display: grid; }
+    .fit > * { grid-area: 1 / 1; min-width: 0; }
+    .sizer { visibility: hidden; white-space: nowrap; }
+
     :host([size="lg"]) .trigger { height: var(--cg-component-input-height-lg); font-size: var(--cg-font-size-base); padding: 0 var(--cg-spacing-16); }
     :host([size="lg"]) .option { font-size: var(--cg-font-size-base); }
 
@@ -196,6 +204,8 @@ export class CgSelect extends LitElement {
   private i18n = new Messages(this, MESSAGES);
 
   @property({ reflect: true }) size: 'sm' | 'md' | 'lg' = 'md';
+  /** `full` (default): fills its container. `auto`: inline, as wide as its longest option — for a select in a row or sentence (with `size="sm"`). */
+  @property({ reflect: true }) width: 'full' | 'auto' = 'full';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
   @property({ type: Array }) options: SelectOption[] = [];
   @property() value = '';
@@ -360,6 +370,8 @@ export class CgSelect extends LitElement {
     const filtered = this._filteredOptions();
     const accessibleName = this.accessibleLabel || this._hostAriaLabel || '';
     const labelledby = accessibleName ? undefined : this.label ? 'select-label' : undefined;
+    const shown = selected ? selected.label : this.placeholder ?? this.i18n.t('placeholder');
+    const text = html`<span class="trigger-text ${!selected ? 'placeholder' : ''}">${shown}</span>`;
 
     return html`
       ${this.label ? html`<span class="label" id="select-label">${this.label}</span>` : nothing}
@@ -380,9 +392,7 @@ export class CgSelect extends LitElement {
         @click=${this._toggle}
         @keydown=${this._handleKeydown}
       >
-        <span class="trigger-text ${!selected ? 'placeholder' : ''}">
-          ${selected ? selected.label : this.placeholder ?? this.i18n.t('placeholder')}
-        </span>
+        ${this.width === 'auto' ? html`<span class="fit">${text}${(selected ? this.options : [{ label: shown }, ...this.options]).map((o) => html`<span class="sizer" aria-hidden="true">${o.label}</span>`)}</span>` : text}
         ${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : html`
         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 9l6 6 6-6"></path>
