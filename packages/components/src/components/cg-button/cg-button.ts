@@ -14,6 +14,7 @@ import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
  * <cg-button variant="primary" size="md">Click me</cg-button>
  * <cg-button variant="secondary" loading>Saving...</cg-button>
  * <cg-button type="danger"><span slot="prefix">[trash icon]</span>Delete</cg-button>
+ * <cg-button variant="tertiary" type="danger">Delete contact…</cg-button>
  * <form><cg-input name="email"></cg-input><cg-button type="submit">Send</cg-button></form>
  * <cg-button href="/deals/new" variant="secondary">New deal</cg-button>
  * ```
@@ -37,7 +38,11 @@ import { hostBase, reducedMotion, spinKeyframes } from '../../styles/index.js';
  * @slot suffix - Icon or content after the label
  *
  * @cssprop --cg-color-action-primary-background-default - Primary button background color
- * @cssprop --cg-component-button-height-md - Button height (md size, 48px)
+ * Sizes: `sm` 32 px, `md` (default) 36 px, `lg` 40 px, radius 8 px
+ * (`rounded="full"` for a pill). `variant="tertiary" type="danger"` is the
+ * ghost-danger button: red text, no fill.
+ *
+ * @cssprop --cg-component-button-height-md - Button height (md size, 36px)
  * @cssprop --cg-interaction-press-scale - Scale on press/active (0.97)
  * @cssprop --cg-transition-duration-fast - Color transition speed
  */
@@ -77,6 +82,11 @@ export class CgButton extends LitElement {
       transition-timing-function: var(--cg-transition-easing-ease-out);
       -webkit-font-smoothing: antialiased;
       position: relative;
+      /* Size md (the default): 36 px. */
+      padding: 0 var(--cg-spacing-16);
+      font-size: var(--cg-font-size-sm);
+      border-radius: var(--cg-component-button-radius-md);
+      height: var(--cg-component-button-height-md);
     }
 
     /* Hover / pressed: a neutral state overlay on the variant's own colour
@@ -116,12 +126,6 @@ export class CgButton extends LitElement {
       font-size: var(--cg-font-size-xs);
       border-radius: var(--cg-component-button-radius-sm);
       height: var(--cg-component-button-height-sm);
-    }
-    :host([size="md"]) .btn {
-      padding: 0 var(--cg-spacing-16);
-      font-size: var(--cg-font-size-sm);
-      border-radius: var(--cg-component-button-radius-md);
-      height: var(--cg-component-button-height-md);
     }
     :host([size="lg"]) .btn {
       padding: 0 var(--cg-spacing-24);
@@ -170,6 +174,11 @@ export class CgButton extends LitElement {
       color: var(--cg-color-status-error-text-inverse);
       border-color: transparent;
     }
+    /* Ghost danger (tertiary): red text, no fill or border; hover is the neutral overlay only. */
+    :host([type="danger"][variant="tertiary"]) .btn {
+      background-color: transparent !important;
+      border-color: transparent;
+    }
 
     /* ── Disabled: the variant's own colours at 40% opacity, no hover, not-allowed. ── */
     .btn:is(:disabled, [aria-disabled="true"]) {
@@ -177,10 +186,10 @@ export class CgButton extends LitElement {
       cursor: not-allowed;
     }
     /* ── Loading ── */
-    :host([loading]) .btn {
-      color: transparent;
-      pointer-events: none;
-    }
+    /* The label hides (slotted content inherits the slot's visibility; the
+       width stays); the spinner takes the variant's text colour. */
+    :host([loading]) .btn { pointer-events: none; }
+    :host([loading]) slot { visibility: hidden; }
     .spinner {
       position: absolute;
       width: var(--cg-icon-size-100);
@@ -190,12 +199,6 @@ export class CgButton extends LitElement {
       border-radius: var(--cg-border-radius-full);
       animation: spin var(--cg-transition-duration-slow) linear infinite;
     }
-    :host([loading]) .spinner { color: var(--cg-color-action-primary-text-default); /* contrast: non-text on --cg-color-action-primary-background-default */ }
-    :host([loading][variant="secondary"]) .spinner { color: var(--cg-color-action-secondary-text-default); /* contrast: non-text on --cg-color-action-secondary-background-default */ }
-    :host([loading][variant="tertiary"]) .spinner { color: var(--cg-color-action-tertiary-text-default); }
-
-    /* ── Error state (colours: with the danger type above) ── */
-    :host([status="error"]) .spinner { color: var(--cg-color-status-error-text-default); }
 
     /* ── Success state ── */
     :host([status="success"]) .btn {
@@ -203,7 +206,6 @@ export class CgButton extends LitElement {
       color: var(--cg-color-status-success-text-default);
       border-color: var(--cg-color-status-success-border-default);
     }
-    :host([status="success"]) .spinner { color: var(--cg-color-status-success-text-default); }
 
     /* ── Full width ── */
     :host([full]) {
@@ -274,7 +276,7 @@ export class CgButton extends LitElement {
       const inactive = this.disabled || this._formDisabled || this.loading || !isSafeHref(this.href);
       return html`<a part="button" class="btn" href=${inactive ? nothing : this.href} role=${inactive ? 'link' : nothing} aria-disabled=${inactive ? 'true' : nothing} aria-busy=${this.loading ? 'true' : nothing} aria-label=${this.label || nothing} target=${this.target || nothing} rel=${this.rel || (this.target === '_blank' ? 'noopener noreferrer' : nothing)} download=${this.download ?? nothing}>${content}</a>`;
     }
-    return html`<button part="button" class="btn" type="button" ?disabled=${this.disabled || this._formDisabled || this.loading} aria-busy=${this.loading ? 'true' : 'false'} aria-label=${this.label || nothing} aria-haspopup=${this.expanded ? 'menu' : nothing} aria-expanded=${this.expanded || nothing}>${content}</button>`;
+    return html`<button part="button" class="btn" type="button" ?disabled=${this.disabled || this._formDisabled || this.loading} aria-busy=${this.loading} aria-label=${this.label || nothing} aria-haspopup=${this.expanded ? 'menu' : nothing} aria-expanded=${this.expanded || nothing}>${content}</button>`;
   }
 }
 

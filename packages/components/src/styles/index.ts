@@ -18,7 +18,7 @@ export {
   hoverLift,
   cardHoverLift,
 } from './motion.css.js';
-export { hostBase, hostBlock, hostHidden } from './base.css.js';
+export { hostBase, hostBlock, hostHidden, nativeFont } from './base.css.js';
 export { elevation1, elevation2, elevation3, elevation4, elevation5 } from './elevation.css.js';
 export {
   aiGlow,

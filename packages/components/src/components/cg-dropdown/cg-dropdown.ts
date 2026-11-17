@@ -1,7 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
-import { entranceStagger, menuListStyles } from '../../styles/index.js';
+import { entranceStagger, menuListStyles, nativeFont } from '../../styles/index.js';
 import { bindOutsideClick } from '../../utils/outside-click.js';
 import { handleRovingKey } from '../../utils/roving-index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
@@ -20,6 +20,8 @@ export interface DropdownItem {
   shortcut?: string;
   disabled?: boolean;
   divider?: boolean;
+  /** A destructive item ("Delete contact…"): red text; hover stays the neutral fill. */
+  danger?: boolean;
 }
 
 /**
@@ -30,7 +32,7 @@ export interface DropdownItem {
  * ```html
  * <cg-dropdown
  *   position="bottom-start"
- *   .items=${[{id:'edit',label:'Edit'},{id:'delete',label:'Delete'}]}
+ *   .items=${[{id:'edit',label:'Edit'},{id:'delete',label:'Delete…',danger:true}]}
  * >
  *   <cg-button slot="trigger" variant="secondary">Actions <cg-icon slot="suffix" name="chevron-down" size="sm"></cg-icon></cg-button>
  * </cg-dropdown>
@@ -67,7 +69,7 @@ export interface DropdownItem {
  */
 @customElement('cg-dropdown')
 export class CgDropdown extends LitElement {
-  static override styles = [entranceStagger, menuListStyles, css`
+  static override styles = [nativeFont, entranceStagger, menuListStyles, css`
     :host {
       display: inline-block;
       position: relative;
@@ -426,7 +428,7 @@ export class CgDropdown extends LitElement {
           const enabledIndex = this._enabledItems.indexOf(item);
           return html`
             <button
-              class="menu-item ${item.disabled ? 'disabled' : ''} ${enabledIndex === this._activeIndex ? 'active' : ''}"
+              class="menu-item ${item.disabled ? 'disabled' : ''} ${item.danger ? 'danger' : ''} ${enabledIndex === this._activeIndex ? 'active' : ''}"
               role="menuitem"
               tabindex="-1"
               aria-disabled=${item.disabled ? 'true' : nothing}

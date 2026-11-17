@@ -126,12 +126,9 @@ export const menuListStyles = /* @__PURE__ */ pureStyle(() => css`
     cursor: not-allowed;
     opacity: var(--cg-opacity-40);
   }
+  /* Destructive item: red text only; hover / active keep the neutral fill. */
   .menu-item.danger {
     color: var(--cg-color-status-error-text-default);
-  }
-  .menu-item.danger:hover:not([disabled]):not(.disabled),
-  .menu-item.danger[data-active]:not([disabled]):not(.disabled) {
-    background: var(--cg-color-status-error-background-default);
   }
 
   .menu-item-icon {

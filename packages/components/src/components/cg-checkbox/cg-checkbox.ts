@@ -69,7 +69,9 @@ export class CgCheckbox extends LitElement {
       align-items: center;
       justify-content: center;
       position: relative;
-      transition: border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default), background var(--cg-transition-duration-fast) var(--cg-transition-easing-default), box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default), transform var(--cg-transition-duration-fast) var(--cg-transition-easing-ease-out);
+      /* Colour only, nothing moves (design direction: calm states). */
+      transition: var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition-property: border-color, background, box-shadow;
     }
 
     /* ── Rounded variants ── */
@@ -83,11 +85,6 @@ export class CgCheckbox extends LitElement {
        neutral field hover border (never an accent). */
     :host(:not([disabled]):not([error]):not([success])) label:hover .box {
       border-color: var(--cg-color-input-border-hover);
-    }
-
-    /* Pressed */
-    :host(:not([disabled])) label:active .box {
-      transform: scale(var(--cg-interaction-press-scale));
     }
 
     /* Native control: a real <input type="checkbox"> laid exactly over the
@@ -116,11 +113,10 @@ export class CgCheckbox extends LitElement {
       box-shadow: 0 0 0 var(--cg-border-width-100) var(--cg-color-focus-ring-offset), 0 0 0 calc(var(--cg-border-width-100) * 2) var(--cg-color-focus-ring);
     }
 
-    /* ── Checked / indeterminate (same spring entry for consistent feedback) ── */
+    /* ── Checked / indeterminate (the tick draws in; the box does not move) ── */
     .box:is(.checked, .indeterminate) {
       background: var(--cg-color-checkbox-background-checked);
       border-color: var(--cg-color-checkbox-border-checked);
-      animation: boxPop var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out);
     }
 
     /* ── Animated tick — stroke reveal ── */
@@ -146,14 +142,6 @@ export class CgCheckbox extends LitElement {
     /* Tick and dash share one stroke reveal. */
     @keyframes draw {
       to { stroke-dashoffset: 0; }
-    }
-
-    @keyframes boxPop {
-      0% { transform: scale(1); }
-      30% { transform: scale(0.85); }
-      60% { transform: scale(1.08); }
-      80% { transform: scale(0.97); }
-      100% { transform: scale(1); }
     }
 
     /* ── Error state ── */

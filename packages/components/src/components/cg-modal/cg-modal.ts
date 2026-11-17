@@ -1,7 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
-import { spinKeyframes, reducedMotion } from '../../styles/index.js';
+import { spinKeyframes, reducedMotion, nativeFont } from '../../styles/index.js';
 import { FocusTrap } from '../../utils/focus-trap.js';
 import { lockBodyScroll, unlockBodyScroll } from '../../utils/scroll-lock.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
@@ -38,7 +38,7 @@ const MESSAGES = defineMessages('cg-modal', {
  */
 @customElement('cg-modal')
 export class CgModal extends LitElement {
-  static override styles = [spinKeyframes, reducedMotion, css`
+  static override styles = [nativeFont, spinKeyframes, reducedMotion, css`
     :host {
       display: contents;
       font-family: var(--cg-font-family-primary);

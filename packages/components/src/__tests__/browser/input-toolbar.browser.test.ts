@@ -39,7 +39,7 @@ describe.skipIf(!browserAvailable)('cg-input in a toolbar (real browser)', { tim
   });
 
   it('with a floating label the placeholder stays hidden until the label floats', async () => {
-    const page = await field('label="E-mail" placeholder="you@example.com"');
+    const page = await field('label="E-mail" label-position="floating" placeholder="you@example.com"');
     expect(transparent(await placeholderColour(page))).toBe(true);
     await page.locator('#f input').focus();
     await settleStyles(page);

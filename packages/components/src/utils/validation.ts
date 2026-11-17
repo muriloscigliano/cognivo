@@ -152,3 +152,22 @@ export function setValueMissing(
   if (anchor) internals.setValidity({ valueMissing: true }, message, anchor);
   else internals.setValidity({ valueMissing: true }, message);
 }
+
+let focusing = false;
+
+/**
+ * Field error state without the browser's bubble. A form-associated field
+ * calls this from its own `invalid` listener: the event is cancelled (the
+ * browser shows no validation bubble — the field shows its message under
+ * itself instead) and, for the first invalid field of one validation pass
+ * (a form's invalid events fire synchronously, in tree order), `focus` runs.
+ * `checkValidity()` / `reportValidity()` fire `invalid` too, so they show the
+ * message and move focus to the first invalid field as well.
+ */
+export function showInvalid(e: Event, focus: () => void): void {
+  e.preventDefault();
+  if (focusing) return;
+  focusing = true;
+  queueMicrotask(() => (focusing = false));
+  focus();
+}

@@ -1,7 +1,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
-import { reducedMotion } from '../../styles/index.js';
+import { reducedMotion, nativeFont } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 import { slotHasContent, observeLightDom } from '../../utils/slot-content.js';
 
@@ -54,7 +54,7 @@ const MESSAGES = defineMessages('cg-sidebar', {
  */
 @customElement('cg-sidebar')
 export class CgSidebar extends LitElement {
-  static override styles = [reducedMotion, css`
+  static override styles = [nativeFont, reducedMotion, css`
     :host {
       display: block;
       width: var(--cg-component-sidebar-width);

@@ -3,7 +3,7 @@ import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
 import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
-import { mirrorValidity, type ValidationMessages } from '../../utils/validation.js';
+import { mirrorValidity, showInvalid, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion, spinKeyframes } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -13,7 +13,7 @@ const MESSAGES = defineMessages('cg-input', {
 
 /**
  * @element cg-input
- * Text input with floating label, prefix/suffix slots, clear button, and validation states.
+ * Text input with a label above it (or a floating label), prefix/suffix slots, clear button, and validation states.
  *
  * @example
  * ```html
@@ -24,8 +24,15 @@ const MESSAGES = defineMessages('cg-input', {
  * <cg-input size="sm" affix="plain" placeholder="Search"><cg-icon slot="prefix" name="search" size="sm"></cg-icon></cg-input>
  * ```
  *
- * Without a `label` the placeholder is always visible (with one, the label
- * stands in for it until it floats). `affix="plain"` draws prefix / suffix
+ * The label sits above the field by default (`label-position="top"`: 12 px,
+ * 500, muted, 6 px gap); `label-position="floating"` puts it inside the field,
+ * where it stands in for the placeholder until it floats.
+ *
+ * Invalid state: when the field fails validation (a form's submit,
+ * `checkValidity()`, `reportValidity()`), the browser's bubble is suppressed;
+ * the field gets the error border, `aria-invalid`, its validation message
+ * under it (in place of `helper`) and a `data-invalid` attribute, and the
+ * first invalid field takes focus. The message clears once the value is valid. `affix="plain"` draws prefix / suffix
  * content inside the field with no box or divider; `size="sm"` is the
  * compact toolbar height (`--cg-component-input-height-sm`) and has no
  * floating label (it would not fit): `label` only names the field.
@@ -52,19 +59,21 @@ export class CgInput extends LitElement {
   constructor() {
     super();
     this._internals = formInternals(this);
+    // No native bubble: the field shows its own message (utils/validation showInvalid).
+    this.addEventListener('invalid', (e) => { showInvalid(e, () => this._input.focus()); this._invalid = this.validationMessage; });
   }
 
   static override styles = [hostBlock, reducedMotion, spinKeyframes, css`
     .wrapper {
+      box-sizing: border-box;
       display: flex;
       align-items: center;
       padding: 0 var(--cg-spacing-4);
       border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
       border-radius: var(--cg-component-input-radius);
       background: var(--cg-color-input-background-default);
-      transition:
-        border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition: var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition-property: border-color, box-shadow;
       height: var(--cg-component-input-height-md);
       position: relative;
       overflow: hidden; /* clips a boxed prefix / suffix to the field's corners */
@@ -110,10 +119,10 @@ export class CgInput extends LitElement {
     }
 
     /* Error */
-    :host([error]) .wrapper {
+    :host(:is([error],[data-invalid])) .wrapper {
       border-color: var(--cg-color-input-border-error);
     }
-    :host([error]) .wrapper.focused {
+    :host(:is([error],[data-invalid])) .wrapper.focused {
       border-color: var(--cg-color-status-error-text-default);
       box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
     }
@@ -164,22 +173,16 @@ export class CgInput extends LitElement {
       padding: var(--cg-spacing-8) 0;
       z-index: 1;
     }
-    :host([size="lg"]) input { font-size: var(--cg-font-size-base); padding: var(--cg-spacing-12) 0; }
+    :host([size="lg"]) input { font-size: var(--cg-font-size-base); }
 
     /* When floating label is active, shift input down to make room.
        (The label element, not :host([label]): label reflects, so the attribute is there even when empty.) */
     .floating-label+input {
-      padding-top: var(--cg-spacing-20);
-      padding-bottom: var(--cg-spacing-2);
-    }
-    :host([size="lg"]) .floating-label+input {
-      padding-top: var(--cg-spacing-24);
-      padding-bottom: var(--cg-spacing-4);
+      padding: var(--cg-spacing-16) 0 0;
     }
 
     input::placeholder {
       color: var(--cg-color-input-text-placeholder);
-      transition: color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
     /* A floating label stands in for the placeholder until it floats (focus or a value). */
     .field:not(.floated) .floating-label+input::placeholder {
@@ -197,30 +200,24 @@ export class CgInput extends LitElement {
       font-size: var(--cg-font-size-sm);
       color: var(--cg-color-input-text-placeholder);
       pointer-events: none;
-      transition:
-        top var(--cg-transition-duration-default) var(--cg-transition-easing-default),
-        transform var(--cg-transition-duration-default) var(--cg-transition-easing-default),
-        font-size var(--cg-transition-duration-default) var(--cg-transition-easing-default),
-        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+      transition: var(--cg-transition-duration-default) var(--cg-transition-easing-default);
+      transition-property: top, transform, font-size, color;
       z-index: 2;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    :host([size="lg"]) .floating-label { font-size: var(--cg-font-size-base); }
-
     /* Floated state — label shrinks and moves to top */
     .field.floated .floating-label {
-      top: var(--cg-spacing-6);
+      top: var(--cg-spacing-2);
       transform: translateY(0);
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-surface-container-text);
     }
-    :host([size="lg"]) .field.floated .floating-label { top: var(--cg-spacing-8); }
 
     /* Error / success: the floated label, the count and the helper take the status colour. */
-    :host([error]) :is(.field.floated .floating-label, .count, .helper) {
+    :host(:is([error],[data-invalid])) :is(.field.floated .floating-label, .count, .helper) {
       color: var(--cg-color-status-error-text-default);
     }
     :host([success]) :is(.field.floated .floating-label, .helper) {
@@ -235,15 +232,14 @@ export class CgInput extends LitElement {
     /* ── Slots — hidden by default, shown when content is slotted ── */
     .prefix, .suffix {
       display: none;
-      align-items: center;
-      justify-content: center;
+      place-items: center;
       color: var(--cg-color-input-icon-default);
       flex-shrink: 0;
       width: var(--cg-spacing-40);
       align-self: stretch;
       background: var(--cg-overlay-dark-subtle);
     }
-    .has-content { display: flex; }
+    .has-content { display: grid; }
     .prefix {
       border-right: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
       margin-left: calc(-1 * var(--cg-spacing-4));
@@ -263,9 +259,8 @@ export class CgInput extends LitElement {
 
     /* ── Clear button ── */
     .clear {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: grid;
+      place-items: center;
       width: var(--cg-spacing-20);
       height: var(--cg-spacing-20);
       border: none;
@@ -275,22 +270,9 @@ export class CgInput extends LitElement {
       cursor: pointer;
       padding: 0;
       flex-shrink: 0;
-      transition:
-        background-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
-        transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
-      opacity: 0;
-      transform: scale(0.8);
-      animation: clearIn 150ms var(--cg-transition-easing-ease-out) forwards;
     }
     .clear:hover { background: var(--cg-color-state-hover); color: var(--cg-color-state-text); }
-    .clear:active { transform: scale(0.9); }
     .clear svg { width: var(--cg-spacing-12); height: var(--cg-spacing-12); }
-
-    @keyframes clearIn {
-      from { opacity: 0; transform: scale(0.8); }
-      to { opacity: 1; transform: scale(1); }
-    }
 
     /* ── Character count ── */
     .count {
@@ -298,18 +280,22 @@ export class CgInput extends LitElement {
       color: var(--cg-color-input-text-placeholder);
       flex-shrink: 0;
       font-variant-numeric: tabular-nums;
-      transition: color var(--cg-transition-duration-default) var(--cg-transition-easing-default);
     }
 
-    /* ── Helper text ── */
-    .helper {
+    /* ── Label above the field (the default) and help / error text below ── */
+    .label, .helper {
+      display: block;
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-input-text-placeholder);
-      padding: var(--cg-spacing-8) var(--cg-spacing-12) 0;
     }
+    .label { font-weight: var(--cg-font-weight-medium); margin-bottom: var(--cg-component-input-label-gap); }
+    .helper { padding-top: var(--cg-spacing-4); }
   `];
 
   @property({ reflect: true }) label = '';
+  /** `top` (default): the label sits above the field (12 px, 500, muted).
+   *  `floating`: the label sits inside the field and floats up on focus / value. */
+  @property({ attribute: 'label-position' }) labelPosition: 'top' | 'floating' = 'top';
   @property() value = '';
   @property() placeholder = '';
   @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
@@ -343,6 +329,8 @@ export class CgInput extends LitElement {
   @property() autocomplete = 'off';
 
   @state() private _focused = false;
+  /** The validation message shown after an `invalid` event, until the field is valid again. */
+  @state() private _invalid = '';
   @state() private _hasPrefix = false;
   @state() private _hasSuffix = false;
 
@@ -376,6 +364,8 @@ export class CgInput extends LitElement {
     }
     // Mirror the native input: required, type="email"/"url" typeMismatch, maxlength.
     mirrorValidity(this._internals, this._input, this.validationMessages);
+    if (this._invalid) this._invalid = this.validationMessage;
+    this.toggleAttribute('data-invalid', !!this._invalid);
   }
 
   formResetCallback() {
@@ -416,15 +406,19 @@ export class CgInput extends LitElement {
   }
 
   override render() {
+    const label = this.size !== 'sm' && this.label;
+    const help = this._invalid || this.helper;
     return html`
+      ${label && this.labelPosition === 'top' ? html`<label class="label" for="i">${label}</label>` : nothing}
       <div class="wrapper ${this._focused ? 'focused' : ''} ${this._effectivelyDisabled ? 'disabled' : ''} ${this.readonly ? 'readonly' : ''}">
         <span class="prefix ${this._hasPrefix ? 'has-content' : ''}">
           <slot name="prefix" @slotchange=${(e: Event) => { this._hasPrefix = (e.target as HTMLSlotElement).assignedNodes().length > 0; }}></slot>
         </span>
 
         <div class="field ${this._isFloated ? 'floated' : ''}">
-          ${this.label && this.size !== 'sm' ? html`<span class="floating-label">${this.label}</span>` : nothing}
+          ${label && this.labelPosition === 'floating' ? html`<span class="floating-label">${label}</span>` : nothing}
           <input
+            id="i"
             .value=${this.value}
             type=${this.type}
             name=${this.name || nothing}
@@ -436,10 +430,10 @@ export class CgInput extends LitElement {
             min=${this.min || nothing}
             max=${this.max || nothing}
             autocomplete=${this.autocomplete}
-            aria-invalid=${this.error ? 'true' : 'false'}
-            aria-busy=${this.loading ? 'true' : 'false'}
+            aria-invalid=${this.error || !!this._invalid}
+            aria-busy=${this.loading}
             aria-label=${this.label || this.placeholder || nothing}
-            aria-describedby=${this.helper ? 'helper' : nothing}
+            aria-describedby=${help ? 'helper' : nothing}
             @input=${this._handleInput}
             @keydown=${this._handleKeydown}
             @focus=${this._handleFocus}
@@ -458,7 +452,7 @@ export class CgInput extends LitElement {
           <slot name="suffix" @slotchange=${(e: Event) => { this._hasSuffix = (e.target as HTMLSlotElement).assignedNodes().length > 0; }}></slot>
         </span>
       </div>
-      ${this.helper ? html`<div class="helper" id="helper">${this.helper}</div>` : nothing}
+      ${help ? html`<div class="helper" id="helper">${help}</div>` : nothing}
     `;
   }
 }

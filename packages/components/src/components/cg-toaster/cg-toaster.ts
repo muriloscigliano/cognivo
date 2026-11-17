@@ -3,7 +3,7 @@ import { svg } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { customElement } from '../../utils/define.js';
-import { reducedMotion } from '../../styles/index.js';
+import { reducedMotion, nativeFont } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
 const MESSAGES = defineMessages('cg-toaster', {
@@ -46,7 +46,7 @@ interface ToastEntry extends ToastOptions {
  */
 @customElement('cg-toaster')
 export class CgToaster extends LitElement {
-  static override styles = [reducedMotion, css`
+  static override styles = [nativeFont, reducedMotion, css`
     :host {
       position: fixed;
       z-index: var(--cg-z-index-top);

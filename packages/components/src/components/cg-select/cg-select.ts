@@ -2,7 +2,7 @@ import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
-import { setValueMissing, type ValidationMessages } from '../../utils/validation.js';
+import { setValueMissing, showInvalid, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { bindOutsideClick } from '../../utils/outside-click.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
@@ -27,6 +27,11 @@ const MESSAGES = defineMessages('cg-select', {
  * <cg-select searchable error .options=${items}></cg-select>
  * ```
  *
+ * The label sits above the trigger (12 px, 500, 6 px gap). The menu is at
+ * least as wide as the trigger and 200 px, and options stay on one line.
+ * When the field fails validation, the browser's bubble is suppressed and the
+ * message shows under the field (see cg-input).
+ *
  * @fires {CustomEvent<{value: string, label: string}>} cg-change - When a selection is made
  *
  * @cssprop [--cg-color-input-background-default=#18181b] - Trigger background
@@ -50,6 +55,8 @@ export class CgSelect extends LitElement {
   constructor() {
     super();
     this._internals = formInternals(this);
+    // No native bubble: the field shows its own message (utils/validation showInvalid).
+    this.addEventListener('invalid', (e) => { showInvalid(e, () => this.shadowRoot?.querySelector<HTMLElement>('.trigger')?.focus()); this._invalid = this.validationMessage; });
   }
 
   static override styles = [hostBlock, reducedMotion, css`
@@ -92,9 +99,9 @@ export class CgSelect extends LitElement {
     }
     .trigger.open { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); background-image: linear-gradient(var(--cg-color-state-hover), var(--cg-color-state-hover)); }
     .trigger.disabled { opacity: var(--cg-opacity-40); cursor: not-allowed; pointer-events: none; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
-    :host([error]) .trigger { border-color: var(--cg-color-input-border-error); }
-    :host([error]) .trigger:focus-visible,
-    :host([error]) .trigger.open {
+    :host(:is([error],[data-invalid])) .trigger { border-color: var(--cg-color-input-border-error); }
+    :host(:is([error],[data-invalid])) .trigger:focus-visible,
+    :host(:is([error],[data-invalid])) .trigger.open {
       border-color: var(--cg-color-status-error-text-default);
       box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
     }
@@ -111,7 +118,9 @@ export class CgSelect extends LitElement {
     .trigger.open .chevron { transform: rotate(180deg); }
 
     .dropdown {
-      position: absolute; top: 100%; left: 0; right: 0; z-index: var(--cg-z-index-200);
+      /* At least as wide as the trigger and 200 px; options never wrap (dashboard audit P1-9). */
+      position: absolute; top: 100%; left: 0; z-index: var(--cg-z-index-200);
+      box-sizing: border-box; min-width: max(100%, 200px); width: max-content; max-width: max(100%, 320px);
       margin-top: var(--cg-spacing-4); padding: var(--cg-spacing-6);
       background: var(--cg-color-modal-container-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-cards-border);
@@ -133,7 +142,9 @@ export class CgSelect extends LitElement {
       color: var(--cg-color-surface-base-text);
       transition: background-color var(--cg-transition-duration-state) var(--cg-transition-easing-ease-out);
       display: flex; align-items: center; gap: var(--cg-spacing-8);
+      white-space: nowrap;
     }
+    .option > span { overflow: hidden; text-overflow: ellipsis; }
     .option.highlighted { background: var(--cg-color-state-hover); }
     .option.selected { color: var(--cg-color-state-text); font-weight: var(--cg-font-weight-medium); }
     .option.disabled { opacity: var(--cg-opacity-40); pointer-events: none; }
@@ -159,13 +170,14 @@ export class CgSelect extends LitElement {
 
     .empty-msg { padding: var(--cg-spacing-12); text-align: center; color: var(--cg-color-input-text-placeholder); font-size: var(--cg-font-size-sm); }
 
-    .label { display: block; font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-medium); color: var(--cg-color-surface-container-text); margin-bottom: var(--cg-spacing-4); }
+    .label { display: block; font-size: var(--cg-font-size-xs); font-weight: var(--cg-font-weight-medium); color: var(--cg-color-surface-container-text); margin-bottom: var(--cg-component-input-label-gap); }
+    .helper { padding-top: var(--cg-spacing-4); font-size: var(--cg-font-size-xs); color: var(--cg-color-status-error-text-default); }
 
     /* Size variants */
-    :host([size="sm"]) .trigger { height: var(--cg-component-input-height-sm); font-size: var(--cg-font-size-xs); padding: 0 var(--cg-spacing-8); border-radius: var(--cg-border-radius-100); }
+    :host([size="sm"]) .trigger { height: var(--cg-component-input-height-sm); font-size: var(--cg-font-size-xs); padding: 0 var(--cg-spacing-8); }
     :host([size="sm"]) .option { font-size: var(--cg-font-size-xs); }
 
-    :host([size="lg"]) .trigger { height: var(--cg-component-input-height-lg); font-size: var(--cg-font-size-base); padding: 0 var(--cg-spacing-16); border-radius: var(--cg-border-radius-150); }
+    :host([size="lg"]) .trigger { height: var(--cg-component-input-height-lg); font-size: var(--cg-font-size-base); padding: 0 var(--cg-spacing-16); }
     :host([size="lg"]) .option { font-size: var(--cg-font-size-base); }
 
     /* ── Rounded overrides ── */
@@ -231,6 +243,8 @@ export class CgSelect extends LitElement {
     if (changed.has('required') || changed.has('value')) {
       setValueMissing(this._internals, this.required && !this.value, this.validationMessages, 'select');
     }
+    if (this._invalid) this._invalid = this.validationMessage;
+    this.toggleAttribute('data-invalid', !!this._invalid);
   }
 
   formResetCallback() {
@@ -242,6 +256,8 @@ export class CgSelect extends LitElement {
   }
 
   @state() private _open = false;
+  /** The validation message shown after an `invalid` event, until the field is valid again. */
+  @state() private _invalid = '';
   @state() private _search = '';
   @state() private _highlighted = -1;
 
@@ -360,7 +376,8 @@ export class CgSelect extends LitElement {
         aria-label=${labelledby ? nothing : accessibleName || (this.placeholder ?? this.i18n.t('placeholder'))}
         aria-activedescendant=${this._open && this._highlighted >= 0 && this._highlighted < filtered.length ? `select-option-${this._highlighted}` : nothing}
         aria-required=${this.required ? 'true' : 'false'}
-        aria-invalid=${this.error ? 'true' : 'false'}
+        aria-invalid=${this.error || !!this._invalid}
+        aria-describedby=${this._invalid ? 'helper' : nothing}
         aria-busy=${this.loading ? 'true' : 'false'}
         @click=${this._toggle}
         @keydown=${this._handleKeydown}
@@ -404,6 +421,7 @@ export class CgSelect extends LitElement {
           </div>
         `)}
       </div>
+      ${this._invalid ? html`<div class="helper" id="helper">${this._invalid}</div>` : nothing}
     `;
   }
 }

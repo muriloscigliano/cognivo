@@ -66,12 +66,12 @@ describe.skipIf(!browserAvailable)('cg-modal focus and visibility (real browser)
       return el?.tagName === 'BUTTON' && el.classList.contains('close-btn');
     });
     expect(await tabTrail(page, 4)).toEqual([
-      'cg-input#name>input',
-      'cg-input#email>input',
+      'cg-input#name>input#i',
+      'cg-input#email>input#i',
       'cg-button#save>button',
       'cg-modal#m>button', // wraps to the close button
     ]);
-    expect(await tabTrail(page, 2, 'Shift+Tab')).toEqual(['cg-button#save>button', 'cg-input#email>input']);
+    expect(await tabTrail(page, 2, 'Shift+Tab')).toEqual(['cg-button#save>button', 'cg-input#email>input#i']);
     await page.close();
   });
 

@@ -7,7 +7,10 @@ import { pureStyle } from './pure-style.js';
 
 /**
  * Base :host styles for inline-flex components (buttons, badges, chips).
- * Includes font-family, color transition, and box-sizing.
+ * Includes font-family, color transition, and box-sizing, and the native
+ * control reset: buttons and fields inside the shadow root inherit the
+ * component's font instead of the browser's 13.33 px control font (zero
+ * specificity, so any component rule wins).
  */
 export const hostBase = /* @__PURE__ */ pureStyle(() => css`
   :host {
@@ -16,6 +19,7 @@ export const hostBase = /* @__PURE__ */ pureStyle(() => css`
     box-sizing: border-box;
     transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
   }
+  :where(button, input, select, textarea) { font: inherit; }
 `);
 
 /**
@@ -28,6 +32,12 @@ export const hostBlock = /* @__PURE__ */ pureStyle(() => css`
     box-sizing: border-box;
     transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
   }
+  :where(button, input, select, textarea) { font: inherit; }
+`);
+
+/** Native controls inherit the component's font (for components without hostBase / hostBlock). */
+export const nativeFont = /* @__PURE__ */ pureStyle(() => css`
+  :where(button, input, select, textarea) { font: inherit; }
 `);
 
 /** Hide host when [hidden] attribute is present. */

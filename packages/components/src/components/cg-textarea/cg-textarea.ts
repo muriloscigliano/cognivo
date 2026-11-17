@@ -2,7 +2,7 @@ import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
-import { mirrorValidity, type ValidationMessages } from '../../utils/validation.js';
+import { mirrorValidity, showInvalid, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -12,7 +12,12 @@ const MESSAGES = defineMessages('cg-textarea', {
 
 /**
  * @element cg-textarea
- * Multi-line text input with floating label, optional auto-resize, and character count.
+ * Multi-line text input with a label above it (or `label-position="floating"`),
+ * an optional toolbar, optional auto-resize, and character count.
+ *
+ * `slot="toolbar"` content sits above the text, inside the field's border
+ * (formatting buttons, "Insert variable"). Invalid state as in cg-input: no
+ * native bubble, the message under the field, the first invalid field focused.
  *
  * @example
  * ```html
@@ -21,6 +26,7 @@ const MESSAGES = defineMessages('cg-textarea', {
  * <cg-textarea label="Notes" error helper="Required field"></cg-textarea>
  * ```
  *
+ * @slot toolbar - Controls above the text, inside the border
  * @fires {CustomEvent<{value: string}>} cg-input - On every input change
  *
  * @cssprop [--cg-color-input-background-default=#18181b] - Textarea background
@@ -36,6 +42,8 @@ export class CgTextarea extends LitElement {
   constructor() {
     super();
     this._internals = formInternals(this);
+    // No native bubble: the field shows its own message (utils/validation showInvalid).
+    this.addEventListener('invalid', (e) => { showInvalid(e, () => this.focus()); this._invalid = this.validationMessage; });
   }
 
   static override styles = [hostBlock, reducedMotion, css`
@@ -48,13 +56,35 @@ export class CgTextarea extends LitElement {
       position: relative;
     }
 
-    textarea {
-      width: 100%;
-      box-sizing: border-box;
-      padding: var(--cg-spacing-12);
+    /* The frame carries the field's border, radius and states, around the
+       optional toolbar and the text. */
+    .frame {
+      position: relative;
       border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
       border-radius: var(--cg-component-input-radius);
       background: var(--cg-color-input-background-default);
+      overflow: hidden;
+      transition:
+        border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default),
+        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
+    }
+    /* Toolbar above the text, inside the border (Bold, Link, Insert variable…). */
+    slot[name="toolbar"]::slotted(*) {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-4);
+      padding: var(--cg-spacing-4);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
+    }
+
+    textarea {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      padding: var(--cg-spacing-12);
+      border: none;
+      border-radius: 0;
+      background: transparent;
       color: var(--cg-color-input-text-default);
       font: inherit;
       font-size: var(--cg-font-size-sm);
@@ -62,21 +92,16 @@ export class CgTextarea extends LitElement {
       resize: vertical;
       outline: none;
       min-height: var(--cg-spacing-96);
-      transition:
-        border-color var(--cg-transition-duration-default) var(--cg-transition-easing-default),
-        box-shadow var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    textarea::placeholder { color: transparent; }
-    .field.floated textarea::placeholder {
-      color: var(--cg-color-input-text-placeholder);
-      transition: color var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
-    }
-    :host(:not([label])) textarea::placeholder { color: var(--cg-color-input-text-placeholder); }
+    textarea::placeholder { color: var(--cg-color-input-text-placeholder); }
+    /* A floating label stands in for the placeholder until it floats. */
+    .field:not(.floated) .floating-label + textarea::placeholder { color: transparent; }
 
-    textarea:hover:not(:disabled):not([readonly]) { border-color: var(--cg-color-input-border-hover); }
-    textarea:focus-visible { outline: none; border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); }
-    textarea:disabled { opacity: var(--cg-opacity-40); cursor: not-allowed; background: var(--cg-color-input-background-disabled); }
-    textarea[readonly] { background: var(--cg-color-surface-field-readonly-background); }
+    .frame:hover:not(:has(:disabled, [readonly])) { border-color: var(--cg-color-input-border-hover); }
+    .frame:has(textarea:focus-visible) { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); }
+    .frame:has(textarea:disabled) { opacity: var(--cg-opacity-40); background: var(--cg-color-input-background-disabled); }
+    textarea:disabled { cursor: not-allowed; }
+    .frame:has(textarea[readonly]) { background: var(--cg-color-surface-field-readonly-background); }
 
     /* Loading */
     :host([loading]) .wrapper { position: relative; pointer-events: none; opacity: 0.7; }
@@ -103,23 +128,23 @@ export class CgTextarea extends LitElement {
     }
 
     /* When floating label is active, shift textarea padding to make room */
-    :host([label]) textarea {
+    .floating-label + textarea {
       padding-top: var(--cg-spacing-24);
       padding-bottom: var(--cg-spacing-6);
     }
-    :host([label][size="lg"]) textarea {
+    :host([size="lg"]) .floating-label + textarea {
       padding-top: var(--cg-spacing-32);
       padding-bottom: var(--cg-spacing-8);
     }
 
-    :host([error]) textarea { border-color: var(--cg-color-input-border-error); }
-    :host([error]) textarea:focus-visible {
+    :host(:is([error],[data-invalid])) .frame { border-color: var(--cg-color-input-border-error); }
+    :host(:is([error],[data-invalid])) .frame:has(textarea:focus-visible) {
       border-color: var(--cg-color-status-error-text-default);
       box-shadow: 0 0 0 3px var(--cg-shadow-focus-error);
     }
 
-    :host([success]) textarea { border-color: var(--cg-color-input-icon-success); }
-    :host([success]) textarea:focus-visible {
+    :host([success]) .frame { border-color: var(--cg-color-input-icon-success); }
+    :host([success]) .frame:has(textarea:focus-visible) {
       border-color: var(--cg-color-status-success-text-default);
       box-shadow: 0 0 0 3px var(--cg-shadow-focus-success);
     }
@@ -163,7 +188,7 @@ export class CgTextarea extends LitElement {
     }
 
     /* Error state label color */
-    :host([error]) .field.floated .floating-label {
+    :host(:is([error],[data-invalid])) .field.floated .floating-label {
       color: var(--cg-color-status-error-text-default);
     }
 
@@ -186,25 +211,26 @@ export class CgTextarea extends LitElement {
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-input-text-placeholder);
     }
-    :host([error]) .count { color: var(--cg-color-status-error-text-default); }
+    :host(:is([error],[data-invalid])) :is(.count, .helper) { color: var(--cg-color-status-error-text-default); }
 
-    /* ── Helper text ── */
-    .helper {
+    /* ── Label above the field (the default) and help / error text below ── */
+    .label, .helper {
+      display: block;
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-input-text-placeholder);
-      padding: var(--cg-spacing-8) var(--cg-spacing-12) 0;
     }
-    :host([error]) .helper { color: var(--cg-color-status-error-text-default); }
+    .label { font-weight: var(--cg-font-weight-medium); margin-bottom: var(--cg-component-input-label-gap); }
+    .helper { padding-top: var(--cg-spacing-4); }
     :host([success]) .helper { color: var(--cg-color-status-success-text-default); }
 
     /* Size variants */
     :host([size="lg"]) textarea { font-size: var(--cg-font-size-base); padding: var(--cg-spacing-12) var(--cg-spacing-16); min-height: var(--cg-spacing-128); }
 
     /* ── Rounded overrides ── */
-    :host([rounded="none"]) textarea { border-radius: 0; }
-    :host([rounded="sm"]) textarea { border-radius: var(--cg-border-radius-50); }
-    :host([rounded="md"]) textarea { border-radius: var(--cg-border-radius-100); }
-    :host([rounded="lg"]) textarea { border-radius: var(--cg-component-input-radius); }
+    :host([rounded="none"]) .frame { border-radius: 0; }
+    :host([rounded="sm"]) .frame { border-radius: var(--cg-border-radius-50); }
+    :host([rounded="md"]) .frame { border-radius: var(--cg-border-radius-100); }
+    :host([rounded="lg"]) .frame { border-radius: var(--cg-component-input-radius); }
   `];
 
   /** Per-element text overrides (JSON attribute); see `setMessages()`. */
@@ -212,6 +238,8 @@ export class CgTextarea extends LitElement {
   private i18n = new Messages(this, MESSAGES);
 
   @property({ reflect: true }) label = '';
+  /** `top` (default): the label sits above the field. `floating`: inside it, floating up on focus / value. */
+  @property({ attribute: 'label-position' }) labelPosition: 'top' | 'floating' = 'top';
   @property() helper = '';
   @property({ reflect: true }) size: 'md' | 'lg' = 'md';
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
@@ -234,6 +262,8 @@ export class CgTextarea extends LitElement {
   @property({ type: Boolean }) required = false;
 
   @state() private _focused = false;
+  /** The validation message shown after an `invalid` event, until the field is valid again. */
+  @state() private _invalid = '';
 
   @query('textarea') private _textarea!: HTMLTextAreaElement;
 
@@ -305,6 +335,8 @@ export class CgTextarea extends LitElement {
       this._internals?.setFormValue(this.value);
     }
     mirrorValidity(this._internals, this._textarea, this.validationMessages);
+    if (this._invalid) this._invalid = this.validationMessage;
+    this.toggleAttribute('data-invalid', !!this._invalid);
     if (this.autoresize && changed.has('value') && this._textarea) {
       this._textarea.style.height = 'auto';
       this._textarea.style.height = this._textarea.scrollHeight + 'px';
@@ -339,33 +371,40 @@ export class CgTextarea extends LitElement {
   override render() {
     const fieldClasses = ['field', this._isFloated ? 'floated' : ''].filter(Boolean).join(' ');
 
+    const floating = this.labelPosition === 'floating';
+    const help = this._invalid || this.helper;
     return html`
+      ${this.label && !floating ? html`<label class="label" for="t">${this.label}</label>` : nothing}
       <div class="wrapper ${this._effectivelyDisabled ? 'disabled' : ''}">
+        <div class="frame">
+        <slot name="toolbar"></slot>
         <div class=${fieldClasses}>
-          ${this.label ? html`<span class="floating-label">${this.label}</span>` : nothing}
+          ${this.label && floating ? html`<span class="floating-label">${this.label}</span>` : nothing}
           <textarea
+            id="t"
             .value=${this.value}
             rows=${this.rows}
             name=${this.name || nothing}
-            placeholder=${this.placeholder || (this.label ? ' ' : nothing)}
+            placeholder=${this.placeholder || (this.label && floating ? ' ' : nothing)}
             maxlength=${this.maxlength || nothing}
             ?disabled=${this._effectivelyDisabled || this.loading}
             ?readonly=${this.readonly}
             ?required=${this.required}
-            aria-invalid=${this.error ? 'true' : 'false'}
+            aria-invalid=${this.error || !!this._invalid}
             aria-busy=${this.loading ? 'true' : 'false'}
             aria-required=${this.required ? 'true' : 'false'}
             aria-label=${this.label || nothing}
-            aria-describedby=${[this.helper ? 'helper' : '', this.maxlength ? 'count' : ''].filter(Boolean).join(' ') || nothing}
+            aria-describedby=${[help ? 'helper' : '', this.maxlength ? 'count' : ''].filter(Boolean).join(' ') || nothing}
             @input=${this._handleInput}
             @focus=${this._handleFocus}
             @blur=${this._handleBlur}
           ></textarea>
           ${this.loading ? html`<div class="loading-overlay" role="status" aria-label=${this.i18n.t('loading')}><span class="loading-spinner" aria-hidden="true"></span></div>` : nothing}
         </div>
+        </div>
         ${this.maxlength ? html`<div class="footer"><span class="count" id="count">${this.value.length}/${this.maxlength}</span></div>` : nothing}
       </div>
-      ${this.helper ? html`<div class="helper" id="helper">${this.helper}</div>` : nothing}
+      ${help ? html`<div class="helper" id="helper">${help}</div>` : nothing}
     `;
   }
 }

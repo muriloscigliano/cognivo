@@ -200,8 +200,18 @@ describe('cg-input', () => {
     expect(count!.textContent).toBe('5/200');
   });
 
-  it('floating label renders with label text', async () => {
+  it('label renders above the field by default, as a <label> for the input', async () => {
     el.label = 'Username';
+    await el.updateComplete;
+    const label = el.shadowRoot!.querySelector('label.label');
+    expect(label?.textContent).toBe('Username');
+    expect(label?.getAttribute('for')).toBe(el.shadowRoot!.querySelector('input')!.id);
+    expect(el.shadowRoot!.querySelector('.floating-label')).toBeNull();
+  });
+
+  it('label-position="floating" renders the floating label with label text', async () => {
+    el.label = 'Username';
+    el.labelPosition = 'floating';
     await el.updateComplete;
 
     const floatingLabel = el.shadowRoot!.querySelector('.floating-label');
