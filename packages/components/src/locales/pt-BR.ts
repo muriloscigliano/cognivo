@@ -265,6 +265,7 @@ export const ptBR: LocaleMessages = {
     page: 'Página {page}',
     previousLabel: 'Anterior',
     nextLabel: 'Próxima',
+    range: '{start}–{end} de {total}',
   },
   'cg-password-input': {
     label: 'Senha',

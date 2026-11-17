@@ -14,6 +14,9 @@ import { hostBlock, reducedMotion } from '../../styles/index.js';
  * </cg-empty-state>
  * ```
  *
+ * `compact`: the empty state inside a card or list (no icon, start-aligned,
+ * 14 px / 500 title, 13 px muted line, the optional action pill below).
+ *
  * @slot icon - Override the default icon
  * @slot - Extra body content below description
  * @slot actions - Buttons row at the bottom
@@ -90,9 +93,31 @@ export class CgEmptyState extends LitElement {
       margin-top: var(--cg-spacing-8);
     }
     .actions[hidden] { display: none; }
+
+    /* Compact: the empty state inside a card or list — no icon, start-aligned,
+       a 14 px / 500 title and a 13 px muted line, the optional pill below. */
+    :host([compact]) .root {
+      align-items: flex-start;
+      text-align: start;
+      gap: var(--cg-spacing-2);
+      padding: var(--cg-spacing-16) 0;
+    }
+    :host([compact]) .icon-wrap { display: none; }
+    :host([compact]) .title {
+      font-size: var(--cg-font-size-sm);
+      font-weight: var(--cg-font-weight-medium);
+      color: var(--cg-color-state-text);
+    }
+    :host([compact]) .description {
+      font-size: var(--cg-font-size-13);
+      color: var(--cg-color-on-surface-container-default);
+    }
+    :host([compact]) .actions { justify-content: flex-start; }
   `];
 
   @property({ reflect: true }) variant: 'default' | 'search' | 'error' | 'success' | 'info' | 'ai' = 'default';
+  /** Compact (in a card or list): no icon, start-aligned, 14 px title, 13 px muted line. */
+  @property({ type: Boolean, reflect: true }) compact = false;
   @property() override title = '';
   @property() description = '';
   @property() icon = '';

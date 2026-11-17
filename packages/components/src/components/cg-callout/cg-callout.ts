@@ -16,6 +16,9 @@ const MESSAGES = defineMessages('cg-callout', {
  * - Icon auto-selected by variant (or custom via slot)
  * - Action slot (button)
  * - 5 semantic variants
+ * - `quiet`: an inline error / notice on the panel surface (hairline border,
+ *   the status colour only on a 16 px icon, 14 px title, 13 px muted line):
+ *   `<cg-callout quiet variant="danger" title="Could not load contacts">`
  */
 @customElement('cg-callout')
 export class CgCallout extends LitElement {
@@ -63,6 +66,23 @@ export class CgCallout extends LitElement {
 
     :host([variant="neutral"]) .icon,
     :host([variant="neutral"]) .title { color: var(--cg-color-surface-container-text); }
+
+    /* Quiet: an inline error / notice on the panel surface — hairline border,
+       the status colour only on a 16 px icon, a 14 px near-black title and a
+       13 px muted line. Pair it with a grey "Try again" pill in slot="action". */
+    :host([quiet]) .callout {
+      background: var(--cg-color-surface-panel-background);
+      border-color: var(--cg-color-surface-hairline);
+    }
+    :host([quiet]) .title { color: var(--cg-color-state-text); }
+    :host([quiet]) .description {
+      font-size: var(--cg-font-size-13);
+      color: var(--cg-color-on-surface-container-default);
+    }
+    :host([quiet]) .icon svg {
+      width: var(--cg-icon-size-100);
+      height: var(--cg-icon-size-100);
+    }
 
     .icon {
       flex-shrink: 0;
@@ -141,6 +161,8 @@ export class CgCallout extends LitElement {
   @property() override title = '';
   @property() description = '';
   @property({ type: Boolean }) dismissible = false;
+  /** Quiet surface: panel background and hairline; the variant colours only the icon. */
+  @property({ type: Boolean, reflect: true }) quiet = false;
 
   @state() private _dismissed = false;
   @state() private _dismissing = false;

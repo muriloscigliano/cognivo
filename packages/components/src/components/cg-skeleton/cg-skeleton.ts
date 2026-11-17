@@ -17,7 +17,13 @@ const MESSAGES = defineMessages('cg-skeleton', {
  * <cg-skeleton variant="circular" width="40px" height="40px"></cg-skeleton>
  * <cg-skeleton variant="text" lines="3"></cg-skeleton>
  * <cg-skeleton no-animation></cg-skeleton>
+ * <cg-skeleton variant="row" count="8"></cg-skeleton>
  * ```
+ *
+ * `variant="row"`: `count` list rows at the list density
+ * (`--cg-component-table-row-height-list`, hairlines between): a 32 px
+ * circle, two text lines and a short value at the end, so the page keeps its
+ * final layout while it loads. The group is one status, not one per row.
  *
  * @cssprop --cg-color-loading-spinner-secondary - Skeleton background color
  * @cssprop --cg-border-radius-100 - Default border radius (12px)
@@ -65,6 +71,20 @@ export class CgSkeleton extends LitElement {
       flex-direction: column;
     }
 
+    /* ── List rows ── */
+    .row {
+      display: flex;
+      align-items: center;
+      gap: var(--cg-spacing-12);
+      box-sizing: border-box;
+      height: var(--cg-component-table-row-height-list);
+    }
+    .row + .row { border-top: var(--cg-border-width-50) solid var(--cg-color-surface-hairline); }
+    .row .circular { width: var(--cg-spacing-32); height: var(--cg-spacing-32); flex-shrink: 0; }
+    .row .lines { flex: 1; display: grid; gap: var(--cg-spacing-8); }
+    .row .text-line + .text-line { margin-top: 0; }
+    .row .end { width: var(--cg-spacing-64); }
+
     /* Reduced motion: no animation, static placeholder */
     @media (prefers-reduced-motion: reduce) {
       .skeleton {
@@ -78,7 +98,9 @@ export class CgSkeleton extends LitElement {
 
   private i18n = new Messages(this, MESSAGES);
 
-  @property({ type: String, reflect: true }) variant: 'text' | 'circular' | 'rectangular' = 'rectangular';
+  @property({ type: String, reflect: true }) variant: 'text' | 'circular' | 'rectangular' | 'row' = 'rectangular';
+  /** `variant="row"`: how many rows. */
+  @property({ type: Number }) count = 3;
   @property({ type: String }) width = '100%';
   @property({ type: String }) height = '';
   @property({ type: Number }) lines = 3;
@@ -101,6 +123,18 @@ export class CgSkeleton extends LitElement {
   }
 
   override render() {
+    if (this.variant === 'row') {
+      return html`
+        <div role="status" aria-label=${this.i18n.t('loading')} aria-busy="true">
+          ${Array.from({ length: Math.max(1, Math.min(50, this.count)) }, () => html`
+            <div class="row">
+              <div class="skeleton circular"></div>
+              <div class="lines"><div class="skeleton text-line" style="width: 40%"></div><div class="skeleton text-line" style="width: 24%"></div></div>
+              <div class="skeleton text-line end"></div>
+            </div>`)}
+        </div>
+      `;
+    }
     if (this.variant === 'text') {
       const lineCount = Math.max(1, Math.min(20, this.lines));
       return html`

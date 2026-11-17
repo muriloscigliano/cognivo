@@ -14,7 +14,8 @@ const MESSAGES = defineMessages('cg-modal', {
 
 /**
  * @element cg-modal
- * Modal dialog with backdrop blur, scale animation, focus trap, and scroll lock.
+ * Modal dialog with a light backdrop (no blur), scale animation, focus trap, and scroll lock.
+ * Radius 12 px (`--cg-component-modal-radius`); footer `cg-button`s are the 36 px default.
  *
  * @example
  * ```html
@@ -48,9 +49,8 @@ export class CgModal extends LitElement {
       position: fixed;
       inset: 0;
       z-index: var(--cg-z-index-500);
+      /* A light dim, no blur (calm: black 32 %, dark 56 %). */
       background: var(--cg-color-modal-overlay-background);
-      backdrop-filter: blur(var(--cg-blur-backdrop)) saturate(150%);
-      -webkit-backdrop-filter: blur(var(--cg-blur-backdrop)) saturate(150%);
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default);

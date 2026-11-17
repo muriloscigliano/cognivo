@@ -85,8 +85,9 @@ export class CgSegmentedControl extends LitElement {
       align-items: center;
       justify-content: center;
       gap: var(--cg-spacing-6);
-      height: calc(var(--cg-component-segmented-control-height-md) - 2 * var(--cg-component-segmented-control-padding));
-      padding: 0 var(--cg-spacing-16);
+      /* Track height minus the padding and the border on both sides: md 32 → 26 px options, inset 3 px. */
+      height: calc(var(--cg-component-segmented-control-height-md) - 2 * (var(--cg-component-segmented-control-padding) + var(--cg-border-width-50)));
+      padding: 0 var(--cg-spacing-12);
       border: none;
       background: transparent;
       color: var(--cg-color-surface-container-outlined);
@@ -122,12 +123,12 @@ export class CgSegmentedControl extends LitElement {
 
     /* Sizes */
     :host([size="sm"]) .segment {
-      height: calc(var(--cg-component-segmented-control-height-sm) - 2 * var(--cg-component-segmented-control-padding));
+      height: calc(var(--cg-component-segmented-control-height-sm) - 2 * (var(--cg-component-segmented-control-padding) + var(--cg-border-width-50)));
       padding: 0 var(--cg-spacing-12);
       font-size: var(--cg-font-size-xs);
     }
     :host([size="lg"]) .segment {
-      height: calc(var(--cg-component-segmented-control-height-lg) - 2 * var(--cg-component-segmented-control-padding));
+      height: calc(var(--cg-component-segmented-control-height-lg) - 2 * (var(--cg-component-segmented-control-padding) + var(--cg-border-width-50)));
       padding: 0 var(--cg-spacing-20);
       font-size: var(--cg-font-size-base);
     }
