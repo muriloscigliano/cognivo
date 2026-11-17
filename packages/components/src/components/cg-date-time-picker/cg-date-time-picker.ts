@@ -2,7 +2,7 @@ import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
-import { setValueMissing, type ValidationMessages } from '../../utils/validation.js';
+import { messageFor, setValueMissing, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -35,16 +35,25 @@ function wallParts(ms: number, timeZone: string): { date: string; time: string; 
   return { date: `${g('year')}-${pad(g('month'))}-${pad(g('day'))}`, time: `${pad(g('hour'))}:${pad(g('minute'))}`, utc };
 }
 
-/** The instant (ms) of a wall-clock date + time in a time zone (DST-aware). */
+/**
+ * The instant (ms) of a wall-clock date + time in a time zone (DST-aware),
+ * the same way every time (Temporal's "compatible"):
+ * - a wall time that happens twice (the clocks go back) is the EARLIER
+ *   instant — the offset before the change (New York 01:30 on 2026-11-01 is
+ *   -04:00);
+ * - a wall time that never happens (the clocks go forward) moves forward by
+ *   the gap — read with the offset before the change (New York 02:30 on
+ *   2026-03-08 is 03:30 -04:00; London 01:30 on 2026-03-29 is 02:30 +01:00).
+ */
 function zonedInstant(date: string, time: string, timeZone: string): number {
   const [y, mo, d] = date.split('-').map(Number);
   const [h, mi] = time.split(':').map(Number);
-  const guess = Date.UTC(y!, mo! - 1, d!, h!, mi!);
+  const wall = Date.UTC(y!, mo! - 1, d!, h!, mi!);
   const offset = (ms: number) => wallParts(ms, timeZone).utc - Math.floor(ms / 1000) * 1000;
-  let inst = guess - offset(guess);
-  const second = guess - offset(inst);
-  if (second !== inst) inst = second;
-  return inst;
+  // The offsets a day either side cover any one transition.
+  const before = offset(wall - 864e5);
+  const fits = [before, offset(wall + 864e5)].map((o) => wall - o).filter((ms) => wallParts(ms, timeZone).utc === wall);
+  return fits.length ? Math.min(...fits) : wall - before;
 }
 
 /** "+hh:mm" / "-hh:mm" offset of a time zone at an instant. */
@@ -73,6 +82,16 @@ function offsetString(ms: number, timeZone: string): string {
  * "Jan 31, 2027, 9:00 AM (GMT-3)" in the page's locale (`lang`). Without
  * `time-zone` the browser's zone is shown and a value without an offset
  * stays as written (`2027-01-31T09:00`).
+ *
+ * Daylight saving: a value with an offset keeps its instant until the user
+ * edits it (the second 01:30 of a fall-back night stays the second). A wall
+ * time the user picks (or a value without an offset) that happens twice
+ * takes the earlier offset; one that never happens moves forward by the gap
+ * (New York 02:30 on 2026-03-08 → 03:30 -04:00) — the same rule every time.
+ * `min` / `max` are instants (time and offset count; a date alone is that
+ * whole day in the zone): outside them the field is rangeUnderflow /
+ * rangeOverflow, and days wholly outside are disabled (still reachable with
+ * the arrows, not pickable). "Today" is the zone's today.
  *
  * Keyboard: Enter / Space / ArrowDown on the trigger opens the calendar on
  * the selected day (or today); the arrows move by day / week, Page Up /
@@ -362,19 +381,54 @@ export class CgDateTimePicker extends LitElement {
   formResetCallback(): void { this.value = this.getAttribute('value') ?? ''; }
   formStateRestoreCallback(state: string): void { this.value = state; }
 
-  /** The submitted value: with a time zone (or an offset given), wall time + that zone's offset. */
+  /** The submitted value: with a time zone (or an offset given), the instant as wall time + the
+   *  zone's offset at that instant — an offset value keeps its instant (the second 01:30 of a
+   *  fall-back night stays the second) until the user edits it. */
   private get _formValue(): string {
-    const { date, time, zoned } = this._parsed;
+    const { date, time, zoned, at } = this._parsed;
     if (!date) return '';
     if (!time) return date;
     if (!(this.timeZone || zoned)) return `${date}T${time}`;
-    return `${date}T${time}:00${offsetString(zonedInstant(date, time, this._zone), this._zone)}`;
+    return this._stamp(at!);
+  }
+  /** An instant as `YYYY-MM-DDTHH:mm:00±hh:mm` in the zone. */
+  private _stamp(at: number): string {
+    const w = wallParts(at, this._zone);
+    return `${w.date}T${w.time}:00${offsetString(at, this._zone)}`;
+  }
+
+  /** `min` / `max` as instants (time and offset included); a date alone is that whole day. */
+  private _bound(value: string, end: boolean): number | undefined {
+    const b = this._parse(value);
+    if (!b.date) return undefined;
+    if (b.at !== undefined) return b.at;
+    const [y, m, d] = b.date.split('-').map(Number);
+    return end ? zonedInstant(new Date(Date.UTC(y!, m! - 1, d! + 1)).toISOString().slice(0, 10), '00:00', this._zone) - 1 : zonedInstant(b.date, '00:00', this._zone);
   }
 
   override updated(changed: PropertyValues) {
     super.updated(changed);
     if (changed.has('value') || changed.has('timeZone')) this._internals?.setFormValue(this._formValue);
-    setValueMissing(this._internals, this.required && !this.value, this.validationMessages, 'text', this._trigger);
+    // Validity: valueMissing, else the instant against min / max.
+    const { at, date } = this._parsed;
+    const point = at ?? (date ? zonedInstant(date, '00:00', this._zone) : undefined);
+    const min = this._bound(this.min, false);
+    const max = this._bound(this.max, true);
+    const key = point === undefined ? '' : min !== undefined && point < min ? 'rangeUnderflow' : max !== undefined && point > max ? 'rangeOverflow' : '';
+    if (key && !(this.required && !this.value)) {
+      // The browser's own wording for the bound ("Value must be … or later"), from a
+      // datetime-local probe in wall time one minute past it (both 01:30s of a
+      // fall-back night read alike, so the value itself cannot be the probe's).
+      const probe = document.createElement('input');
+      probe.type = 'datetime-local';
+      const wall = (ms: number) => { const w = wallParts(ms, this._zone); return `${w.date}T${w.time}`; };
+      const bound = key === 'rangeUnderflow' ? min! : max!;
+      probe[key === 'rangeUnderflow' ? 'min' : 'max'] = wall(bound);
+      probe.value = wall(bound + (key === 'rangeUnderflow' ? -6e4 : 6e4));
+      this._internals?.setValidity({ [key]: true }, messageFor(key, this.validationMessages, probe.validationMessage), this._trigger ?? undefined);
+    } else {
+      setValueMissing(this._internals, this.required && !this.value, this.validationMessages, 'text', this._trigger);
+    }
     if (this._invalid) this._invalid = this.validationMessage;
     this.toggleAttribute('data-invalid', !!this._invalid);
   }
@@ -398,34 +452,40 @@ export class CgDateTimePicker extends LitElement {
 
   // ── Parsing ──
   /** Wall date / time in the zone; `zoned` when the value was an instant with an offset. */
-  private get _parsed(): { date: string; time: string; zoned: boolean } {
-    const m = VALUE.exec(this.value);
+  private get _parsed(): { date: string; time: string; zoned: boolean; at?: number | undefined } {
+    return this._parse(this.value);
+  }
+  /** A value, `min` or `max`: its wall date / time in the zone and, with a time, its instant
+   *  (`at`) — the given instant when it has an offset, else the wall time read in the zone. */
+  private _parse(value: string): { date: string; time: string; zoned: boolean; at?: number | undefined } {
+    const m = VALUE.exec(value);
     if (!m) return { date: '', time: '', zoned: false };
     if (m[2] && m[3]) {
-      const ms = Date.parse(this.value);
-      if (!Number.isNaN(ms)) return { ...wallParts(ms, this._zone), zoned: true };
+      const at = Date.parse(value);
+      if (!Number.isNaN(at)) return { ...wallParts(at, this._zone), zoned: true, at };
     }
-    return { date: m[1]!, time: m[2] ?? '', zoned: false };
+    const time = m[2] ?? '';
+    return { date: m[1]!, time, zoned: false, at: time ? zonedInstant(m[1]!, time, this._zone) : undefined };
   }
+  /** Today's date in the zone. */
+  private get _today(): string { return wallParts(Date.now(), this._zone).date; }
   private get _date(): string { return this._parsed.date; }
   private get _time(): string { return this._parsed.time; }
   /** Write a new wall date + time back, keeping the value's form (offset or not). */
   private _setWall(date: string, time: string) {
     const zoned = !!this.timeZone || this._parsed.zoned;
-    this.value = zoned ? `${date}T${time}:00${offsetString(zonedInstant(date, time, this._zone), this._zone)}` : `${date}T${time}`;
+    // An edit resolves the wall time in the zone (zonedInstant: earlier offset / forward over a gap).
+    this.value = zoned ? this._stamp(zonedInstant(date, time, this._zone)) : `${date}T${time}`;
   }
 
   private _toggle() {
     if (this._disabled) return;
     this._open = !this._open;
     if (this._open) {
-      const now = new Date();
-      this._focusDate = this._date || `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-      if (this._date) {
-        const d = new Date(this._date + 'T00:00:00');
-        this._viewYear = d.getFullYear();
-        this._viewMonth = d.getMonth();
-      }
+      this._focusDate = this._date || this._today;
+      const [y, m] = this._focusDate.split('-').map(Number);
+      this._viewYear = y!;
+      this._viewMonth = m! - 1;
       if (this._time) {
         const [h, m] = this._time.split(':').map(Number);
         if (this.use12h) {
@@ -488,8 +548,10 @@ export class CgDateTimePicker extends LitElement {
   private _onListKey(e: KeyboardEvent, values: number[], current: number, pick: (v: number) => void) {
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
     e.preventDefault();
-    const i = Math.max(0, values.indexOf(current));
-    const next = values[Math.min(values.length - 1, Math.max(0, i + (e.key === 'ArrowDown' ? 1 : -1)))]!;
+    const i = values.indexOf(current);
+    const down = e.key === 'ArrowDown';
+    // Nothing picked yet: Down lands on the first option, Up on the last.
+    const next = values[i < 0 ? (down ? 0 : values.length - 1) : Math.min(values.length - 1, Math.max(0, i + (down ? 1 : -1)))]!;
     pick(next);
     const list = e.currentTarget as HTMLElement;
     void this.updateComplete.then(() => {
@@ -522,11 +584,12 @@ export class CgDateTimePicker extends LitElement {
     this._emit();
   }
 
+  /** A day wholly before `min` or after `max` (compared as instants in the zone). */
   private _isDisabledDate(y: number, m: number, d: number): boolean {
-    const s = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    if (this.min && s < this.min.split('T')[0]!) return true;
-    if (this.max && s > this.max.split('T')[0]!) return true;
-    return false;
+    const s = `${y}-${pad(m + 1)}-${pad(d)}`;
+    const min = this._bound(this.min, false);
+    const max = this._bound(this.max, true);
+    return (min !== undefined && s < wallParts(min, this._zone).date) || (max !== undefined && s > wallParts(max, this._zone).date);
   }
 
   private _getDays() {
@@ -535,8 +598,7 @@ export class CgDateTimePicker extends LitElement {
     const firstDay = (new Date(year, month, 1).getDay() - this._firstDay + 7) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const daysInPrev = new Date(year, month, 0).getDate();
-    const today = new Date();
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const todayStr = this._today;
 
     const days: { day: number; month: number; year: number; outside: boolean; today: boolean; selected: boolean; disabled: boolean }[] = [];
 
@@ -585,9 +647,7 @@ export class CgDateTimePicker extends LitElement {
     if (this._selectedHour < 0 && this._selectedMinute < 0) return;
     if (this._selectedHour < 0) this._selectedHour = this.use12h ? 12 : 0;
     if (this._selectedMinute < 0) this._selectedMinute = 0;
-    const now = new Date();
-    const date = this._date || `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-    this._setWall(date, this._buildTimeString());
+    this._setWall(this._date || this._today, this._buildTimeString());
     this._emit();
   }
 
@@ -601,12 +661,11 @@ export class CgDateTimePicker extends LitElement {
   // ── Display ──
   /** "Jan 31, 2027, 9:00 AM (GMT-3)" in the element's locale; the date alone without a time. */
   private _formatDisplay(): string {
-    const { date, time } = this._parsed;
+    const { date, time, at } = this._parsed;
     if (!date) return '';
     const locale = this.i18n.locale;
-    if (!time) return new Date(`${date}T00:00:00`).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' });
+    if (!time || at === undefined) return new Date(`${date}T00:00:00`).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' });
     const zone = this._zone;
-    const at = zonedInstant(date, time, zone);
     const text = new Intl.DateTimeFormat(locale, {
       month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: zone, ...(this.use12h ? { hour12: true } : {}),
     }).format(at);
@@ -690,8 +749,8 @@ export class CgDateTimePicker extends LitElement {
                 return html`
                 <button type="button" class="cal-day ${d.today ? 'today' : ''} ${d.selected ? 'selected' : ''} ${d.outside ? 'outside' : ''} ${d.disabled ? 'disabled-day' : ''}"
                   tabindex=${iso === this._focusDate ? '0' : '-1'}
-                  @click=${(e: Event) => { e.stopPropagation(); this._selectDay(d.year, d.month, d.day); }}
-                  ?disabled=${d.disabled} aria-label=${dayName.format(new Date(d.year, d.month, d.day))}
+                  @click=${(e: Event) => { e.stopPropagation(); if (!d.disabled) this._selectDay(d.year, d.month, d.day); }}
+                  aria-disabled=${d.disabled ? 'true' : nothing} aria-label=${dayName.format(new Date(d.year, d.month, d.day))}
                   aria-pressed=${d.selected ? 'true' : 'false'} aria-current=${d.today ? 'date' : nothing}
                 >${d.day}</button>
               `;
