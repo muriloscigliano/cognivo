@@ -50,8 +50,12 @@ const AUTO_BAR_MAX = 30;
  * property), e.g. `{ "style": "currency", "currency": "BRL" }`, and applies
  * them to the max label, value labels, the tooltip, the legend, the
  * announcement and the data table, in `locale` (default: the nearest `lang`).
- * Without `format`, marks show compact numbers (1.2K) and the table the full
- * locale number.
+ * Without `format`, marks show compact numbers (1.2K) in `locale` and the
+ * tooltip, the chart's name and the table the full locale number. A value
+ * label that would collide with its neighbour or leave the chart switches to
+ * compact notation (and is dropped if it still collides); the tooltip and
+ * the table keep the full value. An invalid `format` or `locale` falls back
+ * to the default formatter with a console warning — the chart still draws.
  *
  * No data, or only zeros: the card keeps its shape (`height`) and shows
  * `empty-text` (title) and `empty-description` (one muted line) at the
@@ -358,7 +362,7 @@ export class CgChart extends LitElement {
     this._tipX = (xs[i]! / W) * 100;
     this._tipY = (T / H) * 100;
     this._tipLabel = d.label;
-    this._tipValue = this._fmt(d.value);
+    this._tipValue = this._full(d.value);
     this._tipShow = true;
   }
   @state() private _tipLabel = '';
@@ -373,19 +377,62 @@ export class CgChart extends LitElement {
     this._setActive(keys[e.key]!);
   }
 
-  private _nf?: [unknown, string, Intl.NumberFormat];
-  /** The number formatter for `format` / `locale` (cached per pair). */
-  private _numbers(): Intl.NumberFormat {
+  private _nf?: { key: string; full: Intl.NumberFormat; compact: Intl.NumberFormat; formatted: boolean };
+  /**
+   * The number formatters for `format` / `locale` (cached per pair). An
+   * invalid locale or format (Intl throws) never blanks the chart: it falls
+   * back to the page language / the default formatter, with one warning.
+   */
+  private _numbers() {
     const loc = this.locale || this.i18n.locale;
-    if (this._nf?.[0] !== this.format || this._nf[1] !== loc) this._nf = [this.format, loc, new Intl.NumberFormat(loc, this.format ?? undefined)];
-    return this._nf[2];
+    const key = JSON.stringify([this.format, loc]);
+    if (this._nf?.key === key) return this._nf;
+    const warn = (what: string, err: unknown) =>
+      console.warn(`[cognivo] <cg-chart> ignores an invalid ${what} and uses the default: ${(err as Error).message}`);
+    let locale: string | undefined = loc;
+    try { Intl.NumberFormat.supportedLocalesOf(loc); } catch (err) {
+      warn(`locale "${loc}"`, err);
+      locale = this.locale && this.locale !== this.i18n.locale ? this.i18n.locale : undefined;
+      try { if (locale) Intl.NumberFormat.supportedLocalesOf(locale); } catch { locale = undefined; }
+    }
+    let opts = this.format ?? undefined;
+    try { new Intl.NumberFormat(locale, opts); } catch (err) { warn('format', err); opts = undefined; }
+    const full = new Intl.NumberFormat(locale, opts);
+    let compact: Intl.NumberFormat;
+    try { compact = new Intl.NumberFormat(locale, { ...opts, notation: 'compact', minimumFractionDigits: 0, maximumFractionDigits: 1 }); } catch { compact = full; }
+    this._nf = { key, full, compact, formatted: !!opts };
+    return this._nf;
   }
 
+  /** The full value: tooltip, live reading, the chart's name, the data table. */
+  private _full(v: number) { return this._numbers().full.format(v); }
+
+  /** A value on a mark: `format` in full, else compact (1.2K) in the locale. */
   private _fmt(v: number) {
-    if (this.format) return this._numbers().format(v);
-    if (Math.abs(v) >= 1e6) return (v / 1e6).toFixed(1) + 'M';
-    if (Math.abs(v) >= 1e3) return (v / 1e3).toFixed(1) + 'K';
-    return v % 1 === 0 ? String(v) : v.toFixed(1);
+    const nf = this._numbers();
+    return (nf.formatted ? nf.full : nf.compact).format(v);
+  }
+
+  /** Estimated SVG text width (viewBox units) — generous, so a fit is a real fit. */
+  private _textW(s: string, size: number) { return s.length * size * 0.62; }
+
+  /**
+   * Value labels for bars centred at `xs` in slots `step` wide: in full when
+   * each fits its slot, else compact; then, left to right, any label that
+   * would still touch the one before it (or leave the chart) is dropped.
+   */
+  private _barLabels(values: number[], xs: number[], step: number, size: number, W: number): Array<{ text: string; x: number } | null> {
+    const nf = this._numbers();
+    let texts = values.map((v) => this._fmt(v));
+    if (texts.some((t) => this._textW(t, size) > step - 2)) texts = values.map((v) => nf.compact.format(v));
+    let prevRight = -Infinity;
+    return texts.map((text, i) => {
+      const w = this._textW(text, size);
+      const x = Math.min(Math.max(xs[i]!, w / 2), W - w / 2);
+      if (x - w / 2 < prevRight + 2) return null;
+      prevRight = x + w / 2;
+      return { text, x };
+    });
   }
 
   /** Pie / donut / horizontal bars: a tooltip at the pointer (no crosshair). */
@@ -394,7 +441,7 @@ export class CgChart extends LitElement {
     this._tipX = ((e.clientX - r.left) / r.width) * 100;
     this._tipY = ((e.clientY - r.top) / r.height) * 100;
     this._tipLabel = label;
-    this._tipValue = this._fmt(value);
+    this._tipValue = this._full(value);
     this._tipShow = true;
   }
   private _untip() { this._tipShow = false; }
@@ -410,6 +457,7 @@ export class CgChart extends LitElement {
     const step = pw / n;
     this._plot = { L, R, T, ph, W, H, xs: data.map((_, i) => L + i * step + step / 2) };
     const values = this.showValues && !series;
+    const labels = values ? this._barLabels(data.map((d) => d.value), this._plot.xs, step, 10, W) : [];
 
     return svg`
       ${this._maxLine(L, R, T, W)}
@@ -422,7 +470,7 @@ export class CgChart extends LitElement {
         return svg`
           <rect class="bar bar-anim" x="${x}" y="${yBase}" width="${bw}" height="0" rx="${Math.min(4, bw / 3)}" style="fill:${c}"
             data-y="${yFinal}" data-h="${bh}" data-delay="${i * 50}" />
-          ${values ? svg`<text class="val val-anim" x="${x + bw / 2}" y="${yFinal - 6}" text-anchor="middle" font-size="10" font-weight="600" opacity="0" data-delay="${i * 50 + 300}">${this._fmt(d.value)}</text>` : nothing}
+          ${labels[i] ? svg`<text class="val val-anim" x="${labels[i]!.x}" y="${yFinal - 6}" text-anchor="middle" font-size="10" font-weight="600" opacity="0" data-delay="${i * 50 + 300}">${labels[i]!.text}</text>` : nothing}
           ${this._showLabel(i) ? svg`<text class="axis" x="${x + bw / 2}" y="${H - 6}" text-anchor="middle" font-size="10">${d.label}</text>` : nothing}
         `;
       })}
@@ -433,13 +481,22 @@ export class CgChart extends LitElement {
   private _hbar() {
     const { data } = this;
     const W = 400, lW = 72, gap = 8, bH = 28;
-    const H = data.length * (bH + gap);
     const max = Math.max(...data.map(d => d.value), 1);
+    // Value labels in full when the widest fits the 52-unit room right of the
+    // longest bar; else compact, and the bars give way to the widest label.
+    let texts = data.map((d) => this._fmt(d.value));
+    const widest = (t: string[]) => Math.max(...t.map((s) => this._textW(s, 11)));
+    let room = 52;
+    if (widest(texts) > room) {
+      texts = data.map((d) => this._numbers().compact.format(d.value));
+      room = Math.max(room, widest(texts));
+    }
+    const barMax = W - lW - gap - room;
 
     return svg`
       ${data.map((d, i) => {
         const y = i * (bH + gap);
-        const bW = (d.value / max) * (W - lW - 60);
+        const bW = (d.value / max) * barMax;
         const c = this._color(i, d);
         return svg`
           <text class="axis" x="${lW - 6}" y="${y + bH / 2 + 4}" text-anchor="end" font-size="11">${d.label}</text>
@@ -448,7 +505,7 @@ export class CgChart extends LitElement {
             @mouseenter=${(e: MouseEvent) => this._tip(e, d.label, d.value)}
             @click=${(e: MouseEvent) => this._tip(e, d.label, d.value)}
             @mouseleave=${this._untip} />
-          <text class="val val-anim" x="${lW + bW + 8}" y="${y + bH / 2 + 4}" font-size="11" font-weight="600" opacity="0" data-delay="${i * 50 + 300}">${this._fmt(d.value)}</text>
+          <text class="val val-anim" x="${lW + bW + 8}" y="${y + bH / 2 + 4}" font-size="11" font-weight="600" opacity="0" data-delay="${i * 50 + 300}">${texts[i]}</text>
         `;
       })}
     `;
@@ -589,7 +646,7 @@ export class CgChart extends LitElement {
           <svg
             role="img"
             tabindex=${reading ? '0' : nothing}
-            aria-label=${`${this.title || this.i18n.t('label')}: ${this.data.map((d) => `${d.label} ${this._fmt(d.value)}`).join(', ')}`}
+            aria-label=${`${this.title || this.i18n.t('label')}: ${this.data.map((d) => `${d.label} ${this._full(d.value)}`).join(', ')}`}
             viewBox="0 0 ${vw} ${vh}"
             style="${isPie ? `max-width:${vw}px; margin:0 auto;` : ''}"
             @keydown=${reading ? this._onKey : nothing}
@@ -608,7 +665,7 @@ export class CgChart extends LitElement {
         <div class="sr"><table>
           <caption>${this.title || this.i18n.t('label')}</caption>
           <thead><tr><th scope="col">${this.i18n.t('category')}</th><th scope="col">${this.i18n.t('value')}</th></tr></thead>
-          <tbody>${this.data.map((d) => html`<tr><th scope="row">${d.label}</th><td>${this._numbers().format(d.value)}</td></tr>`)}</tbody>
+          <tbody>${this.data.map((d) => html`<tr><th scope="row">${d.label}</th><td>${this._full(d.value)}</td></tr>`)}</tbody>
         </table></div>
 
         ${this.showLegend && this.type !== 'auto' ? html`
