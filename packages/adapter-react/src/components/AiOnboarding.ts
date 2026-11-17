@@ -1,2 +1,2 @@
 import { createWrapper } from '../create-wrapper.js';
-export const AiOnboarding = createWrapper('ai-onboarding', ['steps', 'active', 'dismissible'], {});
+export const AiOnboarding = /* @__PURE__ */ createWrapper('ai-onboarding', ['steps', 'active', 'dismissible'], {});

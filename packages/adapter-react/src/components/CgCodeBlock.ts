@@ -16,7 +16,7 @@ export interface CgCodeBlockProps {
   className?: string;
 }
 
-export const CgCodeBlock = createWrapper<CgCodeBlockProps, 'cg-code-block'>(
+export const CgCodeBlock = /* @__PURE__ */ createWrapper<CgCodeBlockProps, 'cg-code-block'>(
   'cg-code-block',
   ['code', 'language', 'filename', 'lineNumbers', 'wrap', 'collapsible'],
   {}

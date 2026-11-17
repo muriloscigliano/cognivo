@@ -1,5 +1,5 @@
 import { createWrapper } from '../create-wrapper.js';
-export const CgPasswordInput = createWrapper('cg-password-input', ['value', 'label', 'placeholder', 'helper', 'name', 'required', 'disabled', 'error', 'success', 'showStrength', 'minLength'],
+export const CgPasswordInput = /* @__PURE__ */ createWrapper('cg-password-input', ['value', 'label', 'placeholder', 'helper', 'name', 'required', 'disabled', 'error', 'success', 'showStrength', 'minLength'],
   {
     onPasswordChange: 'cg-password-change',
     onPasswordToggle: 'cg-password-toggle',

@@ -6,7 +6,7 @@ export interface CgMarkdownProps {
   className?: string;
 }
 
-export const CgMarkdown = createWrapper<CgMarkdownProps, 'cg-markdown'>(
+export const CgMarkdown = /* @__PURE__ */ createWrapper<CgMarkdownProps, 'cg-markdown'>(
   'cg-markdown',
   ['text'],
   {}

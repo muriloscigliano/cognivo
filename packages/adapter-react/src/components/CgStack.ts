@@ -16,7 +16,7 @@ export interface CgStackProps {
   className?: string;
 }
 
-export const CgStack = createWrapper<CgStackProps, 'cg-stack'>(
+export const CgStack = /* @__PURE__ */ createWrapper<CgStackProps, 'cg-stack'>(
   'cg-stack',
   ['direction', 'gap', 'align', 'justify', 'wrap', 'full'],
   {}

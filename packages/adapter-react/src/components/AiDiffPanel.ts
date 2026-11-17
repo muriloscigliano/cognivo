@@ -1,6 +1,6 @@
 import { createWrapper } from '../create-wrapper.js';
 
-export const AiDiffPanel = createWrapper(
+export const AiDiffPanel = /* @__PURE__ */ createWrapper(
   'ai-diff-panel',
   ['before', 'after', 'mode', 'title', 'labels'],
   {

@@ -14,7 +14,7 @@ export interface BiasAnchoringProps {
   className?: string;
 }
 
-export const BiasAnchoring = createWrapper<BiasAnchoringProps, 'bias-anchoring'>(
+export const BiasAnchoring = /* @__PURE__ */ createWrapper<BiasAnchoringProps, 'bias-anchoring'>(
   'bias-anchoring',
   ['anchor', 'current', 'label', 'orientation', 'variant'],
   {}

@@ -16,7 +16,7 @@ export interface CgSwitchProps {
   className?: string;
 }
 
-export const CgSwitch = createWrapper<CgSwitchProps, 'cg-switch'>(
+export const CgSwitch = /* @__PURE__ */ createWrapper<CgSwitchProps, 'cg-switch'>(
   'cg-switch',
   ['label', 'description', 'name', 'checked', 'disabled'],
   {

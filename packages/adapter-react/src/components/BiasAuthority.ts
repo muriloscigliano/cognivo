@@ -12,7 +12,7 @@ export interface BiasAuthorityProps {
   className?: string;
 }
 
-export const BiasAuthority = createWrapper<BiasAuthorityProps, 'bias-authority'>(
+export const BiasAuthority = /* @__PURE__ */ createWrapper<BiasAuthorityProps, 'bias-authority'>(
   'bias-authority',
   ['source', 'kind', 'icon', 'href'],
   {}

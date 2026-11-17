@@ -16,7 +16,7 @@ export interface CgImageGalleryProps {
   className?: string;
 }
 
-export const CgImageGallery = createWrapper<CgImageGalleryProps, 'cg-image-gallery'>(
+export const CgImageGallery = /* @__PURE__ */ createWrapper<CgImageGalleryProps, 'cg-image-gallery'>(
   'cg-image-gallery',
   ['images', 'maxVisible'],
   { onGalleryClick: 'cg-gallery-click' }

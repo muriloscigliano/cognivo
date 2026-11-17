@@ -12,7 +12,7 @@ export interface AiThinkingProps {
   onCancel?: (e: CustomEvent) => void;
 }
 
-export const AiThinking = createWrapper<AiThinkingProps, 'ai-thinking'>(
+export const AiThinking = /* @__PURE__ */ createWrapper<AiThinkingProps, 'ai-thinking'>(
   'ai-thinking',
   ['text', 'shimmer'],
   {

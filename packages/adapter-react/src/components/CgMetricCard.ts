@@ -14,7 +14,7 @@ export interface CgMetricCardProps {
   onMetricClick?: (e: CustomEvent) => void;
 }
 
-export const CgMetricCard = createWrapper<CgMetricCardProps, 'cg-metric-card'>(
+export const CgMetricCard = /* @__PURE__ */ createWrapper<CgMetricCardProps, 'cg-metric-card'>(
   'cg-metric-card',
   ['title', 'value', 'delta', 'trend'],
   {

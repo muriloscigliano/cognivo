@@ -18,7 +18,7 @@ export interface CgImageProps {
   onImageError?: (e: CustomEvent) => void;
 }
 
-export const CgImage = createWrapper<CgImageProps, 'cg-image'>(
+export const CgImage = /* @__PURE__ */ createWrapper<CgImageProps, 'cg-image'>(
   'cg-image',
   ['src', 'alt', 'ratio', 'fit', 'lazy'],
   {

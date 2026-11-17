@@ -1,5 +1,5 @@
 import { createWrapper } from '../create-wrapper.js';
-export const AiPersonalizationDash = createWrapper('ai-personalization-dash', ['rounded', 'preferences', 'segments', 'userName', 'lastUpdated', 'showReset'],
+export const AiPersonalizationDash = /* @__PURE__ */ createWrapper('ai-personalization-dash', ['rounded', 'preferences', 'segments', 'userName', 'lastUpdated', 'showReset'],
   {
     onPersonalizationChange: 'ai-personalization-change',
     onPersonalizationReset: 'ai-personalization-reset',

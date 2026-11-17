@@ -18,7 +18,7 @@ export interface CgRadioProps {
   className?: string;
 }
 
-export const CgRadio = createWrapper<CgRadioProps, 'cg-radio'>(
+export const CgRadio = /* @__PURE__ */ createWrapper<CgRadioProps, 'cg-radio'>(
   'cg-radio',
   ['label', 'description', 'name', 'value', 'checked', 'disabled'],
   {

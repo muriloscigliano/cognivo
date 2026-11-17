@@ -1,6 +1,6 @@
 import { createWrapper } from '../create-wrapper.js';
 
-export const AiPromptEditor = createWrapper(
+export const AiPromptEditor = /* @__PURE__ */ createWrapper(
   'ai-prompt-editor',
   ['versions', 'editable'],
   {

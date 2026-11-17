@@ -30,7 +30,7 @@ export interface CgTextareaProps {
   className?: string;
 }
 
-export const CgTextarea = createWrapper<CgTextareaProps, 'cg-textarea'>(
+export const CgTextarea = /* @__PURE__ */ createWrapper<CgTextareaProps, 'cg-textarea'>(
   'cg-textarea',
   ['value', 'placeholder', 'name', 'rows', 'maxlength', 'disabled', 'readonly', 'error', 'autoresize'],
   {

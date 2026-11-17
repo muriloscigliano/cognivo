@@ -8,7 +8,7 @@ export interface AiToolIndicatorProps {
   onToolClick?: (e: CustomEvent) => void;
 }
 
-export const AiToolIndicator = createWrapper<AiToolIndicatorProps, 'ai-tool-indicator'>(
+export const AiToolIndicator = /* @__PURE__ */ createWrapper<AiToolIndicatorProps, 'ai-tool-indicator'>(
   'ai-tool-indicator',
   ['tools', 'compact'],
   {

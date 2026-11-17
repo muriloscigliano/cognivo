@@ -34,7 +34,7 @@ export interface CgInputProps {
   className?: string;
 }
 
-export const CgInput = createWrapper<CgInputProps, 'cg-input'>(
+export const CgInput = /* @__PURE__ */ createWrapper<CgInputProps, 'cg-input'>(
   'cg-input',
   ['value', 'placeholder', 'name', 'type', 'size', 'disabled', 'readonly', 'error', 'success', 'clearable', 'maxlength'],
   {

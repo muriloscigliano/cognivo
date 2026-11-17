@@ -26,8 +26,15 @@ const BUDGETS = [
   // cg-timeline-item; the drift test requires one per component): React
   // 10,276 → 10,380 B (+104 B), Vue 10,190 → 10,331 B (+141 B).
   // Limits = measured: React 10.14 KB, Vue 10.09 KB.
-  { name: '@cognivo/adapter-react', file: 'packages/adapter-react/dist/index.js',  maxKbGz: 10.14 },
-  { name: '@cognivo/adapter-vue',   file: 'packages/adapter-vue/dist/index.js',    maxKbGz: 10.09 },
+  // kit-fix-47 (dashboard swap, 2026-11-18): every wrapper call is
+  // `/* @__PURE__ */` so unused wrappers tree-shake (one wrapper bundled is
+  // ~1 KB; the adapter's tree-shake test), plus cg-chart's format / locale:
+  // React 10,380 → 10,503 B (+123 B for the whole file). Limit = measured:
+  // 10.26 KB. Vue declares cg-chart's `format` (an object, so it must be
+  // set as a property) and `locale`: 10,331 → 10,350 B. Limit = measured:
+  // 10.11 KB.
+  { name: '@cognivo/adapter-react', file: 'packages/adapter-react/dist/index.js',  maxKbGz: 10.26 },
+  { name: '@cognivo/adapter-vue',   file: 'packages/adapter-vue/dist/index.js',    maxKbGz: 10.11 },
   // design-advisor bias category chunks (hashed filenames, matched by prefix)
   { name: 'design-advisor · biases-cognitive',       dir: 'packages/design-advisor/dist', prefix: 'biases-cognitive-',       maxKbGz: 920 },
   { name: 'design-advisor · biases-decision-making', dir: 'packages/design-advisor/dist', prefix: 'biases-decision-making-', maxKbGz: 580 },

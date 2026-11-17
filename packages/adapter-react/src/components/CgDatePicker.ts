@@ -18,7 +18,7 @@ export interface CgDatePickerProps {
   className?: string;
 }
 
-export const CgDatePicker = createWrapper<CgDatePickerProps, 'cg-date-picker'>(
+export const CgDatePicker = /* @__PURE__ */ createWrapper<CgDatePickerProps, 'cg-date-picker'>(
   'cg-date-picker',
   ['value', 'name', 'min', 'max', 'disabled', 'error'],
   {

@@ -1,5 +1,5 @@
 import { createWrapper } from '../create-wrapper.js';
-export const AiAudioPlayer = createWrapper('ai-audio-player', ['src', 'title', 'duration'],
+export const AiAudioPlayer = /* @__PURE__ */ createWrapper('ai-audio-player', ['src', 'title', 'duration'],
   {
     onAudioError: 'ai-audio-error',
     onAudioEnd: 'ai-audio-end',

@@ -24,7 +24,7 @@ export interface CgMeterProps {
   className?: string;
 }
 
-export const CgMeter = createWrapper<CgMeterProps, 'cg-meter'>(
+export const CgMeter = /* @__PURE__ */ createWrapper<CgMeterProps, 'cg-meter'>(
   'cg-meter',
   ['value', 'min', 'max', 'low', 'high', 'optimum', 'label', 'variant', 'size', 'showValue'],
   { showValue: 'show-value' }

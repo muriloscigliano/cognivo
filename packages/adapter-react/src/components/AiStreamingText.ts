@@ -12,7 +12,7 @@ export interface AiStreamingTextProps {
   onStreamingComplete?: (e: CustomEvent) => void;
 }
 
-export const AiStreamingText = createWrapper<AiStreamingTextProps, 'ai-streaming-text'>(
+export const AiStreamingText = /* @__PURE__ */ createWrapper<AiStreamingTextProps, 'ai-streaming-text'>(
   'ai-streaming-text',
   ['content', 'streaming', 'showCursor', 'markdown'],
   {

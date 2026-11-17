@@ -26,7 +26,7 @@ export interface CgSliderProps {
   className?: string;
 }
 
-export const CgSlider = createWrapper<CgSliderProps, 'cg-slider'>(
+export const CgSlider = /* @__PURE__ */ createWrapper<CgSliderProps, 'cg-slider'>(
   'cg-slider',
   ['label', 'name', 'value', 'min', 'max', 'step', 'unit', 'showValue', 'showRange', 'disabled'],
   {

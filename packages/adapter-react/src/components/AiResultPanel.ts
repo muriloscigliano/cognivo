@@ -18,7 +18,7 @@ export interface AiResultPanelProps {
   onResultCopy?: (e: CustomEvent) => void;
 }
 
-export const AiResultPanel = createWrapper<AiResultPanelProps, 'ai-result-panel'>(
+export const AiResultPanel = /* @__PURE__ */ createWrapper<AiResultPanelProps, 'ai-result-panel'>(
   'ai-result-panel',
   ['title', 'explanation', 'bullets', 'drivers', 'confidence'],
   {

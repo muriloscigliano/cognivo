@@ -22,7 +22,7 @@ export interface CgTextProps {
   className?: string;
 }
 
-export const CgText = createWrapper<CgTextProps, 'cg-text'>(
+export const CgText = /* @__PURE__ */ createWrapper<CgTextProps, 'cg-text'>(
   'cg-text',
   ['text', 'size', 'weight', 'color', 'as', 'align', 'truncate', 'inline', 'clamp'],
   {}

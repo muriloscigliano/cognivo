@@ -16,7 +16,7 @@ export interface AiChartSummaryProps {
   onSummaryRefresh?: (e: CustomEvent) => void;
 }
 
-export const AiChartSummary = createWrapper<AiChartSummaryProps, 'ai-chart-summary'>(
+export const AiChartSummary = /* @__PURE__ */ createWrapper<AiChartSummaryProps, 'ai-chart-summary'>(
   'ai-chart-summary',
   ['summary', 'trends', 'collapsible'],
   {

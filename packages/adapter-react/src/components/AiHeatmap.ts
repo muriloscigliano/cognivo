@@ -1,6 +1,6 @@
 import { createWrapper } from '../create-wrapper.js';
 
-export const AiHeatmap = createWrapper(
+export const AiHeatmap = /* @__PURE__ */ createWrapper(
   'ai-heatmap',
   ['data', 'rowLabels', 'colLabels', 'colorScale', 'showValues', 'title'],
   {

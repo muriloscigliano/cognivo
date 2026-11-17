@@ -24,7 +24,7 @@ export interface CgDateRangePickerProps {
   className?: string;
 }
 
-export const CgDateRangePicker = createWrapper<CgDateRangePickerProps, 'cg-date-range-picker'>(
+export const CgDateRangePicker = /* @__PURE__ */ createWrapper<CgDateRangePickerProps, 'cg-date-range-picker'>(
   'cg-date-range-picker',
   ['label', 'from', 'to', 'min', 'max', 'placeholder', 'format', 'disabled', 'open'],
   { onCgDateRangeChange: 'cg-date-range-change' }

@@ -29,7 +29,7 @@ export interface CgButtonProps {
   className?: string;
 }
 
-export const CgButton = createWrapper<CgButtonProps, 'cg-button'>(
+export const CgButton = /* @__PURE__ */ createWrapper<CgButtonProps, 'cg-button'>(
   'cg-button',
   ['variant', 'size', 'type', 'disabled', 'loading', 'full', 'label'],
   {}

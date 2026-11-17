@@ -33,7 +33,7 @@ export interface CgSplitButtonProps {
   className?: string;
 }
 
-export const CgSplitButton = createWrapper<CgSplitButtonProps, 'cg-split-button'>(
+export const CgSplitButton = /* @__PURE__ */ createWrapper<CgSplitButtonProps, 'cg-split-button'>(
   'cg-split-button',
   ['label', 'variant', 'size', 'type', 'disabled', 'loading', 'items', 'open', 'menuPlacement'],
   {

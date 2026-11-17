@@ -28,7 +28,7 @@ export interface CgListProps {
   className?: string;
 }
 
-export const CgList = createWrapper<CgListProps, 'cg-list'>(
+export const CgList = /* @__PURE__ */ createWrapper<CgListProps, 'cg-list'>(
   'cg-list',
   ['items', 'variant', 'dividers', 'hoverable', 'clickable', 'emptyText'],
   { onListClick: 'cg-list-click', onListAction: 'cg-list-action' }

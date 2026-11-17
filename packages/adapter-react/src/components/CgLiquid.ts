@@ -1,2 +1,2 @@
 import { createWrapper } from '../create-wrapper.js';
-export const CgLiquid = createWrapper('cg-liquid', ['blurRadius', 'contrast', 'fill'], {});
+export const CgLiquid = /* @__PURE__ */ createWrapper('cg-liquid', ['blurRadius', 'contrast', 'fill'], {});

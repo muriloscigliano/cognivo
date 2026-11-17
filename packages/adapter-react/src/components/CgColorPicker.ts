@@ -1,5 +1,5 @@
 import { createWrapper } from '../create-wrapper.js';
-export const CgColorPicker = createWrapper('cg-color-picker', ['value', 'colors', 'columns', 'label', 'allowCustom'],
+export const CgColorPicker = /* @__PURE__ */ createWrapper('cg-color-picker', ['value', 'colors', 'columns', 'label', 'allowCustom'],
   {
     onColorChange: 'cg-color-change',
   }

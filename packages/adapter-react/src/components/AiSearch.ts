@@ -1,6 +1,6 @@
 import { createWrapper } from '../create-wrapper.js';
 
-export const AiSearch = createWrapper(
+export const AiSearch = /* @__PURE__ */ createWrapper(
   'ai-search',
   ['placeholder', 'suggestions', 'filters', 'recentSearches', 'results'],
   {

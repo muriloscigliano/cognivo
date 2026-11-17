@@ -20,7 +20,7 @@ export interface AiInsightCardProps {
   onInsightBookmark?: (e: CustomEvent) => void;
 }
 
-export const AiInsightCard = createWrapper<AiInsightCardProps, 'ai-insight-card'>(
+export const AiInsightCard = /* @__PURE__ */ createWrapper<AiInsightCardProps, 'ai-insight-card'>(
   'ai-insight-card',
   ['type', 'text', 'confidence', 'timestamp'],
   {

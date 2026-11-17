@@ -8,7 +8,7 @@ export interface CgPaginationProps {
   onPageChange?: (e: CustomEvent<CgPageChangeDetail>) => void;
 }
 
-export const CgPagination = createWrapper<CgPaginationProps, 'cg-pagination'>('cg-pagination', ['total', 'current', 'siblings', 'showFirst', 'showLast'],
+export const CgPagination = /* @__PURE__ */ createWrapper<CgPaginationProps, 'cg-pagination'>('cg-pagination', ['total', 'current', 'siblings', 'showFirst', 'showLast'],
   {
     onPageChange: 'cg-page-change',
   }

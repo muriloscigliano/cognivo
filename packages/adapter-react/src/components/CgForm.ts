@@ -16,7 +16,7 @@ export interface CgFormProps {
   className?: string;
 }
 
-export const CgForm = createWrapper<CgFormProps, 'cg-form'>(
+export const CgForm = /* @__PURE__ */ createWrapper<CgFormProps, 'cg-form'>(
   'cg-form',
   ['name', 'gap', 'loading', 'errors'],
   {

@@ -10,7 +10,7 @@ export interface AiBadgeProps {
   className?: string;
 }
 
-export const AiBadge = createWrapper<AiBadgeProps, 'ai-badge'>(
+export const AiBadge = /* @__PURE__ */ createWrapper<AiBadgeProps, 'ai-badge'>(
   'ai-badge',
   ['score', 'showPercentage'],
   { onBadgeClick: 'ai-badge-click' }

@@ -1,2 +1,2 @@
 import { createWrapper } from '../create-wrapper.js';
-export const CgTimestamp = createWrapper('cg-timestamp', ['datetime', 'format', 'live'], {});
+export const CgTimestamp = /* @__PURE__ */ createWrapper('cg-timestamp', ['datetime', 'format', 'live'], {});

@@ -1,5 +1,5 @@
 import { createWrapper } from '../create-wrapper.js';
-export const AiPresence = createWrapper('ai-presence', ['users', 'maxVisible'],
+export const AiPresence = /* @__PURE__ */ createWrapper('ai-presence', ['users', 'maxVisible'],
   {
     onUserClick: 'ai-presence-user-click',
   }

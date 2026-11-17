@@ -31,7 +31,7 @@ export interface CgSelectProps {
   className?: string;
 }
 
-export const CgSelect = createWrapper<CgSelectProps, 'cg-select'>(
+export const CgSelect = /* @__PURE__ */ createWrapper<CgSelectProps, 'cg-select'>(
   'cg-select',
   ['options', 'value', 'placeholder', 'name', 'disabled', 'error', 'searchable'],
   {

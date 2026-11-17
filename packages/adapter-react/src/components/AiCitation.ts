@@ -9,7 +9,7 @@ export interface AiCitationProps {
   onCitationClick?: (e: CustomEvent) => void;
 }
 
-export const AiCitation = createWrapper<AiCitationProps, 'ai-citation'>(
+export const AiCitation = /* @__PURE__ */ createWrapper<AiCitationProps, 'ai-citation'>(
   'ai-citation',
   ['sources', 'mode', 'maxVisible'],
   {

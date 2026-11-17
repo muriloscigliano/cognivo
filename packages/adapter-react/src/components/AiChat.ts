@@ -22,7 +22,7 @@ export interface AiChatProps {
   onRate?: (e: CustomEvent) => void;
 }
 
-export const AiChat = createWrapper<AiChatProps, 'ai-chat'>(
+export const AiChat = /* @__PURE__ */ createWrapper<AiChatProps, 'ai-chat'>(
   'ai-chat',
   ['aiClient', 'dataset'],
   {

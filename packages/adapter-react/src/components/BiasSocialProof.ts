@@ -14,7 +14,7 @@ export interface BiasSocialProofProps {
   className?: string;
 }
 
-export const BiasSocialProof = createWrapper<BiasSocialProofProps, 'bias-social-proof'>(
+export const BiasSocialProof = /* @__PURE__ */ createWrapper<BiasSocialProofProps, 'bias-social-proof'>(
   'bias-social-proof',
   ['count', 'type', 'interval', 'format', 'avatars'],
   {}

@@ -1,2 +1,2 @@
 import { createWrapper } from '../create-wrapper.js';
-export const CgTimelineItem = createWrapper('cg-timeline-item', ['label', 'variant'], {});
+export const CgTimelineItem = /* @__PURE__ */ createWrapper('cg-timeline-item', ['label', 'variant'], {});

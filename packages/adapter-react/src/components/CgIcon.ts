@@ -12,7 +12,7 @@ export interface CgIconProps {
   className?: string;
 }
 
-export const CgIcon = createWrapper<CgIconProps, 'cg-icon'>(
+export const CgIcon = /* @__PURE__ */ createWrapper<CgIconProps, 'cg-icon'>(
   'cg-icon',
   ['name', 'size', 'color', 'label'],
   {}

@@ -10,7 +10,7 @@ export interface CgCarouselProps {
   onSlideClick?: (e: CustomEvent) => void;
 }
 
-export const CgCarousel = createWrapper<CgCarouselProps, 'cg-carousel'>(
+export const CgCarousel = /* @__PURE__ */ createWrapper<CgCarouselProps, 'cg-carousel'>(
   'cg-carousel',
   ['showDots', 'showArrows'],
   {

@@ -20,7 +20,7 @@ export interface CgImageBlockProps {
   className?: string;
 }
 
-export const CgImageBlock = createWrapper<CgImageBlockProps, 'cg-image-block'>(
+export const CgImageBlock = /* @__PURE__ */ createWrapper<CgImageBlockProps, 'cg-image-block'>(
   'cg-image-block',
   ['src', 'alt', 'caption', 'source', 'sourceUrl', 'ratio', 'clickable'],
   { onImageClick: 'cg-image-click' }

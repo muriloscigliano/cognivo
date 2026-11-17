@@ -1,6 +1,6 @@
 import { createWrapper } from '../create-wrapper.js';
 
-export const AiFeedback = createWrapper(
+export const AiFeedback = /* @__PURE__ */ createWrapper(
   'ai-feedback',
   ['mode', 'tags', 'messageId', 'showComment'],
   {

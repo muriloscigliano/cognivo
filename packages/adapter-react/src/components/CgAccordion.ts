@@ -21,7 +21,7 @@ export interface CgAccordionProps {
   className?: string;
 }
 
-export const CgAccordion = createWrapper<CgAccordionProps, 'cg-accordion'>(
+export const CgAccordion = /* @__PURE__ */ createWrapper<CgAccordionProps, 'cg-accordion'>(
   'cg-accordion',
   ['items', 'multiple', 'variant', 'defaultOpen'],
   {

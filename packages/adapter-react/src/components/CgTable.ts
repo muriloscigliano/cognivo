@@ -29,7 +29,7 @@ export interface CgTableProps {
   onRowClick?: (e: CustomEvent<{ index: number; row: unknown[] }>) => void;
 }
 
-export const CgTable = createWrapper<CgTableProps, 'cg-table'>(
+export const CgTable = /* @__PURE__ */ createWrapper<CgTableProps, 'cg-table'>(
   'cg-table',
   ['columns', 'rows', 'striped', 'compact', 'emptyText'],
   {

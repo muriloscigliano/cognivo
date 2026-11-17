@@ -14,7 +14,7 @@ export interface BiasScarcityProps {
   className?: string;
 }
 
-export const BiasScarcity = createWrapper<BiasScarcityProps, 'bias-scarcity'>(
+export const BiasScarcity = /* @__PURE__ */ createWrapper<BiasScarcityProps, 'bias-scarcity'>(
   'bias-scarcity',
   ['type', 'deadline', 'remaining', 'threshold', 'pulse'],
   {}
