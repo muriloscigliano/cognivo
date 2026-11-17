@@ -179,15 +179,22 @@ export class CgDateTimePicker extends LitElement {
       margin-left: calc(-1 * var(--cg-spacing-4));
     }
     .trigger-icon svg { width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); }
-    .trigger-text {
-      flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    /* The shown text stacks over a hidden sizer (a sample date and time with
+       the zone), so the trigger is as wide empty as filled. */
+    .trigger-body {
+      flex: 1; min-width: 0; overflow: hidden; white-space: nowrap;
+      display: grid; grid-template-columns: minmax(0, 1fr); align-items: center;
       padding: 0 var(--cg-spacing-12);
     }
-    /* A value: the date and time are never cut; the zone suffix gives way first. */
-    .trigger-text.value { display: flex; align-items: baseline; gap: var(--cg-spacing-6); }
-    .trigger-value { flex: none; }
-    .trigger-zone { flex: 0 1 auto; min-width: 0; overflow: hidden; font-size: var(--cg-font-size-xs); color: var(--cg-color-input-text-placeholder); }
-    .placeholder { color: var(--cg-color-input-text-placeholder); }
+    .trigger-body > * { grid-area: 1 / 1; min-width: 0; }
+    .trigger-sizer { visibility: hidden; display: flex; align-items: baseline; gap: var(--cg-spacing-6); }
+    /* A value: the zone suffix is whole or not shown — when it does not fit it
+       wraps to a second, clipped line (the name and tooltip still carry it);
+       then the date and time end in an ellipsis. */
+    .trigger-text.value { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--cg-spacing-6); height: 1lh; overflow: hidden; }
+    .trigger-value { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .trigger-zone, .sizer-zone { flex: none; font-size: var(--cg-font-size-xs); color: var(--cg-color-input-text-placeholder); }
+    .trigger-text.placeholder { overflow: hidden; text-overflow: ellipsis; color: var(--cg-color-input-text-placeholder); }
 
     /* ── Dropdown ── */
     .dropdown {
@@ -672,15 +679,24 @@ export class CgDateTimePicker extends LitElement {
   private _formatDisplay(): { text: string; zone?: string | undefined } {
     const { date, time, at } = this._parsed;
     if (!date) return { text: '' };
+    if (!time || at === undefined) return { text: new Date(`${date}T00:00:00`).toLocaleDateString(this.i18n.locale, { month: 'short', day: 'numeric', year: 'numeric' }) };
+    return this._formatInstant(at);
+  }
+
+  /** "Jan 31, 2027, 9:00 AM" and its zone "GMT−3" (a real minus sign) in the page's locale. */
+  private _formatInstant(at: number): { text: string; zone?: string | undefined } {
     const locale = this.i18n.locale;
-    if (!time || at === undefined) return { text: new Date(`${date}T00:00:00`).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' }) };
     const zone = this._zone;
     const text = new Intl.DateTimeFormat(locale, {
       month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: zone, ...(this.use12h ? { hour12: true } : {}),
     }).format(at);
     const name = new Intl.DateTimeFormat(locale, { timeZone: zone, timeZoneName: 'shortOffset' }).formatToParts(at).find((p) => p.type === 'timeZoneName')?.value;
-    // A real minus sign: "GMT−3".
     return { text, zone: name?.replace('-', '\u2212') };
+  }
+
+  /** A wide sample value (two-digit day and hour) that sizes the trigger, empty or filled. */
+  private _sample() {
+    return this._formatInstant(zonedInstant(`${new Date().getFullYear()}-09-28`, '12:58', this._zone));
   }
 
   private _handleClickOutside = (e: Event) => { if (!e.composedPath().includes(this)) this._close(); };
@@ -702,6 +718,8 @@ export class CgDateTimePicker extends LitElement {
 
   override render() {
     const { text: display, zone } = this._formatDisplay();
+    const full = display ? [display, zone].filter(Boolean).join(' ') : '';
+    const sample = this._sample();
     const days = this._getDays();
     const hours = this._getHours();
     const minutes = this._getMinutes();
@@ -722,7 +740,8 @@ export class CgDateTimePicker extends LitElement {
         aria-required=${this.required ? 'true' : nothing}
         aria-describedby=${this._invalid || this.helper ? 'helper' : nothing}
         aria-haspopup="dialog"
-        aria-label=${this.label || this.i18n.t('label')}
+        aria-label=${[this.label || this.i18n.t('label'), full].filter(Boolean).join(', ')}
+        title=${full || nothing}
         @click=${this._toggle}
         @keydown=${this._handleKeydown}
       >
@@ -736,9 +755,12 @@ export class CgDateTimePicker extends LitElement {
             <polyline points="16 14.5 16 16 17 16.5"></polyline>
           </svg>
         </span>
-        ${display
-          ? html`<span class="trigger-text value"><span class="trigger-value">${display}</span> ${zone ? html`<span class="trigger-zone">${zone}</span>` : nothing}</span>`
-          : html`<span class="trigger-text placeholder">${this.placeholder ?? this.i18n.t('placeholder')}</span>`}
+        <span class="trigger-body">
+          <span class="trigger-sizer" aria-hidden="true">${sample.text} ${sample.zone ? html`<span class="sizer-zone">${sample.zone}</span>` : nothing}</span>
+          ${display
+            ? html`<span class="trigger-text value"><span class="trigger-value">${display}</span> ${zone ? html`<span class="trigger-zone">${zone}</span>` : nothing}</span>`
+            : html`<span class="trigger-text placeholder">${this.placeholder ?? this.i18n.t('placeholder')}</span>`}
+        </span>
       </div>
 
       <div class="dropdown ${this._open ? 'open' : ''}" role="dialog" aria-label=${this.i18n.t('dialog')} @keydown=${this._handleKeydown}>
