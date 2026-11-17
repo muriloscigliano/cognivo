@@ -248,7 +248,14 @@ export class CgDateRangePicker extends LitElement {
       }
       .dropdown.open { transform: none; }
       .presets { flex-direction: row; flex-wrap: wrap; min-width: 0; }
-      .dropdown cg-calendar { display: block; --cg-component-calendar-cell-size: var(--cg-size-touch-target); }
+      /* Columns may shrink below the 44 px cell on screens under ~390 px, so
+         every day stays inside the sheet (days stay 44 px tall). */
+      .dropdown cg-calendar {
+        display: block;
+        min-width: 0;
+        --cg-component-calendar-cell-size: var(--cg-size-touch-target);
+        --_cg-calendar-track-min: 0px;
+      }
     }
   `];
 

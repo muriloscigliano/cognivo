@@ -76,8 +76,9 @@ export class CgCalendar extends LitElement {
 
     .weekdays {
       display: grid;
-      /* Cells stretch when the host is given more width (a phone sheet). */
-      grid-template-columns: repeat(7, minmax(var(--cg-component-calendar-cell-size), 1fr));
+      /* Cells stretch when the host is given more width (a phone sheet); a
+         host may set --_cg-calendar-track-min: 0px to let them shrink too. */
+      grid-template-columns: repeat(7, minmax(var(--_cg-calendar-track-min, var(--cg-component-calendar-cell-size)), 1fr));
       justify-items: center;
       gap: var(--cg-spacing-2);
       margin-bottom: var(--cg-spacing-8);
@@ -94,8 +95,9 @@ export class CgCalendar extends LitElement {
 
     .days {
       display: grid;
-      /* Cells stretch when the host is given more width (a phone sheet). */
-      grid-template-columns: repeat(7, minmax(var(--cg-component-calendar-cell-size), 1fr));
+      /* Cells stretch when the host is given more width (a phone sheet); a
+         host may set --_cg-calendar-track-min: 0px to let them shrink too. */
+      grid-template-columns: repeat(7, minmax(var(--_cg-calendar-track-min, var(--cg-component-calendar-cell-size)), 1fr));
       justify-items: center;
       gap: var(--cg-spacing-2);
     }
@@ -103,7 +105,8 @@ export class CgCalendar extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: var(--cg-component-calendar-cell-size);
+      /* The column's width up to the cell size (narrower only in a shrinking grid). */
+      width: min(100%, var(--cg-component-calendar-cell-size));
       height: var(--cg-component-calendar-cell-size);
       border: none;
       background: transparent;

@@ -35,11 +35,14 @@ const panel = (page: Page) => page.evaluate(() => {
   const cal = root.querySelector('cg-calendar')!;
   const c = cal.getBoundingClientRect();
   const day = cal.shadowRoot!.querySelector('.day')!.getBoundingClientRect();
+  const days = Array.from(cal.shadowRoot!.querySelectorAll('.day'), (b) => b.getBoundingClientRect());
   const presets = Array.from(root.querySelectorAll('.preset'), (p) => p.getBoundingClientRect().top);
   return {
     left: d.left, right: d.right, top: d.top, bottom: d.bottom, width: d.width,
     calWidth: c.width, calTop: c.top, months: root.querySelectorAll('cg-calendar').length,
-    day: Math.round(day.width), presetRow: new Set(presets.map(Math.round)).size, presetsAbove: presets.every((t) => t < c.top),
+    day: Math.round(day.width), columns: new Set(days.map((b) => Math.round(b.left))).size,
+    daysInside: days.every((b) => b.left >= d.left && b.right <= d.right && b.left >= c.left && b.right <= c.right),
+    presetRow: new Set(presets.map(Math.round)).size, presetsAbove: presets.every((t) => t < c.top),
   };
 });
 
@@ -57,7 +60,9 @@ describe.skipIf(!browserAvailable)('cg-date-range-picker on a phone (real browse
       expect(r.right).toBe(390);
       expect(r.bottom).toBe(844);
       expect(r.top).toBeGreaterThanOrEqual(0);
-      expect(r.months).toBe(1);
+      // One month: seven day columns, all inside the sheet.
+      expect(r.columns).toBe(7);
+      expect(r.daysInside).toBe(true);
       // One month, the sheet's width less its padding.
       expect(r.calWidth).toBeGreaterThanOrEqual(390 - 2 * 16 - 1);
       expect(r.day).toBeGreaterThanOrEqual(44);
@@ -65,6 +70,24 @@ describe.skipIf(!browserAvailable)('cg-date-range-picker on a phone (real browse
         expect(r.presetRow).toBe(1);
         expect(r.presetsAbove).toBe(true);
       }
+      await page.close();
+    });
+  }
+
+  for (const width of [360, 320]) {
+    it(`pill with presets at ${width} px: no horizontal scroll, every day inside the sheet`, async () => {
+      const page = await open(width, `variant="pill" presets='["7d","30d","90d"]' from="2026-11-01" to="2026-11-14"`);
+      const r = await panel(page);
+      const scroll = await page.evaluate(() => {
+        const sheet = document.getElementById('r')!.shadowRoot!.querySelector('.dropdown')!;
+        return { page: document.documentElement.scrollWidth, sheet: sheet.scrollWidth - sheet.clientWidth };
+      });
+      expect(r.left).toBe(0);
+      expect(r.right).toBe(width);
+      expect(scroll.page).toBeLessThanOrEqual(width);
+      expect(scroll.sheet).toBe(0);
+      expect(r.columns).toBe(7);
+      expect(r.daysInside).toBe(true);
       await page.close();
     });
   }
