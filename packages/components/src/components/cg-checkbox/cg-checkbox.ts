@@ -2,7 +2,7 @@ import { LitElement, html, svg, css, nothing, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
-import { mirrorValidity, type ValidationMessages } from '../../utils/validation.js';
+import { mirrorValidity, type ValidationMessages, reportFormValidity } from '../../utils/validation.js';
 import { hostBlock, reducedMotion, spinKeyframes } from '../../styles/index.js';
 
 /**
@@ -30,7 +30,7 @@ export class CgCheckbox extends LitElement {
 
   constructor() {
     super();
-    this._internals = formInternals(this, () => this.renderRoot.querySelector('input')?.focus());
+    this._internals = formInternals(this);
   }
 
   static override styles = [hostBlock, reducedMotion, spinKeyframes, css`
@@ -126,19 +126,12 @@ export class CgCheckbox extends LitElement {
       overflow: visible;
     }
 
-    .check-icon .tick {
+    /* Tick and dash draw in with one stroke reveal (24 covers both paths' length). */
+    .check-icon path {
       stroke-dasharray: 24;
       stroke-dashoffset: 24;
-      animation: draw var(--cg-transition-duration-slow) 60ms var(--cg-transition-easing-ease-out) forwards;
+      animation: draw var(--cg-transition-duration-slow) var(--cg-transition-easing-ease-out) forwards;
     }
-
-    .check-icon .dash {
-      stroke-dasharray: 14;
-      stroke-dashoffset: 14;
-      animation: draw var(--cg-transition-duration-default) 40ms var(--cg-transition-easing-ease-out) forwards;
-    }
-
-    /* Tick and dash share one stroke reveal. */
     @keyframes draw {
       to { stroke-dashoffset: 0; }
     }
@@ -211,7 +204,7 @@ export class CgCheckbox extends LitElement {
   get validationMessage(): string { return this._internals?.validationMessage ?? ''; }
   get willValidate(): boolean { return this._internals?.willValidate ?? false; }
   checkValidity(): boolean { return this._internals?.checkValidity() ?? true; }
-  reportValidity(): boolean { return this._internals?.reportValidity() ?? true; }
+  reportValidity(): boolean { return this._internals ? reportFormValidity(this._internals) : true; }
 
   override updated(changed: PropertyValues) {
     super.updated(changed);
@@ -258,7 +251,7 @@ export class CgCheckbox extends LitElement {
             ?required=${this.required}
             aria-label=${ariaLabel}
             aria-labelledby=${this.label ? 'label-text' : nothing}
-            aria-describedby=${[this.label && this.description && 'description', this._invalid && 'helper'].filter(Boolean).join(' ') || nothing}
+            aria-describedby="${this.label && this.description ? 'description' : ''} ${this._invalid ? 'helper' : ''}"
             aria-invalid=${this.error || !!this._invalid}
             aria-busy=${this.loading ? 'true' : nothing}
             @change=${this._handleChange}

@@ -2,7 +2,7 @@ import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
-import { messageFor, setValueMissing, type ValidationMessages } from '../../utils/validation.js';
+import { messageFor, setValueMissing, type ValidationMessages, reportFormValidity } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -376,7 +376,7 @@ export class CgDateTimePicker extends LitElement {
   get validationMessage(): string { return this._internals?.validationMessage ?? ''; }
   get willValidate(): boolean { return this._internals?.willValidate ?? false; }
   checkValidity(): boolean { return this._internals?.checkValidity() ?? true; }
-  reportValidity(): boolean { return this._internals?.reportValidity() ?? true; }
+  reportValidity(): boolean { return this._internals ? reportFormValidity(this._internals) : true; }
   formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
   formResetCallback(): void { this.value = this.getAttribute('value') ?? ''; }
   formStateRestoreCallback(state: string): void { this.value = state; }

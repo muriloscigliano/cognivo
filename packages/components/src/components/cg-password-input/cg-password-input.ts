@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
 import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
-import { messageFor, setValueMissing, type ValidationMessages } from '../../utils/validation.js';
+import { messageFor, setValueMissing, type ValidationMessages, reportFormValidity } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -174,7 +174,7 @@ export class CgPasswordInput extends LitElement {
 
   constructor() {
     super();
-    this._internals = formInternals(this, () => this.renderRoot.querySelector('input')?.focus());
+    this._internals = formInternals(this);
   }
 
   /** Per-element text overrides (JSON attribute); see `setMessages()`. */
@@ -211,7 +211,7 @@ export class CgPasswordInput extends LitElement {
   get validationMessage(): string { return this._internals?.validationMessage ?? ''; }
   get willValidate(): boolean { return this._internals?.willValidate ?? false; }
   checkValidity(): boolean { return this._internals?.checkValidity() ?? true; }
-  reportValidity(): boolean { return this._internals?.reportValidity() ?? true; }
+  reportValidity(): boolean { return this._internals ? reportFormValidity(this._internals) : true; }
 
   override updated(changed: Map<string, unknown>): void {
     if (changed.has('value') || changed.has('required') || changed.has('minLength') || changed.has('validationMessages')) {

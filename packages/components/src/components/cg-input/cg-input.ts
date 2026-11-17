@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
 import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
-import { mirrorValidity, type ValidationMessages } from '../../utils/validation.js';
+import { mirrorValidity, type ValidationMessages, reportFormValidity } from '../../utils/validation.js';
 import { hostBlock, reducedMotion, spinKeyframes } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -28,12 +28,15 @@ const MESSAGES = defineMessages('cg-input', {
  * 500, muted, 6 px gap); `label-position="floating"` puts it inside the field,
  * where it stands in for the placeholder until it floats.
  *
- * Invalid state: when a submit or `reportValidity()` (the field's or its
- * form's) finds the field invalid, the browser's bubble is suppressed;
+ * Invalid state: when a submit attempt (a submit button, Enter),
+ * `reportFormValidity(form)` or the field's own `reportValidity()` finds the
+ * field invalid, the browser's bubble is suppressed;
  * the field gets the error border, `aria-invalid`, its validation message
  * under it (in place of `helper`) and a `data-invalid` attribute, and the
  * first invalid field takes focus. The message clears once the value is valid.
- * `checkValidity()` only answers: no message, no focus change. `affix="plain"` draws prefix / suffix
+ * After the user changed the field and left it, the message shows too (no
+ * focus move). `checkValidity()` only answers: no message, no focus change.
+ * `affix="plain"` draws prefix / suffix
  * content inside the field with no box or divider; `size="sm"` is the
  * compact toolbar height (`--cg-component-input-height-sm`) and has no
  * floating label (it would not fit): `label` only names the field.
@@ -59,7 +62,7 @@ export class CgInput extends LitElement {
 
   constructor() {
     super();
-    this._internals = formInternals(this, () => this._input.focus());
+    this._internals = formInternals(this);
   }
 
   static override styles = [hostBlock, reducedMotion, spinKeyframes, css`
@@ -186,7 +189,6 @@ export class CgInput extends LitElement {
       color: transparent;
     }
 
-    input:disabled { cursor: not-allowed; }
     /* type="search": no native cancel button (blue in some browsers); clearable draws the grey one. */
     input::-webkit-search-cancel-button { display: none; }
 
@@ -349,7 +351,7 @@ export class CgInput extends LitElement {
   get validationMessage(): string { return this._internals?.validationMessage ?? ''; }
   get willValidate(): boolean { return this._internals?.willValidate ?? false; }
   checkValidity(): boolean { return this._internals?.checkValidity() ?? true; }
-  reportValidity(): boolean { return this._internals?.reportValidity() ?? true; }
+  reportValidity(): boolean { return this._internals ? reportFormValidity(this._internals) : true; }
 
   override updated(changed: PropertyValues) {
     super.updated(changed);
@@ -386,15 +388,6 @@ export class CgInput extends LitElement {
     this.dispatchEvent(new CustomEvent('cg-input', { detail: { value: this.value }, bubbles: true, composed: true }));
   }
 
-  /** Implicit submission: Enter in the field submits the owning form, as it
-   *  does for a native <input> (the real input lives in our shadow root, so
-   *  the browser cannot do this for us). */
-  private _handleKeydown(e: KeyboardEvent) {
-    handleImplicitSubmit(e, this._internals);
-  }
-
-  private _handleFocus() { this._focused = true; }
-  private _handleBlur() { this._focused = false; }
 
   private _handleClear() {
     this.value = '';
@@ -434,9 +427,9 @@ export class CgInput extends LitElement {
             aria-label=${this.label || this.placeholder || nothing}
             aria-describedby=${help ? 'helper' : nothing}
             @input=${this._handleInput}
-            @keydown=${this._handleKeydown}
-            @focus=${this._handleFocus}
-            @blur=${this._handleBlur}
+            @keydown=${(e: KeyboardEvent) => handleImplicitSubmit(e, this._internals) /* Enter submits the owning form, as in a native <input> */}
+            @focus=${() => { this._focused = true; }}
+            @blur=${() => { this._focused = false; }}
           />
         </div>
 

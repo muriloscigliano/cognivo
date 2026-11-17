@@ -7,6 +7,11 @@
  * cg-checkbox after an invalid cg-input got the browser's bubble and no
  * inline message.
  *
+ * Cognivo runs inside embeds on other sites, so no native prototype is
+ * patched: fields react only to a submit attempt they can see (a click on a
+ * submit button, Enter in a field), `reportFormValidity(form)` / a field's
+ * own `reportValidity()`, and touched + blur.
+ *
  * Checked in Chromium with a mixed form (cg-input, cg-checkbox, cg-radio,
  * cg-number-input, cg-password-input, cg-otp-input, cg-phone-input,
  * cg-select): every field is routed through the shared helper.
@@ -34,10 +39,13 @@ const BODY = `
     <cg-phone-input id="phone" name="phone" label="Phone" required></cg-phone-input>
     <cg-select id="country" name="country" label="Country" required></cg-select>
     <cg-button id="go" type="submit">Send</cg-button>
+    <button id="native-go" type="submit">Send</button>
   </form>`;
 
 async function open(): Promise<Page> {
-  const page = await openPage(TAGS, BODY);
+  const page = await openPage(TAGS, BODY, ['utils/validation.ts']);
+  // Never actually navigate on a submit.
+  await page.evaluate(() => document.getElementById('f')!.addEventListener('submit', (e) => e.preventDefault()));
   await page.addStyleTag({ path: TOKENS_CSS });
   await page.evaluate(() => {
     (document.getElementById('country') as HTMLElement & { options: unknown }).options = [{ value: 'br', label: 'Brazil' }];
@@ -81,9 +89,21 @@ describe.skipIf(!browserAvailable)('checkValidity() is quiet; submit / reportVal
     await page.close();
   });
 
-  it('form.reportValidity(): every field shows its message in place (no bubble) and the first takes focus', async () => {
+  it('Cognivo patches no native prototype: checkValidity / reportValidity are the browser\'s own', async () => {
     const page = await open();
-    expect(await page.evaluate(() => (document.getElementById('f') as HTMLFormElement).reportValidity())).toBe(false);
+    const native = await page.evaluate(() => [HTMLFormElement, HTMLFieldSetElement, ElementInternals].flatMap((C) =>
+      (['checkValidity', 'reportValidity'] as const).map((m) => `${C.name}.${m}: ${/\{\s*\[native code\]\s*\}/.test(Function.prototype.toString.call((C.prototype as unknown as Record<string, () => boolean>)[m]))}`)));
+    expect(native).toEqual([
+      'HTMLFormElement.checkValidity: true', 'HTMLFormElement.reportValidity: true',
+      'HTMLFieldSetElement.checkValidity: true', 'HTMLFieldSetElement.reportValidity: true',
+      'ElementInternals.checkValidity: true', 'ElementInternals.reportValidity: true',
+    ]);
+    await page.close();
+  });
+
+  it('reportFormValidity(form): every field shows its message in place (no bubble) and the first takes focus', async () => {
+    const page = await open();
+    expect(await page.evaluate(() => (window as unknown as { __cg: { reportFormValidity(f: HTMLFormElement): boolean } }).__cg.reportFormValidity(document.getElementById('f') as HTMLFormElement))).toBe(false);
     await settle(page);
     expect(await state(page)).toEqual({ shown: IDS, focus: 'name', inner: 'input', bubbles: [] });
     await page.close();
@@ -96,7 +116,7 @@ describe.skipIf(!browserAvailable)('checkValidity() is quiet; submit / reportVal
       for (const id of ['plan', 'qty', 'pw', 'otp', 'phone', 'country']) f.removeChild(document.getElementById(id)!);
     });
     await page.locator('#name input').fill('Ana');
-    await page.evaluate(() => (document.getElementById('f') as HTMLFormElement).requestSubmit());
+    await page.locator('#go').click();
     await settle(page);
     const s = await state(page);
     expect(s).toEqual({ shown: ['terms'], focus: 'terms', inner: s.inner, bubbles: [] });
@@ -113,6 +133,32 @@ describe.skipIf(!browserAvailable)('checkValidity() is quiet; submit / reportVal
     await settle(page);
     await settle(page);
     expect((await state(page)).shown).toEqual([]);
+    await page.close();
+  });
+
+  it('a native submit button and Enter in a field are submit attempts too', async () => {
+    const page = await open();
+    await page.locator('#native-go').click();
+    await settle(page);
+    expect(await state(page)).toEqual({ shown: IDS, focus: 'name', inner: 'input', bubbles: [] });
+    const fresh = await open();
+    await fresh.locator('#name input').focus();
+    await fresh.keyboard.press('Enter');
+    await settle(fresh);
+    expect((await state(fresh)).shown).toEqual(IDS);
+    await page.close();
+    await fresh.close();
+  });
+
+  it('touched + blur: a field the user changed and left shows its message, without moving focus; untouched fields stay quiet', async () => {
+    const page = await open();
+    await page.locator('#name input').fill('A');
+    await page.locator('#name input').fill('');
+    await page.keyboard.press('Tab');
+    await settle(page);
+    const s = await state(page);
+    expect(s.shown).toEqual(['name']);
+    expect(s.focus).toBe('terms');
     await page.close();
   });
 });

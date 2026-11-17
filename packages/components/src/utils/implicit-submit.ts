@@ -27,6 +27,8 @@
  * cg-phone-input, cg-combobox, cg-tag-input, cg-otp-input).
  */
 
+import { markSubmitAttempt } from './validation.js';
+
 const BLOCKING_INPUT_TYPES = new Set([
   'text', 'search', 'tel', 'url', 'email', 'password',
   'date', 'month', 'week', 'time', 'datetime-local', 'number',
@@ -77,6 +79,8 @@ export function runImplicitSubmission(controls: Element[], submitWithoutButton: 
 /** Run implicit submission for `form` (no-op when `form` is null). */
 export function implicitlySubmit(form: HTMLFormElement | null | undefined): void {
   if (!form) return;
+  // A submit attempt the fields can see (utils/validation): errors show in place.
+  markSubmitAttempt(form);
   runImplicitSubmission(elementsOf(form), () => HTMLFormElement.prototype.requestSubmit.call(form));
 }
 
@@ -91,4 +95,22 @@ export function handleImplicitSubmit(e: KeyboardEvent, internals: ElementInterna
   if (!form) return;
   e.preventDefault();
   implicitlySubmit(form);
+}
+
+let watching = false;
+
+/**
+ * One capture-phase click listener on the document (installed once, by the
+ * first form field): a click on a submit button — native, or a custom
+ * element with type="submit" such as cg-button — marks its form's submit
+ * attempt (utils/validation), so the invalid fields show their errors. It
+ * only observes: the click is never stopped or changed.
+ */
+export function watchSubmits(): void {
+  if (watching || typeof document === 'undefined') return;
+  watching = true;
+  document.addEventListener('click', (e) => {
+    const button = e.composedPath().find((n): n is Element => n instanceof Element && isSubmitButton(n));
+    if (button) markSubmitAttempt((button as HTMLButtonElement).form ?? button.closest('form'));
+  }, true);
 }

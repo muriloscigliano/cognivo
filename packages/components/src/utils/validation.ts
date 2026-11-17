@@ -147,50 +147,71 @@ export function setValueMissing(
 let focusing = false;
 
 /**
- * `checkValidity()` only asks: it fires `invalid` like `reportValidity()`
- * does, but must not show errors or move focus. The browser gives the two
- * the same event, so the checkValidity methods of forms, fieldsets and
- * ElementInternals (which every field's own `checkValidity()` calls) are
- * wrapped once to count the quiet calls in progress. A second copy of the
- * library on the page wraps the wrapper: both counts go up, so each copy's
- * fields stay quiet. (A listener's exception never propagates out of
- * checkValidity(), so a count always comes back down.)
+ * When fields show their errors. Cognivo runs inside embeds on other sites,
+ * so it never patches native prototypes: an `invalid` event alone (a
+ * `checkValidity()` anywhere, or the host page's own code) changes nothing
+ * visible. A field shows its message in place — and the first invalid one
+ * takes focus — only during a submit attempt it can see:
+ * - a click on a submit button (native or `cg-button type="submit"`), seen by
+ *   one capture-phase listener on the document, marks that button's form;
+ * - Enter in a field (the shared implicit-submit helper) marks its form;
+ * - `reportFormValidity(form)` and a field's own `reportValidity()`.
+ * The mark lasts until the current task ends (the browser validates
+ * synchronously inside the submit). A field also shows its message once the
+ * user has changed it and left it (touched + blur), without moving focus.
  */
-let quiet = 0;
-let wrapped = false;
+/** The form of the submit attempt in this task (one at a time: a task submits one form). */
+let attempt: HTMLFormElement | null | undefined;
+let reporting = 0;
 
-export function quietCheckValidity(): void {
-  if (wrapped) return;
-  wrapped = true;
-  // Looked up by name: server rendering (@lit-labs/ssr) has form internals but no HTMLFormElement.
-  for (const name of ['HTMLFormElement', 'HTMLFieldSetElement', 'ElementInternals']) {
-    const proto = (globalThis as unknown as Record<string, { prototype: { checkValidity?(): boolean } } | undefined>)[name]?.prototype;
-    const check = proto?.checkValidity;
-    if (check) proto.checkValidity = function (this: unknown) {
-      quiet++;
-      const valid = check.call(this);
-      quiet--;
-      return valid;
-    };
-  }
+/** Mark a submit attempt on `form` for the rest of this task. */
+export function markSubmitAttempt(form: HTMLFormElement | null | undefined): void {
+  // (Marked twice in one task — Enter clicking the default button — is the same attempt.)
+  attempt = form;
+  focusing = false;
+  setTimeout(() => { attempt = null; });
 }
 
 /**
- * Field error state without the browser's bubble, for every form-associated
- * component (installed by `formInternals`). On a reported `invalid` — a
- * submit attempt or `reportValidity()` — the event is cancelled (no bubble:
- * the field shows its message under itself; its own listener sees
- * `defaultPrevented`) and the first invalid field of the pass (a form's
- * invalid events fire synchronously, in tree order) runs `focus`. On a
- * `checkValidity()` nothing happens: returns `false`.
+ * Validate and show every invalid field's message in place (no browser
+ * bubble), focusing the first — the replacement for calling
+ * `form.reportValidity()` directly on a form with cg fields. (Also works on
+ * one field, or its ElementInternals.)
  */
-export function showInvalid(e: Event, focus: () => void): boolean {
-  if (quiet) return false;
-  e.preventDefault();
-  if (!focusing) {
-    focusing = true;
-    queueMicrotask(() => (focusing = false));
-    focus();
-  }
-  return true;
+export function reportFormValidity(form: { reportValidity(): boolean }): boolean {
+  // (A listener's exception never propagates out of reportValidity(), so the count comes back down.)
+  if (!reporting++) focusing = false;
+  const valid = form.reportValidity();
+  reporting--;
+  return valid;
+}
+
+/**
+ * Install the invalid behaviour on a form-associated field (`formInternals`
+ * calls this): during a submit attempt or a report, `invalid` is cancelled
+ * (no bubble), `show` renders the message and the first invalid field of the
+ * pass runs `focus`; after the user changed the field and left it, `show`
+ * alone. Otherwise nothing happens.
+ */
+export function watchValidity(el: HTMLElement, internals: ElementInternals, focus: () => void, show: () => void): void {
+  let touched = false;
+  el.addEventListener('invalid', (e) => {
+    if (!reporting && !(attempt && internals.form === attempt)) return;
+    e.preventDefault();
+    show();
+    // The first invalid field of this attempt takes focus. (Not reset in a
+    // microtask: a native submit button's validation runs a microtask
+    // checkpoint after every invalid listener; each attempt resets it.)
+    if (!focusing) {
+      focusing = true;
+      focus();
+    }
+  });
+  const touch = () => { touched = true; };
+  el.addEventListener('input', touch);
+  el.addEventListener('cg-change', touch);
+  // Left the field (focus not moving inside it; contains() is inclusive and false for null).
+  el.addEventListener('focusout', (e) => {
+    if (touched && !el.contains(e.relatedTarget as Node | null) && !internals.validity.valid) show();
+  });
 }

@@ -3,7 +3,7 @@ import { property, state, query } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
 import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
-import { setValueMissing, type ValidationMessages } from '../../utils/validation.js';
+import { setValueMissing, type ValidationMessages, reportFormValidity } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { bindOutsideClick } from '../../utils/outside-click.js';
 import {
@@ -487,7 +487,7 @@ export class CgPhoneInput extends LitElement {
   get validationMessage(): string { return this._internals?.validationMessage ?? ''; }
   get willValidate(): boolean { return this._internals?.willValidate ?? false; }
   checkValidity(): boolean { return this._internals?.checkValidity() ?? true; }
-  reportValidity(): boolean { return this._internals?.reportValidity() ?? true; }
+  reportValidity(): boolean { return this._internals ? reportFormValidity(this._internals) : true; }
 
   override updated(changed: PropertyValues): void {
     super.updated(changed);

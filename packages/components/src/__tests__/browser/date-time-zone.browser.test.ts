@@ -22,7 +22,7 @@ import { browserAvailable, openPage, closeBrowser, settleStyles, axeViolations }
 const TOKENS_CSS = resolve(__dirname, '..', '..', '..', '..', 'tokens', 'dist', 'index.css');
 
 async function open(body: string, lang = 'en-US'): Promise<Page> {
-  const page = await openPage(['cg-date-time-picker'], body);
+  const page = await openPage(['cg-date-time-picker'], body, ['utils/validation.ts']);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.addStyleTag({ path: TOKENS_CSS });
   await page.evaluate((lang) => { document.documentElement.lang = lang; }, lang);
@@ -59,7 +59,8 @@ describe.skipIf(!browserAvailable)('cg-date-time-picker for dated steps (real br
       const el = document.querySelector('cg-date-time-picker') as HTMLElement & { validity: ValidityState };
       let prevented = false;
       el.addEventListener('invalid', (e) => { prevented = e.defaultPrevented; });
-      const valid = document.querySelector('form')!.reportValidity();
+      // reportFormValidity: the documented way to report a form with cg fields (no bubble).
+      const valid = (window as unknown as { __cg: { reportFormValidity(f: HTMLFormElement): boolean } }).__cg.reportFormValidity(document.querySelector('form')!);
       return { valid, missing: el.validity.valueMissing, prevented };
     });
     expect(r).toEqual({ valid: false, missing: true, prevented: true });

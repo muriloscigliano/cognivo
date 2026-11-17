@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
 import { handleImplicitSubmit } from '../../utils/implicit-submit.js';
-import { setValueMissing, type ValidationMessages } from '../../utils/validation.js';
+import { setValueMissing, type ValidationMessages, reportFormValidity } from '../../utils/validation.js';
 import { hostBase, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -170,7 +170,7 @@ export class CgOtpInput extends LitElement {
   get validationMessage(): string { return this._internals?.validationMessage ?? ''; }
   get willValidate(): boolean { return this._internals?.willValidate ?? false; }
   checkValidity(): boolean { return this._internals?.checkValidity() ?? true; }
-  reportValidity(): boolean { return this._internals?.reportValidity() ?? true; }
+  reportValidity(): boolean { return this._internals ? reportFormValidity(this._internals) : true; }
 
   /** Before render, so a value set from outside (a property, a form reset)
    *  shows in the boxes in the same update. */
