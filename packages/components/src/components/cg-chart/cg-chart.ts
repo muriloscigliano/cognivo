@@ -8,6 +8,9 @@ const MESSAGES = defineMessages('cg-chart', {
   label: 'Chart',
   empty: 'No data',
   total: 'Total',
+  /** Column headers of the visually hidden data table. */
+  category: 'Label',
+  value: 'Value',
 });
 
 /** Data point for cg-chart */
@@ -34,7 +37,10 @@ const AUTO_BAR_MAX = 30;
  * (12 px, muted) — `show-grid` off hides it; a crosshair and a small
  * tooltip card (label and value) follow the pointer over bar, line, area and
  * auto charts, and the arrow keys (Home / End, Escape) move it on the
- * focused chart. Colours are tokens (`--cg-color-chart-N-*`), so a theme
+ * focused chart; a tap reads the point (or the pie slice) under the finger.
+ * The reading is announced from a polite live region that is always there;
+ * a visually hidden table (caption = title) holds every label and value.
+ * Colours are tokens (`--cg-color-chart-N-*`), so a theme
  * switch repaints the marks; `ChartSeries.color` still overrides.
  *
  * `type="auto"`: bars in one series colour for up to 30 points, a line
@@ -140,6 +146,19 @@ export class CgChart extends LitElement {
       z-index: 10;
     }
     .tip.show { display: flex; }
+    /* The reading's live region and the data table: read, not seen. Always
+       rendered (never display: none), so the first reading is announced. */
+    .sr {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
+    }
     .tip-label { font-size: var(--cg-font-size-xs); color: var(--cg-color-on-surface-container-default); }
     .tip-value { font-size: var(--cg-font-size-sm); font-weight: var(--cg-font-weight-medium); font-variant-numeric: tabular-nums; }
 
@@ -407,6 +426,7 @@ export class CgChart extends LitElement {
           <rect class="hbar-anim" x="${lW}" y="${y}" width="0" height="${bH}" rx="4" style="fill:${c}; cursor:pointer"
             data-w="${bW}" data-delay="${i * 50}"
             @mouseenter=${(e: MouseEvent) => this._tip(e, d.label, d.value)}
+            @click=${(e: MouseEvent) => this._tip(e, d.label, d.value)}
             @mouseleave=${this._untip} />
           <text class="val val-anim" x="${lW + bW + 8}" y="${y + bH / 2 + 4}" font-size="11" font-weight="600" opacity="0" data-delay="${i * 50 + 300}">${this._fmt(d.value)}</text>
         `;
@@ -476,6 +496,7 @@ export class CgChart extends LitElement {
       return svg`
         <path class="anim-slice" d="${p}" style="fill:${c}; cursor:pointer; animation-delay:${i * 60}ms"
           @mouseenter=${(e: MouseEvent) => this._tip(e, d.label, d.value)}
+          @click=${(e: MouseEvent) => this._tip(e, d.label, d.value)}
           @mouseleave=${this._untip} />
         ${pct >= 5 ? svg`<text class=${donut ? 'axis' : 'val'} x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="600">${pct}%</text>` : nothing}
       `;
@@ -543,7 +564,8 @@ export class CgChart extends LitElement {
       <div class="wrap ${this.contained ? 'contained' : ''}">
         ${header}
 
-        <div class="svg-wrap" @pointermove=${reading ? this._onMove : nothing} @pointerleave=${reading ? () => this._setActive(-1) : nothing}>
+        <div class="svg-wrap" @pointermove=${reading ? this._onMove : nothing} @pointerdown=${reading ? this._onMove : nothing}
+          @pointerleave=${reading ? (e: PointerEvent) => { if (e.pointerType !== 'touch') this._setActive(-1); } : nothing}>
           <svg
             role="img"
             tabindex=${reading ? '0' : nothing}
@@ -557,11 +579,17 @@ export class CgChart extends LitElement {
             ${reading && this._active >= 0 ? svg`<line class="crosshair" x1="${xs[this._active]}" y1="${T}" x2="${xs[this._active]}" y2="${T + ph}" />` : nothing}
           </svg>
           ${reading && this.showGrid ? html`<span class="max-label" aria-hidden="true" style="top:${(T / H) * 100}%">${this._fmt(max)}</span>` : nothing}
-          <div class="tip ${this._tipShow ? 'show' : ''}" style="left:${this._tipX}%;top:${this._tipY}%;" aria-live="polite">
+          <div class="tip ${this._tipShow ? 'show' : ''}" style="left:${this._tipX}%;top:${this._tipY}%;" aria-hidden="true">
             <span class="tip-label">${this._tipLabel}</span>
             <span class="tip-value">${this._tipValue}</span>
           </div>
+          <div class="sr" aria-live="polite">${this._tipShow ? `${this._tipLabel}: ${this._tipValue}` : ''}</div>
         </div>
+        <div class="sr"><table>
+          <caption>${this.title || this.i18n.t('label')}</caption>
+          <thead><tr><th scope="col">${this.i18n.t('category')}</th><th scope="col">${this.i18n.t('value')}</th></tr></thead>
+          <tbody>${this.data.map((d) => html`<tr><th scope="row">${d.label}</th><td>${new Intl.NumberFormat(this.i18n.locale).format(d.value)}</td></tr>`)}</tbody>
+        </table></div>
 
         ${this.showLegend && this.type !== 'auto' ? html`
           <div class="legend">

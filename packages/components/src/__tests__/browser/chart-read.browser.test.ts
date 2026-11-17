@@ -121,6 +121,66 @@ describe.skipIf(!browserAvailable)('cg-chart reads (real browser)', { timeout: 6
     await page.close();
   });
 
+  it('the reading\'s live region is always there (never display: none), so the first reading is announced', async () => {
+    const page = await chart('type="auto" height="200" title="Sign-ups"', days(5, (i) => i + 1));
+    const live = () => page.evaluate(() => {
+      const el = document.getElementById('c')!.shadowRoot!.querySelector('[aria-live]') as HTMLElement | null;
+      let hidden = false;
+      for (let n: Element | null = el; n; n = n.parentElement) if (getComputedStyle(n).display === 'none' || getComputedStyle(n).visibility === 'hidden') hidden = true;
+      return { exists: !!el, hidden, text: el?.textContent!.replace(/\s+/g, ' ').trim() ?? '' };
+    });
+    expect(await live()).toEqual({ exists: true, hidden: false, text: '' });
+    await page.evaluate(() => (document.getElementById('c')!.shadowRoot!.querySelector('svg') as SVGElement).focus());
+    await page.keyboard.press('ArrowRight');
+    await settleStyles(page);
+    expect(await live()).toEqual({ exists: true, hidden: false, text: 'Nov 1: 1' });
+    // The visual card is not a second announcement.
+    expect(await page.evaluate(() => document.getElementById('c')!.shadowRoot!.querySelector('.tip')!.getAttribute('aria-hidden'))).toBe('true');
+    await page.close();
+  });
+
+  it('a tap reads the point under the finger (bars) or the slice (pie)', async () => {
+    const page = await chart('type="auto" height="200" title="Sign-ups"', days(8, (i) => i + 1));
+    const box = await page.evaluate(() => document.getElementById('c')!.shadowRoot!.querySelector('rect.bar:nth-of-type(4)')!.getBoundingClientRect().toJSON());
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 1 });
+    const tap = async (x: number, y: number) => {
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] } as never);
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] } as never);
+    };
+    await tap(box.x + box.width / 2, box.y + box.height - 2);
+    await settleStyles(page);
+    const read = () => page.evaluate(() => {
+      const root = document.getElementById('c')!.shadowRoot!;
+      return { tip: getComputedStyle(root.querySelector('.tip')!).display, live: root.querySelector('[aria-live]')!.textContent!.replace(/\s+/g, ' ').trim() };
+    });
+    expect(await read()).toEqual({ tip: 'flex', live: 'Nov 4: 4' });
+    await page.evaluate(() => { const c = document.getElementById('c') as HTMLElement & { type: string; data: unknown }; c.type = 'pie'; c.data = [{ label: 'Open', value: 3 }, { label: 'Closed', value: 1 }]; });
+    await settleStyles(page);
+    const slice = await page.evaluate(() => document.getElementById('c')!.shadowRoot!.querySelector('path.anim-slice')!.getBoundingClientRect().toJSON());
+    await tap(slice.x + slice.width * 0.6, slice.y + slice.height * 0.5);
+    await settleStyles(page);
+    expect(await read()).toEqual({ tip: 'flex', live: 'Open: 3' });
+    await page.close();
+  });
+
+  it('a visually hidden data table holds the same numbers for assistive tech', async () => {
+    const page = await chart('type="auto" height="200" title="Sign-ups"', days(3, (i) => (i + 1) * 10));
+    const t = page.getByRole('table', { name: 'Sign-ups' });
+    await expect(t.count()).resolves.toBe(1);
+    const rows = await page.evaluate(() => Array.from(document.getElementById('c')!.shadowRoot!.querySelectorAll('table tr'), (r) => Array.from(r.children, (c) => c.textContent!.trim())));
+    expect(rows).toEqual([['Label', 'Value'], ['Nov 1', '10'], ['Nov 2', '20'], ['Nov 3', '30']]);
+    // Clipped to a 1 px box: nothing of it shows.
+    const clip = await page.evaluate(() => {
+      const box = document.getElementById('c')!.shadowRoot!.querySelector('table')!.parentElement!;
+      const r = box.getBoundingClientRect();
+      return { area: r.width * r.height, overflow: getComputedStyle(box).overflow };
+    });
+    expect(clip).toEqual({ area: 1, overflow: 'hidden' });
+    expect(await axeViolations(page)).toEqual([]);
+    await page.close();
+  });
+
   it('zero data: the card keeps its height and shows the empty title and line at the bottom, no chart', async () => {
     const page = await chart('type="auto" height="200" contained title="Today" empty-text="No activity yet" empty-description="Sign-ups show here as they come in."', days(9, () => 0));
     const r = await page.evaluate(() => {

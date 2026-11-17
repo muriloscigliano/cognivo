@@ -82,6 +82,8 @@ export const ptBR: LocaleMessages = {
     label: 'Gráfico',
     empty: 'Sem dados',
     total: 'Total',
+    category: 'Rótulo',
+    value: 'Valor',
   },
   'cg-chip': {
     remove: 'Remover {label}',
