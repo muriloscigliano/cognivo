@@ -9,13 +9,14 @@
  * adapter: bundling `dist/index.js` for one wrapper (esbuild, minified,
  * tree-shaken, React and the components external) keeps that wrapper and
  * drops every unused one. Requires `pnpm build` first (turbo runs build
- * before test).
+ * before test); skipped locally without dist, a failure in CI (distGate).
  */
 import { describe, it, expect } from 'vitest';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { build } from 'esbuild';
+import { distGate } from './dist-gate.js';
 
 const pkg = resolve(__dirname, '..', '..');
 const DIST = resolve(pkg, 'dist', 'index.js');
@@ -36,7 +37,7 @@ async function bundle(imports: string): Promise<{ text: string; gzip: number }> 
   return { text: Buffer.from(code).toString('utf8'), gzip: gzipSync(code, { level: 9 }).length };
 }
 
-describe.skipIf(!existsSync(DIST))('React adapter tree-shaking (built dist)', () => {
+describe.skipIf(!distGate(process.env, existsSync(DIST)))('React adapter tree-shaking (built dist)', () => {
   it('one wrapper imported: it ships, the unused wrappers drop out', async () => {
     const { text, gzip } = await bundle('CgButton');
     expect(text).toContain('"cg-button"');
