@@ -55,6 +55,7 @@ export class CgPasswordInput extends LitElement {
 
     input {
       flex: 1;
+      box-sizing: border-box;
       height: var(--cg-component-input-height-md);
       padding: 0 var(--cg-spacing-40) 0 var(--cg-spacing-12);
       background: var(--cg-color-input-background-default);

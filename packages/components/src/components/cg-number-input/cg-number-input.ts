@@ -90,6 +90,7 @@ export class CgNumberInput extends LitElement {
     :host([rounded="full"]) .wrapper { border-radius: var(--cg-border-radius-full); }
 
     .btn {
+      box-sizing: border-box;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -119,11 +120,12 @@ export class CgNumberInput extends LitElement {
     .btn svg { width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); }
 
     /* Sizes */
-    :host([size="sm"]) .btn { width: var(--cg-component-input-height-sm); height: var(--cg-component-input-height-sm); }
-    :host([size="md"]) .btn { width: var(--cg-component-input-height-md); height: var(--cg-component-input-height-md); }
-    :host([size="lg"]) .btn { width: var(--cg-component-input-height-lg); height: var(--cg-component-input-height-lg); }
+    :host([size="sm"]) .btn { width: var(--cg-component-input-height-sm); height: calc(var(--cg-component-input-height-sm) - 2 * var(--cg-border-width-50)); }
+    :host([size="md"]) .btn { width: var(--cg-component-input-height-md); height: calc(var(--cg-component-input-height-md) - 2 * var(--cg-border-width-50)); }
+    :host([size="lg"]) .btn { width: var(--cg-component-input-height-lg); height: calc(var(--cg-component-input-height-lg) - 2 * var(--cg-border-width-50)); }
 
     input {
+      box-sizing: border-box;
       border: none;
       outline: none;
       background: transparent;
@@ -137,9 +139,9 @@ export class CgNumberInput extends LitElement {
     input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     input:disabled { cursor: not-allowed; }
 
-    :host([size="sm"]) input { width: var(--cg-spacing-48); font-size: var(--cg-font-size-xs); height: var(--cg-component-input-height-sm); }
-    :host([size="md"]) input { width: var(--cg-spacing-56); font-size: var(--cg-font-size-sm); height: var(--cg-component-input-height-md); }
-    :host([size="lg"]) input { width: var(--cg-spacing-64); font-size: var(--cg-font-size-base); height: var(--cg-component-input-height-lg); }
+    :host([size="sm"]) input { width: var(--cg-spacing-48); font-size: var(--cg-font-size-xs); height: calc(var(--cg-component-input-height-sm) - 2 * var(--cg-border-width-50)); }
+    :host([size="md"]) input { width: var(--cg-spacing-56); font-size: var(--cg-font-size-sm); height: calc(var(--cg-component-input-height-md) - 2 * var(--cg-border-width-50)); }
+    :host([size="lg"]) input { width: var(--cg-spacing-64); font-size: var(--cg-font-size-base); height: calc(var(--cg-component-input-height-lg) - 2 * var(--cg-border-width-50)); }
 
     .label { display: block; font-size: var(--cg-font-size-xs); color: var(--cg-color-input-text-placeholder); margin-bottom: var(--cg-spacing-4); font-weight: var(--cg-font-weight-medium); }
   `];

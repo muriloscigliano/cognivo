@@ -63,6 +63,20 @@ describe.skipIf(!browserAvailable)('one control scale (real browser)', { timeout
     await page.close();
   });
 
+  it('every field-like control is 36 px tall by default (border included)', async () => {
+    const FIELDS: Record<string, string> = {
+      'cg-autocomplete': '.input-wrap', 'cg-combobox': '.wrapper', 'cg-date-picker': '.trigger', 'cg-phone-input': '.wrapper',
+      'cg-number-input': '.wrapper', 'cg-password-input': 'input', 'cg-time-picker': '.trigger', 'cg-color-picker': '.trigger',
+      'cg-date-time-picker': '.trigger', 'cg-date-range-picker': '.trigger', 'cg-split-button': '.primary',
+    };
+    const tags = Object.keys(FIELDS);
+    const page = await open(tags, tags.map((t) => `<${t} label="Field"></${t}>`).join(''));
+    const heights = await page.evaluate((fields) => Object.fromEntries(Object.entries(fields).map(([t, sel]) =>
+      [t, document.querySelector(t)!.shadowRoot!.querySelector(sel)!.getBoundingClientRect().height])), FIELDS);
+    expect(heights).toEqual(Object.fromEntries(tags.map((t) => [t, 36])));
+    await page.close();
+  });
+
   it('ghost-danger: variant="tertiary" type="danger" is red text on no fill (hover adds only the neutral overlay)', async () => {
     const page = await open(['cg-button'], '<cg-button id="g" variant="tertiary" type="danger">Delete contact…</cg-button>');
     const b = await box(page, '#g', '.btn');

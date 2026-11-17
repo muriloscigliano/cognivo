@@ -46,8 +46,9 @@ export class CgCombobox extends LitElement {
       align-items: center;
       flex-wrap: wrap;
       gap: var(--cg-spacing-6);
+      box-sizing: border-box;
       min-height: var(--cg-component-input-height-md);
-      padding: var(--cg-spacing-8) var(--cg-spacing-12);
+      padding: var(--cg-spacing-4) var(--cg-spacing-12);
       background: var(--cg-color-input-background-default);
       border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
       border-radius: var(--cg-component-input-radius);

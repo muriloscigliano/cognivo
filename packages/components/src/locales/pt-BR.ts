@@ -133,6 +133,12 @@ export const ptBR: LocaleMessages = {
     endPlaceholder: 'Data final',
     label: 'Seletor de período',
     calendar: 'Calendário do período',
+    last7: 'Últimos 7 dias',
+    last30: 'Últimos 30 dias',
+    last90: 'Últimos 90 dias',
+    last12m: 'Últimos 12 meses',
+    ytd: 'Este ano até hoje',
+    presets: 'Atalhos',
   },
   'cg-date-time-picker': {
     placeholder: 'Selecione data e hora',
@@ -145,6 +151,8 @@ export const ptBR: LocaleMessages = {
     minute: 'Min',
     am: 'AM',
     pm: 'PM',
+    hours: 'Horas',
+    minutes: 'Minutos',
   },
   'cg-drawer': {
     label: 'Painel lateral',

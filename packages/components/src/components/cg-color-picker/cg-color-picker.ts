@@ -89,6 +89,7 @@ export class CgColorPicker extends LitElement {
       align-items: center;
       gap: var(--cg-spacing-8);
       padding: 0 var(--cg-spacing-12);
+      box-sizing: border-box;
       height: var(--cg-component-input-height-md);
       border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
       border-radius: var(--cg-component-input-radius);

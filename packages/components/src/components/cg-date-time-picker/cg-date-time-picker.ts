@@ -1,6 +1,8 @@
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
+import { formInternals } from '../../utils/form-internals.js';
+import { setValueMissing, showInvalid, type ValidationMessages } from '../../utils/validation.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
 
@@ -15,7 +17,42 @@ const MESSAGES = defineMessages('cg-date-time-picker', {
   minute: 'Min',
   am: 'AM',
   pm: 'PM',
+  /** Accessible names of the hour and minute lists. */
+  hours: 'Hours',
+  minutes: 'Minutes',
 });
+
+const pad = (n: number) => String(n).padStart(2, '0');
+const VALUE = /^(\d{4}-\d{2}-\d{2})(?:T(\d{2}:\d{2})(?::\d{2}(?:\.\d+)?)?(Z|[+-]\d{2}:?\d{2})?)?$/;
+
+/** Wall-clock parts of an instant in a time zone. */
+function wallParts(ms: number, timeZone: string): { date: string; time: string; utc: number } {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit',
+  }).formatToParts(ms);
+  const g = (t: string) => Number(parts.find((p) => p.type === t)!.value);
+  const utc = Date.UTC(g('year'), g('month') - 1, g('day'), g('hour'), g('minute'), g('second'));
+  return { date: `${g('year')}-${pad(g('month'))}-${pad(g('day'))}`, time: `${pad(g('hour'))}:${pad(g('minute'))}`, utc };
+}
+
+/** The instant (ms) of a wall-clock date + time in a time zone (DST-aware). */
+function zonedInstant(date: string, time: string, timeZone: string): number {
+  const [y, mo, d] = date.split('-').map(Number);
+  const [h, mi] = time.split(':').map(Number);
+  const guess = Date.UTC(y!, mo! - 1, d!, h!, mi!);
+  const offset = (ms: number) => wallParts(ms, timeZone).utc - Math.floor(ms / 1000) * 1000;
+  let inst = guess - offset(guess);
+  const second = guess - offset(inst);
+  if (second !== inst) inst = second;
+  return inst;
+}
+
+/** "+hh:mm" / "-hh:mm" offset of a time zone at an instant. */
+function offsetString(ms: number, timeZone: string): string {
+  const mins = Math.round((wallParts(ms, timeZone).utc - Math.floor(ms / 1000) * 1000) / 60000);
+  const a = Math.abs(mins);
+  return `${mins < 0 ? '-' : '+'}${pad(Math.floor(a / 60))}:${pad(a % 60)}`;
+}
 
 /**
  * @element cg-date-time-picker
@@ -27,22 +64,49 @@ const MESSAGES = defineMessages('cg-date-time-picker', {
  * <cg-date-time-picker label="Deadline" value="2026-04-06T14:30" use12h></cg-date-time-picker>
  * ```
  *
+ * For dated steps: a form field (`name`, `required`, reset, FormData, the
+ * in-place invalid state of cg-input). `time-zone` (IANA, e.g.
+ * `America/Sao_Paulo`) says which zone the wall time is in: the value then
+ * carries that zone's offset for the date (`2027-01-31T09:00:00-03:00`,
+ * daylight saving included), an instant with an offset (`…Z`, `…+01:00`) is
+ * shown as wall time in the zone, and the trigger names the zone:
+ * "Jan 31, 2027, 9:00 AM (GMT-3)" in the page's locale (`lang`). Without
+ * `time-zone` the browser's zone is shown and a value without an offset
+ * stays as written (`2027-01-31T09:00`).
+ *
+ * Keyboard: Enter / Space / ArrowDown on the trigger opens the calendar on
+ * the selected day (or today); the arrows move by day / week, Page Up /
+ * Page Down by month, Home / End to the week's start / end, Enter picks the
+ * day; the hour and minute lists move with ArrowUp / ArrowDown; Escape
+ * closes and returns to the trigger.
+ *
  * @fires {CustomEvent<{value: string, date: string, time: string}>} cg-change - When date or time changes
  */
 @customElement('cg-date-time-picker')
 export class CgDateTimePicker extends LitElement {
+  static formAssociated = true;
+  private _internals: ElementInternals | undefined;
+
+  constructor() {
+    super();
+    this._internals = formInternals(this);
+    // No native bubble: the field shows its own message (utils/validation showInvalid).
+    this.addEventListener('invalid', (e) => { showInvalid(e, () => this._trigger?.focus()); this._invalid = this.validationMessage; });
+  }
+
   static override styles = [hostBlock, reducedMotion, css`
     :host { position: relative; }
 
     .label {
       font-size: var(--cg-font-size-xs);
       color: var(--cg-color-surface-container-text);
-      margin-bottom: var(--cg-spacing-4);
+      margin-bottom: var(--cg-component-input-label-gap);
       font-weight: var(--cg-font-weight-medium);
     }
 
     /* ── Trigger ── */
     .trigger {
+      box-sizing: border-box;
       display: flex;
       align-items: center;
       gap: 0;
@@ -65,9 +129,9 @@ export class CgDateTimePicker extends LitElement {
     .trigger.open { border-color: var(--cg-color-input-border-focus); box-shadow: 0 0 0 var(--cg-border-width-300) var(--cg-color-state-focus-halo); }
     .trigger.disabled { opacity: var(--cg-opacity-40); pointer-events: none; background: var(--cg-color-input-background-disabled); border-color: var(--cg-color-input-border-disabled); }
 
-    :host([error]) .trigger { border-color: var(--cg-color-input-border-error); }
-    :host([error]) .trigger:focus-visible,
-    :host([error]) .trigger.open { border-color: var(--cg-color-status-error-text-default); box-shadow: 0 0 0 3px var(--cg-shadow-focus-error); }
+    :host(:is([error],[data-invalid])) .trigger { border-color: var(--cg-color-input-border-error); }
+    :host(:is([error],[data-invalid])) .trigger:focus-visible,
+    :host(:is([error],[data-invalid])) .trigger.open { border-color: var(--cg-color-status-error-text-default); box-shadow: 0 0 0 3px var(--cg-shadow-focus-error); }
     :host([success]) .trigger { border-color: var(--cg-color-input-icon-success); }
     :host([success]) .trigger:focus-visible,
     :host([success]) .trigger.open { border-color: var(--cg-color-status-success-text-default); box-shadow: 0 0 0 3px var(--cg-shadow-focus-success); }
@@ -111,13 +175,14 @@ export class CgDateTimePicker extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
       border-radius: var(--cg-component-input-radius);
       opacity: 0;
+      visibility: hidden;
       transform: translateY(calc(-1 * var(--cg-spacing-4))) scale(0.98);
       pointer-events: none;
       transition:
         opacity var(--cg-transition-duration-fast) var(--cg-transition-easing-default),
         transform var(--cg-transition-duration-fast) var(--cg-transition-easing-default);
     }
-    .dropdown.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+    .dropdown.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); pointer-events: auto; }
 
     .dropdown-inner {
       display: flex;
@@ -246,7 +311,7 @@ export class CgDateTimePicker extends LitElement {
       font-size: var(--cg-font-size-xs); color: var(--cg-color-input-text-placeholder);
       padding: var(--cg-spacing-4) 0 0;
     }
-    :host([error]) .helper { color: var(--cg-color-status-error-text-default); }
+    :host(:is([error],[data-invalid])) .helper { color: var(--cg-color-status-error-text-default); }
     :host([success]) .helper { color: var(--cg-color-status-success-text-default); }
   `];
 
@@ -256,7 +321,14 @@ export class CgDateTimePicker extends LitElement {
   private i18n = new Messages(this, MESSAGES);
 
   @property() label = '';
+  /** `YYYY-MM-DDTHH:mm` (wall time), or with seconds and an offset. */
   @property() value = '';
+  @property({ reflect: true }) name = ''; // reflected: FormData keys a form-associated element by its name ATTRIBUTE
+  @property({ type: Boolean }) required = false;
+  /** IANA time zone of the wall time (e.g. `America/Sao_Paulo`); default: the browser's. */
+  @property({ attribute: 'time-zone' }) timeZone = '';
+  /** Per-element validation texts (see cg-input). */
+  @property({ type: Object, attribute: 'validation-messages' }) validationMessages: ValidationMessages | null = null;
   @property() placeholder?: string;
   @property() helper = '';
   @property() min = '';
@@ -270,6 +342,44 @@ export class CgDateTimePicker extends LitElement {
   @property({ type: Number }) step = 5;
 
   @state() private _open = false;
+  /** The validation message shown after an `invalid` event, until valid again. */
+  @state() private _invalid = '';
+  /** Disabled by an ancestor `<fieldset disabled>`. */
+  @state() private _formDisabled = false;
+  /** The calendar day that holds the keyboard focus (roving tab stop). */
+  @state() private _focusDate = '';
+
+  private get _trigger(): HTMLElement | null { return this.renderRoot?.querySelector?.<HTMLElement>('.trigger') ?? null; }
+  private get _disabled(): boolean { return this.disabled || this._formDisabled; }
+  /** The zone the wall time is in. */
+  private get _zone(): string { return this.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone; }
+
+  // ── Form association ──
+  get validity(): ValidityState | undefined { return this._internals?.validity; }
+  get validationMessage(): string { return this._internals?.validationMessage ?? ''; }
+  get willValidate(): boolean { return this._internals?.willValidate ?? false; }
+  checkValidity(): boolean { return this._internals?.checkValidity() ?? true; }
+  reportValidity(): boolean { return this._internals?.reportValidity() ?? true; }
+  formDisabledCallback(disabled: boolean): void { this._formDisabled = disabled; }
+  formResetCallback(): void { this.value = this.getAttribute('value') ?? ''; }
+  formStateRestoreCallback(state: string): void { this.value = state; }
+
+  /** The submitted value: with a time zone (or an offset given), wall time + that zone's offset. */
+  private get _formValue(): string {
+    const { date, time, zoned } = this._parsed;
+    if (!date) return '';
+    if (!time) return date;
+    if (!(this.timeZone || zoned)) return `${date}T${time}`;
+    return `${date}T${time}:00${offsetString(zonedInstant(date, time, this._zone), this._zone)}`;
+  }
+
+  override updated(changed: PropertyValues) {
+    super.updated(changed);
+    if (changed.has('value') || changed.has('timeZone')) this._internals?.setFormValue(this._formValue);
+    setValueMissing(this._internals, this.required && !this.value, this.validationMessages, 'text', this._trigger);
+    if (this._invalid) this._invalid = this.validationMessage;
+    this.toggleAttribute('data-invalid', !!this._invalid);
+  }
   @state() private _viewYear = new Date().getFullYear();
   @state() private _viewMonth = new Date().getMonth();
   @state() private _selectedHour = -1;
@@ -279,7 +389,8 @@ export class CgDateTimePicker extends LitElement {
   /** Short weekday names (Sunday first) in the element's locale. */
   private get _weekdays(): string[] {
     const fmt = new Intl.DateTimeFormat(this.i18n.locale, { weekday: 'short' });
-    return Array.from({ length: 7 }, (_, i) => fmt.format(new Date(2023, 0, 1 + i))); // 2023-01-01 was a Sunday
+    const first = this._firstDay;
+    return Array.from({ length: 7 }, (_, i) => fmt.format(new Date(2023, 0, 1 + ((i + first) % 7)))); // 2023-01-01 was a Sunday
   }
   /** Long month names in the element's locale. */
   private get _monthNames(): string[] {
@@ -288,19 +399,30 @@ export class CgDateTimePicker extends LitElement {
   }
 
   // ── Parsing ──
-  private get _date(): string {
-    if (!this.value) return '';
-    return this.value.split('T')[0] ?? '';
+  /** Wall date / time in the zone; `zoned` when the value was an instant with an offset. */
+  private get _parsed(): { date: string; time: string; zoned: boolean } {
+    const m = VALUE.exec(this.value);
+    if (!m) return { date: '', time: '', zoned: false };
+    if (m[2] && m[3]) {
+      const ms = Date.parse(this.value);
+      if (!Number.isNaN(ms)) return { ...wallParts(ms, this._zone), zoned: true };
+    }
+    return { date: m[1]!, time: m[2] ?? '', zoned: false };
   }
-  private get _time(): string {
-    if (!this.value || !this.value.includes('T')) return '';
-    return this.value.split('T')[1] ?? '';
+  private get _date(): string { return this._parsed.date; }
+  private get _time(): string { return this._parsed.time; }
+  /** Write a new wall date + time back, keeping the value's form (offset or not). */
+  private _setWall(date: string, time: string) {
+    const zoned = !!this.timeZone || this._parsed.zoned;
+    this.value = zoned ? `${date}T${time}:00${offsetString(zonedInstant(date, time, this._zone), this._zone)}` : `${date}T${time}`;
   }
 
   private _toggle() {
-    if (this.disabled) return;
+    if (this._disabled) return;
     this._open = !this._open;
     if (this._open) {
+      const now = new Date();
+      this._focusDate = this._date || `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
       if (this._date) {
         const d = new Date(this._date + 'T00:00:00');
         this._viewYear = d.getFullYear();
@@ -318,16 +440,87 @@ export class CgDateTimePicker extends LitElement {
       }
     }
   }
-  private _close() { this._open = false; }
+  private _close(refocus = false) {
+    this._open = false;
+    if (refocus) void this.updateComplete.then(() => this._trigger?.focus());
+  }
+
+  /** Focus the calendar day that holds the tab stop (after the view renders). */
+  private _focusDay() {
+    // Retried for a few frames: the reduced-motion style gives every element a
+    // near-zero transition, so a just-opened panel's children can still be
+    // visibility: hidden (not focusable) for a frame or two.
+    void this.updateComplete.then(() => {
+      let tries = 0;
+      const attempt = () => {
+        const day = this.renderRoot.querySelector<HTMLElement>('.cal-day[tabindex="0"]');
+        day?.focus();
+        if (day && (this.renderRoot as ShadowRoot).activeElement !== day && this._open && tries++ < 10) requestAnimationFrame(attempt);
+      };
+      attempt();
+    });
+  }
+
+  /** Calendar grid keys: arrows (day / week), Page Up / Down (month), Home / End (week). */
+  private _onDayKey(e: KeyboardEvent) {
+    const [y, m, d] = this._focusDate.split('-').map(Number);
+    const at = new Date(y!, m! - 1, d!);
+    const dow = (at.getDay() - this._firstDay + 7) % 7;
+    const step: Record<string, () => void> = {
+      ArrowLeft: () => at.setDate(at.getDate() - 1),
+      ArrowRight: () => at.setDate(at.getDate() + 1),
+      ArrowUp: () => at.setDate(at.getDate() - 7),
+      ArrowDown: () => at.setDate(at.getDate() + 7),
+      Home: () => at.setDate(at.getDate() - dow),
+      End: () => at.setDate(at.getDate() + (6 - dow)),
+      PageUp: () => at.setMonth(at.getMonth() - 1, Math.min(d!, new Date(at.getFullYear(), at.getMonth(), 0).getDate())),
+      PageDown: () => at.setMonth(at.getMonth() + 1, Math.min(d!, new Date(at.getFullYear(), at.getMonth() + 2, 0).getDate())),
+    };
+    const move = step[e.key];
+    if (!move) return;
+    e.preventDefault();
+    move();
+    this._focusDate = `${at.getFullYear()}-${pad(at.getMonth() + 1)}-${pad(at.getDate())}`;
+    this._viewYear = at.getFullYear();
+    this._viewMonth = at.getMonth();
+    this._focusDay();
+  }
+
+  /** Hour / minute list keys: ArrowUp / ArrowDown pick the previous / next option. */
+  private _onListKey(e: KeyboardEvent, values: number[], current: number, pick: (v: number) => void) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    const i = Math.max(0, values.indexOf(current));
+    const next = values[Math.min(values.length - 1, Math.max(0, i + (e.key === 'ArrowDown' ? 1 : -1)))]!;
+    pick(next);
+    const list = e.currentTarget as HTMLElement;
+    void this.updateComplete.then(() => {
+      const opt = list.querySelector<HTMLElement>('[aria-selected="true"]');
+      opt?.focus();
+      opt?.scrollIntoView({ block: 'nearest' });
+    });
+  }
+
+  /** First day of the week in the element's locale (0 = Sunday). */
+  private get _firstDay(): number {
+    try {
+      const loc = new Intl.Locale(this.i18n.locale) as Intl.Locale & { getWeekInfo?: () => { firstDay: number }; weekInfo?: { firstDay: number } };
+      const first = (loc.getWeekInfo?.() ?? loc.weekInfo)?.firstDay;
+      return first ? first % 7 : 0;
+    } catch {
+      return 0;
+    }
+  }
 
   // ── Calendar ──
   private _prevMonth() { if (this._viewMonth === 0) { this._viewMonth = 11; this._viewYear--; } else { this._viewMonth--; } }
   private _nextMonth() { if (this._viewMonth === 11) { this._viewMonth = 0; this._viewYear++; } else { this._viewMonth++; } }
 
   private _selectDay(year: number, month: number, day: number) {
-    const date = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    const time = this._buildTimeString();
-    this.value = `${date}T${time}`;
+    const date = `${year}-${pad(month + 1)}-${pad(day)}`;
+    const time = this._time && this._selectedHour < 0 ? this._time : this._buildTimeString();
+    this._focusDate = date;
+    this._setWall(date, time);
     this._emit();
   }
 
@@ -341,7 +534,7 @@ export class CgDateTimePicker extends LitElement {
   private _getDays() {
     const year = this._viewYear;
     const month = this._viewMonth;
-    const firstDay = new Date(year, month, 1).getDay();
+    const firstDay = (new Date(year, month, 1).getDay() - this._firstDay + 7) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const daysInPrev = new Date(year, month, 0).getDate();
     const today = new Date();
@@ -391,10 +584,12 @@ export class CgDateTimePicker extends LitElement {
   }
 
   private _updateTimeInValue() {
-    if (this._selectedHour < 0 || this._selectedMinute < 0) return;
-    const date = this._date || new Date().toISOString().slice(0, 10);
-    const time = this._buildTimeString();
-    this.value = `${date}T${time}`;
+    if (this._selectedHour < 0 && this._selectedMinute < 0) return;
+    if (this._selectedHour < 0) this._selectedHour = this.use12h ? 12 : 0;
+    if (this._selectedMinute < 0) this._selectedMinute = 0;
+    const now = new Date();
+    const date = this._date || `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    this._setWall(date, this._buildTimeString());
     this._emit();
   }
 
@@ -406,34 +601,33 @@ export class CgDateTimePicker extends LitElement {
   }
 
   // ── Display ──
+  /** "Jan 31, 2027, 9:00 AM (GMT-3)" in the element's locale; the date alone without a time. */
   private _formatDisplay(): string {
-    if (!this.value) return '';
-    const parts: string[] = [];
-    if (this._date) {
-      const d = new Date(this._date + 'T00:00:00');
-      parts.push(d.toLocaleDateString(this.i18n.locale, { month: 'short', day: 'numeric', year: 'numeric' }));
-    }
-    if (this._time) {
-      const [h, m] = this._time.split(':').map(Number);
-      if (this.use12h) {
-        const period = h! >= 12 ? 'PM' : 'AM';
-        const h12 = h! === 0 ? 12 : h! > 12 ? h! - 12 : h!;
-        parts.push(`${h12}:${String(m).padStart(2, '0')} ${this.i18n.t(period === 'AM' ? 'am' : 'pm')}`);
-      } else {
-        parts.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
-      }
-    }
-    return parts.join(', ');
+    const { date, time } = this._parsed;
+    if (!date) return '';
+    const locale = this.i18n.locale;
+    if (!time) return new Date(`${date}T00:00:00`).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' });
+    const zone = this._zone;
+    const at = zonedInstant(date, time, zone);
+    const text = new Intl.DateTimeFormat(locale, {
+      month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: zone, ...(this.use12h ? { hour12: true } : {}),
+    }).format(at);
+    const name = new Intl.DateTimeFormat(locale, { timeZone: zone, timeZoneName: 'shortOffset' }).formatToParts(at).find((p) => p.type === 'timeZoneName')?.value;
+    return name ? `${text} (${name})` : text;
   }
 
   private _handleClickOutside = (e: Event) => { if (!e.composedPath().includes(this)) this._close(); };
   private _handleKeydown(e: KeyboardEvent) {
     if (e.key === 'Escape') {
       // An open popup consumes its Escape, so an enclosing drawer or dialog stays open.
-      if (this._open) { e.preventDefault(); e.stopPropagation(); this._close(); }
+      if (this._open) { e.preventDefault(); e.stopPropagation(); this._close(true); }
       return;
     }
-    if ((e.key === 'Enter' || e.key === ' ') && !this._open) { e.preventDefault(); this._toggle(); }
+    if ((e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') && !this._open) {
+      e.preventDefault();
+      this._toggle();
+      this._focusDay();
+    }
   }
 
   override connectedCallback() { super.connectedCallback(); document.addEventListener('click', this._handleClickOutside); }
@@ -444,16 +638,22 @@ export class CgDateTimePicker extends LitElement {
     const days = this._getDays();
     const hours = this._getHours();
     const minutes = this._getMinutes();
+    const dayName = new Intl.DateTimeFormat(this.i18n.locale, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+    const help = this._invalid || this.helper;
+    const hourStop = hours.includes(this._selectedHour) ? this._selectedHour : hours[0];
+    const minuteStop = minutes.includes(this._selectedMinute) ? this._selectedMinute : minutes[0];
 
     return html`
       ${this.label ? html`<div class="label">${this.label}</div>` : nothing}
       <div
-        class="trigger ${this._open ? 'open' : ''} ${this.disabled ? 'disabled' : ''}"
-        tabindex=${this.disabled ? '-1' : '0'}
+        class="trigger ${this._open ? 'open' : ''} ${this._disabled ? 'disabled' : ''}"
+        tabindex=${this._disabled ? '-1' : '0'}
         role="combobox"
         aria-expanded=${this._open}
-        aria-disabled=${this.disabled ? 'true' : nothing}
-        aria-invalid=${this.error ? 'true' : nothing}
+        aria-disabled=${this._disabled ? 'true' : nothing}
+        aria-invalid=${this.error || this._invalid ? 'true' : nothing}
+        aria-required=${this.required ? 'true' : nothing}
+        aria-describedby=${this._invalid || this.helper ? 'helper' : nothing}
         aria-haspopup="dialog"
         aria-label=${this.label || this.i18n.t('label')}
         @click=${this._toggle}
@@ -472,27 +672,32 @@ export class CgDateTimePicker extends LitElement {
         <span class="trigger-text ${!display ? 'placeholder' : ''}">${display || (this.placeholder ?? this.i18n.t('placeholder'))}</span>
       </div>
 
-      <div class="dropdown ${this._open ? 'open' : ''}" role="dialog" aria-label=${this.i18n.t('dialog')}>
+      <div class="dropdown ${this._open ? 'open' : ''}" role="dialog" aria-label=${this.i18n.t('dialog')} @keydown=${this._handleKeydown}>
         <div class="dropdown-inner">
           <!-- Calendar -->
           <div class="cal-side">
             <div class="cal-header">
-              <button class="cal-btn" @click=${this._prevMonth} aria-label=${this.i18n.t('previousMonth')}>
+              <button type="button" class="cal-btn" @click=${this._prevMonth} aria-label=${this.i18n.t('previousMonth')}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"></path></svg>
               </button>
               <span class="cal-title">${this._monthNames[this._viewMonth]} ${this._viewYear}</span>
-              <button class="cal-btn" @click=${this._nextMonth} aria-label=${this.i18n.t('nextMonth')}>
+              <button type="button" class="cal-btn" @click=${this._nextMonth} aria-label=${this.i18n.t('nextMonth')}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"></path></svg>
               </button>
             </div>
             <div class="cal-weekdays">${this._weekdays.map(d => html`<span class="cal-weekday">${d}</span>`)}</div>
-            <div class="cal-days">
-              ${days.map(d => html`
-                <button class="cal-day ${d.today ? 'today' : ''} ${d.selected ? 'selected' : ''} ${d.outside ? 'outside' : ''} ${d.disabled ? 'disabled-day' : ''}"
+            <div class="cal-days" @keydown=${this._onDayKey}>
+              ${days.map(d => {
+                const iso = `${d.year}-${pad(d.month + 1)}-${pad(d.day)}`;
+                return html`
+                <button type="button" class="cal-day ${d.today ? 'today' : ''} ${d.selected ? 'selected' : ''} ${d.outside ? 'outside' : ''} ${d.disabled ? 'disabled-day' : ''}"
+                  tabindex=${iso === this._focusDate ? '0' : '-1'}
                   @click=${(e: Event) => { e.stopPropagation(); this._selectDay(d.year, d.month, d.day); }}
-                  ?disabled=${d.disabled} aria-label="${d.day} ${this._monthNames[d.month]} ${d.year}" aria-selected=${d.selected ? 'true' : 'false'}
+                  ?disabled=${d.disabled} aria-label=${dayName.format(new Date(d.year, d.month, d.day))}
+                  aria-pressed=${d.selected ? 'true' : 'false'} aria-current=${d.today ? 'date' : nothing}
                 >${d.day}</button>
-              `)}
+              `;
+              })}
             </div>
           </div>
 
@@ -504,9 +709,11 @@ export class CgDateTimePicker extends LitElement {
             <div class="time-columns">
               <div class="time-column">
                 <span class="time-column-label">${this.i18n.t('hour')}</span>
-                <div class="time-scroll">
+                <div class="time-scroll" role="listbox" aria-label=${this.i18n.t('hours')}
+                  @keydown=${(e: KeyboardEvent) => this._onListKey(e, hours, this._selectedHour, (h) => this._selectHour(h))}>
                   ${hours.map(h => html`
-                    <button class="time-option ${this._selectedHour === h ? 'selected' : ''}"
+                    <button type="button" role="option" class="time-option ${this._selectedHour === h ? 'selected' : ''}"
+                      tabindex=${h === hourStop ? '0' : '-1'}
                       @click=${(e: Event) => { e.stopPropagation(); this._selectHour(h); }}
                       aria-selected=${this._selectedHour === h ? 'true' : 'false'}
                     >${this.use12h ? h : String(h).padStart(2, '0')}</button>
@@ -516,9 +723,11 @@ export class CgDateTimePicker extends LitElement {
               <div class="time-col-divider"></div>
               <div class="time-column">
                 <span class="time-column-label">${this.i18n.t('minute')}</span>
-                <div class="time-scroll">
+                <div class="time-scroll" role="listbox" aria-label=${this.i18n.t('minutes')}
+                  @keydown=${(e: KeyboardEvent) => this._onListKey(e, minutes, this._selectedMinute, (m) => this._selectMinute(m))}>
                   ${minutes.map(m => html`
-                    <button class="time-option ${this._selectedMinute === m ? 'selected' : ''}"
+                    <button type="button" role="option" class="time-option ${this._selectedMinute === m ? 'selected' : ''}"
+                      tabindex=${m === minuteStop ? '0' : '-1'}
                       @click=${(e: Event) => { e.stopPropagation(); this._selectMinute(m); }}
                       aria-selected=${this._selectedMinute === m ? 'true' : 'false'}
                     >${String(m).padStart(2, '0')}</button>
@@ -527,15 +736,15 @@ export class CgDateTimePicker extends LitElement {
               </div>
               ${this.use12h ? html`
                 <div class="period-toggle">
-                  <button class="period-btn ${this._period === 'AM' ? 'active' : ''}" @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('AM'); }}>${this.i18n.t('am')}</button>
-                  <button class="period-btn ${this._period === 'PM' ? 'active' : ''}" @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('PM'); }}>${this.i18n.t('pm')}</button>
+                  <button type="button" class="period-btn ${this._period === 'AM' ? 'active' : ''}" aria-pressed=${this._period === 'AM'} @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('AM'); }}>${this.i18n.t('am')}</button>
+                  <button type="button" class="period-btn ${this._period === 'PM' ? 'active' : ''}" aria-pressed=${this._period === 'PM'} @click=${(e: Event) => { e.stopPropagation(); this._setPeriod('PM'); }}>${this.i18n.t('pm')}</button>
                 </div>
               ` : nothing}
             </div>
           </div>
         </div>
       </div>
-      ${this.helper ? html`<div class="helper">${this.helper}</div>` : nothing}
+      ${help ? html`<div class="helper" id="helper">${help}</div>` : nothing}
     `;
   }
 }

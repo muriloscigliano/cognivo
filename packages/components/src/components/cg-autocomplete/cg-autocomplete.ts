@@ -54,6 +54,7 @@ export class CgAutocomplete extends LitElement {
       border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
       border-radius: var(--cg-component-input-radius);
       background: var(--cg-color-input-background-default);
+      box-sizing: border-box;
       min-height: var(--cg-component-input-height-md);
       transition:
         border-color var(--cg-transition-duration-fast) var(--cg-transition-easing-default),

@@ -34,6 +34,7 @@ export class CgDatePicker extends LitElement {
       align-items: center;
       gap: 0;
       padding: 0 var(--cg-spacing-4);
+      box-sizing: border-box;
       height: var(--cg-component-input-height-md);
       border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
       border-radius: var(--cg-component-input-radius);

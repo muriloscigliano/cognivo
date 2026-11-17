@@ -73,6 +73,7 @@ export class CgPhoneInput extends LitElement {
     .wrapper {
       display: flex;
       align-items: stretch;
+      box-sizing: border-box;
       height: var(--cg-component-input-height-md);
       background: var(--cg-color-input-background-default);
       border: var(--cg-border-width-50) solid var(--cg-color-input-border-default);
