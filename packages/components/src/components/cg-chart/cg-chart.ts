@@ -46,6 +46,13 @@ const AUTO_BAR_MAX = 30;
  * `type="auto"`: bars in one series colour for up to 30 points, a line
  * above that; x labels are thinned to about six; no legend.
  *
+ * Values: `format` takes `Intl.NumberFormat` options (JSON attribute or
+ * property), e.g. `{ "style": "currency", "currency": "BRL" }`, and applies
+ * them to the max label, value labels, the tooltip, the legend, the
+ * announcement and the data table, in `locale` (default: the nearest `lang`).
+ * Without `format`, marks show compact numbers (1.2K) and the table the full
+ * locale number.
+ *
  * No data, or only zeros: the card keeps its shape (`height`) and shows
  * `empty-text` (title) and `empty-description` (one muted line) at the
  * bottom — no flat line at zero.
@@ -204,6 +211,10 @@ export class CgChart extends LitElement {
   /** Wrap chart in a card container */
   @property({ type: Boolean }) contained = false;
   @property({ type: Boolean }) showGrid = true;
+  /** `Intl.NumberFormat` options for every value shown (e.g. currency). */
+  @property({ type: Object }) format: Intl.NumberFormatOptions | null = null;
+  /** BCP 47 locale for values; defaults to the nearest `lang`. */
+  @property() locale = '';
   /** Empty-state title; defaults to the `empty` message. */
   @property({ attribute: 'empty-text' }) emptyText?: string;
   /** Empty-state line under the title. */
@@ -362,7 +373,16 @@ export class CgChart extends LitElement {
     this._setActive(keys[e.key]!);
   }
 
+  private _nf?: [unknown, string, Intl.NumberFormat];
+  /** The number formatter for `format` / `locale` (cached per pair). */
+  private _numbers(): Intl.NumberFormat {
+    const loc = this.locale || this.i18n.locale;
+    if (this._nf?.[0] !== this.format || this._nf[1] !== loc) this._nf = [this.format, loc, new Intl.NumberFormat(loc, this.format ?? undefined)];
+    return this._nf[2];
+  }
+
   private _fmt(v: number) {
+    if (this.format) return this._numbers().format(v);
     if (Math.abs(v) >= 1e6) return (v / 1e6).toFixed(1) + 'M';
     if (Math.abs(v) >= 1e3) return (v / 1e3).toFixed(1) + 'K';
     return v % 1 === 0 ? String(v) : v.toFixed(1);
@@ -588,7 +608,7 @@ export class CgChart extends LitElement {
         <div class="sr"><table>
           <caption>${this.title || this.i18n.t('label')}</caption>
           <thead><tr><th scope="col">${this.i18n.t('category')}</th><th scope="col">${this.i18n.t('value')}</th></tr></thead>
-          <tbody>${this.data.map((d) => html`<tr><th scope="row">${d.label}</th><td>${new Intl.NumberFormat(this.i18n.locale).format(d.value)}</td></tr>`)}</tbody>
+          <tbody>${this.data.map((d) => html`<tr><th scope="row">${d.label}</th><td>${this._numbers().format(d.value)}</td></tr>`)}</tbody>
         </table></div>
 
         ${this.showLegend && this.type !== 'auto' ? html`

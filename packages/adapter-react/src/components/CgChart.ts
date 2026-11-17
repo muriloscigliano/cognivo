@@ -25,11 +25,15 @@ export interface CgChartProps {
   showGrid?: boolean;
   /** Text shown when there is no data. */
   emptyText?: string;
+  /** `Intl.NumberFormat` options for every value (axis, tooltip, data table), e.g. `{ style: 'currency', currency: 'BRL' }`. */
+  format?: Intl.NumberFormatOptions | null;
+  /** BCP 47 locale for values; defaults to the nearest `lang`. */
+  locale?: string;
   className?: string;
 }
 
 export const CgChart = createWrapper<CgChartProps, 'cg-chart'>(
   'cg-chart',
-  ['data', 'type', 'title', 'subtitle', 'height', 'showLegend', 'showValues', 'showGrid', 'emptyText'],
+  ['data', 'type', 'title', 'subtitle', 'height', 'showLegend', 'showValues', 'showGrid', 'emptyText', 'format', 'locale'],
   {}
 );

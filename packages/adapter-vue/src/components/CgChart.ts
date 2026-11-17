@@ -12,6 +12,8 @@ export const CgChart = createVueWrapper(
     showValues: { type: Boolean, default: true },
     showGrid: { type: Boolean, default: true },
     emptyText: { type: String, default: undefined },
+    format: { type: Object, default: undefined },
+    locale: { type: String, default: undefined },
   },
   {}
 );

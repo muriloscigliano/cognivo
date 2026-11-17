@@ -181,6 +181,48 @@ describe.skipIf(!browserAvailable)('cg-chart reads (real browser)', { timeout: 6
     await page.close();
   });
 
+  it('format: Intl number options (currency, in the locale) for the max label, the tooltip, the live reading and the data table', async () => {
+    const page = await openPage(['cg-chart'], `<div lang="pt-BR" style="width:600px"><cg-chart id="c" type="auto" height="200" title="Receita"></cg-chart></div>`);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.addStyleTag({ path: TOKENS_CSS });
+    await page.evaluate(() => {
+      const c = document.getElementById('c') as HTMLElement & { data: unknown; format: unknown };
+      c.format = { style: 'currency', currency: 'BRL' };
+      c.data = [{ label: '1 nov', value: 425.9 }, { label: '2 nov', value: 1234.5 }];
+    });
+    await settleStyles(page);
+    const brl = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+    const read = () => page.evaluate(() => {
+      const root = document.getElementById('c')!.shadowRoot!;
+      const t = (s: string) => root.querySelector(s)!.textContent!.trim();
+      return {
+        max: t('.max-label'),
+        tip: t('.tip-value'),
+        live: t('[aria-live]'),
+        cells: Array.from(root.querySelectorAll('tbody td'), (c) => c.textContent!.trim()),
+        label: root.querySelector('svg')!.getAttribute('aria-label'),
+      };
+    });
+    await page.evaluate(() => (document.getElementById('c')!.shadowRoot!.querySelector('svg') as SVGElement).focus());
+    await page.keyboard.press('ArrowRight');
+    await settleStyles(page);
+    const r = await read();
+    expect(r.max).toBe(brl(1234.5));
+    expect(r.tip).toBe(brl(425.9));
+    expect(r.live).toBe(`1 nov: ${brl(425.9)}`);
+    expect(r.cells).toEqual([brl(425.9), brl(1234.5)]);
+    expect(r.label).toContain(brl(1234.5));
+    // As an attribute (JSON), with an explicit locale.
+    await page.evaluate(() => {
+      const c = document.getElementById('c')!;
+      c.setAttribute('format', '{"style":"currency","currency":"USD"}');
+      c.setAttribute('locale', 'en-US');
+    });
+    await settleStyles(page);
+    expect((await read()).cells).toEqual(['$425.90', '$1,234.50']);
+    await page.close();
+  });
+
   it('zero data: the card keeps its height and shows the empty title and line at the bottom, no chart', async () => {
     const page = await chart('type="auto" height="200" contained title="Today" empty-text="No activity yet" empty-description="Sign-ups show here as they come in."', days(9, () => 0));
     const r = await page.evaluate(() => {
