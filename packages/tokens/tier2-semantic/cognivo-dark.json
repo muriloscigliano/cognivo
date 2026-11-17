@@ -1536,7 +1536,8 @@
       "icon": {
         "default": {
           "$type": "color",
-          "$value": "{color.surface.container.icon}"
+          "$value": "{color.input.text.placeholder}",
+          "$description": "A field's icon (prefix / suffix, clock, chevron): the muted placeholder grey, never an accent."
         },
         "error": {
           "$type": "color",
