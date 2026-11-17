@@ -51,6 +51,11 @@ export interface TableColumn {
    *  `width` to choose where it cuts; without it the column takes the width
    *  the other columns leave. Works with `render`, `slotted` and `rowHeader`. */
   truncate?: boolean;
+  /** Stacked (phone) layout, see `stack-below`: `title` (the first line;
+   *  default: the row-header column, else the first column), `meta` (the
+   *  muted second line, joined with a middle dot; the default), `end` (at the
+   *  right, e.g. a status or an action) or `hidden` (not shown when stacked). */
+  stack?: 'title' | 'meta' | 'end' | 'hidden';
 }
 
 const plain = (v: unknown): unknown => (v instanceof Date ? v.getTime() : v instanceof Node ? v.textContent : v);
@@ -113,6 +118,12 @@ const CONTROL = 'a[href],button,input,select,textarea,summary,label,[role=button
  * rows arrive sorted (server-side or cursor data) so the table never
  * reorders them.
  *
+ * Layout: `density="list"` (default, 60 px rows) or `"data"` (40 px at
+ * 13 px), a 36 px header row; `variant="flush"` inside a card;
+ * `sticky-first` pins the first column; an overflowing table fades on the
+ * edge that has more behind it; `stack-below="768"` turns rows into stacked
+ * list rows below that width (columns pick their part with `stack`).
+ *
  * @slot footer - Footer area for pagination or summary
  * @slot cell-{rowIndex}-{key} - Content of one cell of a `slotted` column
  *
@@ -127,6 +138,8 @@ const CONTROL = 'a[href],button,input,select,textarea,summary,label,[role=button
 export class CgTable extends LitElement {
   static override styles = [hostBlock, reducedMotion, css`
     .table-wrapper {
+      /* The fill sticky cells and the edge fades paint with. */
+      --_bg: var(--cg-color-surface-container-background);
       overflow: hidden;
       background: var(--cg-color-surface-container-background);
       border: var(--cg-border-width-50) solid var(--cg-color-surface-table-border);
@@ -134,9 +147,25 @@ export class CgTable extends LitElement {
       padding: var(--cg-spacing-4) 0;
     }
 
+    .scroll-area { position: relative; }
     .table-scroll {
       overflow-x: auto;
     }
+
+    /* Edge fades: the side with more table behind it fades out (scroll hint). */
+    .fade {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      z-index: 3;
+      width: var(--cg-component-table-fade-size);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity var(--cg-transition-duration-state) var(--cg-transition-easing-ease-out);
+    }
+    .fade.on { opacity: 1; }
+    .fade-start { left: var(--_fade-left, 0); background: linear-gradient(to right, var(--_bg), transparent); }
+    .fade-end { right: 0; background: linear-gradient(to left, var(--_bg), transparent); }
     /* Overflowing: the scroll box is a tab stop (keyboard scrolling); its ring sits inside. */
     .table-scroll:focus-visible {
       outline: none;
@@ -145,59 +174,75 @@ export class CgTable extends LitElement {
 
     /* variant="plain": flat rows in the card — full-width hairlines between
        rows, no inset body; the card's border closes the last row. */
-    :host([variant="plain"]) .table-wrapper { padding: 0; }
-    :host([variant="plain"]) table { width: 100%; margin: 0; }
-    :host([variant="plain"]) tbody tr:last-child > * { border-bottom: 0; }
+    :host(:is([variant="plain"], [variant="flush"])) .table-wrapper { padding: 0; }
+    :host(:is([variant="plain"], [variant="flush"])) table { width: 100%; margin: 0; }
+    :host(:is([variant="plain"], [variant="flush"])) tbody tr:last-child > * { border-bottom: 0; }
 
-    /* Body area (default variant "inset") — slightly darker inset with inner rounding + border */
-    :host(:not([variant="plain"])) tbody {
-      background: var(--cg-overlay-dark-subtle);
+    /* variant="flush": a table inside a card — no outer border, fill or
+       radius (the card is the frame); hairline rows; the edge cells line up
+       with the card's padding. */
+    :host([variant="flush"]) .table-wrapper {
+      --_bg: var(--cg-color-surface-panel-background);
+      border: 0;
+      background: none;
     }
-    :host(:not([variant="plain"])) tbody tr:first-child > * {
-      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
-    }
-    :host(:not([variant="plain"])) tbody tr:last-child > * {
+    :host([variant="flush"]) thead th {
+      background: var(--cg-color-surface-panel-background);
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
     }
-    :host(:not([variant="plain"])) tbody tr > :first-child {
+    :host([variant="flush"]) tr > :first-child { padding-inline-start: 0; }
+    :host([variant="flush"]) tr > :last-child { padding-inline-end: 0; }
+
+    /* Body area (default variant "inset") — slightly darker inset with inner rounding + border */
+    :host([variant="inset"]) tbody {
+      background: var(--cg-overlay-dark-subtle);
+    }
+    :host([variant="inset"]) tbody tr:first-child > * {
+      border-top: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
+    }
+    :host([variant="inset"]) tbody tr:last-child > * {
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
+    }
+    :host([variant="inset"]) tbody tr > :first-child {
       border-left: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
     }
-    :host(:not([variant="plain"])) tbody tr > :last-child {
+    :host([variant="inset"]) tbody tr > :last-child {
       border-right: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
     }
-    :host(:not([variant="plain"])) tbody tr:first-child > :first-child {
+    :host([variant="inset"]) tbody tr:first-child > :first-child {
       border-top-left-radius: var(--cg-border-radius-150);
     }
-    :host(:not([variant="plain"])) tbody tr:first-child > :last-child {
+    :host([variant="inset"]) tbody tr:first-child > :last-child {
       border-top-right-radius: var(--cg-border-radius-150);
     }
-    :host(:not([variant="plain"])) tbody tr:last-child > :first-child {
+    :host([variant="inset"]) tbody tr:last-child > :first-child {
       border-bottom-left-radius: var(--cg-border-radius-150);
     }
-    :host(:not([variant="plain"])) tbody tr:last-child > :last-child {
+    :host([variant="inset"]) tbody tr:last-child > :last-child {
       border-bottom-right-radius: var(--cg-border-radius-150);
     }
 
     /* Rounded variants — outer wrapper + inner tbody corners */
     :host([rounded="none"]) .table-wrapper { border-radius: 0; }
-    :host([rounded="none"]:not([variant="plain"])) tbody tr:first-child > :first-child,
-    :host([rounded="none"]:not([variant="plain"])) tbody tr:first-child > :last-child,
-    :host([rounded="none"]:not([variant="plain"])) tbody tr:last-child > :first-child,
-    :host([rounded="none"]:not([variant="plain"])) tbody tr:last-child > :last-child { border-radius: 0; }
+    :host([rounded="none"][variant="inset"]) tbody tr:first-child > :first-child,
+    :host([rounded="none"][variant="inset"]) tbody tr:first-child > :last-child,
+    :host([rounded="none"][variant="inset"]) tbody tr:last-child > :first-child,
+    :host([rounded="none"][variant="inset"]) tbody tr:last-child > :last-child { border-radius: 0; }
 
     :host([rounded="sm"]) .table-wrapper { border-radius: var(--cg-border-radius-100); }
-    :host([rounded="sm"]:not([variant="plain"])) tbody tr:first-child > :first-child { border-top-left-radius: var(--cg-border-radius-50); }
-    :host([rounded="sm"]:not([variant="plain"])) tbody tr:first-child > :last-child { border-top-right-radius: var(--cg-border-radius-50); }
-    :host([rounded="sm"]:not([variant="plain"])) tbody tr:last-child > :first-child { border-bottom-left-radius: var(--cg-border-radius-50); }
-    :host([rounded="sm"]:not([variant="plain"])) tbody tr:last-child > :last-child { border-bottom-right-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"][variant="inset"]) tbody tr:first-child > :first-child { border-top-left-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"][variant="inset"]) tbody tr:first-child > :last-child { border-top-right-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"][variant="inset"]) tbody tr:last-child > :first-child { border-bottom-left-radius: var(--cg-border-radius-50); }
+    :host([rounded="sm"][variant="inset"]) tbody tr:last-child > :last-child { border-bottom-right-radius: var(--cg-border-radius-50); }
 
     :host([rounded="md"]) .table-wrapper { border-radius: var(--cg-border-radius-150); }
-    :host([rounded="md"]:not([variant="plain"])) tbody tr:first-child > :first-child { border-top-left-radius: var(--cg-border-radius-100); }
-    :host([rounded="md"]:not([variant="plain"])) tbody tr:first-child > :last-child { border-top-right-radius: var(--cg-border-radius-100); }
-    :host([rounded="md"]:not([variant="plain"])) tbody tr:last-child > :first-child { border-bottom-left-radius: var(--cg-border-radius-100); }
-    :host([rounded="md"]:not([variant="plain"])) tbody tr:last-child > :last-child { border-bottom-right-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"][variant="inset"]) tbody tr:first-child > :first-child { border-top-left-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"][variant="inset"]) tbody tr:first-child > :last-child { border-top-right-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"][variant="inset"]) tbody tr:last-child > :first-child { border-bottom-left-radius: var(--cg-border-radius-100); }
+    :host([rounded="md"][variant="inset"]) tbody tr:last-child > :last-child { border-bottom-right-radius: var(--cg-border-radius-100); }
 
     :host([rounded="lg"]) .table-wrapper { border-radius: var(--cg-component-table-radius); }
+    :host([variant="flush"]) .table-wrapper { border-radius: 0; }
 
     table {
       width: calc(100% - var(--cg-spacing-8) * 2);
@@ -206,7 +251,13 @@ export class CgTable extends LitElement {
       border-spacing: 0;
       font-size: var(--cg-font-size-sm);
     }
-    :host([compact]) table { font-size: var(--cg-font-size-xs); }
+
+    /* ── Two densities: list (default, 60 px rows) and data (40 px rows at
+       13 px; also compact). The header row is 36 px. ── */
+    tbody tr { height: var(--cg-component-table-row-height-list); }
+    thead tr { height: var(--cg-component-table-header-height); }
+    :host(:is([density="data"], [compact])) tbody tr { height: var(--cg-component-table-row-height-data); }
+    :host(:is([density="data"], [compact])) table { font-size: var(--cg-font-size-13); }
 
     /* ── Header ── */
     thead { position: sticky; top: 0; z-index: 1; }
@@ -230,7 +281,7 @@ export class CgTable extends LitElement {
     }
 
     thead th {
-      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      padding: 0 var(--cg-spacing-16);
       text-align: left;
       font-weight: var(--cg-font-weight-medium);
       font-size: var(--cg-font-size-xs);
@@ -239,9 +290,6 @@ export class CgTable extends LitElement {
       border-bottom: none;
       white-space: nowrap;
       user-select: none;
-    }
-    :host([compact]) thead th {
-      padding: var(--cg-spacing-6) var(--cg-spacing-12);
     }
 
     /* Sortable header: a real button that reads as header text. */
@@ -290,13 +338,10 @@ export class CgTable extends LitElement {
     /* ── Cells (row-header cells are th in tbody) ── */
     td, tbody th {
       text-align: left;
-      padding: var(--cg-spacing-12) var(--cg-spacing-16);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
       color: var(--cg-color-surface-table-text);
       border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
       vertical-align: middle;
-    }
-    :host([compact]) td, :host([compact]) tbody th {
-      padding: var(--cg-spacing-6) var(--cg-spacing-12);
     }
 
     tbody th { font-weight: var(--cg-font-weight-medium); }
@@ -323,14 +368,17 @@ export class CgTable extends LitElement {
     }
     @media (hover: hover) {
       tbody tr:hover > * {
+        --_row: var(--cg-color-state-hover);
         background: var(--cg-color-state-hover);
       }
       .sort-btn:hover { color: var(--cg-color-state-text); }
     }
     :host([clickable]) tbody tr:active > * {
+      --_row: var(--cg-color-state-pressed);
       background: var(--cg-color-state-pressed);
     }
     tbody tr.selected > * {
+      --_row: var(--cg-color-state-selected);
       background: var(--cg-color-state-selected);
     }
     :host([clickable]) tbody tr {
@@ -345,17 +393,88 @@ export class CgTable extends LitElement {
 
     /* ── Striped ── */
     :host([striped]) tbody tr:nth-child(even) > * {
+      --_row: var(--cg-color-action-tertiary-background-hover);
       background: var(--cg-color-action-tertiary-background-hover);
     }
     @media (hover: hover) {
       :host([striped]) tbody tr:nth-child(even):hover:not(.selected) > * {
+        --_row: var(--cg-color-action-tertiary-background-hover);
         background: var(--cg-color-action-tertiary-background-hover);
       }
     }
     /* Selection wins over stripes (and their hover). */
     :host([striped]) tbody tr.selected > * {
+      --_row: var(--cg-color-state-selected);
       background: var(--cg-color-state-selected);
     }
+
+    /* ── sticky-first: the first column stays put while the table scrolls
+       sideways, on an opaque fill with the row state painted over it. ── */
+    .sticky {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+    }
+    thead .sticky { z-index: 2; }
+    /* !important: the row-state rules set --_row (painted here) and a translucent background this must replace. */
+    .sticky {
+      background: linear-gradient(var(--_row, transparent), var(--_row, transparent)), var(--_bg) !important;
+    }
+    /* With selection, the checkbox column is pinned too and the first column sits after it. */
+    .select-col.sticky ~ .sticky { left: calc(var(--cg-spacing-48) + 2 * var(--cg-spacing-12)); }
+
+    /* ── Stacked (phone, below stack-below px): each row is a list row — the
+       title line, a muted meta line, the end column at the right. Roles keep
+       it a table for assistive tech. ── */
+    :host([stacked]) :is(table, tbody, tr, td, th) { display: block; }
+    :host([stacked]) table { width: 100%; margin: 0; }
+    :host([stacked]) thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+    :host([stacked]) tbody tr {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      align-content: center;
+      column-gap: var(--cg-spacing-8);
+      position: relative;
+      box-sizing: border-box;
+      height: auto;
+      min-height: var(--cg-component-table-row-height-list);
+      padding: var(--cg-spacing-12) calc(var(--cg-spacing-16) + var(--_end-w, 0px)) var(--cg-spacing-12) var(--cg-spacing-16);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
+    }
+    :host([stacked]) tbody tr:last-child { border-bottom: 0; }
+    :host([stacked]) tbody tr > * {
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      max-width: 100%;
+    }
+    :host([stacked]) tbody tr > .st-title {
+      flex: 1 0 100%;
+      font-weight: var(--cg-font-weight-medium);
+    }
+    :host([stacked]) tbody tr > .st-meta {
+      font-size: var(--cg-font-size-13);
+      color: var(--cg-color-on-surface-container-default);
+    }
+    :host([stacked]) tbody tr > .st-meta ~ .st-meta::before {
+      content: '·';
+      margin-inline-end: var(--cg-spacing-8);
+    }
+    :host([stacked]) tbody tr > .st-end {
+      position: absolute;
+      right: var(--cg-spacing-16);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    :host([stacked]) .st-hidden { display: none; }
+    :host([stacked]) .select-col { width: auto; }
 
     /* ── Empty state ── */
     /* The empty-state cell controls its own spacing — strip the row's td
@@ -421,7 +540,19 @@ export class CgTable extends LitElement {
   @property({ type: Array }) columns: TableColumn[] = [];
   @property({ type: Array }) rows: unknown[][] = [];
   @property({ type: Boolean, reflect: true }) striped = false;
+  /** @deprecated Use `density="data"`; still works (it is the data density). */
   @property({ type: Boolean, reflect: true }) compact = false;
+  /** `list` (default): 56-64 px rows (`--cg-component-table-row-height-list`).
+   *  `data`: 40 px rows at 13 px (`-row-height-data`). The header row is 36 px. */
+  @property({ reflect: true }) density: 'list' | 'data' = 'list';
+  /** Pin the first column (and the selection column) while the table scrolls sideways. */
+  @property({ type: Boolean, reflect: true, attribute: 'sticky-first' }) stickyFirst = false;
+  /** Below this width (px) rows render as stacked list rows (title, muted
+   *  meta line, `stack: 'end'` column at the right; `stack: 'hidden'`
+   *  columns dropped). 0 (default): never. 768 suits phones. */
+  @property({ type: Number, attribute: 'stack-below' }) stackBelow = 0;
+  /** Set by the table: it is narrower than `stack-below` and shows stacked rows. Read-only. */
+  @property({ type: Boolean, reflect: true }) stacked = false;
   @property({ type: Boolean, reflect: true }) clickable = false;
   @property({ type: Boolean, reflect: true }) selectable = false;
   @property({ type: Boolean, reflect: true }) loading = false;
@@ -434,8 +565,10 @@ export class CgTable extends LitElement {
   private i18n = new Messages(this, MESSAGES);
   @property({ reflect: true }) rounded: 'none' | 'sm' | 'md' | 'lg' = 'lg';
   /** `inset` (default): the body is an inset card inside the outer card.
-   *  `plain`: flat rows separated by full-width hairlines. */
-  @property({ reflect: true }) variant: 'inset' | 'plain' = 'inset';
+   *  `plain`: flat rows separated by full-width hairlines.
+   *  `flush`: plain without the outer border, fill and radius — a table
+   *  inside a card, its edge cells aligned to the card padding. */
+  @property({ reflect: true }) variant: 'inset' | 'plain' | 'flush' = 'inset';
 
   /** Caption (names the table). */
   @property() caption = '';
@@ -468,6 +601,9 @@ export class CgTable extends LitElement {
   @state() private _overflows = false;
   /** The scroll box holds focus: it keeps its tab stop until blur, even if it stops overflowing. */
   @state() private _scrollFocused = false;
+  /** More table to the start / end of the scroll box (the edge fades). */
+  @state() private _fadeStart = false;
+  @state() private _fadeEnd = false;
   private _resize: ResizeObserver | undefined;
 
   private _unobserveLight: (() => void) | null = null;
@@ -498,9 +634,25 @@ export class CgTable extends LitElement {
     if (!this.isConnected || this._resize || typeof ResizeObserver !== 'function') return;
     const box = this.renderRoot.querySelector<HTMLElement>('.table-scroll');
     if (!box) return;
-    this._resize = new ResizeObserver(() => { this._overflows = box.scrollWidth > box.clientWidth; });
+    this._resize = new ResizeObserver(() => {
+      this.stacked = this.stackBelow > 0 && this.getBoundingClientRect().width < this.stackBelow;
+      this._overflows = box.scrollWidth > box.clientWidth;
+      this._syncScroll();
+    });
+    this._resize.observe(this);
     this._resize.observe(box);
     this._resize.observe(box.firstElementChild!);
+  }
+
+  /** Edge fades from the scroll position; the start fade begins after the pinned column. */
+  private _syncScroll() {
+    const box = this.renderRoot?.querySelector?.<HTMLElement>('.table-scroll');
+    if (!box) return;
+    const max = box.scrollWidth - box.clientWidth;
+    this._fadeStart = max > 1 && box.scrollLeft > 1;
+    this._fadeEnd = max > 1 && box.scrollLeft < max - 1;
+    const pinned = this.stickyFirst ? Array.from(box.querySelectorAll<HTMLElement>('thead .sticky')).pop() : undefined;
+    box.parentElement!.style.setProperty('--_fade-left', pinned ? `${pinned.offsetLeft + pinned.offsetWidth}px` : '0px');
   }
 
   override willUpdate(changed: PropertyValues) {
@@ -593,8 +745,22 @@ export class CgTable extends LitElement {
     this._syncFooter();
   }
 
-  override updated() {
+  override updated(changed: PropertyValues) {
     this._syncTruncateTitles();
+    if (changed.has('stackBelow')) this.stacked = this.stackBelow > 0 && this.getBoundingClientRect().width < this.stackBelow;
+    // Stacked: reserve room at the right of each row for the widest end cell.
+    if (this.stacked) {
+      const ends = this.renderRoot.querySelectorAll<HTMLElement>('tbody .st-end');
+      const w = Math.max(0, ...Array.from(ends, (e) => e.offsetWidth));
+      this.style.setProperty('--_end-w', w ? `${w + 12}px` : '0px');
+    }
+  }
+
+  /** The stacked-layout part of each column: title / meta / end / hidden. */
+  private _stackParts(): string[] {
+    const visible = this.columns.filter((c) => c.stack !== 'hidden' && c.stack !== 'end');
+    const title = this.columns.find((c) => c.stack === 'title') ?? visible.find((c) => c.rowHeader) ?? visible[0];
+    return this.columns.map((c) => `st-${c === title ? 'title' : c.stack === 'title' ? 'meta' : c.stack ?? 'meta'}`);
   }
 
   /** Each truncated cell's title is its full text (slotted content included). */
@@ -657,21 +823,27 @@ export class CgTable extends LitElement {
     const widths = ['short', 'long', 'med', 'short'];
     // An overflowing scroll box is a tab stop; named after the table, it is a region.
     const scrollName = this._overflows ? this._labelledText || this.label || this.caption : '';
+    // Stacked rows are blocks: explicit roles keep the table semantics.
+    const st = this.stacked;
+    const parts = this._stackParts();
+    const pin = (ci: number) => (this.stickyFirst && ci === 0 ? ' sticky' : '');
 
     return html`
       <div class="table-wrapper">
+        <div class="scroll-area">
         <div class="table-scroll"
           tabindex=${this._overflows || this._scrollFocused ? '0' : nothing}
           role=${scrollName ? 'region' : nothing}
           aria-label=${scrollName || nothing}
           @focus=${(e: FocusEvent) => { this._scrollFocused = e.target === e.currentTarget; }}
-          @blur=${() => { this._scrollFocused = false; }}>
-        <table aria-label=${this._labelledText || this.label || nothing} aria-busy=${this.loading ? 'true' : nothing}>
+          @blur=${() => { this._scrollFocused = false; }}
+          @scroll=${this._syncScroll}>
+        <table role=${st ? 'table' : nothing} aria-label=${this._labelledText || this.label || nothing} aria-busy=${this.loading ? 'true' : nothing}>
           ${this.caption ? html`<caption class=${this.captionHidden ? 'sr-only' : ''}>${this.caption}</caption>` : nothing}
-          <thead>
-            <tr>
+          <thead role=${st ? 'rowgroup' : nothing}>
+            <tr role=${st ? 'row' : nothing}>
               ${this.selectable ? html`
-                <th scope="col" class="select-col">
+                <th scope="col" role=${st ? 'columnheader' : nothing} class="select-col${this.stickyFirst ? ' sticky' : ''}">
                   <cg-checkbox
                     ?checked=${allSelected}
                     .indeterminate=${this._selected.size > 0 && !allSelected}
@@ -680,12 +852,13 @@ export class CgTable extends LitElement {
                     aria-label=${this.i18n.t('selectAll')}></cg-checkbox>
                 </th>
               ` : nothing}
-              ${this.columns.map(col => {
+              ${this.columns.map((col, ci) => {
                 const dir = sort?.key === col.key ? sort.direction : undefined;
                 return html`
                 <th
                   scope="col"
-                  class=${dir ? 'sorted' : ''}
+                  role=${st ? 'columnheader' : nothing}
+                  class="${dir ? 'sorted' : ''}${pin(ci)}"
                   data-align=${col.align ?? 'left'}
                   style=${col.width ? `width: ${col.width}` : ''}
                   aria-sort=${dir ? (dir === 'asc' ? 'ascending' : 'descending') : nothing}
@@ -694,7 +867,7 @@ export class CgTable extends LitElement {
               })}
             </tr>
           </thead>
-          <tbody>
+          <tbody role=${st ? 'rowgroup' : nothing}>
             ${this.loading ? Array.from({ length: this.loadingRows }, (_, ri) => html`
               <tr class="loading-row" aria-hidden="true">
                 ${this.selectable ? html`<td class="select-col"><div class="loading-bar loading-check"></div></td>` : nothing}
@@ -710,11 +883,12 @@ export class CgTable extends LitElement {
               </tr>
             ` : sortedRows.map(({ row, i: origIdx }) => html`
               <tr class="${this._selected.has(origIdx) ? 'selected' : ''}"
+                role=${st ? 'row' : nothing}
                 tabindex=${this.clickable ? '0' : nothing}
                 @click=${(e: Event) => { if (!this._fromControl(e)) this._handleRowClick(origIdx, row); }}
                 @keydown=${(e: KeyboardEvent) => { if (this.clickable && e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); this._handleRowClick(origIdx, row); } }}>
                 ${this.selectable ? html`
-                  <td class="select-col" @click=${(e: Event) => e.stopPropagation()}>
+                  <td class="select-col${this.stickyFirst ? ' sticky' : ''}" role=${st ? 'cell' : nothing} @click=${(e: Event) => e.stopPropagation()}>
                     <cg-checkbox
                       ?checked=${this._selected.has(origIdx)}
                       @cg-change=${() => this._toggleRow(origIdx)}
@@ -722,13 +896,19 @@ export class CgTable extends LitElement {
                       aria-label=${this.i18n.t('selectRow', { row: origIdx + 1 })}></cg-checkbox>
                   </td>
                 ` : nothing}
-                ${this.columns.map((col, ci) => col.rowHeader
-                  ? html`<th scope="row" class=${col.truncate ? 'truncate' : ''} data-align=${col.align ?? 'left'}>${this._cell(col, row, ci, origIdx)}</th>`
-                  : html`<td class=${col.truncate ? 'truncate' : ''} data-align=${col.align ?? 'left'}>${this._cell(col, row, ci, origIdx)}</td>`)}
+                ${this.columns.map((col, ci) => {
+                  const cls = `${col.truncate ? 'truncate ' : ''}${parts[ci]}${pin(ci)}`;
+                  return col.rowHeader
+                    ? html`<th scope="row" role=${st ? 'rowheader' : nothing} class=${cls} data-align=${col.align ?? 'left'}>${this._cell(col, row, ci, origIdx)}</th>`
+                    : html`<td role=${st ? 'cell' : nothing} class=${cls} data-align=${col.align ?? 'left'}>${this._cell(col, row, ci, origIdx)}</td>`;
+                })}
               </tr>
             `)}
           </tbody>
         </table>
+        </div>
+        <div class="fade fade-start ${this._fadeStart ? 'on' : ''}" aria-hidden="true"></div>
+        <div class="fade fade-end ${this._fadeEnd ? 'on' : ''}" aria-hidden="true"></div>
         </div>
         <div class="table-footer" ?hidden=${!this._hasFooter}>
           <slot name="footer" @slotchange=${this._handleFooterSlotChange}></slot>
