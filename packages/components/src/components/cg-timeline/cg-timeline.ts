@@ -32,6 +32,17 @@ interface TimelineItem extends HTMLElement {
  * your own state and re-render (the DOM is then left alone). `move(item, to)`
  * moves a step from code (a "Move up" menu item).
  *
+ * Controlled lists: cancel `cg-reorder` and re-render the order yourself —
+ * now or a frame later, moving the same elements or making new ones. Once the
+ * re-rendered list has the step (the same element, or one with the same
+ * `label`) at `to`, the timeline announces the move and, after a keyboard
+ * move, focuses that step's handle — once.
+ *
+ * A pointer or touch drag previews the move (the step follows the finger,
+ * the others make room; nothing in the DOM moves) and fires one `cg-reorder`
+ * with the final `{ from, to }` on release; a cancelled pointer (pointercancel)
+ * fires nothing.
+ *
  * A list (named by `label`); the steps are its list items. The move
  * announcement is a polite live region beside the list.
  *
@@ -76,6 +87,32 @@ export class CgTimeline extends LitElement {
   @property({ type: Boolean, reflect: true }) reorderable = false;
 
   @state() private _announce = '';
+  /** A cancelled move waiting for the consumer's re-render. */
+  private _pending: { item: TimelineItem; label: string; to: number; focus: boolean; announce: boolean } | null = null;
+  private _children: MutationObserver | undefined;
+
+  override connectedCallback() {
+    super.connectedCallback();
+    // The post-render hook for controlled lists: the consumer's DOM changes.
+    this._children ??= new MutationObserver(() => this._afterRender());
+    this._children.observe(this, { childList: true });
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    this._children?.disconnect();
+  }
+
+  /** Children changed: renumber; a pending (cancelled) move that now shows is announced and focused once. */
+  private _afterRender() {
+    this._sync();
+    const p = this._pending;
+    const it = p && this.items[p.to];
+    if (!p || !it || (it !== p.item && !(p.label && (it.label || it.textContent!.trim()) === p.label))) return;
+    this._pending = null;
+    if (p.announce) this.announceMove(it);
+    if (p.focus) it.focusHandle();
+  }
 
   /** The steps, in order. */
   get items(): TimelineItem[] {
@@ -108,7 +145,14 @@ export class CgTimeline extends LitElement {
     to = Math.max(0, Math.min(items.length - 1, Math.round(to)));
     if (to === from) return false;
     const ev = new CustomEvent('cg-reorder', { detail: { from, to }, bubbles: true, composed: true, cancelable: true });
-    if (!this.dispatchEvent(ev)) return false;
+    const it = item as TimelineItem;
+    this._pending = null;
+    if (!this.dispatchEvent(ev)) {
+      // Controlled: announce / refocus once the consumer has re-rendered it at `to`.
+      this._pending = { item: it, label: it.label || it.textContent!.trim(), to, focus: !!options.focus, announce: options.announce !== false };
+      this._afterRender();
+      return false;
+    }
     const ref = to > from ? items[to]!.nextSibling : items[to]!;
     this.insertBefore(item, ref);
     this._sync();

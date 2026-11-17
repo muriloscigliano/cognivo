@@ -15,7 +15,6 @@ const MESSAGES = defineMessages('cg-timeline-item', {
 interface Timeline extends HTMLElement {
   items: HTMLElement[];
   move(item: HTMLElement, to: number, options?: { focus?: boolean; announce?: boolean }): boolean;
-  announceMove(item: HTMLElement): void;
 }
 
 /**
@@ -162,26 +161,40 @@ export class CgTimelineItem extends LitElement {
     this._timeline?.move(this, this.index - 1 + delta, { focus: true });
   }
 
-  /** Pointer drag: the step follows the pointer's height among the other steps. */
+  /**
+   * Pointer / touch drag: a preview only — this step follows the pointer and
+   * the steps it passes make room (`translate`; the DOM is not touched). On
+   * release one `move()` commits the final position; pointercancel drops it.
+   */
   private _onPointerDown(e: PointerEvent) {
     const timeline = this._timeline;
-    if (!timeline || e.button !== 0) return;
+    if (!timeline || !e.isPrimary || e.button !== 0) return;
     e.preventDefault();
+    const items = timeline.items;
+    const from = items.indexOf(this);
+    const rects = items.map((i) => i.getBoundingClientRect());
+    const gap = rects.length > 1 ? rects[1]!.top - rects[0]!.bottom : 0;
+    const room = rects[from]!.height + gap;
+    let to = from;
     this.toggleAttribute('dragging', true);
-    let moved = false;
     const onMove = (ev: PointerEvent) => {
-      const others = timeline.items.filter((i) => i !== this);
-      const to = others.filter((i) => { const r = i.getBoundingClientRect(); return r.top + r.height / 2 < ev.clientY; }).length;
-      if (timeline.move(this, to, { announce: false })) moved = true;
+      if (ev.pointerId !== e.pointerId) return;
+      const dy = ev.clientY - e.clientY;
+      to = rects.filter((r, i) => i !== from && r.top + r.height / 2 < ev.clientY).length;
+      items.forEach((it, i) => {
+        const y = i === from ? dy : from < i && i <= to ? -room : to <= i && i < from ? room : 0;
+        it.style.translate = y ? `0 ${y}px` : '';
+      });
     };
-    const onUp = () => {
+    const onUp = (ev: PointerEvent) => {
+      if (ev.pointerId !== e.pointerId) return;
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
       window.removeEventListener('pointercancel', onUp);
+      items.forEach((it) => { it.style.translate = ''; });
       this.toggleAttribute('dragging', false);
-      if (moved) timeline.announceMove(this);
+      if (ev.type === 'pointerup') timeline.move(this, to);
     };
-    // Window listeners, not pointer capture: moving the element in the DOM would release a capture.
     window.addEventListener('pointermove', onMove);
     window.addEventListener('pointerup', onUp);
     window.addEventListener('pointercancel', onUp);
