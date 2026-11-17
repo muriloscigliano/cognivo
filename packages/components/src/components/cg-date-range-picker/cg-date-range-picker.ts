@@ -41,6 +41,9 @@ import '../cg-calendar/cg-calendar.js';
  * calendar and apply at once; the matching one is pressed. Picking both ends
  * in the calendar applies too — no "Show" button.
  *
+ * On a phone (up to 640 px) the open panel is a bottom sheet: the full
+ * width of the screen, presets in a row above one month that fills it.
+ *
  * @fires {CustomEvent<{from: string, to: string}>} cg-date-range-change
  */
 @customElement('cg-date-range-picker')
@@ -86,7 +89,7 @@ export class CgDateRangePicker extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--cg-color-input-icon-default);
+      color: var(--cg-color-input-text-placeholder); /* a neutral field icon (input-icon-default is an accent) */
       flex-shrink: 0;
       width: var(--cg-spacing-40);
       align-self: stretch;
@@ -222,6 +225,31 @@ export class CgDateRangePicker extends LitElement {
     .pill-text.empty { color: var(--cg-color-input-text-placeholder); }
     .chevron { display: flex; color: var(--cg-color-input-text-placeholder); }
     .chevron svg { width: var(--cg-icon-size-100); height: var(--cg-icon-size-100); }
+
+    /* ── Phone: a bottom sheet — full width, presets in a row above one month
+       that fills it, 44 px day targets. ── */
+    @media (max-width: 640px) {
+      .dropdown, .dropdown.has-presets {
+        position: fixed;
+        inset: auto 0 0 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--cg-spacing-8);
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: var(--cg-spacing-16) var(--cg-spacing-16) calc(var(--cg-spacing-16) + env(safe-area-inset-bottom, 0px));
+        background: var(--cg-color-modal-container-background);
+        border: 0;
+        border-top: var(--cg-border-width-50) solid var(--cg-color-surface-hairline);
+        border-radius: var(--cg-component-calendar-radius) var(--cg-component-calendar-radius) 0 0;
+        transform: translateY(var(--cg-spacing-16));
+      }
+      .dropdown.open { transform: none; }
+      .presets { flex-direction: row; flex-wrap: wrap; min-width: 0; }
+      .dropdown cg-calendar { display: block; --cg-component-calendar-cell-size: var(--cg-size-touch-target); }
+    }
   `];
 
   /** Per-element text overrides (JSON attribute); see `setMessages()`. */

@@ -78,8 +78,10 @@ function offsetString(ms: number, timeZone: string): string {
  * `America/Sao_Paulo`) says which zone the wall time is in: the value then
  * carries that zone's offset for the date (`2027-01-31T09:00:00-03:00`,
  * daylight saving included), an instant with an offset (`…Z`, `…+01:00`) is
- * shown as wall time in the zone, and the trigger names the zone:
- * "Jan 31, 2027, 9:00 AM (GMT-3)" in the page's locale (`lang`). Without
+ * shown as wall time in the zone, and the trigger names the zone in a
+ * compact muted suffix: "Jan 31, 2027, 9:00 AM GMT−3" in the page's locale
+ * (`lang`). The trigger is as wide as its content, up to its container; the
+ * date and time are never cut (the zone suffix gives way first). Without
  * `time-zone` the browser's zone is shown and a value without an offset
  * stays as written (`2027-01-31T09:00`).
  *
@@ -122,9 +124,12 @@ export class CgDateTimePicker extends LitElement {
     }
 
     /* ── Trigger ── */
+    /* As wide as its content (date, time, zone), up to the container. */
     .trigger {
       box-sizing: border-box;
       display: flex;
+      width: max-content;
+      max-width: 100%;
       align-items: center;
       gap: 0;
       padding: 0 var(--cg-spacing-4);
@@ -164,7 +169,7 @@ export class CgDateTimePicker extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--cg-color-input-icon-default);
+      color: var(--cg-color-input-text-placeholder); /* a neutral field icon (input-icon-default is an accent) */
       flex-shrink: 0;
       width: var(--cg-spacing-40);
       align-self: stretch;
@@ -178,6 +183,10 @@ export class CgDateTimePicker extends LitElement {
       flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
       padding: 0 var(--cg-spacing-12);
     }
+    /* A value: the date and time are never cut; the zone suffix gives way first. */
+    .trigger-text.value { display: flex; align-items: baseline; gap: var(--cg-spacing-6); }
+    .trigger-value { flex: none; }
+    .trigger-zone { flex: 0 1 auto; min-width: 0; overflow: hidden; font-size: var(--cg-font-size-xs); color: var(--cg-color-input-text-placeholder); }
     .placeholder { color: var(--cg-color-input-text-placeholder); }
 
     /* ── Dropdown ── */
@@ -659,18 +668,19 @@ export class CgDateTimePicker extends LitElement {
   }
 
   // ── Display ──
-  /** "Jan 31, 2027, 9:00 AM (GMT-3)" in the element's locale; the date alone without a time. */
-  private _formatDisplay(): string {
+  /** "Jan 31, 2027, 9:00 AM" and the zone "GMT−3" in the element's locale; the date alone without a time. */
+  private _formatDisplay(): { text: string; zone?: string | undefined } {
     const { date, time, at } = this._parsed;
-    if (!date) return '';
+    if (!date) return { text: '' };
     const locale = this.i18n.locale;
-    if (!time || at === undefined) return new Date(`${date}T00:00:00`).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' });
+    if (!time || at === undefined) return { text: new Date(`${date}T00:00:00`).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' }) };
     const zone = this._zone;
     const text = new Intl.DateTimeFormat(locale, {
       month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: zone, ...(this.use12h ? { hour12: true } : {}),
     }).format(at);
     const name = new Intl.DateTimeFormat(locale, { timeZone: zone, timeZoneName: 'shortOffset' }).formatToParts(at).find((p) => p.type === 'timeZoneName')?.value;
-    return name ? `${text} (${name})` : text;
+    // A real minus sign: "GMT−3".
+    return { text, zone: name?.replace('-', '\u2212') };
   }
 
   private _handleClickOutside = (e: Event) => { if (!e.composedPath().includes(this)) this._close(); };
@@ -691,7 +701,7 @@ export class CgDateTimePicker extends LitElement {
   override disconnectedCallback() { super.disconnectedCallback(); document.removeEventListener('click', this._handleClickOutside); }
 
   override render() {
-    const display = this._formatDisplay();
+    const { text: display, zone } = this._formatDisplay();
     const days = this._getDays();
     const hours = this._getHours();
     const minutes = this._getMinutes();
@@ -726,7 +736,9 @@ export class CgDateTimePicker extends LitElement {
             <polyline points="16 14.5 16 16 17 16.5"></polyline>
           </svg>
         </span>
-        <span class="trigger-text ${!display ? 'placeholder' : ''}">${display || (this.placeholder ?? this.i18n.t('placeholder'))}</span>
+        ${display
+          ? html`<span class="trigger-text value"><span class="trigger-value">${display}</span> ${zone ? html`<span class="trigger-zone">${zone}</span>` : nothing}</span>`
+          : html`<span class="trigger-text placeholder">${this.placeholder ?? this.i18n.t('placeholder')}</span>`}
       </div>
 
       <div class="dropdown ${this._open ? 'open' : ''}" role="dialog" aria-label=${this.i18n.t('dialog')} @keydown=${this._handleKeydown}>

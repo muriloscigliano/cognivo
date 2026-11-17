@@ -58,11 +58,11 @@ describe.skipIf(!browserAvailable)('cg-date-time-picker around daylight saving (
   describe('a value with an offset keeps its instant', () => {
     for (const [zone, value, shown] of [
       // New York, fall back 2026-11-01: 1:30 happens twice; the second is EST.
-      ['America/New_York', '2026-11-01T01:30:00-05:00', 'Nov 1, 2026, 1:30 AM (GMT-5)'],
-      ['America/New_York', '2026-11-01T01:30:00-04:00', 'Nov 1, 2026, 1:30 AM (GMT-4)'],
+      ['America/New_York', '2026-11-01T01:30:00-05:00', 'Nov 1, 2026, 1:30 AM GMT\u22125'],
+      ['America/New_York', '2026-11-01T01:30:00-04:00', 'Nov 1, 2026, 1:30 AM GMT\u22124'],
       // London, fall back 2026-10-25: the second 1:30 is GMT.
-      ['Europe/London', '2026-10-25T01:30:00+00:00', 'Oct 25, 2026, 1:30 AM (GMT)'],
-      ['Europe/London', '2026-10-25T01:30:00+01:00', 'Oct 25, 2026, 1:30 AM (GMT+1)'],
+      ['Europe/London', '2026-10-25T01:30:00+00:00', 'Oct 25, 2026, 1:30 AM GMT'],
+      ['Europe/London', '2026-10-25T01:30:00+01:00', 'Oct 25, 2026, 1:30 AM GMT+1'],
     ] as const) {
       it(`${zone} ${value}`, async () => {
         const page = await open(`time-zone="${zone}" value="${value}"`);

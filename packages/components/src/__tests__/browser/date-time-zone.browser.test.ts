@@ -10,7 +10,7 @@
  * `required`, reset, FormData, the in-place invalid state); with
  * `time-zone` (IANA) its value carries that zone's offset
  * (`2027-01-31T09:00:00-03:00`) and the trigger reads
- * "Jan 31, 2027, 9:00 AM (GMT-3)" in the page's locale; the calendar is a
+ * "Jan 31, 2027, 9:00 AM GMT−3" in the page's locale; the calendar is a
  * keyboard grid (arrows, Page Up / Down, Home / End, Enter, Escape back to
  * the trigger) and the time columns move with the arrow keys.
  */
@@ -39,16 +39,16 @@ describe.skipIf(!browserAvailable)('cg-date-time-picker for dated steps (real br
   it('time-zone: the value carries the zone offset and the trigger shows the zone, in the page locale', async () => {
     const page = await open(`<form><cg-date-time-picker name="send" label="Send on" time-zone="America/Sao_Paulo" value="2027-01-31T09:00"></cg-date-time-picker></form>`);
     expect(await formValue(page)).toBe('2027-01-31T09:00:00-03:00');
-    expect(await text(page)).toBe('Jan 31, 2027, 9:00 AM (GMT-3)');
+    expect(await text(page)).toBe('Jan 31, 2027, 9:00 AM GMT\u22123');
     await page.evaluate(() => { document.documentElement.lang = 'pt-BR'; (document.querySelector('cg-date-time-picker') as HTMLElement & { requestUpdate(): void }).requestUpdate(); });
     await settleStyles(page);
-    expect(await text(page)).toBe('31 de jan. de 2027, 9:00 (GMT-3)');
+    expect(await text(page)).toBe('31 de jan. de 2027, 9:00 GMT\u22123');
     await page.close();
   });
 
   it('an instant with an offset is shown as wall time in the time zone', async () => {
     const page = await open(`<form><cg-date-time-picker name="send" time-zone="America/Sao_Paulo" value="2027-01-31T12:00:00Z"></cg-date-time-picker></form>`);
-    expect(await text(page)).toBe('Jan 31, 2027, 9:00 AM (GMT-3)');
+    expect(await text(page)).toBe('Jan 31, 2027, 9:00 AM GMT\u22123');
     expect(await formValue(page)).toBe('2027-01-31T09:00:00-03:00');
     await page.close();
   });

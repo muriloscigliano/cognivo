@@ -76,7 +76,7 @@ export class CgDatePicker extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--cg-color-input-icon-default);
+      color: var(--cg-color-input-text-placeholder); /* a neutral field icon (input-icon-default is an accent) */
       flex-shrink: 0;
       width: var(--cg-spacing-40);
       align-self: stretch;

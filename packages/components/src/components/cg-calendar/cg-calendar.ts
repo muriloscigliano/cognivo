@@ -76,7 +76,9 @@ export class CgCalendar extends LitElement {
 
     .weekdays {
       display: grid;
-      grid-template-columns: repeat(7, var(--cg-component-calendar-cell-size));
+      /* Cells stretch when the host is given more width (a phone sheet). */
+      grid-template-columns: repeat(7, minmax(var(--cg-component-calendar-cell-size), 1fr));
+      justify-items: center;
       gap: var(--cg-spacing-2);
       margin-bottom: var(--cg-spacing-8);
     }
@@ -92,7 +94,9 @@ export class CgCalendar extends LitElement {
 
     .days {
       display: grid;
-      grid-template-columns: repeat(7, var(--cg-component-calendar-cell-size));
+      /* Cells stretch when the host is given more width (a phone sheet). */
+      grid-template-columns: repeat(7, minmax(var(--cg-component-calendar-cell-size), 1fr));
+      justify-items: center;
       gap: var(--cg-spacing-2);
     }
     .day {
