@@ -4,6 +4,8 @@ import { customElement } from '../../utils/define.js';
 import { formInternals } from '../../utils/form-internals.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { defineMessages, Messages } from '../../utils/messages.js';
+import { FocusTrap, deepContains, focusEntry, getDeepActiveElement, getFocusableElements } from '../../utils/focus-trap.js';
+import { lockBodyScroll, unlockBodyScroll } from '../../utils/scroll-lock.js';
 
 const MESSAGES = defineMessages('cg-date-range-picker', {
   placeholder: 'Select date range',
@@ -41,8 +43,12 @@ import '../cg-calendar/cg-calendar.js';
  * calendar and apply at once; the matching one is pressed. Picking both ends
  * in the calendar applies too — no "Show" button.
  *
- * On a phone (up to 640 px) the open panel is a bottom sheet: the full
- * width of the screen, presets in a row above one month that fills it.
+ * On a phone (up to 640 px) the open panel is a modal bottom sheet: in the
+ * top layer (a popover, so no transformed or overflow-hidden ancestor moves
+ * or clips it) over a backdrop, with the shared body scroll lock, focus moved
+ * in and returned to the trigger, Escape and a backdrop tap to close; the
+ * full width of the screen, at most 90dvh, presets in a row above one month
+ * that fills it.
  *
  * @fires {CustomEvent<{from: string, to: string}>} cg-date-range-change
  */
@@ -238,6 +244,7 @@ export class CgDateRangePicker extends LitElement {
         align-items: stretch;
         gap: var(--cg-spacing-8);
         max-height: 90vh;
+        max-height: 90dvh;
         overflow-y: auto;
         padding: var(--cg-spacing-16) var(--cg-spacing-16) calc(var(--cg-spacing-16) + env(safe-area-inset-bottom, 0px));
         background: var(--cg-color-modal-container-background);
@@ -247,6 +254,9 @@ export class CgDateRangePicker extends LitElement {
         transform: translateY(var(--cg-spacing-16));
       }
       .dropdown.open { transform: none; }
+      /* The modal sheet (top layer): undo the popover UA box. */
+      .dropdown:popover-open { width: auto; height: auto; color: inherit; }
+      .dropdown::backdrop { background: var(--cg-color-modal-overlay-background); }
       .presets { flex-direction: row; flex-wrap: wrap; min-width: 0; }
       /* Columns may shrink below the 44 px cell on screens under ~390 px, so
          every day stays inside the sheet (days stay 44 px tall). */
@@ -326,6 +336,10 @@ export class CgDateRangePicker extends LitElement {
     if (changed.has('from') || changed.has('to')) {
       this._syncFormValue();
     }
+    if (changed.has('open') && changed.get('open') !== undefined) {
+      if (this.open && this._sheet) this._showSheet();
+      else if (!this.open) { this._hideSheet(); this._sheet = false; }
+    }
   }
 
   private _syncFormValue() {
@@ -339,6 +353,51 @@ export class CgDateRangePicker extends LitElement {
   private _toggle() {
     if (this._effectivelyDisabled) return;
     this.open = !this.open;
+  }
+
+  /** Open on a phone: the panel is a modal sheet (top layer, scroll lock, focus trap). */
+  @state() private _sheet = false;
+  private _trap = new FocusTrap();
+  private get _dropdown() { return this.renderRoot?.querySelector<HTMLElement>('.dropdown') ?? null; }
+
+  override willUpdate(changed: Map<string, unknown>) {
+    if (changed.has('open') && this.open) {
+      this._sheet = typeof matchMedia === 'function' && matchMedia('(max-width: 640px)').matches;
+    }
+  }
+
+  private _showSheet() {
+    const d = this._dropdown;
+    if (!d) return;
+    try { if (typeof d.showPopover === 'function' && !d.matches(':popover-open')) d.showPopover(); } catch { /* fixed sheet without the top layer */ }
+    lockBodyScroll(this);
+    this._trap.activate(d, { handleEscape: false });
+    // The trap focuses on the next frame; while the sheet's children are still
+    // becoming visible (any transition, even a reduced-motion 0.01ms one) that
+    // misses — so once they have settled, move focus in if it is not there yet.
+    void Promise.all((typeof d.getAnimations === 'function' ? d.getAnimations({ subtree: true }) : []).map((a) => a.finished.catch(() => undefined))).then(() => {
+      if (!this.open || deepContains(d, getDeepActiveElement())) return;
+      const first = getFocusableElements(d)[0];
+      if (first) focusEntry(first);
+    });
+  }
+
+  private _hideSheet() {
+    const d = this._dropdown;
+    try { if (d?.matches(':popover-open')) d.hidePopover(); } catch { /* not shown */ }
+    unlockBodyScroll(this);
+    this._trap.deactivate();
+  }
+
+  /** The sheet's backdrop: a click on the popover itself, outside its box. */
+  private _onSheetClick(e: MouseEvent) {
+    if (!this._sheet || e.target !== e.currentTarget) return;
+    const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    if (e.clientY < r.top || e.clientY > r.bottom || e.clientX < r.left || e.clientX > r.right) this._close();
+  }
+
+  private _onSheetKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape' && this.open) { e.preventDefault(); e.stopPropagation(); this._close(); }
   }
 
   private _close() {
@@ -381,6 +440,9 @@ export class CgDateRangePicker extends LitElement {
   override disconnectedCallback() {
     super.disconnectedCallback();
     document.removeEventListener('click', this._handleClickOutside);
+    // An unmount while open must not leave the page scroll-locked.
+    unlockBodyScroll(this);
+    this._trap.deactivate();
   }
 
   private _handleKeydown(e: KeyboardEvent) {
@@ -438,7 +500,9 @@ export class CgDateRangePicker extends LitElement {
         <span class="segment ${toText ? '' : 'empty'}">${toText || (this.endPlaceholder ?? this.i18n.t('endPlaceholder'))}</span>`}
       </div>
 
-      <div id="cg-drp-dropdown" class="dropdown ${this.open ? 'open' : ''} ${presets.length ? 'has-presets' : ''}" role="dialog" aria-label=${this.i18n.t('calendar')}>
+      <div id="cg-drp-dropdown" class="dropdown ${this.open ? 'open' : ''} ${presets.length ? 'has-presets' : ''}" role="dialog" aria-label=${this.i18n.t('calendar')}
+        popover=${this._sheet ? 'manual' : nothing} aria-modal=${this._sheet ? 'true' : nothing}
+        @click=${this._onSheetClick} @keydown=${this._onSheetKeydown}>
         ${presets.length ? html`<div class="presets" role="group" aria-label=${this.i18n.t('presets')}>
           ${presets.map((p) => html`<button type="button" class="preset" aria-pressed=${p.from === this.from && p.to === this.to ? 'true' : 'false'}
             @click=${(e: Event) => { e.stopPropagation(); this._applyPreset(p); }}>${p.label}</button>`)}
