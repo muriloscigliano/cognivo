@@ -64,6 +64,22 @@ describe.skipIf(!browserAvailable)('cg-select width="auto" size="sm" (real brows
     await page.close();
   });
 
+  it('starting empty, the placeholder is in the sizer: no jump on the first selection', async () => {
+    const page = await openPage(['cg-select'], `<div style="width:600px"><cg-select id="e" size="sm" width="auto" aria-label="Operator" placeholder="Choose an operator"></cg-select></div>`);
+    await page.addStyleTag({ path: TOKENS_CSS });
+    await page.evaluate((ops) => { Object.assign(document.getElementById('e')!, { options: ops }); }, OPS);
+    await settleStyles(page);
+    const empty = await box(page, 'e');
+    expect(empty.shown).toBe('Choose an operator');
+    expect(empty.cut).toBe(false);
+    await page.evaluate(() => { (document.getElementById('e') as HTMLElement & { value: string }).value = 'is'; });
+    await settleStyles(page);
+    const picked = await box(page, 'e');
+    expect(picked.shown).toBe('is');
+    expect(picked.width).toBe(empty.width);
+    await page.close();
+  });
+
   it('without width, cg-select still fills its container', async () => {
     const page = await open();
     expect((await box(page, 'full')).width).toBe(600);

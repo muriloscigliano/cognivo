@@ -177,7 +177,7 @@ export class CgSelect extends LitElement {
     :host([size="sm"]) .trigger { height: var(--cg-component-input-height-sm); font-size: var(--cg-font-size-xs); padding: 0 var(--cg-spacing-8); }
     :host([size="sm"]) .option { font-size: var(--cg-font-size-xs); }
 
-    /* width="auto": inline, as wide as the longest option (the width holds as the value changes). */
+    /* width="auto": inline, as wide as the longest option or the placeholder (the width holds as the value changes). */
     :host([width="auto"]) { display: inline-block; vertical-align: middle; max-width: 100%; }
     .fit { flex: 1; min-width: 0; display: grid; }
     .fit > * { grid-area: 1 / 1; min-width: 0; }
@@ -392,7 +392,7 @@ export class CgSelect extends LitElement {
         @click=${this._toggle}
         @keydown=${this._handleKeydown}
       >
-        ${this.width === 'auto' ? html`<span class="fit">${text}${(selected ? this.options : [{ label: shown }, ...this.options]).map((o) => html`<span class="sizer" aria-hidden="true">${o.label}</span>`)}</span>` : text}
+        ${this.width === 'auto' ? html`<span class="fit">${text}${[{ label: this.placeholder ?? this.i18n.t('placeholder') }, ...this.options].map((o) => html`<span class="sizer" aria-hidden="true">${o.label}</span>`)}</span>` : text}
         ${this.loading ? html`<span class="loading-spinner" aria-hidden="true"></span>` : html`
         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 9l6 6 6-6"></path>
