@@ -97,3 +97,10 @@ test('surface ladder: canvas < panel < raised in dark (lighter as it rises), wit
   const p2 = themes(preset);
   for (const t of [p2.light, p2.dark]) for (const n of names) assert.equal(t.has(`--cg-color-surface-${n}`), false, n);
 });
+
+test('page chrome: a 48 px phone top bar, 28 px under the page header (16 px back-link gap), a 56 px action bar', () => {
+  assert.equal(resolve(light, '--cg-component-app-shell-mobile-bar-height'), '48px');
+  assert.equal(resolve(light, '--cg-component-page-header-gap-below'), '28px');
+  assert.equal(resolve(light, '--cg-component-page-header-back-gap'), '16px');
+  assert.equal(resolve(light, '--cg-component-action-bar-height'), '56px');
+});

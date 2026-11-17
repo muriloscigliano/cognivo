@@ -131,6 +131,8 @@ export * from './components/cg-thumbnail/cg-thumbnail.js';
 export * from './components/cg-overflow-list/cg-overflow-list.js';
 export * from './components/cg-lightbox/cg-lightbox.js';
 export * from './components/cg-app-shell/cg-app-shell.js';
+export * from './components/cg-action-bar/cg-action-bar.js';
+export * from './components/cg-page-header/cg-page-header.js';
 
 // ── Motion & Effects ─────────────────────────────────────────────────────────
 export * from './components/cg-border-beam/cg-border-beam.js';

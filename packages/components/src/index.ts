@@ -238,6 +238,8 @@ import { CgThumbnail } from './components/cg-thumbnail/cg-thumbnail.js';
 import { CgOverflowList } from './components/cg-overflow-list/cg-overflow-list.js';
 import { CgLightbox } from './components/cg-lightbox/cg-lightbox.js';
 import { CgAppShell } from './components/cg-app-shell/cg-app-shell.js';
+import { CgActionBar } from './components/cg-action-bar/cg-action-bar.js';
+import { CgPageHeader } from './components/cg-page-header/cg-page-header.js';
 // ── Wave 12: Motion & Effects ───────────────────────────────────────────────
 import { CgBorderBeam } from './components/cg-border-beam/cg-border-beam.js';
 import { AiThinkingOrb } from './components/ai-thinking-orb/ai-thinking-orb.js';
@@ -312,7 +314,7 @@ export {
   CgSidebar, CgAvatar, CgEmptyState, CgMeter, CgDateRangePicker,
   // Wave 10: Astryx-parity gap-fill
   CgToolbar, CgGrid, CgCenter, CgStatusDot, CgTimestamp, CgBlockquote, CgThumbnail,
-  CgOverflowList, CgLightbox, CgAppShell,
+  CgOverflowList, CgLightbox, CgAppShell, CgActionBar, CgPageHeader,
   // Wave 12: Motion & Effects
   CgBorderBeam, AiThinkingOrb, CgLiquid, CgLiquidItem,
   // Bias Wrappers — composable behavioral primitives

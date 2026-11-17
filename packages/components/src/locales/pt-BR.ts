@@ -258,6 +258,9 @@ export const ptBR: LocaleMessages = {
     more: 'Mais',
     item: 'Item {n}',
   },
+  'cg-app-shell': {
+    menu: 'Menu',
+  },
   'cg-pagination': {
     label: 'Paginação',
     previous: 'Página anterior',

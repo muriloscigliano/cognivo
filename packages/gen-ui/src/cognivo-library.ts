@@ -2291,6 +2291,28 @@ export const AppShellDef = defineComponent({
   description: 'Top-level app scaffold with header/sidebar/content/footer landmark regions and collapsible sidebar',
 });
 
+export const PageHeaderDef = defineComponent({
+  name: 'PageHeader', tagName: 'cg-page-header',
+  props: z.object({
+    heading: z.string(),
+    description: z.string().optional(),
+    backHref: z.string().optional(),
+    backLabel: z.string().optional(),
+    level: z.number().int().min(1).max(6).optional(),
+    actions: z.array(z.any()).optional(),
+  }),
+  description: 'Page header: optional back link, 24 px title, one-line muted description, actions on the title baseline',
+});
+
+export const ActionBarDef = defineComponent({
+  name: 'ActionBar', tagName: 'cg-action-bar',
+  props: z.object({
+    status: z.string().optional(),
+    actions: z.array(z.any()).optional(),
+  }),
+  description: 'Sticky action bar at the bottom of an editor: a polite status (Unsaved changes) and the Save actions',
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Wave 11: Forms & actions coverage (2 components)
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2578,7 +2600,7 @@ const ALL_COMPONENTS = [
   AiTransformSliderDef, AiTranslationPanelDef, AiValidationChecklistDef, AiVoicePanelDef,
   // Wave 11: Astryx-parity layout & display
   ToolbarDef, GridDef, CenterDef, StatusDotDef, TimestampDef,
-  BlockquoteDef, ThumbnailDef, OverflowListDef, LightboxDef, AppShellDef,
+  BlockquoteDef, ThumbnailDef, OverflowListDef, LightboxDef, AppShellDef, ActionBarDef, PageHeaderDef,
   // Wave 11: Forms & actions coverage
   PhoneInputDef, SplitButtonDef,
   // Wave 11: AI coverage

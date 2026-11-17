@@ -1,9 +1,15 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, svg } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { customElement } from '../../utils/define.js';
 import { hostBlock, reducedMotion } from '../../styles/index.js';
 import { getDeepActiveElement, getFocusableElements, focusEntry } from '../../utils/focus-trap.js';
 import { lockBodyScroll, unlockBodyScroll } from '../../utils/scroll-lock.js';
+import { defineMessages, Messages } from '../../utils/messages.js';
+
+const MESSAGES = defineMessages('cg-app-shell', {
+  /** The phone top bar's menu button (opens / closes the navigation drawer). */
+  menu: 'Menu',
+});
 
 /** Below this width the sidebar is an overlay drawer, not a column. */
 const PHONE_QUERY = '(max-width: 768px)';
@@ -37,6 +43,14 @@ const PHONE_QUERY = '(max-width: 768px)';
  * from the backdrop or Escape, and the breakpoint changes, fire
  * `cg-app-shell-toggle` like `toggleSidebar()`.
  *
+ * Phone top bar: content in the `mobile-header` slot (the page title, a
+ * button) turns the header row on a phone into a real top bar,
+ * `--cg-component-app-shell-mobile-bar-height` (48 px) tall: a menu icon
+ * button (`--cg-size-touch-target`, 44 px; `aria-expanded`, named by the
+ * `menu` message) that opens and closes the drawer, then the slotted
+ * content at 16 px / 500. The bar stays usable while the drawer is open; the
+ * `header` slot is not shown on a phone then. On desktop the bar is hidden.
+ *
  * Right-to-left: the drawer slides from the inline-start edge (the right in
  * `dir="rtl"`), and the panel's inset and the column's divider follow the
  * writing direction.
@@ -52,6 +66,7 @@ const PHONE_QUERY = '(max-width: 768px)';
  * ```
  *
  * @slot header - Top bar (banner landmark).
+ * @slot mobile-header - Phone top bar content (page title), after the menu button.
  * @slot sidebar - Navigation rail (complementary landmark).
  * @slot - Main content.
  * @slot footer - Bottom bar (contentinfo landmark).
@@ -153,6 +168,9 @@ export class CgAppShell extends LitElement {
     :host([panel]) .no-header header { display: none; }
     :host([panel]) .no-header main { margin-top: var(--cg-component-app-shell-panel-top); }
 
+    /* ── Phone top bar (mobile-header slot): hidden on desktop ── */
+    .mobile-bar { display: none; }
+
     /* Empty regions collapse so they don't reserve borders */
     footer.empty { display: none; }
 
@@ -237,6 +255,49 @@ export class CgAppShell extends LitElement {
       :host([sidebar-position="end"][sidebar-collapsed]) aside {
         transform: translateX(calc(var(--_cg-shell-dir) * (var(--_cg-shell-sidebar-w) + var(--cg-spacing-16))));
       }
+
+      /* A real top bar: the menu button and the page title; above the
+         drawer's backdrop, so the same button closes it. */
+      :host .shell.has-mobile.has-mobile {
+        --_cg-shell-header-h: var(--cg-component-app-shell-mobile-bar-height);
+      }
+      .has-mobile header { display: none; }
+      .has-mobile .mobile-bar {
+        grid-area: header;
+        display: flex;
+        align-items: center;
+        gap: var(--cg-spacing-4);
+        position: sticky;
+        top: 0;
+        z-index: calc(var(--cg-z-index-300) + 1);
+        height: var(--cg-component-app-shell-mobile-bar-height);
+        padding-inline: var(--cg-spacing-2) var(--cg-spacing-16);
+        background: inherit;
+        color: var(--cg-color-surface-base-text);
+        font-size: var(--cg-font-size-base);
+        font-weight: var(--cg-font-weight-medium);
+        min-width: 0;
+      }
+      .menu-btn {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: var(--cg-size-touch-target);
+        height: var(--cg-size-touch-target);
+        padding: 0;
+        border: 0;
+        border-radius: var(--cg-border-radius-50);
+        background: none;
+        color: inherit;
+        cursor: pointer;
+      }
+      .menu-btn:hover { background: var(--cg-color-state-hover); }
+      .menu-btn:active { background: var(--cg-color-state-pressed); }
+      .menu-btn:focus-visible {
+        outline: none;
+        box-shadow: inset 0 0 0 var(--cg-focus-ring-width) var(--cg-color-focus-ring);
+      }
+      .menu-btn svg { width: var(--cg-icon-size-150); height: var(--cg-icon-size-150); }
 
       .backdrop {
         display: block;
@@ -408,6 +469,11 @@ export class CgAppShell extends LitElement {
     }
   }
 
+  @state() private _hasMobile = false;
+  /** Per-element text overrides (JSON attribute); see `setMessages()`. */
+  @property({ type: Object }) messages: Partial<typeof MESSAGES> | null = null;
+  private i18n = new Messages(this, MESSAGES);
+
   private _onHeaderSlotChange(e: Event): void {
     this._hasHeader = (e.target as HTMLSlotElement).assignedNodes({ flatten: true }).length > 0;
   }
@@ -416,10 +482,16 @@ export class CgAppShell extends LitElement {
     // While the phone drawer is open, the rest of the page is inert: focus stays in the drawer.
     const behind = this._drawerOpen;
     return html`
-      <div class="shell ${this._hasHeader ? '' : 'no-header'}">
+      <div class="shell ${this._hasHeader ? '' : 'no-header'} ${this._hasMobile ? 'has-mobile' : ''}">
         <header ?inert=${behind}><slot name="header" @slotchange=${this._onHeaderSlotChange}></slot></header>
+        <div class="mobile-bar">
+          <button class="menu-btn" type="button" aria-label=${this.i18n.t('menu')} aria-expanded=${!this.sidebarCollapsed} aria-controls="sidebar" @click=${() => this.toggleSidebar()}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">${svg`<path d="M4 7h16M4 12h16M4 17h16"></path>`}</svg>
+          </button>
+          <slot name="mobile-header" @slotchange=${(e: Event) => { this._hasMobile = (e.target as HTMLSlotElement).assignedNodes({ flatten: true }).length > 0; }}></slot>
+        </div>
         <div class="backdrop" @click=${() => this._setCollapsed(true)}></div>
-        <aside ?inert=${this.sidebarCollapsed}>
+        <aside id="sidebar" ?inert=${this.sidebarCollapsed}>
           <slot name="sidebar"></slot>
         </aside>
         <main ?inert=${behind}><slot></slot></main>
