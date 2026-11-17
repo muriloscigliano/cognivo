@@ -9,6 +9,9 @@ const MESSAGES = defineMessages('cg-table', {
   empty: 'No data',
   selectAll: 'Select all rows',
   selectRow: 'Select row {row}',
+  sortBy: 'Sort by',
+  sortAsc: '{column}, ascending',
+  sortDesc: '{column}, descending',
 });
 
 /** A column sort: the column `key` and its direction. */
@@ -150,6 +153,8 @@ export class CgTable extends LitElement {
     .scroll-area { position: relative; }
     .table-scroll {
       overflow-x: auto;
+      /* A focused cell scrolls out from under the pinned column. */
+      scroll-padding-inline-start: var(--_pin-w, 0px);
     }
 
     /* Edge fades: the side with more table behind it fades out (scroll hint). */
@@ -164,8 +169,10 @@ export class CgTable extends LitElement {
       transition: opacity var(--cg-transition-duration-state) var(--cg-transition-easing-ease-out);
     }
     .fade.on { opacity: 1; }
-    .fade-start { left: var(--_fade-left, 0); background: linear-gradient(to right, var(--_bg), transparent); }
-    .fade-end { right: 0; background: linear-gradient(to left, var(--_bg), transparent); }
+    .fade-start { inset-inline-start: var(--_pin-w, 0px); background: linear-gradient(to right, var(--_bg), transparent); }
+    .fade-end { inset-inline-end: 0; background: linear-gradient(to left, var(--_bg), transparent); }
+    :host(:dir(rtl)) .fade-start { background: linear-gradient(to left, var(--_bg), transparent); }
+    :host(:dir(rtl)) .fade-end { background: linear-gradient(to right, var(--_bg), transparent); }
     /* Overflowing: the scroll box is a tab stop (keyboard scrolling); its ring sits inside. */
     .table-scroll:focus-visible {
       outline: none;
@@ -412,7 +419,7 @@ export class CgTable extends LitElement {
        sideways, on an opaque fill with the row state painted over it. ── */
     .sticky {
       position: sticky;
-      left: 0;
+      inset-inline-start: 0;
       z-index: 1;
     }
     thead .sticky { z-index: 2; }
@@ -421,7 +428,7 @@ export class CgTable extends LitElement {
       background: linear-gradient(var(--_row, transparent), var(--_row, transparent)), var(--_bg) !important;
     }
     /* With selection, the checkbox column is pinned too and the first column sits after it. */
-    .select-col.sticky ~ .sticky { left: calc(var(--cg-spacing-48) + 2 * var(--cg-spacing-12)); }
+    .select-col.sticky ~ .sticky { inset-inline-start: calc(var(--cg-spacing-48) + 2 * var(--cg-spacing-12)); }
 
     /* ── Stacked (phone, below stack-below px): each row is a list row — the
        title line, a muted meta line, the end column at the right. Roles keep
@@ -473,8 +480,44 @@ export class CgTable extends LitElement {
       top: 50%;
       transform: translateY(-50%);
     }
-    :host([stacked]) .st-hidden { display: none; }
+    /* Hidden when stacked: out of sight but still in the row, so every
+       later cell keeps its own column header for assistive tech. */
+    :host([stacked]) tbody tr > .st-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
     :host([stacked]) .select-col { width: auto; }
+    /* The clipped header row holds no controls when stacked: select-all and
+       the sort live in this bar above the rows. */
+    .stack-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--cg-spacing-8) var(--cg-spacing-16);
+      padding: var(--cg-spacing-8) var(--cg-spacing-16);
+      border-bottom: var(--cg-border-width-50) solid var(--cg-color-surface-table-divider);
+      font-size: var(--cg-font-size-13);
+      color: var(--cg-color-on-surface-container-default);
+    }
+    .stack-sort { display: inline-flex; align-items: center; gap: var(--cg-spacing-8); margin-inline-start: auto; }
+    .stack-sort select {
+      font: inherit;
+      color: var(--cg-color-surface-table-text);
+      height: var(--cg-component-input-height-sm);
+      padding: 0 var(--cg-spacing-8);
+      background: var(--_bg);
+      border: var(--cg-border-width-50) solid var(--cg-color-surface-table-border);
+      border-radius: var(--cg-border-radius-100);
+    }
+    .stack-sort select:focus-visible {
+      outline: var(--cg-focus-ring-width) solid var(--cg-color-focus-ring);
+      outline-offset: var(--cg-border-width-50);
+    }
 
     /* ── Empty state ── */
     /* The empty-state cell controls its own spacing — strip the row's td
@@ -644,15 +687,21 @@ export class CgTable extends LitElement {
     this._resize.observe(box.firstElementChild!);
   }
 
-  /** Edge fades from the scroll position; the start fade begins after the pinned column. */
+  /** Edge fades from the scroll position; the start fade begins after the
+   *  pinned column (`--_pin-w`, also the scroll padding). Right-to-left
+   *  scrollLeft runs from 0 to negative, so its size is what counts. */
   private _syncScroll() {
     const box = this.renderRoot?.querySelector?.<HTMLElement>('.table-scroll');
     if (!box) return;
     const max = box.scrollWidth - box.clientWidth;
-    this._fadeStart = max > 1 && box.scrollLeft > 1;
-    this._fadeEnd = max > 1 && box.scrollLeft < max - 1;
+    const pos = Math.abs(box.scrollLeft);
+    this._fadeStart = max > 1 && pos > 1;
+    this._fadeEnd = max > 1 && pos < max - 1;
     const pinned = this.stickyFirst ? Array.from(box.querySelectorAll<HTMLElement>('thead .sticky')).pop() : undefined;
-    box.parentElement!.style.setProperty('--_fade-left', pinned ? `${pinned.offsetLeft + pinned.offsetWidth}px` : '0px');
+    const b = box.getBoundingClientRect();
+    const p = pinned?.getBoundingClientRect();
+    const w = p ? (getComputedStyle(box).direction === 'rtl' ? b.right - p.left : p.right - b.left) : 0;
+    box.parentElement!.style.setProperty('--_pin-w', `${Math.max(0, w)}px`);
   }
 
   override willUpdate(changed: PropertyValues) {
@@ -692,7 +741,10 @@ export class CgTable extends LitElement {
   private _handleSort(col: TableColumn) {
     if (!col.sortable) return;
     const cur = this._sort;
-    const next: TableSort = { key: col.key, direction: cur?.key === col.key && cur.direction === 'asc' ? 'desc' : 'asc' };
+    this._requestSort({ key: col.key, direction: cur?.key === col.key && cur.direction === 'asc' ? 'desc' : 'asc' });
+  }
+
+  private _requestSort(next: TableSort) {
     this.dispatchEvent(new CustomEvent('cg-sort-change', { detail: next, bubbles: true, composed: true }));
     if (this.sort !== undefined) return;
     this._sortKey = next.key;
@@ -827,9 +879,24 @@ export class CgTable extends LitElement {
     const st = this.stacked;
     const parts = this._stackParts();
     const pin = (ci: number) => (this.stickyFirst && ci === 0 ? ' sticky' : '');
+    const sortable = st ? this.columns.filter((c) => c.sortable) : [];
+    const sortOption = (c: TableColumn, d: 'asc' | 'desc') => html`<option value="${c.key}:${d}" ?selected=${sort?.key === c.key && sort.direction === d}>${this.i18n.t(d === 'asc' ? 'sortAsc' : 'sortDesc', { column: c.label })}</option>`;
 
     return html`
       <div class="table-wrapper">
+        ${st && (this.selectable || sortable.length) ? html`
+          <div class="stack-bar">
+            ${this.selectable ? html`<cg-checkbox
+              ?checked=${allSelected}
+              .indeterminate=${this._selected.size > 0 && !allSelected}
+              @cg-change=${this._toggleAll}
+              label=${this.i18n.t('selectAll')}></cg-checkbox>` : nothing}
+            ${sortable.length ? html`<label class="stack-sort">${this.i18n.t('sortBy')}
+              <select @change=${(e: Event) => { const [key, direction] = (e.target as HTMLSelectElement).value.split(':') as [string, 'asc' | 'desc']; this._requestSort({ key, direction }); }}>
+                ${sort ? nothing : html`<option value="" selected disabled></option>`}
+                ${sortable.map((c) => [sortOption(c, 'asc'), sortOption(c, 'desc')])}
+              </select></label>` : nothing}
+          </div>` : nothing}
         <div class="scroll-area">
         <div class="table-scroll"
           tabindex=${this._overflows || this._scrollFocused ? '0' : nothing}
@@ -844,12 +911,12 @@ export class CgTable extends LitElement {
             <tr role=${st ? 'row' : nothing}>
               ${this.selectable ? html`
                 <th scope="col" role=${st ? 'columnheader' : nothing} class="select-col${this.stickyFirst ? ' sticky' : ''}">
-                  <cg-checkbox
+                  ${st ? this.i18n.t('selectAll') : html`<cg-checkbox
                     ?checked=${allSelected}
                     .indeterminate=${this._selected.size > 0 && !allSelected}
                     @cg-change=${this._toggleAll}
                     label=""
-                    aria-label=${this.i18n.t('selectAll')}></cg-checkbox>
+                    aria-label=${this.i18n.t('selectAll')}></cg-checkbox>`}
                 </th>
               ` : nothing}
               ${this.columns.map((col, ci) => {
@@ -862,7 +929,7 @@ export class CgTable extends LitElement {
                   data-align=${col.align ?? 'left'}
                   style=${col.width ? `width: ${col.width}` : ''}
                   aria-sort=${dir ? (dir === 'asc' ? 'ascending' : 'descending') : nothing}
-                >${col.sortable ? html`<button type="button" class="sort-btn" @click=${() => this._handleSort(col)}>${col.label}<span class="sort-icon" aria-hidden="true"><cg-icon name=${dir ? (dir === 'asc' ? 'arrow-up' : 'arrow-down') : 'sort'} size="xs"></cg-icon></span></button>` : col.label}</th>
+                >${col.sortable && !st ? html`<button type="button" class="sort-btn" @click=${() => this._handleSort(col)}>${col.label}<span class="sort-icon" aria-hidden="true"><cg-icon name=${dir ? (dir === 'asc' ? 'arrow-up' : 'arrow-down') : 'sort'} size="xs"></cg-icon></span></button>` : col.label}</th>
               `;
               })}
             </tr>

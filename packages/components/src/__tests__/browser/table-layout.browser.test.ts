@@ -16,7 +16,7 @@
  * - a fade on each edge that has more table behind it;
  * - `stack-below="768"`: below that width each row is a stacked list row
  *   (title line, muted meta line, `stack: 'end'` column at the right,
- *   `stack: 'hidden'` columns dropped), still a table to assistive tech.
+ *   `stack: 'hidden'` columns visually hidden, still read), still a table to assistive tech.
  */
 import { resolve } from 'node:path';
 import { describe, it, expect, afterAll } from 'vitest';
@@ -123,6 +123,55 @@ describe.skipIf(!browserAvailable)('cg-table layout (real browser)', { timeout: 
     await page.close();
   });
 
+  it('sticky-first in a right-to-left page: the first column pins to the right edge; the start fade sits after it on the right', async () => {
+    const page = await table('sticky-first', '360px');
+    await page.evaluate(() => { document.getElementById('box')!.dir = 'rtl'; });
+    await settleStyles(page);
+    // RTL scrollLeft runs from 0 (start, right) to negative (end, left).
+    await page.evaluate(() => { const s = document.getElementById('t')!.shadowRoot!.querySelector('.table-scroll')!; s.scrollLeft = -200; s.dispatchEvent(new Event('scroll')); });
+    await settleStyles(page);
+    const r = await page.evaluate(() => {
+      const root = document.getElementById('t')!.shadowRoot!;
+      const box = root.querySelector('.table-scroll')!.getBoundingClientRect();
+      const head = root.querySelector('thead th')!.getBoundingClientRect();
+      const cell = root.querySelector('tbody tr > *')!.getBoundingClientRect();
+      const start = root.querySelector('.fade-start')!;
+      const end = root.querySelector('.fade-end')!;
+      const fs = start.getBoundingClientRect();
+      return {
+        head: Math.round(box.right - head.right),
+        cell: Math.round(box.right - cell.right),
+        startAfterPin: Math.round(head.left - fs.right),
+        startOn: getComputedStyle(start).opacity,
+        endAtLeft: Math.round(end.getBoundingClientRect().left - box.left),
+        endOn: getComputedStyle(end).opacity,
+      };
+    });
+    expect(r).toEqual({ head: 0, cell: 0, startAfterPin: 0, startOn: '1', endAtLeft: 0, endOn: '1' });
+    await page.close();
+  });
+
+  it('sticky-first: a focused cell next to the pinned column scrolls out from under it (scroll-padding)', async () => {
+    const page = await table('sticky-first', '360px');
+    await page.evaluate(() => {
+      const t = document.getElementById('t') as HTMLElement & { columns: Array<Record<string, unknown>> };
+      t.columns = t.columns.map((c, i) => (i === 1 ? { ...c, render: (v: unknown) => Object.assign(document.createElement('button'), { textContent: String(v) }) } : c));
+    });
+    await settleStyles(page);
+    await page.evaluate(() => { const s = document.getElementById('t')!.shadowRoot!.querySelector('.table-scroll')!; s.scrollLeft = s.scrollWidth; });
+    await settleStyles(page);
+    const r = await page.evaluate(() => {
+      const root = document.getElementById('t')!.shadowRoot!;
+      const btn = root.querySelector('tbody tr button') as HTMLButtonElement;
+      btn.focus();
+      const pin = root.querySelector('tbody tr > .sticky')!.getBoundingClientRect();
+      return { focused: root.activeElement === btn, gap: Math.round(btn.getBoundingClientRect().left - pin.right) };
+    });
+    expect(r.focused).toBe(true);
+    expect(r.gap).toBeGreaterThanOrEqual(0);
+    await page.close();
+  });
+
   it('overflow fade: the edge with more table behind it fades; none when the table fits', async () => {
     const page = await table('', '360px');
     const fades = () => page.evaluate(() => {
@@ -157,11 +206,11 @@ describe.skipIf(!browserAvailable)('cg-table layout (real browser)', { timeout: 
         titleFull: b(title!).width > rr.width * 0.6,
         metaBelow: b(email!).top >= b(title!).bottom - 1 && Math.abs(b(changed!).top - b(email!).top) < 2,
         metaColour: getComputedStyle(email!).color !== getComputedStyle(title!).color,
-        versionHidden: getComputedStyle(version!).display,
+        versionHidden: getComputedStyle(version!).clipPath,
         statusRight: Math.round(rr.right - b(status!).right) <= 16 && b(status!).left > b(email!).right,
       };
     });
-    expect(r).toEqual({ overflow: 0, headHeight: 1, titleFull: true, metaBelow: true, metaColour: true, versionHidden: 'none', statusRight: true });
+    expect(r).toEqual({ overflow: 0, headHeight: 1, titleFull: true, metaBelow: true, metaColour: true, versionHidden: 'inset(50%)', statusRight: true });
     await expect(page.getByRole('row').count()).resolves.toBe(4);
     await expect(page.getByRole('columnheader', { name: 'E-mail' }).count()).resolves.toBe(1);
     await expect(page.getByRole('rowheader', { name: 'Comeback hello' }).count()).resolves.toBe(1);

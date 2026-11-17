@@ -353,6 +353,9 @@ export const ptBR: LocaleMessages = {
     empty: 'Nenhum dado',
     selectAll: 'Selecionar todas as linhas',
     selectRow: 'Selecionar linha {row}',
+    sortBy: 'Ordenar por',
+    sortAsc: '{column}, crescente',
+    sortDesc: '{column}, decrescente',
   },
   'cg-tag-input': {
     duplicate: 'A tag "{tag}" já existe',
