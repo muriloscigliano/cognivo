@@ -162,10 +162,11 @@ let wrapped = false;
 export function quietCheckValidity(): void {
   if (wrapped) return;
   wrapped = true;
-  for (const C of [HTMLFormElement, HTMLFieldSetElement, ElementInternals]) {
-    const proto = C.prototype as { checkValidity(): boolean };
-    const check = proto.checkValidity;
-    proto.checkValidity = function (this: unknown) {
+  // Looked up by name: server rendering (@lit-labs/ssr) has form internals but no HTMLFormElement.
+  for (const name of ['HTMLFormElement', 'HTMLFieldSetElement', 'ElementInternals']) {
+    const proto = (globalThis as unknown as Record<string, { prototype: { checkValidity?(): boolean } } | undefined>)[name]?.prototype;
+    const check = proto?.checkValidity;
+    if (check) proto.checkValidity = function (this: unknown) {
       quiet++;
       const valid = check.call(this);
       quiet--;
