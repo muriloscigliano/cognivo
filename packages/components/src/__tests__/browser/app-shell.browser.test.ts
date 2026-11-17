@@ -103,7 +103,7 @@ describe.skipIf(!browserAvailable)('cg-app-shell (real browser)', { timeout: 30_
       await page.close();
     });
 
-    it('paints the sidebar surface token in each theme (light: gray.100, dark: gray.950), not black', async () => {
+    it('paints the sidebar surface token in each theme (light: gray.100, dark: the ladder canvas #0b0b0c), not black', async () => {
       const page = await shell(DESKTOP);
       const read = () => page.evaluate((js) => {
         const aside = getComputedStyle(new Function(`return ${js}`)() as Element).backgroundColor;
@@ -117,7 +117,7 @@ describe.skipIf(!browserAvailable)('cg-app-shell (real browser)', { timeout: 30_
       expect(await read()).toEqual({ aside: 'rgb(244, 244, 245)', token: 'rgb(244, 244, 245)' }); // gray.100 #f4f4f5
       await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
       await frames(page);
-      expect(await read()).toEqual({ aside: 'rgb(9, 9, 11)', token: 'rgb(9, 9, 11)' }); // gray.950 #09090b
+      expect(await read()).toEqual({ aside: 'rgb(11, 11, 12)', token: 'rgb(11, 11, 12)' }); // surface ladder canvas #0b0b0c
       await page.close();
     });
 

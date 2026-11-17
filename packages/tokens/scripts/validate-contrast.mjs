@@ -223,6 +223,13 @@ const PAIRS = [
   { label: 'link-on-canvas', fg: 'color-link-text', bg: 'color-surface-canvas-background' },
   { label: 'link-hover-on-page', fg: 'color-link-hover', bg: 'color-surface-base-background' },
 
+  // the surface ladder (canvas < panel < raised): text, muted text and links on
+  // the raised step, muted text on the panel (dashboard audit 2026-11-17)
+  { label: 'text-on-raised', fg: 'color-state-text', bg: 'color-surface-raised-background' },
+  { label: 'muted-on-raised', fg: 'color-on-surface-container-default', bg: 'color-surface-raised-background' },
+  { label: 'muted-on-panel', fg: 'color-on-surface-container-default', bg: 'color-surface-panel-background' },
+  { label: 'link-on-raised', fg: 'color-link-text', bg: 'color-surface-raised-background' },
+
   // text selection (::selection): opaque, so the pair is the whole story on any fill
   { label: 'text-selection', fg: 'color-selection-text', bg: 'color-selection-background' },
 
@@ -241,6 +248,10 @@ const REQUIRED = new Set([
   'link-on-panel',
   'link-on-canvas',
   'link-hover-on-page',
+  'text-on-raised',
+  'muted-on-raised',
+  'muted-on-panel',
+  'link-on-raised',
   'input-label-resting',
   'table-header-text',
   'toast-description',

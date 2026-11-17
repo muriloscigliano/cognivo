@@ -4,29 +4,35 @@
       "height": {
         "sm": {
           "$type": "dimension",
-          "$value": "32px"
+          "$value": "32px",
+          "$description": "One control scale (dashboard audit 2026-11-17): sm 32 / md 36 / lg 40 px"
         },
         "md": {
           "$type": "dimension",
-          "$value": "48px"
+          "$value": "36px",
+          "$description": "One control scale (dashboard audit 2026-11-17): sm 32 / md 36 / lg 40 px; the default"
         },
         "lg": {
           "$type": "dimension",
-          "$value": "56px"
+          "$value": "40px",
+          "$description": "One control scale (dashboard audit 2026-11-17): sm 32 / md 36 / lg 40 px"
         }
       },
       "radius": {
         "sm": {
           "$type": "dimension",
-          "$value": "{border.radius.50}"
+          "$value": "{border.radius.50}",
+          "$description": "Controls are radius 8 px at every size (rounded=\"full\" for a pill)"
         },
         "md": {
           "$type": "dimension",
-          "$value": "{border.radius.100}"
+          "$value": "{border.radius.50}",
+          "$description": "Controls are radius 8 px at every size (rounded=\"full\" for a pill)"
         },
         "lg": {
           "$type": "dimension",
-          "$value": "{border.radius.125}"
+          "$value": "{border.radius.50}",
+          "$description": "Controls are radius 8 px at every size (rounded=\"full\" for a pill)"
         }
       }
     },
@@ -34,20 +40,29 @@
       "height": {
         "sm": {
           "$type": "dimension",
-          "$value": "32px"
+          "$value": "32px",
+          "$description": "One control scale (dashboard audit 2026-11-17): sm 32 / md 36 / lg 40 px"
         },
         "md": {
           "$type": "dimension",
-          "$value": "48px"
+          "$value": "36px",
+          "$description": "One control scale (dashboard audit 2026-11-17): sm 32 / md 36 / lg 40 px; the default"
         },
         "lg": {
           "$type": "dimension",
-          "$value": "56px"
+          "$value": "40px",
+          "$description": "One control scale (dashboard audit 2026-11-17): sm 32 / md 36 / lg 40 px"
         }
       },
       "radius": {
         "$type": "dimension",
-        "$value": "{border.radius.125}"
+        "$value": "{border.radius.50}",
+        "$description": "Field radius: 8 px, the same as buttons"
+      },
+      "label-gap": {
+        "$type": "dimension",
+        "$value": "{spacing.6}",
+        "$description": "Gap between a top label and its field"
       }
     },
     "card": {
@@ -84,6 +99,11 @@
           "$type": "dimension",
           "$value": "{border.radius.150}"
         }
+      },
+      "height": {
+        "$type": "dimension",
+        "$value": "28px",
+        "$description": "The one badge size (full pill); size=\"sm|md|lg\" all render it"
       }
     },
     "table": {
@@ -94,12 +114,33 @@
       "virtual-max-height": {
         "$type": "dimension",
         "$value": "400px"
+      },
+      "row-height-list": {
+        "$type": "dimension",
+        "$value": "60px",
+        "$description": "density=\"list\" (the default): list rows 56-64 px"
+      },
+      "row-height-data": {
+        "$type": "dimension",
+        "$value": "40px",
+        "$description": "density=\"data\": data rows at 13 px type"
+      },
+      "header-height": {
+        "$type": "dimension",
+        "$value": "36px",
+        "$description": "Header row: 12 px / 500 muted"
+      },
+      "fade-size": {
+        "$type": "dimension",
+        "$value": "{spacing.24}",
+        "$description": "Width of the fade on a horizontally scrolling edge"
       }
     },
     "modal": {
       "radius": {
         "$type": "dimension",
-        "$value": "{border.radius.200}"
+        "$value": "{border.radius.100}",
+        "$description": "Dialog radius: 12 px"
       },
       "width": {
         "sm": {
@@ -161,7 +202,8 @@
     "pagination": {
       "button-size": {
         "$type": "dimension",
-        "$value": "36px"
+        "$value": "28px",
+        "$description": "Pager pills (Previous / Next and page buttons): 28 px"
       }
     },
     "drawer": {
@@ -438,15 +480,16 @@
       "height": {
         "sm": {
           "$type": "dimension",
-          "$value": "32px"
+          "$value": "28px"
         },
         "md": {
           "$type": "dimension",
-          "$value": "40px"
+          "$value": "32px",
+          "$description": "Track height (the default size): options are 26 px, inset 3 px (1 px border + the 2 px padding)"
         },
         "lg": {
           "$type": "dimension",
-          "$value": "48px"
+          "$value": "36px"
         }
       },
       "radius": {
@@ -455,7 +498,8 @@
       },
       "padding": {
         "$type": "dimension",
-        "$value": "{spacing.4}"
+        "$value": "{spacing.2}",
+        "$description": "Inset of the options inside the track border"
       }
     },
     "file-input": {
